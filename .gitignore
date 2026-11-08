@@ -1,0 +1,13 @@
+# Compiled sources
+*.amx
+
+# Local compiler output and diagnostics
+/build/
+
+# Compressed sources
+*.zip
+*.rar
+
+# Temporary
+log.txt
+logs/
