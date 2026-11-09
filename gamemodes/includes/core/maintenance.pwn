@@ -12,7 +12,7 @@ hook OnGameModeInit() {
 	TextDrawSetOutline(UpdateIn[0], 1);
 	TextDrawBackgroundColor(UpdateIn[0], 255);
 	TextDrawFont(UpdateIn[0], 1);
-	TextDrawSetProportional(UpdateIn[0], 1);
+	TextDrawSetProportional(UpdateIn[0], true);
 	TextDrawSetShadow(UpdateIn[0], 0);
 
 	UpdateIn[1] = TextDrawCreate(595.181335, 431.007720, "00:00");
@@ -23,7 +23,7 @@ hook OnGameModeInit() {
 	TextDrawSetOutline(UpdateIn[1], 1);
 	TextDrawBackgroundColor(UpdateIn[1], 255);
 	TextDrawFont(UpdateIn[1], 1);
-	TextDrawSetProportional(UpdateIn[1], 1);
+	TextDrawSetProportional(UpdateIn[1], true);
 	TextDrawSetShadow(UpdateIn[1], 0);
 	return 1;
 }
@@ -105,14 +105,14 @@ forward Maintenance();
 public Maintenance()
 {
 	new string[128];
-    ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Freezing Accounts...", 1);
+    ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Freezing Accounts...", 1);
 
     foreach(new i: Player)
 	{
 		TogglePlayerControllable(i, false);
 	}
 
-    ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Locking Paintball Arenas...", 1);
+    ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Locking Paintball Arenas...", 1);
 
     for(new i = 0; i < MAX_ARENAS; i++)
     {
@@ -191,7 +191,7 @@ public Maintenance()
 	}	
 
 
-    ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Accounts...", 1);
+    ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Accounts...", 1);
 	SendRconCommand("password asdatasdhwda");
 	SendRconCommand("hostname Next Generation Roleplay [Restarting for Maintenance]");
 	foreach(new i: Player)
@@ -214,41 +214,41 @@ forward FinishMaintenance();
 public FinishMaintenance()
 {
     foreach(new i: Player) Kick(i);
-    ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Houses...", 1);
+    ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Houses...", 1);
 	SaveHouses();
-	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Dynamic Doors...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Dynamic Doors...", 1);
 	SaveDynamicDoors();
-	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Garages...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Garages...", 1);
 	SaveGarages();
-	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Map Icons...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Map Icons...", 1);
 	SaveDynamicMapIcons();
-	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Gates...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Gates...", 1);
 	SaveGates();
-	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Event Points...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Event Points...", 1);
 	SaveEventPoints();
-	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Paintball Arenas...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Paintball Arenas...", 1);
 	SavePaintballArenas();
-	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Server Configuration", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Server Configuration", 1);
     Misc_Save();
-    ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Office Elevator...", 1);
+    ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Office Elevator...", 1);
 	SaveElevatorStuff();
-	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Mail Boxes...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Mail Boxes...", 1);
 	SaveMailboxes();
-	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Speed Cameras...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Speed Cameras...", 1);
 	SaveSpeedCameras();
-	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Points...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Points...", 1);
 	for (new i=0; i<MAX_POINTS; i++)
 	{
 		SavePoint(i);	
 	}
 	if(rflstatus > 0) {
-		ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving RFL Teams...", 1);
+		ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving RFL Teams...", 1);
 		SaveRelayForLifeTeams();
 	}
 	g_mysql_SavePrices();
-	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Turfs...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Turfs...", 1);
 	SaveTurfWars();
-	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Streamer Plugin Shutting Down...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Streamer Plugin Shutting Down...", 1);
 	DestroyAllDynamicObjects();
 	DestroyAllDynamic3DTextLabels();
 	DestroyAllDynamicCPs();

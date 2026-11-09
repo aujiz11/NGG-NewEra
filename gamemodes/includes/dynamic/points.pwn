@@ -185,7 +185,7 @@ CMD:capture(playerid, params[])
 
 	DynPoints[point][poCapping] = playerid;
 	DynPoints[point][poTimeCapLeft] = 10;
-	SetTimerEx("ProgressTimer", 1000, 0, "d", point);
+	SetTimerEx("ProgressTimer", 1000, false, "d", point);
 	return 1;
 }
 
@@ -200,7 +200,7 @@ public ProgressTimer(id)
 			GameTextForPlayer(DynPoints[id][poCapping], szMiscArray, 1100, 3);
 			format(szMiscArray, sizeof(szMiscArray), "%s is attempting to capture the point, time left: %d", GetPlayerNameEx(DynPoints[id][poCapping]), DynPoints[id][poTimeCapLeft]);
 			UpdateDynamic3DTextLabelText(DynPoints[id][poTextID], COLOR_RED, szMiscArray);
-			SetTimerEx("ProgressTimer", 1000, 0, "d", id);
+			SetTimerEx("ProgressTimer", 1000, false, "d", id);
 		} else {
 			GetPlayerPos(DynPoints[id][poCapping], x, y, z);
 			if (DynPoints[id][CapturePos][0] != x || DynPoints[id][CapturePos][1] != y || DynPoints[id][CapturePos][2] != z || GetPVarInt(DynPoints[id][poCapping],"Injured") == 1) {
@@ -259,7 +259,7 @@ public ProgressTimer(id)
 			DynPoints[id][poCapperGroup] = fam;
 			DynPoints[id][poTimeLeft] = 10;
 			if(DynPoints[id][CapTimer] != 0) KillTimer(DynPoints[id][CapTimer]);
-			DynPoints[id][CapTimer] = SetTimerEx("CaptureTimer", 60000, 1, "d", id);
+			DynPoints[id][CapTimer] = SetTimerEx("CaptureTimer", 60000, true, "d", id);
 		}
 	} else {
 		DynPoints[id][poCapping] = INVALID_PLAYER_ID;

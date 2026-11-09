@@ -85,7 +85,7 @@ _t_ableTo(playerid)
 	new animlib[32],tmp[32];
 	GetAnimationName(GetPlayerAnimationIndex(playerid),animlib,32,tmp,32);
 	if(!strcmp(animlib, "SWIM")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command while swimming!"), 0;
-	if(IsPlayerInAnyVehicle(playerid) == 1)
+	if(IsPlayerInAnyVehicle(playerid) == true)
 	{
 		SendClientMessage(playerid, COLOR_GRAD2, "You cannot use this whilst in a vehicle.");
 		return 0;

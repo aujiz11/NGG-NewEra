@@ -155,7 +155,7 @@ CMD:togchatbox2(playerid, params[]) {
 }
 */
 
-stock SendClientMessageWrap(playerid, color, width, string[])
+stock SendClientMessageWrap(playerid, color, width, const string[])
 {
 	if(strlen(string) > width)
 	{
@@ -178,7 +178,7 @@ stock ClearChatbox(playerid)
 	return 1;
 }
 
-stock OOCOff(color,string[])
+stock OOCOff(color,const string[])
 {
 	foreach(new i: Player)
 	{
@@ -682,7 +682,7 @@ CMD:setfreq(playerid, params[])
 }
 
 
-ChatTrafficProcess(playerid, color, szString[], chattype) {
+ChatTrafficProcess(playerid, color, const szString[], chattype) {
 
 	if(PlayerInfo[playerid][pToggledChats][chattype] == 0) SendClientMessageEx(playerid, color, szString);
 	return 1;
@@ -699,7 +699,7 @@ ChatTrafficProcess(playerid, color, szString[], chattype) {
 	*/
 }
 
-ProxChatBubble(playerid, szString[]) {
+ProxChatBubble(playerid, const szString[]) {
 
 	SetPlayerChatBubble(playerid, szString, COLOR_PURPLE, 15.0, 5000);
 	//format(szString, 128, "{FF8000}> {C2A2DA}%s", szString);

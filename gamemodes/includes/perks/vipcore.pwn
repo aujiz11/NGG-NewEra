@@ -83,7 +83,7 @@ stock GetVIPRankName(i)
 	return string;
 }
 
-stock SendVIPMessage(color, string[])
+stock SendVIPMessage(color, const string[])
 {
 	foreach(new i: Player)
 	{

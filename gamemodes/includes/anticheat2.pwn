@@ -1450,7 +1450,7 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID, iExtraID2 = -1, iE
 				*/
 
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: You were kicked for being desynced.");
-				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				SetTimerEx("KickEx", 1000, false, "i", playerid);
 
 				format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is using Silent Aim (detector %d) on %s with a %s (warnings: %d).", GetPlayerNameExt(playerid), iExtraID3, GetPlayerNameExt(iExtraID2), AC_GetWeaponName(iExtraID), arrAntiCheat[playerid][ac_iFlags][processid]);
 			}
@@ -1473,7 +1473,7 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID, iExtraID2 = -1, iE
 				if(arrAntiCheat[playerid][ac_iFlags][processid] > 15) {
 					
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: You were kicked for being desynced.");
-					SetTimerEx("KickEx", 1000, 0, "i", playerid);
+					SetTimerEx("KickEx", 1000, false, "i", playerid);
 				}
 				return 1;
 			}
@@ -1523,7 +1523,7 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID, iExtraID2 = -1, iE
 			case AC_HEALTHARMORHACKS: {
 				
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: You were kicked for plausibly health/armor hacking.");
-				SetTimerEx("KickEx", 1000, 0, "i", iExtraID);
+				SetTimerEx("KickEx", 1000, false, "i", iExtraID);
 				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s was kicked for (plausibly!) health/armor hacking. Refrain from taking more action until fully tested.", GetPlayerNameEx(playerid));
 			}			
 			case AC_DIALOGSPOOFING: {
@@ -1534,7 +1534,7 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID, iExtraID2 = -1, iE
 			case AC_GHOSTHACKS: {
 
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: You were kicked for being desynced.");
-				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				SetTimerEx("KickEx", 1000, false, "i", playerid);
 				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s is using ghost hacks (Shooting while AFK). WeaponID: %d", GetPlayerNameEx(playerid), iExtraID);
 				Log("logs/anticheat.log", szMiscArray);
 			}
@@ -1543,7 +1543,7 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID, iExtraID2 = -1, iE
 				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s has a weird camera mode (probably aimbot). Camera Mode: %d.", GetPlayerNameEx(playerid), iExtraID);
 				Log("logs/anticheat.log", szMiscArray);
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: You were kicked for being desynced.");
-				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				SetTimerEx("KickEx", 1000, false, "i", playerid);
 			}
 		
 		}

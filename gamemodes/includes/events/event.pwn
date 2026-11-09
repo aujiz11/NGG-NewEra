@@ -203,7 +203,7 @@ CMD:joinevent(playerid, params[]) {
 		EventKernel[EventPlayers] ++;
 		if(EventKernel[EventPlayers] == EventKernel[EventLimit] && EventKernel[EventTime] == 0)
 		{
-			ABroadCast(COLOR_YELLOW, "The event has now reached the max players limit, you can now start it.", 2);
+			ABroadCastText(COLOR_YELLOW, "The event has now reached the max players limit, you can now start it.", 2);
 		}
 	}
 
@@ -1301,7 +1301,7 @@ CMD:startevent(playerid, params[])
 						format( string, sizeof( string ), "Event Jointext: %s EventLimit: %d.", EventKernel[EventInfo], EventKernel[EventLimit] );
 						ABroadCast( COLOR_GRAD2, string, 4 );
 					}
-					ABroadCast( COLOR_GRAD2, "This is a race type event, to view the race checkpoints use /edit checkpoints", 4 );
+					ABroadCastText( COLOR_GRAD2, "This is a race type event, to view the race checkpoints use /edit checkpoints", 4 );
 				}
 				format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s would like to start the event, do you approve? /approveevent or /denyevent.", GetPlayerNameEx(playerid) );
 				ABroadCast( COLOR_YELLOW, string, 4 );

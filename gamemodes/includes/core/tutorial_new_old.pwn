@@ -206,7 +206,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		case DIALOG_REGISTER_EXIT:
 		{
-			if(!response) SetTimerEx("KickEx", 1000, 0, "i", playerid);
+			if(!response) SetTimerEx("KickEx", 1000, false, "i", playerid);
 			else Register_MainMenu(playerid);
 		}
 		case DIALOG_REGISTER_MENU:
@@ -607,8 +607,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[0], 0.480000, 1.900000);
 	TextDrawColor(TutTextDraw[0], 865730559);
 	TextDrawSetOutline(TutTextDraw[0], 1);
-	TextDrawSetProportional(TutTextDraw[0], 1);
-	TextDrawSetSelectable(TutTextDraw[0], 0);
+	TextDrawSetProportional(TutTextDraw[0], true);
+	TextDrawSetSelectable(TutTextDraw[0], false);
 
 	TutTextDraw[1] = TextDrawCreate(258.000000, 83.000000, "N");
 	TextDrawBackgroundColor(TutTextDraw[1], 255);
@@ -616,8 +616,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[1], 0.399999, 2.000000);
 	TextDrawColor(TutTextDraw[1], 865730559);
 	TextDrawSetOutline(TutTextDraw[1], 1);
-	TextDrawSetProportional(TutTextDraw[1], 1);
-	TextDrawSetSelectable(TutTextDraw[1], 0);
+	TextDrawSetProportional(TutTextDraw[1], true);
+	TextDrawSetSelectable(TutTextDraw[1], false);
 
 	TutTextDraw[2] = TextDrawCreate(271.000000, 86.000000, "ext");
 	TextDrawBackgroundColor(TutTextDraw[2], 255);
@@ -625,8 +625,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[2], 0.350000, 1.599999);
 	TextDrawColor(TutTextDraw[2], -1);
 	TextDrawSetOutline(TutTextDraw[2], 1);
-	TextDrawSetProportional(TutTextDraw[2], 1);
-	TextDrawSetSelectable(TutTextDraw[2], 0);
+	TextDrawSetProportional(TutTextDraw[2], true);
+	TextDrawSetSelectable(TutTextDraw[2], false);
 
 	TutTextDraw[3] = TextDrawCreate(317.000000, 86.000000, "eneration");
 	TextDrawBackgroundColor(TutTextDraw[3], 255);
@@ -634,8 +634,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[3], 0.299999, 1.500000);
 	TextDrawColor(TutTextDraw[3], -1);
 	TextDrawSetOutline(TutTextDraw[3], 1);
-	TextDrawSetProportional(TutTextDraw[3], 1);
-	TextDrawSetSelectable(TutTextDraw[3], 0);
+	TextDrawSetProportional(TutTextDraw[3], true);
+	TextDrawSetSelectable(TutTextDraw[3], false);
 
 	TutTextDraw[4] = TextDrawCreate(303.000000, 81.000000, "G");
 	TextDrawBackgroundColor(TutTextDraw[4], 255);
@@ -643,8 +643,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[4], 0.480000, 1.900000);
 	TextDrawColor(TutTextDraw[4], 865730559);
 	TextDrawSetOutline(TutTextDraw[4], 1);
-	TextDrawSetProportional(TutTextDraw[4], 1);
-	TextDrawSetSelectable(TutTextDraw[4], 0);
+	TextDrawSetProportional(TutTextDraw[4], true);
+	TextDrawSetSelectable(TutTextDraw[4], false);
 
 	TutTextDraw[5] = TextDrawCreate(258.000000, 81.000000, "N");
 	TextDrawBackgroundColor(TutTextDraw[5], 255);
@@ -652,8 +652,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[5], 0.399999, 2.000000);
 	TextDrawColor(TutTextDraw[5], 865730559);
 	TextDrawSetOutline(TutTextDraw[5], 1);
-	TextDrawSetProportional(TutTextDraw[5], 1);
-	TextDrawSetSelectable(TutTextDraw[5], 0);
+	TextDrawSetProportional(TutTextDraw[5], true);
+	TextDrawSetSelectable(TutTextDraw[5], false);
 
 	TutTextDraw[6] = TextDrawCreate(271.000000, 84.000000, "ext");
 	TextDrawBackgroundColor(TutTextDraw[6], 255);
@@ -661,8 +661,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[6], 0.350000, 1.599999);
 	TextDrawColor(TutTextDraw[6], -1);
 	TextDrawSetOutline(TutTextDraw[6], 1);
-	TextDrawSetProportional(TutTextDraw[6], 1);
-	TextDrawSetSelectable(TutTextDraw[6], 0);
+	TextDrawSetProportional(TutTextDraw[6], true);
+	TextDrawSetSelectable(TutTextDraw[6], false);
 
 	TutTextDraw[7] = TextDrawCreate(317.000000, 84.000000, "eneration");
 	TextDrawBackgroundColor(TutTextDraw[7], 255);
@@ -670,8 +670,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[7], 0.299999, 1.500000);
 	TextDrawColor(TutTextDraw[7], -1);
 	TextDrawSetOutline(TutTextDraw[7], 1);
-	TextDrawSetProportional(TutTextDraw[7], 1);
-	TextDrawSetSelectable(TutTextDraw[7], 0);
+	TextDrawSetProportional(TutTextDraw[7], true);
+	TextDrawSetSelectable(TutTextDraw[7], false);
 
 	TutTextDraw[8] = TextDrawCreate(265.000000, 95.000000, "R");
 	TextDrawBackgroundColor(TutTextDraw[8], 255);
@@ -679,8 +679,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[8], 0.589999, 3.099999);
 	TextDrawColor(TutTextDraw[8], 255);
 	TextDrawSetOutline(TutTextDraw[8], 1);
-	TextDrawSetProportional(TutTextDraw[8], 1);
-	TextDrawSetSelectable(TutTextDraw[8], 0);
+	TextDrawSetProportional(TutTextDraw[8], true);
+	TextDrawSetSelectable(TutTextDraw[8], false);
 
 	TutTextDraw[9] = TextDrawCreate(265.000000, 96.000000, "R");
 	TextDrawBackgroundColor(TutTextDraw[9], 255);
@@ -688,8 +688,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[9], 0.609999, 2.900000);
 	TextDrawColor(TutTextDraw[9], 1721368575);
 	TextDrawSetOutline(TutTextDraw[9], 1);
-	TextDrawSetProportional(TutTextDraw[9], 1);
-	TextDrawSetSelectable(TutTextDraw[9], 0);
+	TextDrawSetProportional(TutTextDraw[9], true);
+	TextDrawSetSelectable(TutTextDraw[9], false);
 
 	TutTextDraw[10] = TextDrawCreate(283.000000, 103.000000, "ole");
 	TextDrawBackgroundColor(TutTextDraw[10], 255);
@@ -697,8 +697,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[10], 0.399999, 2.000000);
 	TextDrawColor(TutTextDraw[10], -1);
 	TextDrawSetOutline(TutTextDraw[10], 1);
-	TextDrawSetProportional(TutTextDraw[10], 1);
-	TextDrawSetSelectable(TutTextDraw[10], 0);
+	TextDrawSetProportional(TutTextDraw[10], true);
+	TextDrawSetSelectable(TutTextDraw[10], false);
 
 	TutTextDraw[11] = TextDrawCreate(283.000000, 101.000000, "ole");
 	TextDrawBackgroundColor(TutTextDraw[11], 255);
@@ -706,8 +706,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[11], 0.399999, 2.000000);
 	TextDrawColor(TutTextDraw[11], -1);
 	TextDrawSetOutline(TutTextDraw[11], 1);
-	TextDrawSetProportional(TutTextDraw[11], 1);
-	TextDrawSetSelectable(TutTextDraw[11], 0);
+	TextDrawSetProportional(TutTextDraw[11], true);
+	TextDrawSetSelectable(TutTextDraw[11], false);
 
 	TutTextDraw[12] = TextDrawCreate(348.000000, 103.000000, "lay");
 	TextDrawBackgroundColor(TutTextDraw[12], 255);
@@ -715,8 +715,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[12], 0.399999, 2.000000);
 	TextDrawColor(TutTextDraw[12], -1);
 	TextDrawSetOutline(TutTextDraw[12], 1);
-	TextDrawSetProportional(TutTextDraw[12], 1);
-	TextDrawSetSelectable(TutTextDraw[12], 0);
+	TextDrawSetProportional(TutTextDraw[12], true);
+	TextDrawSetSelectable(TutTextDraw[12], false);
 
 	TutTextDraw[13] = TextDrawCreate(348.000000, 101.000000, "lay");
 	TextDrawBackgroundColor(TutTextDraw[13], 255);
@@ -724,8 +724,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[13], 0.399999, 2.000000);
 	TextDrawColor(TutTextDraw[13], -1);
 	TextDrawSetOutline(TutTextDraw[13], 1);
-	TextDrawSetProportional(TutTextDraw[13], 1);
-	TextDrawSetSelectable(TutTextDraw[13], 0);
+	TextDrawSetProportional(TutTextDraw[13], true);
+	TextDrawSetSelectable(TutTextDraw[13], false);
 
 	TutTextDraw[14] = TextDrawCreate(330.000000, 97.000000, "P");
 	TextDrawBackgroundColor(TutTextDraw[14], 255);
@@ -733,8 +733,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[14], 0.609999, 2.900000);
 	TextDrawColor(TutTextDraw[14], 255);
 	TextDrawSetOutline(TutTextDraw[14], 1);
-	TextDrawSetProportional(TutTextDraw[14], 1);
-	TextDrawSetSelectable(TutTextDraw[14], 0);
+	TextDrawSetProportional(TutTextDraw[14], true);
+	TextDrawSetSelectable(TutTextDraw[14], false);
 
 	TutTextDraw[15] = TextDrawCreate(315.000000, 423.000000, "transboxdwn");
 	TextDrawAlignment(TutTextDraw[15], 2);
@@ -743,12 +743,12 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[15], 0.119998, 3.499999);
 	TextDrawColor(TutTextDraw[15], -84215296);
 	TextDrawSetOutline(TutTextDraw[15], 0);
-	TextDrawSetProportional(TutTextDraw[15], 1);
+	TextDrawSetProportional(TutTextDraw[15], true);
 	TextDrawSetShadow(TutTextDraw[15], 0);
-	TextDrawUseBox(TutTextDraw[15], 1);
+	TextDrawUseBox(TutTextDraw[15], true);
 	TextDrawBoxColor(TutTextDraw[15], 169098265);
 	TextDrawTextSize(TutTextDraw[15], 1116.000000, 75.000000);
-	TextDrawSetSelectable(TutTextDraw[15], 0);
+	TextDrawSetSelectable(TutTextDraw[15], false);
 
 	TutTextDraw[16] = TextDrawCreate(298.000000, 73.000000, "Welcome to");
 	TextDrawBackgroundColor(TutTextDraw[16], 255);
@@ -756,9 +756,9 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[16], 0.179998, 0.899998);
 	TextDrawColor(TutTextDraw[16], -1431655681);
 	TextDrawSetOutline(TutTextDraw[16], 0);
-	TextDrawSetProportional(TutTextDraw[16], 1);
+	TextDrawSetProportional(TutTextDraw[16], true);
 	TextDrawSetShadow(TutTextDraw[16], 1);
-	TextDrawSetSelectable(TutTextDraw[16], 0);
+	TextDrawSetSelectable(TutTextDraw[16], false);
 
 	TutTextDraw[17] = TextDrawCreate(330.000000, 96.000000, "P");
 	TextDrawBackgroundColor(TutTextDraw[17], 255);
@@ -766,8 +766,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[17], 0.609999, 2.900000);
 	TextDrawColor(TutTextDraw[17], 1721368575);
 	TextDrawSetOutline(TutTextDraw[17], 1);
-	TextDrawSetProportional(TutTextDraw[17], 1);
-	TextDrawSetSelectable(TutTextDraw[17], 0);
+	TextDrawSetProportional(TutTextDraw[17], true);
+	TextDrawSetSelectable(TutTextDraw[17], false);
 
 	TutTextDraw[18] = TextDrawCreate(379.000000, 76.000000, SERVER_GM_TEXT);
 	TextDrawAlignment(TutTextDraw[18], 2);
@@ -776,9 +776,9 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[18], 0.179999, 0.899999);
 	TextDrawColor(TutTextDraw[18], -65281);
 	TextDrawSetOutline(TutTextDraw[18], 0);
-	TextDrawSetProportional(TutTextDraw[18], 1);
+	TextDrawSetProportional(TutTextDraw[18], true);
 	TextDrawSetShadow(TutTextDraw[18], 1);
-	TextDrawSetSelectable(TutTextDraw[18], 0);
+	TextDrawSetSelectable(TutTextDraw[18], false);
 
 	TutTextDraw[20] = TextDrawCreate(280.000000, 440.000000, "www.ng-gaming.net");
 	TextDrawBackgroundColor(TutTextDraw[20], 255);
@@ -786,8 +786,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[20], 0.159999, 0.699998);
 	TextDrawColor(TutTextDraw[20], 1150943231);
 	TextDrawSetOutline(TutTextDraw[20], 1);
-	TextDrawSetProportional(TutTextDraw[20], 1);
-	TextDrawSetSelectable(TutTextDraw[20], 0);
+	TextDrawSetProportional(TutTextDraw[20], true);
+	TextDrawSetSelectable(TutTextDraw[20], false);
 
 	TutTextDraw[21] = TextDrawCreate(292.000000, 423.000000, "NGG");
 	TextDrawBackgroundColor(TutTextDraw[21], 255);
@@ -795,8 +795,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[21], 0.539999, 1.899999);
 	TextDrawColor(TutTextDraw[21], -1);
 	TextDrawSetOutline(TutTextDraw[21], 1);
-	TextDrawSetProportional(TutTextDraw[21], 0);
-	TextDrawSetSelectable(TutTextDraw[21], 0);
+	TextDrawSetProportional(TutTextDraw[21], false);
+	TextDrawSetSelectable(TutTextDraw[21], false);
 
 	TutTextDraw[22] = TextDrawCreate(292.000000, 421.000000, "NGG");
 	TextDrawBackgroundColor(TutTextDraw[22], 255);
@@ -804,8 +804,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[22], 0.539999, 1.899999);
 	TextDrawColor(TutTextDraw[22], 1150943231);
 	TextDrawSetOutline(TutTextDraw[22], 1);
-	TextDrawSetProportional(TutTextDraw[22], 0);
-	TextDrawSetSelectable(TutTextDraw[22], 0);
+	TextDrawSetProportional(TutTextDraw[22], false);
+	TextDrawSetSelectable(TutTextDraw[22], false);
 
 	TutTextDraw[23] = TextDrawCreate(280.000000, 439.000000, "www.ng-gaming.net");
 	TextDrawBackgroundColor(TutTextDraw[23], 255);
@@ -813,8 +813,8 @@ Tutorial_InitTextDraws()
 	TextDrawLetterSize(TutTextDraw[23], 0.159999, 0.699998);
 	TextDrawColor(TutTextDraw[23], -1);
 	TextDrawSetOutline(TutTextDraw[23], 1);
-	TextDrawSetProportional(TutTextDraw[23], 1);
-	TextDrawSetSelectable(TutTextDraw[23], 0);
+	TextDrawSetProportional(TutTextDraw[23], true);
+	TextDrawSetSelectable(TutTextDraw[23], false);
 }
 
 
@@ -1084,7 +1084,7 @@ Register_Prison(playerid)
 	SetPlayerVirtualWorld(playerid, 0);
 	SetHealth(playerid, 100);
 
-	TogglePlayerControllable(playerid, 0);
+	TogglePlayerControllable(playerid, false);
 	SetCameraBehindPlayer(playerid);
 
 	new randcell = random(29);
@@ -1135,7 +1135,7 @@ public Register_Plane(playerid)
 		}
 		case 3: {
 			PlayAudioStreamForPlayer(playerid, "http://sampweb.ng-gaming.net/dom/plane_part2.mp3");
-		    TogglePlayerControllable(playerid, 1);
+		    TogglePlayerControllable(playerid, true);
 			SetCameraBehindPlayer(playerid);
 			SetPlayerFacingAngle(playerid, 0.0);
 			SetPlayerVirtualWorld(playerid, 100);
@@ -1182,7 +1182,7 @@ public Tutorial_Checker(playerid)
 			if(!IsPlayerInRangeOfPoint(playerid, 100.0, -64.0691, -1502.6654, 1500.7435))
 			{
 				SendClientMessage(playerid, COLOR_LIGHTRED, "You have been kicked for tabbing inside the registration process.");
-				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				SetTimerEx("KickEx", 1000, false, "i", playerid);
  			}
 		}
 		case 1:
@@ -1190,7 +1190,7 @@ public Tutorial_Checker(playerid)
 			if(!IsPlayerInRangeOfPoint(playerid, 100.0, 1435.9309,-1102.6654,1500.743))
 			{
 				SendClientMessage(playerid, COLOR_LIGHTRED, "You have been kicked for tabbing inside the registration process.");
-				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				SetTimerEx("KickEx", 1000, false, "i", playerid);
 	 		}
 		}
 	}

@@ -52,7 +52,7 @@ public PayNSpray(playerid, id, vehicleid)
 		else
 		{
 			SendClientMessage(playerid, COLOR_WHITE, "Your agency does not have enough money in their funds to pay for this!");
-			TogglePlayerControllable(playerid, 1);
+			TogglePlayerControllable(playerid, true);
 			return 1;
 		}
 	}
@@ -65,7 +65,7 @@ public PayNSpray(playerid, id, vehicleid)
 		else
 		{
 			SendClientMessage(playerid, COLOR_WHITE, "You don't have enough money to pay for this!");
-			TogglePlayerControllable(playerid, 1);
+			TogglePlayerControllable(playerid, true);
 			return 1;
 		}
 	}
@@ -78,7 +78,7 @@ public PayNSpray(playerid, id, vehicleid)
 	}
 	SendClientMessage(playerid, COLOR_WHITE, "Your vehicle has been repaired!");
 	PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
-	TogglePlayerControllable(playerid, 1);
+	TogglePlayerControllable(playerid, true);
 	return 1;
 }
 
@@ -287,7 +287,7 @@ CMD:repaircar(playerid, params[])
 						else return SendClientMessage(playerid, COLOR_WHITE, "You don't have enough money to pay for this!");
 					}
 					SetTimerEx("PayNSpray", 5000, false, "iii", playerid, i, GetPlayerVehicleID(playerid));
-					TogglePlayerControllable(playerid, 0);
+					TogglePlayerControllable(playerid, false);
 					GameTextForPlayer(playerid, "Repairing...", 5000, 5);
 					return 1;
 				}

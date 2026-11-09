@@ -186,7 +186,7 @@ CMD:speedopos(playerid, params[])
 		PlayerTextDrawLetterSize(playerid, _vhudTextFuel[playerid], 0.270000, 2.000000);
 		PlayerTextDrawColor(playerid, _vhudTextFuel[playerid], -1);
 		PlayerTextDrawSetOutline(playerid, _vhudTextFuel[playerid], 1);
-		PlayerTextDrawSetProportional(playerid, _vhudTextFuel[playerid], 1);
+		PlayerTextDrawSetProportional(playerid, _vhudTextFuel[playerid], true);
 
 		PlayerTextDrawDestroy(playerid, _vhudTextSpeed[playerid]);
 		_vhudTextSpeed[playerid] = CreatePlayerTextDraw(playerid, TPosX[1], TPosY[0], "~b~MPH: N/A");
@@ -195,7 +195,7 @@ CMD:speedopos(playerid, params[])
 		PlayerTextDrawLetterSize(playerid, _vhudTextSpeed[playerid], 0.270000, 2.000000);
 		PlayerTextDrawColor(playerid, _vhudTextSpeed[playerid], -1);
 		PlayerTextDrawSetOutline(playerid, _vhudTextSpeed[playerid], 1);
-		PlayerTextDrawSetProportional(playerid, _vhudTextSpeed[playerid], 1);
+		PlayerTextDrawSetProportional(playerid, _vhudTextSpeed[playerid], true);
 
 		PlayerTextDrawDestroy(playerid, _vhudSeatBelt[playerid]);
 		_vhudSeatBelt[playerid] = CreatePlayerTextDraw(playerid, TPosX[1], TPosY[1], "~b~SB: ~r~OFF");
@@ -204,7 +204,7 @@ CMD:speedopos(playerid, params[])
 		PlayerTextDrawLetterSize(playerid, _vhudSeatBelt[playerid], 0.270000, 2.000000);
 		PlayerTextDrawColor(playerid, _vhudSeatBelt[playerid], -1);
 		PlayerTextDrawSetOutline(playerid, _vhudSeatBelt[playerid], 1);
-		PlayerTextDrawSetProportional(playerid, _vhudSeatBelt[playerid], 1);
+		PlayerTextDrawSetProportional(playerid, _vhudSeatBelt[playerid], true);
 
 		PlayerTextDrawDestroy(playerid, _vhudLights[playerid]);
 		_vhudLights[playerid] = CreatePlayerTextDraw(playerid, TPosX[0], TPosY[1], "~b~Lights: ~r~OFF");
@@ -213,7 +213,7 @@ CMD:speedopos(playerid, params[])
 		PlayerTextDrawLetterSize(playerid, _vhudLights[playerid], 0.270000, 2.000000);
 		PlayerTextDrawColor(playerid, _vhudLights[playerid], -1);
 		PlayerTextDrawSetOutline(playerid, _vhudLights[playerid], 1);
-		PlayerTextDrawSetProportional(playerid, _vhudLights[playerid], 1);
+		PlayerTextDrawSetProportional(playerid, _vhudLights[playerid], true);
 		
 		ShowVehicleHUDForPlayer(playerid);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have moved the position of your speedometer.");

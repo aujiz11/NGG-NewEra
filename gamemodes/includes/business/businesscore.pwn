@@ -826,7 +826,7 @@ CMD:bonline(playerid, params[]) {
     return 1;
 }
 
-CMD:buy(playerid, params[])
+CMD:buy(playerid, const params[])
 {
    	if (!IsAt247(playerid)) {
         SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not in a 24/7!");
@@ -1632,7 +1632,7 @@ CMD:shopbusinessname(playerid, params[])
 	return 1;
 }
 
-CMD:buyclothes(playerid, params[])
+CMD:buyclothes(playerid, const params[])
 {
 	new biz = InBusiness(playerid);
 
@@ -2679,7 +2679,7 @@ CMD:offermenu(playerid, params[])
     return 1;
 }
 
-CMD:buyfood(playerid, params[])
+CMD:buyfood(playerid, const params[])
 {
 	if (!IsAtRestaurant(playerid))
 	{
@@ -2900,7 +2900,7 @@ CMD:resupply(playerid, params[])
 
 	format(Businesses[iBusiness][bOrderBy], MAX_PLAYER_NAME, "%s", GetPlayerNameEx(playerid));
 	getdate(year, month, day);
-	format(Businesses[iBusiness][bOrderDate], 30, "%d-%02d-%02d %02d:%02d:%02d", year, month, day, hour, minuite, second);
+	format(Businesses[iBusiness][bOrderDate], 30, "%d-%02d-%02d %02d:%02d:%02d", year, month, day, gServerHour, minuite, gServerSecond);
 	Businesses[iBusiness][bSafeBalance] -= floatround(amount * BUSINESS_ITEMS_COST);
 	Businesses[iBusiness][bOrderAmount] = amount;
 	Businesses[iBusiness][bOrderState] = 1;

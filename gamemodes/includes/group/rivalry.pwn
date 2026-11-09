@@ -402,7 +402,7 @@ hook OnPlayerConnect(playerid)
     TextDrawFont(TD_RepFam, 2);
     TextDrawLetterSize(TD_RepFam, 0.25, 2.8000000000000003);
     TextDrawColor(TD_RepFam, 0xffffffFF);
-    TextDrawSetOutline(TD_RepFam, true);
+    TextDrawSetOutline(TD_RepFam, 1);
     TextDrawSetProportional(TD_RepFam, true);
     TextDrawSetShadow(TD_RepFam, 1);
 }

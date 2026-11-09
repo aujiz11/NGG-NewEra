@@ -94,7 +94,7 @@ CMD:staffbans(playerid, params[])
 		szMiscArray[0] = 0;
 		SendClientMessage(playerid, COLOR_WHITE, "-------------------------------------------------------------");
 
-		for(new i; i < GetPlayerPoolSize(); i++)
+		foreach(new i: Player)
 		{
 			if(PlayerInfo[i][pStaffBanned] >= 1)
 			{

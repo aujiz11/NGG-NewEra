@@ -38,7 +38,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		if(dialogid != DIALOG_FS_ELEVATOR1 && dialogid != DIALOG_FS_ELEVATOR2) { // For dialogs called from filterscripts.
 			if(PlayerInfo[playerid][pAdmin] == 99999 || dialogid == 32700) return 1;
 	    	SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM] Please delete your dialog CLEO.");
-	    	SetTimerEx("KickEx", 1000, 0, "i", playerid);
+            SetTimerEx("KickEx", 1000, false, "i", playerid);
 	    }
 	}
     iLastDialogID[playerid] = -1;
@@ -950,20 +950,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new iTruckModel = GetVehicleModel(GetPlayerVehicleID(playerid));
 			if (iTruckModel != 443 && Businesses[iBusiness][bType] == BUSINESS_TYPE_NEWCARDEALERSHIP) {
 				SendClientMessageEx(playerid, COLOR_WHITE, "You need to be driving a Packer in order to accept orders from car dealerships.");
-				TogglePlayerControllable(playerid, 1);
+				TogglePlayerControllable(playerid, true);
 				DeletePVar(playerid, "IsFrozen");
 				return 1;
 			}
 			if (iTruckModel != 514 && Businesses[iBusiness][bType] == BUSINESS_TYPE_GASSTATION) {
 				SendClientMessageEx(playerid, COLOR_WHITE, "You need to be driving a tank truck in order to accept orders from gas stations.");
-				TogglePlayerControllable(playerid, 1);
+				TogglePlayerControllable(playerid, true);
 				DeletePVar(playerid, "IsFrozen");
 				return 1;
 			}
 			if ((iTruckModel == 443 || iTruckModel == 514) && Businesses[iBusiness][bType] != BUSINESS_TYPE_NEWCARDEALERSHIP && Businesses[iBusiness][bType] != BUSINESS_TYPE_GASSTATION)
 			{
 				SendClientMessageEx(playerid, COLOR_WHITE, "You need to be driving a regular truck (i.e not packer or tank truck) in order to accept orders from this type of business.");
-				TogglePlayerControllable(playerid, 1);
+				TogglePlayerControllable(playerid, true);
 				DeletePVar(playerid, "IsFrozen");
 				return 1;
 			}
@@ -973,12 +973,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			format(string,sizeof(string),"* Please wait a moment while the vehicle is being loaded with %s...", GetInventoryType(iBusiness));
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 			SetPVarInt(playerid, "LoadTruckTime", 10);
-			SetTimerEx("LoadTruck", 1000, 0, "d", playerid);
+			SetTimerEx("LoadTruck", 1000, false, "d", playerid);
 		}
 		else
 		{
 			DeletePVar(playerid, "IsFrozen");
-			TogglePlayerControllable(playerid, 1);
+			TogglePlayerControllable(playerid, true);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You canceled the loading of the shipment, type /loadshipment to try again.");
 		}
 	}
@@ -2085,7 +2085,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		if(response == 0)
 		{
 			SendClientMessage(playerid, COLOR_RED, "SERVER: You have been kicked out automatically.");
-			SetTimerEx("KickEx", 1000, 0, "i", playerid);
+			SetTimerEx("KickEx", 1000, false, "i", playerid);
 		}
 		else if(dialogid == MAINMENU)
 		{
@@ -4345,7 +4345,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			PlayerInfo[playerid][pAcceptReport]++;
 			ReportCount[playerid]++;
 			ReportHourCount[playerid]++;
-			Reports[reportid][ReplyTimerr] = SetTimerEx("ReplyTimer", 30000, 0, "d", reportid);
+			Reports[reportid][ReplyTimerr] = SetTimerEx("ReplyTimer", 30000, false, "d", reportid);
 			Reports[reportid][CheckingReport] = playerid;
 			//Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
 			Reports[reportid][BeingUsed] = 0;
@@ -5094,7 +5094,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPlayerToTeamColor(suspect);
 					SetPlayerWantedLevel(suspect, 0);
 					WantLawyer[suspect] = 1;
-					TogglePlayerControllable(suspect, 1);
+					TogglePlayerControllable(suspect, true);
 					ClearAnimationsEx(suspect);
 					SetPlayerSpecialAction(suspect, SPECIAL_ACTION_NONE);
 					PlayerCuffed[suspect] = 0;
@@ -5168,7 +5168,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPlayerToTeamColor(suspect);
 					SetPlayerWantedLevel(suspect, 0);
 					WantLawyer[suspect] = 1;
-					TogglePlayerControllable(suspect, 1);
+					TogglePlayerControllable(suspect, true);
 					ClearAnimationsEx(suspect);
 					SetPlayerSpecialAction(suspect, SPECIAL_ACTION_NONE);
 					PlayerCuffed[suspect] = 0;
@@ -6814,7 +6814,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						new
 							Message[128];
 
-						TogglePlayerControllable(playerid, 0);
+						TogglePlayerControllable(playerid, false);
 						SetPVarInt(playerid, "IsFrozen", 1);
 						SetPVarInt(playerid, "_rAutoM", 5);
 						SetPVarInt(playerid, "_rRepID", playerid);
@@ -6960,7 +6960,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPVarInt( playerid, "COMMUNITY_ADVISOR_REQUEST", 1 );
 					SetPVarInt( playerid, "HelpTime", 5);
 					SetPVarString( playerid, "HelpReason", "Report Menu");
-					SetTimerEx( "HelpTimer", 60000, 0, "d", playerid);
+					SetTimerEx( "HelpTimer", 60000, false, "d", playerid);
 				}
 				case 11: //Request Unmute
 				{
@@ -8250,7 +8250,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		// Account Eating Bug Fix
 		if(!IsPlayerInAnyVehicle(playerid))
 		{
-			TogglePlayerControllable(playerid, 1);
+			TogglePlayerControllable(playerid, true);
 			SendClientMessageEx(playerid,COLOR_GRAD2,"You need to be in the vehicle you wish to purchase.");
 			return 1;
 		}
@@ -8263,7 +8263,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(!vehicleCountCheck(playerid))
 			{
-				TogglePlayerControllable(playerid, 1);
+				TogglePlayerControllable(playerid, true);
  				RemovePlayerFromVehicle(playerid);
  				new Float:slx, Float:sly, Float:slz;
  				GetPlayerPos(playerid, slx, sly, slz);
@@ -8278,14 +8278,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new Float:slx, Float:sly, Float:slz;
 				GetPlayerPos(playerid, slx, sly, slz);
 				SetPlayerPos(playerid, slx, sly, slz+1.2);
-				TogglePlayerControllable(playerid, 1);
+				TogglePlayerControllable(playerid, true);
 				return 1;
 			}
 
 			new randcolor1 = Random(0, 126);
 			new randcolor2 = Random(0, 126);
 			SetPlayerPos(playerid, Businesses[d][bParkPosX][v], Businesses[d][bParkPosY][v], Businesses[d][bParkPosZ][v]+2);
-			TogglePlayerControllable(playerid, 1);
+			TogglePlayerControllable(playerid, true);
 			new cost;
 			if(PlayerInfo[playerid][pDonateRank] < 1)
 			{
@@ -8346,7 +8346,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new Float:slx, Float:sly, Float:slz;
 			GetPlayerPos(playerid, slx, sly, slz);
 			SetPlayerPos(playerid, slx, sly, slz+1.2);
-			TogglePlayerControllable(playerid, 1);
+			TogglePlayerControllable(playerid, true);
 			return 1;
 		}
 	}
@@ -8387,7 +8387,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		else
 		{
 			DeletePVar(playerid, "IsFrozen");
-			TogglePlayerControllable(playerid, 1);
+			TogglePlayerControllable(playerid, true);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You canceled the loading of the shipment, type /loadshipment to try again.");
 		}
 	}
@@ -8419,12 +8419,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			SetPVarInt(playerid, "LoadType", 1);
 			SetPVarInt(playerid, "LoadTruckTime", 10);
-			SetTimerEx("LoadTruckOld", 1000, 0, "d", playerid);
+			SetTimerEx("LoadTruckOld", 1000, false, "d", playerid);
 		}
 		else
 		{
 			DeletePVar(playerid, "IsFrozen");
-			TogglePlayerControllable(playerid, 1);
+			TogglePlayerControllable(playerid, true);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You canceled the loading of the shipment, type /loadshipment to try again.");
 		}
 	}
@@ -8458,12 +8458,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			SetPVarInt(playerid, "LoadType", 1);
 			SetPVarInt(playerid, "LoadTruckTime", 10);
-			SetTimerEx("LoadTruckOld", 1000, 0, "d", playerid);
+			SetTimerEx("LoadTruckOld", 1000, false, "d", playerid);
 		}
 		else
 		{
 			DeletePVar(playerid, "IsFrozen");
-			TogglePlayerControllable(playerid, 1);
+			TogglePlayerControllable(playerid, true);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You canceled the loading of the shipment, type /loadshipment to try again.");
 		}
 	}

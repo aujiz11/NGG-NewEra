@@ -44,7 +44,7 @@ Internal_SetPlayerPos(playerid, Float:X, Float:Y, Float:Z) {
 Internal_TogglePlayerSpectating(playerid, toggle) {
 
 	Bit_On(arrPAntiCheat[playerid], ac_bitValidSpectating);
-	return TogglePlayerSpectating(playerid, toggle);
+	return TogglePlayerSpectating(playerid, toggle != 0);
 }
 
 /*
@@ -100,7 +100,7 @@ Internal_SetPlayerTime(playerid, iHour, iMinute) {
 
 Internal_CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay, addsiren=0) {
 
-	new i = CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay, addsiren);
+	new i = CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay, addsiren != 0);
 	Iter_Add(Vehicles, i);
 	return i;
 }

@@ -104,7 +104,7 @@ LoadPrisoner(iLoadingID, iPrisonerID, iVehicleID, iVehicleSeat, iNewVW, iNewIW)
 	SetPlayerInterior(iPrisonerID, iNewIW);
 	PlayerInfo[iPrisonerID][pInt] = iNewIW;
 	PutPlayerInVehicle(iPrisonerID, iVehicleID, iVehicleSeat);
-	TogglePlayerControllable(iPrisonerID, 0);
+	TogglePlayerControllable(iPrisonerID, false);
 	DeletePVar(iPrisonerID, "ArrestPoint");
 
 	SendClientMessageEx(iPrisonerID, COLOR_LIGHTBLUE, "You have been loaded into a prisoner transport bus by and will be transported to DOC");
@@ -1215,7 +1215,7 @@ CMD:deliverinmates(playerid, params[])
 			SetPlayerFacingAngle(i, 0);
 			SetPlayerPos(i, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2]);
 			DeletePVar(i, "IsFrozen");
-			TogglePlayerControllable(i, 1);
+			TogglePlayerControllable(i, true);
 			SetPlayerInterior(i, 10);
 			SetPlayerVirtualWorld(i, 0);
 			PlayerInfo[i][pVW] = 0;
@@ -1681,9 +1681,9 @@ CMD:jailcuff(playerid, params[])
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
 					ClearAnimationsEx(giveplayerid);
-					TogglePlayerControllable(giveplayerid, 0);
+					TogglePlayerControllable(giveplayerid, false);
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_CUFFED);
-					TogglePlayerControllable(giveplayerid, 1);
+					TogglePlayerControllable(giveplayerid, true);
 					DeletePVar(playerid, "pBagged");
 					SetPVarInt(giveplayerid, "jailcuffs", 1);
 				}
@@ -1691,7 +1691,7 @@ CMD:jailcuff(playerid, params[])
 				{
 				    format(string, sizeof(string), "* %s removes a set of cuffs from his belt and attempts to cuff %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					SetTimerEx("CuffTackled", 4000, 0, "ii", playerid, giveplayerid);
+					SetTimerEx("CuffTackled", 4000, false, "ii", playerid, giveplayerid);
 				}
 				else
 				{

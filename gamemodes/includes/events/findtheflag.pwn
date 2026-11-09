@@ -56,15 +56,16 @@ stock ShowFlagShop(playerid) {
 	new title[54];
 	szMiscArray[0] = 0;
 	format(title, sizeof(title), "Flag Shop - Flag Credits: %s", number_format(PlayerInfo[playerid][pFlagCredits]));
-	Dialog_Show(playerid, flag_shop, DIALOG_STYLE_TABLIST_HEADERS, title,
-	"Item\tCost\n\
+	new dialogInfo[] = "Item\tCost\n\
 	Gift Reset\t2\n\
 	Custom Car Voucher\t6\n\
 	House Interior Change\t6\n\
 	Bronze VIP 1 Month\t12\n\
 	Silver VIP 1 Month\t20\n\
 	Gold VIP 2 Month\t35\n\
-	Platinum VIP 1 Month\t40", 
+	Platinum VIP 1 Month\t40";
+	Dialog_Show(playerid, flag_shop, DIALOG_STYLE_TABLIST_HEADERS, title,
+    dialogInfo,
 	"Select", "Go Back");
 	return 1;
 }

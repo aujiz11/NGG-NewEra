@@ -533,14 +533,14 @@ public LoadForklift(playerid, facility, boxid, vehicle) {
 	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", GetPVarInt(playerid, "LoadForkliftTime"));
 	GameTextForPlayer(playerid, string, 1100, 3);
 
-	if(GetPVarInt(playerid, "LoadForkliftTime") > 0) SetTimerEx("LoadForklift", 1000, 0, "iiii", playerid, facility, boxid, vehicle);
+	if(GetPVarInt(playerid, "LoadForkliftTime") > 0) SetTimerEx("LoadForklift", 1000, false, "iiii", playerid, facility, boxid, vehicle);
 
 	if(GetPVarInt(playerid, "LoadForkliftTime") <= 0)
 	{
 		DeletePVar(playerid, "LoadForkliftTime");
 		CrateBeingProcessed[facility] = 0;
 		CrateBox[boxid][cbFacility] = -1;
-		TogglePlayerControllable(playerid, 1);
+		TogglePlayerControllable(playerid, true);
 		if(!ValidGroup(PlayerInfo[playerid][pMember])) {
 			SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to load the crate. You're no longer apart of a group!");
 			return 1;
@@ -922,9 +922,9 @@ CMD:crate(playerid, params[]) {
 					CrateBeingProcessed[facility] = 1;
 					CrateBox[c][cbFacility] = facility;
 					SetPVarInt(playerid, "LoadForkliftTime", 5);
-					SetTimerEx("LoadForklift", 1000, 0, "iiii", playerid, facility, c, veh);
+					SetTimerEx("LoadForklift", 1000, false, "iiii", playerid, facility, c, veh);
 					GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~5 seconds left", 1100, 3);
-					TogglePlayerControllable(playerid, 0);
+					TogglePlayerControllable(playerid, false);
 					break;
 				}
 			}
@@ -1457,7 +1457,7 @@ CMD:cfedit(playerid, params[]) {
 	return 1;
 }
 
-stock DeleteOrder(facility, reason[]) {
+stock DeleteOrder(facility, const reason[]) {
 	szMiscArray[0] = 0;
 	for(new g = 0; g < MAX_GROUPS; g++) {
 		if(CrateOrder[g][coFacility] == facility) {
@@ -1771,9 +1771,9 @@ CMD:delivercrate(playerid, params[]) {
     CrateBeingDelivered[point] = 1;
     VehDelivering[veh] = 1;
     SetPVarInt(playerid, "DeliverCrateTime", 8);
-    SetTimerEx("DeliverCrate", 1000, 0, "iiiii", playerid, fac, veh, point, crates);
+    SetTimerEx("DeliverCrate", 1000, false, "iiiii", playerid, fac, veh, point, crates);
 	GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~8 seconds left", 1100, 3);
-	TogglePlayerControllable(playerid, 0);
+	TogglePlayerControllable(playerid, false);
 	return 1;
 }
 
@@ -1785,11 +1785,11 @@ public DeliverCrate(playerid, fac, veh, point, crates) {
 	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", GetPVarInt(playerid, "DeliverCrateTime"));
 	GameTextForPlayer(playerid, string, 1100, 3);
 
-	if(GetPVarInt(playerid, "DeliverCrateTime") > 0) SetTimerEx("DeliverCrate", 1000, 0, "iiiii", playerid, fac, veh, point, crates);
+	if(GetPVarInt(playerid, "DeliverCrateTime") > 0) SetTimerEx("DeliverCrate", 1000, false, "iiiii", playerid, fac, veh, point, crates);
 
 	if(GetPVarInt(playerid, "DeliverCrateTime") < 1) {
 		DeletePVar(playerid, "DeliverCrateTime");
-		TogglePlayerControllable(playerid, 1);
+		TogglePlayerControllable(playerid, true);
 		CrateBeingDelivered[point] = 0;
 		VehDelivering[veh] = 0;
 		if(!ValidGroup(PlayerInfo[playerid][pMember])) {

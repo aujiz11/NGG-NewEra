@@ -86,7 +86,7 @@ hook OnPlayerDisconnect(playerid, reason) {
 		SetPlayerVirtualWorld(playerid, PokerTable[tableid][pkrVW]);
 		SetPlayerPos(playerid, GetPVarFloat(playerid, "pkrTableJoinX"), GetPVarFloat(playerid, "pkrTableJoinY"), GetPVarFloat(playerid, "pkrTableJoinZ")+0.1);
 		SetCameraBehindPlayer(playerid);
-		TogglePlayerControllable(playerid, 1);
+		TogglePlayerControllable(playerid, true);
 		ApplyAnimation(playerid, "CARRY", "crry_prtial", 2.0, 0, 0, 0, 0, 0);
 
 		if(GetPVarInt(playerid, "pkrActiveHand")) {
@@ -286,11 +286,10 @@ PokerAssignBlinds(tableid)
 	}
 
 	// Find where to start & distubute blinds.
-	new bool:roomDealer = false, bool:roomBigBlind = false, bool:roomSmallBlind = false;
 
 	// Find the Dealer.
 	new tmpPos = PokerTable[tableid][pkrPos];
-	if(roomDealer == false) {
+	{
 		if(tmpPos == 6) {
 			tmpPos = 0;
 		}
@@ -300,15 +299,12 @@ PokerAssignBlinds(tableid)
 		if(playerid != -1) {
 			SetPVarInt(playerid, "pkrRoomDealer", 1);
 			SetPVarString(playerid, "pkrStatusString", "Dealer");
-			roomDealer = true;
-		} else {
-			tmpPos++;
 		}
 	}
 
 	// Find the player after the Dealer.
 	tmpPos = PokerTable[tableid][pkrPos];
-	if(roomBigBlind == false) {
+	{
 		if(tmpPos == 6) {
 			tmpPos = 0;
 		}
@@ -321,7 +317,6 @@ PokerAssignBlinds(tableid)
 				new tmpString[128];
 				format(tmpString, sizeof(tmpString), "~r~BB -$%d", PokerTable[tableid][pkrBlind]);
 				SetPVarString(playerid, "pkrStatusString", tmpString);
-				roomBigBlind = true;
 
 				if(GetPVarInt(playerid, "pkrChips") < PokerTable[tableid][pkrBlind]) {
 					PokerTable[tableid][pkrPot] += GetPVarInt(playerid, "pkrChips");
@@ -334,11 +329,7 @@ PokerAssignBlinds(tableid)
 				SetPVarInt(playerid, "pkrCurrentBet", PokerTable[tableid][pkrBlind]);
 				PokerTable[tableid][pkrActiveBet] = PokerTable[tableid][pkrBlind];
 
-			} else {
-				tmpPos++;
 			}
-		} else {
-			tmpPos++;
 		}
 	}
 
@@ -347,7 +338,7 @@ PokerAssignBlinds(tableid)
 
 		// Find the player after the Big Blind.
 		tmpPos = PokerTable[tableid][pkrPos];
-		if(roomSmallBlind == false) {
+		{
 			if(tmpPos == 6) {
 				tmpPos = 0;
 			}
@@ -360,7 +351,6 @@ PokerAssignBlinds(tableid)
 					new tmpString[128];
 					format(tmpString, sizeof(tmpString), "~r~SB -$%d", PokerTable[tableid][pkrBlind]/2);
 					SetPVarString(playerid, "pkrStatusString", tmpString);
-					roomSmallBlind = true;
 
 					if(GetPVarInt(playerid, "pkrChips") < (PokerTable[tableid][pkrBlind]/2)) {
 						PokerTable[tableid][pkrPot] += GetPVarInt(playerid, "pkrChips");
@@ -372,11 +362,7 @@ PokerAssignBlinds(tableid)
 
 					SetPVarInt(playerid, "pkrCurrentBet", PokerTable[tableid][pkrBlind]/2);
 					PokerTable[tableid][pkrActiveBet] = PokerTable[tableid][pkrBlind]/2;
-				} else {
-					tmpPos++;
 				}
-			} else {
-				tmpPos++;
 			}
 		}
 	}
@@ -643,7 +629,7 @@ PlacePokerTable(tableid, skipmisc, Float:x, Float:y, Float:z, Float:rx, Float:ry
 	// Create 3D Text Label
 	new szString[64];
 	format(szString, sizeof(szString), "Poker Table %d", tableid);
-	PokerTable[tableid][pkrText3DID] = Create3DTextLabel(szString, COLOR_YELLOW, x, y, z+1.3, DRAWDISTANCE_POKER_MISC, virtualworld, 0);
+	PokerTable[tableid][pkrText3DID] = Create3DTextLabel(szString, COLOR_YELLOW, x, y, z+1.3, DRAWDISTANCE_POKER_MISC, virtualworld, false);
 
 	return tableid;
 }
@@ -686,7 +672,7 @@ DestroyPokerTable(tableid)
 }
 
 // Note: 0, 1 should be the hand, the rest are community cards.
-AnaylzePokerHand(playerid, Hand[])
+AnaylzePokerHand(playerid, const Hand[])
 {
 	new pokerArray[7];
 	for(new i = 0; i < sizeof(pokerArray); i++) {
@@ -830,7 +816,6 @@ AnaylzePokerHand(playerid, Hand[])
 			tmp = 0;
 		}
 	}
-	tmp = 0;
 
 	// Convert Hand to Singles
 
@@ -909,7 +894,7 @@ forward PokerExit(playerid);
 public PokerExit(playerid)
 {
 	SetCameraBehindPlayer(playerid);
-	TogglePlayerControllable(playerid, 1);
+	TogglePlayerControllable(playerid, true);
 	ClearAnimationsEx(playerid);
 	CancelSelectTextDraw(playerid);
 }
@@ -1647,7 +1632,7 @@ JoinPokerTable(playerid, tableid) {
 				Log("logs/poker.log", string);
 
 				ApplyAnimation(playerid, "CASINO", "cards_out", 4.1, 0, 1, 1, 1, 1, 1);
-				TogglePlayerControllable(playerid, 0);
+				TogglePlayerControllable(playerid, false);
 				SetPlayerPosObjectOffset(PokerTable[tableid][pkrObjectID], playerid, PokerTableMiscObjOffsets[s][0], PokerTableMiscObjOffsets[s][1], PokerTableMiscObjOffsets[s][2]);
 				SetPlayerFacingAngle(playerid, PokerTableMiscObjOffsets[s][5]+90.0);
 				ApplyAnimation(playerid, "CASINO", "cards_out", 4.1, 0, 1, 1, 1, 1, 1);
@@ -1708,7 +1693,7 @@ LeavePokerTable(playerid) {
 	SetPlayerVirtualWorld(playerid, PokerTable[tableid][pkrVW]);
 	SetPlayerPos(playerid, GetPVarFloat(playerid, "pkrTableJoinX"), GetPVarFloat(playerid, "pkrTableJoinY"), GetPVarFloat(playerid, "pkrTableJoinZ")+0.1);
 	SetCameraBehindPlayer(playerid);
-	TogglePlayerControllable(playerid, 1);
+	TogglePlayerControllable(playerid, true);
 	ApplyAnimation(playerid, "CARRY", "crry_prtial", 2.0, 0, 0, 0, 0, 0);
 	CancelSelectTextDraw(playerid);
 	ShowPlayerDialogEx(playerid, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");

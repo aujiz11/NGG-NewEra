@@ -44,8 +44,8 @@ stock HideBackupActiveForPlayer(playerid)
 	PlayerTextDrawHide(playerid, BackupText[playerid]);
 }
 
-forward SetPlayerFree(playerid,declare,reason[]);
-public SetPlayerFree(playerid,declare,reason[])
+forward SetPlayerFree(playerid,declare,const reason[]);
+public SetPlayerFree(playerid,declare,const reason[])
 {
 	if(IsPlayerConnected(playerid))
 	{
@@ -88,7 +88,7 @@ stock CuffTacklee(playerid, giveplayerid)
 	format(string, sizeof(string), "* %s handcuffs %s, tightening the cuffs securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
-	TogglePlayerControllable(giveplayerid, 0);
+	TogglePlayerControllable(giveplayerid, false);
 	ClearAnimationsEx(giveplayerid);
 	ClearAnimationsEx(playerid);
 	GetHealth(giveplayerid, health);
@@ -108,7 +108,7 @@ stock CuffTacklee(playerid, giveplayerid)
 
 stock ClearTackle(playerid)
 {
-    TogglePlayerControllable(playerid, 1);
+    TogglePlayerControllable(playerid, true);
 	//PreloadAnimLib(playerid, "SUNBATHE");
 	//PreloadAnimLib(GetPVarInt(playerid, "IsTackled"), "SUNBATHE");
     ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.1, 0, 1, 1, 0, 0, 1);
@@ -149,7 +149,7 @@ public DragPlayer(dragger, dragee)
 		SetPlayerVirtualWorld(dragee, GetPlayerVirtualWorld(dragger));
 		ClearAnimationsEx(dragee);
 		ApplyAnimation(dragee, "ped","cower",1,1,0,0,0,0,1);
-        SetTimerEx("DragPlayer", 1000, 0, "ii", dragger, dragee);
+        SetTimerEx("DragPlayer", 1000, false, "ii", dragger, dragee);
 	}
 	return 1;
 }
@@ -196,9 +196,9 @@ public CuffTackled(playerid, giveplayerid)
 				{
 					format(string, sizeof(string), "* %s pushes %s aside and is able to escape.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
     				ProxDetector(30.0, giveplayerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-    				TogglePlayerControllable(playerid, 0);
+                    TogglePlayerControllable(playerid, false);
 					ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
-					SetTimerEx("CopGetUp", 3500, 0, "i", playerid);
+					SetTimerEx("CopGetUp", 3500, false, "i", playerid);
 				 	ClearTackle(giveplayerid);
 				}
 			}
@@ -219,7 +219,7 @@ public CopGetUp(playerid)
     SetPVarInt(playerid, "CopTackleCooldown", 30); // a Cooldown on when the cop can tackle again after tackling someone
 	DeletePVar(playerid, "Tackling");
     SendClientMessageEx(playerid, COLOR_GRAD2, "It will be 30 seconds before you can tackle again.");
-	TogglePlayerControllable(playerid, 1);
+	TogglePlayerControllable(playerid, true);
 	//PreloadAnimLib(playerid, "SUNBATHE");
 	ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.0, 0, 1, 1, 0, 0, 1);
 	return 1;
@@ -232,7 +232,7 @@ stock TacklePlayer(playerid, tacklee)
 	format(string, sizeof(string), "** %s leaps at %s, tackling them.", GetPlayerNameEx(playerid), GetPlayerNameEx(tacklee));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	SetPVarInt(tacklee, "IsTackled", playerid);
-	TogglePlayerControllable(tacklee, 0);
+	TogglePlayerControllable(tacklee, false);
 	SetPVarInt(tacklee, "IsFrozen", 1);
 	SetPVarInt(tacklee, "TackleCooldown", 20); //Actually a countdown till the tackle is over
 	SetPVarInt(playerid, "Tackling", tacklee);
@@ -1910,7 +1910,7 @@ CMD:cuff(playerid, params[])
 					format(string, sizeof(string), "* %s handcuffs %s, tightening the cuffs securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
-					TogglePlayerControllable(giveplayerid, 0);
+					TogglePlayerControllable(giveplayerid, false);
 					ClearAnimationsEx(giveplayerid);
 					GetHealth(giveplayerid, health);
 					GetArmour(giveplayerid, armor);
@@ -1929,7 +1929,7 @@ CMD:cuff(playerid, params[])
 				{
 				    format(string, sizeof(string), "* %s removes a set of cuffs from his belt and attempts to cuff %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					SetTimerEx("CuffTackled", 4000, 0, "ii", playerid, giveplayerid);
+					SetTimerEx("CuffTackled", 4000, false, "ii", playerid, giveplayerid);
 				}
 				else
 				{
@@ -1984,7 +1984,7 @@ CMD:uncuff(playerid, params[])
 					format(string, sizeof(string), "* %s has uncuffed %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					GameTextForPlayer(giveplayerid, "~g~Uncuffed", 2500, 3);
-					TogglePlayerControllable(giveplayerid, 1);
+					TogglePlayerControllable(giveplayerid, true);
 					ClearAnimationsEx(giveplayerid);
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
 					PlayerCuffed[giveplayerid] = 0;
@@ -2159,7 +2159,7 @@ CMD:drag(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_WHITE, "You are now dragging the suspect, press the '{AA3333}FIRE{FFFFFF}' button to stop.");
 				SetPVarInt(giveplayerid, "BeingDragged", 1);
 				SetPVarInt(playerid, "DraggingPlayer", giveplayerid);
-				SetTimerEx("DragPlayer", 1000, 0, "ii", playerid, giveplayerid);
+				SetTimerEx("DragPlayer", 1000, false, "ii", playerid, giveplayerid);
 			}
 			else
 			{

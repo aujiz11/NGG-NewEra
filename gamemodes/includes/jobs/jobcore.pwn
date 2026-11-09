@@ -37,7 +37,7 @@
 
 #include <YSI_Coding\y_hooks>
 
-stock SendJobMessage(job, color, string[])
+stock SendJobMessage(job, color, const string[])
 {
 	foreach(new i: Player)
 	{

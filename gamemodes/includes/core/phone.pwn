@@ -55,7 +55,7 @@ public RingToner()
 			PlayerPlaySound(i, 1139, 0.0, 0.0, 0.0);
 		}
 	}
-	SetTimer("RingTonerRev", 1000, 0);
+	SetTimer("RingTonerRev", 1000, false);
 	return 1;
 }
 
@@ -79,7 +79,7 @@ public RingTonerRev()
 			RingTone[i] = 0;
 		}
 	}
-	SetTimer("RingToner", 1000, 0);
+	SetTimer("RingToner", 1000, false);
 	return 1;
 }
 
@@ -297,7 +297,7 @@ CMD:setautoreply(playerid, params[])
 	return 1;
 }
 
-CMD:call(playerid, params[])
+CMD:call(playerid, const params[])
 {
 	new string[128], phonenumb;
 
@@ -640,7 +640,7 @@ CMD:p(playerid, params[]) {
 	return cmd_pickup(playerid, params);
 }
 
-CMD:pickup(playerid, params[])
+CMD:pickup(playerid, const params[])
 {
 	new string[128];
 	if(Mobile[playerid] != INVALID_PLAYER_ID)
@@ -723,7 +723,7 @@ CMD:hangup(playerid,params[])
 		{
 			if(GetPVarInt(caller, "_UsingJailPhone") == 1)
 			{
-				TogglePlayerControllable(caller, 1);
+				TogglePlayerControllable(caller, true);
 				DeletePVar(caller, "_UsingJailPhone");
 				bJailPhoneUse[GetClosestPrisonPhone(caller)] = false;
 			}

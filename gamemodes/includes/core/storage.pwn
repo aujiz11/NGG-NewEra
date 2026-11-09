@@ -275,7 +275,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 		return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR! You cannot transfer from yourself to yourself");
 	}
 
-	storageid=0; fromstorageid=0; //temp
+	// Only on-hand storage is enabled; normalize legacy selectors.
+	if(storageid != 0) storageid = 0;
+	if(fromstorageid != 0) fromstorageid = 0;
 	//printf("TransferStorage(playerid=%d, storageid=%d, fromplayerid=%d, fromstorageid=%d, itemid=%d, amount=%d, price=%d, special=%d)", playerid, storageid, fromplayerid, fromstorageid, itemid, amount, price, special);
 
 	if(GetPVarInt(playerid, "Storage_transaction") == 1)

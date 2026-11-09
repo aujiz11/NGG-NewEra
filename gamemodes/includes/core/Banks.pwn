@@ -91,11 +91,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case BANK: {
 			
 			if(!response) {
-				TogglePlayerControllable(playerid, 1);
+				TogglePlayerControllable(playerid, true);
 				return SendClientMessageEx(playerid, COLOR_YELLOW, "   You are no longer being attended by the banker.");
 			}
 
-			TogglePlayerControllable(playerid, 0);
+			TogglePlayerControllable(playerid, false);
 
 			switch(listitem) {		
 				case 0: ShowBankMenu(playerid, 1);

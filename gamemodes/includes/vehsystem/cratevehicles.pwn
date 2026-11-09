@@ -152,8 +152,8 @@ hook OnVehicleSpawn(vehicleid) {
 	return 1;
 }
 
-forward AnnounceRespawn(group, type[], veh, amount);
-public AnnounceRespawn(group, type[], veh, amount) {
+forward AnnounceRespawn(group, const type[], veh, amount);
+public AnnounceRespawn(group, const type[], veh, amount) {
 	if(ValidGroup(group)) {
 		new string[128];
 		format(string, sizeof(string), "** Vehicle %s was %s %d crate(s) were destroyed. **", VehicleName[CrateVehicle[veh][cvModel] - 400], type, amount);
@@ -446,7 +446,8 @@ stock ListVehicles(playerid, group) {
 		}
 	}
 	if(strlen(szMiscArray) == 34) {
-		Dialog_Show(playerid, -1, DIALOG_STYLE_LIST, title, "This group doesn't own any vehicles!", "Close", "");
+		new dialogInfo[] = "This group doesn't own any vehicles!";
+		Dialog_Show(playerid, -1, DIALOG_STYLE_LIST, title, dialogInfo, "Close", "");
 	}
 	else {
 		Dialog_Show(playerid, cvstorage, DIALOG_STYLE_TABLIST_HEADERS, title, szMiscArray, "Manage", "Close");

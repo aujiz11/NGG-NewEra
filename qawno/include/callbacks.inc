@@ -369,8 +369,9 @@ stock static Callback_GetDriver(vehicleid)
 {
 	// Returns the driver of a vehicle (obvious).
 
-	for(new i = 0, l = GetPlayerPoolSize(); i <= l; i ++)
+	for(new i = 0; i < MAX_PLAYERS; i ++)
 	{
+		if(!IsPlayerConnected(i)) continue;
 		if(IsPlayerInVehicle(i, vehicleid) && GetPlayerState(i) == PLAYER_STATE_DRIVER)
 		{
 		    return i;
@@ -590,7 +591,7 @@ stock CB_AddStaticVehicleEx(modelid, Float:x, Float:y, Float:z, Float:rotation, 
 	return vehicleid;
 }
 
-stock CB_ApplyAnimation(playerid, animlib[], animname[], Float:fDelta, loop, lockx, locky, freeze, time, forcesync = 0)
+stock CB_ApplyAnimation(playerid, const animlib[], const animname[], Float:fDelta, loop, lockx, locky, freeze, time, forcesync = 0)
 {
 	new
 		ret = ApplyAnimation(playerid, animlib, animname, fDelta, loop, lockx, locky, freeze, time, forcesync);
@@ -933,9 +934,9 @@ public OnPlayerUpdate(playerid)
         }
         else if(GetPlayerWeapon(playerid) == WEAPON_SPRAYCAN && s_aPlayerInfo[playerid][e_iLastAmmo] > ammo)
         {
-			for(new i = 1, l = GetVehiclePoolSize(); i <= l; i ++)
+			for(new i = 1; i < MAX_VEHICLES; i ++)
 			{
-			    if(IsPlayerSprayingVehicle(playerid, i))
+			    if(IsValidVehicle(i) && IsPlayerSprayingVehicle(playerid, i))
             	{
 					CallLocalFunction("OnPlayerSprayAtVehicle", "ii", playerid, i);
 					break;
@@ -1146,8 +1147,9 @@ public Callback_HoldTimer(playerid, key)
 forward Callback_TabCheck();
 public Callback_TabCheck()
 {
-	for(new i = 0, l = GetPlayerPoolSize(); i <= l; i ++)
+	for(new i = 0; i < MAX_PLAYERS; i ++)
 	{
+		if(!IsPlayerConnected(i)) continue;
 	    switch(GetPlayerState(i))
 	    {
 	        case PLAYER_STATE_ONFOOT, PLAYER_STATE_DRIVER, PLAYER_STATE_PASSENGER:

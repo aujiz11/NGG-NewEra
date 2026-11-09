@@ -1199,8 +1199,8 @@ TurfWars_LoadPGUI(playerid) {
 	PlayerTextDrawLetterSize(playerid, TW_PTextDraws[playerid][0], 0.180000, 0.899999);
 	PlayerTextDrawColor(playerid, TW_PTextDraws[playerid][0], 16777215);
 	PlayerTextDrawSetOutline(playerid, TW_PTextDraws[playerid][0], 1);
-	PlayerTextDrawSetProportional(playerid, TW_PTextDraws[playerid][0], 1);
-	PlayerTextDrawSetSelectable(playerid, TW_PTextDraws[playerid][0], 0);
+	PlayerTextDrawSetProportional(playerid, TW_PTextDraws[playerid][0], true);
+	PlayerTextDrawSetSelectable(playerid, TW_PTextDraws[playerid][0], false);
 
 	TW_PTextDraws[playerid][1] = CreatePlayerTextDraw(playerid, 510.000000, 211.000000, ""); // Turf Health
 	PlayerTextDrawBackgroundColor(playerid, TW_PTextDraws[playerid][1], 60);
@@ -1208,8 +1208,8 @@ TurfWars_LoadPGUI(playerid) {
 	PlayerTextDrawLetterSize(playerid, TW_PTextDraws[playerid][1], 0.180000, 0.899999);
 	PlayerTextDrawColor(playerid, TW_PTextDraws[playerid][1], -56);
 	PlayerTextDrawSetOutline(playerid, TW_PTextDraws[playerid][1], 1);
-	PlayerTextDrawSetProportional(playerid, TW_PTextDraws[playerid][1], 1);
-	PlayerTextDrawSetSelectable(playerid, TW_PTextDraws[playerid][1], 0);
+	PlayerTextDrawSetProportional(playerid, TW_PTextDraws[playerid][1], true);
+	PlayerTextDrawSetSelectable(playerid, TW_PTextDraws[playerid][1], false);
 
 	TW_PTextDraws[playerid][2] = CreatePlayerTextDraw(playerid, 543.000000, 200.000000, ""); // Turf Name
 	PlayerTextDrawAlignment(playerid, TW_PTextDraws[playerid][2], 2);
@@ -1218,8 +1218,8 @@ TurfWars_LoadPGUI(playerid) {
 	PlayerTextDrawLetterSize(playerid, TW_PTextDraws[playerid][2], 0.180000, 0.899999);
 	PlayerTextDrawColor(playerid, TW_PTextDraws[playerid][2], -56);
 	PlayerTextDrawSetOutline(playerid, TW_PTextDraws[playerid][2], 1);
-	PlayerTextDrawSetProportional(playerid, TW_PTextDraws[playerid][2], 1);
-	PlayerTextDrawSetSelectable(playerid, TW_PTextDraws[playerid][2], 0);
+	PlayerTextDrawSetProportional(playerid, TW_PTextDraws[playerid][2], true);
+	PlayerTextDrawSetSelectable(playerid, TW_PTextDraws[playerid][2], false);
 
 	TW_PTextDraws[playerid][3] = CreatePlayerTextDraw(playerid, 530.000000, 210.000000, "hud:radar_enemyAttack");
 	PlayerTextDrawBackgroundColor(playerid, TW_PTextDraws[playerid][3], 255);
@@ -1227,12 +1227,12 @@ TurfWars_LoadPGUI(playerid) {
 	PlayerTextDrawLetterSize(playerid, TW_PTextDraws[playerid][3], 0.500000, 1.000000);
 	PlayerTextDrawColor(playerid, TW_PTextDraws[playerid][3], -1);
 	PlayerTextDrawSetOutline(playerid, TW_PTextDraws[playerid][3], 0);
-	PlayerTextDrawSetProportional(playerid, TW_PTextDraws[playerid][3], 1);
+	PlayerTextDrawSetProportional(playerid, TW_PTextDraws[playerid][3], true);
 	PlayerTextDrawSetShadow(playerid, TW_PTextDraws[playerid][3], 1);
-	PlayerTextDrawUseBox(playerid, TW_PTextDraws[playerid][3], 1);
+	PlayerTextDrawUseBox(playerid, TW_PTextDraws[playerid][3], true);
 	PlayerTextDrawBoxColor(playerid, TW_PTextDraws[playerid][3], 255);
 	PlayerTextDrawTextSize(playerid, TW_PTextDraws[playerid][3], 10.000000, 10.000000);
-	PlayerTextDrawSetSelectable(playerid, TW_PTextDraws[playerid][3], 0);
+	PlayerTextDrawSetSelectable(playerid, TW_PTextDraws[playerid][3], false);
 	
 	TW_PTextDraws[playerid][4] = CreatePlayerTextDraw(playerid, 571.000000, 211.000000, ""); // Turf Level
 	PlayerTextDrawBackgroundColor(playerid, TW_PTextDraws[playerid][4], 60);
@@ -1240,8 +1240,8 @@ TurfWars_LoadPGUI(playerid) {
 	PlayerTextDrawLetterSize(playerid, TW_PTextDraws[playerid][4], 0.180000, 0.899999);
 	PlayerTextDrawColor(playerid, TW_PTextDraws[playerid][4], -56);
 	PlayerTextDrawSetOutline(playerid, TW_PTextDraws[playerid][4], 1);
-	PlayerTextDrawSetProportional(playerid, TW_PTextDraws[playerid][4], 1);
-	PlayerTextDrawSetSelectable(playerid, TW_PTextDraws[playerid][4], 0);
+	PlayerTextDrawSetProportional(playerid, TW_PTextDraws[playerid][4], true);
+	PlayerTextDrawSetSelectable(playerid, TW_PTextDraws[playerid][4], false);
 
 	TW_PTextDraws[playerid][5] = CreatePlayerTextDraw(playerid, 544.000000, 210.000000, "hud:radar_enemyAttack");
 	PlayerTextDrawBackgroundColor(playerid, TW_PTextDraws[playerid][5], 255);
@@ -1249,12 +1249,12 @@ TurfWars_LoadPGUI(playerid) {
 	PlayerTextDrawLetterSize(playerid, TW_PTextDraws[playerid][5], 0.500000, 1.000000);
 	PlayerTextDrawColor(playerid, TW_PTextDraws[playerid][5], -1);
 	PlayerTextDrawSetOutline(playerid, TW_PTextDraws[playerid][5], 0);
-	PlayerTextDrawSetProportional(playerid, TW_PTextDraws[playerid][5], 1);
+	PlayerTextDrawSetProportional(playerid, TW_PTextDraws[playerid][5], true);
 	PlayerTextDrawSetShadow(playerid, TW_PTextDraws[playerid][5], 1);
-	PlayerTextDrawUseBox(playerid, TW_PTextDraws[playerid][5], 1);
+	PlayerTextDrawUseBox(playerid, TW_PTextDraws[playerid][5], true);
 	PlayerTextDrawBoxColor(playerid, TW_PTextDraws[playerid][5], 255);
 	PlayerTextDrawTextSize(playerid, TW_PTextDraws[playerid][5], 10.000000, 10.000000);
-	PlayerTextDrawSetSelectable(playerid, TW_PTextDraws[playerid][5], 0);
+	PlayerTextDrawSetSelectable(playerid, TW_PTextDraws[playerid][5], false);
 }
 
 TurfWars_LoadGUI() {
@@ -1266,12 +1266,12 @@ TurfWars_LoadGUI() {
 	TextDrawLetterSize(TW_TextDraws[0], 0.500000, 4.499999);
 	TextDrawColor(TW_TextDraws[0], 0);
 	TextDrawSetOutline(TW_TextDraws[0], 0);
-	TextDrawSetProportional(TW_TextDraws[0], 1);
+	TextDrawSetProportional(TW_TextDraws[0], true);
 	TextDrawSetShadow(TW_TextDraws[0], 0);
-	TextDrawUseBox(TW_TextDraws[0], 1);
+	TextDrawUseBox(TW_TextDraws[0], true);
 	TextDrawBoxColor(TW_TextDraws[0], 50);
 	TextDrawTextSize(TW_TextDraws[0], 350.000000, 99.000000);
-	TextDrawSetSelectable(TW_TextDraws[0], 0);
+	TextDrawSetSelectable(TW_TextDraws[0], false);
 
 	TW_TextDraws[1]	 = TextDrawCreate(544.000000, 190.000000, "-");
 	TextDrawAlignment(TW_TextDraws[1]	, 2);
@@ -1280,12 +1280,12 @@ TurfWars_LoadGUI() {
 	TextDrawLetterSize(TW_TextDraws[1]	, 0.500000, 3.299999);
 	TextDrawColor(TW_TextDraws[1]	, 0);
 	TextDrawSetOutline(TW_TextDraws[1]	, 0);
-	TextDrawSetProportional(TW_TextDraws[1]	, 1);
+	TextDrawSetProportional(TW_TextDraws[1]	, true);
 	TextDrawSetShadow(TW_TextDraws[1]	, 0);
-	TextDrawUseBox(TW_TextDraws[1]	, 1);
+	TextDrawUseBox(TW_TextDraws[1]	, true);
 	TextDrawBoxColor(TW_TextDraws[1]	, 50);
 	TextDrawTextSize(TW_TextDraws[1]	, 350.000000, 99.000000);
-	TextDrawSetSelectable(TW_TextDraws[1]	, 0);
+	TextDrawSetSelectable(TW_TextDraws[1]	, false);
 
 	TW_TextDraws[2]	 = TextDrawCreate(515.000000, 179.000000, "TURF INFO");
 	TextDrawBackgroundColor(TW_TextDraws[2]	, 60);
@@ -1293,8 +1293,8 @@ TurfWars_LoadGUI() {
 	TextDrawLetterSize(TW_TextDraws[2]	, 0.250000, 1.000000);
 	TextDrawColor(TW_TextDraws[2]	, -926365496);
 	TextDrawSetOutline(TW_TextDraws[2]	, 1);
-	TextDrawSetProportional(TW_TextDraws[2]	, 1);
-	TextDrawSetSelectable(TW_TextDraws[2]	, 0);
+	TextDrawSetProportional(TW_TextDraws[2]	, true);
+	TextDrawSetSelectable(TW_TextDraws[2]	, false);
 
 	TW_TextDraws[3] = TextDrawCreate(498.000000, 210.000000, "hud:radar_girlfriend");
 	TextDrawBackgroundColor(TW_TextDraws[3], 255);
@@ -1302,12 +1302,12 @@ TurfWars_LoadGUI() {
 	TextDrawLetterSize(TW_TextDraws[3], 0.500000, 1.000000);
 	TextDrawColor(TW_TextDraws[3], -1);
 	TextDrawSetOutline(TW_TextDraws[3], 0);
-	TextDrawSetProportional(TW_TextDraws[3], 1);
+	TextDrawSetProportional(TW_TextDraws[3], true);
 	TextDrawSetShadow(TW_TextDraws[3], 1);
-	TextDrawUseBox(TW_TextDraws[3], 1);
+	TextDrawUseBox(TW_TextDraws[3], true);
 	TextDrawBoxColor(TW_TextDraws[3], 255);
 	TextDrawTextSize(TW_TextDraws[3], 10.000000, 10.000000);
-	TextDrawSetSelectable(TW_TextDraws[3], 0);
+	TextDrawSetSelectable(TW_TextDraws[3], false);
 
 	TW_TextDraws[4] = TextDrawCreate(559.000000, 210.000000, "LD_DRV:goboat");
 	TextDrawBackgroundColor(TW_TextDraws[4], 255);
@@ -1315,12 +1315,12 @@ TurfWars_LoadGUI() {
 	TextDrawLetterSize(TW_TextDraws[4], 0.500000, 1.000000);
 	TextDrawColor(TW_TextDraws[4], -1);
 	TextDrawSetOutline(TW_TextDraws[4], 0);
-	TextDrawSetProportional(TW_TextDraws[4], 1);
+	TextDrawSetProportional(TW_TextDraws[4], true);
 	TextDrawSetShadow(TW_TextDraws[4], 1);
-	TextDrawUseBox(TW_TextDraws[4], 1);
+	TextDrawUseBox(TW_TextDraws[4], true);
 	TextDrawBoxColor(TW_TextDraws[4], 255);
 	TextDrawTextSize(TW_TextDraws[4], 10.000000, 10.000000);
-	TextDrawSetSelectable(TW_TextDraws[4], 0);
+	TextDrawSetSelectable(TW_TextDraws[4], false);
 }
 
 

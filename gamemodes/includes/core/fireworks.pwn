@@ -54,7 +54,7 @@ public Firework(playerid, type)
         new string[128];
 		format(string, sizeof(string), "STAND BACK! 5 seconds till launch!", GetPlayerNameEx(playerid));
 	    ProxDetector(30.0, playerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
-	    SetTimerEx("Firework", 5000, 0, "ii", playerid, TYPE_LAUNCH);
+	    SetTimerEx("Firework", 5000, false, "ii", playerid, TYPE_LAUNCH);
     }
 	else if(type == TYPE_LAUNCH)
 	{
@@ -62,7 +62,7 @@ public Firework(playerid, type)
 		new time = MoveDynamicObject(Rocket[playerid], x, y, z + RocketHeight, 10);
 		MoveDynamicObject(RocketLight[playerid], x, y, z + 2 + RocketHeight, 10);
 		MoveDynamicObject(RocketSmoke[playerid], x, y, z + RocketHeight, 10);
-		SetTimerEx("Firework", time, 0, "ii", playerid, TYPE_EXPLODE);
+		SetTimerEx("Firework", time, false, "ii", playerid, TYPE_EXPLODE);
 	}
 	else if(type == TYPE_EXPLODE)
 	{
@@ -95,7 +95,7 @@ public Firework(playerid, type)
 		    CreateExplosion(x, y, z, 7, 10);
 		}
 		RocketExplosions[playerid]++;
-  		SetTimerEx("Firework", 250, 0, "ii", playerid, TYPE_EXPLODE);
+        SetTimerEx("Firework", 250, false, "ii", playerid, TYPE_EXPLODE);
 	}
 	return 1;
 }
@@ -140,7 +140,7 @@ CMD:placefirework(playerid, params[])
   		SetPVarFloat(playerid,"fypos",y);
   		SetPVarFloat(playerid,"fzpos",z);
   		RocketExplosions[playerid] = 0;
-  		SetTimerEx("Firework", 25000, 0, "ii", playerid, TYPE_COUNTDOWN);
+        SetTimerEx("Firework", 25000, false, "ii", playerid, TYPE_COUNTDOWN);
 	}
 	else
 	{

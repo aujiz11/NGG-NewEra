@@ -823,7 +823,7 @@ Interact_CuffPlayer(playerid, giveplayerid) {
 	format(szMiscArray, sizeof(szMiscArray), "* %s handcuffs %s, tightening the cuffs securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
-	TogglePlayerControllable(giveplayerid, 0);
+	TogglePlayerControllable(giveplayerid, false);
 	ClearAnimationsEx(giveplayerid);
 	GetHealth(giveplayerid, health);
 	GetArmour(giveplayerid, armor);
@@ -840,7 +840,7 @@ Interact_CuffPlayer(playerid, giveplayerid) {
 	if(GetPVarType(giveplayerid, "IsTackled")) {
 	    format(szMiscArray, sizeof(szMiscArray), "* %s removes a set of cuffs from his belt and attempts to cuff %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		SetTimerEx("CuffTackled", 4000, 0, "ii", playerid, giveplayerid);
+		SetTimerEx("CuffTackled", 4000, false, "ii", playerid, giveplayerid);
 	}
 	return 1;
 }
@@ -858,7 +858,7 @@ Interact_UncuffPlayer(playerid, giveplayerid) {
 		format(szMiscArray, sizeof(szMiscArray), "* %s has uncuffed %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		GameTextForPlayer(giveplayerid, "~g~Uncuffed", 2500, 3);
-		TogglePlayerControllable(giveplayerid, 1);
+		TogglePlayerControllable(giveplayerid, true);
 		ClearAnimationsEx(giveplayerid);
 		SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
 		PlayerCuffed[giveplayerid] = 0;
@@ -1053,7 +1053,7 @@ Interact_DragPlayer(playerid, giveplayerid) {
 
 	SetPVarInt(giveplayerid, "BeingDragged", 1);
 	SetPVarInt(playerid, "DraggingPlayer", giveplayerid);
-	SetTimerEx("DragPlayer", 1000, 0, "ii", playerid, giveplayerid);
+	SetTimerEx("DragPlayer", 1000, false, "ii", playerid, giveplayerid);
 
 	return 1;
 }
@@ -1097,7 +1097,7 @@ Interact_DetainPlayer(playerid, giveplayerid, seatid = -1) {
 	return 1;
 }
 
-Interact_GiveTicket(playerid, giveplayerid, reason[], amount = -1) {
+Interact_GiveTicket(playerid, giveplayerid, const reason[], amount = -1) {
 	if(amount == -1) {
 		format(szMiscArray, sizeof(szMiscArray), "Please enter an amount to fine %s", GetPlayerNameEx(giveplayerid));
 		return ShowPlayerDialogEx(playerid, GIVE_TICKET, DIALOG_STYLE_INPUT, "Ticket Player", szMiscArray, "Next", "");

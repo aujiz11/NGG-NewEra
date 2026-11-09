@@ -40,7 +40,7 @@
 
 #include <YSI_Coding\y_hooks>
 
-SendDedicatedMessage(color, string[])
+SendDedicatedMessage(color, const string[])
 {
 	foreach(new i: Player) 
 	{

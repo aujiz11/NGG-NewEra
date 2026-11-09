@@ -34,7 +34,7 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-stock SendTaxiMessage(color, string[])
+stock SendTaxiMessage(color, const string[])
 {
 	foreach(new i: Player)
 	{

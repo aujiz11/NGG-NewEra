@@ -115,7 +115,7 @@ stock GetFamedRankName(i)
 	return string;
 }
 
-stock SendFamedMessage(color, string[])
+stock SendFamedMessage(color, const string[])
 {
 	foreach(new i: Player)
 	{

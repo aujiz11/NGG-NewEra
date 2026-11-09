@@ -373,11 +373,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	return 0;
 }
 
-CMD:ads(playerid, params[]) {
+CMD:ads(playerid, const params[]) {
 	return cmd_advertisements(playerid, params);
 }
 
-CMD:advertisements(playerid, params[]) {
+CMD:advertisements(playerid, const params[]) {
 	if(gPlayerLogged{playerid} == 0) {
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
 	}

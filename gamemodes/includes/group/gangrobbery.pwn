@@ -884,7 +884,7 @@ checkRobbery(playerid)
 	new playername[MAX_PLAYER_NAME];
 	GetPlayerName(playerid, playername, sizeof(playername));
 	SendClientMessageEx(playerid, COLOR_YELLOW, "Awaiting approval..." );
-	ABroadCast(COLOR_LIGHTRED, "(Gang Leader) Robbery Request - ((/approve)(/deny)robbery)", 2);
+	ABroadCastText(COLOR_LIGHTRED, "(Gang Leader) Robbery Request - ((/approve)(/deny)robbery)", 2);
 }
 
 initiateRobbery(playerid)

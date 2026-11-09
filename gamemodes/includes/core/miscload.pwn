@@ -13,12 +13,12 @@ hook OnGameModeInit() {
 	TextDrawLetterSize(TD_ServerError, 0.210000, 0.899999);
 	TextDrawColor(TD_ServerError, -1);
 	TextDrawSetOutline(TD_ServerError, 0);
-	TextDrawSetProportional(TD_ServerError, 1);
+	TextDrawSetProportional(TD_ServerError, true);
 	TextDrawSetShadow(TD_ServerError, 1);
-	TextDrawUseBox(TD_ServerError, 1);
+	TextDrawUseBox(TD_ServerError, true);
 	TextDrawBoxColor(TD_ServerError, -14803426);
 	TextDrawTextSize(TD_ServerError, -300.000000, 655.000000);
-	TextDrawSetSelectable(TD_ServerError, 0);
+	TextDrawSetSelectable(TD_ServerError, false);
 }
 
 
@@ -40,14 +40,14 @@ hook OnPlayerConnect(playerid) {
 	PlayerTextDrawLetterSize(playerid,TD_ChatBox[0], 0.490000, 9.199996);
 	PlayerTextDrawColor(playerid,TD_ChatBox[0], 0);
 	PlayerTextDrawSetOutline(playerid,TD_ChatBox[0], 0);
-	PlayerTextDrawSetProportional(playerid,TD_ChatBox[0], 1);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[0], true);
 	PlayerTextDrawSetShadow(playerid,TD_ChatBox[0], 0);
-	PlayerTextDrawUseBox(playerid,TD_ChatBox[0], 1);
+	PlayerTextDrawUseBox(playerid,TD_ChatBox[0], true);
 	PlayerTextDrawBoxColor(playerid,TD_ChatBox[0], 50);
 	PlayerTextDrawTextSize(playerid,TD_ChatBox[0], 341.000000, 280.000000);
 	PlayerTextDrawSetPreviewModel(playerid, TD_ChatBox[0], 19300);
 	PlayerTextDrawSetPreviewRot(playerid, TD_ChatBox[0], -16.000000, 0.000000, -55.000000, 50000.000000);
-	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[0], 0);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[0], false);
 
 	TD_ChatBox[1] = CreatePlayerTextDraw(playerid,394.000000, 353.000000, "");
 	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[1], 50);
@@ -55,8 +55,8 @@ hook OnPlayerConnect(playerid) {
 	PlayerTextDrawLetterSize(playerid,TD_ChatBox[1], 0.130000, 0.799999);
 	PlayerTextDrawColor(playerid,TD_ChatBox[1], -1);
 	PlayerTextDrawSetOutline(playerid,TD_ChatBox[1], 1);
-	PlayerTextDrawSetProportional(playerid,TD_ChatBox[1], 1);
-	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[1], 0);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[1], true);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[1], false);
 
 	TD_ChatBox[2] = CreatePlayerTextDraw(playerid,394.000000, 361.000000, "");
 	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[2], 50);
@@ -64,8 +64,8 @@ hook OnPlayerConnect(playerid) {
 	PlayerTextDrawLetterSize(playerid,TD_ChatBox[2], 0.130000, 0.799999);
 	PlayerTextDrawColor(playerid,TD_ChatBox[2], -1);
 	PlayerTextDrawSetOutline(playerid,TD_ChatBox[2], 1);
-	PlayerTextDrawSetProportional(playerid,TD_ChatBox[2], 1);
-	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[2], 0);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[2], true);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[2], false);
 
 	TD_ChatBox[3] = CreatePlayerTextDraw(playerid,394.000000, 369.000000, "");
 	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[3], 50);
@@ -73,8 +73,8 @@ hook OnPlayerConnect(playerid) {
 	PlayerTextDrawLetterSize(playerid,TD_ChatBox[3], 0.130000, 0.799999);
 	PlayerTextDrawColor(playerid,TD_ChatBox[3], -1);
 	PlayerTextDrawSetOutline(playerid,TD_ChatBox[3], 1);
-	PlayerTextDrawSetProportional(playerid,TD_ChatBox[3], 1);
-	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[3], 0);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[3], true);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[3], false);
 
 	TD_ChatBox[4] = CreatePlayerTextDraw(playerid,394.000000, 377.000000, "");
 	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[4], 50);
@@ -82,8 +82,8 @@ hook OnPlayerConnect(playerid) {
 	PlayerTextDrawLetterSize(playerid,TD_ChatBox[4], 0.130000, 0.799999);
 	PlayerTextDrawColor(playerid,TD_ChatBox[4], -1);
 	PlayerTextDrawSetOutline(playerid,TD_ChatBox[4], 1);
-	PlayerTextDrawSetProportional(playerid,TD_ChatBox[4], 1);
-	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[4], 0);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[4], true);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[4], false);
 
 	TD_ChatBox[5] = CreatePlayerTextDraw(playerid,394.000000, 385.000000, "");
 	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[5], 50);
@@ -91,8 +91,8 @@ hook OnPlayerConnect(playerid) {
 	PlayerTextDrawLetterSize(playerid,TD_ChatBox[5], 0.130000, 0.799999);
 	PlayerTextDrawColor(playerid,TD_ChatBox[5], -1);
 	PlayerTextDrawSetOutline(playerid,TD_ChatBox[5], 1);
-	PlayerTextDrawSetProportional(playerid,TD_ChatBox[5], 1);
-	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[5], 0);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[5], true);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[5], false);
 
 	TD_ChatBox[6] = CreatePlayerTextDraw(playerid,394.000000, 393.000000, "");
 	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[6], 50);
@@ -100,8 +100,8 @@ hook OnPlayerConnect(playerid) {
 	PlayerTextDrawLetterSize(playerid,TD_ChatBox[6], 0.130000, 0.799999);
 	PlayerTextDrawColor(playerid,TD_ChatBox[6], -1);
 	PlayerTextDrawSetOutline(playerid,TD_ChatBox[6], 1);
-	PlayerTextDrawSetProportional(playerid,TD_ChatBox[6], 1);
-	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[6], 0);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[6], true);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[6], false);
 		
 	TD_ChatBox[7] = CreatePlayerTextDraw(playerid,394.000000, 401.000000, "");
 	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[7], 50);
@@ -109,8 +109,8 @@ hook OnPlayerConnect(playerid) {
 	PlayerTextDrawLetterSize(playerid,TD_ChatBox[7], 0.130000, 0.799999);
 	PlayerTextDrawColor(playerid,TD_ChatBox[7], -1);
 	PlayerTextDrawSetOutline(playerid,TD_ChatBox[7], 1);
-	PlayerTextDrawSetProportional(playerid,TD_ChatBox[7], 1);
-	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[7], 0);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[7], true);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[7], false);
 	
 	TD_ChatBox[8] = CreatePlayerTextDraw(playerid,394.000000, 409.000000, "");
 	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[8], 50);
@@ -118,8 +118,8 @@ hook OnPlayerConnect(playerid) {
 	PlayerTextDrawLetterSize(playerid,TD_ChatBox[8], 0.130000, 0.799999);
 	PlayerTextDrawColor(playerid,TD_ChatBox[8], -1);
 	PlayerTextDrawSetOutline(playerid,TD_ChatBox[8], 1);
-	PlayerTextDrawSetProportional(playerid,TD_ChatBox[8], 1);
-	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[8], 0);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[8], true);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[8], false);
 
 	TD_ChatBox[9] = CreatePlayerTextDraw(playerid,394.000000, 417.000000, "");
 	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[9], 50);
@@ -127,8 +127,8 @@ hook OnPlayerConnect(playerid) {
 	PlayerTextDrawLetterSize(playerid,TD_ChatBox[9], 0.130000, 0.799999);
 	PlayerTextDrawColor(playerid,TD_ChatBox[9], -1);
 	PlayerTextDrawSetOutline(playerid,TD_ChatBox[9], 1);
-	PlayerTextDrawSetProportional(playerid,TD_ChatBox[9], 1);
-	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[9], 0);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[9], true);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[9], false);
 
 	TD_ChatBox[10] = CreatePlayerTextDraw(playerid,394.000000, 425.000000, "");
 	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[10], 50);
@@ -136,8 +136,8 @@ hook OnPlayerConnect(playerid) {
 	PlayerTextDrawLetterSize(playerid,TD_ChatBox[10], 0.130000, 0.799999);
 	PlayerTextDrawColor(playerid,TD_ChatBox[10], -1);
 	PlayerTextDrawSetOutline(playerid,TD_ChatBox[10], 1);
-	PlayerTextDrawSetProportional(playerid,TD_ChatBox[10], 1);
-	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[10], 0);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[10], true);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[10], false);
 	*/
 	return 1;
 }

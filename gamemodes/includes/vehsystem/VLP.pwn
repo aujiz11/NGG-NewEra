@@ -79,7 +79,7 @@ DestroyVLPTextDraws(playerid) {
 	PlayerTextDrawSetOutline(playerid, VLPTextDraws[playerid][0], 1);
 	PlayerTextDrawBackgroundColor(playerid, VLPTextDraws[playerid][0], 154);
 	PlayerTextDrawFont(playerid, VLPTextDraws[playerid][0], 3);
-	PlayerTextDrawSetProportional(playerid, VLPTextDraws[playerid][0], 1);
+	PlayerTextDrawSetProportional(playerid, VLPTextDraws[playerid][0], true);
 
 	VLPTextDraws[playerid][1] = CreatePlayerTextDraw(playerid, 638.464538, 411.413299, "Location");
 	PlayerTextDrawLetterSize(playerid, VLPTextDraws[playerid][1], 0.449999, 1.600000);
@@ -92,7 +92,7 @@ DestroyVLPTextDraws(playerid) {
 	PlayerTextDrawSetOutline(playerid, VLPTextDraws[playerid][1], 1);
 	PlayerTextDrawBackgroundColor(playerid, VLPTextDraws[playerid][1], 255);
 	PlayerTextDrawFont(playerid, VLPTextDraws[playerid][1], 3);
-	PlayerTextDrawSetProportional(playerid, VLPTextDraws[playerid][1], 1);
+	PlayerTextDrawSetProportional(playerid, VLPTextDraws[playerid][1], true);
 
 	VLPTextDraws[playerid][2] = CreatePlayerTextDraw(playerid, 572.635070, 432.238861, "Please wait:");
 	PlayerTextDrawLetterSize(playerid, VLPTextDraws[playerid][2], 0.449999, 1.600000);
@@ -105,7 +105,7 @@ DestroyVLPTextDraws(playerid) {
 	PlayerTextDrawSetOutline(playerid, VLPTextDraws[playerid][2], -1);
 	PlayerTextDrawBackgroundColor(playerid, VLPTextDraws[playerid][2], 255);
 	PlayerTextDrawFont(playerid, VLPTextDraws[playerid][2], 3);
-	PlayerTextDrawSetProportional(playerid, VLPTextDraws[playerid][2], 1);
+	PlayerTextDrawSetProportional(playerid, VLPTextDraws[playerid][2], true);
 
 	VLPTextDraws[playerid][3] = CreatePlayerTextDraw(playerid, 607.519653, 432.095947, "00:12");
 	PlayerTextDrawLetterSize(playerid, VLPTextDraws[playerid][3], 0.449999, 1.600000);
@@ -118,7 +118,7 @@ DestroyVLPTextDraws(playerid) {
 	PlayerTextDrawSetOutline(playerid, VLPTextDraws[playerid][3], 1);
 	PlayerTextDrawBackgroundColor(playerid, VLPTextDraws[playerid][3], 51);
 	PlayerTextDrawFont(playerid, VLPTextDraws[playerid][3], 1);
-	PlayerTextDrawSetProportional(playerid, VLPTextDraws[playerid][3], 1);
+	PlayerTextDrawSetProportional(playerid, VLPTextDraws[playerid][3], true);
 }*/
 
 /*ShowVLPTextDraws(playerid, vehicleid, TYPE = 0) {

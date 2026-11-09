@@ -953,7 +953,6 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 21);
-				j++;
 				format(szMiscArray, sizeof(szMiscArray), "%sPizza Boy\n", szMiscArray);
 			}
 			Help_GenerateCMDList(playerid, 3, -1, 9, 0);
@@ -1051,7 +1050,6 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 4);
-				j++;
 				format(szMiscArray, sizeof(szMiscArray), "%sPlatinum VIP\n", szMiscArray);
 			}
 			Help_GenerateCMDList(playerid, 3, -1, 13, 0);
@@ -1146,7 +1144,6 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 10);
-				j++;
 				format(szMiscArray, sizeof(szMiscArray), "%sVoucher\n", szMiscArray);
 			}
 			Help_GenerateCMDList(playerid, 3, -1, 14, 0);
@@ -1175,7 +1172,7 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 	return 1;
 }
 
-stock Help_GenerateCMDList(playerid, listtype, listitem = -1, type = 0, subtype = 0, param[] = 0)
+stock Help_GenerateCMDList(playerid, listtype, listitem = -1, type = 0, subtype = 0, const param[] = 0)
 {
 	new string[256], j = 0;
 	for(new i = 0; i < sizeof(Help); i++)

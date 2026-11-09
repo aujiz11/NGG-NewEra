@@ -426,7 +426,7 @@ new briefcaselimit[] = { 500000, 100, 100, 50000 };
 new servernumber, betaserver;
 new textdrawscount;
 
-new hour, minuite, second;
+new gServerHour, minuite, gServerSecond;
 
 new InsidePlane[MAX_PLAYERS];
 new InsideMainMenu[MAX_PLAYERS char];

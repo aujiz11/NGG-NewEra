@@ -167,7 +167,7 @@ public TeleportToShop(playerid)
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "EventToken") == 1 || GetPVarInt(playerid, "IsInArena") || !GetPVarInt(playerid, "ShopTP"))
 		return DeletePVar(playerid, "ShopTP"), SendClientMessage(playerid, COLOR_GRAD2, "SERVER: Shop Teleportation has been cancelled.");
 	if(gettime() - LastShot[playerid] < 30) {
-		TogglePlayerControllable(playerid, 1);
+		TogglePlayerControllable(playerid, true);
 		DeletePVar(playerid, "ShopTP");
 		return SendClientMessageEx(playerid, COLOR_GRAD2, "You have been injured within the last 30 seconds, you will not be teleported to the shop.");
 	}
@@ -176,7 +176,7 @@ public TeleportToShop(playerid)
 		SetPlayerPos(playerid, 2957.9670, -1459.4045, 10.8092);
 		SetPlayerInterior(playerid, 0);
 		SetPlayerVirtualWorld(playerid, 1);
-		TogglePlayerControllable(playerid, 1);
+		TogglePlayerControllable(playerid, true);
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "If you wish to leave the shop, type /leaveshop to return to your previous location.");
 		SendClientMessageEx(playerid, COLOR_ORANGE, "Note{ffffff}: You will {ff0000}not{ffffff} be able to return to your previous location upon purchasing a vehicle.");
 	}
@@ -909,7 +909,7 @@ CMD:nggshop(playerid, params[]) {
 	
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have requested a Teleport to the NGG Shop, please wait 30 seconds..");
 	SetTimerEx("TeleportToShop", 30000, false, "i", playerid);
-	TogglePlayerControllable(playerid, 0);
+	TogglePlayerControllable(playerid, false);
 	SetPVarInt(playerid, "ShopTP", 1);
 	
 	new Float:tmp[3];
@@ -1193,7 +1193,6 @@ CMD:sellcredits(playerid, params[])
 					TransactionFee = (5+CreditsTaxed);
 				}
 				case 4 .. 5: {
-					CreditsTaxed = 0;
 					Credits = Credits-5;
 					TransactionFee = 5;
 				}
@@ -1551,7 +1550,7 @@ CMD:setpumpkinstock(playerid, params[])
 	return 1;
 }
 
-CMD:microshop(playerid, params[])
+CMD:microshop(playerid, const params[])
 {
 	DeletePVar(playerid, "m_listitem");
 	DeletePVar(playerid, "m_Item");

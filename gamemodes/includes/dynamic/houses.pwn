@@ -524,7 +524,7 @@ stock SaveHouses()
 	{
 		SaveHouse(i);
 	}
-	ABroadCast(COLOR_LIGHTRED, "House saving finished.", 4);
+	ABroadCastText(COLOR_LIGHTRED, "House saving finished.", 4);
 	return 1;
 }
 

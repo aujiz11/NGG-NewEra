@@ -63,7 +63,7 @@ GetNearestParkingMeter(playerid)
 	return meterid;
 }
 
-strmatch(string1[], string2[], bool:casesensitive = false)
+strmatch(const string1[], const string2[], bool:casesensitive = false)
 {
 	if((strcmp(string1, string2, casesensitive, strlen(string2)) == 0) && (strlen(string2) == strlen(string1))) return true;
 	return false;

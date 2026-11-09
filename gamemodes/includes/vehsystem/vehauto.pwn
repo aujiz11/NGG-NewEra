@@ -28,7 +28,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 			format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s turns the key in the ignition and the engine starts.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine starting, please wait...");
-			SetTimerEx("SetVehicleEngine", 1000, 0, "dd",  vehicleid, playerid);
+			SetTimerEx("SetVehicleEngine", 1000, false, "dd",  vehicleid, playerid);
 			RemoveVehicleFromMeter(vehicleid);
 		}
 		

@@ -137,7 +137,7 @@ task HouseMarket[60000]()
 				{
 					if(notification == false)
 					{
-						ABroadCast(COLOR_LIGHTRED, "One or more house listing(s) are pending review.", 4, true);
+						ABroadCastText(COLOR_LIGHTRED, "One or more house listing(s) are pending review.", 4, true);
 						notification = true;
 					}
 				}
@@ -417,7 +417,7 @@ CMD:deletelisting(playerid, params[])
     return 1;
 }
 
-CMD:houselistings(playerid, params[])
+CMD:houselistings(playerid, const params[])
 {
 	if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
 	if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while injured.");
@@ -599,7 +599,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						if(inputtext[i] == '{' && inputtext[i + 7] == '}')
 						{
 							strmid(string, inputtext, i + 1, i + 7);
-							if(ishex(string))
+							if(IsHex(string))
 							{
 								strdel(inputtext, i, i + 8);
 								continue;

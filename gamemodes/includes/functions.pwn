@@ -71,7 +71,14 @@ CheckPointCheck(iTargetID)  {
 	return 0;
 }
 
-IsNumeric(szInput[]) {
+stock NGRP_LoadModelSelectionMenu(const filename[])
+{
+	new path[75];
+	format(path, sizeof(path), "%s", filename);
+	return LoadModelSelectionMenu(path);
+}
+
+IsNumeric(const szInput[]) {
 
 	new
 		iChar,
@@ -81,7 +88,7 @@ IsNumeric(szInput[]) {
 	return 1;
 }
 
-ReturnUserFromIP(szIP[]) {
+ReturnUserFromIP(const szIP[]) {
 
 	foreach(new i : Player) {
 		if(strcmp(szIP, GetPlayerIpEx(i), true) == 0) return i;
@@ -89,7 +96,7 @@ ReturnUserFromIP(szIP[]) {
 	return INVALID_PLAYER_ID;
 }
 
-ReturnUser(text[]) {
+ReturnUser(const text[]) {
 
 	new
 		strPos,
@@ -253,7 +260,7 @@ IsInRangeOfPoint(Float: fPosX, Float: fPosY, Float: fPosZ, Float: fPosX2, Float:
 	ApplyAnimation(playerid,animlib,"null",0.0,0,0,0,0,0,1);
 }*/
 
-IsValidName(szPlayerName[]) {
+IsValidName(const szPlayerName[]) {
 
 	new
 		iLength,
@@ -297,7 +304,7 @@ IsPlayerInRangeOfDynamicObject(iPlayerID, iObjectID, Float: fRadius) {
 	return IsPlayerInRangeOfPoint(iPlayerID, fRadius, fPos[0], fPos[1], fPos[2]);
 }
 
-Array_Count(arrCount[], iMax = sizeof arrCount) {
+Array_Count(const arrCount[], iMax = sizeof arrCount) {
 
 	new
 		iCount,
@@ -307,7 +314,7 @@ Array_Count(arrCount[], iMax = sizeof arrCount) {
 	return iCount;
 }
 
-String_Count(arrCount[][], iMax = sizeof arrCount) {
+String_Count(const arrCount[][], iMax = sizeof arrCount) {
 
 	new
 		iCount,
@@ -356,7 +363,7 @@ public ReleasePlayer(playerid)
 	DeletePVar(playerid, "IsFrozen");
 	if(PlayerCuffed[playerid] == 0)
 	{
-		TogglePlayerControllable(playerid,1);
+		TogglePlayerControllable(playerid,true);
 	}
 }
 
@@ -602,7 +609,7 @@ public cameraexpire(playerid)
 	  	SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "cameravw2"));
 	  	SetPlayerInterior(playerid, GetPVarInt(playerid, "cameraint2"));
 	}
- 	TogglePlayerControllable(playerid,1);
+    TogglePlayerControllable(playerid,true);
   	DestroyDynamic3DTextLabel(Camera3D[playerid]);
    	SendClientMessageEx(playerid, COLOR_GRAD1, "Your camera ran out of batteries!");
 }
@@ -633,7 +640,7 @@ public KickNonRP(playerid)
 	if(strcmp(GetPlayerNameEx(playerid), name) == 0)
 	{
 	    SendClientMessage(playerid, COLOR_WHITE, "You have been kicked for failing to connect with a role play name (i.e. John_Smith).");
-		SetTimerEx("KickEx", 1000, 0, "i", playerid);
+		SetTimerEx("KickEx", 1000, false, "i", playerid);
 	}
 }
 
@@ -931,7 +938,7 @@ public HelpTimer(playerid)
         	DeletePVar(playerid, "COMMUNITY_ADVISOR_REQUEST");
          	return 1;
         }
-		SetTimerEx("HelpTimer", 60000, 0, "d", playerid);
+		SetTimerEx("HelpTimer", 60000, false, "d", playerid);
 	}
 	return 1;
 }
@@ -1426,7 +1433,7 @@ stock BadFloat(Float:x)
 	return false;
 }
 
-stock SendBugMessage(playerid, member, string[])
+stock SendBugMessage(playerid, member, const string[])
 {
     if(!(0 <= member < MAX_GROUPS))
         return 0;
@@ -1582,7 +1589,7 @@ stock GivePlayerEventWeapons( playerid )
 	return 1;
 }
 
-stock crc32(string[])
+stock crc32(const string[])
 {
 	new crc_table[256] = {
 			0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419, 0x706AF48F, 0xE963A535,
@@ -1701,7 +1708,7 @@ stock StripColorEmbedding(string[])
 	    if (string[i] == '{' && string[i + 7] == '}')
 		{
 		    strmid(tmp, string, i + 1, i + 7);
-			if (ishex(tmp))
+			if (IsHex(tmp))
 			{
 				strdel(string, i, i + 8);
 				i = 0;
@@ -2066,7 +2073,7 @@ stock abs(value)
     return ((value < 0 ) ? (-value) : (value));
 }
 
-stock str_replace(sSearch[], sReplace[], const sSubject[], &iCount = 0)
+stock str_replace(const sSearch[], const sReplace[], const sSubject[], &iCount = 0)
 {
 	new
 		iLengthTarget = strlen(sSearch),

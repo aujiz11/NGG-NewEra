@@ -60,7 +60,7 @@ task DynamicDoorSellRequests[60000]()
 	}
 	if(notification == true)
 	{
-		ABroadCast(COLOR_LIGHTRED, "One or more dynamic door sale requests are pending review.", 4, true);
+		ABroadCastText(COLOR_LIGHTRED, "One or more dynamic door sale requests are pending review.", 4, true);
 		return 1;
 	}
 	return 1;

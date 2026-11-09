@@ -89,11 +89,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case ATM: {
 			
 			if(!response) {
-				TogglePlayerControllable(playerid, 1);
+				TogglePlayerControllable(playerid, true);
 				return 1;
 			}
 
-			TogglePlayerControllable(playerid, 0);
+			TogglePlayerControllable(playerid, false);
 
 			switch(listitem) {		
 				case 0: ShowATMMenu(playerid, 1);

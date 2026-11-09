@@ -65,7 +65,7 @@ stock GetBackpackFreeSlotGun(playerid) {
 	return slot;
 }
 
-ShowBackpackMenu(playerid, dialogid, extramsg[]) {
+ShowBackpackMenu(playerid, dialogid, const extramsg[]) {
 	new dgTitle[128],
 		string[15];
 
@@ -448,7 +448,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
 								format(szMiscArray, sizeof(szMiscArray), "ListItem%dWId", itemcount);
 								SetPVarInt(playerid, szMiscArray, myweapons[0]);
-								itemcount++;
 							}
 							if(strlen(szDialog) > 0) ShowPlayerDialogEx(playerid, DIALOG_BGUNS2, DIALOG_STYLE_LIST, "Select a weapon to deposit", szDialog, "Select", "Cancel");
 							else {
@@ -518,7 +517,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
 								format(szMiscArray, sizeof(szMiscArray), "ListItem%dWId", itemcount);
 								SetPVarInt(playerid, szMiscArray, myweapons[0]);
-								itemcount++;
 							}
 							if(strlen(szDialog) > 0) ShowPlayerDialogEx(playerid, DIALOG_BGUNS2, DIALOG_STYLE_LIST, "Select a weapon to deposit", szDialog, "Select", "Cancel");
 							else {

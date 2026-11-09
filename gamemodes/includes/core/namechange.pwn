@@ -98,7 +98,7 @@ CMD:namechanges(playerid, params[])
 	}
 	return 1;
 }*/
-CMD:changename(playerid, params[])
+CMD:changename(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[playerid][pSMod] > 0) return ShowPlayerDialogEx( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Free Name Change","Please enter your new desired name!\n\nNote: Name Changes are free because you are a Senior Moderator.", "Change", "Cancel" );
 	if(!IsAtNameChange(playerid)) return SendClientMessageEx( playerid, COLOR_WHITE, "You are not in the Name Change Place!" );

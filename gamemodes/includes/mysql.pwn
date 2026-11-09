@@ -32,7 +32,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-stock SQLUpdateBuild(query[], table[], sqlplayerid)
+stock SQLUpdateBuild(query[], const table[], sqlplayerid)
 {
 	new querylen = strlen(query);
 	if (!query[0]) {
@@ -50,7 +50,7 @@ stock SQLUpdateBuild(query[], table[], sqlplayerid)
 	return 1;
 }
 
-stock SQLUpdateFinish(query[], table[], sqlplayerid)
+stock SQLUpdateFinish(query[], const table[], sqlplayerid)
 {
 	if (strcmp(query, "WHERE id=", false) == 0) mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 	else
@@ -64,7 +64,7 @@ stock SQLUpdateFinish(query[], table[], sqlplayerid)
 	return 1;
 }
 
-stock SaveInteger(query[], table[], sqlid, Value[], Integer)
+stock SaveInteger(query[], const table[], sqlid, const Value[], Integer)
 {
 	SQLUpdateBuild(query, table, sqlid);
 	new updval[64];
@@ -74,7 +74,7 @@ stock SaveInteger(query[], table[], sqlid, Value[], Integer)
 }
 
 
-stock SaveString(query[], table[], sqlid, Value[], String[])
+stock SaveString(query[], const table[], sqlid, const Value[], const String[])
 {
 	SQLUpdateBuild(query, table, sqlid);
 	new escapedstring[160], string[160];
@@ -84,7 +84,7 @@ stock SaveString(query[], table[], sqlid, Value[], String[])
 	return 1;
 }
 
-stock SaveFloat(query[], table[], sqlid, Value[], Float:Number)
+stock SaveFloat(query[], const table[], sqlid, const Value[], Float:Number)
 {
 	new flotostr[32];
 	format(flotostr, sizeof(flotostr), "%0.2f", Number);
@@ -778,13 +778,13 @@ public OnQueryFinish(resultid, extraid, handleid)
 				GameTextForPlayer(extraid, "Scheduled Maintenance...", 5000, 5);
 				SendClientMessage(extraid, COLOR_LIGHTBLUE, "* The server will be going down for Scheduled Maintenance. A brief period of downtime will follow.");
 				SendClientMessage(extraid, COLOR_GRAD2, "We will be going down to do some maintenance on the server/script, we will be back online shortly.");
-				SetTimerEx("KickEx", 1000, 0, "i", extraid);
+				SetTimerEx("KickEx", 1000, false, "i", extraid);
 
 				foreach(extraid: Player) if(gPlayerLogged{extraid}) {
 					SetPVarInt(extraid, "RestartKick", 1);
 					return OnPlayerStatsUpdate(extraid);
 				}
-				ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Account saving finished!", 1);
+				ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Account saving finished!", 1);
 				//g_mysql_DumpAccounts();
 
 				SetTimer("FinishMaintenance", 1500, false);
@@ -799,7 +799,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 						OnPlayerStatsUpdate(i);
 					}
 				}
-				ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Account saving finished!", 2);
+				ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Account saving finished!", 2);
 				print("Account Saving Complete");
 				foreach(new i: Player)
 				{
@@ -865,7 +865,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					HideNoticeGUIFrame(extraid);
 					if(++gPlayerLogTries[extraid] == 2) {
 						SendClientMessage(extraid, COLOR_RED, "SERVER: Wrong password, you have been kicked out automatically.");
-						SetTimerEx("KickEx", 1000, 0, "i", extraid);
+						SetTimerEx("KickEx", 1000, false, "i", extraid);
 					}
 					return 1;
 				}
@@ -1071,7 +1071,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 		    if(rows > 0)
 			{
 				SendClientMessage(extraid, COLOR_RED, "Your IP is banned! You can appeal this at http://www.ng-gaming.net/forums");
-				SetTimerEx("KickEx", 1000, 0, "i", extraid);
+				SetTimerEx("KickEx", 1000, false, "i", extraid);
 			}
 			else
 			{
@@ -1180,7 +1180,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 								}
 							}
 						}
-						SetTimerEx("KickEx", 1000, 0, "i", extraid);
+						SetTimerEx("KickEx", 1000, false, "i", extraid);
 						format(string, sizeof(string), "%s failed whitelist auth. Secure IP: %s | Connected IP: %s", GetPlayerNameEx(extraid), secureip, GetPlayerIpEx(extraid));
 						Log("logs/whitelist.log", string);
 						return true;
@@ -1367,7 +1367,7 @@ public OnQueryError(errorid, const error[], const callback[], const query[], MyS
 
 // g_mysql_ReturnEscaped(string unEscapedString)
 // Description: Takes a unescaped string and returns an escaped one.
-stock g_mysql_ReturnEscaped(unEscapedString[])
+stock g_mysql_ReturnEscaped(const unEscapedString[])
 {
 	new EscapedString[256];
 	mysql_escape_string(unEscapedString, EscapedString);
@@ -1678,7 +1678,7 @@ stock CheckBanEx(playerid)
 	return 1;
 }
 
-stock AddBan(Admin, Player, Reason[])
+stock AddBan(Admin, Player, const Reason[])
 {
     new string[128];
 	SetPVarInt(Admin, "BanningPlayer", Player);
@@ -1689,7 +1689,7 @@ stock AddBan(Admin, Player, Reason[])
 }
 
 
-stock SystemBan(Player, Reason[])
+stock SystemBan(Player, const Reason[])
 {
 	new string[256];
     mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%e', 'System')", GetPlayerIpEx(Player), Reason);
@@ -1698,7 +1698,7 @@ stock SystemBan(Player, Reason[])
 }
 
 
-stock MySQLBan(userid,ip[],reason[],status,admin[])
+stock MySQLBan(userid,const ip[],const reason[],status,const admin[])
 {
 	new string[256];
     mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `bans` (`user_id`, `ip_address`, `reason`, `date_added`, `status`, `admin`) VALUES ('%d','%s','%e', NOW(), '%d','%e')", userid, ip, reason, status, admin);
@@ -1800,7 +1800,7 @@ stock CountFlags(playerid)
 	return 1;
 }
 
-stock AddFlag(playerid, adminid, flag[], type = 1)
+stock AddFlag(playerid, adminid, const flag[], type = 1)
 {
 	new query[300];
 	new admin[24];
@@ -2126,7 +2126,7 @@ stock MySQLUpdateFinish(query[], sqlplayerid)
 	return 1;
 }
 
-stock SavePlayerInteger(query[], sqlid, Value[], Integer)
+stock SavePlayerInteger(query[], sqlid, const Value[], Integer)
 {
 	MySQLUpdateBuild(query, sqlid);
 	new updval[64];
@@ -2136,7 +2136,7 @@ stock SavePlayerInteger(query[], sqlid, Value[], Integer)
 }
 
 
-stock SavePlayerString(query[], sqlid, Value[], String[])
+stock SavePlayerString(query[], sqlid, const Value[], const String[])
 {
 	MySQLUpdateBuild(query, sqlid);
 	new escapedstring[160], string[160];
@@ -2146,7 +2146,7 @@ stock SavePlayerString(query[], sqlid, Value[], String[])
 	return 1;
 }
 
-stock SavePlayerFloat(query[], sqlid, Value[], Float:Number)
+stock SavePlayerFloat(query[], sqlid, const Value[], Float:Number)
 {
 	new flotostr[32];
 	mysql_format(MainPipeline, flotostr, sizeof(flotostr), "%0.2f", Number);
@@ -3632,7 +3632,7 @@ public AddReportToken(playerid)
 	GetPlayerName(playerid, sz_playerName, MAX_PLAYER_NAME);
 	getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 	format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
-	format(thour, sizeof(thour), "%02d:00:00", hour);
+	format(thour, sizeof(thour), "%02d:00:00", gServerHour);
 
 	mysql_format(MainPipeline, query, sizeof(query), "SELECT NULL FROM `tokens_report` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
 	mysql_tquery(MainPipeline, query, "QueryTokenFinish", "ii", playerid, 1);
@@ -3652,7 +3652,7 @@ public AddCAReportToken(playerid)
 	GetPlayerName(playerid, sz_playerName, MAX_PLAYER_NAME);
 	getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 	format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
-	format(thour, sizeof(thour), "%02d:00:00", hour);
+	format(thour, sizeof(thour), "%02d:00:00", gServerHour);
 
 	mysql_format(MainPipeline, query, sizeof(query), "SELECT NULL FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
 	mysql_tquery(MainPipeline, query, "QueryTokenFinish", "ii", playerid, 2);
@@ -3672,7 +3672,7 @@ public AddCallToken(playerid)
 	getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 	format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 
-	mysql_format(MainPipeline, query, sizeof(query), "SELECT NULL FROM `tokens_call` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = %d", GetPlayerSQLId(playerid), tdate, hour);
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT NULL FROM `tokens_call` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = %d", GetPlayerSQLId(playerid), tdate, gServerHour);
 	mysql_tquery(MainPipeline, query, "QueryTokenFinish", "ii", playerid, 3);
 	return 1;
 }
@@ -3690,7 +3690,7 @@ public AddWDToken(playerid)
 	GetPlayerName(playerid, sz_playerName, MAX_PLAYER_NAME);
 	getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 	format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
-	format(thour, sizeof(thour), "%02d:00:00", hour);
+	format(thour, sizeof(thour), "%02d:00:00", gServerHour);
 
 	mysql_format(MainPipeline, query, sizeof(query), "SELECT NULL FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
 	mysql_tquery(MainPipeline, query, "QueryTokenFinish", "ii", playerid, 4);
@@ -3704,7 +3704,7 @@ public QueryTokenFinish(playerid, type)
 	cache_get_row_count(rows);
 	getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 	format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
-	format(thour, sizeof(thour), "%02d:00:00", hour);
+	format(thour, sizeof(thour), "%02d:00:00", gServerHour);
 
 	switch(type)
 	{
@@ -3738,12 +3738,12 @@ public QueryTokenFinish(playerid, type)
 		{
 			if(rows == 0)
 			{
-				mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `tokens_call` (`id`, `playerid`, `date`, `hour`, `count`) VALUES (NULL, %d, '%s', %d, 1)", GetPlayerSQLId(playerid), tdate, hour);
+				mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `tokens_call` (`id`, `playerid`, `date`, `hour`, `count`) VALUES (NULL, %d, '%s', %d, 1)", GetPlayerSQLId(playerid), tdate, gServerHour);
 				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 			else
 			{
-				mysql_format(MainPipeline, string, sizeof(string), "UPDATE `tokens_call` SET `count` = count+1 WHERE `playerid` = %d AND `date` = '%s' AND `hour` = %d", GetPlayerSQLId(playerid), tdate, hour);
+				mysql_format(MainPipeline, string, sizeof(string), "UPDATE `tokens_call` SET `count` = count+1 WHERE `playerid` = %d AND `date` = '%s' AND `hour` = %d", GetPlayerSQLId(playerid), tdate, gServerHour);
 				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 		}
@@ -5697,7 +5697,7 @@ public CheckAccounts(playerid)
             sobeitCheckvar[playerid] = 1;
      		sobeitCheckIsDone[playerid] = 1;
      		IsPlayerFrozen[playerid] = 0;
-    		SetTimerEx("KickEx", 1000, 0, "i", playerid);
+            SetTimerEx("KickEx", 1000, false, "i", playerid);
 		}
 	}
 	return 1;
@@ -6052,7 +6052,7 @@ public ExecuteShopQueue(playerid, id)
 			cache_get_row_count(rows);
 			if(IsPlayerConnected(playerid))
 			{
-				while(index < rows)
+				if(index < rows)
 				{
 					cache_get_value_name(index, "id", result); tmp[0] = strval(result);
 					cache_get_value_name(index, "GiftVoucher", result); tmp[1] = strval(result);
@@ -6128,7 +6128,7 @@ public ExecuteShopQueue(playerid, id)
 			cache_get_row_count(rows);
 			if(IsPlayerConnected(playerid))
 			{
-				while(index < rows)
+				if(index < rows)
 				{
 					cache_get_value_name(index, "order_id", result); tmp[0] = strval(result);
 					cache_get_value_name(index, "credit_amount", result); tmp[1] = strval(result);
@@ -6326,7 +6326,7 @@ stock SavePaintballArenas()
 	}
 }
 
-stock AddNonRPPoint(playerid, point, expiration, reason[], issuerid, manual)
+stock AddNonRPPoint(playerid, point, expiration, const reason[], issuerid, manual)
 {
 	new szQuery[512], escapedstring[128];
 	mysql_escape_string(reason, escapedstring);

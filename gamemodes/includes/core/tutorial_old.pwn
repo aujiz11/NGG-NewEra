@@ -666,7 +666,7 @@ stock TutorialStep(playerid)
 			RegistrationStep[playerid] = 0;
 			PlayerInfo[playerid][pTut] = 1;
 			gOoc[playerid] = 0; gNews[playerid] = 0;
-			TogglePlayerControllable(playerid, 0);
+			TogglePlayerControllable(playerid, false);
 			SetCamBack(playerid);
 			DeletePVar(playerid, "MedicBill");
 			SetPlayerColor(playerid,TEAM_HIT_COLOR);
@@ -714,7 +714,7 @@ stock TutorialStep(playerid)
 					InterpolateCameraLookAt(playerid, -1947.651367, 141.897277, 123.343559, -1969.573242, 138.121002, 28.262483, 8000, 1);
 				}
 			}
-			SetTimerEx("DelaySetCameraBehindPlayer", 8000, 0, "i", playerid);
+			SetTimerEx("DelaySetCameraBehindPlayer", 8000, false, "i", playerid);
 			if(emailcheck) InvalidEmailCheck(playerid, PlayerInfo[playerid][pEmail], 1);
 		}
 	}
@@ -728,4 +728,4 @@ CMD:next(playerid, params[])
 }
 
 forward DelaySetCameraBehindPlayer(playerid);
-public DelaySetCameraBehindPlayer(playerid) SetCameraBehindPlayer(playerid), TogglePlayerControllable(playerid, 1);
+public DelaySetCameraBehindPlayer(playerid) SetCameraBehindPlayer(playerid), TogglePlayerControllable(playerid, true);

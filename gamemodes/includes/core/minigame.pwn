@@ -46,9 +46,9 @@ hook OnGameModeInit()
 	TextDrawLetterSize(TD_Interact[0], 12.500013, 21.000000);
 	TextDrawColor(TD_Interact[0], -196);
 	TextDrawSetOutline(TD_Interact[0], 0);
-	TextDrawSetProportional(TD_Interact[0], 1);
+	TextDrawSetProportional(TD_Interact[0], true);
 	TextDrawSetShadow(TD_Interact[0], 0);
-	TextDrawSetSelectable(TD_Interact[0], 0);
+	TextDrawSetSelectable(TD_Interact[0], false);
 
 	TD_Interact[1] = TextDrawCreate(299.000000, 279.000000, "LD_BEAT:cring");
 	TextDrawBackgroundColor(TD_Interact[1], 255);
@@ -56,12 +56,12 @@ hook OnGameModeInit()
 	TextDrawLetterSize(TD_Interact[1], 0.539999, 2.299999);
 	TextDrawColor(TD_Interact[1], -1);
 	TextDrawSetOutline(TD_Interact[1], 0);
-	TextDrawSetProportional(TD_Interact[1], 1);
+	TextDrawSetProportional(TD_Interact[1], true);
 	TextDrawSetShadow(TD_Interact[1], 1);
-	TextDrawUseBox(TD_Interact[1], 1);
+	TextDrawUseBox(TD_Interact[1], true);
 	TextDrawBoxColor(TD_Interact[1], 255);
 	TextDrawTextSize(TD_Interact[1], 42.000000, 44.000000);
-	TextDrawSetSelectable(TD_Interact[1], 0);
+	TextDrawSetSelectable(TD_Interact[1], false);
 
 	TD_Interact[2] = TextDrawCreate(262.000000, 292.000000, "LD_BEAT:up");
 	TextDrawBackgroundColor(TD_Interact[2], 255);
@@ -69,12 +69,12 @@ hook OnGameModeInit()
 	TextDrawLetterSize(TD_Interact[2], 0.539999, 2.299999);
 	TextDrawColor(TD_Interact[2], -196);
 	TextDrawSetOutline(TD_Interact[2], 0);
-	TextDrawSetProportional(TD_Interact[2], 1);
+	TextDrawSetProportional(TD_Interact[2], true);
 	TextDrawSetShadow(TD_Interact[2], 1);
-	TextDrawUseBox(TD_Interact[2], 1);
+	TextDrawUseBox(TD_Interact[2], true);
 	TextDrawBoxColor(TD_Interact[2], 255);
 	TextDrawTextSize(TD_Interact[2], 16.000000, 17.000000);
-	TextDrawSetSelectable(TD_Interact[2], 0);
+	TextDrawSetSelectable(TD_Interact[2], false);
 
 	TD_Interact[3] = TextDrawCreate(283.000000, 292.000000, "LD_BEAT:up");
 	TextDrawBackgroundColor(TD_Interact[3], 255);
@@ -82,12 +82,12 @@ hook OnGameModeInit()
 	TextDrawLetterSize(TD_Interact[3], 0.539999, 2.299999);
 	TextDrawColor(TD_Interact[3], -96);
 	TextDrawSetOutline(TD_Interact[3], 0);
-	TextDrawSetProportional(TD_Interact[3], 1);
+	TextDrawSetProportional(TD_Interact[3], true);
 	TextDrawSetShadow(TD_Interact[3], 1);
-	TextDrawUseBox(TD_Interact[3], 1);
+	TextDrawUseBox(TD_Interact[3], true);
 	TextDrawBoxColor(TD_Interact[3], 255);
 	TextDrawTextSize(TD_Interact[3], 16.000000, 17.000000);
-	TextDrawSetSelectable(TD_Interact[3], 0);
+	TextDrawSetSelectable(TD_Interact[3], false);
 
 	TD_Interact[4] = TextDrawCreate(312.000000, 292.000000, "LD_BEAT:up");
 	TextDrawBackgroundColor(TD_Interact[4], 255);
@@ -95,12 +95,12 @@ hook OnGameModeInit()
 	TextDrawLetterSize(TD_Interact[4], 0.539999, 2.299999);
 	TextDrawColor(TD_Interact[4], -1);
 	TextDrawSetOutline(TD_Interact[4], 0);
-	TextDrawSetProportional(TD_Interact[4], 1);
+	TextDrawSetProportional(TD_Interact[4], true);
 	TextDrawSetShadow(TD_Interact[4], 1);
-	TextDrawUseBox(TD_Interact[4], 1);
+	TextDrawUseBox(TD_Interact[4], true);
 	TextDrawBoxColor(TD_Interact[4], 255);
 	TextDrawTextSize(TD_Interact[4], 16.000000, 17.000000);
-	TextDrawSetSelectable(TD_Interact[4], 0);
+	TextDrawSetSelectable(TD_Interact[4], false);
 
 	TD_Interact[5] = TextDrawCreate(340.000000, 292.000000, "LD_BEAT:up");
 	TextDrawBackgroundColor(TD_Interact[5], 255);
@@ -108,12 +108,12 @@ hook OnGameModeInit()
 	TextDrawLetterSize(TD_Interact[5], 0.539999, 2.299999);
 	TextDrawColor(TD_Interact[5], -96);
 	TextDrawSetOutline(TD_Interact[5], 0);
-	TextDrawSetProportional(TD_Interact[5], 1);
+	TextDrawSetProportional(TD_Interact[5], true);
 	TextDrawSetShadow(TD_Interact[5], 1);
-	TextDrawUseBox(TD_Interact[5], 1);
+	TextDrawUseBox(TD_Interact[5], true);
 	TextDrawBoxColor(TD_Interact[5], 255);
 	TextDrawTextSize(TD_Interact[5], 16.000000, 17.000000);
-	TextDrawSetSelectable(TD_Interact[5], 0);
+	TextDrawSetSelectable(TD_Interact[5], false);
 
 	TD_Interact[6] = TextDrawCreate(362.000000, 292.000000, "LD_BEAT:up");
 	TextDrawBackgroundColor(TD_Interact[6], 255);
@@ -121,12 +121,12 @@ hook OnGameModeInit()
 	TextDrawLetterSize(TD_Interact[6], 0.539999, 2.299999);
 	TextDrawColor(TD_Interact[6], -196);
 	TextDrawSetOutline(TD_Interact[6], 0);
-	TextDrawSetProportional(TD_Interact[6], 1);
+	TextDrawSetProportional(TD_Interact[6], true);
 	TextDrawSetShadow(TD_Interact[6], 1);
-	TextDrawUseBox(TD_Interact[6], 1);
+	TextDrawUseBox(TD_Interact[6], true);
 	TextDrawBoxColor(TD_Interact[6], -156);
 	TextDrawTextSize(TD_Interact[6], 16.000000, 17.000000);
-	TextDrawSetSelectable(TD_Interact[6], 0);
+	TextDrawSetSelectable(TD_Interact[6], false);
 }
 
 hook OnGameModeExit()

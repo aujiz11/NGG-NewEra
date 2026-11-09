@@ -41,7 +41,7 @@
 
 new dr_iPlayerTimeStamp[MAX_PLAYERS];
 
-CMD:odrughelp(playerid, params[])
+CMD:odrughelp(playerid, const params[])
 {
 	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
 	SendClientMessageEx(playerid, COLOR_GREY, "GENERAL: /mydrugs, /usedrug, /buypot, /buyopium, /plantpot, /plantopium, /pickplant, /checkplant /makeheroin");
@@ -248,7 +248,7 @@ GivePlayerDrugEffects(playerid, id, amount)
 				SetPVarInt(playerid, "HeroinLastUsed", gettime());
 				PlayerInfo[playerid][pSyringes] -= 1;
 
-				SetPVarInt(playerid, "InjectHeroinStanding", SetTimerEx("InjectHeroinStanding", 5000, 0, "i", playerid));
+				SetPVarInt(playerid, "InjectHeroinStanding", SetTimerEx("InjectHeroinStanding", 5000, false, "i", playerid));
 
 				if(!IsPlayerInAnyVehicle(playerid)) ApplyAnimation(playerid,"SMOKING","M_smkstnd_loop",2.1,0,0,0,0,0);
 
@@ -262,7 +262,7 @@ GivePlayerDrugEffects(playerid, id, amount)
 			PlayerInfo[playerid][pSyringes] -= 1;
 
 			SetPVarInt(playerid, "Health", 30);
-			SetPVarInt(playerid, "InjectHeroin", SetTimerEx("InjectHeroin", 5000, 0, "i", playerid));
+			SetPVarInt(playerid, "InjectHeroin", SetTimerEx("InjectHeroin", 5000, false, "i", playerid));
 
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have injected heroin into yourself, the effects will begin in 5 seconds.");
 			format(string, sizeof(string), "* %s injects heroin into themself.", GetPlayerNameEx(playerid));
@@ -280,7 +280,7 @@ public InjectHeroin(playerid)
     KillEMSQueue(playerid);
 	ClearAnimationsEx(playerid);
 	SetHealth(playerid, 30);
-	SetPVarInt(playerid, "HeroinEffect", SetTimerEx("HeroinEffect", 1000, 1, "i", playerid));
+	SetPVarInt(playerid, "HeroinEffect", SetTimerEx("HeroinEffect", 1000, true, "i", playerid));
 
 	SendClientMessageEx(playerid, COLOR_GREEN, "The effects of the heroin have started.");
 	return 1;
@@ -315,7 +315,7 @@ public InjectHeroinStanding(playerid)
 {
 	SetPVarInt(playerid, "HeroinDamageResist", 1);
 	SendClientMessageEx(playerid, COLOR_GREEN, "The effects of the heroin have started.");
-	SetPVarInt(playerid, "HeroinEffectStanding", SetTimerEx("HeroinEffectStanding", 30000, 0, "i", playerid));
+	SetPVarInt(playerid, "HeroinEffectStanding", SetTimerEx("HeroinEffectStanding", 30000, false, "i", playerid));
 	return 1;
 }
 
@@ -385,7 +385,7 @@ ListDrugs(playerid)
 	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 }
 
-GetDrugID(Drug[])
+GetDrugID(const Drug[])
 {
 	for(new i; i < sizeof(Drugs); ++i) {
 
@@ -561,7 +561,7 @@ CMD:makeheroin(playerid, params[])
 	ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
 	Purification[0] = 1;
-	SetPVarInt(playerid, "AttemptPurify", SetTimerEx("AttemptPurify", 1000, 1, "i", playerid));
+	SetPVarInt(playerid, "AttemptPurify", SetTimerEx("AttemptPurify", 1000, true, "i", playerid));
 	return 1;
 }
 

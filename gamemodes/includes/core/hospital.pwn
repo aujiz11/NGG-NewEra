@@ -67,7 +67,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 DeliverPlayerToHospital(playerid, iHospital)
 {
-	TogglePlayerControllable(playerid, 0);
+	TogglePlayerControllable(playerid, false);
 	SetHealth(playerid, 0.5);
 	SetPlayerInterior(playerid, 1);
 	PlayerInfo[playerid][pInt] = 1;
@@ -218,7 +218,7 @@ public Hospital_StreamIn(playerid, iHospital, index)
 		SetPlayerFacingAngle(playerid, 180);
 	}
 	
-	TogglePlayerControllable(playerid, 1);
+	TogglePlayerControllable(playerid, true);
 	ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.0, 1, 0, 0, 0, 0, 1);
 	
 	return 1;
@@ -365,7 +365,7 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		{
 			if(!IsPlayerInRangeOfPoint(playerid, 7.0, HospitalSpawns[iBed][0], HospitalSpawns[iBed][1], HospitalSpawns[iBed][2]))
 			{
-				TogglePlayerControllable(playerid, 0);
+				TogglePlayerControllable(playerid, false);
 				SetTimerEx("Hospital_StreamIn", FREEZE_TIME, false, "iii", playerid, iHospital, iBed);
 				Streamer_UpdateEx(playerid, HospitalSpawns[iBed][0], HospitalSpawns[iBed][1], HospitalSpawns[iBed][2]);
 				SetPlayerPos(playerid, HospitalSpawns[iBed][0], HospitalSpawns[iBed][1], HospitalSpawns[iBed][2]);

@@ -28,14 +28,14 @@ InitiateGamemode()
  	g_mysql_LoadSales();
  	g_mysql_LoadPrices();
  	LoadBusinessSales();
- 	ToyList = LoadModelSelectionMenu("ToyList.txt");
-	CarList = LoadModelSelectionMenu("CarList.txt");
-	PlaneList = LoadModelSelectionMenu("PlaneList.txt");
-	BoatList = LoadModelSelectionMenu("BoatList.txt");
-	ToyList2 = LoadModelSelectionMenu("ToyList.txt");
-	CarList2 = LoadModelSelectionMenu("CarList.txt");
-	CarList3 = LoadModelSelectionMenu("RestrictedCarList.txt");
-	SkinList = LoadModelSelectionMenu("SkinList.txt");
+    ToyList = NGRP_LoadModelSelectionMenu("ToyList.txt");
+	CarList = NGRP_LoadModelSelectionMenu("CarList.txt");
+	PlaneList = NGRP_LoadModelSelectionMenu("PlaneList.txt");
+	BoatList = NGRP_LoadModelSelectionMenu("BoatList.txt");
+	ToyList2 = NGRP_LoadModelSelectionMenu("ToyList.txt");
+	CarList2 = NGRP_LoadModelSelectionMenu("CarList.txt");
+	CarList3 = NGRP_LoadModelSelectionMenu("RestrictedCarList.txt");
+	SkinList = NGRP_LoadModelSelectionMenu("SkinList.txt");
 	
 	/*---[Miscs]---*/
 	NGGShop = CreateDynamicPolygon(shop_vertices);
@@ -56,7 +56,7 @@ InitiateGamemode()
 	ResetElevatorQueue();
 	Elevator_Initialize();
 	AntiDeAMX();
-	EnableStuntBonusForAll(0);
+	EnableStuntBonusForAll(false);
 	//ShowNameTags(0);
 	ShowPlayerMarkers(PLAYER_MARKERS_MODE_STREAMED);
 	DisableInteriorEnterExits();
@@ -64,7 +64,7 @@ InitiateGamemode()
 	//NationSel_InitTextDraws();
 	CountCitizens();
 	SetNameTagDrawDistance(40.0);
-	AllowInteriorWeapons(1);
+	AllowInteriorWeapons(true);
 	UsePlayerPedAnims();
 	ManualVehicleEngineAndLights();
 	GiftAllowed = 1;

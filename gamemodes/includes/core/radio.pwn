@@ -51,7 +51,7 @@ stock SendAudioURLToRange(url[], Float:x, Float:y, Float:z, Float:range)
 stock PlayerPlayMusic(playerid)
 {
 	if(IsPlayerConnected(playerid)) {
-		SetTimer("StopMusic", 5000, 0);
+		SetTimer("StopMusic", 5000, false);
 		PlayerPlaySound(playerid, 1068, 0.0, 0.0, 0.0);
 	}
 }
@@ -59,7 +59,7 @@ stock PlayerPlayMusic(playerid)
 stock PlayerFixRadio(playerid)
 {
 	if(IsPlayerConnected(playerid)) {
-		SetTimer("PlayerFixRadio2", 1000, 0);
+		SetTimer("PlayerFixRadio2", 1000, false);
 		PlayerPlaySound(playerid, 1068, 0.0, 0.0, 0.0);
 		Fixr[playerid] = 1;
 	}
@@ -94,7 +94,7 @@ public PlayerFixRadio2()
 	}	
 }
 
-stock PlayAudioStreamForPlayerEx(playerid, url[], Float:posX = 0.0, Float:posY = 0.0, Float:posZ = 0.0, Float:distance = 50.0, usepos = 0)
+stock PlayAudioStreamForPlayerEx(playerid, const url[], Float:posX = 0.0, Float:posY = 0.0, Float:posZ = 0.0, Float:distance = 50.0, usepos = 0)
 {
 	if(GetPVarType(playerid, "pAudioStream"))
 	{
@@ -102,7 +102,7 @@ stock PlayAudioStreamForPlayerEx(playerid, url[], Float:posX = 0.0, Float:posY =
 		StopAudioStreamForPlayerEx(playerid, 1);
 	}
 	else SetPVarString(playerid, "pAudioStream", url);
-    PlayAudioStreamForPlayer(playerid, url, posX, posY, posZ, distance, usepos);
+    PlayAudioStreamForPlayer(playerid, url, posX, posY, posZ, distance, usepos != 0);
 }
 
 stock StopAudioStreamForPlayerEx(playerid, reset = 0)
@@ -232,7 +232,7 @@ public StationSelectHTTP(index, response_code, data[])
 	return 1;
 }
 
-stock ShowSetStation(playerid, title[] = "Radio Menu")
+stock ShowSetStation(playerid, const title[] = "Radio Menu")
 {
 	new string[256];
 	format(string, sizeof(string), "Favorite Station\nGenres\nTop 50 Stations\nSearch\nK-LSR\nRadio New Robada\nNick's Radio\nCustom Audio URL\n%sTurn radio off", ((!isnull(PlayerInfo[playerid][pFavStation])) ? ("Favorite Station Settings\n") : ("")));
@@ -882,7 +882,7 @@ CMD:music(playerid, params[])
 	return 1;
 }
 
-CMD:mp3(playerid, params[])
+CMD:mp3(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pCDPlayer] || PlayerInfo[playerid][pAdmin] >= 2)
 	{

@@ -37,9 +37,8 @@ public FixServerTime()
 	new tmpsecond;
 	gettime(tmphour, tmpminute, tmpsecond);
 	FixHour(tmphour);
-	tmphour = shifthour;
 	
-	new iTempHour = CalculateWorldGameTime(hour, minuite);
+	new iTempHour = CalculateWorldGameTime(gServerHour, minuite);
 	SetWorldTime(iTempHour);
 	print("Adjusted the server time...");
 	return 1;
@@ -245,8 +244,8 @@ public SyncPlayerTime(playerid)
 	if(zombieevent == 0)
 	{
 		new
-		iTempHour = CalculateWorldGameTime(hour, minuite),
-		iTempMinute = CalculateGameMinute(minuite, second);
+		iTempHour = CalculateWorldGameTime(gServerHour, minuite),
+		iTempMinute = CalculateGameMinute(minuite, gServerSecond);
 
 		SetPlayerTime(playerid, iTempHour, iTempMinute);
 	}
@@ -267,8 +266,8 @@ public SyncMinTime(i)
 		if(zombieevent == 0) 
 		{
 			new
-			iTempHour = CalculateWorldGameTime(hour, minuite),
-			iTempMinute = CalculateGameMinute(minuite, second);
+			iTempHour = CalculateWorldGameTime(gServerHour, minuite),
+			iTempMinute = CalculateGameMinute(minuite, gServerSecond);
 
 			SetPlayerTime(i, iTempHour, iTempMinute);
 		}
@@ -281,8 +280,8 @@ forward SyncPlayerTime(playerid);
 public SyncPlayerTime(playerid)
 {
 	new
-		iTempHour = CalculateWorldGameTime(hour, minuite),
-		iTempMinute = CalculateGameMinute(minuite, second);
+		iTempHour = CalculateWorldGameTime(gServerHour, minuite),
+		iTempMinute = CalculateGameMinute(minuite, gServerSecond);
 
 	SetPlayerTime(playerid, iTempHour, iTempMinute);
 	return 1;
@@ -292,8 +291,8 @@ forward SyncMinTime(i);
 public SyncMinTime(i)
 {
 	new
-		iTempHour = CalculateWorldGameTime(hour, minuite),
-		iTempMinute = CalculateGameMinute(minuite, second);
+		iTempHour = CalculateWorldGameTime(gServerHour, minuite),
+		iTempMinute = CalculateGameMinute(minuite, gServerSecond);
 
 	if(GetPlayerVirtualWorld(i) == 133769)
 	{

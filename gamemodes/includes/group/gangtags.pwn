@@ -29,7 +29,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	{
 		case DIALOG_GANGTAGS_INPUT:
 		{
-			if(!response) return ClearAnimationsEx(playerid), TogglePlayerControllable(playerid, 1), 1;
+			if(!response) return ClearAnimationsEx(playerid), TogglePlayerControllable(playerid, true), 1;
 			if(strlen(inputtext) > MAX_GANGTAGS_LEN) {
 				ClearAnimationsEx(playerid);
 				DeletePVar(playerid, PVAR_GANGTAGID);
@@ -49,7 +49,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		case DIALOG_GANGTAGS_FONT:
 		{
-			if(!response) return ClearAnimationsEx(playerid), TogglePlayerControllable(playerid, 1), 1;
+			if(!response) return ClearAnimationsEx(playerid), TogglePlayerControllable(playerid, true), 1;
 			SendClientMessage(playerid, COLOR_GREEN, "[Gang Tags] {DDDDDD}Spraying... Use /tag again to stop tagging.");
 			GangTag_InitSeconds(playerid, GANGTAG_TIME, listitem);
 		}
@@ -70,7 +70,7 @@ forward GangTag_InitSeconds(playerid, time, fontid);
 public GangTag_InitSeconds(playerid, time, fontid)
 {
 	szMiscArray[0] = 0;
-	if(!GetPVarType(playerid, PVAR_GANGTAGTEXT)) return ClearAnimationsEx(playerid), TogglePlayerControllable(playerid, 1), 1;
+	if(!GetPVarType(playerid, PVAR_GANGTAGTEXT)) return ClearAnimationsEx(playerid), TogglePlayerControllable(playerid, true), 1;
 	time -= 1000;
 	new timesec = time/1000;
 	format(szMiscArray, sizeof(szMiscArray), "~g~ Spraying... ~w~ %d", timesec);
@@ -87,7 +87,7 @@ GangTag_FinishTag(playerid, fontid)
 	GangTag_Save(playerid, GetPVarInt(playerid, PVAR_GANGTAGID), szMiscArray, fontid);
 	DeletePVar(playerid, PVAR_GANGTAGTEXT);
 	ClearAnimationsEx(playerid);
-	TogglePlayerControllable(playerid, 1);
+	TogglePlayerControllable(playerid, true);
 	GameTextForPlayer(playerid, "~g~Tagged!", 5000, 3);
 
 	/*new iTurfID = TurfWars_GetTurfID(playerid);
@@ -98,7 +98,7 @@ GangTag_FinishTag(playerid, fontid)
 	}*/
 }
 
-GangTag_Save(iPlayerID, i, text[], fontid)
+GangTag_Save(iPlayerID, i, const text[], fontid)
 {
 	SetDynamicObjectMaterialText(arrGangTags[i][gt_iObjectID], 0, text, OBJECT_MATERIAL_SIZE_512x512, szFonts[fontid], 1000 / strlen(text), 1, GangTag_IntColor(arrGroupData[PlayerInfo[iPlayerID][pMember]][g_hDutyColour]), 0, 1);
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `gangtags` SET `gangid` = '%d', `text` = '%e', `fontid` = '%d', `pdbid` = '%d', `pname` = '%s', `color` = '%d' WHERE `id` = '%d'", PlayerInfo[iPlayerID][pMember], text, fontid, GetPlayerSQLId(iPlayerID), GetPlayerNameExt(iPlayerID), arrGroupData[PlayerInfo[iPlayerID][pMember]][g_hDutyColour], i);
@@ -226,7 +226,7 @@ public GangTag_OnAdmSave(iPlayerID, i)
 }
 
 
-GangTag_AdmProcess(i, Float:X, Float:Y, Float:Z, Float:RX, Float:RY, Float:RZ, text[], fontid, color)
+GangTag_AdmProcess(i, Float:X, Float:Y, Float:Z, Float:RX, Float:RY, Float:RZ, const text[], fontid, color)
 {
 	Iter_Add(GangTags, i);
 	if(IsValidDynamicObject(arrGangTags[i][gt_iObjectID])) DestroyDynamicObject(arrGangTags[i][gt_iObjectID]);
@@ -260,7 +260,7 @@ public GangTag_OnDelete(iPlayerID, i)
 forward GangTag_OnCleanTag(iPlayerID, i);
 public GangTag_OnCleanTag(iPlayerID, i)
 {
-	TogglePlayerControllable(iPlayerID, 1);
+	TogglePlayerControllable(iPlayerID, true);
 	ClearAnimationsEx(iPlayerID);
 	GameTextForPlayer(iPlayerID, "~g~Cleaned!", 3000, 3);
 	GangTag_Save(iPlayerID, i, "-", 0);
@@ -323,7 +323,7 @@ CMD:cleantag(playerid)
 			GetDynamicObjectPos(arrGangTags[i][gt_iObjectID], gtPos[0], gtPos[1], gtPos[2]);
 			if(IsPlayerInRangeOfPoint(playerid, 5.0, gtPos[0], gtPos[1], gtPos[2]))
 			{
-				TogglePlayerControllable(playerid, 0);
+				TogglePlayerControllable(playerid, false);
 				ApplyAnimation(playerid, "SPRAYCAN", "spraycan_fire", 4.1, 1, 1, 1, 1, 0, 0);
 				GameTextForPlayer(playerid, "~y~Cleaning...", 5000, 3);
 				SetTimerEx("GangTag_OnCleanTag", 15000, false, "ii", playerid, i);
@@ -342,7 +342,7 @@ CMD:tag(playerid, params[])
 	{
 		DeletePVar(playerid, PVAR_GANGTAGTEXT);
 		ClearAnimationsEx(playerid);
-		TogglePlayerControllable(playerid, 1);
+		TogglePlayerControllable(playerid, true);
 		GameTextForPlayer(playerid, "~r~Cancelled!", 5000, 3);
 		return 1;
 	}
@@ -356,7 +356,7 @@ CMD:tag(playerid, params[])
 		if(IsPlayerInRangeOfPoint(playerid, 5.0, gtPos[0], gtPos[1], gtPos[2]))
 		{
 			SetPVarInt(playerid, PVAR_GANGTAGID, i);
-			TogglePlayerControllable(playerid, 0);
+			TogglePlayerControllable(playerid, false);
 			ApplyAnimation(playerid, "SPRAYCAN", "spraycan_fire", 4.1, 1, 1, 1, 1, 0, 0);
 			ShowPlayerDialogEx(playerid, DIALOG_GANGTAGS_INPUT, DIALOG_STYLE_INPUT, "Gang Tag Point | Insert text", "Insert the text you would like to spray on the wall", "Spray", "");
 			return 1;

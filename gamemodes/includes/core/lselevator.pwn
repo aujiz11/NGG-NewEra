@@ -210,7 +210,7 @@ stock Elevator_MoveToFloor(floorid)
     MoveDynamicObject(Obj_ElevatorDoors[1], X_DOOR_CLOSED, -1303.459472, GetDoorsZCoordForFloor(floorid), 0.25);
     DestroyDynamic3DTextLabel(Label_Elevator);
 
-	ElevatorBoostTimer = SetTimerEx("Elevator_Boost", 2000, 0, "i", floorid);
+	ElevatorBoostTimer = SetTimerEx("Elevator_Boost", 2000, false, "i", floorid);
 }
 			
 stock RemoveFirstQueueFloor()

@@ -107,7 +107,7 @@ CMD:fix(playerid, params[])
     				format(string, sizeof(string), "* %s has began repairing the vehicle.", GetPlayerNameEx(playerid));
     				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					SetPVarInt(playerid, "FixVehicleTimer", SetTimerEx("FixVehicle", 15000, false, "ii", playerid, closestcar));
-					TogglePlayerControllable(playerid, 0);
+					TogglePlayerControllable(playerid, false);
 					ApplyAnimation(playerid, "MISC", "Plunger_01", 4.1, 1, 1, 1, 1, 1, 1);
     			}
 				defer Fix_PlayerInVehicleCheck(playerid);
@@ -122,7 +122,7 @@ CMD:fix(playerid, params[])
 forward FixVehicle(playerid, vehicleid);
 public FixVehicle(playerid, vehicleid)
 {
-	TogglePlayerControllable(playerid, 1);
+	TogglePlayerControllable(playerid, true);
 	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
 	ClearAnimationsEx(playerid);
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);

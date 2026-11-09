@@ -219,7 +219,7 @@ public OnDynamicObjectMoved(objectid)
 	    Label_Elevator	= CreateDynamic3DTextLabel("Press '~k~~GROUP_CONTROL_BWD~' to use elevator", COLOR_YELLOW, 1784.9822, -1302.0426, z - 0.9, 4.0);
 
 	    ElevatorState 	= ELEVATOR_STATE_WAITING;
-	    SetTimer("Elevator_TurnToIdle", ELEVATOR_WAIT_TIME, 0);
+	    SetTimer("Elevator_TurnToIdle", ELEVATOR_WAIT_TIME, false);
 	}
 
 	if (objectid == BikeParkourObjects[0]) // container
@@ -568,7 +568,7 @@ public OnPlayerPressButton(playerid, buttonid)
 		if(IsACop(playerid))
 		{
 			MoveDynamicObject(SASDDoors[0], 14.92530, 53.51950, 996.84857, 4, 0.00000, 0.00000, 180.00000);
-			SetTimer("CloseSASDNew1", 2500, 0);
+			SetTimer("CloseSASDNew1", 2500, false);
 		}
 		else
 		{
@@ -582,7 +582,7 @@ public OnPlayerPressButton(playerid, buttonid)
 		if(IsACop(playerid))
 		{
 			MoveDynamicObject(SASDDoors[1], 8.70370, 57.32530, 991.03699, 4, 0.00000, 0.00000, 0.00000);
-			SetTimer("CloseSASDNew2", 2500, 0);
+			SetTimer("CloseSASDNew2", 2500, false);
 		}
 		else
 		{
@@ -598,7 +598,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	    {
 	        MoveDynamicObject(sasd1A,2510.65332031,-1697.00976562,561.79223633,4);
 	 		MoveDynamicObject(sasd1B,2515.67211914,-1696.97485352,561.79223633,4);
-			SetTimer("CloseSASD1", 2500, 0);
+			SetTimer("CloseSASD1", 2500, false);
 	    }
 	    else
 	    {
@@ -614,7 +614,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	 		MoveDynamicObject(sasd5B,2518.84228516,-1660.10888672,561.80004883,4);
 	 		//2522.86059570,-1660.07177734,561.80206299
 			//2519.84228516,-1660.10888672,561.80004883
-			SetTimer("CloseSASD5", 2500, 0);
+			SetTimer("CloseSASD5", 2500, false);
 	    }
 	    else
 	    {
@@ -628,7 +628,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	    {
 	        MoveDynamicObject(sasd3A,2521.15600586,-1697.01550293,561.79223633,4);
 	 		MoveDynamicObject(sasd3B,2526.15893555,-1696.98010254,561.79223633,4);
-			SetTimer("CloseSASD3", 2500, 0);
+			SetTimer("CloseSASD3", 2500, false);
 	    }
 	    else
 	    {
@@ -642,7 +642,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	    {
             MoveDynamicObject(sasd2A,2515.87548828,-1697.01525879,561.79223633,4);
 	 		MoveDynamicObject(sasd2B,2520.89257812,-1696.97509766,561.79223633,4);
-			SetTimer("CloseSASD2", 2500, 0);
+			SetTimer("CloseSASD2", 2500, false);
 	    }
 	    else
 	    {
@@ -656,7 +656,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	    {
 	        MoveDynamicObject(sasd4A,2510.84130859,-1660.08081055,561.79528809,4);
 	 		MoveDynamicObject(sasd4B,2515.81982422,-1660.04650879,561.80004883,4);
-			SetTimer("CloseSASD4", 2500, 0);
+			SetTimer("CloseSASD4", 2500, false);
 	    }
 	    else
 	    {
@@ -673,7 +673,7 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		MoveDynamicObject(westlobby1,239.71582031,115.09179688,1002.21502686,4);
 		MoveDynamicObject(westlobby2,239.67968750,120.09960938,1002.21502686,4);
-		SetTimer("CloseWestLobby", 2500, 0);
+		SetTimer("CloseWestLobby", 2500, false);
 	}
 	if(buttonid == eastout)
 	{
@@ -684,7 +684,7 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
  		MoveDynamicObject(eastlobby1,253.14941406,111.59960938,1002.21502686,4);
  		MoveDynamicObject(eastlobby2,253.18457031,106.59960938,1002.21502686,4);
-		SetTimer("CloseEastLobby", 2500, 0);
+		SetTimer("CloseEastLobby", 2500, false);
 	}
 	if(buttonid == lockerin || buttonid == lockerout)
 	{
@@ -695,7 +695,7 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		MoveDynamicObject(locker1,268.29980469,112.56640625,1003.61718750,4);
 		MoveDynamicObject(locker2,263.29980469,112.52929688,1003.61718750,4);
-		SetTimer("CloseLocker", 2500, 0);
+		SetTimer("CloseLocker", 2500, false);
 	}
 	if(buttonid == cctvin || buttonid == cctvout)
 	{
@@ -706,7 +706,7 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		MoveDynamicObject(cctv1,263.44921875,115.79980469,1003.61718750,4);
 		MoveDynamicObject(cctv2,268.46875000,115.83691406,1003.61718750,4);
-		SetTimer("CloseCCTV", 2500, 0);
+		SetTimer("CloseCCTV", 2500, false);
 	}
 	if(buttonid == chiefin || buttonid == chiefout)
 	{
@@ -717,7 +717,7 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		MoveDynamicObject(chief1,228.0,119.50000000,1009.21875000,4);
 		MoveDynamicObject(chief2,230.0,119.53515625,1009.21875000,4);
-	    SetTimer("CloseChief", 2500, 0);
+	    SetTimer("CloseChief", 2500, false);
 	}
 	if(buttonid == elevator)
 	{
@@ -753,13 +753,13 @@ public OnPlayerPressButton(playerid, buttonid)
 	{
 		MoveDynamicObject(westlobby1,239.71582031,115.09179688,1002.21502686,4);
 		MoveDynamicObject(westlobby2,239.67968750,120.09960938,1002.21502686,4);
-		SetTimer("CloseWestLobby", 2500, 0);
+		SetTimer("CloseWestLobby", 2500, false);
 	}
 	if(buttonid == eastin)
 	{
 	    MoveDynamicObject(eastlobby1,253.14941406,111.59960938,1002.21502686,4);
 	    MoveDynamicObject(eastlobby2,253.18457031,106.59960938,1002.21502686,4);
-		SetTimer("CloseEastLobby", 2500, 0);
+		SetTimer("CloseEastLobby", 2500, false);
 	}
 	for(new i = 0; i < sizeof(DocButton); i++) {
 		if (buttonid == DocButton[i]) {
@@ -1594,9 +1594,9 @@ public OnPlayerConnect(playerid)
 
 	ShowNoticeGUIFrame(playerid, 1);
 
-	logincheck[playerid] = SetTimerEx("LoginCheck", 120000, 0, "i", playerid);
+	logincheck[playerid] = SetTimerEx("LoginCheck", 120000, false, "i", playerid);
 
-	SetTimerEx("LoginCheckEx", 5000, 0, "i", playerid);
+	SetTimerEx("LoginCheckEx", 5000, false, "i", playerid);
 
 	gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 	SetHealth(playerid, 100);
@@ -2234,12 +2234,12 @@ public OnPlayerDisconnect(playerid, reason)
 		if(EventKernel[EventRequest] == playerid)
 		{
 			EventKernel[EventRequest] = INVALID_PLAYER_ID;
-			ABroadCast( COLOR_YELLOW, "{AA3333}AdmWarning{FFFF00}: The player that was requesting an event has disconnected/crashed.", 4 );
+			ABroadCastText( COLOR_YELLOW, "{AA3333}AdmWarning{FFFF00}: The player that was requesting an event has disconnected/crashed.", 4 );
 		}
 		if(EventKernel[EventCreator] == playerid)
 		{
 			EventKernel[EventCreator] = INVALID_PLAYER_ID;
-			ABroadCast( COLOR_YELLOW, "{AA3333}AdmWarning{FFFF00}: The player that was creating an event has disconnected/crashed.", 4 );
+			ABroadCastText( COLOR_YELLOW, "{AA3333}AdmWarning{FFFF00}: The player that was creating an event has disconnected/crashed.", 4 );
 		}
 		for(new x; x < sizeof(EventKernel[EventStaff]); x++) {
 			if(EventKernel[EventStaff][x] == playerid) {
@@ -2688,7 +2688,7 @@ public OnPlayerSpawn(playerid)
     if(!gPlayerLogged{playerid})
     {
         SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You are not logged in!");
-        SetTimerEx("KickEx", 1000, 0, "i", playerid);
+        SetTimerEx("KickEx", 1000, false, "i", playerid);
         return 1;
 	}
 
@@ -2846,7 +2846,7 @@ public OnPlayerSpawn(playerid)
 			        if(PlayerInfo[playerid][pHospital] == 0)
 			        {
 					    sobeitCheckIsDone[playerid] = 1;
-					    SetTimerEx("sobeitCheck", 10000, 0, "i", playerid);
+					    SetTimerEx("sobeitCheck", 10000, false, "i", playerid);
 						TogglePlayerControllable(playerid, false);
 					}
 				}
@@ -2972,7 +2972,7 @@ public OnPlayerEnterCheckpoint(playerid)
 	    if(EventRCPT[RCPIdCurrent[playerid]] == 3 && PlayerInfo[playerid][pHydration] < 60) {
 		    SendClientMessageEx(playerid, COLOR_WHITE, "You have entered a Watering Station checkpoint, you need to stay here in order to get rehydrated again.");
 		    SendClientMessageEx(playerid, COLOR_WHITE, "You may choose to leave at any point or wait until you get the message of fully rehydrated.");
-            SetPVarInt(playerid, "WSRCPTimerId", SetTimerEx("WateringStation", 4000, 1, "i", playerid));
+            SetPVarInt(playerid, "WSRCPTimerId", SetTimerEx("WateringStation", 4000, true, "i", playerid));
             SetPVarInt(playerid, "InWaterStationRCP", 1);
             return 1;
 		}
@@ -3445,7 +3445,7 @@ public OnPlayerEnterCheckpoint(playerid)
 				    	PlayerPlaySound(playerid, 1058, 0.0, 0.0, 0.0);
 				    	DisablePlayerCheckpoint(playerid);
 				    	gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
-						TogglePlayerControllable(playerid, 0);
+						TogglePlayerControllable(playerid, false);
 						SetPVarInt(playerid, "IsFrozen", 1);
 						DisplayOrders(playerid);
 					}
@@ -3765,8 +3765,8 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					{
 						format(string, sizeof(string), "** %s leaps at %s attempting to tackle them but is not able.", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPlayerTargetPlayer(playerid)));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-						TogglePlayerControllable(playerid, 0);
-						SetTimerEx("CopGetUp", 2500, 0, "i", playerid);
+						TogglePlayerControllable(playerid, false);
+						SetTimerEx("CopGetUp", 2500, false, "i", playerid);
 						ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
 					}
 	            }
@@ -3851,7 +3851,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						format(string, sizeof(string), "License Plate: %d. Speed: %.0f MPH", GetPlayerVehicleID(i), fVehSpeed[i]);
 						SendClientMessageEx(playerid, COLOR_GRAD4, string);
 						SetPVarInt(playerid, "RadarTimeout", 1);
-						SetTimerEx("RadarCooldown", 3000, 0, "i", playerid);
+						SetTimerEx("RadarCooldown", 3000, false, "i", playerid);
 						return 1;
 					}
 				}
@@ -3880,7 +3880,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				SetHealth(playerid, 100);
 		    }
 			DeletePVar(playerid, "DrinkCooledDown");
-		    SetTimerEx("DrinkCooldown", 2500, 0, "i", playerid);
+		    SetTimerEx("DrinkCooldown", 2500, false, "i", playerid);
 			return 1;
 		}
 	}
@@ -3901,7 +3901,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				SetHealth(playerid, 100);
 		    }
 			DeletePVar(playerid, "DrinkCooledDown");
-		    SetTimerEx("DrinkCooldown", 2500, 0, "i", playerid);
+		    SetTimerEx("DrinkCooldown", 2500, false, "i", playerid);
 			return 1;
 		}
 	}
@@ -3924,7 +3924,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				SetHealth(playerid, 100);
 			}
 			DeletePVar(playerid, "DrinkCooledDown");
-			SetTimerEx("DrinkCooldown", 2500, 0, "i", playerid);
+			SetTimerEx("DrinkCooldown", 2500, false, "i", playerid);
 			return 1;
 		}
 	}
@@ -4471,7 +4471,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					new Float:X, Float:Y, Float:Z;
 					GetPlayerPos(playerid, X, Y, Z);
 					SetPlayerPos(playerid, X, Y, Z+2);
-					TogglePlayerControllable(playerid, 1);
+					TogglePlayerControllable(playerid, true);
 				}
 				else
 				{
@@ -4588,7 +4588,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				else if(PlayerVehicleInfo[i][v][pvLocked] == 1 && PlayerVehicleInfo[i][v][pvLock] == 1) {
 					GetVehicleParamsEx(newcar,engine,lights,alarm,doors,bonnet,boot,objective);
 					SetVehicleParamsEx(newcar,engine,lights,VEHICLE_PARAMS_ON,doors,bonnet,boot,objective);
-					SetTimerEx("DisableVehicleAlarm", 20000, 0, "d",  newcar);
+					SetTimerEx("DisableVehicleAlarm", 20000, false, "d",  newcar);
 				}
 				else if(PlayerVehicleInfo[i][v][pvLocked] == 1 && PlayerVehicleInfo[i][v][pvLock] == 2 && PlayerVehicleInfo[i][v][pvLocksLeft] > 0) { // Electronic Lock System
 

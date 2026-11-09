@@ -1334,7 +1334,7 @@ stock SurfingCheck(vehicleid)
 		{
 			new Float:x, Float:y, Float:z;
 			GetPlayerPos(p, x, y, z);
-			SetTimerEx("SurfingFix", 2000, 0, "ifff", p, x, y, z);
+			SetTimerEx("SurfingFix", 2000, false, "ifff", p, x, y, z);
 		}
 	}	
 }
@@ -1882,7 +1882,7 @@ CMD:car(playerid, params[])
 			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s turns the key in the ignition and the engine starts.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine starting, please wait...");
-			SetTimerEx("SetVehicleEngine", 1000, 0, "dd",  vehicleid, playerid);
+			SetTimerEx("SetVehicleEngine", 1000, false, "dd",  vehicleid, playerid);
 			RemoveVehicleFromMeter(vehicleid);
 		}
 	}
@@ -2421,17 +2421,17 @@ CMD:carkeys(playerid, params[])
 	return 1;
 }
 
-CMD:sb(playerid, params[]) return cmd_seatbelt(playerid, params);
+CMD:sb(playerid, const params[]) return cmd_seatbelt(playerid, params);
 
-CMD:seatbelt(playerid, params[])
+CMD:seatbelt(playerid, const params[])
 {
-    if(IsPlayerInAnyVehicle(playerid) == 0)
+    if(IsPlayerInAnyVehicle(playerid) == false)
 	{
         SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in a vehicle!");
         return 1;
     }
 
-    if(IsPlayerInAnyVehicle(playerid) == 1 && Seatbelt[playerid] == 0)
+    if(IsPlayerInAnyVehicle(playerid) == true && Seatbelt[playerid] == 0)
 	{
         if(IsABike(GetPlayerVehicleID(playerid)))
             return SendClientMessageEx(playerid, COLOR_WHITE, "We have added a helmet feature, buy a helmet from any 24/7 and use /helmet(/hm).");
@@ -2443,7 +2443,7 @@ CMD:seatbelt(playerid, params[])
         }
 
     }
-    else if(IsPlayerInAnyVehicle(playerid) == 1 && Seatbelt[playerid] == 1)
+    else if(IsPlayerInAnyVehicle(playerid) == true && Seatbelt[playerid] == 1)
 	{
         if(IsABike(GetPlayerVehicleID(playerid)))
 		{

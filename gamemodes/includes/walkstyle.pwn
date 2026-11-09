@@ -112,7 +112,7 @@ stock SetWalkingKey(key)
 	return 1;
 }
 
-stock AddWalkingStyle(animlib[], animname[], Float:fDelta = 4.0, loop = 1, lockx = 1, locky = 1, freeze = 1, time = 1)
+stock AddWalkingStyle(const animlib[], const animname[], Float:fDelta = 4.0, loop = 1, lockx = 1, locky = 1, freeze = 1, time = 1)
 {
 	new id;
 	for (new i = 1; i < sizeof(WalkingStyles); i ++)
@@ -237,7 +237,7 @@ stock ResetPlayerWalkingStyle(playerid)
 stock walk_TogglePlayerControllable(playerid, toggle)
 {
 	SetPVarInt(playerid, "Frozen", !toggle);
-	return TogglePlayerControllable(playerid, toggle);
+	return TogglePlayerControllable(playerid, toggle != 0);
 }
 
 #define TogglePlayerControllable walk_TogglePlayerControllable

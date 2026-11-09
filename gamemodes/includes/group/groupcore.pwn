@@ -264,7 +264,7 @@ public SaveGroup(iGroupID) {
 	return 1;
 }
 
-stock SendGroupMessage(iGroupType, color, string[], allegiance = 0)
+stock SendGroupMessage(iGroupType, color, const string[], allegiance = 0)
 {
 	new iGroupID;
 	foreach(new i: Player)
@@ -280,7 +280,7 @@ stock SendGroupMessage(iGroupType, color, string[], allegiance = 0)
 	}
 }
 
-stock SendMedicMessage(color, string[])
+stock SendMedicMessage(color, const string[])
 {
 	foreach(new i: Player)
 	{
@@ -291,7 +291,7 @@ stock SendMedicMessage(color, string[])
 	}
 }
 
-stock SendDivisionMessage(member, division, color, string[])
+stock SendDivisionMessage(member, division, color, const string[])
 {
 	foreach(new i: Player)
 	{
@@ -740,7 +740,7 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 	return ShowPlayerDialogEx(iPlayerID, DIALOG_EDITGROUP, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 }
 
-stock CrateLog(groupid, string[])
+stock CrateLog(groupid, const string[])
 {
 	new month, day, year, file[32];
 	getdate(year, month, day);
@@ -748,7 +748,7 @@ stock CrateLog(groupid, string[])
 	return Log(file, string);
 }
 
-stock GroupLog(groupid, string[])
+stock GroupLog(groupid, const string[])
 {
 	new month, day, year, file[32];
 	getdate(year, month, day);
@@ -756,7 +756,7 @@ stock GroupLog(groupid, string[])
 	return Log(file, string);
 }
 
-stock GroupPayLog(groupid, string[])
+stock GroupPayLog(groupid, const string[])
 {
 	new month, day, year, file[32];
 	getdate(year, month, day);
@@ -764,7 +764,7 @@ stock GroupPayLog(groupid, string[])
 	return Log(file, string);
 }
 
-stock GroupLogEx(groupid, string[], type = 0) {
+stock GroupLogEx(groupid, const string[], type = 0) {
 
 	new month, day, year, file[32];
 	getdate(year, month, day);
@@ -1956,7 +1956,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					szTitle[32 + GROUP_MAX_NAME_LEN],
 					hColour;
 
-				if(strlen(inputtext) > 6 || !ishex(inputtext)) {
+				if(strlen(inputtext) > 6 || !IsHex(inputtext)) {
 					format(szTitle, sizeof szTitle, "Edit Group Duty Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_DUTYCOL, DIALOG_STYLE_INPUT, szTitle, "Invalid value specified.\n\nEnter a colour in hexadecimal format (for example, BCA3FF). This colour will be used to identify the group.", "Confirm", "Cancel");
 				}
@@ -1989,7 +1989,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					szTitle[32 + GROUP_MAX_NAME_LEN],
 					hColour;
 
-				if(strlen(inputtext) > 6 || !ishex(inputtext)) {
+				if(strlen(inputtext) > 6 || !IsHex(inputtext)) {
 					format(szTitle, sizeof szTitle, "Edit Group Radio Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOCOL, DIALOG_STYLE_INPUT, szTitle, "Invalid value specified.\n\nEnter a colour in hexadecimal format (for example, BCA3FF). This colour will be used for the group's in-character radio chat.", "Confirm", "Cancel");
 				}
@@ -2592,7 +2592,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					szTitle[32 + GROUP_MAX_NAME_LEN],
 					hColour;
 
-				if(strlen(inputtext) > 6 || !ishex(inputtext)) {
+				if(strlen(inputtext) > 6 || !IsHex(inputtext)) {
 					format(szTitle, sizeof szTitle, "Edit Group OOC Chat Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOCOL, DIALOG_STYLE_INPUT, szTitle, "Invalid value specified.\n\nEnter a color in hexadecimal format (for example, BCA3FF). This color will be that of their OOC Chat.", "Confirm", "Cancel");
 				}
@@ -3098,7 +3098,7 @@ public OnVehicleSirenStateChange(playerid, vehicleid, newstate)
     return 1;
 }
 
-stock EditDV(playerid, iDvSlotID, params[], name[], Float:value, &slot)
+stock EditDV(playerid, iDvSlotID, params[], const name[], Float:value, &slot)
 {
 	new string[128];
 	format(string, sizeof(string), "%s has edited DV Slot %d - %s.", GetPlayerNameEx(playerid), iDvSlotID, params);
@@ -3928,7 +3928,7 @@ CMD:dvrespawnall(playerid, params[])
 }
 
 CMD:freedvrespawn(playerid, params[]) return cmd_dvrespawn(playerid, "1");
-CMD:dvrespawn(playerid, params[])
+CMD:dvrespawn(playerid, const params[])
 {
 	new szString[128],
 		iGroupID = PlayerInfo[playerid][pMember];
@@ -5749,7 +5749,7 @@ CMD:togfam(playerid, params[])
 	return 1;
 }
 
-CMD:locker(playerid, params[]) {
+CMD:locker(playerid, const params[]) {
 
 	new
 		iGroupID = PlayerInfo[playerid][pMember],

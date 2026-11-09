@@ -610,7 +610,7 @@ stock UpdateSpeedCamerasForPlayer(p)
 							SendClientMessageEx(p, COLOR_WHITE, string);
 							PlayerPlaySound(p, 1132, 0.0, 0.0, 0.0);
 							PlayerTextDrawShow(p, _vhudFlash[p]);
-							SetTimerEx("TurnOffFlash", 500, 0, "i", p);
+							SetTimerEx("TurnOffFlash", 500, false, "i", p);
 						}
 					    foreach(new i: Player)
 						{
@@ -624,7 +624,7 @@ stock UpdateSpeedCamerasForPlayer(p)
 								SendClientMessageEx(p, COLOR_WHITE, string);
 								PlayerPlaySound(p, 1132, 0.0, 0.0, 0.0);
 								PlayerTextDrawShow(p, _vhudFlash[p]);
-								SetTimerEx("TurnOffFlash", 500, 0, "i", p);
+								SetTimerEx("TurnOffFlash", 500, false, "i", p);
 								g_mysql_SaveVehicle(i, v);
 							}
 						}	

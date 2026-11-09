@@ -1068,7 +1068,7 @@ CMD:accept(playerid, params[])
                         SetPlayerInterior(playerid, 7); SetPlayerInterior(BoxOffer[playerid], 7);
                         SetPlayerPos(playerid, 768.94, -70.87, 1001.56); SetPlayerFacingAngle(playerid, 131.8632);
                         SetPlayerPos(BoxOffer[playerid], 764.35, -66.48, 1001.56); SetPlayerFacingAngle(BoxOffer[playerid], 313.1165);
-                        TogglePlayerControllable(playerid, 0); TogglePlayerControllable(BoxOffer[playerid], 0);
+                        TogglePlayerControllable(playerid, false); TogglePlayerControllable(BoxOffer[playerid], false);
                         GameTextForPlayer(playerid, "~r~Waiting", 3000, 1); GameTextForPlayer(BoxOffer[playerid], "~r~Waiting", 3000, 1);
                         new name[MAX_PLAYER_NAME];
                         new dszMessage[MAX_PLAYER_NAME];
@@ -1108,7 +1108,7 @@ CMD:accept(playerid, params[])
                     SetPlayerInterior(playerid, 5); SetPlayerInterior(BoxOffer[playerid], 5);
                     SetPlayerPos(playerid, 762.9852,2.4439,1001.5942); SetPlayerFacingAngle(playerid, 131.8632);
                     SetPlayerPos(BoxOffer[playerid], 758.7064,-1.8038,1001.5942); SetPlayerFacingAngle(BoxOffer[playerid], 313.1165);
-                    TogglePlayerControllable(playerid, 0); TogglePlayerControllable(BoxOffer[playerid], 0);
+                    TogglePlayerControllable(playerid, false); TogglePlayerControllable(BoxOffer[playerid], false);
                     GameTextForPlayer(playerid, "~r~Waiting", 3000, 1); GameTextForPlayer(BoxOffer[playerid], "~r~Waiting", 3000, 1);
                     new name[MAX_PLAYER_NAME];
                     new dszMessage[MAX_PLAYER_NAME];
@@ -1311,8 +1311,8 @@ CMD:accept(playerid, params[])
                     if (ProxDetectorS(5.0, playerid, LiveOffer[playerid])) {
                         SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are frozen till the Live Conversation ends.");
                         SendClientMessageEx(LiveOffer[playerid], COLOR_LIGHTBLUE, "* You are frozen till the Live Conversation ends (use /live again).");
-                        TogglePlayerControllable(playerid, 0);
-                        TogglePlayerControllable(LiveOffer[playerid], 0);
+                        TogglePlayerControllable(playerid, false);
+                        TogglePlayerControllable(LiveOffer[playerid], false);
 						SetPVarInt(playerid, "IsLive", 1);
 						SetPVarInt(LiveOffer[playerid], "IsLive", 1);
                         TalkingLive[playerid] = LiveOffer[playerid];

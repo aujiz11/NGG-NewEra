@@ -31,7 +31,7 @@ public ClearAnims(playerid)
 	ClearAnimationsEx(playerid);
 }
 
-PlayAnim(playerid, animlib[], animname[], Float:fDelta, loop, lockx, locky, freeze, time, forcesync)
+PlayAnim(playerid, const animlib[], const animname[], Float:fDelta, loop, lockx, locky, freeze, time, forcesync)
 {
 	ApplyAnimation(playerid, animlib, animname, fDelta, loop, lockx, locky, freeze, time, forcesync);
 }
@@ -51,7 +51,7 @@ CMD:toganimhelper(playerid, params[])
 	return 1;
 }
 
-PlayAnimEx(playerid, animlib[], animname[], Float:fDelta, loop, lockx, locky, freeze, time, forcesync)
+PlayAnimEx(playerid, const animlib[], const animname[], Float:fDelta, loop, lockx, locky, freeze, time, forcesync)
 {
 	if(!IsPlayerIdle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You must stop your current animation!");
 	gPlayerUsingLoopingAnim[playerid] = 1;
@@ -67,7 +67,7 @@ StopLoopingAnim(playerid)
     ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
 }
 
-PreloadAnimLib(playerid, animlib[])
+PreloadAnimLib(playerid, const animlib[])
 {
 	ApplyAnimation(playerid,animlib,"null",0.0,0,0,0,0,0,1);
 }
@@ -78,7 +78,7 @@ IsAblePedAnimation(playerid)
    		SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
    		return 0;
 	}
-    if(IsPlayerInAnyVehicle(playerid) == 1)
+    if(IsPlayerInAnyVehicle(playerid) == true)
     {
 		SendClientMessage(playerid, COLOR_GRAD2, "This animation requires you to be outside a vehicle.");
 		return 0;
@@ -92,7 +92,7 @@ IsAbleVehicleAnimation(playerid)
    		SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
    		return 0;
 	}
-	if(IsPlayerInAnyVehicle(playerid) == 0)
+	if(IsPlayerInAnyVehicle(playerid) == false)
     {
 		SendClientMessage(playerid, COLOR_GRAD2, "This animation requires you to be inside a vehicle.");
 		return 0;
@@ -118,7 +118,7 @@ LoadVactionsHelper()
 {
 	txtAnimHelper = TextDrawCreate(630.0, 420.0,
 	"~r~~k~~PED_SPRINT~ ~w~to stop the animation");
-	TextDrawUseBox(txtAnimHelper, 0);
+	TextDrawUseBox(txtAnimHelper, false);
 	TextDrawFont(txtAnimHelper, 2);
 	TextDrawSetShadow(txtAnimHelper,0);
     TextDrawSetOutline(txtAnimHelper,1);
@@ -187,7 +187,7 @@ CMD:stopani(playerid, params[])
 	else
 	{
 	    GetPlayerPos(playerid, StopaniFloats[playerid][0], StopaniFloats[playerid][1], StopaniFloats[playerid][2]);
-		SetTimerEx("StopaniTimer", 10000, 0, "d", playerid);
+		SetTimerEx("StopaniTimer", 10000, false, "d", playerid);
 		SendClientMessageEx (playerid, COLOR_YELLOW, "Do not move for 10 seconds to have your animations cleared!");
 	}
 	return 1;
@@ -260,22 +260,22 @@ CMD:time(playerid, params[])
     else if(month == 10) { mtext = "October"; }
     else if(month == 11) { mtext = "November"; }
     else if(month == 12) { mtext = "December"; }
-	if(hour > 12 && hour < 24)
+	if(gServerHour > 12 && gServerHour < 24)
 	{
-		thour = hour - 12;
+		thour = gServerHour - 12;
 		suffix = "PM";
 	}
-	else if(hour == 12)
+	else if(gServerHour == 12)
 	{
 		thour = 12;
 		suffix = "PM";
 	}
-	else if(hour > 0 && hour < 12)
+	else if(gServerHour > 0 && gServerHour < 12)
 	{
-		thour = hour;
+		thour = gServerHour;
 		suffix = "AM";
 	}
-	else if(hour == 0)
+	else if(gServerHour == 0)
 	{
 		thour = 12;
 		suffix = "AM";

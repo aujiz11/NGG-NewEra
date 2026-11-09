@@ -37,7 +37,7 @@
 /*
 NationSel_InitNationNameText(Text:txtInit)
 {
-  	TextDrawUseBox(txtInit, 0);
+	TextDrawUseBox(txtInit, false);
 	TextDrawLetterSize(txtInit,1.25,3.0);
 	TextDrawFont(txtInit, 0);
 	TextDrawSetShadow(txtInit,0);
@@ -57,7 +57,7 @@ NationSel_InitTextDraws()
     // Init our observer helper text display
 	txtNationSelHelper = TextDrawCreate(10.0, 415.0,
 	   " Press ~b~~k~~GO_LEFT~ ~w~or ~b~~k~~GO_RIGHT~ ~w~to switch cities.~n~ Press ~r~~k~~PED_FIREWEAPON~ ~w~to select.");
-	TextDrawUseBox(txtNationSelHelper, 1);
+	TextDrawUseBox(txtNationSelHelper, true);
 	TextDrawBoxColor(txtNationSelHelper,0x222222BB);
 	TextDrawLetterSize(txtNationSelHelper,0.3,1.0);
 	TextDrawTextSize(txtNationSelHelper,400.0,40.0);
@@ -68,7 +68,7 @@ NationSel_InitTextDraws()
     TextDrawColor(txtNationSelHelper,0xFFFFFFFF);
 
 	txtNationSelMain = TextDrawCreate(10.0, 50.0, "Select Your Nation");
-	TextDrawUseBox(txtNationSelMain, 0);
+	TextDrawUseBox(txtNationSelMain, false);
 	TextDrawLetterSize(txtNationSelMain, 1.25, 3.0);
 	TextDrawFont(txtNationSelMain, 1);
 	TextDrawSetShadow(txtNationSelMain, 0);
@@ -312,7 +312,7 @@ CMD:deport(playerid, params[])
 			format(string, sizeof(string), "* You deported %s!", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 			DeletePVar(giveplayerid, "IsFrozen");
-			TogglePlayerControllable(giveplayerid, 1);
+			TogglePlayerControllable(giveplayerid, true);
 			ClearAnimationsEx(giveplayerid);
 			SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
 			PlayerCuffed[giveplayerid] = 0;

@@ -141,7 +141,7 @@ AnswerNewbie(iPlayerID, iNewbieID, szAnswer[]) {
 	return 1;
 }
 
-SendGlobalNewbMsg(szMessage[]) {
+SendGlobalNewbMsg(const szMessage[]) {
 	
 	foreach(new i : Player) {
 		if(PlayerInfo[i][pToggledChats][0] == 0) {

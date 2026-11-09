@@ -1051,7 +1051,7 @@ public SAN_Process_WatchTV(playerid, channel)
 	SAN_ShowTextDraws(playerid);	
 	SetPlayerInterior(playerid, GetPVarInt(iLastCameraman[channel], "CameramanLastInt"));
 	SetPlayerVirtualWorld(playerid, GetPVarInt(iLastCameraman[channel], "CameramanLastVW"));
-	TogglePlayerControllable(playerid, 0);
+	TogglePlayerControllable(playerid, false);
 	TextDrawHideForPlayer(playerid, TV_text[11]);
 	TextDrawHideForPlayer(playerid, TV_text[12]);
 	TextDrawHideForPlayer(playerid, TV_text[13]);
@@ -1270,7 +1270,7 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 		case SAN_CAMERAMAN_SET:
 		{
 			if(GetPVarInt(playerid, "WatchingTV") == 1) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot set an angle when you are already watching the TV.");
-			TogglePlayerControllable(playerid, 0);
+			TogglePlayerControllable(playerid, false);
 			if(!GetPVarType(playerid, "PreviewingTV"))
 			{
 				GetPlayerPos(playerid, CameramanFloats[channel][playerid][0], CameramanFloats[channel][playerid][1], CameramanFloats[channel][playerid][2]);
@@ -1368,7 +1368,7 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 			SetPVarInt(playerid, "PreviewingTV", 1);
 			SetPVarInt(playerid, "iCameraman_Type", 2);
 			SetPVarInt(playerid, "ICamPointA", 1);
-			TogglePlayerControllable(playerid, 0);
+			TogglePlayerControllable(playerid, false);
 			GetPlayerPos(playerid,ICCameramanFloats[channel][playerid][0], ICCameramanFloats[channel][playerid][1], ICCameramanFloats[channel][playerid][2]);
 			GetPlayerCameraFrontVector(playerid, ICCameramanFVFloats[channel][playerid][0], ICCameramanFVFloats[channel][playerid][1], ICCameramanFVFloats[channel][playerid][2]);
 			SetPlayerCameraPos(playerid, ICCameramanFloats[channel][playerid][0], ICCameramanFloats[channel][playerid][1], ICCameramanFloats[channel][playerid][2]);
@@ -1398,7 +1398,7 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 			GetPlayerFacingAngle(playerid, BroadcastFloats[playerid][0]);
 			SetPVarInt(playerid, "iCameraman_Type", 2);
 			SetPVarInt(playerid, "PreviewingTV", 1);
-			TogglePlayerControllable(playerid, 0);
+			TogglePlayerControllable(playerid, false);
 			GetPlayerPos(playerid,ICCameramanFloats[channel][playerid][3], ICCameramanFloats[channel][playerid][4], ICCameramanFloats[channel][playerid][5]);
 			GetPlayerCameraFrontVector(playerid, ICCameramanFVFloats[channel][playerid][3], ICCameramanFVFloats[channel][playerid][4], ICCameramanFVFloats[channel][playerid][5]);
 			SetPlayerCameraPos(playerid, ICCameramanFloats[channel][playerid][3], ICCameramanFloats[channel][playerid][4], ICCameramanFloats[channel][playerid][5]);
@@ -1439,7 +1439,7 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 			ICCameramanFloats[channel][playerid][5]+ICCameramanFVFloats[channel][playerid][5], 10000, CAMERA_MOVE);
 			
 			SetPVarInt(playerid, "PreviewingTV", 1);
-			TogglePlayerControllable(playerid, 0);
+			TogglePlayerControllable(playerid, false);
 			SAN_ShowTextDraws(playerid);
 		}
 		case SAN_CAMERAMAN_INTERPOLATE: // This will finalize the interpolate-camera settings of the cameraman, and stream it to the broadcast (the players using /watchtv).
@@ -1611,7 +1611,7 @@ SAN_Process_StartPreview(playerid, giveplayerid)
 	SendClientMessage(playerid, COLOR_LIGHTBLUE, "Use 'N' to cancel. Use -- '/bdirector' or '/cameraman' -> Broadcast -- to broadcast the current angle.");
 	SAN_ShowTextDraws(playerid);
 	DeletePVar(playerid, "ListItemID_Cameras");
-	TogglePlayerControllable(playerid, 0);
+	TogglePlayerControllable(playerid, false);
 	TogglePlayerSpectating(playerid, 1);
 	SetTimerEx("SAN_Process_StartPreview2", 500, false, "ii", playerid, giveplayerid);
 	return 1;	
@@ -1906,8 +1906,8 @@ CMD:stopnews(playerid, params[])
 				{
 					SendClientMessage(i, COLOR_LIGHTBLUE, "* Live conversation ended.");
 					SendClientMessage(TalkingLive[i], COLOR_LIGHTBLUE, "* Live conversation ended.");
-					TogglePlayerControllable(i, 1);
-					TogglePlayerControllable(TalkingLive[i], 1);
+					TogglePlayerControllable(i, true);
+					TogglePlayerControllable(TalkingLive[i], true);
 					TalkingLive[TalkingLive[i]] = INVALID_PLAYER_ID;
 					TalkingLive[i] = INVALID_PLAYER_ID;
 					SendClientMessage(i, COLOR_LIGHTBLUE, "* Live has just been shutdown..");
@@ -2000,7 +2000,7 @@ CMD:news(playerid, params[])
 
 // -------------------------------------------- NEW COMMANDS BY JINGLES -----------------------------------
 
-CMD:setchannel(playerid, params[])
+CMD:setchannel(playerid, const params[])
 {
 	if(IsAReporter(playerid))
 	{
@@ -2035,7 +2035,7 @@ CMD:sh(playerid, params[])
 	return 1;
 }
 
-CMD:shows(playerid, params[])
+CMD:shows(playerid, const params[])
 {
 	if(!GetPVarType(playerid, "WatchingTV"))
 	{
@@ -2057,7 +2057,7 @@ CMD:shows(playerid, params[])
 
 
 
-CMD:mic(playerid, params[])
+CMD:mic(playerid, const params[])
 {
 	szMiscArray[0] = 0;
 	if(shutdown == 1) return SendClientMessage(playerid, COLOR_WHITE, "The news system is currently shut down." );
@@ -2269,7 +2269,7 @@ SAN_RankCheck(playerid, slot) {
 	return 0;
 }
 
-CMD:cameraman(playerid, params[])
+CMD:cameraman(playerid, const params[])
 {
 	if(IsAReporter(playerid))
 	{
@@ -2319,7 +2319,7 @@ CMD:cameraman(playerid, params[])
 }
 
 
-CMD:bdirector(playerid, params[])
+CMD:bdirector(playerid, const params[])
 {
 	szMiscArray[0] = 0;
 
@@ -2422,12 +2422,12 @@ public SAN_InitTextDraws()
 	TextDrawLetterSize(TV_text[0], 0.500000, 26.000000);
 	TextDrawColor(TV_text[0], 0);
 	TextDrawSetOutline(TV_text[0], 0);
-	TextDrawSetProportional(TV_text[0], 1);
+	TextDrawSetProportional(TV_text[0], true);
 	TextDrawSetShadow(TV_text[0], 0);
-	TextDrawUseBox(TV_text[0], 1);
+	TextDrawUseBox(TV_text[0], true);
 	TextDrawBoxColor(TV_text[0], 255);
 	TextDrawTextSize(TV_text[0], 11.000000, 11.000000);
-	TextDrawSetSelectable(TV_text[0], 0);
+	TextDrawSetSelectable(TV_text[0], false);
 
 	TV_text[1] = TextDrawCreate(638.000000, 85.000000, "tv-right");
 	TextDrawAlignment(TV_text[1], 2);
@@ -2436,12 +2436,12 @@ public SAN_InitTextDraws()
 	TextDrawLetterSize(TV_text[1], 0.500000, 26.000000);
 	TextDrawColor(TV_text[1], 0);
 	TextDrawSetOutline(TV_text[1], 0);
-	TextDrawSetProportional(TV_text[1], 1);
+	TextDrawSetProportional(TV_text[1], true);
 	TextDrawSetShadow(TV_text[1], 0);
-	TextDrawUseBox(TV_text[1], 1);
+	TextDrawUseBox(TV_text[1], true);
 	TextDrawBoxColor(TV_text[1], 255);
 	TextDrawTextSize(TV_text[1], 11.000000, 11.000000);
-	TextDrawSetSelectable(TV_text[1], 0);
+	TextDrawSetSelectable(TV_text[1], false);
 
 	TV_text[2] = TextDrawCreate(313.000000, 439.000000, "tv-down");
 	TextDrawAlignment(TV_text[2], 2);
@@ -2450,12 +2450,12 @@ public SAN_InitTextDraws()
 	TextDrawLetterSize(TV_text[2], 0.500000, 1.000000);
 	TextDrawColor(TV_text[2], 0);
 	TextDrawSetOutline(TV_text[2], 0);
-	TextDrawSetProportional(TV_text[2], 1);
+	TextDrawSetProportional(TV_text[2], true);
 	TextDrawSetShadow(TV_text[2], 0);
-	TextDrawUseBox(TV_text[2], 1);
+	TextDrawUseBox(TV_text[2], true);
 	TextDrawBoxColor(TV_text[2], 255);
 	TextDrawTextSize(TV_text[2], 11.000000, 501.000000);
-	TextDrawSetSelectable(TV_text[2], 0);
+	TextDrawSetSelectable(TV_text[2], false);
 
 	TV_text[3] = TextDrawCreate(313.000000, -1.000000, "tv-up");
 	TextDrawAlignment(TV_text[3], 2);
@@ -2464,12 +2464,12 @@ public SAN_InitTextDraws()
 	TextDrawLetterSize(TV_text[3], 0.500000, 1.000000);
 	TextDrawColor(TV_text[3], 0);
 	TextDrawSetOutline(TV_text[3], 0);
-	TextDrawSetProportional(TV_text[3], 1);
+	TextDrawSetProportional(TV_text[3], true);
 	TextDrawSetShadow(TV_text[3], 0);
-	TextDrawUseBox(TV_text[3], 1);
+	TextDrawUseBox(TV_text[3], true);
 	TextDrawBoxColor(TV_text[3], 255);
 	TextDrawTextSize(TV_text[3], 11.000000, 501.000000);
-	TextDrawSetSelectable(TV_text[3], 0);
+	TextDrawSetSelectable(TV_text[3], false);
 
 	TV_text[4] = TextDrawCreate(317.000000, 424.000000, "news-line");
 	TextDrawAlignment(TV_text[4], 2);
@@ -2478,12 +2478,12 @@ public SAN_InitTextDraws()
 	TextDrawLetterSize(TV_text[4], 0.200000, 0.999999);
 	TextDrawColor(TV_text[4], -1);
 	TextDrawSetOutline(TV_text[4], 0);
-	TextDrawSetProportional(TV_text[4], 1);
+	TextDrawSetProportional(TV_text[4], true);
 	TextDrawSetShadow(TV_text[4], 0);
-	TextDrawUseBox(TV_text[4], 1);
+	TextDrawUseBox(TV_text[4], true);
 	TextDrawBoxColor(TV_text[4], 100);
 	TextDrawTextSize(TV_text[4], 11.000000, 191.000000);
-	TextDrawSetSelectable(TV_text[4], 0);
+	TextDrawSetSelectable(TV_text[4], false);
 
 	TV_text[5] = TextDrawCreate(317.000000, 10.000000, "SAN-TV");
 	TextDrawAlignment(TV_text[5], 2);
@@ -2492,12 +2492,12 @@ public SAN_InitTextDraws()
 	TextDrawLetterSize(TV_text[5], 0.289999, 1.400000);
 	TextDrawColor(TV_text[5], -1);
 	TextDrawSetOutline(TV_text[5], 0);
-	TextDrawSetProportional(TV_text[5], 1);
+	TextDrawSetProportional(TV_text[5], true);
 	TextDrawSetShadow(TV_text[5], 0);
-	TextDrawUseBox(TV_text[5], 1);
+	TextDrawUseBox(TV_text[5], true);
 	TextDrawBoxColor(TV_text[5], 100);
 	TextDrawTextSize(TV_text[5], 11.000000, 51.000000);
-	TextDrawSetSelectable(TV_text[5], 0);
+	TextDrawSetSelectable(TV_text[5], false);
 
 	TV_text[6] = TextDrawCreate(317.000000, 438.000000, "Channel 1");
 	TextDrawAlignment(TV_text[6], 2);
@@ -2506,9 +2506,9 @@ public SAN_InitTextDraws()
 	TextDrawLetterSize(TV_text[6], 0.260000, 1.100000);
 	TextDrawColor(TV_text[6], -1);
 	TextDrawSetOutline(TV_text[6], 0);
-	TextDrawSetProportional(TV_text[6], 1);
+	TextDrawSetProportional(TV_text[6], true);
 	TextDrawSetShadow(TV_text[6], 0);
-	TextDrawSetSelectable(TV_text[6], 0);
+	TextDrawSetSelectable(TV_text[6], false);
 
 	TV_text[7] = TextDrawCreate(-0.500, -0.500, "LD_SPAC:tvcorn");
     TextDrawFont(TV_text[7], 4);
@@ -2552,7 +2552,7 @@ public SAN_InitTextDraws()
 	TextDrawSetOutline(TV_text[12], 1);
 	TextDrawBackgroundColor(TV_text[12], 51);
 	TextDrawFont(TV_text[12], 1);
-	TextDrawSetProportional(TV_text[12], 1);
+	TextDrawSetProportional(TV_text[12], true);
 
 	TV_text[13] = TextDrawCreate(190.800003, 205.187500, "We are currently experiencing technical difficulties.");
 	TextDrawLetterSize(TV_text[13], 0.249999, 1.302500);
@@ -2562,7 +2562,7 @@ public SAN_InitTextDraws()
 	TextDrawSetOutline(TV_text[13], 1);
 	TextDrawBackgroundColor(TV_text[13], 51);
 	TextDrawFont(TV_text[13], 1);
-	TextDrawSetProportional(TV_text[13], 1);
+	TextDrawSetProportional(TV_text[13], true);
 
 
 }

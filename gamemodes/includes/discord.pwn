@@ -80,6 +80,7 @@ stock SendDiscordMessage(channel, const message[])
 	return 1;
 }
 
+forward DCC_OnChannelMessage(DCC_Channel:channel, const author[], const message[]);
 public DCC_OnChannelMessage(DCC_Channel:channel, const author[], const message[])
 {
 	if(betaserver == 0) {

@@ -49,7 +49,8 @@ stock ShowGroupWeapons(playerid, group) {
 	if(!ValidGroup(group)) return 1;
 	new title[54];
 	format(title, sizeof(title), "Weapon Safe - Mats: %s", number_format(arrGroupData[group][g_iLockerStock]));
-	Dialog_Show(playerid, wep_option, DIALOG_STYLE_LIST, title, "Withdraw Weapon\nDeposit Weapon", "Select", "Go Back");
+	new dialogInfo[] = "Withdraw Weapon\nDeposit Weapon";
+	Dialog_Show(playerid, wep_option, DIALOG_STYLE_LIST, title, dialogInfo, "Select", "Go Back");
 	return 1;
 }
 
@@ -199,9 +200,11 @@ stock SaveWeapons(i) {
 stock CrateTransferOption(playerid, group) {
 	if(!ValidGroup(group)) return 1;
 	if(PlayerInfo[playerid][pLeader] == group) {
-		Dialog_Show(playerid, crate_tran_option, DIALOG_STYLE_LIST, "Crate Transfer", "Deploy Crate Box\nTransfer to Crate\nDeposit Crate\nRecall Crate", "Select", "Go Back");
+		new dialogInfo[] = "Deploy Crate Box\nTransfer to Crate\nDeposit Crate\nRecall Crate";
+		Dialog_Show(playerid, crate_tran_option, DIALOG_STYLE_LIST, "Crate Transfer", dialogInfo, "Select", "Go Back");
 	} else {
-		Dialog_Show(playerid, crate_tran_option, DIALOG_STYLE_LIST, "Crate Transfer", "Deposit Crate", "Select", "Go Back");
+		new dialogInfo[] = "Deposit Crate";
+		Dialog_Show(playerid, crate_tran_option, DIALOG_STYLE_LIST, "Crate Transfer", dialogInfo, "Select", "Go Back");
 	}
 	return 1;
 }
@@ -608,7 +611,8 @@ CMD:convertlocker(playerid, params[]) {
 		if(amount > 0) {
 			Dialog_Show(playerid, convert_locker, DIALOG_STYLE_MSGBOX, "Are you sure?", szMiscArray, "Yes", "No");
 		} else {
-			Dialog_Show(playerid, -1, DIALOG_STYLE_MSGBOX, "No materials to convert", "There is no weapons to convert from the old locker.", "Close", "");
+			new dialogInfo[] = "There is no weapons to convert from the old locker.";
+			Dialog_Show(playerid, -1, DIALOG_STYLE_MSGBOX, "No materials to convert", dialogInfo, "Close", "");
 		}
 	} else {
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command!");

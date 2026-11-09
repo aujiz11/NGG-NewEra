@@ -48,6 +48,13 @@ stock IsAdminLevel(playerid, level, warning = 1) {
 	return 0;
 }
 
+stock ABroadCastText(hColor, const szMessage[], iLevel, bool:bUndercover = false, bool:Discord = true)
+{
+	new message[sizeof(szMiscArray)];
+	format(message, sizeof(message), "%s", szMessage);
+	return ABroadCast(hColor, message, iLevel, bUndercover, Discord);
+}
+
 stock ABroadCast(hColor, szMessage[], iLevel, bool: bUndercover = false, bool: Discord = true)
 {
 	foreach(new i: Player) {
@@ -64,7 +71,7 @@ stock ABroadCast(hColor, szMessage[], iLevel, bool: bUndercover = false, bool: D
 	return 1;
 }
 
-stock ShopTechBroadCast(color,string[])
+stock ShopTechBroadCast(color,const string[])
 {
 	foreach(new i: Player)
 	{
@@ -473,7 +480,7 @@ CMD:admins(playerid, params[])
 				new tdate[11], thour[9], i_timestamp[3];
 				getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 				format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
-				format(thour, sizeof(thour), "%02d:00:00", hour);
+				format(thour, sizeof(thour), "%02d:00:00", gServerHour);
 
 				if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 				{
@@ -1797,7 +1804,7 @@ CMD:makeadmin(playerid, params[])  {
 				TextDrawLetterSize(PriorityReport[iTargetID], 0.460000, 1.800000);
 				TextDrawColor(PriorityReport[iTargetID], -65281);
 				TextDrawSetOutline(PriorityReport[iTargetID], 0);
-				TextDrawSetProportional(PriorityReport[iTargetID], 1);
+				TextDrawSetProportional(PriorityReport[iTargetID], true);
 				TextDrawSetShadow(PriorityReport[iTargetID], 1);
 
 
@@ -3384,7 +3391,7 @@ CMD:rcabuse(playerid, params[]) {
 						SendClientMessageToAllEx(COLOR_LIGHTRED, szMessage);
 						PlayerInfo[iTargetID][pBanned] = 1;
 						AddBan(playerid, iTargetID, "Abuse of faction vehicles.");
-						SetTimerEx("KickEx", 1000, 0, "i", iTargetID);
+						SetTimerEx("KickEx", 1000, false, "i", iTargetID);
 					}
 				}
 			}
@@ -4987,7 +4994,7 @@ CMD:kick(playerid, params[])
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
 				DBLog(playerid, giveplayerid, "Kick", reason);
 				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+				SetTimerEx("KickEx", 1000, false, "i", giveplayerid);
 				if(GetPVarType(giveplayerid, "RepFam_TL")) Rivalry_Toggle(giveplayerid, false);
 			}
 			return 1;
@@ -5139,7 +5146,7 @@ CMD:skick(playerid, params[])
 			{
 				format(string, sizeof(string), "AdmCmd: %s has been auto-kicked, reason: Trying to /skick a higher admin.", GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_YELLOW,string,2);
-				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				SetTimerEx("KickEx", 1000, false, "i", playerid);
 				return 1;
 			}
 			else
@@ -5152,7 +5159,7 @@ CMD:skick(playerid, params[])
 				ABroadCast(COLOR_LIGHTRED,string,2);
 
 				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+				SetTimerEx("KickEx", 1000, false, "i", giveplayerid);
 			}
 			return 1;
 
@@ -5177,7 +5184,7 @@ CMD:freeze(playerid, params[])
 				return 1;
 			}
 
-			TogglePlayerControllable(giveplayerid, 0);
+			TogglePlayerControllable(giveplayerid, false);
 			SetPVarInt(giveplayerid, "IsFrozen", 1);
 			format(string, sizeof(string), "AdmCmd: %s was frozen by %s",GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_LIGHTRED,string, 2);
@@ -5205,7 +5212,7 @@ CMD:unfreeze(playerid, params[])
 			DeletePVar(giveplayerid, "PlayerCuffed");
 			PlayerCuffed[giveplayerid] = 0;
 			PlayerTied[giveplayerid] = 0;
-			TogglePlayerControllable(giveplayerid, 1);
+			TogglePlayerControllable(giveplayerid, true);
 			format(string, sizeof(string), "AdmCmd: %s was unfrozen by %s.",GetPlayerNameEx(giveplayerid),GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_LIGHTRED,string,2);
 			DBLog(playerid, giveplayerid, "Admin", "Was un-frozen");
@@ -5475,10 +5482,10 @@ CMD:reloadlist(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 1337)
 	{
-	    ToyList2 = LoadModelSelectionMenu("ToyList.txt");
-		CarList2 = LoadModelSelectionMenu("CarList.txt");
-		PlaneList = LoadModelSelectionMenu("PlaneList.txt");
-		BoatList = LoadModelSelectionMenu("BoatList.txt");
+	    ToyList2 = NGRP_LoadModelSelectionMenu("ToyList.txt");
+		CarList2 = NGRP_LoadModelSelectionMenu("CarList.txt");
+		PlaneList = NGRP_LoadModelSelectionMenu("PlaneList.txt");
+		BoatList = NGRP_LoadModelSelectionMenu("BoatList.txt");
 		SendClientMessageEx(playerid, COLOR_CYAN, "Lists have been reloaded.");
 	}
 	return 1;
@@ -5739,7 +5746,7 @@ CMD:akick(playerid, params[])
 	{
 		format(string, sizeof(string), "AdmCmd: %s has been auto-kicked, reason: Trying to /akick a higher admin.", GetPlayerNameEx(playerid));
 		ABroadCast(COLOR_YELLOW,string,2);
-		SetTimerEx("KickEx", 1000, 0, "i", playerid);
+		SetTimerEx("KickEx", 1000, false, "i", playerid);
 		return 1;
 	}
 	format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was admin kicked by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerIpEx(giveplayerid), GetPlayerNameEx(playerid), reason);
@@ -5749,7 +5756,7 @@ CMD:akick(playerid, params[])
 	StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
 	format(string, sizeof(string), "AdmCmd: %s was admin kicked by a Admin, reason: %s", GetPlayerNameEx(giveplayerid), reason);
 	SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);
-	SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+	SetTimerEx("KickEx", 1000, false, "i", giveplayerid);
 	return 1;
 }
 

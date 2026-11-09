@@ -41,7 +41,7 @@ public OnPlayerLoad(playerid)
 	    if(PlayerInfo[playerid][pOnline] != servernumber)
 	    {
 		    SendClientMessage(playerid, COLOR_WHITE, "SERVER: This account is already online!");
-			SetTimerEx("KickEx", 1000, 0, "i", playerid);
+			SetTimerEx("KickEx", 1000, false, "i", playerid);
 			return 1;
 		}
 	}
@@ -53,7 +53,7 @@ public OnPlayerLoad(playerid)
 		ABroadCast(COLOR_YELLOW, string, 2);
 		SendClientMessage(playerid, COLOR_RED, "Your account is banned! You can appeal this at http://www.ng-gaming.net/forums");
 		SendClientMessage(playerid, COLOR_RED, "Your ban date will be set and when it's time it will automatically been banned. ");
-		SetTimerEx("KickEx", 1000, 0, "i", playerid);
+		SetTimerEx("KickEx", 1000, false, "i", playerid);
 		return 1;
 	}
 	ConnectionDBLog(playerid);
@@ -63,7 +63,7 @@ public OnPlayerLoad(playerid)
 	if(PlayerInfo[playerid][pDisabled] == 2)
 	{
 		ShowPlayerDialogEx(playerid, DIALOG_DISABLED, DIALOG_STYLE_MSGBOX, "Account Disabled - Visit http://www.ng-gaming.net/forums", "Your account has been disabled as it has been inactive for more than six months.\nPlease visit the forums and post an Administrative Request to begin the process to reactivate your account.", "Okay", "");
-		SetTimerEx("KickEx", 5000, 0, "i", playerid);
+		SetTimerEx("KickEx", 5000, false, "i", playerid);
 		return 1;
 	}
 	if(PlayerInfo[playerid][pDisabled] != 0)
@@ -78,7 +78,7 @@ public OnPlayerLoad(playerid)
 		if(PlayerInfo[playerid][pAP] > 1) PlayerInfo[playerid][pAP] = 0;
 		if(PlayerInfo[playerid][pSecurity] > 1) PlayerInfo[playerid][pSecurity] = 0;
 		SendClientMessage(playerid, COLOR_WHITE, "SERVER: This account is disabled!");
-		SetTimerEx("KickEx", 1000, 0, "i", playerid);
+		SetTimerEx("KickEx", 1000, false, "i", playerid);
 		return 1;
 	}
 
@@ -653,7 +653,7 @@ public OnPlayerLoad(playerid)
 			TextDrawLetterSize(PriorityReport[playerid], 0.460000, 1.800000);
 			TextDrawColor(PriorityReport[playerid], -65281);
 			TextDrawSetOutline(PriorityReport[playerid], 0);
-			TextDrawSetProportional(PriorityReport[playerid], 1);
+			TextDrawSetProportional(PriorityReport[playerid], true);
 			TextDrawSetShadow(PriorityReport[playerid], 1);
 
 			new year, month, day, tmphour, tmpminute, tmpsecond, query[300];
@@ -737,7 +737,7 @@ public OnPlayerLoad(playerid)
 		new tdate[11], thour[9], i_timestamp[3];
 		getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 		format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
-		format(thour, sizeof(thour), "%02d:00:00", hour);
+		format(thour, sizeof(thour), "%02d:00:00", gServerHour);
 		GetReportCount(playerid, tdate);
 		GetHourReportCount(playerid, thour, tdate);
 	}
@@ -747,7 +747,7 @@ public OnPlayerLoad(playerid)
 		new tdate[11], thour[9], i_timestamp[3];
 		getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 		format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
-		format(thour, sizeof(thour), "%02d:00:00", hour);
+		format(thour, sizeof(thour), "%02d:00:00", gServerHour);
 		GetRequestCount(playerid, tdate);
 		GetHourRequestCount(playerid, thour, tdate);
 	}
@@ -757,7 +757,7 @@ public OnPlayerLoad(playerid)
 		new tdate[11], thour[9], i_timestamp[3];
 		getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 		format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
-		format(thour, sizeof(thour), "%02d:00:00", hour);
+		format(thour, sizeof(thour), "%02d:00:00", gServerHour);
 		GetWDCount(playerid, tdate);
 		GetWDHourCount(playerid, thour, tdate);
 	}
@@ -793,7 +793,7 @@ public OnPlayerLoad(playerid)
 
 	if(PlayerInfo[playerid][pInt] > 0 || PlayerInfo[playerid][pVW] > 0)
 	{
-	    TogglePlayerControllable(playerid, 1);
+	    TogglePlayerControllable(playerid, true);
 	}
 
 	SetPlayerFightingStyle(playerid, PlayerInfo[playerid][pFightStyle]);

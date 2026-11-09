@@ -118,7 +118,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 						GhostHacker[playerid][2]++;
 						if(!GhostHacker[playerid][4]) {
 							GhostHacker[playerid][4] = 1;
-							SetTimerEx("CheckBulletAmount", 1000, 0, "ii", playerid);
+							SetTimerEx("CheckBulletAmount", 1000, false, "ii", playerid);
 						}
 					//}
 				}
@@ -241,7 +241,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) [%s] has moved from the login screen position.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
 		Log("logs/security.log", szMiscArray);
 		SendClientMessage(playerid, COLOR_WHITE, "SERVER: You attempted to deal damage to someone when not logged in.");
-		SetTimerEx("KickEx", 1000, 0, "i", playerid);
+		SetTimerEx("KickEx", 1000, false, "i", playerid);
 		return 1;
 	}
 	if((0 <= bodypart < 2)) return 1;
@@ -446,7 +446,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				//GameTextForPlayer(damagedid, "~r~Tazed", 3500, 3);
 				ClearAnimationsEx(damagedid);
-				TogglePlayerControllable(damagedid, 0);
+				TogglePlayerControllable(damagedid, false);
 				ApplyAnimation(damagedid,"CRACK","crckdeth2",4.1,0,1,1,1,1,1);
 				PlayerPlaySound(damagedid, 1085, X, Y, Z);
 				PlayerPlaySound(playerid, 1085, X, Y, Z);
@@ -457,7 +457,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				TazerTimeout[playerid] = 12;
 				SetTimerEx("TazerTimer",1000,false,"d",playerid);
 				PlayerTextDrawShow(damagedid, _vhudFlash[damagedid]);
-				SetTimerEx("TurnOffFlash", 800, 0, "i", damagedid);
+				SetTimerEx("TurnOffFlash", 800, false, "i", damagedid);
 				if(GetPVarType(damagedid, "FixVehicleTimer")) KillTimer(GetPVarInt(damagedid, "FixVehicleTimer")), DeletePVar(damagedid, "FixVehicleTimer");
 				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~r~Tazer reloading... ~w~12", 1500,3);
 				return 1;
@@ -485,7 +485,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	    		SetPlayerDrunkLevel(damagedid, 10000);
 	    		PlayerTextDrawShow(damagedid, _vhudFlash[damagedid]);
 	    		SetPVarInt(damagedid, "IsFrozen", 1);
-     			SetTimerEx("TurnOffFlash", 5000, 0, "i", damagedid);
+                SetTimerEx("TurnOffFlash", 5000, false, "i", damagedid);
 
      			SetPVarInt(damagedid, "pBagged", 1);
 
@@ -1193,7 +1193,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 	}
 	if(PlayerTied[playerid]) {
 		DeletePVar(playerid, "IsFrozen");
-		TogglePlayerControllable(playerid, 1);
+		TogglePlayerControllable(playerid, true);
 		PlayerTied[playerid] = 0;
 	}
 	// SetPVarInt(playerid, "MedicAid", 1);

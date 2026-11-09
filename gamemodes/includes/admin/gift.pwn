@@ -3809,7 +3809,7 @@ CMD:getgift(playerid, params[])
 }
 
 // Dynamic Giftbox
-CMD:dgedit(playerid, params[])
+CMD:dgedit(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 99999 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	new string[128], choice[32], type, amount, var;
