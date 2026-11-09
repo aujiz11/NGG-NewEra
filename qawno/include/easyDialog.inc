@@ -32,7 +32,8 @@ static
 forward OnDialogPerformed(playerid, dialog[], response, success);
 
 forward @dialog_format(); @dialog_format() {
-	format("", 0, "");
+	new destination[1];
+	format(destination, sizeof(destination), "");
 }
 
 forward Dialog_IsOpened(playerid);

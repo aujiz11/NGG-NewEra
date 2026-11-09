@@ -3942,7 +3942,7 @@ CMD:dvrespawn(playerid, const params[])
 			    new iModelID = DynVehicleInfo[i][gv_iModel];
 			    if(400 <= iModelID < 612 && DynVehicleInfo[i][gv_igID] == iGroupID)
 			    {
-					if(!IsVehicleOccupied(DynVehicleInfo[i][gv_iSpawnedID]))
+					if(!IsVehicleSeatOccupied(DynVehicleInfo[i][gv_iSpawnedID]))
 					{
 						if(strval(params) == 1) DynVeh_Spawn(i, 1); else DynVeh_Spawn(i);
 					}
@@ -6577,7 +6577,7 @@ AddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount = 1) {
 
 	szMiscArray[0] = 0;
 
-	if(playerid != INVALID_PLAYER_ID && PlayerInfo[playerid][pGuns][GetWeaponSlot(iWeaponID)] == 0) return 1;
+	if(playerid != INVALID_PLAYER_ID && PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(iWeaponID)] == 0) return 1;
 
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `gWeaponsNew` SET `%d` = `%d` + %d WHERE `id` = '%d'", iWeaponID, iWeaponID, iAmount, iGroupID+1);
 	//mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `gWeapons` (`Group_ID`, `Weapon_ID`) VALUES ('%d', '%d') ", iGroupID, iWeaponID);
@@ -6591,7 +6591,7 @@ public OnAddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount) {
 	szMiscArray[0] = 0;
 
 	if(playerid != INVALID_PLAYER_ID) {
-		PlayerInfo[playerid][pGuns][GetWeaponSlot(iWeaponID)] = 0;
+		PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(iWeaponID)] = 0;
 		SetPlayerWeaponsEx(playerid);
 
 		format(szMiscArray, sizeof(szMiscArray), "%s has deposited a %s into the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(iWeaponID));

@@ -612,9 +612,9 @@ NatDis_AnimEffects(playerid)
 		SetPlayerVelocity(playerid, random(10) / 100, random(10) / 100, random(10) / 100);
 		switch(random(3))
 		{
-			case 0: ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, 0, 0, 0, 0, 6000, 1);
-			case 1: ApplyAnimation(playerid, "PED", "KO_shot_face", 4.0, 0, 1, 1, 1, 6000, 1);
-			case 2: ApplyAnimation(playerid, "PED", "KO_shot_stom", 4.0, 0, 1, 1, 1, 6000, 1);
+			case 0: ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, false, false, false, false, 6000, 1);
+			case 1: ApplyAnimation(playerid, "PED", "KO_shot_face", 4.0, false, true, true, true, 6000, 1);
+			case 2: ApplyAnimation(playerid, "PED", "KO_shot_stom", 4.0, false, true, true, true, 6000, 1);
 		}
 	}
 }

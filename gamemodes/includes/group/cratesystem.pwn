@@ -74,7 +74,7 @@ hook OnPlayerDisconnect(playerid, reason) {
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	if(IsKeyJustDown(KEY_FIRE, newkeys, oldkeys)) {
 		if(CarryCrate[playerid] >= 0) {
-			ApplyAnimation(playerid, "CARRY", "putdwn", 4.1, 0, 0, 0, 0, 0, 1);
+			ApplyAnimation(playerid, "CARRY", "putdwn", 4.1, false, false, false, false, 0, 1);
 			SetTimerEx("PlayerCarryCrate", 1000, false, "iiii", playerid, CarryCrate[playerid], -1, 1);
 		}
 	}
@@ -873,7 +873,7 @@ CMD:crate(playerid, params[]) {
 		GetCrateBox(playerid, box, 2.0);
 		if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You're not near any crate boxes to pickup!");
 		if(CarryCrate[playerid] != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "you're currently carraying a crate either store or drop it before carrying another!");
-		ApplyAnimation(playerid, "CARRY", "liftup", 4.1, 0, 0, 0, 0, 0, 1);
+		ApplyAnimation(playerid, "CARRY", "liftup", 4.1, false, false, false, false, 0, 1);
 		SetTimerEx("PlayerCarryCrate", 1000, false, "iiii", playerid, box, -1, 0);
 		return 1;
 	}
@@ -984,7 +984,7 @@ CMD:crate(playerid, params[]) {
 		else if((boxid = CarryCrate[playerid]) != -1) { // Player -> Vehicle
 			if(IsAPlane(CrateVehicle[VehFound][cvSpawnID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need a forklift to load them into the plane!");
 			if((boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)) return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't load crates into the vehicle whilst the trunk is closed! - '/car trunk' to open it.");
-			ApplyAnimation(playerid, "CARRY", "putdwn105", 4.1, 0, 0, 0, 0, 0, 1);
+			ApplyAnimation(playerid, "CARRY", "putdwn105", 4.1, false, false, false, false, 0, 1);
 			SetTimerEx("PlayerCarryCrate", 700, false, "iiii", playerid, boxid, VehFound, 3);
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD2, "Your not in possession of any crates that you can store!");
@@ -1036,7 +1036,7 @@ CMD:crate(playerid, params[]) {
 			if((boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)) return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't unload crates whilst the trunk is closed! - '/car trunk' to open it.");
 			for(new b = 0; b < MAX_CRATES; b++) {
 				if(CrateBox[b][cbInVeh] == VehFound) {
-					ApplyAnimation(playerid, "CARRY", "liftup105", 4.1, 0, 0, 0, 0, 0, 1);
+					ApplyAnimation(playerid, "CARRY", "liftup105", 4.1, false, false, false, false, 0, 1);
 					SetTimerEx("PlayerCarryCrate", 700, false, "iiii", playerid, b, VehFound, 2);
 					break;
 				}
@@ -1912,7 +1912,7 @@ Dialog:cgun_take(playerid, response, listitem, inputtext[]) {
 		new GunID = arrGroupData[group][g_iLockerGuns][listitem];
 		if(!GunID) return SendClientMessageEx(playerid, COLOR_WHITE, "Theres no weapon assigned to that slot!");
 		if(CrateBox[box][cbMats] < arrGroupData[group][g_iLockerCost][listitem]) return SendClientMessageEx(playerid, COLOR_GRAD2, "There isn't enough materials in the crate for that weapon!");
-		if(PlayerInfo[playerid][pGuns][GetWeaponSlot(GunID)] != GunID) {
+		if(PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(GunID)] != GunID) {
 			GivePlayerValidWeapon(playerid, GunID);
 			CrateBox[box][cbMats] -= arrGroupData[group][g_iLockerCost][listitem];
 			format(szMiscArray, sizeof(szMiscArray), "* %s reaches into the weapon crate box and takes out a %s.", GetPlayerNameEx(playerid), Weapon_ReturnName(GunID));

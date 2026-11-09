@@ -175,7 +175,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		case DIALOG_POLLS_HOURS: {
 
-			if(!response || !IsNumeric(inputtext)) return 1;
+			if(!response || !IsNumericString(inputtext)) return 1;
 
 			arrPolls[pol_iHours] = strval(inputtext);
 			format(szMiscArray, sizeof(szMiscArray), "Administrator %s set the minimum playing hours for Poll ID %d to %d hours.", GetPlayerNameEx(playerid), arrPolls[pol_iPollID], arrPolls[pol_iHours]);

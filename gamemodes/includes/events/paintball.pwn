@@ -817,7 +817,7 @@ stock SpawnPaintballArena(playerid, arenaid)
 	{
 	    case 1,4: // Deathmatch, KOTH
 	    {
-			new rand = Random(1,5);
+			new rand = (random(4) + 1);
 			switch (rand)
 			{
 	    		case 1:
@@ -846,7 +846,7 @@ stock SpawnPaintballArena(playerid, arenaid)
 		{
 		    if(PlayerInfo[playerid][pPaintTeam] == 1) // Red
 		    {
-		    	new rand = Random(1,4);
+                new rand = (random(3) + 1);
 		    	switch (rand)
 		    	{
 		    	    case 1:
@@ -869,7 +869,7 @@ stock SpawnPaintballArena(playerid, arenaid)
 			}
 			if(PlayerInfo[playerid][pPaintTeam] == 2) // Blue
 			{
-			    new rand = Random(1,4);
+			    new rand = (random(3) + 1);
 			    switch (rand)
 			    {
 			        case 1:
@@ -3433,7 +3433,7 @@ CMD:joinarena(playerid, params[])
         }
         if(pTazer{playerid} != 0)
 		{
-			RemovePlayerWeapon(playerid, 23);
+			RemovePlayerLoadoutWeapon(playerid, 23);
 			GivePlayerValidWeapon(playerid, pTazerReplace{playerid});
 			format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));			ProxDetector(4.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
  			pTazer{playerid} = 0;

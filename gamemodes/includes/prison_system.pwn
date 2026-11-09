@@ -1329,7 +1329,7 @@ CMD:acceptjailfood(playerid, params[])
 		ProxChatBubble(playerid, string);
 		ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		//PlayAnimEx(playerid, "FOOD", "EAT_Burger", 4.1, 0, 1, 0, 4000, 1);
-		PlayAnimEx(playerid, "FOOD", "EAT_Burger", 4.0, 0, 0, 0, 1, 0, 0);
+		PlayAnimEx(playerid, "FOOD", "EAT_Burger", 4.0, false, false, false, true, 0, 0);
 		SetTimerEx("ClearAnims", 3000, false, "d", playerid);
 	}
 	else SendClientMessageEx(playerid, COLOR_WHITE, "You are not in range of the person offering you food.");
@@ -1375,7 +1375,7 @@ CMD:eatfood(playerid, params[])
 		ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		DeletePVar(playerid, "carryingfood");
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
-		PlayAnimEx(playerid, "FOOD", "EAT_Burger", 4.0, 0, 0, 0, 1, 0, 0);
+		PlayAnimEx(playerid, "FOOD", "EAT_Burger", 4.0, false, false, false, true, 0, 0);
 		SetTimerEx("ClearAnims", 3000, false, "d", playerid);
 		RemovePlayerAttachedObject(playerid, 9);
 
@@ -2130,7 +2130,7 @@ CMD:drinkpruno(playerid, params[])
 			SendClientMessage(playerid, COLOR_PURPLE, string);
 
 			SetPVarInt(playerid, "pWineConsumed", 1);
-			ApplyAnimation(playerid, "PED", "WALK_DRUNK", 4.1, 1, 1, 1, 1, 1, 1);
+			ApplyAnimation(playerid, "PED", "WALK_DRUNK", 4.1, true, true, true, true, 1, 1);
 			SetPlayerDrunkLevel(playerid, 10000);
 			SetTimerEx("_DrinkWineTimer", 30000, false, "d", playerid);
 
@@ -2476,7 +2476,7 @@ public _ShowerTimer(playerid)
 		}
 		default: 
 		{
-			ApplyAnimation(playerid, "MISC", "Scratchballs_01", 4.0, 0, 0, 0, 0, 0, 1);
+			ApplyAnimation(playerid, "MISC", "Scratchballs_01", 4.0, false, false, false, false, 0, 1);
 			SetPVarInt(playerid, "pPrisonShowerStage", 1);
 
 			SetTimerEx("_ShowerTimer", 8000, false, "d", playerid);
@@ -2631,7 +2631,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
     		TogglePlayerControllable(playerid, FALSE);
 
-    		PlayAnimEx(playerid, "BD_FIRE", "wash_up", 4.0, 1, 0, 0, 0, 0, 1);
+            PlayAnimEx(playerid, "BD_FIRE", "wash_up", 4.0, true, false, false, false, 0, 1);
         }
 	    else if(IsPlayerInAShower(playerid))
 	    {
@@ -2652,7 +2652,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 				SetTimerEx("_ShowerTimer", 10000, false, "d", playerid);
 
-				PlayAnimEx(playerid, "BD_FIRE", "wash_up", 4.0, 1, 0, 0, 0, 0, 1);
+				PlayAnimEx(playerid, "BD_FIRE", "wash_up", 4.0, true, false, false, false, 0, 1);
 			}
 			else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have any soap.");
 	    }
@@ -2667,7 +2667,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			SetPVarInt(playerid, "pPrisonCellChisel", 1);
 			SetPVarInt(playerid, "pPrisonChisel", 0);
 
-			PlayAnimEx(playerid,"BOMBER","BOM_Plant",4.0,0,0,0,0,0,0);
+			PlayAnimEx(playerid,"BOMBER","BOM_Plant",4.0,false,false,false,false,0,0);
 
 			SendClientMessage(playerid, COLOR_WHITE, "You have chiseled a hole in your cell, type /celldeposit to deposit contraband.");
 	    }

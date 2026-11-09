@@ -133,7 +133,7 @@ public ScrapMetal(playerid, vehicleid)
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	SendClientMessage(playerid, COLOR_WHITE, "Your have applied scrap metal to your vehicle giving it +500HP!");
 	PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
-	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, false, false, false, false, 0, 1);
 	format(string, sizeof(string), "[ZSCRAPMETAL] %s(%d) used a Scrap Metal. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][16]);
 	Log("logs/micro.log", string);
 	DeletePVar(playerid, "zscrapmetal");
@@ -550,7 +550,7 @@ CMD:zfuelcan(playerid, params[])
 	new string[72];
 	format(string, sizeof(string), "%s begins refilling their vehicle with a fuel can.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	ApplyAnimation(playerid, "SCRATCHING", "scdldlp", 4.0, 1, 0, 0, 0, 0, 1);
+	ApplyAnimation(playerid, "SCRATCHING", "scdldlp", 4.0, true, false, false, false, 0, 1);
 	SetTimerEx("FuelCan", 10000, false, "iii", playerid, closestcar, PlayerInfo[playerid][zFuelCan]);
 	SetPVarInt(playerid, "fuelcan", 2);
 	GameTextForPlayer(playerid, "~w~Refueling...", 10000, 3);
@@ -575,7 +575,7 @@ CMD:zscrapmetal(playerid, params[])
 	new string[71];
 	format(string, sizeof(string), "%s begins to apply scrap metal to their vehicle.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	ApplyAnimation(playerid, "COP_AMBIENT", "Copbrowse_loop", 4.1, 1, 0, 0, 0, 0, 1);
+	ApplyAnimation(playerid, "COP_AMBIENT", "Copbrowse_loop", 4.1, true, false, false, false, 0, 1);
 	SetTimerEx("ScrapMetal", 6000, false, "ii", playerid, closestcar);
 	SetPVarInt(playerid, "zscrapmetal", 1);
 	GameTextForPlayer(playerid, "~w~Applying...", 6000, 3);
@@ -597,7 +597,7 @@ CMD:z50cal(playerid, params[])
 		SendClientMessageEx(playerid, -1, "You have unloaded a .50 Caliber bullet from your weapon.");
 		DeletePVar(playerid, "z50Cal");
 	}
-	ApplyAnimation(playerid, "RIFLE", "RIFLE_load", 4.0, 0, 0, 0, 0, 0, 1);
+	ApplyAnimation(playerid, "RIFLE", "RIFLE_load", 4.0, false, false, false, false, 0, 1);
 	return 1;
 }
 

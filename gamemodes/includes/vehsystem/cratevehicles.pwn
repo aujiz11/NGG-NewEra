@@ -522,7 +522,7 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 		switch(listitem) {
 			case 0: {
 				if((veh = CrateVehicle[carid][cvSpawnID]) != INVALID_VEHICLE_ID) {
-				 	if((!IsVehicleOccupied(veh) || IsPlayerInVehicle(playerid, veh)) && !IsVehicleInTow(veh)) {
+                    if((!IsVehicleSeatOccupied(veh) || IsPlayerInVehicle(playerid, veh)) && !IsVehicleInTow(veh)) {
 					 	if(CreateCount(carid) > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Unable to despawn %s (Veh id: %d) as it's carrying crates.", VehicleName[CrateVehicle[carid][cvModel] - 400], veh);
 			    		GetVehicleHealth(veh, vHealth);
 						if(vHealth < 800) return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle is too damaged to be stored.");
@@ -978,7 +978,7 @@ CMD:cvrespawn(playerid, params[]) {
 		if(strcmp(params, "all", true) == 0) {
 			for(new v = 0; v < MAX_CRATE_VEHCILES; v++) {
 				if(CrateVehicle[v][cvSpawnID] != INVALID_VEHICLE_ID) {
-					if(!IsVehicleOccupied(CrateVehicle[v][cvSpawnID]) && !CreateCount(v)) {
+					if(!IsVehicleSeatOccupied(CrateVehicle[v][cvSpawnID]) && !CreateCount(v)) {
 						SpawnCrateVeh(v);
 					}
 				}
@@ -989,7 +989,7 @@ CMD:cvrespawn(playerid, params[]) {
 			Log("logs/admin.log", szMiscArray);
 		} else {
 			if(strval(params) != -1) {
-				if(!IsNumeric(params)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid input, please ensure it's a number!");
+				if(!IsNumericString(params)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid input, please ensure it's a number!");
 				if(!ValidGroup(strval(params))) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group ID (0 - %d only)", MAX_GROUPS);
 				format(szMiscArray, sizeof(szMiscArray), "** Respawning all dynamic group crate vehicles...");
 				foreach(new i: Player) {
@@ -1000,7 +1000,7 @@ CMD:cvrespawn(playerid, params[]) {
 			}
 			for(new v = 0; v < MAX_CRATE_VEHCILES; v++) {
 				if(CrateVehicle[v][cvSpawnID] != INVALID_VEHICLE_ID && CrateVehicle[v][cvGroupID] == strval(params)) {
-					if(!IsVehicleOccupied(CrateVehicle[v][cvSpawnID]) && !CreateCount(v)) {
+					if(!IsVehicleSeatOccupied(CrateVehicle[v][cvSpawnID]) && !CreateCount(v)) {
 						SpawnCrateVeh(v);
 					}
 				}

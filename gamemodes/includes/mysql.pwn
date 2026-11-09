@@ -6500,7 +6500,7 @@ public CheckTrunkContents(playerid)
 	cache_get_value_name_int(0, "pvWeapon2", TrunkWeaps[2]);
 	new
 		i = 0;
-	while (i < 3 && (!TrunkWeaps[i] || PlayerInfo[playerid][pGuns][GetWeaponSlot(TrunkWeaps[i])] ==  TrunkWeaps[i]))
+	while (i < 3 && (!TrunkWeaps[i] || PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(TrunkWeaps[i])] ==  TrunkWeaps[i]))
 	{
 		i++;
 	}

@@ -290,7 +290,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		case DIALOG_REGISTER_SKIN: {
 
-			if(response && !isnull(inputtext) && IsNumeric(inputtext) && IsValidSkin(strval(inputtext))) {
+			if(response && !isnull(inputtext) && IsNumericString(inputtext) && IsValidSkin(strval(inputtext))) {
 
 			    PlayerInfo[playerid][pModel] = strval(inputtext);
 				Register_CreatePlayer(playerid, strval(inputtext));
@@ -404,7 +404,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 		    if(response)
 		    {
-		        if(IsNumeric(inputtext))
+		        if(IsNumericString(inputtext))
 		        {
 		            ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
 		            return 1;
@@ -1108,7 +1108,7 @@ public Register_Plane(playerid)
 			SetPlayerCameraPos(playerid,2.0753,31.0642,1199.6012);
 			SetPlayerCameraLookAt(playerid,1.8925,30.6527,1199.5938);
 			SetTimerEx("Plane_TogglePlayerControllable", 1000, false, "i", playerid); // just in case
-			ApplyAnimation(playerid, "PED","SEAT_down", 4.0, 0, 1, 1, 1, 0, 0);
+			ApplyAnimation(playerid, "PED","SEAT_down", 4.0, false, true, true, true, 0, 0);
 			ClearChatbox(playerid);
 			SendClientMessage(playerid,COLOR_YELLOW,"[INTERCOM] Dear guest,");
 			SendClientMessage(playerid,COLOR_YELLOW,"[INTERCOM] We will soon arrive at Los Santos Airport.");

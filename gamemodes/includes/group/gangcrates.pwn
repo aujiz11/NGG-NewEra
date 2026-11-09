@@ -744,7 +744,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case GCRATE_TRANSFER_DEPOSIT: {
 			
 			if(response) {
-				if(strval(inputtext) < 1 || !IsNumeric(inputtext)) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid amount.");
+				if(strval(inputtext) < 1 || !IsNumericString(inputtext)) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid amount.");
 				new 
 					iAmount = strval(inputtext),
 					iItem = GetPVarInt(playerid, "TransferItem"),
@@ -758,7 +758,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case GCRATE_TRANSFER_WITHDRAW: {
 			
 			if(response) {
-				if(strval(inputtext) < 1 || !IsNumeric(inputtext)) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid amount.");
+				if(strval(inputtext) < 1 || !IsNumericString(inputtext)) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid amount.");
 				new iAmount = strval(inputtext);
 
 				TransferItemFromCrate(playerid, GetPVarInt(playerid, "TransferItem"), iAmount, GetPVarInt(playerid, "GCTransferTo"));

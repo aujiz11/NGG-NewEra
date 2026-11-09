@@ -108,7 +108,7 @@ public OnVehicleSpawn(vehicleid) {
 			GetVehiclePos(InsidePlane[i], XB, YB, ZB);
 			if(ZB > 50.0)
 			{
-				PlayerInfo[i][pAGuns][GetWeaponSlot(46)] = 46;
+				PlayerInfo[i][pAGuns][GetLoadoutWeaponSlot(46)] = 46;
 				GivePlayerValidWeapon(i, 46);
 			}
 			PlayerInfo[i][pVW] = 0;
@@ -2244,7 +2244,7 @@ public OnPlayerDisconnect(playerid, reason)
 		for(new x; x < sizeof(EventKernel[EventStaff]); x++) {
 			if(EventKernel[EventStaff][x] == playerid) {
 				EventKernel[EventStaff][x] = INVALID_PLAYER_ID;
-				RemovePlayerWeapon(playerid, 38);
+				RemovePlayerLoadoutWeapon(playerid, 38);
 				break;
 			}
 		}
@@ -2659,7 +2659,7 @@ public OnVehicleDeath(vehicleid) {
 			GetVehiclePos(InsidePlane[i], XB, YB, ZB);
 			if(ZB > 50.0)
 			{
-				PlayerInfo[i][pAGuns][GetWeaponSlot(46)] = 46;
+				PlayerInfo[i][pAGuns][GetLoadoutWeaponSlot(46)] = 46;
 				GivePlayerValidWeapon(i, 46);
 			}
 			PlayerInfo[i][pVW] = 0;
@@ -3087,11 +3087,11 @@ public OnPlayerEnterCheckpoint(playerid)
 		new szMessage[140];
 		new RandAmount;
 		switch(PlayerInfo[playerid][pCarLockPickSkill]) {
-			case 0 .. 49: RandAmount = Random(10000, 13000);
-			case 50 .. 124: RandAmount = Random(13000, 16000);
-			case 125 .. 224: RandAmount = Random(16000, 24000);
-			case 225 .. 349: RandAmount = Random(24000, 27000);
-			default: RandAmount = Random(27000, 33000);
+			case 0 .. 49: RandAmount = (random(3000) + 10000);
+			case 50 .. 124: RandAmount = (random(3000) + 13000);
+			case 125 .. 224: RandAmount = (random(8000) + 16000);
+			case 225 .. 349: RandAmount = (random(3000) + 24000);
+			default: RandAmount = (random(6000) + 27000);
 		}
 		if(!Bank_TransferCheck(RandAmount)) return 1;
 		PlayerInfo[playerid][pAccount] += RandAmount;
@@ -3713,7 +3713,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	    StopLoopingAnim(playerid);
         TextDrawHideForPlayer(playerid,txtAnimHelper);
     }
-	if(newkeys & KEY_JUMP && !(oldkeys & KEY_JUMP) && GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED) ApplyAnimation(playerid, "GYMNASIUM", "gym_jog_falloff",4.1,0,1,1,0,0);
+	if(newkeys & KEY_JUMP && !(oldkeys & KEY_JUMP) && GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED) ApplyAnimation(playerid, "GYMNASIUM", "gym_jog_falloff",4.1,false,true,true,false,0);
 	if(newkeys & KEY_SECONDARY_ATTACK)
 	{
 	    new string[128];
@@ -3767,7 +3767,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						TogglePlayerControllable(playerid, false);
 						SetTimerEx("CopGetUp", 2500, false, "i", playerid);
-						ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
+						ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, true, true, true, true, 0, 1);
 					}
 	            }
 	        }
@@ -4129,7 +4129,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			SetPlayerInterior(GetPVarInt(playerid, "DraggingPlayer"), GetPlayerInterior(playerid));
 			SetPlayerVirtualWorld(GetPVarInt(playerid, "DraggingPlayer"), GetPlayerVirtualWorld(playerid));
 			ClearAnimationsEx(GetPVarInt(playerid, "DraggingPlayer"));
-			ApplyAnimation(GetPVarInt(playerid, "DraggingPlayer"), "ped","cower",1,1,0,0,0,0,1);
+			ApplyAnimation(GetPVarInt(playerid, "DraggingPlayer"), "ped","cower",1,true,false,false,false,0,1);
             DeletePVar(GetPVarInt(playerid, "DraggingPlayer"), "BeingDragged");
             format(string, sizeof(string), "* You have stopped dragging %s.", GetPlayerNameEx(GetPVarInt(playerid, "DraggingPlayer")));
 			DeletePVar(playerid, "DraggingPlayer");
@@ -4709,7 +4709,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		}
 		else if(IsAHelicopter(vehicleid))
 		{
-		    PlayerInfo[playerid][pAGuns][GetWeaponSlot(46)] = 46;
+		    PlayerInfo[playerid][pAGuns][GetLoadoutWeaponSlot(46)] = 46;
 			GivePlayerValidWeapon(playerid, 46);
 		}
 		else if(IsAnTaxi(vehicleid) || IsAnBus(vehicleid))
@@ -4779,7 +4779,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	}
 	if((newstate == 2 || newstate == 3 || newstate == 7 || newstate == 9) && pTazer{playerid} == 1)
 	{
-		RemovePlayerWeapon(playerid, 23);
+		RemovePlayerLoadoutWeapon(playerid, 23);
 		GivePlayerValidWeapon(playerid, pTazerReplace{playerid});
 		pTazer{playerid} = 0;
 	}
@@ -5572,8 +5572,8 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		{
 			if(modelid == 1654) PlayerInfo[playerid][pC4] = CreateDynamicObject(modelid, GetPVarFloat(playerid, "DYN_C4_FLOAT_X"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Y"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Z")-0.9, 0, 89.325012207031, 3.9700012207031);
 			else PlayerInfo[playerid][pC4] = CreateDynamicObject(modelid, GetPVarFloat(playerid, "DYN_C4_FLOAT_X"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Y"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Z")-0.7, 0, 0, 0);
-			ApplyAnimation(playerid,"BOMBER","BOM_Plant",4.0,0,0,0,0,0);
-			ApplyAnimation(playerid,"BOMBER","BOM_Plant",4.0,0,0,0,0,0);
+			ApplyAnimation(playerid,"BOMBER","BOM_Plant",4.0,false,false,false,false,0);
+			ApplyAnimation(playerid,"BOMBER","BOM_Plant",4.0,false,false,false,false,0);
 			PlayerInfo[playerid][pBombs]--;
 			PlayerInfo[playerid][pC4Used] = 1;
 			SendClientMessageEx(playerid, COLOR_GREEN, "You have placed C4 on the ground, /pickupbomb to remove it.");

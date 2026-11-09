@@ -616,7 +616,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(GetPVarType(buyingfrom, "Interact_SellGun")) {
 
 					new weaponid = GetPVarInt(buyingfrom, "Interact_SellGun");
-					if(PlayerInfo[buyingfrom][pGuns][GetWeaponSlot(weaponid)] == weaponid)
+					if(PlayerInfo[buyingfrom][pGuns][GetLoadoutWeaponSlot(weaponid)] == weaponid)
 					{
 						Interact_GivePlayerValidWeapon(buyingfrom, playerid, weaponid, price);
 					}
@@ -646,7 +646,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			Interact_Prescribe(playerid, 1);
 		}
 		case INTERACT_PRESCRIBE1: {
-			if(strval(inputtext) <= 0 || !IsNumeric(inputtext)) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid value.");
+			if(strval(inputtext) <= 0 || !IsNumericString(inputtext)) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid value.");
 			SetPVarInt(playerid, "DR_PAM", strval(inputtext));
 			Interact_ProcessPrescription(playerid);
 		}
@@ -656,15 +656,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 Interact_GivePlayerValidWeapon(playerid, giveplayerid, weaponid, saleprice = 0) {
 
-	if(PlayerInfo[giveplayerid][pGuns][GetWeaponSlot(weaponid)] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "That player already has a weapon in that slot");
-	if(PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] != weaponid) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have a weapon in your possession.");
+	if(PlayerInfo[giveplayerid][pGuns][GetLoadoutWeaponSlot(weaponid)] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "That player already has a weapon in that slot");
+	if(PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(weaponid)] != weaponid) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have a weapon in your possession.");
 	if(weaponid == WEAPON_KNIFE) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot give knives!");
 	if(GetPVarType(giveplayerid, "IsInArena") || GetPVarInt(giveplayerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this right now!");
 	if(PlayerInfo[giveplayerid][pConnectHours] < 2 || PlayerInfo[giveplayerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "That person is currently restricted from carrying weapons");
 
 
 	if(saleprice != 0 && (GetPlayerCash(giveplayerid) < saleprice || saleprice < 0)) return SendClientMessage(giveplayerid, COLOR_GRAD2, "You do not have enough money");
-	PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] = 0;
+	PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(weaponid)] = 0;
 	SetPlayerWeaponsEx(playerid);
 
 	GivePlayerValidWeapon(giveplayerid, weaponid);
@@ -830,7 +830,7 @@ Interact_CuffPlayer(playerid, giveplayerid) {
 	SetPVarFloat(giveplayerid, "cuffhealth",health);
 	SetPVarFloat(giveplayerid, "cuffarmor",armor);
 	SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_CUFFED);
-	ApplyAnimation(giveplayerid,"ped","cower",1,1,0,0,0,0,1);
+	ApplyAnimation(giveplayerid,"ped","cower",1,true,false,false,false,0,1);
 	PlayerCuffed[giveplayerid] = 2;
 	SetPVarInt(giveplayerid, "PlayerCuffed", 2);
 	SetPVarInt(giveplayerid, "IsFrozen", 1);
@@ -1135,7 +1135,7 @@ Interact_LoadPatient(playerid, giveplayerid, seatid = -1) {
 
         new carid = gLastCar[playerid];
         if(!IsAnAmbulance(carid)) return SendClientMessageEx(playerid, COLOR_GREY, "Your last vehicle was not an ambulance.");
-        if(IsVehicleOccupied(carid, seatid)) return SendClientMessageEx(playerid, COLOR_GREY, "That seat is occupied.");
+        if(IsVehicleSeatOccupied(carid, seatid)) return SendClientMessageEx(playerid, COLOR_GREY, "That seat is occupied.");
 		if(!IsPlayerInRangeOfVehicle(giveplayerid, carid, 10.0) || !IsPlayerInRangeOfVehicle(playerid, carid, 10.0)) return SendClientMessageEx(playerid, COLOR_GREY, "Both you and your patient must be near the ambulance.");
 
 		format(szMiscArray, sizeof(szMiscArray), "* You were loaded by paramedic %s.", GetPlayerNameEx(playerid));

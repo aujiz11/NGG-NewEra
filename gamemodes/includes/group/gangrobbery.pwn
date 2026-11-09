@@ -262,7 +262,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		case DIALOG_SAFE_PIN_EDIT:
 		{
-			if(!response || !IsNumeric(inputtext)) return safeMenu(playerid);
+			if(!response || !IsNumericString(inputtext)) return safeMenu(playerid);
 			{
 				if(isnull(inputtext) && strlen(inputtext) != 4) return safeMenu(playerid);
 				new iSafeID = GetPVarInt(playerid, "_EditingSafeID"),
@@ -305,7 +305,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		case DIALOG_SAFE_CTYPEID:
 		{
-			if(!response || isnull(inputtext) || !IsNumeric(inputtext)) return safeEditMenu(playerid);
+			if(!response || isnull(inputtext) || !IsNumericString(inputtext)) return safeEditMenu(playerid);
 			new iSafeID = GetPVarInt(playerid, "_EditingSafeID"),
 				szDialog[128];
 			if(SafeData[iSafeID][g_iType] == 0)
@@ -382,7 +382,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		case DIALOG_SAFE_PIN_AEDIT:
 		{
-			if(!response || !IsNumeric(inputtext)) return safeMenu(playerid);
+			if(!response || !IsNumericString(inputtext)) return safeMenu(playerid);
 			{
 				if(isnull(inputtext) && strlen(inputtext) != 4) return safeMenu(playerid);
 				new iSafeID = GetPVarInt(playerid, "_EditingSafeID"),
@@ -455,7 +455,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 		else
 		{
-			ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 1, 0, 0, 0, 0);
+			ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, true, false, false, false, 0);
 			SetPVarInt(playerid, "_RobbingSafe", 1);
 			breachSafe(playerid, GetGVarInt("RobbedSafeID"));
 		}
@@ -556,7 +556,7 @@ startCollectMoney(playerid, iSafeID)
 	SendClientMessageEx(playerid, COLOR_WHITE, str);
 	SetPVarInt(playerid, "_RobbingSafe", 1);
 	SetTimerEx("collectMoney", 10000, false, "ii", playerid, iSafeID);
-	ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 1, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, true, false, false, false, 0);
 	RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2);
 	RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 1);
 	MoneyBagData[iRobberID][g_iObjectID][0] = SetPlayerAttachedObject(playerid,MAX_PLAYER_ATTACHED_OBJECTS - 2,1550,1,0.059999,-0.245000,0.057000,-4.199984,6.600003,99.299903,1.000000,1.000000,1.000000);
@@ -1150,7 +1150,7 @@ CMD:takebag(playerid, params[])
 			MoneyBagData[iBagID][g_iTextLabel] = CreateDynamic3DTextLabel(str, COLOR_LIGHTBLUE, 0.0, -0.3, 0.0, 10.0, playerid, INVALID_VEHICLE_ID, 1);
 		}
 		DestroyDynamicObject(MoneyBagData[iBagID][g_iObjectID][0]);
-		ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0);
+		ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, 0);
 		RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2);
 		RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 1);
 		MoneyBagData[iBagID][g_iObjectID][0] = SetPlayerAttachedObject(playerid,MAX_PLAYER_ATTACHED_OBJECTS - 2,1550,1,0.059999,-0.245000,0.057000,-4.199984,6.600003,99.299903,1.000000,1.000000,1.000000);

@@ -219,7 +219,7 @@ public Hospital_StreamIn(playerid, iHospital, index)
 	}
 	
 	TogglePlayerControllable(playerid, true);
-	ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.0, 1, 0, 0, 0, 0, 1);
+	ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.0, true, false, false, false, 0, 1);
 	
 	return 1;
 }
@@ -297,7 +297,7 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 	
 	if(--arrHospitalBedData[iHospital][iCountDown][iBed] <= 0)
 	{
-		ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.0, 0, 1, 1, 0, 0, 1);
+		ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.0, false, true, true, false, 0, 1);
 		DeletePVar(playerid, "_SpawningAtHospital");
 		DeletePVar(playerid, "_HospitalBeingDelivered");
 		arrHospitalBedData[iHospital][bBedOccupied][iBed] = false;

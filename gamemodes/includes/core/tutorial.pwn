@@ -647,7 +647,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		case DIALOG_REGISTER_SKIN: {
 
-			if(response && !isnull(inputtext) && IsNumeric(inputtext) && IsValidSkin(strval(inputtext))) {
+			if(response && !isnull(inputtext) && IsNumericString(inputtext) && IsValidSkin(strval(inputtext))) {
 
 			    PlayerInfo[playerid][pModel] = strval(inputtext);
 				AdjustActor(playerid, strval(inputtext));
@@ -764,7 +764,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 		    if(response)
 		    {
-		        if(IsNumeric(inputtext))
+		        if(IsNumericString(inputtext))
 		        {
 		            ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
 		            return 1;

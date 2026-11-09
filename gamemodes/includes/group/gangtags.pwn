@@ -324,7 +324,7 @@ CMD:cleantag(playerid)
 			if(IsPlayerInRangeOfPoint(playerid, 5.0, gtPos[0], gtPos[1], gtPos[2]))
 			{
 				TogglePlayerControllable(playerid, false);
-				ApplyAnimation(playerid, "SPRAYCAN", "spraycan_fire", 4.1, 1, 1, 1, 1, 0, 0);
+				ApplyAnimation(playerid, "SPRAYCAN", "spraycan_fire", 4.1, true, true, true, true, 0, 0);
 				GameTextForPlayer(playerid, "~y~Cleaning...", 5000, 3);
 				SetTimerEx("GangTag_OnCleanTag", 15000, false, "ii", playerid, i);
 				return 1;
@@ -357,7 +357,7 @@ CMD:tag(playerid, params[])
 		{
 			SetPVarInt(playerid, PVAR_GANGTAGID, i);
 			TogglePlayerControllable(playerid, false);
-			ApplyAnimation(playerid, "SPRAYCAN", "spraycan_fire", 4.1, 1, 1, 1, 1, 0, 0);
+			ApplyAnimation(playerid, "SPRAYCAN", "spraycan_fire", 4.1, true, true, true, true, 0, 0);
 			ShowPlayerDialogEx(playerid, DIALOG_GANGTAGS_INPUT, DIALOG_STYLE_INPUT, "Gang Tag Point | Insert text", "Insert the text you would like to spray on the wall", "Spray", "");
 			return 1;
 		}

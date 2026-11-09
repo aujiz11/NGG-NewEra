@@ -96,7 +96,7 @@ stock CuffTacklee(playerid, giveplayerid)
 	SetPVarFloat(giveplayerid, "cuffhealth",health);
 	SetPVarFloat(giveplayerid, "cuffarmor",armor);
 	SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_CUFFED);
-	ApplyAnimation(giveplayerid,"ped","cower",1,1,0,0,0,0,1);
+	ApplyAnimation(giveplayerid,"ped","cower",1,true,false,false,false,0,1);
 	PlayerCuffed[giveplayerid] = 2;
 	SetPVarInt(giveplayerid, "PlayerCuffed", 2);
 	SetPVarInt(giveplayerid, "IsFrozen", 1);
@@ -111,7 +111,7 @@ stock ClearTackle(playerid)
     TogglePlayerControllable(playerid, true);
 	//PreloadAnimLib(playerid, "SUNBATHE");
 	//PreloadAnimLib(GetPVarInt(playerid, "IsTackled"), "SUNBATHE");
-    ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.1, 0, 1, 1, 0, 0, 1);
+    ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.1, false, true, true, false, 0, 1);
 	SetPVarInt(playerid, "CantBeTackledCount", 15); // cant be tackled again for 15 seconds
 	DeletePVar(GetPVarInt(playerid, "IsTackled"), "Tackling");
 	DeletePVar(playerid, "IsTackled");
@@ -148,7 +148,7 @@ public DragPlayer(dragger, dragee)
 		SetPlayerInterior(dragee, GetPlayerInterior(dragger));
 		SetPlayerVirtualWorld(dragee, GetPlayerVirtualWorld(dragger));
 		ClearAnimationsEx(dragee);
-		ApplyAnimation(dragee, "ped","cower",1,1,0,0,0,0,1);
+		ApplyAnimation(dragee, "ped","cower",1,true,false,false,false,0,1);
         SetTimerEx("DragPlayer", 1000, false, "ii", dragger, dragee);
 	}
 	return 1;
@@ -197,7 +197,7 @@ public CuffTackled(playerid, giveplayerid)
 					format(string, sizeof(string), "* %s pushes %s aside and is able to escape.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
     				ProxDetector(30.0, giveplayerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
                     TogglePlayerControllable(playerid, false);
-					ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
+					ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, true, true, true, true, 0, 1);
 					SetTimerEx("CopGetUp", 3500, false, "i", playerid);
 				 	ClearTackle(giveplayerid);
 				}
@@ -221,7 +221,7 @@ public CopGetUp(playerid)
     SendClientMessageEx(playerid, COLOR_GRAD2, "It will be 30 seconds before you can tackle again.");
 	TogglePlayerControllable(playerid, true);
 	//PreloadAnimLib(playerid, "SUNBATHE");
-	ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.0, 0, 1, 1, 0, 0, 1);
+	ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.0, false, true, true, false, 0, 1);
 	return 1;
 }
 
@@ -240,8 +240,8 @@ stock TacklePlayer(playerid, tacklee)
 	SetPlayerFacingAngle(playerid, 180.0);
 	SetPlayerFacingAngle(tacklee, 0.0);
 	GetXYBehindPlayer(tacklee, posx, posy, 0.5);
-	ApplyAnimation(playerid, "PED", "KO_shot_stom", 4.0, 0, 1, 1, 1, 20000, 1);
-	ApplyAnimation(tacklee, "DILDO", "Dildo_Hit_3", 4.1, 0, 1, 1, 1, 20000, 1);
+	ApplyAnimation(playerid, "PED", "KO_shot_stom", 4.0, false, true, true, true, 20000, 1);
+	ApplyAnimation(tacklee, "DILDO", "Dildo_Hit_3", 4.1, false, true, true, true, 20000, 1);
 	GetPlayerGroupInfo(playerid, group, rank, division);
 	GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~w~Push ~r~'~k~~CONVERSATION_YES~' ~n~~w~to get up off the suspect.", 15000, 3);
 	format(string, sizeof(string), "%s %s %s has tackled you.  Do you wish to comply or resist?", group, rank, GetPlayerNameEx(playerid));
@@ -551,7 +551,7 @@ CMD:usekit(playerid, params[]) {
 					{
 						defer FinishMedKit(playerid);
 						SetPVarInt(playerid, "BackpackMedKit", 1);
-						ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
+						ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, 0, 1);
 						format(string, sizeof(string), "{FF8000}** {C2A2DA}%s opens a backpack and takes out a Kevlar Vest & First Aid Kit inside.", GetPlayerNameEx(playerid));
 						SendClientMessageEx(playerid, COLOR_WHITE, "You are taking a Med Kit from your backpack, please wait.");
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1749,7 +1749,7 @@ CMD:tazer(playerid, params[])
 			if(TazerTimeout[playerid] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Your tazer is reloading");
 
 			pTazerReplace{playerid} = PlayerInfo[playerid][pGuns][2];
-			if(PlayerInfo[playerid][pGuns][2] != 0) RemovePlayerWeapon(playerid, PlayerInfo[playerid][pGuns][2]);
+			if(PlayerInfo[playerid][pGuns][2] != 0) RemovePlayerLoadoutWeapon(playerid, PlayerInfo[playerid][pGuns][2]);
 			format(string, sizeof(string), "* %s unholsters their tazer.", GetPlayerNameEx(playerid));
 			ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			GivePlayerValidWeapon(playerid, 23);
@@ -1760,7 +1760,7 @@ CMD:tazer(playerid, params[])
 		}
 		else
 		{
-			RemovePlayerWeapon(playerid, 23);
+			RemovePlayerLoadoutWeapon(playerid, 23);
 			GivePlayerValidWeapon(playerid, pTazerReplace{playerid});
 			format(string, sizeof(string), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
 			ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1853,7 +1853,7 @@ CMD:radargun(playerid, params[])
 		if(SpeedRadar == 0)
 		{
 			SetPVarInt(playerid, "RadarReplacement", PlayerInfo[playerid][pGuns][9]);
-			if(PlayerInfo[playerid][pGuns][9] != 0) RemovePlayerWeapon(playerid, PlayerInfo[playerid][pGuns][9]);
+			if(PlayerInfo[playerid][pGuns][9] != 0) RemovePlayerLoadoutWeapon(playerid, PlayerInfo[playerid][pGuns][9]);
 			format(string, sizeof(string), "* %s takes out a LIDAR speed gun.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			GivePlayerValidWeapon(playerid, 43);
@@ -1861,7 +1861,7 @@ CMD:radargun(playerid, params[])
 		}
 		else
 		{
-			RemovePlayerWeapon(playerid, 43);
+			RemovePlayerLoadoutWeapon(playerid, 43);
 			GivePlayerValidWeapon(playerid, GetPVarInt(playerid, "RadarReplacement"));
 			format(string, sizeof(string), "* %s puts away their LIDAR speed gun.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1917,7 +1917,7 @@ CMD:cuff(playerid, params[])
 					SetPVarFloat(giveplayerid, "cuffhealth",health);
 					SetPVarFloat(giveplayerid, "cuffarmor",armor);
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_CUFFED);
-					ApplyAnimation(giveplayerid,"ped","cower",1,1,0,0,0,0,1);
+					ApplyAnimation(giveplayerid,"ped","cower",1,true,false,false,false,0,1);
 					PlayerCuffed[giveplayerid] = 2;
 					SetPVarInt(giveplayerid, "PlayerCuffed", 2);
 					SetPVarInt(giveplayerid, "IsFrozen", 1);

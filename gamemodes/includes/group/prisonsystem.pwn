@@ -1055,7 +1055,7 @@ CMD:acceptjailfood(playerid, params[])
 		ProxChatBubble(playerid, string);
 		// ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		//ApplyAnimation(playerid, "FOOD", "EAT_Burger", 4.1, 0, 1, 0, 4000, 1);
-		ApplyAnimation(playerid, "FOOD", "EAT_Burger", 4.0, 0, 0, 0, 1, 0);
+		ApplyAnimation(playerid, "FOOD", "EAT_Burger", 4.0, false, false, false, true, 0);
 		SetTimerEx("ClearAnims", 3000, false, "d", playerid);
 	}
 	else SendClientMessageEx(playerid, COLOR_WHITE, "You are not in range of the person offering you food.");
@@ -1093,7 +1093,7 @@ CMD:eatfood(playerid, params[])
 		ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		DeletePVar(playerid, "carryingfood");
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
-		ApplyAnimation(playerid, "FOOD", "EAT_Burger", 4.0, 0, 0, 0, 1, 0);
+		ApplyAnimation(playerid, "FOOD", "EAT_Burger", 4.0, false, false, false, true, 0);
 		SetTimerEx("ClearAnims", 3000, false, "d", playerid);
 		RemovePlayerAttachedObject(playerid, 9);
 		

@@ -194,7 +194,7 @@ CMD:id(playerid, params[]) {
 		szPlayerName[MAX_PLAYER_NAME],
 		iTargetID = strval(params);
 
-	if(IsNumeric(params) && IsPlayerConnected(strval(params)))
+	if(IsNumericString(params) && IsPlayerConnected(strval(params)))
 	{
 	    if(PlayerInfo[playerid][pAdmin] >= 2) format(szMessage, sizeof szMessage, "%s (ID: %d · Hours: %s · Ping: %d · FPS: %d · Packet Loss: %.2f)", GetPlayerNameEx(iTargetID), iTargetID, number_format(PlayerInfo[iTargetID][pConnectHours]), GetPlayerPing(iTargetID), GetPlayerFPS(iTargetID), GetPlayerPacketLoss(iTargetID));
 		else format(szMessage, sizeof szMessage, "%s (ID: %d · Level: %d · Ping: %d)", GetPlayerNameEx(iTargetID), iTargetID, GetPlayerScore(iTargetID), GetPlayerPing(iTargetID));
@@ -264,7 +264,7 @@ CMD:givegun(playerid, params[])
             if((PlayerInfo[playa][pConnectHours] < 2 || PlayerInfo[playa][pWRestricted] > 0) && gun != 46 && gun != 43) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is currently restricted from carrying weapons");
 			if(PlayerInfo[playa][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this to someone that has his account restricted!");
 		    if(playa != INVALID_PLAYER_ID && gun <= 20 || gun >= 22) {
-                PlayerInfo[playa][pGuns][GetWeaponSlot(gun)] = gun;
+                PlayerInfo[playa][pGuns][GetLoadoutWeaponSlot(gun)] = gun;
                 GivePlayerValidWeapon(playa, gun);
                 SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
             }
@@ -4450,7 +4450,7 @@ CMD:entercar(playerid, params[])
 		if(sscanf(params, "ii", carid, seatid))	return SendClientMessage(playerid, COLOR_WHITE, "USAGE: /entercar [carid] [seatid]");
 		if(!(1 <= carid <= MAX_VEHICLES)) return SendClientMessageEx(playerid, COLOR_GREY, "Valid vehicle IDs run from 1 to 2000.");
 		if(seatid < 0 || seatid > 3) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid Seat ID!");
-		else if(!IsVehicleOccupied(carid, seatid)) IsPlayerEntering{playerid} = true, PutPlayerInVehicle(playerid, carid, seatid), SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
+		else if(!IsVehicleSeatOccupied(carid, seatid)) IsPlayerEntering{playerid} = true, PutPlayerInVehicle(playerid, carid, seatid), SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
 		else SendClientMessageEx(playerid, COLOR_GREY, "That seat is occupied.");
 	}
 	else
@@ -4755,7 +4755,7 @@ CMD:takeadminweapons(playerid, params[])
 			{
 				if(PlayerInfo[giveplayerid][pAGuns][s] != 0)
 				{
-					RemovePlayerWeapon(giveplayerid, PlayerInfo[giveplayerid][pAGuns][s]);
+					RemovePlayerLoadoutWeapon(giveplayerid, PlayerInfo[giveplayerid][pAGuns][s]);
 				}
 			}
 			format(string,sizeof(string),"You have removed %s's admin spawned weapons.", GetPlayerNameEx(giveplayerid));
@@ -6114,7 +6114,7 @@ CMD:dice(playerid, params[])
     new string[84];
     if (PlayerInfo[playerid][pDice])
 	{
-        new rand = Random(1, 7); format(string, sizeof(string), "{FF8000}** {C2A2DA}%s rolls a dice that lands on %d.", GetPlayerNameEx(playerid), rand);
+        new rand = (random(6) + 1); format(string, sizeof(string), "{FF8000}** {C2A2DA}%s rolls a dice that lands on %d.", GetPlayerNameEx(playerid), rand);
         ProxDetector(9.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
     }
     else
@@ -6145,8 +6145,8 @@ CMD:randnum(playerid, params[]) return cmd_randomnumber(playerid, params);
 
 CMD:card(playerid, params[]) {
 
-    new iDeck = Random(0, 3),
-    	iNumber = Random (0, 12),
+    new iDeck = random(3),
+        iNumber = random(12),
     	szTemp[6],
     	szTemp2[10];
 

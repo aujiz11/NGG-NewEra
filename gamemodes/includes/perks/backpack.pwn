@@ -292,7 +292,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					defer FinishMeal(playerid);
 					SetPVarInt(playerid, "BackpackMeal", 1);
-					ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
+					ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, 0, 1);
 					format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s opens a backpack and takes out a Full Meal.", GetPlayerNameEx(playerid));
 					SendClientMessageEx(playerid, COLOR_WHITE, "You are taking the Meal from your backpack, please wait.");
 					ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -315,7 +315,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					defer FinishMedKit(playerid);
 					SetPVarInt(playerid, "BackpackMedKit", 1);
-					ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
+					ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, 0, 1);
 					format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s opens a backpack and takes out a Kevlar Vest & First Aid Kit inside.", GetPlayerNameEx(playerid));
 					SendClientMessageEx(playerid, COLOR_WHITE, "You are taking the Med Kit from your backpack, please wait.");
 					ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -583,8 +583,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}You can only carry 2 handguns");
 							return 1;
 						}
-						if(slot != 0 && PlayerInfo[playerid][pGuns][GetWeaponSlot(wbid)] == wbid && PlayerInfo[playerid][pAGuns][GetWeaponSlot(wbid)] == 0) {
-							RemovePlayerWeapon(playerid, wbid);
+						if(slot != 0 && PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(wbid)] == wbid && PlayerInfo[playerid][pAGuns][GetLoadoutWeaponSlot(wbid)] == 0) {
+							RemovePlayerLoadoutWeapon(playerid, wbid);
 							PlayerInfo[playerid][pBItems][slot] = wbid;
 							GetWeaponName(wbid, weapname, sizeof(weapname));
 							format(szMiscArray, sizeof(szMiscArray), "You have deposited a %s inside your backpack.", weapname);
@@ -610,8 +610,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}You can only carry 2 handguns and 1 primary");
 							return 1;
 						}
-						if(slot != 0 && PlayerInfo[playerid][pGuns][GetWeaponSlot(wbid)] == wbid && PlayerInfo[playerid][pAGuns][GetWeaponSlot(wbid)] == 0) {
-							RemovePlayerWeapon(playerid, wbid);
+						if(slot != 0 && PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(wbid)] == wbid && PlayerInfo[playerid][pAGuns][GetLoadoutWeaponSlot(wbid)] == 0) {
+							RemovePlayerLoadoutWeapon(playerid, wbid);
 							PlayerInfo[playerid][pBItems][slot] = wbid;
 							GetWeaponName(wbid, weapname, sizeof(weapname));
 							format(szMiscArray, sizeof(szMiscArray), "You have deposited a %s inside your backpack.", weapname);
@@ -637,8 +637,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							ShowBackpackMenu(playerid, DIALOG_BGUNS, "- You can only carry 2 handguns and 3 primary");
 							return 1;
 						}
-						if(slot != 0 && PlayerInfo[playerid][pGuns][GetWeaponSlot(wbid)] == wbid && PlayerInfo[playerid][pAGuns][GetWeaponSlot(wbid)] == 0) {
-							RemovePlayerWeapon(playerid, wbid);
+						if(slot != 0 && PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(wbid)] == wbid && PlayerInfo[playerid][pAGuns][GetLoadoutWeaponSlot(wbid)] == 0) {
+							RemovePlayerLoadoutWeapon(playerid, wbid);
 							PlayerInfo[playerid][pBItems][slot] = wbid;
 							GetWeaponName(wbid, weapname, sizeof(weapname));
 							format(szMiscArray, sizeof(szMiscArray), "You have deposited a %s inside your backpack.", weapname);
@@ -1206,7 +1206,7 @@ CMD:bopen(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREY, string);
 			return 1;
 		}
-		ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
+		ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, 0, 1);
 		format(string, sizeof(string), "{FF8000}** {C2A2DA}%s lays down and opens a backpack.", GetPlayerNameEx(playerid));
 		SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 15.0, 5000);
 		// ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

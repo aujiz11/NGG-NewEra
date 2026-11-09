@@ -1120,7 +1120,7 @@ foreach(new i: Player)
 									format(szMiscArray, sizeof(szMiscArray), "** %s pushes %s aside and is able to escape.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
 									ProxDetector(30.0, i, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 									TogglePlayerControllable(GetPVarInt(i, "IsTackled"), false);
-									ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
+									ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, true, true, true, true, 0, 1);
 									SetTimerEx("CopGetUp", 2500, false, "i", GetPVarInt(i, "IsTackled"));
 									ClearTackle(i);
 								}
@@ -1138,7 +1138,7 @@ foreach(new i: Player)
 									format(szMiscArray, sizeof(szMiscArray), "** %s pushes %s aside and is able to escape.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
 									ProxDetector(30.0, i, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 									TogglePlayerControllable(GetPVarInt(i, "IsTackled"), false);
-									ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
+									ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, true, true, true, true, 0, 1);
 									SetTimerEx("CopGetUp", 2500, false, "i", GetPVarInt(i, "IsTackled"));
 									ClearTackle(i);
 								}
@@ -1553,7 +1553,7 @@ foreach(new i: Player)
 					}
 					else
 					{
-						ApplyAnimation(i,"PED", "WALK_DRUNK",4.0,0,1,0,0,0);
+						ApplyAnimation(i,"PED", "WALK_DRUNK",4.0,false,true,false,false,0);
 					}
 				}
 			}
@@ -2671,7 +2671,7 @@ ptask PlayerUpdate[1000](i) {
 								format(string, sizeof(string), "** %s pushes %s aside and is able to escape.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
 								ProxDetector(30.0, i, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 								TogglePlayerControllable(GetPVarInt(i, "IsTackled"), false);
-								ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
+								ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, true, true, true, true, 0, 1);
 								SetTimerEx("CopGetUp", 2500, false, "i", GetPVarInt(i, "IsTackled"));
 								ClearTackle(i);
 							}
@@ -2689,7 +2689,7 @@ ptask PlayerUpdate[1000](i) {
 								format(string, sizeof(string), "** %s pushes %s aside and is able to escape.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
 								ProxDetector(30.0, i, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 								TogglePlayerControllable(GetPVarInt(i, "IsTackled"), false);
-								ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
+								ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, true, true, true, true, 0, 1);
 								SetTimerEx("CopGetUp", 2500, false, "i", GetPVarInt(i, "IsTackled"));
 								ClearTackle(i);
 							}

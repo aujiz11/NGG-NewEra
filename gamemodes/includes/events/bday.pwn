@@ -112,7 +112,7 @@ CMD:dig(playerid, params[])
 {
 	if(IsPlayerInDynamicArea(playerid, _t_zone)) {
 		if(!_t_ableTo(playerid)) return 1;
-		ApplyAnimation(playerid, "MEDIC", "CPR", 4.0, 0, 0, 0, 0, 0, 1);
+		ApplyAnimation(playerid, "MEDIC", "CPR", 4.0, false, false, false, false, 0, 1);
 		SetPVarInt(playerid, "AntiDigSpam", gettime()+30);
 		if(IsPlayerInRangeOfPoint(playerid, 2.0, _t_Pos[0], _t_Pos[1], _t_Pos[2])) {
 			SendClientMessageEx(playerid, COLOR_YELLOW, "TREASURE: You have found it! You may try again in 5 hours.");

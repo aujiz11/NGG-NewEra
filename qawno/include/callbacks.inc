@@ -578,7 +578,7 @@ stock CB_AddStaticVehicle(modelid, Float:x, Float:y, Float:z, Float:rotation, co
 	return vehicleid;
 }
 
-stock CB_AddStaticVehicleEx(modelid, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay, addsiren = 0)
+stock CB_AddStaticVehicleEx(modelid, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay, bool:addsiren = false)
 {
 	new
 	    vehicleid = AddStaticVehicleEx(modelid, x, y, z, rotation, color1, color2, respawn_delay, addsiren);
@@ -591,7 +591,7 @@ stock CB_AddStaticVehicleEx(modelid, Float:x, Float:y, Float:z, Float:rotation, 
 	return vehicleid;
 }
 
-stock CB_ApplyAnimation(playerid, const animlib[], const animname[], Float:fDelta, loop, lockx, locky, freeze, time, forcesync = 0)
+stock CB_ApplyAnimation(playerid, const animlib[], const animname[], Float:fDelta, bool:loop, bool:lockx, bool:locky, bool:freeze, time, forcesync = 0)
 {
 	new
 		ret = ApplyAnimation(playerid, animlib, animname, fDelta, loop, lockx, locky, freeze, time, forcesync);

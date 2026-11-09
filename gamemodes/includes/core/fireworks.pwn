@@ -130,7 +130,7 @@ CMD:placefirework(playerid, params[])
 		new string[128];
 		format(string, sizeof(string), "%s has placed a firework which will go off in 30 seconds!", GetPlayerNameEx(playerid));
 	    ProxDetector(30.0, playerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
-	    ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_In", 4.0, 0, 0, 0, 0, 0, 1);
+	    ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_In", 4.0, false, false, false, false, 0, 1);
 	    x += (2 * floatsin(-a, degrees));
     	y += (2 * floatcos(-a, degrees));
 	    Rocket[playerid] = CreateDynamicObject(3786, x, y, z, 0, 90, 0);

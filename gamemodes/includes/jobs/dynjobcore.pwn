@@ -487,7 +487,7 @@ Dialog:job_level(playerid, response, listitem, inputtext[]) {
 		jobid = GetPVarInt(playerid, "JobEditID");
 
 	if(!(1 <= strval(inputtext))) return DeletePVar(playerid, "JobEditID"), SendClientMessageEx(playerid, COLOR_GRAD1, "The job Level may not be less than 1");
-	if(!IsNumeric(inputtext)) return DeletePVar(playerid, "JobEditID"), SendClientMessageEx(playerid, COLOR_GRAD1, "You may only use numbers.");
+	if(!IsNumericString(inputtext)) return DeletePVar(playerid, "JobEditID"), SendClientMessageEx(playerid, COLOR_GRAD1, "You may only use numbers.");
 	format(szMiscArray, sizeof(szMiscArray), "%s has edited Job Point %d's level from %d to %d", GetPlayerNameEx(playerid), jobid, JobData[jobid][jLevel], strval(inputtext));
 	Log("logs/jobedit.log", szMiscArray);
 	format(szMiscArray, sizeof(szMiscArray), "You have successfully changed Job ID: %d's level from %d to %d.", jobid, JobData[jobid][jLevel], strval(inputtext));

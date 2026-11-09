@@ -567,7 +567,7 @@ CMD:unloadshipment(playerid, params[])
             if(!GetPVarInt(playerid, "TruckingCrates")) return SendClientMessage(playerid, COLOR_GRAD2, "You do not have any more crates to unload.");
 
             TogglePlayerControllable(playerid, false);
-            ApplyAnimation(playerid, "BD_FIRE", "wash_up", 4.0, 1, 0, 0, 0, 0, 1);
+            ApplyAnimation(playerid, "BD_FIRE", "wash_up", 4.0, true, false, false, false, 0, 1);
 
             new iShipment = PlayerInfo[playerid][pCurrentShipment];
             if(iShipment == 15) SetTimerEx("UnloadingDeliveryCrate", 1000, false, "dd", playerid, 1454);
@@ -589,7 +589,7 @@ CMD:dropshipment(playerid, params[])
         new iShipment = PlayerInfo[playerid][pCurrentShipment];
         if(!IsPlayerInRangeOfPoint(playerid, 1.5, ShipmentLocations[iShipment][3], ShipmentLocations[iShipment][4], ShipmentLocations[iShipment][5])) return SendClientMessage(playerid, COLOR_GRAD2, "You're not close enough to the unload point.");
 
-        ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
+        ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, 0, 1);
         RemovePlayerAttachedObject(playerid, GetPVarInt(playerid, "CrateSlot"));
 
         SetPVarInt(playerid, "TruckingCrates", GetPVarInt(playerid, "TruckingCrates") - 1);

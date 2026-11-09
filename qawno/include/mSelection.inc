@@ -119,7 +119,7 @@ stock PlayerText:mS_CreateCurrentPageTextDraw(playerid, Float:Xpos, Float:Ypos)
 {
 	new PlayerText:txtInit;
    	txtInit = CreatePlayerTextDraw(playerid, Xpos, Ypos, "0/0");
-   	PlayerTextDrawUseBox(playerid, txtInit, 0);
+    PlayerTextDrawUseBox(playerid, txtInit, false);
 	PlayerTextDrawLetterSize(playerid, txtInit, 0.4, 1.1);
 	PlayerTextDrawFont(playerid, txtInit, 1);
 	PlayerTextDrawSetShadow(playerid, txtInit, 0);
@@ -136,7 +136,7 @@ stock PlayerText:mS_CreatePlayerDialogButton(playerid, Float:Xpos, Float:Ypos, F
 {
  	new PlayerText:txtInit;
    	txtInit = CreatePlayerTextDraw(playerid, Xpos, Ypos, button_text);
-   	PlayerTextDrawUseBox(playerid, txtInit, 1);
+    PlayerTextDrawUseBox(playerid, txtInit, true);
    	PlayerTextDrawBoxColor(playerid, txtInit, 0x000000FF);
    	PlayerTextDrawBackgroundColor(playerid, txtInit, 0x000000FF);
 	PlayerTextDrawLetterSize(playerid, txtInit, 0.4, 1.1);
@@ -144,7 +144,7 @@ stock PlayerText:mS_CreatePlayerDialogButton(playerid, Float:Xpos, Float:Ypos, F
 	PlayerTextDrawSetShadow(playerid, txtInit, 0); // no shadow
     PlayerTextDrawSetOutline(playerid, txtInit, 0);
     PlayerTextDrawColor(playerid, txtInit, 0x4A5A6BFF);
-    PlayerTextDrawSetSelectable(playerid, txtInit, 1);
+    PlayerTextDrawSetSelectable(playerid, txtInit, true);
     PlayerTextDrawAlignment(playerid, txtInit, 2);
     PlayerTextDrawTextSize(playerid, txtInit, Height, Width); // The width and height are reversed for centering.. something the game does <g>
     PlayerTextDrawShow(playerid, txtInit);
@@ -157,7 +157,7 @@ stock PlayerText:mS_CreatePlayerHeaderTextDraw(playerid, Float:Xpos, Float:Ypos,
 {
 	new PlayerText:txtInit;
    	txtInit = CreatePlayerTextDraw(playerid, Xpos, Ypos, header_text);
-   	PlayerTextDrawUseBox(playerid, txtInit, 0);
+    PlayerTextDrawUseBox(playerid, txtInit, false);
 	PlayerTextDrawLetterSize(playerid, txtInit, 1.25, 3.0);
 	PlayerTextDrawFont(playerid, txtInit, 0);
 	PlayerTextDrawSetShadow(playerid, txtInit, 0);
@@ -172,7 +172,7 @@ stock PlayerText:mS_CreatePlayerHeaderTextDraw(playerid, Float:Xpos, Float:Ypos,
 stock PlayerText:mS_CreatePlayerBGTextDraw(playerid, Float:Xpos, Float:Ypos, Float:Width, Float:Height, bgcolor)
 {
 	new PlayerText:txtBackground = CreatePlayerTextDraw(playerid, Xpos, Ypos,"                                            ~n~"); // enough space for everyone
-    PlayerTextDrawUseBox(playerid, txtBackground, 1);
+    PlayerTextDrawUseBox(playerid, txtBackground, true);
     PlayerTextDrawBoxColor(playerid, txtBackground, bgcolor);
 	PlayerTextDrawLetterSize(playerid, txtBackground, 5.0, 5.0);
 	PlayerTextDrawFont(playerid, txtBackground, 0);
@@ -197,7 +197,7 @@ stock PlayerText:mS_CreateMPTextDraw(playerid, modelindex, Float:Xpos, Float:Ypo
     PlayerTextDrawTextSize(playerid, txtPlayerSprite, width, height); // Text size is the Width:Height
     PlayerTextDrawSetPreviewModel(playerid, txtPlayerSprite, modelindex);
     PlayerTextDrawSetPreviewRot(playerid,txtPlayerSprite, Xrot, Yrot, Zrot, mZoom);
-    PlayerTextDrawSetSelectable(playerid, txtPlayerSprite, 1);
+    PlayerTextDrawSetSelectable(playerid, txtPlayerSprite, true);
     PlayerTextDrawShow(playerid,txtPlayerSprite);
     return txtPlayerSprite;
 }

@@ -331,7 +331,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		if(pos[1] < -1301.4 && pos[1] > -1303.2417 && pos[0] < 1786.2131 && pos[0] > 1784.1555)
 		{    // He is using the elevator button
 			PlayerPlaySound(playerid, 1083, 0.0, 0.0, 0.0);
-			ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, 0, 0, 0, 0, 0);
+			ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, false, false, false, false, 0);
 			ShowElevatorDialog(playerid, 1);
 		}
 		else    // Is he in a floor button?
@@ -349,7 +349,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				if(i <= 19)
 				{
 					PlayerPlaySound(playerid, 1083, 0.0, 0.0, 0.0);
-					ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, 0, 0, 0, 0, 0);
+					ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, false, false, false, false, 0);
 					CallElevator(playerid, i + 1);
 					GameTextForPlayer(playerid, "~r~Elevator called", 3500, 4);
 				}

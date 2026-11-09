@@ -74,7 +74,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(response) {
 
-				if(isnull(inputtext) || !IsNumeric(inputtext) || strval(inputtext) < 0) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid value.");
+				if(isnull(inputtext) || !IsNumericString(inputtext) || strval(inputtext) < 0) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid value.");
 
 				arrGroupData[iGroupID][g_iPaycheck][iRankID] = strval(inputtext);
 				format(szMiscArray, sizeof(szMiscArray), "%s has changed the paycheck for rank %d (%s) to $%d in %s (%d)", GetPlayerNameEx(playerid), iRankID, arrGroupRanks[iGroupID][iRankID], strval(inputtext), arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
@@ -101,7 +101,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Gov_EditGroup");
 
 			if(response) {
-				if(isnull(inputtext) || !IsNumeric(inputtext) || strval(inputtext) < 0) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid value.");
+				if(isnull(inputtext) || !IsNumericString(inputtext) || strval(inputtext) < 0) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid value.");
 				
 				arrGroupData[iGroupID][g_iBudgetPayment] = strval(inputtext);
 				format(szMiscArray, sizeof(szMiscArray), "%s has changed the budget for %s to $%d", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName], number_format(strval(inputtext)));

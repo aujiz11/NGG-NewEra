@@ -517,7 +517,7 @@ CMD:rld(playerid, params[]) {
 		GivePlayerWeapon(playerid, PlayerInfo[playerid][pGuns][i], 1);
 		SyncPlayerAmmo(playerid, PlayerInfo[playerid][pGuns][i]);
 	}
-	ApplyAnimation(playerid, "PYTHON", "python_reload", 4.0, 0, 0, 0, 0, 0, 1);
+	ApplyAnimation(playerid, "PYTHON", "python_reload", 4.0, false, false, false, false, 0, 1);
 	return 1;
 }
 

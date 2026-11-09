@@ -122,7 +122,7 @@ CMD:usedrug(playerid, params[])
 	if(drug == 4 && PlayerInfo[playerid][pSyringes] <= 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need a syringe. Craft one or buy one from a craftsman.");
 	if(drug != 4 && dr_iPlayerTimeStamp[playerid] > gettime() - 60) return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been injured in the last minute");
 	if(drug != 4 && GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this right now.");
-	if(!IsPlayerInAnyVehicle(playerid) && drug != 4) ApplyAnimation(playerid,"SMOKING","M_smkstnd_loop",2.1,0,0,0,0,0);
+	if(!IsPlayerInAnyVehicle(playerid) && drug != 4) ApplyAnimation(playerid,"SMOKING","M_smkstnd_loop",2.1,false,false,false,false,0);
 
 	PlayerInfo[playerid][pDrugs][drug] -= amount;
 
@@ -250,7 +250,7 @@ GivePlayerDrugEffects(playerid, id, amount)
 
 				SetPVarInt(playerid, "InjectHeroinStanding", SetTimerEx("InjectHeroinStanding", 5000, false, "i", playerid));
 
-				if(!IsPlayerInAnyVehicle(playerid)) ApplyAnimation(playerid,"SMOKING","M_smkstnd_loop",2.1,0,0,0,0,0);
+				if(!IsPlayerInAnyVehicle(playerid)) ApplyAnimation(playerid,"SMOKING","M_smkstnd_loop",2.1,false,false,false,false,0);
 
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have injected heroin into yourself, the effects will begin in 5 seconds.");
 				format(string, sizeof(string), "* %s injects heroin into themself.", GetPlayerNameEx(playerid));
@@ -584,7 +584,7 @@ CMD:plantopium(playerid, params[])
 					szMessage[48],
 					Float:xyz[3];
 
-        		ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_In", 4.0, 0, 0, 0, 0, 0, 1);
+                ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_In", 4.0, false, false, false, false, 0, 1);
 				SendClientMessageEx(playerid, COLOR_GREEN, "You have planted some opium. It will take around 2 hours to grow.");
 		        GetPlayerPos(playerid, xyz[0], xyz[1], xyz[2]);
 		        xyz[2] -= 1.0;
@@ -626,7 +626,7 @@ CMD:plantpot(playerid, params[])
 					szMessage[48],
 					Float: xyz[3];
 
-        		ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_In", 4.0, 0, 0, 0, 0, 0, 1);
+                ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_In", 4.0, false, false, false, false, 0, 1);
 				SendClientMessageEx(playerid, COLOR_GREEN, "You have planted some weed. It will take around 20-45 minutes to grow.");
 		        GetPlayerPos(playerid, xyz[0], xyz[1], xyz[2]);
 				xyz[2] -= 1.5;
@@ -710,7 +710,7 @@ CMD:destroyplant(playerid, params[])
 					new
 						szMessage[128];
 
-					ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_Out", 4.0, 0, 0, 0, 0, 0, 1);
+					ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_Out", 4.0, false, false, false, false, 0, 1);
 
 					switch(Plants[i][pPlantType]) {
 	    				case 1:
@@ -734,7 +734,7 @@ CMD:destroyplant(playerid, params[])
 						}
 						case 2:
 						{
-						    new Grams = Random(10, 30);
+						    new Grams = (random(20) + 10);
 						    format(szMessage, sizeof(szMessage), "* You seized a opium plant weighing %d milligrams.", Grams);
 							SendClientMessageEx(playerid, COLOR_GREY, szMessage);
 							format(szMessage, sizeof(szMessage), "* %s seizes the opium plant.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
@@ -822,7 +822,7 @@ CMD:pickplant(playerid, params[])
 						{
 							new szMessage[128];
 
-							ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_Out", 4.0, 0, 0, 0, 0, 0, 1);
+							ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_Out", 4.0, false, false, false, false, 0, 1);
 
 							format(szMessage, sizeof(szMessage), "You picked the plant and gathered %d grams of pot.", Plants[i][pGrowth]);
 							SendClientMessageEx(playerid, COLOR_GREY, szMessage);
@@ -850,9 +850,9 @@ CMD:pickplant(playerid, params[])
 					    if(Plants[i][pGrowth] >= 120)
 					    {
 							new szMessage[128],
-								Grams = Random(10, 30);
+								Grams = (random(20) + 10);
 
-							ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_Out", 4.0, 0, 0, 0, 0, 0, 1);
+							ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_Out", 4.0, false, false, false, false, 0, 1);
 
 							format(szMessage, sizeof(szMessage), "You picked the plant and gathered %d milligrams of opium.", Grams);
 							SendClientMessageEx(playerid, COLOR_GREY, szMessage);

@@ -749,15 +749,15 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 			SetTimerEx("TazerTimer",1000,false,"d",playerid);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Your tazer is recharging!");
 			
-			RemovePlayerWeapon(playerid, 23);
+			RemovePlayerLoadoutWeapon(playerid, 23);
 			GivePlayerValidWeapon(playerid, pTazerReplace{playerid});
 			format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
 			ProxDetector(4.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			pTazer{playerid} = 0;
 		}
 	}
-	if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena") && (vehmodel != 425 && vehmodel != 432 && vehmodel != 447 && vehmodel != 464 && vehmodel != 476 && vehmodel != 520) && GetWeaponSlot(weaponid) != -1) {
-		if(PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] != weaponid) return 1;
+	if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena") && (vehmodel != 425 && vehmodel != 432 && vehmodel != 447 && vehmodel != 464 && vehmodel != 476 && vehmodel != 520) && GetLoadoutWeaponSlot(weaponid) != -1) {
+		if(PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(weaponid)] != weaponid) return 1;
 	}
 
 	if(hittype == BULLET_HIT_TYPE_PLAYER) {
@@ -1423,7 +1423,7 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID, iExtraID2 = -1, iE
 				GetPlayerWeaponData(playerid, 0, w, a);
 
 				ClearAnimationsEx(playerid, 1);
-				ApplyAnimation(playerid, "PED", "IDLE_stance", 4.1, 0, 0, 0, 0, 0, 1);
+				ApplyAnimation(playerid, "PED", "IDLE_stance", 4.1, false, false, false, false, 0, 1);
 				defer AC_ResetAnim(playerid);
 				GivePlayerWeapon(playerid, w, 0);
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: Please do not C-Bug / CS.");
@@ -1508,7 +1508,7 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID, iExtraID2 = -1, iE
 				new Float:fPos[3];
 				GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 				SetPlayerPos(playerid, fPos[0] + 1.0, fPos[1] + 1.0, fPos[2]);
-				PlayAnimEx(playerid, "PED", "BIKE_fallR", 4.1, 0, 1, 1, 1, 0, 1);
+				PlayAnimEx(playerid, "PED", "BIKE_fallR", 4.1, false, true, true, true, 0, 1);
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: Please do not car surf.");
 				return 1;
 			}

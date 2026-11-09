@@ -161,7 +161,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(response)
 			{
-				if(IsNumeric(inputtext))
+				if(IsNumericString(inputtext))
 				{
 					ShowPlayerDialogEx(playerid, REGISTERREF, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
 					return 1;
@@ -764,7 +764,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				ShowPlayerDialogEx(playerid, DIALOG_SHOPERROR, DIALOG_STYLE_MSGBOX, "Shop Order","ERROR: The shop order ID must be no longer than 6 characters and no lower than 1 character.", "Retry", "Cancel");
 				return 1;
 			}
-			if(!IsNumeric(inputtext))
+			if(!IsNumericString(inputtext))
 			{
 				ShowPlayerDialogEx(playerid, DIALOG_SHOPERROR, DIALOG_STYLE_MSGBOX, "Shop Order","ERROR: The shop order ID must be a numerical value.", "Retry", "Cancel");
 				return 1;
@@ -895,7 +895,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				ShowPlayerDialogEx(playerid, DIALOG_SHOPERROR, DIALOG_STYLE_MSGBOX, "Shop Order","ERROR: The shop order ID must be no longer than 6 characters and no lower than 1 character.", "Retry", "Cancel");
 				return 1;
 			}
-			if(!IsNumeric(inputtext))
+			if(!IsNumericString(inputtext))
 			{
 				ShowPlayerDialogEx(playerid, DIALOG_SHOPERROR, DIALOG_STYLE_MSGBOX, "Shop Order","ERROR: The shop order ID must be a numerical value.", "Retry", "Cancel");
 				return 1;
@@ -2450,7 +2450,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new
 				iVehicleID = PlayerVehicleInfo[playerid][listitem][pvId];
 
-			if((!IsVehicleOccupied(iVehicleID) || IsPlayerInVehicle(playerid, iVehicleID)) && !IsVehicleInTow(iVehicleID) && !PlayerVehicleInfo[playerid][listitem][pvBeingPickLocked]) {
+			if((!IsVehicleSeatOccupied(iVehicleID) || IsPlayerInVehicle(playerid, iVehicleID)) && !IsVehicleInTow(iVehicleID) && !PlayerVehicleInfo[playerid][listitem][pvBeingPickLocked]) {
 
 				new
 					Float: vehiclehealth;
@@ -2706,7 +2706,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		carid = strval(caridstr);
 		if(DynVehicleInfo[carid][gv_iSpawnedID] != INVALID_VEHICLE_ID && !DynVehicleInfo[carid][gv_iDisabled])
 		{
-			if((!IsVehicleOccupied(DynVehicleInfo[carid][gv_iSpawnedID]) || IsPlayerInVehicle(playerid, DynVehicleInfo[carid][gv_iSpawnedID])) && !IsVehicleInTow(DynVehicleInfo[carid][gv_iSpawnedID]))
+			if((!IsVehicleSeatOccupied(DynVehicleInfo[carid][gv_iSpawnedID]) || IsPlayerInVehicle(playerid, DynVehicleInfo[carid][gv_iSpawnedID])) && !IsVehicleInTow(DynVehicleInfo[carid][gv_iSpawnedID]))
 			{
 				new Float: vHealth;
 				GetVehicleHealth(DynVehicleInfo[carid][gv_iSpawnedID], vHealth);
@@ -3307,7 +3307,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(GetPVarInt(playerid, "lockmenu") == 1)
 			{
 				new pvid;
-				if (IsNumeric(inputtext))
+				if (IsNumericString(inputtext))
 				{
 					pvid = strval(inputtext)-1;
 					if(PlayerVehicleInfo[playerid][pvid][pvId] == INVALID_PLAYER_VEHICLE_ID)
@@ -3360,7 +3360,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else if(GetPVarInt(playerid, "lockmenu") == 4)
 			{
 				new pvid;
-				if (IsNumeric(inputtext))
+				if (IsNumericString(inputtext))
 				{
 					pvid = strval(inputtext)-1;
 					if(PlayerVehicleInfo[playerid][pvid][pvId] == INVALID_PLAYER_VEHICLE_ID)
@@ -3399,7 +3399,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else if(GetPVarInt(playerid, "lockmenu") == 2)
 			{
 				new pvid;
-				if (IsNumeric(inputtext))
+				if (IsNumericString(inputtext))
 				{
 					pvid = strval(inputtext)-1;
 					if(PlayerVehicleInfo[playerid][pvid][pvId] == INVALID_PLAYER_VEHICLE_ID)
@@ -3455,7 +3455,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else if(GetPVarInt(playerid, "lockmenu") == 3)
 			{
 				new pvid;
-				if (IsNumeric(inputtext))
+				if (IsNumericString(inputtext))
 				{
 					pvid = strval(inputtext)-1;
 					if(PlayerVehicleInfo[playerid][pvid][pvId] == INVALID_PLAYER_VEHICLE_ID)
@@ -8282,8 +8282,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return 1;
 			}
 
-			new randcolor1 = Random(0, 126);
-			new randcolor2 = Random(0, 126);
+			new randcolor1 = random(126);
+			new randcolor2 = random(126);
 			SetPlayerPos(playerid, Businesses[d][bParkPosX][v], Businesses[d][bParkPosY][v], Businesses[d][bParkPosZ][v]+2);
 			TogglePlayerControllable(playerid, true);
 			new cost;
@@ -8951,7 +8951,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			SetPVarString(playerid, "pkrStatusString", "Call");
 			PokerRotateActivePlayer(tableid);
 
-			ApplyAnimation(playerid, "CASINO", "cards_raise", 4.1, 0, 1, 1, 1, 1, 1);
+			ApplyAnimation(playerid, "CASINO", "cards_raise", 4.1, false, true, true, true, 1, 1);
 		}
 
 		DeletePVar(playerid, "pkrActionChoice");
@@ -8974,7 +8974,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				PokerTable[tableid][pkrRotations] = 0;
 				PokerRotateActivePlayer(tableid);
 
-				ApplyAnimation(playerid, "CASINO", "cards_raise", 4.1, 0, 1, 1, 1, 1, 1);
+				ApplyAnimation(playerid, "CASINO", "cards_raise", 4.1, false, true, true, true, 1, 1);
 			} else {
 				ShowCasinoGamesMenu(playerid, DIALOG_CGAMESRAISEPOKER);
 			}
@@ -9353,7 +9353,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	{
 		if(response)
 		{
-			if(isnull(inputtext) || strlen(inputtext) > 4 || !IsNumeric(inputtext))
+			if(isnull(inputtext) || strlen(inputtext) > 4 || !IsNumericString(inputtext))
 			{
 				ShowPlayerDialogEx(playerid, DIALOG_ENTERPIN, DIALOG_STYLE_INPUT, "Pin Number", "Enter your pin number to access credit shops.", "Confirm", "Exit");
 				return 1;
@@ -9371,7 +9371,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		if(response)
 		{
 
-			if(strlen(inputtext) > 4 || !IsNumeric(inputtext))
+			if(strlen(inputtext) > 4 || !IsNumericString(inputtext))
 				return ShowPlayerDialogEx(playerid, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Pin Number", "Error: A pin must be numbers only, and have at least 4 digits. \nCreate a pin number so you can secure your account credits.", "Create", "Exit");
 
 			if(GetPVarType(playerid, "ChangePin"))
@@ -12121,7 +12121,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(FIFEnabled == 1)
 			{
-				new iNumber = Random(1, 11);
+				new iNumber = (random(10) + 1);
 				if(iNumber > 4)
 				{
 					new szMessage[128];

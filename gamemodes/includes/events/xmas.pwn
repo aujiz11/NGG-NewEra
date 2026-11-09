@@ -61,7 +61,7 @@ CMD:carol(playerid, params[]) // Christmas Event
 							case 5: PlayerInfo[playerid][pTrickortreat] = 2;
 						}
 
-						new rand = Random(1, 5);
+						new rand = (random(4) + 1);
 						switch(rand)
 						{
 							case 1: cstring = "Deck the Halls";

@@ -582,7 +582,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			szMiscArray[0] = 0;
 			if(!response) return ResetDialog(playerid);
-			if(!IsNumeric(inputtext) || strval(inputtext) < 0) return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATERIALS, DIALOG_STYLE_INPUT, "Edit Points - Amount Per Hour", "Please enter the amount this point will give per hour to the owned group.\n\nPlease enter a numerical integer and is 0 or above.", "Select", "Cancel");
+			if(!IsNumericString(inputtext) || strval(inputtext) < 0) return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATERIALS, DIALOG_STYLE_INPUT, "Edit Points - Amount Per Hour", "Please enter the amount this point will give per hour to the owned group.\n\nPlease enter a numerical integer and is 0 or above.", "Select", "Cancel");
 
 			DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmountHour] = strval(inputtext);
 
@@ -604,7 +604,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			szMiscArray[0] = 0;
 			if(!response) return ResetDialog(playerid);
-			if(!IsNumeric(inputtext) || strval(inputtext) < 0) return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_CAPTIME, DIALOG_STYLE_INPUT, "Edit Points - Capturable Timer", "Specify a time (hours) to when the point is allowed to be captured.\nSetting 0 will announce point is ready for capture!\n\nPlease enter a numerical integer and is 0 or above.", "Select", "Cancel");
+			if(!IsNumericString(inputtext) || strval(inputtext) < 0) return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_CAPTIME, DIALOG_STYLE_INPUT, "Edit Points - Capturable Timer", "Specify a time (hours) to when the point is allowed to be captured.\nSetting 0 will announce point is ready for capture!\n\nPlease enter a numerical integer and is 0 or above.", "Select", "Cancel");
 			DynPoints[GetPVarInt(playerid, "pEditingPoint")][poCapturable] = (strval(inputtext) == 0 ? 1 : 0);
 			DynPoints[GetPVarInt(playerid, "pEditingPoint")][poTimer] = strval(inputtext);
 			format(szMiscArray, sizeof(szMiscArray), "%s has edited point %d's capturable timer to %d", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pEditingPoint"), inputtext);
@@ -616,7 +616,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case DIALOG_EDITPOINT_MATVIPSET:
 		{
 			if(response) {
-				if(!IsNumeric(inputtext) || strval(inputtext) < 1) return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATVIPSET, DIALOG_STYLE_INPUT, "Edit Points - Package", "Please enter an amount this package is to give to per delivery.\n\nPlease enter a numerical integer and is 0 or above.", "Select", "Cancel");
+				if(!IsNumericString(inputtext) || strval(inputtext) < 1) return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATVIPSET, DIALOG_STYLE_INPUT, "Edit Points - Package", "Please enter an amount this package is to give to per delivery.\n\nPlease enter a numerical integer and is 0 or above.", "Select", "Cancel");
 				new drank[16];
 				szMiscArray[0] = 0;
 				switch(GetPVarInt(playerid, "pEditingVIPPoint"))

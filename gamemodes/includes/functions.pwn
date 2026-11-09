@@ -78,7 +78,7 @@ stock NGRP_LoadModelSelectionMenu(const filename[])
 	return LoadModelSelectionMenu(path);
 }
 
-IsNumeric(const szInput[]) {
+IsNumericString(const szInput[]) {
 
 	new
 		iChar,
@@ -158,10 +158,10 @@ Float:GetPointDistanceToPointEx(Float:x1,Float:y1,Float:x2,Float:y2)
   return floatsqroot(x*x+y*y);
 } */
 
-RemovePlayerWeapon(playerid, weaponid)
+RemovePlayerLoadoutWeapon(playerid, weaponid)
 {
 	ResetPlayerWeapons(playerid);
-	PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] = 0;
+	PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(weaponid)] = 0;
 	SetPlayerWeaponsEx(playerid);
 	return 1;
 }
@@ -899,7 +899,7 @@ public GetColorCode(clr[])
 {
 	new color = -1;
 
-	if (IsNumeric(clr)) {
+	if (IsNumericString(clr)) {
 		color = strval(clr);
 		return color;
 	}
@@ -2217,12 +2217,6 @@ stock UpdateWheelTarget()
     }
 	if(gWheelTransAlternate) gWheelTransAlternate = 0;
 	else gWheelTransAlternate = 1;
-}
-
-stock Random(min, max)
-{
-    new a = random(max - min) + min;
-    return a;
 }
 
 forward ResetVariables();

@@ -332,7 +332,7 @@ CMD:createphone(playerid, params[]) {
 
 			arrPayPhoneData[i][pp_iObjectID] = CreateDynamicObject(1216, fPos[0], fPos[1], fPos[2] - 0.3, 0.0, 0.0, fPos[3] + 180.0); // temp object to get zone
 
-			format(szMiscArray, sizeof(szMiscArray), "024%d%d", GetPhoneAreaCode(i), Random(100, 999));			
+            format(szMiscArray, sizeof(szMiscArray), "024%d%d", GetPhoneAreaCode(i), (random(899) + 100));
 			arrPayPhoneData[i][pp_iNumber] = strval(szMiscArray);
 
 			for(new x; x < MAX_PAYPHONES; ++x) {

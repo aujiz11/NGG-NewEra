@@ -87,7 +87,7 @@ hook OnPlayerDisconnect(playerid, reason) {
 		SetPlayerPos(playerid, GetPVarFloat(playerid, "pkrTableJoinX"), GetPVarFloat(playerid, "pkrTableJoinY"), GetPVarFloat(playerid, "pkrTableJoinZ")+0.1);
 		SetCameraBehindPlayer(playerid);
 		TogglePlayerControllable(playerid, true);
-		ApplyAnimation(playerid, "CARRY", "crry_prtial", 2.0, 0, 0, 0, 0, 0);
+		ApplyAnimation(playerid, "CARRY", "crry_prtial", 2.0, false, false, false, false, 0);
 
 		if(GetPVarInt(playerid, "pkrActiveHand")) {
 			PokerTable[tableid][pkrActiveHands]--;
@@ -181,7 +181,7 @@ PokerCheckHand(playerid)
 	}
 
 	// Animation
-	ApplyAnimation(playerid, "CASINO", "cards_raise", 4.1, 0, 1, 1, 1, 1, 1);
+	ApplyAnimation(playerid, "CASINO", "cards_raise", 4.1, false, true, true, true, 1, 1);
 }
 
 PokerFoldHand(playerid)
@@ -200,7 +200,7 @@ PokerFoldHand(playerid)
 		GlobalPlaySound(5602, PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrX], PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrY], PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrZ]);
 
 		// Animation
-		ApplyAnimation(playerid, "CASINO", "cards_out", 4.1, 0, 1, 1, 1, 1, 1);
+		ApplyAnimation(playerid, "CASINO", "cards_out", 4.1, false, true, true, true, 1, 1);
 	}
 }
 
@@ -226,7 +226,7 @@ PokerDealHands(tableid)
 				PlayerPlaySound(playerid, 5602, 0.0, 0.0, 0.0);
 
 				// Animation
-				ApplyAnimation(playerid, "CASINO", "cards_in", 4.1, 0, 1, 1, 1, 1, 1);
+				ApplyAnimation(playerid, "CASINO", "cards_in", 4.1, false, true, true, true, 1, 1);
 
 				tmp += 2;
 			}
@@ -550,7 +550,7 @@ ResetPokerRound(tableid)
 				PokerTable[tableid][pkrActiveHands]--;
 
 				// Animation
-				ApplyAnimation(playerid, "CASINO", "cards_out", 4.1, 0, 1, 1, 1, 1, 1);
+				ApplyAnimation(playerid, "CASINO", "cards_out", 4.1, false, true, true, true, 1, 1);
 			}
 
 			DeletePVar(playerid, "pkrActiveHand");
@@ -919,7 +919,7 @@ public PokerPulse(tableid)
 
 				// Animation
 				if(GetPVarInt(playerid, "pkrActiveHand")) {
-					ApplyAnimation(playerid, "CASINO", "cards_loop", 4.1, 0, 1, 1, 1, 1, 1);
+					ApplyAnimation(playerid, "CASINO", "cards_loop", 4.1, false, true, true, true, 1, 1);
 				}
 			}
 		}
@@ -1631,11 +1631,11 @@ JoinPokerTable(playerid, tableid) {
 				format(string, sizeof(string), "%s(%d) (IP:%s) has joined poker table (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), tableid);
 				Log("logs/poker.log", string);
 
-				ApplyAnimation(playerid, "CASINO", "cards_out", 4.1, 0, 1, 1, 1, 1, 1);
+				ApplyAnimation(playerid, "CASINO", "cards_out", 4.1, false, true, true, true, 1, 1);
 				TogglePlayerControllable(playerid, false);
 				SetPlayerPosObjectOffset(PokerTable[tableid][pkrObjectID], playerid, PokerTableMiscObjOffsets[s][0], PokerTableMiscObjOffsets[s][1], PokerTableMiscObjOffsets[s][2]);
 				SetPlayerFacingAngle(playerid, PokerTableMiscObjOffsets[s][5]+90.0);
-				ApplyAnimation(playerid, "CASINO", "cards_out", 4.1, 0, 1, 1, 1, 1, 1);
+				ApplyAnimation(playerid, "CASINO", "cards_out", 4.1, false, true, true, true, 1, 1);
 
 				// Create GUI
 				CreatePokerGUI(playerid);
@@ -1694,7 +1694,7 @@ LeavePokerTable(playerid) {
 	SetPlayerPos(playerid, GetPVarFloat(playerid, "pkrTableJoinX"), GetPVarFloat(playerid, "pkrTableJoinY"), GetPVarFloat(playerid, "pkrTableJoinZ")+0.1);
 	SetCameraBehindPlayer(playerid);
 	TogglePlayerControllable(playerid, true);
-	ApplyAnimation(playerid, "CARRY", "crry_prtial", 2.0, 0, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 2.0, false, false, false, false, 0);
 	CancelSelectTextDraw(playerid);
 	ShowPlayerDialogEx(playerid, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
 
@@ -1794,7 +1794,7 @@ CMD:placetable(playerid, params[])
 	    new Float:fPos[4];
 	    GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 	    GetPlayerFacingAngle(playerid, fPos[3]);
-	    ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_In", 4.0, 0, 0, 0, 0, 0, 1);
+	    ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_In", 4.0, false, false, false, false, 0, 1);
 	    fPos[0] += (2 * floatsin(-fPos[3], degrees));
     	fPos[1] += (2 * floatcos(-fPos[3], degrees));
 		fPos[2] -= 0.5;

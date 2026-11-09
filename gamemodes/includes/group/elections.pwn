@@ -123,7 +123,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		case ELECTIONS_ADD: {
 
-			if(!response || isnull(inputtext) || IsNumeric(inputtext)) return 1;
+			if(!response || isnull(inputtext) || IsNumericString(inputtext)) return 1;
 			if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessage(playerid, COLOR_GREY, "You're not an admin.");
 			new iOptionID = GetGVarInt("CandidateCount");
 			SetGVarString("CandidateName", inputtext, iOptionID);

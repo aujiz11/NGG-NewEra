@@ -1173,7 +1173,7 @@ Phone_Main(playerid) {
 	if(!Bit_State(arrPlayerBits[playerid], phone_bitState)) {
 		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT) {
 
-			ApplyAnimation(playerid, "GRAVEYARD", "mrnM_loop", 4.0, 1, 0, 0, 0, 0, 1);
+			ApplyAnimation(playerid, "GRAVEYARD", "mrnM_loop", 4.0, true, false, false, false, 0, 1);
 		}
 
 		SendClientMessageEx(playerid, COLOR_WHITE, "[PHONE HELP]: Use ~k~~GO_FORWARD~ to go up, ~k~~GO_BACK~ to go down and ~k~~PED_SPRINT~ to select the item.");
@@ -1337,7 +1337,7 @@ CMD:selfie(playerid, const params[]) {
 	    SetPlayerFacingAngle(playerid, fPos[3] - 90.0);
 
 	    TogglePlayerControllable(playerid, false);
-	    PlayAnimEx(playerid, "PED", "gang_gunstand", 4.1, 1, 1, 1, 1, 1, 1);
+	    PlayAnimEx(playerid, "PED", "gang_gunstand", 4.1, true, true, true, true, 1, 1);
 	    SendClientMessage(playerid, COLOR_GRAD1, "{DDDDDD}Select the camera app or use /selfie to go back. Use {FFFF00}/headmove {DDDDDD}to disable your head movement (look straight).");
 	    Bit_On(arrPlayerBits[playerid], phone_bitCamState);
 	}

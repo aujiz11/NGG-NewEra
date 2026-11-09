@@ -83,7 +83,7 @@ public FuelCan(playerid, vehicleid, amount)
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	SendClientMessageEx(playerid, COLOR_WHITE, "You have used a fuel can to refill your vehicle.");
 	PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
-	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, false, false, false, false, 0, 1);
 	DeletePVar(playerid, "fuelcan");
 	return 1;
 }
@@ -107,7 +107,7 @@ public JumpStart(playerid, vehicleid)
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	SendClientMessage(playerid, COLOR_WHITE, "Your vehicle has been Jump Started!");
 	PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
-	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, false, false, false, false, 0, 1);
 	format(string, sizeof(string), "[JUMPSTART] %s(%d) used a jump start. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][8]);
 	Log("logs/micro.log", string);
 	DeletePVar(playerid, "jumpstarting");
@@ -119,7 +119,7 @@ public EatBar(playerid)
 {
 	PlayerInfo[playerid][mInventory][4]--;
 	PlayerInfo[playerid][mCooldown][4] = 60;
-	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, false, false, false, false, 0, 1);
 	SendClientMessageEx(playerid, -1, "You have consumed a energy bar, effects will last for 1 hour.");
 	SendClientMessageEx(playerid, -1, "Your health will decrease slower when in a injured state.");
 	new string[128];
@@ -425,7 +425,7 @@ CMD:changeuserpin(playerid, params[])
     if(sscanf(params, "s[20]s[64]", accountName, password))
 		return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /changeuserpin [player name] [new pin]");
 
-    if(strlen(password) > 4 || !IsNumeric(password))
+    if(strlen(password) > 4 || !IsNumericString(password))
         return SendClientMessageEx(playerid, COLOR_GREY, "The pin must be numbers, and must have 4 digits.");
 
     new passbuffer[129];
@@ -1671,7 +1671,7 @@ CMD:fuelcan(playerid, params[])
 	new string[72];
 	format(string, sizeof(string), "%s begins refilling their vehicle with a fuel can.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	ApplyAnimation(playerid, "SCRATCHING", "scdldlp", 4.0, 1, 0, 0, 0, 0, 1);
+	ApplyAnimation(playerid, "SCRATCHING", "scdldlp", 4.0, true, false, false, false, 0, 1);
 	SetTimerEx("FuelCan", 10000, false, "iii", playerid, closestcar, 100);
 	SetPVarInt(playerid, "fuelcan", 1);
 	GameTextForPlayer(playerid, "~w~Refueling...", 10000, 3);
@@ -1696,7 +1696,7 @@ CMD:jumpstart(playerid, params[])
 	new string[61];
 	format(string, sizeof(string), "%s begins to jump start their vehicle.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	ApplyAnimation(playerid, "MISC", "Plunger_01", 4.1, 1, 1, 1, 1, 1, 1);
+	ApplyAnimation(playerid, "MISC", "Plunger_01", 4.1, true, true, true, true, 1, 1);
 	SetTimerEx("JumpStart", 10000, false, "ii", playerid, closestcar);
 	SetPVarInt(playerid, "jumpstarting", 1);
 	GameTextForPlayer(playerid, "~w~Jump Starting...", 10000, 3);
@@ -1739,7 +1739,7 @@ CMD:eatbar(playerid, params[])
 		format(string, sizeof(string), "You currently have a active Energy Bar, please wait for it to expire in %d minute(s) to consume again.", PlayerInfo[playerid][mCooldown][4]);
 		return SendClientMessageEx(playerid, COLOR_GRAD2, string);
 	}
-	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 3.0, 1, 0, 0, 0, 0, 1);
+	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 3.0, true, false, false, false, 0, 1);
 	format(string, sizeof(string), "%s chews on a energy bar", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	SetPVarInt(playerid, "eatingbar", 1);

@@ -109,7 +109,7 @@ CMD:accept(playerid, params[])
 			if(!IsPlayerInRangeOfPoint(target, 5.0, pos[0], pos[1], pos[2])) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the person who offered you assistance.");
 			if(GetPVarInt(target, "MedVestKit") != 1)
 				return SendClientMessageEx(target, COLOR_GRAD2, "You aren't carrying a kit."), SendClientMessageEx(playerid, COLOR_GRAD2, "The player was unable to assist you as they no longer have a med kit.");
-			ApplyAnimation(target, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
+			ApplyAnimation(target, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, 0, 1);
 			SetHealth(playerid, 100);
 			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s renders aid to %s.", GetPlayerNameEx(target), GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -200,33 +200,33 @@ CMD:accept(playerid, params[])
 			switch(GetPVarInt(targetid,"kissvalstyle")) {
 				case 1:
 				{
-					ApplyAnimation( playerid, "KISSING", "Playa_Kiss_01", 4.1, 0, 0, 0, 0, 0, 1);
-					ApplyAnimation( targetid, "KISSING", "Playa_Kiss_01", 4.1, 0, 0, 0, 0, 0, 1);
+					ApplyAnimation( playerid, "KISSING", "Playa_Kiss_01", 4.1, false, false, false, false, 0, 1);
+					ApplyAnimation( targetid, "KISSING", "Playa_Kiss_01", 4.1, false, false, false, false, 0, 1);
 				}
 				case 2:
 				{
-					ApplyAnimation( playerid, "KISSING", "Playa_Kiss_02", 4.1, 0, 0, 0, 0, 0, 1);
-					ApplyAnimation( targetid, "KISSING", "Playa_Kiss_02", 4.1, 0, 0, 0, 0, 0, 1);
+					ApplyAnimation( playerid, "KISSING", "Playa_Kiss_02", 4.1, false, false, false, false, 0, 1);
+					ApplyAnimation( targetid, "KISSING", "Playa_Kiss_02", 4.1, false, false, false, false, 0, 1);
 				}
 				case 3:
 				{
-					ApplyAnimation( playerid, "KISSING", "Playa_Kiss_03", 4.1, 0, 0, 0, 0, 0, 1);
-					ApplyAnimation( targetid, "KISSING", "Playa_Kiss_03", 4.1, 0, 0, 0, 0, 0, 1);
+					ApplyAnimation( playerid, "KISSING", "Playa_Kiss_03", 4.1, false, false, false, false, 0, 1);
+					ApplyAnimation( targetid, "KISSING", "Playa_Kiss_03", 4.1, false, false, false, false, 0, 1);
 				}
 				case 4:
 				{
-					ApplyAnimation( playerid, "KISSING", "Grlfrd_Kiss_01", 4.1, 0, 0, 0, 0, 0, 1);
-					ApplyAnimation( targetid, "KISSING", "Grlfrd_Kiss_01", 4.1, 0, 0, 0, 0, 0, 1);
+					ApplyAnimation( playerid, "KISSING", "Grlfrd_Kiss_01", 4.1, false, false, false, false, 0, 1);
+					ApplyAnimation( targetid, "KISSING", "Grlfrd_Kiss_01", 4.1, false, false, false, false, 0, 1);
 				}
 				case 5:
 				{
-					ApplyAnimation( playerid, "KISSING", "Grlfrd_Kiss_02", 4.1, 0, 0, 0, 0, 0, 1);
-					ApplyAnimation( targetid, "KISSING", "Grlfrd_Kiss_02", 4.1, 0, 0, 0, 0, 0, 1);
+					ApplyAnimation( playerid, "KISSING", "Grlfrd_Kiss_02", 4.1, false, false, false, false, 0, 1);
+					ApplyAnimation( targetid, "KISSING", "Grlfrd_Kiss_02", 4.1, false, false, false, false, 0, 1);
 				}
 				case 6:
 				{
-					ApplyAnimation( playerid, "KISSING", "Grlfrd_Kiss_03", 4.1, 0, 0, 0, 0, 0, 1);
-					ApplyAnimation( targetid, "KISSING", "Grlfrd_Kiss_03", 4.1, 0, 0, 0, 0, 0, 1);
+					ApplyAnimation( playerid, "KISSING", "Grlfrd_Kiss_03", 4.1, false, false, false, false, 0, 1);
+					ApplyAnimation( targetid, "KISSING", "Grlfrd_Kiss_03", 4.1, false, false, false, false, 0, 1);
 				}
 			}
 			format(string, sizeof(string), "* %s has given %s a kiss.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid));
@@ -694,8 +694,8 @@ CMD:accept(playerid, params[])
 							{
 								Count++;
 								PlayerFacePlayer( playerid, i );
-								ApplyAnimation( playerid, "GANGS", "hndshkaa", 4.0, 1, 1, 1, 0, 1000 );
-								ApplyAnimation( i, "GANGS", "hndshkaa", 4.0, 1, 1, 1, 0, 1000 );
+								ApplyAnimation( playerid, "GANGS", "hndshkaa", 4.0, true, true, true, false, 1000 );
+								ApplyAnimation( i, "GANGS", "hndshkaa", 4.0, true, true, true, false, 1000 );
 								DeletePVar(i, "shrequest");
 								format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
 								ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -705,8 +705,8 @@ CMD:accept(playerid, params[])
 							{
 								Count++;
 								PlayerFacePlayer( playerid, i );
-								ApplyAnimation( playerid, "GANGS", "hndshkba", 4.0, 1, 1, 1, 0, 1000 );
-								ApplyAnimation( i, "GANGS", "hndshkba", 4.0, 1, 1, 1, 0, 1000 );
+								ApplyAnimation( playerid, "GANGS", "hndshkba", 4.0, true, true, true, false, 1000 );
+								ApplyAnimation( i, "GANGS", "hndshkba", 4.0, true, true, true, false, 1000 );
 								DeletePVar(i, "shrequest");
 								format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
 								ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -716,8 +716,8 @@ CMD:accept(playerid, params[])
 							{
 								Count++;
 								PlayerFacePlayer( playerid, i );
-								ApplyAnimation( playerid, "GANGS", "hndshkca", 4.0, 1, 1, 1, 0, 1000 );
-								ApplyAnimation( i, "GANGS", "hndshkca", 4.0, 1, 1, 1, 0, 1000 );
+								ApplyAnimation( playerid, "GANGS", "hndshkca", 4.0, true, true, true, false, 1000 );
+								ApplyAnimation( i, "GANGS", "hndshkca", 4.0, true, true, true, false, 1000 );
 								DeletePVar(i, "shrequest");
 								format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
 								ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -727,8 +727,8 @@ CMD:accept(playerid, params[])
 							{
 								Count++;
 								PlayerFacePlayer( playerid, i );
-								ApplyAnimation( playerid, "GANGS", "hndshkcb", 4.0, 1, 1, 1, 0, 1000 );
-								ApplyAnimation( i, "GANGS", "hndshkca", 4.0, 1, 1, 1, 0, 1000 );
+								ApplyAnimation( playerid, "GANGS", "hndshkcb", 4.0, true, true, true, false, 1000 );
+								ApplyAnimation( i, "GANGS", "hndshkca", 4.0, true, true, true, false, 1000 );
 								DeletePVar(i, "shrequest");
 								format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
 								ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -738,8 +738,8 @@ CMD:accept(playerid, params[])
 							{
 								Count++;
 								PlayerFacePlayer( playerid, i );
-								ApplyAnimation( playerid, "GANGS", "hndshkda", 4.0, 1, 1, 1, 0, 1000 );
-								ApplyAnimation( i, "GANGS", "hndshkca", 4.0, 1, 1, 1, 0, 1000 );
+								ApplyAnimation( playerid, "GANGS", "hndshkda", 4.0, true, true, true, false, 1000 );
+								ApplyAnimation( i, "GANGS", "hndshkca", 4.0, true, true, true, false, 1000 );
 								DeletePVar(i, "shrequest");
 								format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
 								ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -749,8 +749,8 @@ CMD:accept(playerid, params[])
 							{
 								Count++;
 								PlayerFacePlayer( playerid, i );
-								ApplyAnimation( playerid, "GANGS","hndshkfa_swt", 4.0, 1, 1, 1, 0, 2600 );
-								ApplyAnimation( i, "GANGS","hndshkfa_swt", 4.0, 1, 1, 1, 0, 2600 );
+								ApplyAnimation( playerid, "GANGS","hndshkfa_swt", 4.0, true, true, true, false, 2600 );
+								ApplyAnimation( i, "GANGS","hndshkfa_swt", 4.0, true, true, true, false, 2600 );
 								DeletePVar(i, "shrequest");
 								format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
 								ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -760,8 +760,8 @@ CMD:accept(playerid, params[])
 							{
 								Count++;
 								PlayerFacePlayer( playerid, i );
-								ApplyAnimation( playerid, "GANGS", "prtial_hndshk_01", 4.0, 1, 1, 1, 0, 1250 );
-								ApplyAnimation( i, "GANGS", "prtial_hndshk_01", 4.0, 1, 1, 1, 0, 1250 );
+								ApplyAnimation( playerid, "GANGS", "prtial_hndshk_01", 4.0, true, true, true, false, 1250 );
+								ApplyAnimation( i, "GANGS", "prtial_hndshk_01", 4.0, true, true, true, false, 1250 );
 								DeletePVar(i, "shrequest");
 								format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
 								ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -771,8 +771,8 @@ CMD:accept(playerid, params[])
 							{
 								Count++;
 								PlayerFacePlayer( playerid, i );
-								ApplyAnimation( playerid, "GANGS", "prtial_hndshk_biz_01", 3.7, 1, 1, 1, 0, 2200 );
-								ApplyAnimation( i, "GANGS", "prtial_hndshk_biz_01", 3.5, 1, 1, 1, 0, 2200 );
+								ApplyAnimation( playerid, "GANGS", "prtial_hndshk_biz_01", 3.7, true, true, true, false, 2200 );
+								ApplyAnimation( i, "GANGS", "prtial_hndshk_biz_01", 3.5, true, true, true, false, 2200 );
 								DeletePVar(i, "shrequest");
 								format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
 								ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

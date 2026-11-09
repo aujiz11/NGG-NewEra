@@ -103,45 +103,17 @@
 #include <YSI_Core\y_utils>
 #include <YSI_Coding\y_hooks>
 #include <YSI_Coding\y_va>
-native bool:NGRP_LegacyPlayerTextDrawUseBox(playerid, PlayerText:textid, {bool, _}:enable) = PlayerTextDrawUseBox;
-native bool:NGRP_LegacyPlayerTextDrawSetSelectable(playerid, PlayerText:textid, {bool, _}:enable) = PlayerTextDrawSetSelectable;
-#define PlayerTextDrawUseBox NGRP_LegacyPlayerTextDrawUseBox
-#define PlayerTextDrawSetSelectable NGRP_LegacyPlayerTextDrawSetSelectable
 #include <mSelection>
-#undef PlayerTextDrawUseBox
-#undef PlayerTextDrawSetSelectable
 #include <gvar>
 #include <discord-connector>
 #include <geo_ip>
-new NGRP_DialogFormatBuffer[1];
-#define format("",%0,"") format(NGRP_DialogFormatBuffer,%0,"")
 #include <easyDialog>
-#undef format
-stock NGRP_LegacyAddStaticVehicleEx(modelid, Float:x, Float:y, Float:z, Float:angle, color1, color2, respawn_delay, {bool, _}:addsiren = false)
-{
-    return AddStaticVehicleEx(modelid, x, y, z, angle, color1, color2, respawn_delay, !!addsiren);
-}
-native bool:NGRP_LegacyApplyAnimation(playerid, const animlib[], const animname[], Float:delta, {bool, _}:loop, {bool, _}:lockx, {bool, _}:locky, {bool, _}:freeze, time, FORCE_SYNC:forcesync = SYNC_NONE) = ApplyAnimation;
-#undef AddStaticVehicleEx
-#define AddStaticVehicleEx NGRP_LegacyAddStaticVehicleEx
-#define ApplyAnimation NGRP_LegacyApplyAnimation
-#define _ALS_AddStaticVehicleEx
-#define _ALS_ApplyAnimation
 #include <callbacks>
 #include <attachments>
 //#include <profiler>
 
 #if defined SOCKET_ENABLED
 #include <socket>
-#endif
-
-// Preserve NGG helper policies while avoiding open.mp/YSI name collisions.
-#define IsNumeric NGRP_IsNumeric
-#define RemovePlayerWeapon NGRP_RemovePlayerWeapon
-#define GetWeaponSlot NGRP_GetWeaponSlot
-#define IsVehicleOccupied NGRP_IsVehicleOccupied
-#if defined Random
-    #undef Random
 #endif
 
 #include "./includes/defines.pwn"

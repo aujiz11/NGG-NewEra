@@ -104,9 +104,9 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
     if(playerid != INVALID_PLAYER_ID) {
     	if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena")) {
 		    if(weaponid > 0 && GetPlayerWeapon(playerid) == weaponid) {
-				if(PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] != weaponid) {
+				if(PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(weaponid)] != weaponid) {
 					ExecuteHackerAction(playerid, weaponid);
-					RemovePlayerWeapon(playerid, weaponid);
+					RemovePlayerLoadoutWeapon(playerid, weaponid);
 					return 0;
 				}
 			}
@@ -135,7 +135,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 				SetTimerEx("TazerTimer",1000,false,"d",playerid);
 				SendClientMessageEx(playerid, COLOR_WHITE, "Your tazer is recharging!");
 				
-				RemovePlayerWeapon(playerid, 23);
+				RemovePlayerLoadoutWeapon(playerid, 23);
 				GivePlayerValidWeapon(playerid, pTazerReplace{playerid});
 				format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
 				ProxDetector(4.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -353,15 +353,15 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		if ((!iVehCheck && fHitDist > 20.0) || fHitDist > 50.0) return 1;*/
 
 		new vehmodel = GetVehicleModel(GetPlayerVehicleID(playerid));
-		if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena") && (vehmodel != 425 && vehmodel != 432 && vehmodel != 447 && vehmodel != 464 && vehmodel != 476 && vehmodel != 520) && GetWeaponSlot(weaponid) != -1)
+		if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena") && (vehmodel != 425 && vehmodel != 432 && vehmodel != 447 && vehmodel != 464 && vehmodel != 476 && vehmodel != 520) && GetLoadoutWeaponSlot(weaponid) != -1)
 		{
-			if(PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] != weaponid)
+			if(PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(weaponid)] != weaponid)
 			{
 				if(gettime() > GetPVarInt(playerid, "NopeWepWarn"))
 				{
-					format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) has been denied issuing damage. Possible weapon hack: Server Weapon: %d | Used Weapon: %d", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)], weaponid);
+					format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) has been denied issuing damage. Possible weapon hack: Server Weapon: %d | Used Weapon: %d", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(weaponid)], weaponid);
 					ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-					format(szMiscArray, sizeof(szMiscArray), "%s (%d) has been denied issuing damage. Possible weapon hack: Server Weapon: %d | Used Weapon: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)], weaponid);
+					format(szMiscArray, sizeof(szMiscArray), "%s (%d) has been denied issuing damage. Possible weapon hack: Server Weapon: %d | Used Weapon: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(weaponid)], weaponid);
 					Log("logs/hack.log", szMiscArray);
 					SetPVarInt(playerid, "NopeWepWarn", gettime()+60);
 				}
@@ -414,7 +414,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		if(pTazer{playerid} == 1)
 		{
 			if(weaponid !=  23) {
-				RemovePlayerWeapon(playerid, 23);
+				RemovePlayerLoadoutWeapon(playerid, 23);
 				GivePlayerValidWeapon(playerid, pTazerReplace{playerid});
 				format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
 				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -447,7 +447,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				//GameTextForPlayer(damagedid, "~r~Tazed", 3500, 3);
 				ClearAnimationsEx(damagedid);
 				TogglePlayerControllable(damagedid, false);
-				ApplyAnimation(damagedid,"CRACK","crckdeth2",4.1,0,1,1,1,1,1);
+				ApplyAnimation(damagedid,"CRACK","crckdeth2",4.1,false,true,true,true,1,1);
 				PlayerPlaySound(damagedid, 1085, X, Y, Z);
 				PlayerPlaySound(playerid, 1085, X, Y, Z);
 				PlayerCuffed[damagedid] = 1;
@@ -480,7 +480,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				SetArmour(damagedid, fArmour);
 				ClearAnimationsEx(damagedid);
 	    		TogglePlayerControllable(damagedid, FALSE);
-     			ApplyAnimation(damagedid,"PED","KO_shot_stom",4.1,0,1,1,1,1,1);
+                ApplyAnimation(damagedid,"PED","KO_shot_stom",4.1,false,true,true,true,1,1);
 	    		SetTimerEx("_UnbeanbagTimer", 20000, false, "d", damagedid);
 	    		SetPlayerDrunkLevel(damagedid, 10000);
 	    		PlayerTextDrawShow(damagedid, _vhudFlash[damagedid]);
@@ -498,7 +498,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		}
 		if(pTazer{damagedid} == 1 && (!IsNotAGun(weaponid)))
 		{
-			RemovePlayerWeapon(damagedid, 23);
+			RemovePlayerLoadoutWeapon(damagedid, 23);
 			GivePlayerValidWeapon(damagedid, pTazerReplace{damagedid});
 			format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(damagedid));
 			ProxDetector(4.0, damagedid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

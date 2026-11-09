@@ -481,8 +481,8 @@ CMD:pcb(playerid, params[])
 					}
 					VehicleBomb{closestcar} = 1;
 					PlacedVehicleBomb[playerid] = closestcar;
-					ApplyAnimation(playerid,"BOMBER","BOM_Plant",4.0,0,0,0,0,0);
-					ApplyAnimation(playerid,"BOMBER","BOM_Plant",4.0,0,0,0,0,0);
+					ApplyAnimation(playerid,"BOMBER","BOM_Plant",4.0,false,false,false,false,0);
+					ApplyAnimation(playerid,"BOMBER","BOM_Plant",4.0,false,false,false,false,0);
 					SendClientMessageEx(playerid, COLOR_GREEN, "You have placed C4 on the vehicle engine, /pickupbomb to remove it.");
 					PlayerInfo[playerid][pC4] = 1;
 					PlayerInfo[playerid][pBombs]--;
@@ -838,7 +838,7 @@ CMD:knife(playerid, params[])
 		}
 		else {
 			if(PlayerInfo[playerid][pGuns][1] == WEAPON_KNIFE) {
-				RemovePlayerWeapon(playerid, 4); // Remove Knife
+				RemovePlayerLoadoutWeapon(playerid, 4); // Remove Knife
 				SetPVarInt(playerid, "HidingKnife", 1);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You have hidden your knife.");
 			}

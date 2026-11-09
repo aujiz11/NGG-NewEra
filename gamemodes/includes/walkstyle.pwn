@@ -96,10 +96,10 @@ enum E_WALKING_ENUM
 	E_STYLE_LIB[32],
 	E_STYLE_ANIM[32],
 	Float:E_STYLE_DELTA,
-	E_STYLE_LOOP,
-	E_STYLE_LOCK_X,
-	E_STYLE_LOCK_Y,
-	E_STYLE_FREEZE,
+	bool:E_STYLE_LOOP,
+	bool:E_STYLE_LOCK_X,
+	bool:E_STYLE_LOCK_Y,
+	bool:E_STYLE_FREEZE,
 	E_STYLE_TIME
 };
 new WalkingStyles[MAX_WALKING_STYLES + 1][E_WALKING_ENUM];
@@ -112,7 +112,7 @@ stock SetWalkingKey(key)
 	return 1;
 }
 
-stock AddWalkingStyle(const animlib[], const animname[], Float:fDelta = 4.0, loop = 1, lockx = 1, locky = 1, freeze = 1, time = 1)
+stock AddWalkingStyle(const animlib[], const animname[], Float:fDelta = 4.0, bool:loop = true, bool:lockx = true, bool:locky = true, bool:freeze = true, time = 1)
 {
 	new id;
 	for (new i = 1; i < sizeof(WalkingStyles); i ++)
@@ -165,10 +165,10 @@ stock RemoveWalkingStyle(styleid)
 		strdel(WalkingStyles[styleid][E_STYLE_LIB], 0, 32);
 		strdel(WalkingStyles[styleid][E_STYLE_ANIM], 0, 32);
 		WalkingStyles[styleid][E_STYLE_DELTA] = 0.0;
-		WalkingStyles[styleid][E_STYLE_LOOP] = 0;
-		WalkingStyles[styleid][E_STYLE_LOCK_X] = 0;
-		WalkingStyles[styleid][E_STYLE_LOCK_Y] = 0;
-		WalkingStyles[styleid][E_STYLE_FREEZE] = 0;
+		WalkingStyles[styleid][E_STYLE_LOOP] = false;
+		WalkingStyles[styleid][E_STYLE_LOCK_X] = false;
+		WalkingStyles[styleid][E_STYLE_LOCK_Y] = false;
+		WalkingStyles[styleid][E_STYLE_FREEZE] = false;
 		WalkingStyles[styleid][E_STYLE_TIME] = 0;
 	}
 	return 1;
@@ -209,7 +209,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				{
 					if (WalkingStyles[styleid][E_STYLE_ACTIVE] && strlen(WalkingStyles[styleid][E_STYLE_LIB]) && strlen(WalkingStyles[styleid][E_STYLE_ANIM]))
 					{
-			 	 		ApplyAnimation(playerid, WalkingStyles[styleid][E_STYLE_LIB], WalkingStyles[styleid][E_STYLE_ANIM], WalkingStyles[styleid][E_STYLE_DELTA], 0, WalkingStyles[styleid][E_STYLE_LOCK_X], WalkingStyles[styleid][E_STYLE_LOCK_Y], 0, WalkingStyles[styleid][E_STYLE_TIME], 1);
+                        ApplyAnimation(playerid, WalkingStyles[styleid][E_STYLE_LIB], WalkingStyles[styleid][E_STYLE_ANIM], WalkingStyles[styleid][E_STYLE_DELTA], false, WalkingStyles[styleid][E_STYLE_LOCK_X], WalkingStyles[styleid][E_STYLE_LOCK_Y], false, WalkingStyles[styleid][E_STYLE_TIME], 1);
 					}
 				    DeletePVar(playerid, "Walking");
 				}
@@ -227,7 +227,7 @@ stock ResetPlayerWalkingStyle(playerid)
 	    new styleid = PlayerInfo[playerid][pWalkStyle];
 		if (WalkingStyles[styleid][E_STYLE_ACTIVE] && strlen(WalkingStyles[styleid][E_STYLE_LIB]) && strlen(WalkingStyles[styleid][E_STYLE_ANIM]))
 		{
-			ApplyAnimation(playerid, WalkingStyles[styleid][E_STYLE_LIB], WalkingStyles[styleid][E_STYLE_ANIM], WalkingStyles[styleid][E_STYLE_DELTA], 0, WalkingStyles[styleid][E_STYLE_LOCK_X], WalkingStyles[styleid][E_STYLE_LOCK_Y], 0, WalkingStyles[styleid][E_STYLE_TIME], 1);
+			ApplyAnimation(playerid, WalkingStyles[styleid][E_STYLE_LIB], WalkingStyles[styleid][E_STYLE_ANIM], WalkingStyles[styleid][E_STYLE_DELTA], false, WalkingStyles[styleid][E_STYLE_LOCK_X], WalkingStyles[styleid][E_STYLE_LOCK_Y], false, WalkingStyles[styleid][E_STYLE_TIME], 1);
 		}
   		DeletePVar(playerid, "Walking");
 	}
