@@ -108,7 +108,7 @@ PinLogin(playerid)
 // Description: Called with Gamemode Init.
 stock g_mysql_Init()
 {
-	new SQL_HOST[64], SQL_DB[64], SQL_USER[32], SQL_PASS[128], SQL_DEBUG, SQL_DEBUGLOG;
+	new SQL_HOST[64], SQL_DB[64], SQL_USER[32], SQL_PASS[128], SQL_PORT = 3306, SQL_DEBUG, SQL_DEBUGLOG;
 	new SQL_SHOST[64], SQL_SDB[64], SQL_SUSER[32], SQL_SPASS[128];
 	new fileString[128], File: fileHandle = fopen("mysql.cfg", io_read);
 
@@ -117,6 +117,7 @@ stock g_mysql_Init()
 		if(ini_GetValue(fileString, "DB", SQL_DB, sizeof(SQL_DB))) continue;
 		if(ini_GetValue(fileString, "USER", SQL_USER, sizeof(SQL_USER))) continue;
 		if(ini_GetValue(fileString, "PASS", SQL_PASS, sizeof(SQL_PASS))) continue;
+		if(ini_GetInt(fileString, "PORT", SQL_PORT)) continue;
 		if(ini_GetInt(fileString, "SHOPAUTOMATED", ShopToggle)) continue;
 		if(ini_GetValue(fileString, "SHOST", SQL_SHOST, sizeof(SQL_SHOST))) continue;
 		if(ini_GetValue(fileString, "SDB", SQL_SDB, sizeof(SQL_SDB))) continue;
@@ -131,7 +132,16 @@ stock g_mysql_Init()
 
 	mysql_log(NONE); // Has to be NONE for some the server will crash (runs out of memory)
 
-	MainPipeline = mysql_connect(SQL_HOST, SQL_USER, SQL_PASS, SQL_DB);
+	if(SQL_PORT < 1 || SQL_PORT > 65535)
+	{
+		print("[MySQL] Invalid PORT in mysql.cfg; expected 1..65535.");
+		SendRconCommand("exit");
+		return 0;
+	}
+
+	new MySQLOpt:mainOptions = mysql_init_options();
+	mysql_set_option(mainOptions, SERVER_PORT, SQL_PORT);
+	MainPipeline = mysql_connect(SQL_HOST, SQL_USER, SQL_PASS, SQL_DB, mainOptions);
 
 	printf("[MySQL] (Main Pipelines) Connecting to %s...", SQL_HOST);
 	if(mysql_errno(MainPipeline) != 0)
