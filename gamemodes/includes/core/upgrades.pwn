@@ -239,7 +239,7 @@ LevelCheck(playerid)
 					    }
 					    else {
 					        mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `PendingRefReward`=1 WHERE `Username`='%s'", PlayerInfo[playerid][pReferredBy]);
-					        mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", REWARD_REFERRAL_THREAD, playerid, g_arrQueryHandle{playerid});
+					        mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", REWARD_REFERRAL_THREAD, playerid, g_arrQueryHandle[playerid]);
 						}
 					}
 				}

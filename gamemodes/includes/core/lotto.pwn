@@ -177,7 +177,7 @@ public EndLotto(secondt)
 	{
 	    format(string, sizeof(string), "Lottery News: We have started the Lottery Election.");
 		OOCOff(COLOR_WHITE, string);
-		new rand = (random(299) + 1);
+		new rand = Random(1, 300);
 		Lotto(rand);
 	}
 	return 1;

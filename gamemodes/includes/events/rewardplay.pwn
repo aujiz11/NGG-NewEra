@@ -268,7 +268,7 @@ CMD:getrewardgift(playerid, params[]) {
 					}
 					default:
 					{ // 10%
-						new gift = (random(5) + 1);
+						new gift = Random(1, 6);
 						if(gift >= 1 && gift <= 3)
 						{
 							if(RimMod > 0) // Rim Kit

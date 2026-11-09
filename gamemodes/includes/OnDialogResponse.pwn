@@ -198,7 +198,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				format(PlayerInfo[playerid][pReferredBy], MAX_PLAYER_NAME, "%s", szEscape);
 
 				mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT `Username` FROM `accounts` WHERE `Username` = '%s'", szEscape);
-				mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", MAIN_REFERRAL_THREAD, playerid, g_arrQueryHandle{playerid});
+				mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", MAIN_REFERRAL_THREAD, playerid, g_arrQueryHandle[playerid]);
 			}
 			else {
 				PlayerInfo[playerid][pTut]++;
@@ -12121,7 +12121,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(FIFEnabled == 1)
 			{
-				new iNumber = (random(10) + 1);
+				new iNumber = Random(1, 11);
 				if(iNumber > 4)
 				{
 					new szMessage[128];

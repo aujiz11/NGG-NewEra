@@ -734,7 +734,7 @@ CMD:destroyplant(playerid, params[])
 						}
 						case 2:
 						{
-						    new Grams = (random(20) + 10);
+						    new Grams = Random(10, 30);
 						    format(szMessage, sizeof(szMessage), "* You seized a opium plant weighing %d milligrams.", Grams);
 							SendClientMessageEx(playerid, COLOR_GREY, szMessage);
 							format(szMessage, sizeof(szMessage), "* %s seizes the opium plant.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
@@ -850,7 +850,7 @@ CMD:pickplant(playerid, params[])
 					    if(Plants[i][pGrowth] >= 120)
 					    {
 							new szMessage[128],
-								Grams = (random(20) + 10);
+								Grams = Random(10, 30);
 
 							ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_Out", 4.0, false, false, false, false, 0, 1);
 

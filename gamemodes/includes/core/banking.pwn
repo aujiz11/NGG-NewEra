@@ -870,3 +870,42 @@ CMD:nextpaycheck(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_GRAD2, "Please note that you will not accrue time if your game is paused.");
 	return 1;
 }
+
+ParseBankTransferAmount(const text[], &amount) {
+	amount = 0;
+	if(!text[0]) return 0;
+	for(new i; text[i]; ++i) {
+		if(text[i] < '0' || text[i] > '9') return 0;
+		new digit = text[i] - '0';
+		if(amount > (cellmax - digit) / 10) return 0;
+		amount = amount * 10 + digit;
+	}
+	return amount > 0;
+}
+
+BankTransferDebit(amount, bool:chargeFee, &fee) {
+	fee = 0;
+	if(amount <= 0) return 0;
+	if(chargeFee) fee = (amount / 100) * 3 + (amount % 100) * 3 / 100;
+	if(amount > cellmax - fee) return 0;
+	return amount + fee;
+}
+
+CommitBankTransfer(playerid, targetid, amount, debit) {
+    if(playerid < 0 || playerid >= MAX_PLAYERS || targetid < 0 || targetid >= MAX_PLAYERS || playerid == targetid
+        || !IsPlayerConnected(playerid) || !IsPlayerConnected(targetid) || !gPlayerLogged{playerid} || !gPlayerLogged{targetid}
+        || !gAccountsInnoDB || mysql_unprocessed_queries(MainPipeline) != 0 || amount <= 0 || debit < amount) return 0;
+    new sourceid = GetPlayerSQLId(playerid), destid = GetPlayerSQLId(targetid);
+    if(sourceid <= 0 || destid <= 0 || sourceid == destid || PlayerInfo[playerid][pAccount] < debit || PlayerInfo[targetid][pAccount] > cellmax - amount) return 0;
+    new source = PlayerInfo[playerid][pAccount] - debit, destination = PlayerInfo[targetid][pAccount] + amount, query[512];
+    mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` a JOIN `accounts` b ON b.`id`=%d SET a.`Bank`=%d,b.`Bank`=%d WHERE a.`id`=%d AND a.`Bank`=%d AND b.`Bank`=%d",
+        destid, source, destination, sourceid, PlayerInfo[playerid][pAccount], PlayerInfo[targetid][pAccount]);
+    new Cache:result = mysql_query(MainPipeline, query);
+    if(!cache_is_valid(result)) return 0;
+    new affected = cache_affected_rows();
+    cache_delete(result);
+    if(affected != 2) return 0;
+    PlayerInfo[playerid][pAccount] = source;
+    PlayerInfo[targetid][pAccount] = destination;
+    return 1;
+}

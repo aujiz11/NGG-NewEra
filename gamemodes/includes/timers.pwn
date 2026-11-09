@@ -2976,13 +2976,5 @@ ptask fpsCounterUpdate[500](i)
 // TickRate: 60 seconds
 ptask ShopItemQueue[60000](i)
 {
-	szMiscArray[0] = 0;
-	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `shop_orders` WHERE `user_id` = %d AND `status` = 0", GetPlayerSQLId(i));
-	mysql_tquery(MainPipeline, szMiscArray, "ExecuteShopQueue", "ii", i, 0);
-
-	if(ShopToggle == 1)
-	{
-		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `order_delivery_status` WHERE `player_id` = %d AND `status` = 0", GetPlayerSQLId(i));
-		mysql_tquery(ShopPipeline, szMiscArray, "ExecuteShopQueue", "ii", i, 1);
-	}
+	Shop_QueuePlayer(i);
 }

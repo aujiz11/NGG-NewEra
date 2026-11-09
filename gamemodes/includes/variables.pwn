@@ -37,6 +37,13 @@
 new MySQL: MainPipeline;
 new MySQL: ShopPipeline;
 new ShopToggle = 0;
+new bool:gShopDeliveryReady;
+new bool:gAccountsInnoDB;
+new bool:gShopPending[MAX_PLAYERS];
+new gShopOperation[MAX_PLAYERS];
+new gShopTimer[MAX_PLAYERS];
+new gShopOrder[MAX_PLAYERS];
+new gShopQuantities[MAX_PLAYERS][7];
 
 #if defined zombiemode
 new zombieevent;
@@ -801,7 +808,7 @@ new arr_Towing[MAX_PLAYERS];
 new WheelClamp[MAX_VEHICLES char];
 
 new
-	g_arrQueryHandle[MAX_PLAYERS char],
+	g_arrQueryHandle[MAX_PLAYERS],
 	bool:IsPlayerEntering[ MAX_PLAYERS char ];
 
 new iAdverTimer = 0;

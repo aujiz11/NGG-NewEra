@@ -1926,7 +1926,12 @@ enum e_PayPhoneData {
 	pp_iCallerID,
 	pp_iObjectID,
 	pp_iAreaID,
-	Text3D:pp_iTextID
+	Text3D:pp_iTextID,
+	pp_iRevision,
+	bool:pp_bPending,
+	pp_iRequester,
+	pp_iSession,
+	pp_iAccount
 }
 new arrPayPhoneData[MAX_PAYPHONES][e_PayPhoneData];
 

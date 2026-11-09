@@ -79,22 +79,60 @@ hook OnGameModeExit() {
 		-Voucher
 
 */		
-//DBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, szLogTable[], szLogText[]) {
+DBLog_TableAllowed(const table[]) {
+	static const tables[][] = {"Admin", "AdminIPCheck", "AdminMole", "IPCheck", "ItemTransfer", "Kick", "Pay_Log", "PlayerVehicle", "StaffChat"};
+	for(new i; i < sizeof(tables); ++i) if(!strcmp(table, tables[i])) return 1;
+	return 0;
+}
+
+DBLog_WriteEntry(const table[], actorid, targetid, const text[], const actorip[], const targetip[], bool:withTarget) {
+	new length = strlen(text), bool:longEntry = length > 2048;
+	if(length >= sizeof(szMiscArray) || !DBLog_TableAllowed(table)) return 0;
+	new DBResult:result, chunk[2049];
+	if(longEntry) {
+		result = DB_ExecuteQuery(db_iHandle, "BEGIN IMMEDIATE");
+		if(!result) return 0;
+		db_free_result(result);
+	}
+	strmid(chunk, text, 0, 2048, sizeof(chunk));
+	if(withTarget) result = DB_ExecuteQuery(db_iHandle, "INSERT INTO `%s` (`Timestamp`,`PlayerID`,`TargetID`,`LogText`,`PlayerIP`,`TargetIP`) VALUES (%d,%d,%d,'%q','%q','%q')", table, gettime(), actorid, targetid, chunk, actorip, targetip);
+	else result = DB_ExecuteQuery(db_iHandle, "INSERT INTO `%s` (`Timestamp`,`PlayerID`,`LogText`,`PlayerIP`) VALUES (%d,%d,'%q','%q')", table, gettime(), actorid, chunk, actorip);
+	if(result && longEntry) {
+		db_free_result(result);
+		strmid(chunk, text, 2048, length, sizeof(chunk));
+		result = DB_ExecuteQuery(db_iHandle, "UPDATE `%s` SET `LogText`=`LogText`||'%q' WHERE rowid=last_insert_rowid()", table, chunk);
+	}
+	new bool:success = result != DBResult:0;
+	if(result) db_free_result(result);
+	if(longEntry) {
+		result = DB_ExecuteQuery(db_iHandle, success ? ("COMMIT") : ("ROLLBACK"));
+		if(!result) {
+			result = DB_ExecuteQuery(db_iHandle, "ROLLBACK");
+			success = false;
+		}
+		if(result) db_free_result(result);
+	}
+	return success;
+}
+
 DBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, const szLogTable[], const szLogText[]) {
-
-	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `%s` (`Timestamp`,`PlayerID`,`TargetID`,`LogText`,`PlayerIP`,`TargetIP`) VALUES ('%d','%d','%d','%s','%s','%s')", szLogTable, gettime(), PlayerInfo[iPlayerID][pId], PlayerInfo[iTargetID][pId], szLogText, PlayerInfo[iPlayerID][pIP], PlayerInfo[iTargetID][pIP]);
-	db_free_result(db_query(db_iHandle, szMiscArray));
-	printf("%s",szMiscArray);
-
+    if(iPlayerID < 0 || iPlayerID >= MAX_PLAYERS || !IsPlayerConnected(iPlayerID)) return 0;
+    if(!DBLog_TableAllowed(szLogTable) || strlen(szLogText) >= sizeof(szMiscArray)) return 0;
+    new targetid, targetip[46];
+    if(0 <= iTargetID < MAX_PLAYERS && IsPlayerConnected(iTargetID)) {
+        targetid = PlayerInfo[iTargetID][pId];
+        format(targetip, sizeof(targetip), "%s", PlayerInfo[iTargetID][pIP]);
+    }
+    if(!DBLog_WriteEntry(szLogTable, PlayerInfo[iPlayerID][pId], targetid, szLogText, PlayerInfo[iPlayerID][pIP], targetip, true))
+        return print("[SQLite] Audit log write failed."), 0;
 	return 1;
 }
 
 ChatDBLog(iPlayerID, const szLogTable[], const szLogText[]) {
-
-	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `%s` (`Timestamp`,`PlayerID`,`LogText`,`PlayerIP`) VALUES ('%d','%d','%s','%s')", szLogTable, gettime(), PlayerInfo[iPlayerID][pId], szLogText, PlayerInfo[iPlayerID][pIP]);
-	db_free_result(db_query(db_iHandle, szMiscArray));
-	printf("%s",szMiscArray);
-
+    if(iPlayerID < 0 || iPlayerID >= MAX_PLAYERS || !IsPlayerConnected(iPlayerID)) return 0;
+    if(!DBLog_TableAllowed(szLogTable) || strlen(szLogText) >= sizeof(szMiscArray)) return 0;
+    if(!DBLog_WriteEntry(szLogTable, PlayerInfo[iPlayerID][pId], 0, szLogText, PlayerInfo[iPlayerID][pIP], "", false))
+        return print("[SQLite] Chat log write failed."), 0;
 	return 1;
 }
 
@@ -148,9 +186,11 @@ GroupDBLog(iPlayerID, iGroupID, szLogText) {
 
 */
 ConnectionDBLog(iPlayerID) {
-
-	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `Connections` (`Timestamp`,`PlayerID`,`PlayerIP`) VALUES ('%d', '%d', '%s')", gettime(), PlayerInfo[iPlayerID][pId], PlayerInfo[iPlayerID][pIP]);
-	db_free_result(db_query(db_iHandle, szMiscArray));
-	
+	if(iPlayerID < 0 || iPlayerID >= MAX_PLAYERS || !IsPlayerConnected(iPlayerID)) return 0;
+	new query[256];
+	format(query, sizeof(query), "INSERT INTO `Connections` (`Timestamp`,`PlayerID`,`PlayerIP`) VALUES (%d,%d,'%q')", gettime(), PlayerInfo[iPlayerID][pId], PlayerInfo[iPlayerID][pIP]);
+	new DBResult:result = DB_ExecuteQuery(db_iHandle, "%s", query);
+	if(!result) return print("[SQLite] Connection log write failed."), 0;
+	db_free_result(result);
 	return 1;
 }

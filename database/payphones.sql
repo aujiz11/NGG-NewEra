@@ -3,8 +3,8 @@
 -- Persistent IDs 1..100 correspond to runtime slots 0..99 (MAX_PAYPHONES = 100).
 -- /createphone UPDATEs an existing slot; /destroyphone clears it instead of deleting.
 -- Do not delete or renumber slot rows. No real phone locations/numbers are seeded.
--- Existing loader/cache-output and save-WHERE defects remain in Pawn code; see
--- .agents/database/supplemental-tables.md before runtime verification.
+-- Loader, bounds and scoped-write repairs are documented in
+-- .agents/engineering/integrity-fixes-2026-11-09.md. Client acceptance remains separate.
 
 CREATE TABLE IF NOT EXISTS `payphones` (
   `id` int(11) NOT NULL,

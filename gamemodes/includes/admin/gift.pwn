@@ -2811,10 +2811,10 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 	{
 		if(playerid == MAX_PLAYERS || PlayerInfo[playerid][pAdmin] >= 2)
 		{
-			new randgift = (random(102) + 1);
+			new randgift = Random(1, 103);
 			if(randgift >= 1 && randgift <= 83)
 			{
-				new gift = (random(11) + 1);
+				new gift = Random(1, 12);
 				if(gift == 1)
 				{
 					if(PlayerInfo[giveplayerid][pConnectHours] < 2 || PlayerInfo[giveplayerid][pWRestricted] > 0) return GiftPlayer(playerid, giveplayerid);
@@ -2914,7 +2914,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 			}
 			else if(randgift > 83 && randgift <= 98)
 			{
-				new gift = (random(8) + 1);
+				new gift = Random(1, 9);
 				if(gift == 1)
 				{
 					GivePlayerCash(giveplayerid, 150000);
@@ -3049,7 +3049,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 			}
 			else if(randgift > 98 && randgift <= 100)
 			{
-				new gift = (random(5) + 1);
+				new gift = Random(1, 6);
 				if(gift == 1 && PlayerInfo[giveplayerid][pDonateRank] <= 2) // Silver VIP can get it extended, I suppose
 				{
 					PlayerInfo[giveplayerid][pSVIPVoucher]++;
@@ -3134,7 +3134,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 			}
 			else if(randgift > 100 && randgift <= 103) // Rim Mod
 			{
-				new gift = (random(9) + 1);
+				new gift = Random(1, 10);
 				if(gift >= 1 && gift <= 3)
 				{
 					if(RimMod > 0) // Rim Kit
@@ -3189,7 +3189,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 				}
 				else if(gift == 5) //
 				{
-					new gift2 = (random(14) + 1);
+					new gift2 = Random(1, 15);
 					if(gift2 == 3)
 					{
 						if(PVIPVoucher > 0)

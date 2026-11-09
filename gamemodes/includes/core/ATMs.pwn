@@ -193,19 +193,28 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 
 		case ATM_TRANSFER_TO: {
+			DeletePVar(playerid, "ATMTransferTo");
+			DeletePVar(playerid, "ATMTransferAccount");
+			DeletePVar(playerid, "ATMTransferSession");
 			
 			if(!response) {
 				return ShowATMMenu(playerid);
 			}
 
-			new id = strval(inputtext);
+			new id;
+			if(!strlen(inputtext) || strlen(inputtext) > 3 || !IsNumericString(inputtext)) return ShowATMMenu(playerid, 3);
+			id = strval(inputtext);
 			
-			if(!IsPlayerConnected(id) || !gPlayerLogged{id}) {
+			if(id < 0 || id >= MAX_PLAYERS || id == playerid || !IsPlayerConnected(id) || !gPlayerLogged{id}) {
 				SendClientMessageEx(playerid, COLOR_WHITE, "  The player you are trying to transfer to is not connected!");
 				return ShowATMMenu(playerid, 3);
 			}
 
 			SetPVarInt(playerid, "ATMTransferTo", id);
+			SetPVarInt(playerid, "ATMTransferSource", GetPlayerSQLId(playerid));
+			SetPVarInt(playerid, "ATMTransferActorSession", g_arrQueryHandle[playerid]);
+			SetPVarInt(playerid, "ATMTransferAccount", GetPlayerSQLId(id));
+			SetPVarInt(playerid, "ATMTransferSession", g_arrQueryHandle[id]);
 			return ShowATMMenu(playerid, 4);
 		}
 
@@ -216,9 +225,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return ShowATMMenu(playerid, 3);
 			}
 
-			new 
-				id = GetPVarInt(playerid, "ATMTransferTo"),
-				iAmount = strval(inputtext);
+			new id = GetPVarInt(playerid, "ATMTransferTo"), iAmount;
+			if(!gPlayerLogged{playerid} || GetPlayerSQLId(playerid) != GetPVarInt(playerid, "ATMTransferSource")
+				|| g_arrQueryHandle[playerid] != GetPVarInt(playerid, "ATMTransferActorSession") || !GetPVarType(playerid, "ATMTransferTo") || id < 0 || id >= MAX_PLAYERS || id == playerid
+				|| !IsPlayerConnected(id) || !gPlayerLogged{id} || GetPlayerSQLId(id) <= 0
+				|| GetPlayerSQLId(id) != GetPVarInt(playerid, "ATMTransferAccount")
+				|| g_arrQueryHandle[id] != GetPVarInt(playerid, "ATMTransferSession")) {
+				DeletePVar(playerid, "ATMTransferTo");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "The recipient changed or disconnected. Select the recipient again.");
+				return ShowATMMenu(playerid, 3);
+			}
+			if(!ParseBankTransferAmount(inputtext, iAmount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Enter a positive whole amount within the supported range.");
 
 
 			if(restarting) {
@@ -234,19 +251,20 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return ShowATMMenu(playerid, 3);
 			}
 
-			if(iAmount > PlayerInfo[playerid][pAccount] || iAmount < 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You are trying to send more than you have!");
-
-			if(PlayerInfo[playerid][pDonateRank] == 0) {
-				new fee;
-				fee = 3*iAmount/100;
-				PlayerInfo[playerid][pAccount] -= fee;
+			new fee, debit = BankTransferDebit(iAmount, PlayerInfo[playerid][pDonateRank] == 0, fee);
+			if(!debit || debit > PlayerInfo[playerid][pAccount] || PlayerInfo[id][pAccount] > cellmax - iAmount)
+				return SendClientMessageEx(playerid, COLOR_WHITE, "Insufficient funds including fees, or recipient balance limit exceeded.");
+			DeletePVar(playerid, "ATMTransferTo");
+			DeletePVar(playerid, "ATMTransferAccount");
+			DeletePVar(playerid, "ATMTransferSession");
+			if(!CommitBankTransfer(playerid, id, iAmount, debit)) {
+                SendClientMessageEx(playerid, COLOR_GRAD1, "Transfer was not confirmed. Wait and select the recipient again.");
+                return ShowATMMenu(playerid, 3);
+            }
+			if(fee) {
 				format(szMiscArray, sizeof(szMiscArray), "  You have been charged a 3 percent transfer fee: -$%d.", fee);
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 			}
-
-			// Use these as they update the MySQL Directly with less function calls
-			GivePlayerCashEx(playerid, TYPE_BANK, -iAmount);
-			GivePlayerCashEx(id, TYPE_BANK, iAmount);
 
 			format(szMiscArray, sizeof(szMiscArray), "   You have transferred $%s to %s's account.", number_format(iAmount), GetPlayerNameEx(id));
 			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);

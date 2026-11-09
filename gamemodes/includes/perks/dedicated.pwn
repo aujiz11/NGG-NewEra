@@ -471,7 +471,7 @@ CMD:osetdedicated(playerid, params[])
 			SetPVarString(playerid, "Offline_DName", szPlayerName);
 			
             mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT `pDedicatedPlayer` FROM `accounts` WHERE `Username` = '%s'", szPlayerName);
- 			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", OFFLINE_DEDICATED_THREAD, playerid, g_arrQueryHandle{playerid});
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", OFFLINE_DEDICATED_THREAD, playerid, g_arrQueryHandle[playerid]);
  			
  			format(string, sizeof(string), "Attempting to offline set %s account to level %d Dedicated.", szPlayerName, level);
  			SendClientMessageEx(playerid, COLOR_WHITE, string);

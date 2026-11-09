@@ -817,7 +817,7 @@ stock SpawnPaintballArena(playerid, arenaid)
 	{
 	    case 1,4: // Deathmatch, KOTH
 	    {
-			new rand = (random(4) + 1);
+			new rand = Random(1, 5);
 			switch (rand)
 			{
 	    		case 1:
@@ -846,7 +846,7 @@ stock SpawnPaintballArena(playerid, arenaid)
 		{
 		    if(PlayerInfo[playerid][pPaintTeam] == 1) // Red
 		    {
-                new rand = (random(3) + 1);
+                new rand = Random(1, 4);
 		    	switch (rand)
 		    	{
 		    	    case 1:
@@ -869,7 +869,7 @@ stock SpawnPaintballArena(playerid, arenaid)
 			}
 			if(PlayerInfo[playerid][pPaintTeam] == 2) // Blue
 			{
-			    new rand = (random(3) + 1);
+			    new rand = Random(1, 4);
 			    switch (rand)
 			    {
 			        case 1:

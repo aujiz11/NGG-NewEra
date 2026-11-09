@@ -197,19 +197,28 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 
 		case BANK_TRANSFER_TO: {
+			DeletePVar(playerid, "BankTransferTo");
+			DeletePVar(playerid, "BankTransferAccount");
+			DeletePVar(playerid, "BankTransferSession");
 			
 			if(!response) {
 				return ShowBankMenu(playerid);
 			}
 
-			new id = strval(inputtext);
+			new id;
+			if(!strlen(inputtext) || strlen(inputtext) > 3 || !IsNumericString(inputtext)) return ShowBankMenu(playerid, 3);
+			id = strval(inputtext);
 			
-			if(!IsPlayerConnected(id) || !gPlayerLogged{id}) {
+			if(id < 0 || id >= MAX_PLAYERS || id == playerid || !IsPlayerConnected(id) || !gPlayerLogged{id}) {
 				SendClientMessageEx(playerid, COLOR_WHITE, "  The player you are trying to transfer to is not connected!");
 				return ShowBankMenu(playerid, 3);
 			}
 
 			SetPVarInt(playerid, "BankTransferTo", id);
+			SetPVarInt(playerid, "BankTransferSource", GetPlayerSQLId(playerid));
+			SetPVarInt(playerid, "BankTransferActorSession", g_arrQueryHandle[playerid]);
+			SetPVarInt(playerid, "BankTransferAccount", GetPlayerSQLId(id));
+			SetPVarInt(playerid, "BankTransferSession", g_arrQueryHandle[id]);
 			return ShowBankMenu(playerid, 4);
 		}
 
@@ -220,9 +229,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return ShowBankMenu(playerid, 3);
 			}
 
-			new 
-				id = GetPVarInt(playerid, "BankTransferTo"),
-				iAmount = strval(inputtext);
+			new id = GetPVarInt(playerid, "BankTransferTo"), iAmount;
+			if(!gPlayerLogged{playerid} || GetPlayerSQLId(playerid) != GetPVarInt(playerid, "BankTransferSource")
+				|| g_arrQueryHandle[playerid] != GetPVarInt(playerid, "BankTransferActorSession") || !GetPVarType(playerid, "BankTransferTo") || id < 0 || id >= MAX_PLAYERS || id == playerid
+				|| !IsPlayerConnected(id) || !gPlayerLogged{id} || GetPlayerSQLId(id) <= 0
+				|| GetPlayerSQLId(id) != GetPVarInt(playerid, "BankTransferAccount")
+				|| g_arrQueryHandle[id] != GetPVarInt(playerid, "BankTransferSession")) {
+				DeletePVar(playerid, "BankTransferTo");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "The recipient changed or disconnected. Select the recipient again.");
+				return ShowBankMenu(playerid, 3);
+			}
+			if(!ParseBankTransferAmount(inputtext, iAmount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Enter a positive whole amount within the supported range.");
 
 
 			if(restarting) {
@@ -238,11 +255,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return ShowBankMenu(playerid, 3);
 			}
 
-			if(iAmount > PlayerInfo[playerid][pAccount] || iAmount < 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You are trying to send more than you have!");
-
-			// Use these as they update the MySQL Directly with less function calls
-			GivePlayerCashEx(playerid, TYPE_BANK, -iAmount);
-			GivePlayerCashEx(id, TYPE_BANK, iAmount);
+			new fee, debit = BankTransferDebit(iAmount, false, fee);
+			if(!debit || debit > PlayerInfo[playerid][pAccount] || PlayerInfo[id][pAccount] > cellmax - iAmount)
+				return SendClientMessageEx(playerid, COLOR_WHITE, "Insufficient funds including fees, or recipient balance limit exceeded.");
+			DeletePVar(playerid, "BankTransferTo");
+			DeletePVar(playerid, "BankTransferAccount");
+			DeletePVar(playerid, "BankTransferSession");
+			if(!CommitBankTransfer(playerid, id, iAmount, debit)) {
+                SendClientMessageEx(playerid, COLOR_GRAD1, "Transfer was not confirmed. Wait and select the recipient again.");
+                return ShowBankMenu(playerid, 3);
+            }
 
 			format(szMiscArray, sizeof(szMiscArray), "   You have transferred $%s to %s's account.", number_format(iAmount), GetPlayerNameEx(id));
 			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);

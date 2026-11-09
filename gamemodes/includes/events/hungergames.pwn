@@ -430,7 +430,7 @@ CMD:openbackpack(playerid, params[])
 			}
 			else if(HungerBackpackInfo[backpack][hgBackpackType] == 2)
 			{
-				new rand = (random(34) + 1);
+				new rand = Random(1, 35);
 				if(rand > 0 && rand < 6)
 				{
 					GivePlayerValidWeapon(playerid, 24);

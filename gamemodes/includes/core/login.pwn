@@ -8,7 +8,7 @@
 
 stock SetPlayerJoinCamera(playerid)
 {
-	new randcamera = (random(8) + 1);
+	new randcamera = Random(1, 9);
 	switch(randcamera)
 	{
 		case 1: // Gym
@@ -374,7 +374,7 @@ public loginCamera(playerid)
 		}
 	}
 	SetTimerEx("loginCamera", 10000, false, "i", playerid);
-	SetPVarInt(playerid, "LoginScreen", (random(8) + 1));
+	SetPVarInt(playerid, "LoginScreen", Random(1, 9));
 	return 1;
 }
 

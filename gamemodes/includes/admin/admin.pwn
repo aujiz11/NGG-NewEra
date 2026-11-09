@@ -6114,7 +6114,8 @@ CMD:dice(playerid, params[])
     new string[84];
     if (PlayerInfo[playerid][pDice])
 	{
-        new rand = (random(6) + 1); format(string, sizeof(string), "{FF8000}** {C2A2DA}%s rolls a dice that lands on %d.", GetPlayerNameEx(playerid), rand);
+        new rand = Random(1, 7); 
+		format(string, sizeof(string), "{FF8000}** {C2A2DA}%s rolls a dice that lands on %d.", GetPlayerNameEx(playerid), rand);
         ProxDetector(9.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
     }
     else

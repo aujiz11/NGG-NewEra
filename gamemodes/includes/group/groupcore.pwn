@@ -3360,7 +3360,7 @@ CMD:listbugs(playerid, params[])
 			}
 			new query[256];
 			mysql_format(MainPipeline, query, sizeof(query), "SELECT `Username`, `Bugged` FROM `accounts`  WHERE `Bugged` = %d AND `Online` = 0", PlayerInfo[playerid][pMember]);
-			mysql_tquery(MainPipeline, query, "OnQueryFinish", "iii", BUG_LIST_THREAD, playerid, g_arrQueryHandle{playerid});
+			mysql_tquery(MainPipeline, query, "OnQueryFinish", "iii", BUG_LIST_THREAD, playerid, g_arrQueryHandle[playerid]);
 			return 1;
 		}
 	}

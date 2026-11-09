@@ -168,6 +168,7 @@ stock g_mysql_Init()
 		else print("[MySQL] (ShopPipeline) Connection successful toward MySQL Database Server!");
 	}
 
+	mysql_tquery(MainPipeline, "SELECT `TABLE_NAME` AS `name`, `ENGINE` AS `engine` FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA`=DATABASE() AND `TABLE_NAME` IN ('accounts','shop_orders')", "OnShopDeliverySchema");
 	InitiateGamemode(); // Start the server
 
 	return 1;
@@ -191,7 +192,8 @@ public OnQueryFinish(resultid, extraid, handleid)
     szMiscArray[0] = 0;
 	if(resultid != SENDDATA_THREAD) {
 		if(extraid != INVALID_PLAYER_ID) {
-			if(g_arrQueryHandle{extraid} != -1 && g_arrQueryHandle{extraid} != handleid) return 0;
+			if(extraid < 0 || extraid >= MAX_PLAYERS || !IsPlayerConnected(extraid)) return 0;
+			if(handleid != g_arrQueryHandle[extraid]) return 0;
 		}
 		cache_get_row_count(rows);
 		cache_get_field_count(fields);
@@ -1355,7 +1357,11 @@ public OnQueryFinish(resultid, extraid, handleid)
 }
 
 public OnQueryError(errorid, const error[], const callback[], const query[], MySQL:handle) {
-	if(handle == MainPipeline) GangTag_QueryFailed(callback, query);
+	if(handle == MainPipeline) {
+		GangTag_QueryFailed(callback, query);
+		PayPhone_QueryFailed(callback, query);
+		Shop_QueryFailed(query);
+	}
 
 	printf("[MySQL] Query Error - (ErrorID: %d)",  errorid);
 	print("[MySQL] Check mysql_log.txt to review the query that threw the error.");
@@ -1393,7 +1399,7 @@ stock g_mysql_AccountLoginCheck(playerid)
 	new string[128];
 
 	mysql_format(MainPipeline, string, sizeof(string), "SELECT `Username`, `Key`, `Salt`, `Online` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
-	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOGIN_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOGIN_THREAD, playerid, g_arrQueryHandle[playerid]);
 	return 1;
 }
 
@@ -1403,7 +1409,7 @@ g_mysql_AccountAuthCheck(playerid)
 	new string[128];
 
 	mysql_format(MainPipeline, string, sizeof(string), "SELECT `Username` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
-	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", AUTH_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", AUTH_THREAD, playerid, g_arrQueryHandle[playerid]);
 
 	// Reset the GUI
 	//SetPlayerJoinCamera(playerid);
@@ -1453,7 +1459,7 @@ stock g_mysql_CreateAccount(playerid, accountPassword[])
 	WP_Hash(passbuffer, sizeof(passbuffer), string);
 
 	mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `accounts` (`RegiDate`, `LastLogin`, `Username`, `Key`, `Salt`) VALUES (NOW(), NOW(), '%s', '%s', '%s')", GetPlayerNameExt(playerid), passbuffer, salt);
-	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", REGISTER_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", REGISTER_THREAD, playerid, g_arrQueryHandle[playerid]);
 	return 1;
 }
 
@@ -1461,7 +1467,7 @@ stock g_mysql_LoadPVehicles(playerid)
 {
     new string[128];
 	mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `vehicles` WHERE `sqlID` = %d", PlayerInfo[playerid][pId]);
-	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOADPVEHICLE_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOADPVEHICLE_THREAD, playerid, g_arrQueryHandle[playerid]);
 	return 1;
 }
 
@@ -1472,7 +1478,7 @@ stock g_mysql_LoadPVehiclePositions(playerid)
 	new string[128];
 
 	mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `pvehpositions` WHERE `id` = %d", PlayerInfo[playerid][pId]);
-	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOADPVEHPOS_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOADPVEHPOS_THREAD, playerid, g_arrQueryHandle[playerid]);
 	return 1;
 }
 
@@ -1482,7 +1488,7 @@ stock g_mysql_LoadPlayerToys(playerid)
 {
 	new szQuery[128];
 	mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT * FROM `toys` WHERE `player` = %d", PlayerInfo[playerid][pId]);
-	mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", LOADPTOYS_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", LOADPTOYS_THREAD, playerid, g_arrQueryHandle[playerid]);
 	return 1;
 }
 
@@ -1494,7 +1500,7 @@ stock g_mysql_LoadAccount(playerid)
 
 	new string[164];
 	mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
- 	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOADUSERDATA_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOADUSERDATA_THREAD, playerid, g_arrQueryHandle[playerid]);
 	return 1;
 }
 
@@ -1685,7 +1691,7 @@ stock CheckBanEx(playerid)
 {
 	new string[280];
 	mysql_format(MainPipeline, string, sizeof(string), "SELECT `IP` FROM `ban` WHERE `IP` = '%s' AND `active` = '1'", GetPlayerIpEx(playerid));
-	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", IPBAN_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", IPBAN_THREAD, playerid, g_arrQueryHandle[playerid]);
 	return 1;
 }
 
@@ -6052,123 +6058,131 @@ public OnLoadHGBackpacks()
 	return true;
 }
 
-forward ExecuteShopQueue(playerid, id);
-public ExecuteShopQueue(playerid, id)
-{
-	new rows, index, result[128], string[128], query[128], tmp[8];
-	switch(id)
-	{
-		case 0:
-		{
-			cache_get_row_count(rows);
-			if(IsPlayerConnected(playerid))
-			{
-				if(index < rows)
-				{
-					cache_get_value_name(index, "id", result); tmp[0] = strval(result);
-					cache_get_value_name(index, "GiftVoucher", result); tmp[1] = strval(result);
-					cache_get_value_name(index, "CarVoucher", result); tmp[2] = strval(result);
-					cache_get_value_name(index, "VehVoucher", result); tmp[3] = strval(result);
-					cache_get_value_name(index, "SVIPVoucher", result); tmp[4] = strval(result);
-					cache_get_value_name(index, "GVIPVoucher", result); tmp[5] = strval(result);
-					cache_get_value_name(index, "PVIPVoucher", result); tmp[6] = strval(result);
-					cache_get_value_name(index, "credits_spent", result); tmp[7] = strval(result);
+forward OnShopDeliverySchema();
+public OnShopDeliverySchema() {
+    new rows, found, name[32], engine[32];
+    cache_get_row_count(rows);
+    for(new row; row < rows; ++row) {
+        cache_get_value_name(row, "name", name, sizeof(name));
+        cache_get_value_name(row, "engine", engine, sizeof(engine));
+        if(strcmp(engine, "InnoDB", true)) continue;
+        if(!strcmp(name, "accounts", true)) found |= 1;
+        if(!strcmp(name, "shop_orders", true)) found |= 2;
+    }
+    gAccountsInnoDB = (found & 1) != 0;
+    gShopDeliveryReady = found == 3;
+    if(!gShopDeliveryReady) print("[Shop] Automatic delivery paused: accounts and shop_orders must both use InnoDB.");
+    return 1;
+}
 
-					if(tmp[1] > 0)
-					{
-						PlayerInfo[playerid][pGiftVoucher] += tmp[1];
-						format(string, sizeof(string), "You have been automatically issued %d gift reset voucher(s).", tmp[1]);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %d gift reset voucher(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[1]);
-						Log("logs/shoplog.log", string);
-					}
-					if(tmp[2] > 0)
-					{
-						PlayerInfo[playerid][pCarVoucher] += tmp[2];
-						format(string, sizeof(string), "You have been automatically issued %d restricted car voucher(s).", tmp[2]);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %d restricted car voucher(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[2]);
-						Log("logs/shoplog.log", string);
-					}
-					if(tmp[3] > 0)
-					{
-						PlayerInfo[playerid][pVehVoucher] += tmp[3];
-						format(string, sizeof(string), "You have been automatically issued %d car voucher(s).", tmp[3]);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %d car voucher(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[3]);
-						Log("logs/shoplog.log", string);
-					}
-					if(tmp[4] > 0)
-					{
-						PlayerInfo[playerid][pSVIPVoucher] += tmp[4];
-						format(string, sizeof(string), "You have been automatically issued %d Silver VIP voucher(s).", tmp[4]);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %d Silver VIP voucher(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[4]);
-						Log("logs/shoplog.log", string);
-					}
-					if(tmp[5] > 0)
-					{
-						PlayerInfo[playerid][pGVIPVoucher] += tmp[5];
-						format(string, sizeof(string), "You have been automatically issued %d Gold VIP voucher(s).", tmp[5]);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %d Gold VIP voucher(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[5]);
-						Log("logs/shoplog.log", string);
-					}
-					if(tmp[6] > 0)
-					{
-						PlayerInfo[playerid][pPVIPVoucher] += tmp[6];
-						format(string, sizeof(string), "You have been automatically issued %d 1 month PVIP Voucher(s).", tmp[6]);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %d 1 month PVIP Voucher(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[6]);
-						Log("logs/shoplog.log", string);
-					}
-					GivePlayerCredits(playerid, tmp[7], 1, 1);
-					format(string, sizeof(string), "%s(%d) | Credits: %d - 1", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[7]);
-					Log("logs/shopdebug.log", string);
-					mysql_format(MainPipeline, query, sizeof(query), "UPDATE `shop_orders` SET `status` = 1 WHERE `id` = %d", tmp[0]);
-					mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
-					format(string, sizeof(string), "%s(%d) | Status set to 1 - 1", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
-					Log("logs/shopdebug.log", string);
-					OnPlayerStatsUpdate(playerid);
-					return SendClientMessageEx(playerid, COLOR_CYAN, "* Use /myvouchers to check and use your vouchers at any time!");
-				}
+Shop_QueryFailed(const query[]) {
+	if(strfind(query, "/*shop ") != 0) return 0;
+	new playerid, operation;
+	if(sscanf(query[7], "ii", playerid, operation) || playerid < 0 || playerid >= MAX_PLAYERS) return 0;
+	if(gShopOperation[playerid] == operation) gShopPending[playerid] = false;
+	return 1;
 			}
-		}
-		case 1:
-		{
-			cache_get_row_count(rows);
-			if(IsPlayerConnected(playerid))
-			{
-				if(index < rows)
-				{
-					cache_get_value_name(index, "order_id", result); tmp[0] = strval(result);
-					cache_get_value_name(index, "credit_amount", result); tmp[1] = strval(result);
 
-					GivePlayerCredits(playerid, tmp[1], 1);
-					format(string, sizeof(string), "%s(%d) | Credits: %d - 2", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[1]);
-					Log("logs/shopdebug.log", string);
-					format(string, sizeof(string), "You have been automatically issued %s credit(s).", number_format(tmp[1]));
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
-					format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %s credit(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(tmp[1]));
-					Log("logs/shoplog.log", string);
-					mysql_format(ShopPipeline, query, sizeof(query), "UPDATE `order_delivery_status` SET `status` = 1 WHERE `order_id` = %d", tmp[0]);
-					mysql_tquery(ShopPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
-					format(string, sizeof(string), "%s(%d) | Status set to 1 - 2", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
-					Log("logs/shopdebug.log", string);
-					OnPlayerStatsUpdate(playerid);
-					return 1;
-				}
-			}
-		}
+Shop_QueuePlayer(playerid) {
+	if(playerid < 0 || playerid >= MAX_PLAYERS || !IsPlayerConnected(playerid) || !gPlayerLogged{playerid}
+		|| GetPlayerSQLId(playerid) <= 0 || !gShopDeliveryReady || gShopPending[playerid]) return 0;
+	new query[256], operation = ++gShopOperation[playerid];
+	gShopPending[playerid] = true;
+	mysql_format(MainPipeline, query, sizeof(query), "/*shop %d %d */ SELECT * FROM `shop_orders` WHERE `user_id`=%d AND `status`=0 ORDER BY `id` LIMIT 1", playerid, operation, GetPlayerSQLId(playerid));
+	if(!mysql_tquery(MainPipeline, query, "ExecuteShopQueue", "iiii", playerid, g_arrQueryHandle[playerid], GetPlayerSQLId(playerid), operation)) {
+		gShopPending[playerid] = false;
+		return 0;
 	}
 	return 1;
+}
+
+Shop_CommitOrder(playerid, orderid, const quantities[7]) {
+	if(playerid < 0 || playerid >= MAX_PLAYERS || !IsPlayerConnected(playerid) || !gPlayerLogged{playerid}
+		|| !gShopDeliveryReady || orderid <= 0 || mysql_unprocessed_queries(MainPipeline) != 0) return 0;
+	static const accountFields[][] = {"GiftVoucher", "CarVoucher", "VehVoucher", "SVIPVoucher", "GVIPVoucher", "PVIPVoucher", "Credits", "TotalCredits"};
+	static const orderFields[][] = {"GiftVoucher", "CarVoucher", "VehVoucher", "SVIPVoucher", "GVIPVoucher", "PVIPVoucher", "credits_spent"};
+	static const pInfo:playerFields[] = {pGiftVoucher, pCarVoucher, pVehVoucher, pSVIPVoucher, pGVIPVoucher, pPVIPVoucher, pCredits, pTotalCredits};
+	new before[8], after[8], query[4096];
+	for(new i; i < 8; ++i) {
+		before[i] = PlayerInfo[playerid][playerFields[i]];
+		if(before[i] < 0) return 0;
+	}
+	for(new i; i < 7; ++i) if(quantities[i] < 0) return 0;
+	for(new i; i < 6; ++i) {
+		if(before[i] > cellmax - quantities[i]) return 0;
+		after[i] = before[i] + quantities[i];
+	}
+	if(quantities[6] > before[6] || before[7] > cellmax - quantities[6]) return 0;
+	after[6] = before[6] - quantities[6];
+	after[7] = before[7] + quantities[6];
+	format(query, sizeof(query), "UPDATE `accounts` a JOIN `shop_orders` o ON o.`user_id`=a.`id` SET ");
+	for(new i; i < 8; ++i) format(query, sizeof(query), "%sa.`%s`=%d,", query, accountFields[i], after[i]);
+	format(query, sizeof(query), "%so.`status`=1 WHERE a.`id`=%d AND o.`id`=%d AND o.`status`=0", query, GetPlayerSQLId(playerid), orderid);
+	for(new i; i < 8; ++i) format(query, sizeof(query), "%s AND a.`%s`=%d", query, accountFields[i], before[i]);
+	for(new i; i < 7; ++i) format(query, sizeof(query), "%s AND o.`%s`=%d", query, orderFields[i], quantities[i]);
+	new Cache:result = mysql_query(MainPipeline, query);
+	if(!cache_is_valid(result)) return print("[Shop] Delivery statement failed; no in-memory reward issued."), 0;
+	new affected = cache_affected_rows();
+	cache_delete(result);
+	if(affected < 1 || affected > 2) return 0;
+	for(new i; i < 8; ++i) PlayerInfo[playerid][playerFields[i]] = after[i];
+	SendClientMessageEx(playerid, COLOR_CYAN, "Shop order delivered. Use /myvouchers to view your vouchers.");
+	return 1;
+}
+
+forward ExecuteShopQueue(playerid, session, account, operation);
+public ExecuteShopQueue(playerid, session, account, operation) {
+    if(playerid < 0 || playerid >= MAX_PLAYERS || !gShopPending[playerid] || gShopOperation[playerid] != operation) return 0;
+    if(!IsPlayerConnected(playerid) || !gPlayerLogged{playerid} || g_arrQueryHandle[playerid] != session || GetPlayerSQLId(playerid) != account) {
+        gShopPending[playerid] = false;
+        return 0;
+    }
+    new rows, orderid, ownerid, status, quantities[7];
+    cache_get_row_count(rows);
+    if(rows != 1 || !cache_get_value_name_int(0, "id", orderid) || !cache_get_value_name_int(0, "user_id", ownerid)
+        || ownerid != account || !cache_get_value_name_int(0, "status", status) || status != 0) {
+        gShopPending[playerid] = false;
+        return 0;
+    }
+    static const fields[][] = {"GiftVoucher", "CarVoucher", "VehVoucher", "SVIPVoucher", "GVIPVoucher", "PVIPVoucher", "credits_spent"};
+    for(new i; i < 7; ++i) {
+        if(!cache_get_value_name_int(0, fields[i], quantities[i])) {
+            gShopPending[playerid] = false;
+            return 0;
+        }
+        gShopQuantities[playerid][i] = quantities[i];
+    }
+    gShopOrder[playerid] = orderid;
+    gShopTimer[playerid] = SetTimerEx("Shop_FinishPending", 100, false, "iiiii", playerid, session, account, operation, 0);
+    if(!gShopTimer[playerid]) gShopPending[playerid] = false;
+    return 1;
+}
+
+forward Shop_FinishPending(playerid, session, account, operation, attempts);
+public Shop_FinishPending(playerid, session, account, operation, attempts) {
+    if(playerid < 0 || playerid >= MAX_PLAYERS || !gShopPending[playerid] || gShopOperation[playerid] != operation) return 0;
+    gShopTimer[playerid] = 0;
+    if(!IsPlayerConnected(playerid) || !gPlayerLogged{playerid} || g_arrQueryHandle[playerid] != session || GetPlayerSQLId(playerid) != account) {
+        gShopPending[playerid] = false;
+        return 0;
+    }
+    if(mysql_unprocessed_queries(MainPipeline) != 0) {
+        if(attempts < 50) {
+            gShopTimer[playerid] = SetTimerEx("Shop_FinishPending", 100, false, "iiiii", playerid, session, account, operation, attempts+1);
+            if(gShopTimer[playerid]) return 1;
+        }
+        gShopPending[playerid] = false;
+        return 0;
+    }
+    gShopPending[playerid] = false;
+    return Shop_CommitOrder(playerid, gShopOrder[playerid], gShopQuantities[playerid]);
 }
 
 stock CheckAdminWhitelist(playerid)
 {
 	new string[128];
 	mysql_format(MainPipeline, string, sizeof(string), "SELECT `AdminLevel`, `SecureIP`, `Watchdog` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
-	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", ADMINWHITELIST_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", ADMINWHITELIST_THREAD, playerid, g_arrQueryHandle[playerid]);
 	return true;
 }
 
@@ -6357,7 +6371,7 @@ stock LoadPlayerNonRPPoints(playerid)
 {
 	new string[128];
 	mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `nonrppoints` WHERE `sqlid` = '%d'", PlayerInfo[playerid][pId]);
-	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOADPNONRPOINTS_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOADPNONRPOINTS_THREAD, playerid, g_arrQueryHandle[playerid]);
 	return true;
 }
 
@@ -6596,7 +6610,7 @@ stock g_mysql_LoadFIFInfo(playerid)
 {
 	new szQuery[128];
 	mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT * FROM `fallintofun` WHERE `player` = %d", PlayerInfo[playerid][pId]);
-	mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", LOADFIF_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", LOADFIF_THREAD, playerid, g_arrQueryHandle[playerid]);
 	return 1;
 }
 

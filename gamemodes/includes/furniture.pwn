@@ -673,7 +673,7 @@ timer Furniture_HousePosition[5000](playerid, iHouseID) {
 
 stock timer RehashHouseFurniture[10000](iHouseID) {
 
-	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d'", iHouseID);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d' ORDER BY `slotid`", iHouseID);
 	mysql_tquery(MainPipeline, szMiscArray, "OnRehashHouseFurniture", "i", iHouseID);
 }
 
@@ -779,7 +779,7 @@ timer AnimateFurniturePreview[1000](playerid, rotation) {
 FurnitureListInit() {
 
 	// Loading from MySQL database.
-	mysql_tquery(MainPipeline, "SELECT * FROM `furniturecatalog`", "OnLoadFurnitureList", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `furniturecatalog` ORDER BY `modelid`", "OnLoadFurnitureList", "");
 }
 
 forward OnLoadFurnitureList();
@@ -791,9 +791,16 @@ public OnLoadFurnitureList() {
 		iCount;
 
 	cache_get_row_count(iRows);
-	if(!iRows || mysql_errno(MainPipeline)) print("[Furniture System]: No catalog found in the database.");
+	if(!iRows) print("[Furniture System]: No catalog found in the database.");
 
-	while(iCount < iRows) {
+	for(new i; i < MAX_CATALOG; ++i) {
+		arrFurnitureCatalog[i][fc_iModelID] = 0;
+		arrFurnitureCatalog[i][fc_szName][0] = 0;
+		arrFurnitureCatalog[i][fc_iPrice] = 0;
+		arrFurnitureCatalog[i][fc_iVIP] = 0;
+		arrFurnitureCatalog[i][fc_iTypeID] = -1;
+	}
+	while(iCount < iRows && iCount < MAX_CATALOG) {
 		cache_get_value_name_int(iCount, "type", arrFurnitureCatalog[iCount][fc_iTypeID]);
 		cache_get_value_name_int(iCount, "modelid", arrFurnitureCatalog[iCount][fc_iModelID]);
 		cache_get_value_name(iCount, "name", arrFurnitureCatalog[iCount][fc_szName], 32);
@@ -801,11 +808,13 @@ public OnLoadFurnitureList() {
 		cache_get_value_name_int(iCount, "vip", arrFurnitureCatalog[iCount][fc_iVIP]);
 		++iCount;
 	}
+	if(iRows > MAX_CATALOG) printf("[Furniture System] Catalog exceeds capacity; skipped %d rows.", iRows - MAX_CATALOG);
 	printf("[Furniture System] Loaded %d pieces of furniture from the catalog.", iCount);
 	return 1;
 }
 
 IsValidFurniture(iHouseID, iSlotID, check) {
+	if(iHouseID < 0 || iHouseID >= MAX_HOUSES || iSlotID < 0 || iSlotID >= MAX_FURNITURE_SLOTS) return 0;
 
 	switch(check) {
 		case 0: if(IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID])) return 1;
@@ -815,11 +824,12 @@ IsValidFurniture(iHouseID, iSlotID, check) {
 }
 
 GetNextFurnitureSlotID(playerid, iHouseID) {
+	if(iHouseID < 0 || iHouseID >= MAX_HOUSES) return -1;
 
 	new iSlotID = -1,
 		iMaxSlots = GetMaxFurnitureSlots(playerid);
 
-	for(new i; i < iMaxSlots; ++i) {
+	for(new i; i < iMaxSlots && i < MAX_FURNITURE_SLOTS; ++i) {
 
 		if(!IsValidFurniture(iHouseID, i, 0)) {
 			iSlotID = i;
@@ -1044,79 +1054,59 @@ FurniturePermit(playerid) {
 
 stock LoadFurniture() {
 
-	mysql_tquery(MainPipeline, "SELECT * FROM `furniture`", "OnLoadFurniture", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `furniture` ORDER BY `houseid`,`slotid`", "OnLoadFurniture", "i", INVALID_HOUSE_ID);
 }
 
-forward OnLoadFurniture();
-public OnLoadFurniture() {
-
-	new iRows, iCount, value, Float:fValue;
-	cache_get_row_count(iRows);
-
-	for(iCount = 0; iCount < iRows; ++iCount) {
-
-		ProcessFurniture(
-			cache_get_value_name_int(iCount, "houseid", value),
-			cache_get_value_name_int(iCount, "slotid", value), 
-			cache_get_value_name_int(iCount, "modelid", value),
-			cache_get_value_name_float(iCount, "x", fValue), 
-			cache_get_value_name_float(iCount, "y", fValue),
-			cache_get_value_name_float(iCount, "z", fValue),
-			cache_get_value_name_float(iCount, "rx", fValue), 
-			cache_get_value_name_float(iCount, "ry", fValue),
-			cache_get_value_name_float(iCount, "rz", fValue),
-			cache_get_value_name_int(iCount, "text0", value),
-			cache_get_value_name_int(iCount, "text1", value),
-			cache_get_value_name_int(iCount, "text2", value),
-			cache_get_value_name_int(iCount, "text3", value),
-			cache_get_value_name_int(iCount, "text4", value),
-			cache_get_value_name_int(iCount, "col0", value),
-			cache_get_value_name_int(iCount, "col1", value),
-			cache_get_value_name_int(iCount, "col2", value),
-			cache_get_value_name_int(iCount, "col3", value),
-			cache_get_value_name_int(iCount, "col4", value));
+forward OnLoadFurniture(iHouseID);
+public OnLoadFurniture(iHouseID) {
+	if(iHouseID != INVALID_HOUSE_ID && (iHouseID < 0 || iHouseID >= MAX_HOUSES)) return 0;
+	new rows, loaded, previousHouse = -1, previousSlot = -1;
+	cache_get_row_count(rows);
+	for(new row; row < rows; ++row) {
+		new houseid = -1, slotid = -1, modelid, text0, text1, text2, text3, text4, col0, col1, col2, col3, col4;
+		new Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz;
+		cache_get_value_name_int(row, "houseid", houseid);
+		cache_get_value_name_int(row, "slotid", slotid);
+		if(houseid < 0 || houseid >= MAX_HOUSES || slotid < 0 || slotid >= MAX_FURNITURE_SLOTS) continue;
+		if(iHouseID != INVALID_HOUSE_ID && houseid != iHouseID) continue;
+		if(houseid == previousHouse && slotid == previousSlot) continue;
+		cache_get_value_name_int(row, "modelid", modelid);
+		cache_get_value_name_float(row, "x", x);
+		cache_get_value_name_float(row, "y", y);
+		cache_get_value_name_float(row, "z", z);
+		cache_get_value_name_float(row, "rx", rx);
+		cache_get_value_name_float(row, "ry", ry);
+		cache_get_value_name_float(row, "rz", rz);
+		cache_get_value_name_int(row, "text0", text0);
+		cache_get_value_name_int(row, "text1", text1);
+		cache_get_value_name_int(row, "text2", text2);
+		cache_get_value_name_int(row, "text3", text3);
+		cache_get_value_name_int(row, "text4", text4);
+		cache_get_value_name_int(row, "col0", col0);
+		cache_get_value_name_int(row, "col1", col1);
+		cache_get_value_name_int(row, "col2", col2);
+		cache_get_value_name_int(row, "col3", col3);
+		cache_get_value_name_int(row, "col4", col4);
+		if(!ProcessFurniture(houseid, slotid, modelid, x, y, z, rx, ry, rz,
+			text0, text1, text2, text3, text4, col0, col1, col2, col3, col4)) continue;
+		previousHouse = houseid;
+		previousSlot = slotid;
+		++loaded;
 	}
-	//return printf("[Furniture] Loaded %d pieces of furniture from the database.", iCount);
+	printf("[Furniture] Loaded %d of %d placement rows.", loaded, rows);
 	return 1;
 }
 
 forward OnRehashHouseFurniture(iHouseID);
 public OnRehashHouseFurniture(iHouseID) {
-
-	new iRows;
-	cache_get_row_count(iRows);
-	if(!iRows) return 1;
-
-	new iCount, value, Float:fValue;
-	for(iCount = 0; iCount < iRows; ++iCount) {
-
-		ProcessFurniture(
-			iHouseID,
-			cache_get_value_name_int(iCount, "slotid", value), 
-			cache_get_value_name_int(iCount, "modelid", value),
-			cache_get_value_name_float(iCount, "x", fValue), 
-			cache_get_value_name_float(iCount, "y", fValue),
-			cache_get_value_name_float(iCount, "z", fValue),
-			cache_get_value_name_float(iCount, "rx", fValue), 
-			cache_get_value_name_float(iCount, "ry", fValue),
-			cache_get_value_name_float(iCount, "rz", fValue),
-			cache_get_value_name_int(iCount, "text0", value),
-			cache_get_value_name_int(iCount, "text1", value),
-			cache_get_value_name_int(iCount, "text2", value),
-			cache_get_value_name_int(iCount, "text3", value),
-			cache_get_value_name_int(iCount, "text4", value),
-			cache_get_value_name_int(iCount, "col0", value),
-			cache_get_value_name_int(iCount, "col1", value),
-			cache_get_value_name_int(iCount, "col2", value),
-			cache_get_value_name_int(iCount, "col3", value),
-			cache_get_value_name_int(iCount, "col4", value));
-	}
-	return printf("[Furniture] Loaded %d pieces of furniture from the database.", iCount);
+	if(iHouseID < 0 || iHouseID >= MAX_HOUSES) return 0;
+	return OnLoadFurniture(iHouseID);
 }
 
 // Check first/last visitor
 // House_VistorCheck(playerid, iHouseID, choice) {
 House_VistorCheck(iHouseID) {
+	if(iHouseID < 0 || iHouseID >= MAX_HOUSES) return 0;
 
 	if(!HouseInfo[iHouseID][hFurnitureLoaded]) {
 
@@ -1124,8 +1114,8 @@ House_VistorCheck(iHouseID) {
 		for(new o = 0; o < MAX_FURNITURE_SLOTS; o++) {
 			HouseInfo[iHouseID][hFurniture][o] = -1;
 		}
-		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d'", iHouseID);
-		mysql_tquery(MainPipeline, szMiscArray, "OnLoadFurniture", "");
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d' ORDER BY `slotid`", iHouseID);
+		mysql_tquery(MainPipeline, szMiscArray, "OnLoadFurniture", "i", iHouseID);
 
 		/*
 		new iCount;
@@ -1143,7 +1133,7 @@ House_VistorCheck(iHouseID) {
 				case 0: { // Enter House
 					
 					HouseInfo[iHouseID][hFurnitureLoaded] = 1;
-					format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d'", iHouseID);
+					format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d' ORDER BY `slotid`", iHouseID);
 					mysql_tquery(MainPipeline, szMiscArray, true, "OnLoadFurniture", ""); // load the furniture
 				}
 
@@ -1157,6 +1147,7 @@ House_VistorCheck(iHouseID) {
 		}
 		*/
 	}
+	return 1;
 }
 
 CreateFurniture(playerid, iHouseID, iSlotID, iModelID, Float:X, Float:Y, Float:Z, Float:RX, Float:RY, Float:RZ) {
@@ -1167,9 +1158,12 @@ CreateFurniture(playerid, iHouseID, iSlotID, iModelID, Float:X, Float:Y, Float:Z
 }
 
 ProcessFurniture(iHouseID, iSlotID, iModelID, Float:X, Float:Y, Float:Z, Float:RX, Float:RY, Float:RZ, text0 = -1, text1 = -1, text2 = -1, text3 = -1, text4 = -1, col0 = -1, col1 = -1, col2 = -1, col3 = -1, col4 = -1) {
-
-	
+	if(iHouseID < 0 || iHouseID >= MAX_HOUSES || iSlotID < 0 || iSlotID >= MAX_FURNITURE_SLOTS) return 0;
+	if(text0 < -1 || text0 >= sizeof(arrTextures) || text1 < -1 || text1 >= sizeof(arrTextures)
+		|| text2 < -1 || text2 >= sizeof(arrTextures) || text3 < -1 || text3 >= sizeof(arrTextures)
+		|| text4 < -1 || text4 >= sizeof(arrTextures)) return 0;
 	HouseInfo[iHouseID][hFurniture][iSlotID] = CreateDynamicObject(iModelID, X, Y, Z, RX, RY, RZ, HouseInfo[iHouseID][hIntVW]);
+	if(!IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID])) return 0;
 	ProcessFurnitureTexture(iHouseID, iSlotID, HouseInfo[iHouseID][hFurniture][iSlotID], 0, text0, col0, 0);
 	ProcessFurnitureTexture(iHouseID, iSlotID, HouseInfo[iHouseID][hFurniture][iSlotID], 1, text1, col1, 0);
 	ProcessFurnitureTexture(iHouseID, iSlotID, HouseInfo[iHouseID][hFurniture][iSlotID], 2, text2, col2, 0);
@@ -1197,6 +1191,8 @@ IsADoor(iModelID) {
 }
 
 ProcessFurnitureTexture(iHouseID, iSlotID, iObjectID, materialindex, input, color = 0, sql = 0) {
+	if(iHouseID < 0 || iHouseID >= MAX_HOUSES || iSlotID < 0 || iSlotID >= MAX_FURNITURE_SLOTS
+		|| materialindex < 0 || materialindex >= 5 || input < -1 || input >= sizeof(arrTextures)) return 0;
 
 	if(sql) {
 

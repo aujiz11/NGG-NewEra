@@ -43,10 +43,10 @@ FoundTreasure(playerid)
 	{
 	    case 1..149:
 	    {
-	        new FoundAnything = (random(99) + 1);
+	        new FoundAnything = Random(1, 100);
 	        if(FoundAnything >= 1 && FoundAnything <= 50)
 	        {
-	            new ItemFound = (random(9) + 1);
+	            new ItemFound = Random(1, 10);
 	            if(ItemFound >= 1 && ItemFound <= 2)
 	            {
 	                SetPVarInt(playerid, "junkmetal", GetPVarInt(playerid, "junkmetal")+1);
@@ -98,10 +98,10 @@ FoundTreasure(playerid)
 	    }
 	    case 150..299:
 	    {
-	        new FoundAnything = (random(99) + 1);
+	        new FoundAnything = Random(1, 100);
 	        if(FoundAnything >= 1 && FoundAnything <= 75)
 	        {
-	            new ItemFound = (random(9) + 1);
+	            new ItemFound = Random(1, 10);
          		if(ItemFound >= 1 && ItemFound <= 2)
           		{
        	    		SetPVarInt(playerid, "junkmetal", GetPVarInt(playerid, "junkmetal")+1);
@@ -144,7 +144,7 @@ FoundTreasure(playerid)
             	}
 				else if(ItemFound == 10)
 				{
-				    new VeryRare = (random(89) + 1);
+				    new VeryRare = Random(1, 90);
 				    if(VeryRare >= 1 && VeryRare <= 30)
 				    {
 				        SetPVarInt(playerid, "goldwatch", GetPVarInt(playerid, "goldwatch")+1);
@@ -181,10 +181,10 @@ FoundTreasure(playerid)
 	    }
 	    case 300..499:
 	    {
-	        new FoundAnything = (random(124) + 1);
+	        new FoundAnything = Random(1, 125);
 	        if(FoundAnything >= 1 && FoundAnything <= 75)
 	        {
-                new ItemFound = (random(9) + 1);
+                new ItemFound = Random(1, 10);
          		if(ItemFound >= 1 && ItemFound <= 2)
           		{
        	    		SetPVarInt(playerid, "junkmetal", GetPVarInt(playerid, "junkmetal")+1);
@@ -227,7 +227,7 @@ FoundTreasure(playerid)
             	}
 				else if(ItemFound == 10)
 				{
-				    new VeryRare = (random(89) + 1);
+				    new VeryRare = Random(1, 90);
 				    if(VeryRare >= 1 && VeryRare <= 30)
 				    {
 				        SetPVarInt(playerid, "goldwatch", GetPVarInt(playerid, "goldwatch")+1);
@@ -264,10 +264,10 @@ FoundTreasure(playerid)
 	    }
 		case 500..9999:
 		{
-		    new FoundAnything = (random(124) + 1);
+		    new FoundAnything = Random(1, 125);
 	        if(FoundAnything >= 1 && FoundAnything <= 75)
 	        {
-                new ItemFound = (random(9) + 1);
+                new ItemFound = Random(1, 10);
          		if(ItemFound >= 1 && ItemFound <= 2)
           		{
        	    		SetPVarInt(playerid, "junkmetal", GetPVarInt(playerid, "junkmetal")+1);
@@ -310,7 +310,7 @@ FoundTreasure(playerid)
             	}
 				else if(ItemFound == 9 || ItemFound == 10)
 				{
-				    new VeryRare = (random(99) + 1);
+				    new VeryRare = Random(1, 100);
 				    if(VeryRare >= 1 && VeryRare <= 35)
 				    {
 				        SetPVarInt(playerid, "goldwatch", GetPVarInt(playerid, "goldwatch")+1);

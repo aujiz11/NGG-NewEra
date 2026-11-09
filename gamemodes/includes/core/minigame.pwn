@@ -172,7 +172,7 @@ ProcessInteractSprites(playerid) {
 	TextDrawSetString(TD_Interact[5], GetInteractSpriteString(id[2]));
 	TextDrawSetString(TD_Interact[6], GetInteractSpriteString(id[3]));
 
-	id[0] = (random(3) + 1);
+	id[0] = Random(1, 4);
 	TextDrawSetString(TD_Interact[2], GetInteractSpriteString(id[0]));
 	SetPVarInt(playerid, "I0", id[0]);
 

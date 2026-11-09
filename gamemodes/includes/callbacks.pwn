@@ -1202,9 +1202,8 @@ public OnPlayerStreamOut(playerid, forplayerid)
 
 public OnPlayerConnect(playerid)
 {
+	if(++g_arrQueryHandle[playerid] <= 0) g_arrQueryHandle[playerid] = 1;
 	if(IsPlayerNPC(playerid)) return 1;
-
-	g_arrQueryHandle{playerid} = random(256);
 
 	TotalConnect++;
 	if(Iter_Count(Player) > MaxPlayersConnected) {
@@ -1614,6 +1613,13 @@ public OnPlayerConnect(playerid)
 
 public OnPlayerDisconnect(playerid, reason)
 {
+    if(gShopTimer[playerid]) {
+		KillTimer(gShopTimer[playerid]);
+	}
+	
+    gShopTimer[playerid] = 0;
+    gShopPending[playerid] = false;
+
     if(!isnull(unbanip[playerid]))
 	{
 	    new string[26];
@@ -3087,11 +3093,11 @@ public OnPlayerEnterCheckpoint(playerid)
 		new szMessage[140];
 		new RandAmount;
 		switch(PlayerInfo[playerid][pCarLockPickSkill]) {
-			case 0 .. 49: RandAmount = (random(3000) + 10000);
-			case 50 .. 124: RandAmount = (random(3000) + 13000);
-			case 125 .. 224: RandAmount = (random(8000) + 16000);
-			case 225 .. 349: RandAmount = (random(3000) + 24000);
-			default: RandAmount = (random(6000) + 27000);
+			case 0 .. 49: RandAmount = Random(10000, 13000);
+			case 50 .. 124: RandAmount = Random(13000, 16000);
+			case 125 .. 224: RandAmount = Random(16000, 24000);
+			case 225 .. 349: RandAmount = Random(24000, 27000);
+			default: RandAmount = Random(27000, 33000);
 		}
 		if(!Bank_TransferCheck(RandAmount)) return 1;
 		PlayerInfo[playerid][pAccount] += RandAmount;
