@@ -1355,6 +1355,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 }
 
 public OnQueryError(errorid, const error[], const callback[], const query[], MySQL:handle) {
+	if(handle == MainPipeline) GangTag_QueryFailed(callback, query);
 
 	printf("[MySQL] Query Error - (ErrorID: %d)",  errorid);
 	print("[MySQL] Check mysql_log.txt to review the query that threw the error.");

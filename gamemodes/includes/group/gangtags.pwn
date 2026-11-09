@@ -1,301 +1,381 @@
-/* Under initiategamemode:
-GangTag_Load();
-*/
-
-/*
-	Gangtag System by Jingles
-*/
-
+/* Gangtag System by Jingles */
 #include <YSI_Coding\y_hooks>
 
-/* 
-Personally feel this is too much.
-hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
+#define GANGTAG_WRITE_CREATE (1)
+#define GANGTAG_WRITE_TEXT (2)
+#define GANGTAG_WRITE_POSITION (3)
+#define GANGTAG_WRITE_DELETE (4)
+
+hook OnPlayerConnect(playerid)
 {
-	if(GetPVarType(playerid, PVAR_GANGTAGTEXT)) DeletePVar(playerid, PVAR_GANGTAGTEXT);
-	return 1;
-}
-*/
-
-hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
-	if(GetPVarType(playerid, PVAR_GANGTAGTEXT)) DeletePVar(playerid, PVAR_GANGTAGTEXT);
+	++gGangTagSession[playerid];
+	gGangTagListCount[playerid] = 0;
 	return 1;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+hook OnPlayerDisconnect(playerid, reason)
+{
+	GangTag_Cancel(playerid);
+	++gGangTagSession[playerid];
+	gGangTagListCount[playerid] = 0;
+	return 1;
+}
 
+hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
+{
+	GangTag_Cancel(playerid);
+	return 1;
+}
+
+GangTag_Cancel(playerid)
+{
+	++gGangTagAction[playerid];
+	if(gGangTagTimer[playerid]) KillTimer(gGangTagTimer[playerid]);
+	gGangTagTimer[playerid] = 0;
+	if(GetPVarType(playerid, PVAR_GANGTAGID) && IsPlayerConnected(playerid))
+	{
+		ClearAnimationsEx(playerid);
+		TogglePlayerControllable(playerid, true);
+	}
+	DeletePVar(playerid, PVAR_GANGTAGID);
+	DeletePVar(playerid, PVAR_GANGTAGTEXT);
+	return 1;
+}
+
+bool:GangTag_Valid(i)
+{
+	if(i < 0 || i >= MAX_GANGTAGS) return false;
+	return Iter_Contains(GangTags, i) && IsValidDynamicObject(arrGangTags[i][gt_iObjectID]);
+}
+
+bool:GangTag_Near(playerid, i)
+{
+	if(!GangTag_Valid(i)) return false;
+	new Float:pos[3];
+	GetDynamicObjectPos(arrGangTags[i][gt_iObjectID], pos[0], pos[1], pos[2]);
+	return IsPlayerInRangeOfPoint(playerid, 5.0, pos[0], pos[1], pos[2]);
+}
+
+GangTag_Clear(i)
+{
+	if(IsValidDynamicObject(arrGangTags[i][gt_iObjectID])) DestroyDynamicObject(arrGangTags[i][gt_iObjectID]);
+	if(IsValidDynamic3DTextLabel(arrGangTags[i][gt_iTextID])) DestroyDynamic3DTextLabel(arrGangTags[i][gt_iTextID]);
+	arrGangTags[i][gt_iObjectID] = INVALID_STREAMER_ID;
+	arrGangTags[i][gt_iTextID] = Text3D:INVALID_STREAMER_ID;
+	arrGangTags[i][gt_bStored] = false;
+	Iter_Remove(GangTags, i);
+	++arrGangTags[i][gt_iRevision];
+}
+
+bool:GangTag_Requester(i)
+{
+	new playerid = arrGangTags[i][gt_iRequester];
+	return IsPlayerConnected(playerid) && gGangTagSession[playerid] == arrGangTags[i][gt_iSession]
+		&& GetPlayerSQLId(playerid) == arrGangTags[i][gt_iAccount];
+}
+
+bool:GangTag_WriteMatches(i, revision)
+{
+	return 0 <= i < MAX_GANGTAGS && arrGangTags[i][gt_iWrite] != 0 && arrGangTags[i][gt_iRevision] == revision;
+}
+
+GangTag_BeginWrite(playerid, i, operation)
+{
+	if(i < 0 || i >= MAX_GANGTAGS || !IsPlayerConnected(playerid)) return 0;
+	if(gGangTagsLoading || arrGangTags[i][gt_iWrite])
+		return SendClientMessage(playerid, COLOR_GRAD1, "Gang tags are busy. Try again later."), 0;
+	arrGangTags[i][gt_iWrite] = operation;
+	arrGangTags[i][gt_iRequester] = playerid;
+	arrGangTags[i][gt_iSession] = gGangTagSession[playerid];
+	arrGangTags[i][gt_iAccount] = GetPlayerSQLId(playerid);
+	++arrGangTags[i][gt_iRevision];
+	return 1;
+}
+
+GangTag_FailWrite(i, revision)
+{
+	if(!GangTag_WriteMatches(i, revision)) return 0;
+	if(GangTag_Requester(i)) SendClientMessage(arrGangTags[i][gt_iRequester], COLOR_GRAD1, "Gang tag save failed. Ask an administrator to rehash before retrying.");
+	arrGangTags[i][gt_iWrite] = 0;
+	printf("[Gang Tags] Write/read failed for ID %d; committed world state retained. Rehash may be required.", i);
+	return 1;
+}
+
+GangTag_QueryFailed(const callback[], const query[])
+{
+	if(!strcmp(callback, "GangTag_OnLoad")) gGangTagsLoading = false;
+	if(strfind(query, "/*gangtags ") != 0) return 0;
+	new i, revision;
+	if(sscanf(query[11], "ii", i, revision)) return 0;
+	return GangTag_FailWrite(i, revision);
+}
+
+GangTag_Load()
+{
+	if(gGangTagsLoading) return 0;
+	for(new i; i < MAX_GANGTAGS; ++i) if(arrGangTags[i][gt_iWrite]) return 0;
+	gGangTagsLoading = true;
+	if(!mysql_tquery(MainPipeline, "SELECT *, OCTET_LENGTH(`text`) AS `textbytes` FROM `gangtags` WHERE `id` BETWEEN 0 AND 99 ORDER BY `id`", "GangTag_OnLoad"))
+	{
+		gGangTagsLoading = false;
+		return 0;
+	}
+	return 1;
+}
+
+forward GangTag_OnLoad();
+public GangTag_OnLoad()
+{
+	for(new i; i < MAX_GANGTAGS; ++i) GangTag_Clear(i);
+	new rows, loaded;
+	cache_get_row_count(rows);
+	for(new row; row < rows; ++row) loaded += GangTag_ReadRow(row);
+	gGangTagsLoading = false;
+	printf("[Gang Tags] Loaded %d of %d in-range rows.", loaded, rows);
+	return 1;
+}
+
+GangTag_ReadRow(row)
+{
+	new i, fontid, color, groupid, bytes, text[MAX_GANGTAGS_LEN], Float:pos[6];
+	if(!cache_get_value_name_int(row, "id", i) || i < 0 || i >= MAX_GANGTAGS) return 0;
+	arrGangTags[i][gt_bStored] = true;
+	if(!cache_get_value_name_int(row, "textbytes", bytes) || bytes < 1 || bytes >= MAX_GANGTAGS_LEN
+		|| !cache_get_value_name_int(row, "fontid", fontid) || fontid < 0 || fontid >= sizeof(szFonts))
+	{
+		printf("[Gang Tags] Skipped invalid text/font at ID %d.", i);
+		return 0;
+	}
+	if(!cache_get_value_name(row, "text", text, sizeof(text))
+		|| !cache_get_value_name_int(row, "color", color)
+		|| !cache_get_value_name_int(row, "gangid", groupid)
+		|| !cache_get_value_name_float(row, "x", pos[0])
+		|| !cache_get_value_name_float(row, "y", pos[1])
+		|| !cache_get_value_name_float(row, "z", pos[2])
+		|| !cache_get_value_name_float(row, "rx", pos[3])
+		|| !cache_get_value_name_float(row, "ry", pos[4])
+		|| !cache_get_value_name_float(row, "rz", pos[5])) return 0;
+	for(new j; text[j]; ++j) if(text[j] < 32) return 0;
+	if(!GangTag_AdmProcess(i, pos[0], pos[1], pos[2], pos[3], pos[4], pos[5], text, fontid, color)) return 0;
+	arrGangTags[i][gt_iGroup] = groupid;
+	return 1;
+}
+
+GangTag_AdmProcess(i, Float:X, Float:Y, Float:Z, Float:RX, Float:RY, Float:RZ, const text[], fontid, color)
+{
+	if(i < 0 || i >= MAX_GANGTAGS || fontid < 0 || fontid >= sizeof(szFonts) || !strlen(text) || strlen(text) >= MAX_GANGTAGS_LEN) return 0;
+	new objectid = CreateDynamicObject(GANGTAGS_OBJECTID, X, Y, Z, RX, RY, RZ), label[48];
+	format(label, sizeof(label), "Gang Tag Point (ID %d)", i);
+	new Text3D:textid = CreateDynamic3DTextLabel(label, COLOR_YELLOW, X, Y, Z+2.75, 4.0);
+	if(!IsValidDynamicObject(objectid) || !IsValidDynamic3DTextLabel(textid))
+	{
+		if(IsValidDynamicObject(objectid)) DestroyDynamicObject(objectid);
+		if(IsValidDynamic3DTextLabel(textid)) DestroyDynamic3DTextLabel(textid);
+		return 0;
+	}
+	if(IsValidDynamicObject(arrGangTags[i][gt_iObjectID])) DestroyDynamicObject(arrGangTags[i][gt_iObjectID]);
+	if(IsValidDynamic3DTextLabel(arrGangTags[i][gt_iTextID])) DestroyDynamic3DTextLabel(arrGangTags[i][gt_iTextID]);
+	arrGangTags[i][gt_iObjectID] = objectid;
+	arrGangTags[i][gt_iTextID] = textid;
+	SetDynamicObjectMaterialText(arrGangTags[i][gt_iObjectID], 0, text, OBJECT_MATERIAL_SIZE_512x512, szFonts[fontid], 1000 / strlen(text), 1, GangTag_IntColor(color), 0, 1);
+	arrGangTags[i][gt_iFont] = fontid;
+	arrGangTags[i][gt_iColor] = color;
+	format(arrGangTags[i][gt_szText], MAX_GANGTAGS_LEN, "%s", text);
+	Iter_Add(GangTags, i);
+	return 1;
+}
+
+GangTag_Create(playerid)
+{
+	for(new i; i < MAX_GANGTAGS; ++i)
+	{
+		if(arrGangTags[i][gt_bStored] || GangTag_Valid(i) || arrGangTags[i][gt_iWrite]) continue;
+		if(!GangTag_BeginWrite(playerid, i, GANGTAG_WRITE_CREATE)) return 0;
+		new Float:pos[3], color = GANGTAGS_DEFAULTCOL, groupid = PlayerInfo[playerid][pMember];
+		GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
+		if(0 <= groupid < MAX_GROUPS) color = arrGroupData[groupid][g_hDutyColour];
+		new query[512];
+		mysql_format(MainPipeline, query, sizeof(query), "/*gangtags %d %d */ INSERT INTO `gangtags` (`id`,`x`,`y`,`z`,`color`) VALUES (%d,%f,%f,%f,%d)",
+			i, arrGangTags[i][gt_iRevision], i, pos[0], pos[1], pos[2], color);
+		if(!mysql_tquery(MainPipeline, query, "GangTag_OnWrite", "ii", i, arrGangTags[i][gt_iRevision])) GangTag_FailWrite(i, arrGangTags[i][gt_iRevision]);
+		return 1;
+	}
+	return SendClientMessage(playerid, COLOR_GRAD1, "You cannot create any more gang tags.");
+}
+
+GangTag_Save(playerid, i, const text[], fontid)
+{
+	if(!GangTag_Valid(i)) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid gang tag ID.");
+	if(!strlen(text) || strlen(text) >= MAX_GANGTAGS_LEN || fontid < 0 || fontid >= sizeof(szFonts)) return 0;
+	if(!GangTag_BeginWrite(playerid, i, GANGTAG_WRITE_TEXT)) return 0;
+	new groupid = PlayerInfo[playerid][pMember], color = GANGTAGS_DEFAULTCOL, query[768];
+	if(0 <= groupid < MAX_GROUPS) color = arrGroupData[groupid][g_hDutyColour];
+	else groupid = -1;
+	mysql_format(MainPipeline, query, sizeof(query), "/*gangtags %d %d */ UPDATE `gangtags` SET `gangid`=%d,`text`='%e',`fontid`=%d,`pdbid`=%d,`pname`='%e',`color`=%d WHERE `id`=%d",
+		i, arrGangTags[i][gt_iRevision], groupid, text, fontid, GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), color, i);
+	if(!mysql_tquery(MainPipeline, query, "GangTag_OnWrite", "ii", i, arrGangTags[i][gt_iRevision])) GangTag_FailWrite(i, arrGangTags[i][gt_iRevision]);
+	return 1;
+}
+
+GangTag_AdmSave(playerid, i, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+{
+	if(!GangTag_Valid(i) || !GangTag_BeginWrite(playerid, i, GANGTAG_WRITE_POSITION)) return 0;
+	new query[512];
+	mysql_format(MainPipeline, query, sizeof(query), "/*gangtags %d %d */ UPDATE `gangtags` SET `x`=%f,`y`=%f,`z`=%f,`rx`=%f,`ry`=%f,`rz`=%f WHERE `id`=%d",
+		i, arrGangTags[i][gt_iRevision], x, y, z, rx, ry, rz, i);
+	if(!mysql_tquery(MainPipeline, query, "GangTag_OnWrite", "ii", i, arrGangTags[i][gt_iRevision])) GangTag_FailWrite(i, arrGangTags[i][gt_iRevision]);
+	return 1;
+}
+
+GangTag_Delete(playerid, i)
+{
+	if(!GangTag_Valid(i)) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid gang tag ID.");
+	if(!GangTag_BeginWrite(playerid, i, GANGTAG_WRITE_DELETE)) return 0;
+	new query[128];
+	mysql_format(MainPipeline, query, sizeof(query), "/*gangtags %d %d */ DELETE FROM `gangtags` WHERE `id`=%d", i, arrGangTags[i][gt_iRevision], i);
+	if(!mysql_tquery(MainPipeline, query, "GangTag_OnWrite", "ii", i, arrGangTags[i][gt_iRevision])) GangTag_FailWrite(i, arrGangTags[i][gt_iRevision]);
+	return 1;
+}
+
+forward GangTag_OnWrite(i, revision);
+public GangTag_OnWrite(i, revision)
+{
+	if(!GangTag_WriteMatches(i, revision)) return 0;
+	if(arrGangTags[i][gt_iWrite] == GANGTAG_WRITE_DELETE)
+	{
+		GangTag_Clear(i);
+		GangTag_CompleteWrite(i);
+		return 1;
+	}
+	if(arrGangTags[i][gt_iWrite] == GANGTAG_WRITE_CREATE && cache_affected_rows() != 1) return GangTag_FailWrite(i, revision);
+	new query[192];
+	mysql_format(MainPipeline, query, sizeof(query), "/*gangtags %d %d */ SELECT *, OCTET_LENGTH(`text`) AS `textbytes` FROM `gangtags` WHERE `id`=%d", i, revision, i);
+	if(!mysql_tquery(MainPipeline, query, "GangTag_OnWriteRead", "ii", i, revision)) return GangTag_FailWrite(i, revision);
+	return 1;
+}
+
+forward GangTag_OnWriteRead(i, revision);
+public GangTag_OnWriteRead(i, revision)
+{
+	if(!GangTag_WriteMatches(i, revision)) return 0;
+	new rows, rowid;
+	cache_get_row_count(rows);
+	if(rows != 1 || !cache_get_value_name_int(0, "id", rowid) || rowid != i || !GangTag_ReadRow(0)) return GangTag_FailWrite(i, revision);
+	GangTag_CompleteWrite(i);
+	return 1;
+}
+
+GangTag_CompleteWrite(i)
+{
+	if(GangTag_Requester(i))
+	{
+		new message[96];
+		format(message, sizeof(message), "Gang tag ID %d saved successfully.", i);
+		SendClientMessage(arrGangTags[i][gt_iRequester], COLOR_YELLOW, message);
+	}
+	if(arrGangTags[i][gt_iWrite] == GANGTAG_WRITE_TEXT)
+	{
+		new message[128];
+		format(message, sizeof(message), "Account %d has tagged Spray Tag Point %d (%s)", arrGangTags[i][gt_iAccount], i, arrGangTags[i][gt_szText]);
+		Log("logs/gangtags.log", message);
+	}
+	arrGangTags[i][gt_iWrite] = 0;
+	return 1;
+}
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
 	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid)
 	{
 		case DIALOG_GANGTAGS_INPUT:
 		{
-			if(!response) return ClearAnimationsEx(playerid), TogglePlayerControllable(playerid, true), 1;
-			if(strlen(inputtext) > MAX_GANGTAGS_LEN) {
-				ClearAnimationsEx(playerid);
-				DeletePVar(playerid, PVAR_GANGTAGID);
-				return SendClientMessage(playerid, COLOR_GRAD1, "Your text is too long.");
+			if(!GetPVarType(playerid, PVAR_GANGTAGID)) return 1;
+			if(GetPVarType(playerid, PVAR_GANGTAGTEXT)) return 1;
+			if(!response || !strlen(inputtext) || strlen(inputtext) >= MAX_GANGTAGS_LEN)
+			{
+				GangTag_Cancel(playerid);
+				return SendClientMessage(playerid, COLOR_GRAD1, "Tag text must contain 1 to 47 bytes.");
 			}
-			szMiscArray[0] = 0;
-
+			for(new j; inputtext[j]; ++j) if(inputtext[j] < 32) return GangTag_Cancel(playerid);
 			format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) (T:%d) sprayed %s", GetPlayerNameEx(playerid), playerid, GetPVarInt(playerid, PVAR_GANGTAGID), inputtext);
 			ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-
-			szMiscArray[0] = 0;
-
 			SetPVarString(playerid, PVAR_GANGTAGTEXT, inputtext);
-			for(new i; i < sizeof(szFonts); ++i) format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, szFonts[i]);
+			szMiscArray[0] = 0;
+			for(new j; j < sizeof(szFonts); ++j) format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, szFonts[j]);
 			ShowPlayerDialogEx(playerid, DIALOG_GANGTAGS_FONT, DIALOG_STYLE_LIST, "Gang Tags | Font", szMiscArray, "Select", "");
 			return 1;
 		}
 		case DIALOG_GANGTAGS_FONT:
 		{
-			if(!response) return ClearAnimationsEx(playerid), TogglePlayerControllable(playerid, true), 1;
+			if(gGangTagTimer[playerid]) return 1;
+			if(!response || !GetPVarType(playerid, PVAR_GANGTAGTEXT) || listitem < 0 || listitem >= sizeof(szFonts)) return GangTag_Cancel(playerid);
+			new i = GetPVarInt(playerid, PVAR_GANGTAGID);
+			if(!GangTag_Valid(i) || gGangTagActionRevision[playerid] != arrGangTags[i][gt_iRevision]) return GangTag_Cancel(playerid);
 			SendClientMessage(playerid, COLOR_GREEN, "[Gang Tags] {DDDDDD}Spraying... Use /tag again to stop tagging.");
-			GangTag_InitSeconds(playerid, GANGTAG_TIME, listitem);
+			GangTag_Tick(playerid, gGangTagSession[playerid], GetPlayerSQLId(playerid), gGangTagAction[playerid], i, arrGangTags[i][gt_iRevision], GANGTAG_TIME, listitem, 0);
+			return 1;
 		}
 		case DIALOG_GANGTAGS_LIST:
 		{
-			if(!response) return 1;
-			new Float:gt_fPos[3];
-			GetDynamicObjectPos(arrGangTags[listitem][gt_iObjectID], gt_fPos[0], gt_fPos[1], gt_fPos[2]);
-			SetPlayerPos(playerid, gt_fPos[0]+1.0, gt_fPos[1]+1.0, gt_fPos[2] + 0.5);
+			new count = gGangTagListCount[playerid];
+			gGangTagListCount[playerid] = 0;
+			if(!response || listitem < 0 || listitem >= count || !(PlayerInfo[playerid][pAdmin] > 1 || PlayerInfo[playerid][pGangModerator] > 0)) return 1;
+			new i = gGangTagList[playerid][listitem], Float:pos[3];
+			if(!GangTag_Valid(i)) return 1;
+			GetDynamicObjectPos(arrGangTags[i][gt_iObjectID], pos[0], pos[1], pos[2]);
+			SetPlayerPos(playerid, pos[0]+1.0, pos[1]+1.0, pos[2]+0.5);
 			return 1;
 		}
 	}
 	return 0;
 }
 
-
-forward GangTag_InitSeconds(playerid, time, fontid);
-public GangTag_InitSeconds(playerid, time, fontid)
+forward GangTag_Tick(playerid, session, account, action, i, revision, time, fontid, cleaning);
+public GangTag_Tick(playerid, session, account, action, i, revision, time, fontid, cleaning)
 {
-	szMiscArray[0] = 0;
-	if(!GetPVarType(playerid, PVAR_GANGTAGTEXT)) return ClearAnimationsEx(playerid), TogglePlayerControllable(playerid, true), 1;
-	time -= 1000;
-	new timesec = time/1000;
-	format(szMiscArray, sizeof(szMiscArray), "~g~ Spraying... ~w~ %d", timesec);
-	GameTextForPlayer(playerid, szMiscArray, 4000, 3);
-	if(time > 0) SetTimerEx("GangTag_InitSeconds", 1000, false, "iii", playerid, time, fontid);
-	else GangTag_FinishTag(playerid, fontid);
-	return 1;
-}
-
-GangTag_FinishTag(playerid, fontid)
-{
-	szMiscArray[0] = 0;
-	GetPVarString(playerid, PVAR_GANGTAGTEXT, szMiscArray, sizeof(szMiscArray));
-	GangTag_Save(playerid, GetPVarInt(playerid, PVAR_GANGTAGID), szMiscArray, fontid);
-	DeletePVar(playerid, PVAR_GANGTAGTEXT);
-	ClearAnimationsEx(playerid);
-	TogglePlayerControllable(playerid, true);
-	GameTextForPlayer(playerid, "~g~Tagged!", 5000, 3);
-
-	/*new iTurfID = TurfWars_GetTurfID(playerid);
-	if(arrTurfWars[iTurfID][tw_iGroupID] != PlayerInfo[playerid][pMember]) {
-	
-		TurfWars_SetHealth(iTurfID, arrTurfWars[iTurfID][tw_iHealth] - 20);
-		Turf_SyncTurf(iTurfID);
-	}*/
-}
-
-GangTag_Save(iPlayerID, i, const text[], fontid)
-{
-	SetDynamicObjectMaterialText(arrGangTags[i][gt_iObjectID], 0, text, OBJECT_MATERIAL_SIZE_512x512, szFonts[fontid], 1000 / strlen(text), 1, GangTag_IntColor(arrGroupData[PlayerInfo[iPlayerID][pMember]][g_hDutyColour]), 0, 1);
-	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `gangtags` SET `gangid` = '%d', `text` = '%e', `fontid` = '%d', `pdbid` = '%d', `pname` = '%s', `color` = '%d' WHERE `id` = '%d'", PlayerInfo[iPlayerID][pMember], text, fontid, GetPlayerSQLId(iPlayerID), GetPlayerNameExt(iPlayerID), arrGroupData[PlayerInfo[iPlayerID][pMember]][g_hDutyColour], i);
-	mysql_tquery(MainPipeline, szMiscArray, "GangTag_OnSave", "iis", iPlayerID, i, text);
-	DeletePVar(iPlayerID, PVAR_GANGTAGID);
-}
-
-forward GangTag_OnSave(iPlayerID, i, text[]);
-public GangTag_OnSave(iPlayerID, i, text[])
-{
-	if(mysql_errno()) print("[Gang Tags] Something went wrong running a query.");
-	format(szMiscArray, sizeof(szMiscArray), "%s has tagged on Spray Tag Point: %d (%s)", GetPlayerNameExt(iPlayerID), i, text);
-	Log("logs/gangtags.log", szMiscArray);
-	return 1;
-}
-
-GangTag_Load()
-{
-	mysql_tquery(MainPipeline, "SELECT *FROM `gangtags` where 1", "GangTag_OnLoad", "");
-}
-
-forward GangTag_OnLoad();
-public GangTag_OnLoad()
-{
-	new iRows;
-	cache_get_row_count(iRows);
-	if(!iRows) return print("[Gang Tags] There are no gang tags in the database.");
-	new idx,
-		szResult[MAX_GANGTAGS_LEN],
-		value,
-		Float:fValue;
-	while(idx < iRows)
+	if(!IsPlayerConnected(playerid) || session != gGangTagSession[playerid] || account != GetPlayerSQLId(playerid) || action != gGangTagAction[playerid]) return 0;
+	gGangTagTimer[playerid] = 0;
+	if(!GetPVarType(playerid, PVAR_GANGTAGID) || GetPVarInt(playerid, PVAR_GANGTAGID) != i || !GangTag_Near(playerid, i)) return GangTag_Cancel(playerid);
+	if(revision != arrGangTags[i][gt_iRevision] || arrGangTags[i][gt_iWrite] || gGangTagsLoading || GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return GangTag_Cancel(playerid);
+	if(cleaning)
 	{
-		cache_get_value_name(idx, "text", szResult);
-		GangTag_AdmProcess(idx, cache_get_value_name_float(idx, "x", fValue),
-			cache_get_value_name_float(idx, "y", fValue),
-			cache_get_value_name_float(idx, "z", fValue),
-			cache_get_value_name_float(idx, "rx", fValue),
-			cache_get_value_name_float(idx, "ry", fValue),
-			cache_get_value_name_float(idx, "rz", fValue),
-			szResult,
-			cache_get_value_name_int(idx, "fontid", value),
-			cache_get_value_name_int(idx, "color", value));
-		idx++;
+		if(!(IsAStreetSweeper(playerid) || strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) != -1)) return GangTag_Cancel(playerid);
+		GangTag_Save(playerid, i, "-", 0);
+		return GangTag_Cancel(playerid);
 	}
-	printf("[Gang Tags] Loaded %d gang tags.", idx);
-	return 1;
-}
-
-GangTag_Create(iPlayerID)
-{
-	for(new i; i < MAX_GANGTAGS; ++i)
+	if(!IsACriminal(playerid) || PlayerInfo[playerid][pRank] <= 0 || GetPlayerWeapon(playerid) != 41 || !GetPVarType(playerid, PVAR_GANGTAGTEXT)) return GangTag_Cancel(playerid);
+	if(time <= 0)
 	{
-		if(!IsValidDynamicObject(arrGangTags[i][gt_iObjectID]))
-		{
-			new Float:X, Float:Y, Float:Z;
-			GetPlayerPos(iPlayerID, X, Y, Z);
-			SetPlayerPos(iPlayerID, X + 0.5, Y + 0.5, Z + 0.5);
-			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `gangtags` (`id`, `x`, `y`, `z`, `color`) VALUES ('%d', '%f', '%f', '%f', '%d')", i, X, Y, Z, arrGroupData[PlayerInfo[iPlayerID][pMember]][g_hDutyColour]);
-			return mysql_tquery(MainPipeline, szMiscArray, "GangTag_OnCreate", "iifff", iPlayerID, i, X, Y, Z);
-		}
+		new text[MAX_GANGTAGS_LEN];
+		GetPVarString(playerid, PVAR_GANGTAGTEXT, text, sizeof(text));
+		GangTag_Save(playerid, i, text, fontid);
+		return GangTag_Cancel(playerid);
 	}
-	SendClientMessage(iPlayerID, COLOR_GRAD1, "You cannot create any more gang tags.");
+	new message[64];
+	format(message, sizeof(message), "~g~ Spraying... ~w~ %d", time / 1000);
+	GameTextForPlayer(playerid, message, 4000, 3);
+	gGangTagTimer[playerid] = SetTimerEx("GangTag_Tick", 1000, false, "iiiiiiiii", playerid, session, account, action, i, revision, time-1000, fontid, cleaning);
 	return 1;
 }
 
-forward GangTag_OnCreate(iPlayerID, i, Float:X, Float:Y, Float:Z);
-public GangTag_OnCreate(iPlayerID, i, Float:X, Float:Y, Float:Z)
+stock GetGangTags(playerid)
 {
-	new iRows;
-	cache_get_row_count(iRows);
-	if(!iRows)
-	{
-		GangTag_AdmProcess(i, X, Y, Z, 0.0, 0.0, 0.0, "/SETUP/", 0, arrGroupData[PlayerInfo[iPlayerID][pMember]][g_hDutyColour]);
-		format(szMiscArray, sizeof(szMiscArray), "You have successfully created a gang tag point (ID %d)", i);
-		return SendClientMessage(iPlayerID, COLOR_YELLOW, szMiscArray);
-	}
-	SendClientMessage(iPlayerID, COLOR_GRAD1, "Something went wrong.");
-	return 1;
-}
-
-GangTag_AdmSave(iPlayerID, i)
-{
-	new Float:gt_finPos[6];
-	GetDynamicObjectPos(arrGangTags[i][gt_iObjectID], gt_finPos[0], gt_finPos[1],  gt_finPos[2]);
-	GetDynamicObjectRot(arrGangTags[i][gt_iObjectID], gt_finPos[3], gt_finPos[4],  gt_finPos[5]);
-	if(IsValidDynamic3DTextLabel(arrGangTags[i][gt_iTextID])) DestroyDynamic3DTextLabel(arrGangTags[i][gt_iTextID]);
-	format(szMiscArray, sizeof(szMiscArray), "Gang Tag Point (ID %d)", i);
-	arrGangTags[i][gt_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_YELLOW, gt_finPos[0], gt_finPos[1],  gt_finPos[2]+2.75, 4.0);
-	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gangtags` WHERE `id` = '%d'", i);
-	mysql_tquery(MainPipeline, szMiscArray, "GangTag_OnSetText", "i", i);
-	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `gangtags` SET `x` = '%f', `y` = '%f', `z` = '%f', `rx` = '%f', `ry` = '%f', `rz` = '%f' WHERE `id` = '%d'",
-		gt_finPos[0], gt_finPos[1],  gt_finPos[2], gt_finPos[3], gt_finPos[4],  gt_finPos[5], i);
-	mysql_tquery(MainPipeline, szMiscArray, "GangTag_OnAdmSave", "ii", iPlayerID, i);
-}
-
-forward GangTag_OnSetText(i);
-public GangTag_OnSetText(i)
-{
-	new iRows,
-		szResult[MAX_GANGTAGS_LEN],
-		iCount,
-		color,
-		fontid;
-	cache_get_row_count(iRows);
-
-	while(iCount < iRows)
-	{
-		cache_get_value_name(iCount, "text", szResult);
-		cache_get_value_name_int(iCount, "color", color);
-		cache_get_value_name_int(iCount, "fontid", fontid);
-		SetDynamicObjectMaterialText(arrGangTags[i][gt_iObjectID], 0, szResult, OBJECT_MATERIAL_SIZE_512x512, szFonts[fontid], 1000 / strlen(szResult), 1, GangTag_IntColor(color), 0, 1);
-		++iCount;
-	}
-	return 1;
-}
-
-forward GangTag_OnAdmSave(iPlayerID, i);
-public GangTag_OnAdmSave(iPlayerID, i)
-{
-	if(mysql_errno()) return SendClientMessage(iPlayerID, COLOR_GRAD1, "Something went wrong. Try again later.");
-	format(szMiscArray, sizeof(szMiscArray), "You have successfully edited gang tag ID %d", i);
-	SendClientMessage(iPlayerID, COLOR_YELLOW, szMiscArray);
-	return 1;
-}
-
-
-GangTag_AdmProcess(i, Float:X, Float:Y, Float:Z, Float:RX, Float:RY, Float:RZ, const text[], fontid, color)
-{
-	Iter_Add(GangTags, i);
-	if(IsValidDynamicObject(arrGangTags[i][gt_iObjectID])) DestroyDynamicObject(arrGangTags[i][gt_iObjectID]);
-	arrGangTags[i][gt_iObjectID] = CreateDynamicObject(GANGTAGS_OBJECTID, X, Y, Z, RX, RY, RZ);
-	if(IsValidDynamic3DTextLabel(arrGangTags[i][gt_iTextID])) DestroyDynamic3DTextLabel(arrGangTags[i][gt_iTextID]);
-	format(szMiscArray, sizeof(szMiscArray), "Gang Tag Point (ID %d)", i);
-	arrGangTags[i][gt_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_YELLOW, X, Y, Z+2.75, 4.0);
-	SetDynamicObjectMaterialText(arrGangTags[i][gt_iObjectID], 0, text, OBJECT_MATERIAL_SIZE_512x512, szFonts[fontid], 1000 / strlen(text), 1, GangTag_IntColor(color), 0, 1);
-}
-
-GangTag_Delete(iPlayerID, i)
-{
-	if(!IsValidDynamicObject(arrGangTags[i][gt_iObjectID])) return SendClientMessage(iPlayerID, COLOR_GRAD1, "You specified an invalid gang tag ID.");
-	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "DELETE FROM `gangtags` WHERE `id` = '%d'", i);
-	mysql_tquery(MainPipeline, szMiscArray, "GangTag_OnDelete", "ii", iPlayerID, i);
-	return 1;
-}
-
-forward GangTag_OnDelete(iPlayerID, i);
-public GangTag_OnDelete(iPlayerID, i)
-{
-	if(mysql_errno()) return SendClientMessage(iPlayerID, COLOR_GRAD1, "Something went wrong. Please try again later.");
-	DestroyDynamicObject(arrGangTags[i][gt_iObjectID]);
-	DestroyDynamic3DTextLabel(arrGangTags[i][gt_iTextID]);
-	Iter_Remove(GangTags, i);
-	format(szMiscArray, sizeof(szMiscArray), "You have successfully deleted gang tag ID: %d", i);
-	SendClientMessage(iPlayerID, COLOR_YELLOW, szMiscArray);
-	return 1;
-}
-
-forward GangTag_OnCleanTag(iPlayerID, i);
-public GangTag_OnCleanTag(iPlayerID, i)
-{
-	TogglePlayerControllable(iPlayerID, true);
-	ClearAnimationsEx(iPlayerID);
-	GameTextForPlayer(iPlayerID, "~g~Cleaned!", 3000, 3);
-	GangTag_Save(iPlayerID, i, "-", 0);
-	return 1;
-}
-
-stock GetGangTags(iPlayerID)
-{
-	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gangtags` WHERE 1");
-	mysql_tquery(MainPipeline, szMiscArray, "OnGetGangTags", "i", iPlayerID);
-}
-
-forward OnGetGangTags(iPlayerID);
-public OnGetGangTags(iPlayerID)
-{
-	new iRows;
+	new line[160];
 	szMiscArray = "Group Name(ID)\tText\n";
-	cache_get_row_count(iRows);
-	if(iRows > 0)
+	gGangTagListCount[playerid] = 0;
+	foreach(new i : GangTags)
 	{
-		new idx,
-			i,
-			szResult[MAX_GANGTAGS_LEN];
-
-		while(idx < iRows)
-		{
-			cache_get_value_name(idx,  "text", szResult);
-			cache_get_value_name_int(idx, "gangid", i);
-			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (%d)\t%s\n", szMiscArray, idx, arrGroupData[i][g_szGroupName], i, szResult);
-			idx++;
-		}
-		ShowPlayerDialogEx(iPlayerID, DIALOG_GANGTAGS_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Gang Tags | List", szMiscArray, "Select", "");
-		return 1;
+		new groupid = arrGangTags[i][gt_iGroup];
+		if(0 <= groupid < MAX_GROUPS) format(line, sizeof(line), "(%d) %s (%d)\t%s\n", i, arrGroupData[groupid][g_szGroupName], groupid, arrGangTags[i][gt_szText]);
+		else format(line, sizeof(line), "(%d) Unassigned\t%s\n", i, arrGangTags[i][gt_szText]);
+		for(new j; line[j]; ++j) if(line[j] == '\r') line[j] = ' ';
+		if(strlen(szMiscArray) + strlen(line) >= sizeof(szMiscArray)) break;
+		strcat(szMiscArray, line, sizeof(szMiscArray));
+		gGangTagList[playerid][gGangTagListCount[playerid]++] = i;
 	}
-	return SendClientMessage(iPlayerID, COLOR_GRAD1, "There are no gang tags in the database.");
+	if(!gGangTagListCount[playerid]) return SendClientMessage(playerid, COLOR_GRAD1, "There are no loaded gang tags.");
+	return ShowPlayerDialogEx(playerid, DIALOG_GANGTAGS_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Gang Tags | List", szMiscArray, "Select", "");
 }
 
 CMD:gangtaghelp(playerid, params[])
@@ -310,23 +390,27 @@ CMD:gangtaghelp(playerid, params[])
 
 IsAStreetSweeper(playerid) {
 
-	if(PlayerInfo[playerid][pJob] == 15 || PlayerInfo[playerid][pJob2] == 15 || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 8) return 1;
+	if(PlayerInfo[playerid][pJob] == 15 || PlayerInfo[playerid][pJob2] == 15 || (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 8)) return 1;
 	return 0;
 }
 
 CMD:cleantag(playerid)
 {
+	if(GetPVarType(playerid, PVAR_GANGTAGID)) return GangTag_Cancel(playerid);
 	if(IsAStreetSweeper(playerid) || strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) != -1) {
 		new Float:gtPos[3];
-		for(new i; i < MAX_GANGTAGS; ++i)
+		foreach(new i : GangTags)
 		{
+			if(!GangTag_Valid(i) || arrGangTags[i][gt_iWrite] || gGangTagsLoading) continue;
 			GetDynamicObjectPos(arrGangTags[i][gt_iObjectID], gtPos[0], gtPos[1], gtPos[2]);
 			if(IsPlayerInRangeOfPoint(playerid, 5.0, gtPos[0], gtPos[1], gtPos[2]))
 			{
 				TogglePlayerControllable(playerid, false);
 				ApplyAnimation(playerid, "SPRAYCAN", "spraycan_fire", 4.1, true, true, true, true, 0, 0);
 				GameTextForPlayer(playerid, "~y~Cleaning...", 5000, 3);
-				SetTimerEx("GangTag_OnCleanTag", 15000, false, "ii", playerid, i);
+				++gGangTagAction[playerid];
+				SetPVarInt(playerid, PVAR_GANGTAGID, i);
+				gGangTagTimer[playerid] = SetTimerEx("GangTag_Tick", 15000, false, "iiiiiiiii", playerid, gGangTagSession[playerid], GetPlayerSQLId(playerid), gGangTagAction[playerid], i, arrGangTags[i][gt_iRevision], 0, 0, 1);
 				return 1;
 			}
 		}
@@ -338,11 +422,9 @@ CMD:cleantag(playerid)
 
 CMD:tag(playerid, params[])
 {
-	if(GetPVarType(playerid, PVAR_GANGTAGTEXT))
+	if(GetPVarType(playerid, PVAR_GANGTAGID))
 	{
-		DeletePVar(playerid, PVAR_GANGTAGTEXT);
-		ClearAnimationsEx(playerid);
-		TogglePlayerControllable(playerid, true);
+		GangTag_Cancel(playerid);
 		GameTextForPlayer(playerid, "~r~Cancelled!", 5000, 3);
 		return 1;
 	}
@@ -350,12 +432,15 @@ CMD:tag(playerid, params[])
 	if(PlayerInfo[playerid][pRank] == 0) return SendClientMessage(playerid, COLOR_GRAD1, "You need to be at least rank 1 to tag.");
 	if(GetPlayerWeapon(playerid) != 41) return SendClientMessage(playerid, COLOR_GRAD1, "You need a spray can to tag a wall.");
 	new Float:gtPos[3];
-	for(new i; i < MAX_GANGTAGS; ++i)
+	foreach(new i : GangTags)
 	{
+		if(!GangTag_Valid(i) || arrGangTags[i][gt_iWrite] || gGangTagsLoading) continue;
 		GetDynamicObjectPos(arrGangTags[i][gt_iObjectID], gtPos[0], gtPos[1], gtPos[2]);
 		if(IsPlayerInRangeOfPoint(playerid, 5.0, gtPos[0], gtPos[1], gtPos[2]))
 		{
+			++gGangTagAction[playerid];
 			SetPVarInt(playerid, PVAR_GANGTAGID, i);
+			gGangTagActionRevision[playerid] = arrGangTags[i][gt_iRevision];
 			TogglePlayerControllable(playerid, false);
 			ApplyAnimation(playerid, "SPRAYCAN", "spraycan_fire", 4.1, true, true, true, true, 0, 0);
 			ShowPlayerDialogEx(playerid, DIALOG_GANGTAGS_INPUT, DIALOG_STYLE_INPUT, "Gang Tag Point | Insert text", "Insert the text you would like to spray on the wall", "Spray", "");
@@ -375,7 +460,10 @@ CMD:gangtags(playerid)
 
 CMD:rehashgangtags(playerid)
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pGangModerator] > 0) GangTag_Load();
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pGangModerator] > 0)
+	{
+		if(!GangTag_Load()) SendClientMessage(playerid, COLOR_GRAD1, "Gang tags are busy. Try again later.");
+	}
 	else SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
 	return 1;
 }
@@ -397,6 +485,9 @@ CMD:edittagpoint(playerid, params[])
 	{
 		new i;
 		if(sscanf(params, "d", i)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /edittag [ID]");
+		if(!GangTag_Valid(i)) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid gang tag ID.");
+		if(gGangTagsLoading || arrGangTags[i][gt_iWrite]) return SendClientMessage(playerid, COLOR_GRAD1, "Gang tags are busy. Try again later.");
+		gGangTagEditRevision[playerid] = arrGangTags[i][gt_iRevision];
 		SetPVarInt(playerid, PVAR_GANGTAGEDITING, i);
 		EditDynamicObject(playerid, arrGangTags[i][gt_iObjectID]);
 	}
@@ -418,15 +509,15 @@ CMD:deletetagpoint(playerid, params[])
 
 CMD:erasetag(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pGangModerator] == 2)
-    {
-        new i;
-        if(sscanf(params, "d", i)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /erasetag [ID]");
-        GangTag_Save(playerid, i, "Cheeky Nandos", 0);
-        return 1;
-    }
-    else SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
-    return 1;
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pGangModerator] == 2)
+	{
+		new i;
+		if(sscanf(params, "d", i)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /erasetag [ID]");
+		GangTag_Save(playerid, i, "Cheeky Nandos", 0);
+		return 1;
+	}
+	else SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+	return 1;
 }
 
 stock GangTag_IntColor(color)

@@ -1858,7 +1858,17 @@ new ParkingMeterInformation[MAX_PARKING_METERS][ParkingMeterInfo];
 
 enum eGangTags {
 	gt_iObjectID,
-	Text3D:gt_iTextID
+	Text3D:gt_iTextID,
+	gt_iRevision,
+	gt_iWrite,
+	gt_iRequester,
+	gt_iSession,
+	gt_iAccount,
+	bool:gt_bStored,
+	gt_iFont,
+	gt_iColor,
+	gt_iGroup,
+	gt_szText[MAX_GANGTAGS_LEN]
 }
 new arrGangTags[MAX_GANGTAGS][eGangTags];
 

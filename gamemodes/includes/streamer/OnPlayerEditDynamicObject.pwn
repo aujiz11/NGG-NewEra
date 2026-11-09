@@ -326,6 +326,12 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 	GetDynamicObjectRot(objectid, fPos[3], fPos[4], fPos[5]);
 	if(GetPVarType(playerid, PVAR_GANGTAGEDITING))
 	{
+		new i = GetPVarInt(playerid, PVAR_GANGTAGEDITING);
+		if(!GangTag_Valid(i) || objectid != arrGangTags[i][gt_iObjectID] || gGangTagEditRevision[playerid] != arrGangTags[i][gt_iRevision])
+		{
+			DeletePVar(playerid, PVAR_GANGTAGEDITING);
+			return 1;
+		}
 		switch(response)
 		{
 			case EDIT_RESPONSE_CANCEL:
@@ -338,10 +344,9 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			}
 			case EDIT_RESPONSE_FINAL:
 			{
-				new i = GetPVarInt(playerid, PVAR_GANGTAGEDITING);
-				if(IsValidDynamicObject(arrGangTags[i][gt_iObjectID])) DestroyDynamicObject(arrGangTags[i][gt_iObjectID]);
-				arrGangTags[i][gt_iObjectID] = CreateDynamicObject(GANGTAGS_OBJECTID, x, y, z, rx, ry, rz);
-				GangTag_AdmSave(playerid, i);
+				DeletePVar(playerid, PVAR_GANGTAGEDITING);
+				if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pGangModerator] == 2)
+					GangTag_AdmSave(playerid, i, x, y, z, rx, ry, rz);
 				return 1;
 			}
 		}

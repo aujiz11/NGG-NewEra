@@ -2724,6 +2724,17 @@ new iVehExits[3]; // for shamal, nevada and journey
 new Iterator:Vehicles<MAX_VEHICLES>;
 new Iterator:GangTags<MAX_GANGTAGS>;
 
+new bool:gGangTagsLoading;
+new gGangTagSession[MAX_PLAYERS];
+new gGangTagTimer[MAX_PLAYERS];
+new gGangTagAction[MAX_PLAYERS];
+new gGangTagActionRevision[MAX_PLAYERS];
+new gGangTagEditRevision[MAX_PLAYERS];
+new gGangTagList[MAX_PLAYERS][MAX_GANGTAGS];
+new gGangTagListCount[MAX_PLAYERS];
+
+forward bool:GangTag_Valid(i);
+
 new const szFonts[][] = {
 	"Arial",
 	"Impact",
