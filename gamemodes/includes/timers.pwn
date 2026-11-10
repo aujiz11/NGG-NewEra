@@ -980,21 +980,23 @@ task hungerGames[1000]()
 /* Player Tasks - (Optimized from tasks + foreach loop) - Jingles */
 
 task PlayerHeartBeat[1000]() {
-foreach(new i: Player)
-{
+	foreach(new i : Player) 
+	{
+		if(IsPlayerNPC(i)) return 1;
+
 		// alerttimer - Merged by Jingles
 		if(AlertTime[i] != 0) AlertTime[i]--;
 
 		new Float:playerArmour;
 		GetArmour(i, playerArmour);
-        // playertabbedloop - Merged by Jingles
-        new
-            iTick = gettime() - 1;
+		// playertabbedloop - Merged by Jingles
+		new
+			iTick = gettime() - 1;
 
-        if(floatround(playerArmour, floatround_round) < 0)
-        {
-            SetPlayerArmour(i, 0);
-        }
+		if(floatround(playerArmour, floatround_round) < 0)
+		{
+			SetPlayerArmour(i, 0);
+		}
 
 		if(1 <= GetPlayerState(i) <= 3) {
 			if(playerTabbed[i] >= 1) {
@@ -1218,7 +1220,7 @@ foreach(new i: Player)
 			{
 				if(strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)
 				{
-			    	ShowPlayerDialogEx(i, DIALOG_STAYPRISON, DIALOG_STYLE_MSGBOX, "Notice", "Your initial prison time has ran out. However, you can choose to stay.\nWould you like to be released?", "Yes", "No");
+					ShowPlayerDialogEx(i, DIALOG_STAYPRISON, DIALOG_STYLE_MSGBOX, "Notice", "Your initial prison time has ran out. However, you can choose to stay.\nWould you like to be released?", "Yes", "No");
 				}
 				else
 				{
@@ -1228,7 +1230,7 @@ foreach(new i: Player)
 			if(gettime() >= PlayerInfo[i][pPrisonWineTime] && GetPVarInt(i, "pPrisonMWine") == 1 && strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)
 			{
 				SetPVarInt(i, "pPrisonMWine", 2);
-			    SendClientMessageEx(i, COLOR_GREY, "Your pruno is finished. Go to your cell and type /finishpruno to collect it.");
+				SendClientMessageEx(i, COLOR_GREY, "Your pruno is finished. Go to your cell and type /finishpruno to collect it.");
 			}
 			
 
@@ -1303,8 +1305,8 @@ foreach(new i: Player)
 						new Float: pX, Float: pY, Float: pZ;
 						GetPlayerPos(i, pX, pY, pZ);
 						SetPVarFloat(i, "tpDeliverVehX", pX);
-				 		SetPVarFloat(i, "tpDeliverVehY", pY);
-				  		SetPVarFloat(i, "tpDeliverVehZ", pZ);
+						SetPVarFloat(i, "tpDeliverVehY", pY);
+						SetPVarFloat(i, "tpDeliverVehZ", pZ);
 						SetPVarInt(i, "tpDeliverVehTimer", 80);
 						SetTimerEx("OtherTimerEx", 1000, false, "ii", i, TYPE_DELIVERVEHICLE);
 						DestroyVLPTextDraws(i);
@@ -2312,7 +2314,7 @@ foreach(new i: Player)
 					Businesses[biz][bGymBoxingArena2][1] = INVALID_PLAYER_ID;
 				}
 			}
-	        else SetPlayerPos(i, 2907.50, -2275.39, 7.25);
+			else SetPlayerPos(i, 2907.50, -2275.39, 7.25);
 
 			SetHealth(i, GetPVarFloat(i, "_BoxingCacheHP"));
 			SetArmour(i, GetPVarFloat(i, "_BoxingCacheArmour"));
@@ -2415,7 +2417,6 @@ foreach(new i: Player)
 			KillTimer(GetPVarInt(i, "rccamtimer"));
 		}
 	}
-return 1;
 }
 
 // Timer Name: SyncUp()
