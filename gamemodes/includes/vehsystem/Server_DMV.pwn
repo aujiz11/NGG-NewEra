@@ -340,11 +340,9 @@ CMD:licenses(playerid, params[])
 	return 1;
 }
 
-CMD:showid(playerid, params[])
-{
-	return cmd_showlicenses(playerid, params);
-}
 
+
+alias:showlicenses("showid")
 CMD:showlicenses(playerid, params[])
 {
 	new string[128], giveplayerid;

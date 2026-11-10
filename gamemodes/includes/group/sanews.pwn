@@ -193,7 +193,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					UpdateSANewsBroadcast(channel);
 					SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 					DeletePVar(playerid, "DirectorChannelID");
-					cmd_bdirector(playerid, "");
+					pc_cmd_bdirector(playerid, "");
 				}
 				else if(GetPVarType(playerid, "CameramanChannelID"))
 				{
@@ -201,7 +201,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Cameraman %s signed in to Channel %i. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
 					SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 					DeletePVar(playerid, "CameramanChannelID");
-					cmd_cameraman(playerid, "");
+					pc_cmd_cameraman(playerid, "");
 				}
 				else if(GetPVarType(playerid, "LoginChannelID"))
 				{
@@ -369,7 +369,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					case 0:
 					{
-						cmd_cameraman(playerid, "");
+						pc_cmd_cameraman(playerid, "");
 					}
 					case 1:
 					{
@@ -437,7 +437,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					case 0:
 					{
-						cmd_cameraman(playerid, "");
+						pc_cmd_cameraman(playerid, "");
 					}
 					case 1:
 					{
@@ -482,7 +482,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					case 0:
 					{
-						cmd_bdirector(playerid, "");
+						pc_cmd_bdirector(playerid, "");
 					}
 					case 1:
 					{
@@ -511,7 +511,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					case 7:
 					{
-						cmd_bdirector(playerid, "");
+						pc_cmd_bdirector(playerid, "");
 					}
 					case 8:
 					{
@@ -535,7 +535,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}					
 					case 13:
 					{
-						cmd_bdirector(playerid, "");
+						pc_cmd_bdirector(playerid, "");
 					}
 					case 14:
 					{
@@ -547,7 +547,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					case 16:
 					{
-						cmd_bdirector(playerid, "");
+						pc_cmd_bdirector(playerid, "");
 					}
 					case 17:
 					{
@@ -570,7 +570,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else 
 			{
 				DeletePVar(playerid, "ListItemID_Cameras");
-				cmd_bdirector(playerid, "");
+				pc_cmd_bdirector(playerid, "");
 			}
 		}
 		case DIALOG_SAN_CAMLIST2:
@@ -624,7 +624,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, "Press 'N' to stop previewing the stream.");
 				SetPVarInt(playerid, "SAN_PreviewingStream", 1);
 			}
-			cmd_bdirector(playerid, "");
+			pc_cmd_bdirector(playerid, "");
 		}
 		case DIALOG_SAN_BSTREAM:
 		{
@@ -642,7 +642,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 				}
 			}
-			cmd_bdirector(playerid, "");
+			pc_cmd_bdirector(playerid, "");
 		}
 		
 	}
@@ -1937,7 +1937,7 @@ CMD:broadcast(playerid, params[])
 	if(IsAReporter(playerid))
 	{
 		if(!SAN_RankCheck(playerid, 2)) return 1;
-		if(!GetPVarType(playerid, "ChannelID_FMEM")) return cmd_setchannel(playerid, "");
+		if(!GetPVarType(playerid, "ChannelID_FMEM")) return pc_cmd_setchannel(playerid, "");
 		if(broadcasting == 0)
 		{
 			broadcasting = 1;
@@ -2017,7 +2017,7 @@ CMD:setchannel(playerid, const params[])
 // WARNING: Please make sure that people can only use /watchtv in any interior (and mayby at some TV hotspots).
 CMD:watchtv(playerid, params[])
 {
-	cmd_shows(playerid, "");
+	pc_cmd_shows(playerid, "");
 	return 1;
 }
 
@@ -2031,7 +2031,7 @@ CMD:viewers(playerid, params[])
 
 CMD:sh(playerid, params[])
 {
-	cmd_mic(playerid, "");
+	pc_cmd_mic(playerid, "");
 	return 1;
 }
 
@@ -2111,7 +2111,7 @@ CMD:mic(playerid, const params[])
 	if(IsAReporter(playerid) && !GetPVarInt(playerid, "ChannelID_FMEM"))
 	{
 		SendClientMessage(playerid, COLOR_GRAD1, "You are not logged in to a channel. Please login now."); 
-		return cmd_setchannel(playerid, "");
+		return pc_cmd_setchannel(playerid, "");
 	}
 	if(GetPVarInt(playerid, "ChannelID"))
 	{
@@ -2407,7 +2407,7 @@ CMD:channeldesc(playerid, params[])
 
 CMD:cm(playerid, params[])
 {
-	cmd_cameraman(playerid, "");
+	pc_cmd_cameraman(playerid, "");
 	return 1;
 }
 

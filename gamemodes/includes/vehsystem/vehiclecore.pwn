@@ -2421,8 +2421,9 @@ CMD:carkeys(playerid, params[])
 	return 1;
 }
 
-CMD:sb(playerid, const params[]) return cmd_seatbelt(playerid, params);
 
+
+alias:seatbelt("sb")
 CMD:seatbelt(playerid, const params[])
 {
     if(IsPlayerInAnyVehicle(playerid) == false)
@@ -2462,8 +2463,9 @@ CMD:seatbelt(playerid, const params[])
     return 1;
 }
 
-CMD:cb(playerid, params[]) return cmd_checkbelt(playerid, params);
 
+
+alias:checkbelt("cb")
 CMD:checkbelt(playerid, params[])
 {
 	new giveplayerid;
@@ -2783,8 +2785,9 @@ CMD:rc(playerid, params[])
 	return 1;
 }
 
-CMD:lastcar(playerid, params[]) return cmd_oldcar(playerid, params);
 
+
+alias:oldcar("lastcar")
 CMD:oldcar(playerid, params[])
 {
 	new string[128];

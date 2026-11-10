@@ -306,11 +306,9 @@ CMD:gps(playerid, params[])
 	return 1;
 }
 
-CMD:ww(playerid, params[])
-{
-	return cmd_wristwatch(playerid, params);
-}
 
+
+alias:wristwatch("ww")
 CMD:wristwatch(playerid, params[])
 {
 	if(PlayerInfo[playerid][pWristwatch] > 0)

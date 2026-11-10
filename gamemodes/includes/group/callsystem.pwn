@@ -334,10 +334,7 @@ CMD:calls(playerid, params[])
 	return 1;
 }
 
-CMD:ac(playerid, params[])
-{
-	return cmd_acceptcall(playerid, params);
-}
+
 
 
 AcceptCall_Group(playerid, callid) {
@@ -596,6 +593,7 @@ IgnoreCall_Business(playerid, callid) {
 }
 
 
+alias:acceptcall("ac")
 CMD:acceptcall(playerid, params[])
 {	
 	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID && PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");
@@ -604,11 +602,9 @@ CMD:acceptcall(playerid, params[])
 	return 1;
 }
 
-CMD:ic(playerid, params[])
-{
-	return cmd_ignorecall(playerid, params);
-}
 
+
+alias:ignorecall("ic")
 CMD:ignorecall(playerid, params[])
 {
 	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID && PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");

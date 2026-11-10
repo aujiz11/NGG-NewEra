@@ -354,7 +354,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	return 0;
 }
 
-CMD:issuegl(playerid, params[]) return cmd_issuegunlicense(playerid, params);
+
+alias:issuegunlicense("issuegl")
 CMD:issuegunlicense(playerid, params[])
 {
 	if((0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV)
@@ -609,7 +610,7 @@ CMD:ammohelp(playerid, params[]) {
 }
 */
 
-/*CMD:oissuegl(playerid, params[]) return cmd_oissuegunlicense(playerid, params);
+/*CMD:oissuegl(playerid, params[]) return pc_cmd_oissuegunlicense(playerid, params);
 CMD:oissuegunlicense(playerid, params[])
 {
 	if((0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV)
@@ -617,7 +618,7 @@ CMD:oissuegunlicense(playerid, params[])
 		szMiscArray[0] = 0;
 		new TargetName[MAX_PLAYERS];
 		if(sscanf(params, "s[24]", TargetName)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /oissuegunlicense [playerid]");
-		if(IsPlayerConnected(ReturnUser(TargetName))) return cmd_issuegunlicense(playerid, params);
+		if(IsPlayerConnected(ReturnUser(TargetName))) return pc_cmd_issuegunlicense(playerid, params);
 
 		new PlayerName[MAX_PLAYERS];
 		mysql_escape_string(TargetName, PlayerName);
@@ -633,7 +634,8 @@ CMD:oissuegunlicense(playerid, params[])
 	return 1;
 }*/
 
-CMD:orevokegl(playerid, params[]) return cmd_orevokegunlicense(playerid, params);
+
+alias:orevokegunlicense("orevokegl")
 CMD:orevokegunlicense(playerid, params[])
 {
 	if((0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV || PlayerInfo[playerid][pLeader] == 1)
@@ -641,7 +643,7 @@ CMD:orevokegunlicense(playerid, params[])
 		szMiscArray[0] = 0;
 		new TargetName[MAX_PLAYERS];
 		if(sscanf(params, "s[24]", TargetName)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /orevokegunlicense [playerid]");
-		if(IsPlayerConnected(ReturnUser(TargetName))) return cmd_issuegunlicense(playerid, params);
+		if(IsPlayerConnected(ReturnUser(TargetName))) return pc_cmd_issuegunlicense(playerid, params);
 
 		new PlayerName[MAX_PLAYERS];
 		mysql_escape_string(TargetName, PlayerName);

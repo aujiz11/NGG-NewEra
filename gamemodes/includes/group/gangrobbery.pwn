@@ -151,19 +151,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(response && !isnull(inputtext) && strval(inputtext) <= 100)
 				ROB_MAX_PERCENTAGE = strval(inputtext);
-			return cmd_editrobbery(playerid, "");
+			return pc_cmd_editrobbery(playerid, "");
 		}
 		case DIALOG_ROBBERY_SETUP_RATE:
 		{
 			if(response && !isnull(inputtext))
 				ROB_COLLECT_RATE = strval(inputtext);
-			return cmd_editrobbery(playerid, "");
+			return pc_cmd_editrobbery(playerid, "");
 		}
 		case DIALOG_ROBBERY_SETUP_MIN:
 		{
 			if(response && !isnull(inputtext) && strval(inputtext) > 0)
 				ROB_MIN_MEMBERS = strval(inputtext);
-			return cmd_editrobbery(playerid, "");
+			return pc_cmd_editrobbery(playerid, "");
 		}
 		case DIALOG_SAFE_PIN:
 		{
@@ -398,7 +398,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(response) 
 			{
-				return cmd_robsafe(playerid, "");
+				return pc_cmd_robsafe(playerid, "");
 			}
 			else 
 			{ 

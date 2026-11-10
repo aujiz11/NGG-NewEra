@@ -597,7 +597,7 @@ hook OnPlayerLeaveDynamicArea(playerid, areaid) {
 */
 
 /*
-hook OnPlayerCommandReceived(playerid, cmdtext[]) {
+hook OnPlayerCommandReceived(playerid, cmd[], params[], flags) {
 
 	arrAntiCheat[playerid][ac_iCommandCount]++;
 	switch(arrAntiCheat[playerid][ac_iCommandCount]) {

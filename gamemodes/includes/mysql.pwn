@@ -5306,8 +5306,8 @@ public OnPlayerPinVerified(index, bool:success, session, request, account)
 		case 7: ShowModelSelectionMenu(index, PlaneList, "Plane Shop");
 		case 8: ShowModelSelectionMenu(index, BoatList, "Boat Shop");
 		case 9: ShowModelSelectionMenu(index, CarList3, "Restricted Car Shop");
-		case 10: cmd_changename(index, "");
-		case 11: cmd_microshop(index, "");
+		case 10: pc_cmd_changename(index, "");
+		case 11: pc_cmd_microshop(index, "");
 	}
 	DeletePVar(index, "OpenShop");
 	return 1;

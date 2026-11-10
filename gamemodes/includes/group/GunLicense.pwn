@@ -19,7 +19,8 @@
 	return 1;
 }*/
 
-CMD:issuegl(playerid, params[]) return cmd_issuegunlicense(playerid, params);
+
+alias:issuegunlicense("issuegl")
 CMD:issuegunlicense(playerid, params[])
 {
 	if((0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV)

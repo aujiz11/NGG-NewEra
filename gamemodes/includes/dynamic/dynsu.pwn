@@ -363,7 +363,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	return 0;
 }
 
-CMD:clist(playerid, params[]) return cmd_crimelist(playerid, params);
+
+alias:crimelist("clist")
 CMD:crimelist(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 1337 && !PlayerInfo[playerid][pFactionModerator]) return SendClientMessageEx(playerid, COLOR_WHITE, "SERVER: You are not authorized to use this command.");

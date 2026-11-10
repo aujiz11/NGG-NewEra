@@ -437,7 +437,7 @@ CMD:reversejudgement(playerid, params[])
 
 CMD:commute(playerid, params[])
 {
-	cmd_pardon(playerid, "");
+	pc_cmd_pardon(playerid, "");
 	SendClientMessageEx(playerid, COLOR_GRAD1, "You can also use /pardon.");
 	return 1;
 }

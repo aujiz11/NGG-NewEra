@@ -3867,7 +3867,7 @@ CMD:dgedit(playerid, const params[])
 	else if(strcmp(choice, "newbiemutereset", true) == 0) var = dgNewbieMuteReset;
 	else if(strcmp(choice, "restrictedcarvoucher", true) == 0) var = dgRestrictedCarVoucher;
 	else if(strcmp(choice, "platvipvoucher", true) == 0) var = dgPlatinumVIPVoucher;
-	else if(strcmp(choice, "autoreset", true) == 0) return cmd_dgedit(playerid, "autoreset");
+	else if(strcmp(choice, "autoreset", true) == 0) return pc_cmd_dgedit(playerid, "autoreset");
 	else if(strcmp(choice, "usegoldtokens", true) == 0)
 	{
 		if(dgGoldToken) dgGoldToken = 0, SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the use of a Gold Giftbox token to recieve a gift.");
@@ -3957,7 +3957,7 @@ CMD:giftbox(playerid, params[])
 	{
 		new Float: pos[3];
 		SendClientMessageEx(playerid, COLOR_YELLOW, "** There is currently a giftbox placed down and we have set a checkpoint to the location of the giftbox.");
-		if(CheckPointCheck(playerid)) cmd_killcheckpoint(playerid, params); //If they have a checkpoint, just remove it
+		if(CheckPointCheck(playerid)) pc_cmd_killcheckpoint(playerid, params); //If they have a checkpoint, just remove it
 		DisablePlayerCheckpoint(playerid);
 		GetDynamicObjectPos(dynamicgift, pos[0], pos[1], pos[2]);
 		SetPlayerCheckpoint(playerid, pos[0], pos[1], pos[2], 5);

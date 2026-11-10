@@ -81,8 +81,8 @@ timer DDSaleTimerEx[30000](playerid)
 	return 1;
 }
 
-CMD:ad(playerid, params[]) return cmd_approvedoorsale(playerid, params);
-CMD:ds(playerid, params[]) return cmd_denydoorsale(playerid, params);
+
+
 
 CMD:doorsalehelp(playerid, params[])
 {
@@ -153,6 +153,7 @@ CMD:doorsaleinfo(playerid, params[])
 	return 1;
 }
 
+alias:approvedoorsale("ad")
 CMD:approvedoorsale(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
@@ -267,6 +268,7 @@ CMD:approvedoorsale(playerid, params[])
 	return 1;
 }
 
+alias:denydoorsale("ds")
 CMD:denydoorsale(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");

@@ -1671,7 +1671,7 @@ CMD:tackle(playerid, params[])
 		}
 		if(GetPVarInt(playerid, "WeaponsHolstered") == 0) //Unholstered
 	    {
-	        cmd_holster(playerid, params);
+	        pc_cmd_holster(playerid, params);
 			//UnholsterWeapon(playerid, 0);
 		}
         if(GetPVarInt(playerid, "TackleMode") == 0)
@@ -1683,7 +1683,7 @@ CMD:tackle(playerid, params[])
 		{
 	        SetPVarInt(playerid, "TackleMode", 0);
 	        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You've disabled tackling. You may now unholster your weapon.");
-			cmd_holster(playerid, params);
+			pc_cmd_holster(playerid, params);
 			return SetPVarInt(playerid, "ReTackleCooldown", gettime());
 		}
 	}

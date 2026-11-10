@@ -147,8 +147,8 @@ task HouseMarket[60000]()
 	return 1;
 }
 
-CMD:al(playerid, params[]) return cmd_approvelisting(playerid, params);
-CMD:dli(playerid, params[]) return cmd_denylisting(playerid, params);
+
+
 
 CMD:houselistinghelp(playerid, params[])
 {
@@ -170,6 +170,7 @@ CMD:houselistinghelp(playerid, params[])
 	return 1;
 }
 
+alias:denylisting("dli")
 CMD:denylisting(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
@@ -203,6 +204,7 @@ CMD:denylisting(playerid, params[])
 	return 1;
 }
 
+alias:approvelisting("al")
 CMD:approvelisting(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
@@ -815,7 +817,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(HouseInfo[houseid][hOwned] == 0 || HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 1)
 				{
 					SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently for sale.");
-					cmd_houselistings(playerid, "");
+					pc_cmd_houselistings(playerid, "");
 					return 1;
 				}
 				HouseMarketTracking[playerid] = houseid;
@@ -832,13 +834,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 3 to access house listings.");
 			switch(response)
 			{
-				case false: return cmd_houselistings(playerid, "");
+				case false: return pc_cmd_houselistings(playerid, "");
 				case true: 
 				{
 					if(HouseInfo[HouseMarketTracking[playerid]][hOwned] == 0 || HouseInfo[HouseMarketTracking[playerid]][Listed] == 0 || HouseInfo[HouseMarketTracking[playerid]][PendingApproval] == 1)
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently for sale.");
-						cmd_houselistings(playerid, "");
+						pc_cmd_houselistings(playerid, "");
 						return 1;
 					}
 					ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
@@ -857,7 +859,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(HouseInfo[HouseMarketTracking[playerid]][hOwned] == 0 || HouseInfo[HouseMarketTracking[playerid]][Listed] == 0 || HouseInfo[HouseMarketTracking[playerid]][PendingApproval] == 1)
 			{
 				SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently for sale.");
-				cmd_houselistings(playerid, "");
+				pc_cmd_houselistings(playerid, "");
 				return 1;
 			}
 			switch(response)

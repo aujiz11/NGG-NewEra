@@ -228,10 +228,9 @@ CMD:me(playerid, params[])
 	return 1;
 }
 
-CMD:whisper(playerid, params[]) {
-	return cmd_w(playerid, params);
-}
 
+
+alias:w("whisper")
 CMD:w(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
@@ -381,10 +380,9 @@ CMD:o(playerid, params[])
 	return SendClientMessageEx(playerid, COLOR_GRAD1, "/o has been renamed to /ooc to prevent typos.");
 }
 
-CMD:shout(playerid, params[]) {
-	return cmd_s(playerid, params);
-}
 
+
+alias:s("shout")
 CMD:s(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
@@ -405,10 +403,9 @@ CMD:s(playerid, params[])
 	return 1;
 }
 
-CMD:low(playerid, params[]) {
-	return cmd_l(playerid, params);
-}
 
+
+alias:l("low")
 CMD:l(playerid, params[])
 {
 	if(gPlayerLogged{playerid} == 0)
@@ -817,7 +814,8 @@ CMD:resetexamine(playerid, params[])
 	return SendClientMessageEx(playerid, COLOR_GREY, "You have successfully reset their examine description.");
 }
 
-CMD:se(playerid, params[]) return cmd_setexamine(playerid, params);
+
+alias:setexamine("se")
 CMD:setexamine(playerid, params[]) return ShowPlayerDialogEx(playerid, DIALOG_SETEXAMINE, DIALOG_STYLE_INPUT, "Examine Description", "Please enter a description of yourself.\nExample: appears to be a white male, 6' 3 ..etc", "Set", "Cancel");
 
 CMD:examine(playerid, params[])

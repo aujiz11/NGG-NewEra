@@ -1707,10 +1707,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
     return 1;
 }*/
 
-CMD:inv(playerid, params[]) {
-	return cmd_inventory(playerid, params);
-}
 
+
+alias:inventory("inv")
 CMD:inventory(playerid, params[])
 {
 	if(gPlayerLogged{playerid} != 0) ShowInventory(playerid, playerid);

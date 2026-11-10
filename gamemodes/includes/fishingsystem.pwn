@@ -712,7 +712,7 @@ CMD:sellfish(playerid, params[]) {
 		}
 		else
 		{
-            if(CheckPointCheck(playerid)) cmd_killcheckpoint(playerid, params);
+            if(CheckPointCheck(playerid)) pc_cmd_killcheckpoint(playerid, params);
 
 		    GameTextForPlayer(playerid, "~g~CHECKPOINT ~r~SET", 5000, 4);
             SetPVarInt(playerid, "pSellingFish", 1);

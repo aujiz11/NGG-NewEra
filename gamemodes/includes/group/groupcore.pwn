@@ -810,7 +810,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 			if(areaid[0] != INVALID_STREAMER_ID) {
 				for(new i; i < MAX_GROUP_LOCKERS; ++i) {
-					if(areaid[0] == arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID]) cmd_locker(playerid, "");
+					if(areaid[0] == arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID]) pc_cmd_locker(playerid, "");
 				}
 			}
 		}
@@ -2696,7 +2696,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 		}
 		case G_LOCKER_DRUGS: {
-			if(!response) return DeletePVar(playerid, "GSafe_Opt"), cmd_locker(playerid, "");
+			if(!response) return DeletePVar(playerid, "GSafe_Opt"), pc_cmd_locker(playerid, "");
 			else {
 
 				SetPVarInt(playerid, "GLocker_SID", listitem);
@@ -2705,7 +2705,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 		}
 		/*case G_LOCKER_INGREDIENTS: {
-			if(!response) return DeletePVar(playerid, "GSafe_Opt"), cmd_locker(playerid, "");
+			if(!response) return DeletePVar(playerid, "GSafe_Opt"), pc_cmd_locker(playerid, "");
 			else {
 
 				SetPVarInt(playerid, "GLocker_SID", listitem);
@@ -2718,7 +2718,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(!response)
 			{
-				return cmd_locker(playerid, "");
+				return pc_cmd_locker(playerid, "");
 			}
 			switch(listitem)
 			{
@@ -2752,7 +2752,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				DeletePVar(playerid, "GSafe_Action");
 				DeletePVar(playerid, "GSafe_Opt");
-				return cmd_locker(playerid, "");
+				return pc_cmd_locker(playerid, "");
 			}
 			if(response)
 			{
@@ -2857,7 +2857,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									DeletePVar(playerid, "GSafe_Opt");
 									SaveGroup(iGroupID);
 
-									cmd_locker(playerid, "");
+									pc_cmd_locker(playerid, "");
 
 								}
 								else return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
@@ -2876,7 +2876,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									DeletePVar(playerid, "GSafe_Opt");
 									SaveGroup(iGroupID);
 
-									cmd_locker(playerid, "");
+									pc_cmd_locker(playerid, "");
 								}
 								else return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that in the safe.\nPlease input another amount.", "Input", "Cancel");
 							}
@@ -2900,7 +2900,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `id` = '%d'", DS_Ingredients_GetSQLName(iIngredientID), arrGroupData[iGroupID][g_iIngredients][iIngredientID], iGroupID + 1);
 									mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-									cmd_locker(playerid, "");
+									pc_cmd_locker(playerid, "");
 								}
 								else return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
 							}
@@ -2920,7 +2920,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `id` = '%d'", DS_Ingredients_GetSQLName(iIngredientID), arrGroupData[iGroupID][g_iIngredients][iIngredientID], iGroupID + 1);
 									mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-									cmd_locker(playerid, "");
+									pc_cmd_locker(playerid, "");
 								}
 								else return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that in the safe.\nPlease input another amount.", "Input", "Cancel");
 							}
@@ -2984,7 +2984,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(!response) {
 				DeletePVar(playerid, "GLGunTake");
-				return cmd_locker(playerid, "");
+				return pc_cmd_locker(playerid, "");
 			}
 
 			switch(listitem) {
@@ -3011,7 +3011,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(!response) {
 				DeletePVar(playerid, "GLGunTake");
-				return cmd_locker(playerid, "");
+				return pc_cmd_locker(playerid, "");
 			}
 
 			if(!IsValidDynamicObject(arrGCrateData[iCrateID][gcr_iObject])) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid crate ID.");
@@ -3927,7 +3927,7 @@ CMD:dvrespawnall(playerid, params[])
 	return 1;
 }
 
-CMD:freedvrespawn(playerid, params[]) return cmd_dvrespawn(playerid, "1");
+CMD:freedvrespawn(playerid, params[]) return pc_cmd_dvrespawn(playerid, "1");
 CMD:dvrespawn(playerid, const params[])
 {
 	new szString[128],
@@ -5368,10 +5368,9 @@ CMD:m(playerid, params[]) {
 	return 1;
 }
 
-CMD:radio(playerid, params[]) {
-	return cmd_r(playerid, params);
-}
 
+
+alias:r("radio")
 CMD:r(playerid, params[]) {
 	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
@@ -5416,10 +5415,7 @@ CMD:r(playerid, params[]) {
 	return 1;
 }
 
-CMD:int(playerid, params[])
-{
-	return cmd_international(playerid, params);
-}
+
 
 CMD:togint(playerid, params[]) {
 
@@ -5434,6 +5430,7 @@ CMD:togint(playerid, params[]) {
 	return 1;
 }
 
+alias:international("int")
 CMD:international(playerid, params[])
 {
 
@@ -5707,7 +5704,8 @@ public HitmanTrace(playerid, iTargetID) {
 	return 1;
 }
 
-CMD:f(playerid, params[]) return cmd_g(playerid, params);
+
+alias:g("f")
 CMD:g(playerid, params[])
 {
 
@@ -6393,7 +6391,7 @@ CMD:families(playerid, params[])
 	return 1;
 }
 
-//CMD:families(playerid, params[]) return cmd_orgs(playerid, params);
+//CMD:families(playerid, params[]) return pc_cmd_orgs(playerid, params);
 CMD:orgs(playerid, params[])
 {
 	szMiscArray[0] = 0;

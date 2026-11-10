@@ -1905,10 +1905,9 @@ CMD:apark(playerid, params[]) {
 	return 1;
 }
 
-CMD:a(playerid, params[]) {
-	return cmd_admin(playerid, params);
-}
 
+
+alias:admin("a")
 CMD:admin(playerid, params[])  {
 	if(PlayerInfo[playerid][pAdmin] >= 2) {
 		if(!isnull(params)) {
@@ -1933,10 +1932,9 @@ CMD:admin(playerid, params[])  {
 	return 1;
 }
 
-CMD:ha(playerid, params[]) {
-	return cmd_headadmin(playerid, params);
-}
 
+
+alias:headadmin("ha")
 CMD:headadmin(playerid, params[])  {
 	if(PlayerInfo[playerid][pAdmin] >= 1337) {
 		if(!isnull(params)) {
@@ -2117,6 +2115,7 @@ CMD:gotopveh(playerid, params[]) {
 	return 1;
 }
 
+alias:reloadpvehicles("reloadpveh")
 CMD:reloadpvehicles(playerid, params[])
 {
 	if (PlayerInfo[playerid][pAdmin] < 3)
@@ -2138,10 +2137,7 @@ CMD:reloadpvehicles(playerid, params[])
 	return 1;
 }
 
-CMD:reloadpveh(playerid, params[])
-{
-	return cmd_reloadpvehicles(playerid, params);
-}
+
 
 CMD:unloadpvehicles(playerid, params[])
 {
@@ -2534,10 +2530,9 @@ CMD:ipwhitelist(playerid, params[])
 	return 1;
 }
 
-CMD:hosp(playerid, params[]) {
-	return cmd_hospital(playerid, params);
-}
 
+
+alias:hospital("hosp")
 CMD:hospital(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2)
@@ -3403,10 +3398,9 @@ CMD:rcabuse(playerid, params[]) {
 	return 1;
 }
 
-CMD:calc(playerid, params[]) {
-	return cmd_calculate(playerid, params);
-}
 
+
+alias:calculate("calc")
 CMD:calculate(playerid, params[])
 {
 	new string[128], method[20], value1, value2;
@@ -5309,19 +5303,17 @@ CMD:removemoderator(playerid, params[])
 	return 1;
 }
 
-CMD:ahelp(playerid, params[]) {
-	return cmd_ah(playerid, params);
-}
 
+
+alias:ah("ahelp")
 CMD:ah(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] >= 1) Help_ListCat(playerid, DIALOG_HELPCATADMIN);
 	return 1;
 }
 
-CMD:oahelp(playerid, params[]) {
-	return cmd_oah(playerid, params);
-}
 
+
+alias:oah("oahelp")
 CMD:oah(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] >= 1) SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
@@ -5699,8 +5691,9 @@ CMD:undercover(playerid, params[])
 }
 
 
-CMD:qs(playerid, params[]) return cmd_quickstats(playerid, params);
 
+
+alias:quickstats("qs")
 CMD:quickstats(playerid, params[])
 {
 	new string[128], Float: health, Float: armor;
@@ -6086,10 +6079,9 @@ CMD:myangle(playerid, params[])
     return 1;
 }
 
-CMD:kcp(playerid, params[]) {
-	return cmd_killcheckpoint(playerid, params);
-}
 
+
+alias:killcheckpoint("kcp")
 CMD:killcheckpoint(playerid, params[]) {
 
 	Player_KillCheckPoint(playerid);
@@ -6104,7 +6096,7 @@ CMD:flipcoin(playerid, params[]) {
     switch(random(200)) {
         case 0 .. 98: format(szMessage, sizeof(szMessage), "* %s flips a coin that lands on heads.", GetPlayerNameEx(playerid));
 		case 100 .. 198: format(szMessage, sizeof(szMessage), "* %s flips a coin that lands on tails.", GetPlayerNameEx(playerid));
-		default: cmd_flipcoin(playerid, params);
+		default: pc_cmd_flipcoin(playerid, params);
     }
     return ProxDetector(5.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 }
@@ -6126,6 +6118,7 @@ CMD:dice(playerid, params[])
     return 1;
 }
 
+alias:randomnumber("randnum")
 CMD:randomnumber(playerid, params[])
 {
 	new iLower, iUpper;
@@ -6142,7 +6135,7 @@ CMD:randomnumber(playerid, params[])
 	return 1;
 }
 
-CMD:randnum(playerid, params[]) return cmd_randomnumber(playerid, params);
+
 
 CMD:card(playerid, params[]) {
 

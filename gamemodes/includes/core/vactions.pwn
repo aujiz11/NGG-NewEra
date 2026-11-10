@@ -21,7 +21,7 @@
 */
 
 #include <a_samp>
-#include <zcmd>
+#include <Pawn.CMD>
 
 //-------------------------------------------------
 
@@ -156,6 +156,7 @@ public StopaniTimer(playerid)
 	return 1;
 }
 
+alias:animlist("oanimhelp")
 CMD:animlist(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_GREEN, "Available Animations:");
@@ -304,10 +305,7 @@ CMD:animhelp(playerid, params[])
 	return 1;
 }
 
-CMD:oanimhelp(playerid, params[])
-{
-	return cmd_animlist(playerid, params);
-}
+
 
 /*CMD:stopani(playerid, params[])
 {

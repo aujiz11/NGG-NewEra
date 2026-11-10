@@ -4646,9 +4646,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			case 7: ShowPlayerDialogEx(playerid, MDC_SMS, DIALOG_STYLE_INPUT, "MDC - Logged In | SMS", "Enter recipient's phone number.", "OK", "Cancel");
 		}
 	}
-	if(dialogid == MDC_SUSPECT) return cmd_su(playerid, inputtext);
-	if(dialogid == MDC_VEHICLE) return cmd_vmdc(playerid, inputtext);
-	if(dialogid == MDC_VLOOKUP) return cmd_vlookup(playerid, inputtext);
+	if(dialogid == MDC_SUSPECT) return pc_cmd_su(playerid, inputtext);
+	if(dialogid == MDC_VEHICLE) return pc_cmd_vmdc(playerid, inputtext);
+	if(dialogid == MDC_VLOOKUP) return pc_cmd_vlookup(playerid, inputtext);
 	if(dialogid == MDC_FIND && response)
 	{
 		new giveplayerid;
@@ -6151,7 +6151,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			format(params, sizeof(params), "%d %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
 			DeletePVar(playerid, "pInteractName");
 			DeletePVar(playerid, "pInteractID");
-			return cmd_pay(playerid, params);
+			return pc_cmd_pay(playerid, params);
 		}
 		else
 		{
@@ -6199,7 +6199,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			DeletePVar(playerid, "pInteractName");
 			DeletePVar(playerid, "pInteractID");
 			DeletePVar(playerid, "pInteractGive");
-			return cmd_give(playerid, params);
+			return pc_cmd_give(playerid, params);
 		}
 		else
 		{
@@ -12139,7 +12139,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new playersz[5];
 			GetPVarString(playerid, "nrn", playersz, 5);
 			DeletePVar(playerid, "nrn");
-			cmd_nrn(playerid, playersz);
+			pc_cmd_nrn(playerid, playersz);
 		}
 		else
 		{
@@ -12610,7 +12610,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	}
 	if(dialogid == DIALOG_DGRAUTORESET)
 	{
-		if(!response && GetPVarType(playerid, "dgInputSel")) return cmd_dgedit(playerid, "autoreset");
+		if(!response && GetPVarType(playerid, "dgInputSel")) return pc_cmd_dgedit(playerid, "autoreset");
 		if(response)
 		{
 			if(listitem == 0)
@@ -12657,7 +12657,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				format(string, sizeof(string), "You have set the auto reset amount to: %d.", dgAmount);
 				SendClientMessageEx(playerid, -1, string);
 			}
-			return cmd_dgedit(playerid, "autoreset");
+			return pc_cmd_dgedit(playerid, "autoreset");
 		}
 	}
 	if(dialogid == DIALOG_MARRIAGE)
@@ -12783,7 +12783,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	}
 	if(dialogid == DIALOG_MICROSHOP2)
 	{
-		if(!response) return cmd_microshop(playerid, "");
+		if(!response) return pc_cmd_microshop(playerid, "");
 		if(response)
 		{
 			new item;
@@ -12913,7 +12913,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					format(string, sizeof(string), "You have purchased this item 3 times in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
-					return cmd_microshop(playerid, "");
+					return pc_cmd_microshop(playerid, "");
 				}
 				PlayerInfo[playerid][mCooldown][item] = 0;
 				return ShowPlayerDialogEx(playerid, 7484, DIALOG_STYLE_LIST, "Micro Shop: Job Center", "Detective\nLawyer\nWhore\nDrugs Dealer\nBodyguard\nMechanic\nArms Dealer\nBoxer\nDrugs Smuggler\nTaxi Driver\nCraftsman\nBartender\nShipment Contractor\nPizza Boy", "Proceed", "Cancel");
@@ -12924,7 +12924,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					format(string, sizeof(string), "You currently have a active job boost, please wait for it to expire in %d minute(s) to purchase again.", PlayerInfo[playerid][mCooldown][item]);
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
-					return cmd_microshop(playerid, "");
+					return pc_cmd_microshop(playerid, "");
 				}
 				return ShowPlayerDialogEx(playerid, 7484, DIALOG_STYLE_LIST, "Micro Shop: Job Boost", "Detective\nLawyer\nWhore\nDrugs Dealer\nMechanic\nArms Dealer\nBoxer\nShipment Contractor", "Proceed", "Cancel");
 			}
@@ -12936,7 +12936,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					format(string, sizeof(string), "You have purchased this item in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
-					return cmd_microshop(playerid, "");
+					return pc_cmd_microshop(playerid, "");
 				}
 				PlayerInfo[playerid][mCooldown][item] = 0;
 			}
@@ -12947,7 +12947,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					format(string, sizeof(string), "You have purchased this item 3 times in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
-					return cmd_microshop(playerid, "");
+					return pc_cmd_microshop(playerid, "");
 				}
 				PlayerInfo[playerid][mCooldown][item] = 0;
 			}
@@ -12969,7 +12969,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					format(string, sizeof(string), "You have purchased this item 2 times in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
-					return cmd_microshop(playerid, "");
+					return pc_cmd_microshop(playerid, "");
 				}
 				PlayerInfo[playerid][mCooldown][item] = 0;
 			}
@@ -12979,7 +12979,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					format(string, sizeof(string), "You currently have a active Quick Bank Access, please wait for it to expire in %d minute(s) to purchase again.", PlayerInfo[playerid][mCooldown][item]);
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
-					return cmd_microshop(playerid, "");
+					return pc_cmd_microshop(playerid, "");
 				}
 			}
 			if(item == 13)//Restricted Skin
@@ -12988,7 +12988,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					format(string, sizeof(string), "You have purchased this item 3 times in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
-					return cmd_microshop(playerid, "");
+					return pc_cmd_microshop(playerid, "");
 				}
 				PlayerInfo[playerid][mCooldown][item] = 0;
 			}
@@ -12998,7 +12998,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	}
 	if(dialogid == DIALOG_MICROSHOP3)
 	{
-		if(!response) return cmd_microshop(playerid, "");
+		if(!response) return pc_cmd_microshop(playerid, "");
 		if(response)
 		{
 			new item = GetPVarInt(playerid, "m_Item");

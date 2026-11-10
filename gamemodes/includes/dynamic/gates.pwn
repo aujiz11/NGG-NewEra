@@ -111,11 +111,9 @@ CMD:gsave(playerid, params[])
     return 1;
 }
 
-CMD:hgate(playerid, params[])
-{
-	return cmd_movegate(playerid, params);
-}
 
+
+alias:movegate("hgate")
 CMD:movegate(playerid, params[])
 {
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /movegate [pass]");

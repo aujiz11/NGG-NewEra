@@ -262,7 +262,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		if(GetPVarType(playerid, "PayPhone")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are already communicating with a pay phone.");
 		if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID) {
 			SetPVarInt(playerid, "PayPhone", i);
-			return cmd_pickup(playerid, "");
+			return pc_cmd_pickup(playerid, "");
 		}
 		PayPhone_Menu(playerid, i);
 		break;
@@ -277,7 +277,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		new i = GetPVarInt(playerid, "PayPhone");
 		if(!PayPhone_Valid(i) || !IsPlayerInDynamicArea(playerid, arrPayPhoneData[i][pp_iAreaID])) return DeletePVar(playerid, "PayPhone"), 1;
 		if(strval(inputtext) == PlayerInfo[playerid][pPnumber] || strval(inputtext) == 0) return DeletePVar(playerid, "PayPhone"), 1;
-		cmd_call(playerid, inputtext);
+		pc_cmd_call(playerid, inputtext);
 		return 1;
 	}
 	if(dialogid == DIALOG_PAYPHONE_ADMIN) {

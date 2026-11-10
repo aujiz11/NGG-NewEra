@@ -91,9 +91,9 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid) {
 	if(clickedid == Furniture_TD[18] || clickedid == Furniture_TD[18]) FurnitureMenu(playerid, 2); // Build Mode.
 	if(clickedid == Furniture_TD[8]) FurnitureMenu(playerid, 3); // Sell Mode.
 	if(clickedid == Furniture_TD[9]) FurnitureMenu(playerid, 1); // Buy Mode.
-	if(clickedid == Furniture_TD[13]) cmd_furniture(playerid, "");	
-	if(clickedid == Furniture_TD[14]) cmd_furniturehelp(playerid, "");
-	if(clickedid == Furniture_TD[16]) cmd_furnitureresetpos(playerid, "");
+	if(clickedid == Furniture_TD[13]) pc_cmd_furniture(playerid, "");
+	if(clickedid == Furniture_TD[14]) pc_cmd_furniturehelp(playerid, "");
+	if(clickedid == Furniture_TD[16]) pc_cmd_furnitureresetpos(playerid, "");
 	if(clickedid == Furniture_TD[10]) FurniturePermit(playerid);
 	return 1;
 }
@@ -791,7 +791,7 @@ public OnLoadFurnitureList() {
 		iCount;
 
 	cache_get_row_count(iRows);
-	if(!iRows) print("[Furniture System]: No catalog found in the database.");
+	if(!iRows) print("[Furniture System] No catalog found in the database.");
 
 	for(new i; i < MAX_CATALOG; ++i) {
 		arrFurnitureCatalog[i][fc_iModelID] = 0;
@@ -863,11 +863,11 @@ FurnitureMenu(playerid, menu = 0) {
 	new iHouseID = GetHouseID(playerid);
 	if(iHouseID == INVALID_HOUSE_ID) {
 
-		cmd_furniture(playerid, "");
+		pc_cmd_furniture(playerid, "");
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a house anymore.");
 	}
 	if(!HousePermissionCheck(playerid, iHouseID)) {
-		cmd_furniture(playerid, "");
+		pc_cmd_furniture(playerid, "");
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not allowed to modify this house's furniture.");
 	}
 	switch(menu) {
@@ -2323,7 +2323,7 @@ CMD:furnitureresetpos(playerid, const params[]) {
 		new i = GetHouseID(playerid);
 		if(i == INVALID_HOUSE_ID) {
 
-			cmd_furniture(playerid, "");
+			pc_cmd_furniture(playerid, "");
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a house.");
 		}
 

@@ -12,7 +12,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new szIP[16];
 					GetPVarString(playerid, "MF_IP", szIP, sizeof(szIP));
 					format(szMiscArray, sizeof(szMiscArray), "%s 90 Moneyfarming", szIP);
-					cmd_banip(playerid, szMiscArray);
+					pc_cmd_banip(playerid, szMiscArray);
 				}
 			}
 		}

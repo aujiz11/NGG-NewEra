@@ -159,6 +159,7 @@ public OnLoadParkingMeters()
 	return 1;
 }
 
+alias:parkingmeterhelp("meterhelp")
 CMD:parkingmeterhelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_WHITE, "** PARKING METER COMMANDS **");
@@ -179,7 +180,7 @@ CMD:parkingmeterhelp(playerid, params[])
 	return 1;
 }
 
-CMD:meterhelp(playerid, params[]) return cmd_parkingmeterhelp(playerid, params);
+
 
 CMD:meterstatus(playerid, params[])
 {

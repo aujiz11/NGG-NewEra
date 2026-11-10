@@ -96,9 +96,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			switch(listitem) {
 				case 0: {
 					if(IsABike(vehicleid)) {
-						cmd_hm(playerid, "");
+						pc_cmd_helmet(playerid, "");
 					}
-					else cmd_sb(playerid, ""); 
+					else pc_cmd_seatbelt(playerid, "");
 				}
 				case 1: SetVehicleLights(vehicleid, playerid);// lights
 				case 2: SetVehicleHood(vehicleid, playerid);// bonnet

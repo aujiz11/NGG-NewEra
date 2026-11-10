@@ -84,9 +84,7 @@
 #include <open.mp>
 
 /*  ---------------- SCRIPT REVISION ----------------- */
-
-// Do not forget to change this everytime you commit - it's mandatory!
-#define SERVER_GM_TEXT "NG:RP v4.0.0"
+#define SERVER_GM_TEXT "NG:RP v4.0.4"
 
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
@@ -98,7 +96,7 @@
 #include <a_mysql>
 #include <streamer>
 #include <yom_buttons>
-#include <ZCMD>
+#include <Pawn.CMD>
 #include <sscanf2>
 #include <crashdetect>
 #include <YSI_Coding\y_timers>

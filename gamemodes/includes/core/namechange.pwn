@@ -45,7 +45,7 @@ stock IsAtNameChange(playerid)
 	return 0;
 }
 
-/*CMD:nchange(playerid, params[]) return cmd_namechanges(playerid, params);
+/*CMD:nchange(playerid, params[]) return pc_cmd_namechanges(playerid, params);
 
 CMD:namechanges(playerid, params[])
 {

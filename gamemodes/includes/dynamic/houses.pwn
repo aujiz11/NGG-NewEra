@@ -1358,6 +1358,7 @@ CMD:shophousename(playerid, params[])
 	return 1;
 }
 
+alias:houseinvite("hinvite")
 CMD:houseinvite(playerid, params[])
 {
 	if(Homes[playerid] > 0)
@@ -1385,9 +1386,7 @@ CMD:houseinvite(playerid, params[])
 	return 1;
 }
 
-CMD:hinvite(playerid, params[]) {
-	return cmd_houseinvite(playerid, params);
-}
+
 
 CMD:setrentable(playerid, params[])
 {

@@ -205,10 +205,9 @@ CMD:hg(playerid, params[])
 	return 1;
 }
 
-CMD:plantcarbomb(playerid, params[]) {
-	return cmd_pcb(playerid, params);
-}
 
+
+alias:pcb("plantcarbomb")
 CMD:pcb(playerid, params[])
 {
 	if (IsAHitman(playerid))
@@ -1549,10 +1548,9 @@ CMD:resetheadshot(playerid, params[])
     return 1;
 }
 
-CMD:plantbomb(playerid, params[]) {
-    return cmd_pb(playerid, params);
-}
 
+
+alias:pb("plantbomb")
 CMD:pb(playerid, params[])
 {
     if (IsAHitman(playerid))
@@ -1618,10 +1616,9 @@ CMD:order(playerid, params[])
 	return 1;
 }
 
-CMD:pub(playerid, params[]) {
-    return cmd_pickupbomb(playerid, params);
-}
 
+
+alias:pickupbomb("pub")
 CMD:pickupbomb(playerid, params[])
 {
     if (!IsAHitman(playerid))

@@ -102,12 +102,11 @@ CMD:fare(playerid, params[])
 	return 1;
 }
 
-CMD:eba(playerid, params[]) {
-	return cmd_emergencybutton(playerid, params);
-}
 
 
 
+
+alias:emergencybutton("eba")
 CMD:emergencybutton(playerid, params[]) {
 
 	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 7 || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == 7 || IsAReporter(playerid)) {
@@ -160,7 +159,8 @@ CMD:emergencybutton(playerid, params[]) {
 	return 1;
 }
 
-CMD:abus(playerid, params[]) return cmd_ataxi(playerid, params);
+
+alias:ataxi("abus")
 CMD:ataxi(playerid, params[])
 {
 	if(!IsATaxiDriver(playerid)) 

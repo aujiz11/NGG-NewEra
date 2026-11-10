@@ -4890,10 +4890,10 @@ public OnPlayerRequestClass(playerid, classid)
 	return 1;
 }
 
-public OnPlayerCommandPerformed(playerid, cmdtext[], success)
+public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
 {
-	// if(!success) SendClientMessageEx(playerid, COLOR_WHITE, "SERVER: Unknown command. Please use /help to list all available commands.");
-	if(!success) {
+	// if(result == -1 || result == 0) SendClientMessageEx(playerid, COLOR_WHITE, "SERVER: Unknown command. Please use /help to list all available commands.");
+	if(result == -1 || result == 0) {
 
 		TextDrawShowForPlayer(playerid, TD_ServerError);
 		defer HideServerError(playerid);
@@ -4907,7 +4907,11 @@ timer HideServerError[5000](playerid) {
 	return 1;
 }
 
-public OnPlayerCommandReceived(playerid, cmdtext[]) {
+public OnPlayerCommandReceived(playerid, cmd[], params[], flags) {
+
+	new cmdtext[145];
+	if(isnull(params)) format(cmdtext, sizeof(cmdtext), "/%s", cmd);
+	else format(cmdtext, sizeof(cmdtext), "/%s %s", cmd, params);
 
 	if(gPlayerLogged{playerid} != 1) {
 		SendClientMessageEx(playerid, COLOR_RED, "You are not logged in.");
@@ -4924,12 +4928,10 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 	}*/
 
 	playerLastTyped[playerid] = 0;
-	if(strfind(cmdtext, "/changepass", true) == 0 || strfind(cmdtext, "/changeuserpassword", true) == 0 || strfind(cmdtext, "/changeuserpin", true) == 0) {
-		new command[32], space = strfind(cmdtext, " ");
-		strmid(command, cmdtext, 0, space == -1 ? strlen(cmdtext) : space, sizeof(command));
-		printf("[zcmd] [%s]: %s [arguments redacted]", GetPlayerNameEx(playerid), command);
+	if(strfind(cmd, "changepass", true) == 0 || strfind(cmd, "changeuserpassword", true) == 0 || strfind(cmd, "changeuserpin", true) == 0) {
+		printf("[Pawn.CMD] [%s]: /%s [arguments redacted]", GetPlayerNameEx(playerid), cmd);
 	}
-	else printf("[zcmd] [%s]: %s", GetPlayerNameEx(playerid), cmdtext);
+	else printf("[Pawn.CMD] [%s]: %s", GetPlayerNameEx(playerid), cmdtext);
 	if(PlayerInfo[playerid][pForcePasswordChange] == 1) return ShowLoginDialogs(playerid, 0), 0;
 	if(PlayerInfo[playerid][pMuted] == 1) {
 		SendClientMessageEx(playerid, COLOR_GREY, "You cannot speak, you have been silenced!");
@@ -5012,7 +5014,7 @@ public OnPlayerText(playerid, text[])
 	new string[128];
 	playerLastTyped[playerid] = 0;
 
-	//if(strcmp("lol", text, true) == 0) return cmd_me(playerid, "laughs out loud."), 0;
+	//if(strcmp("lol", text, true) == 0) return pc_cmd_me(playerid, "laughs out loud."), 0;
 
 	if(TextSpamUnmute[playerid] != 0)
 	{

@@ -753,7 +753,7 @@ public Job_OnDeleteJobVehicle(iPlayerID, i)
 forward Job_OnCreateJobVehicle(i, iTypeID, iVehID, Float:x, Float:y, Float:z, Float:rotz, color1, color2);
 public Job_OnCreateJobVehicle(i, iTypeID, iVehID, Float:x, Float:y, Float:z, Float:rotz, color1, color2)
 {
-	if(mysql_errno()) return printf("[Dynanmic Jobs System]: Couldn't create vehicle ID %d for job ID %d", iVehID, i);
+	if(mysql_errno()) return printf("[Dynanmic Jobs System] Couldn't create vehicle ID %d for job ID %d", iVehID, i);
 	arrJobVehData[i][jveh_iTypeID] = iTypeID;
 	arrJobVehData[i][jveh_iVehID] = CreateVehicle(iVehID, x, y, z, rotz, color1, color2, 5000);
 	VehicleFuel[arrJobVehData[i][jveh_iVehID]] = 100.0;

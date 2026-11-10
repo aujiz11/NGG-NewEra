@@ -126,14 +126,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new id[3];
 					valstr(id, GetPVarInt(playerid, "pInteract"));
 
-					cmd_frisk(playerid, id);
+					pc_cmd_frisk(playerid, id);
 				}
 				case 4: // Show License
 				{
 					new id[3];
 					valstr(id, GetPVarInt(playerid, "pInteract"));
 
-					cmd_showlicenses(playerid, id);
+					pc_cmd_showlicenses(playerid, id);
 				}
 			}
 
@@ -163,7 +163,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			valstr(id, GetPVarInt(playerid, "pInteract"));
 			format(realstring, 50, "%s %s", id, inputtext);
 
-			cmd_pay(playerid, realstring);
+			pc_cmd_pay(playerid, realstring);
 		}
 		case DIALOG_INTERACT_GIVEITEM:
 		{
@@ -208,22 +208,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new id[3];
 					valstr(id, GetPVarInt(playerid, "pInteract"));
 
-					if(PlayerCuffed[GetPVarInt(playerid, "pInteract")] > 1) cmd_uncuff(playerid, id);
-					else cmd_cuff(playerid, id);
+					if(PlayerCuffed[GetPVarInt(playerid, "pInteract")] > 1) pc_cmd_uncuff(playerid, id);
+					else pc_cmd_cuff(playerid, id);
 				}
 				case 1: // Jailcuff
 				{
 					new id[3];
 					valstr(id, GetPVarInt(playerid, "pInteract"));
 
-					cmd_jailcuff(playerid, id);
+					pc_cmd_jailcuff(playerid, id);
 				}
 				case 2: // Drag
 				{
 					new id[3];
 					valstr(id, GetPVarInt(playerid, "pInteract"));
 
-					cmd_drag(playerid, id);
+					pc_cmd_drag(playerid, id);
 				}
 				case 3: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_DETAIN, DIALOG_STYLE_INPUT, "Interaction Menu - Detain", "Please choose the number of seat you'd like to detain the suspect in. (1-3)", "Select", "Cancel");
 				case 4: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_TICKET, DIALOG_STYLE_INPUT, "Interaction Menu - Ticket", "Please choose how much you would like to ticket the suspect.", "Select", "Cancel");
@@ -243,7 +243,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new id[3];
 					valstr(id, GetPVarInt(playerid, "pInteract"));
 
-					cmd_movept(playerid, id);
+					pc_cmd_movept(playerid, id);
 				}
 				case 1: // Load Patient
 				{
@@ -259,21 +259,21 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					else return 1;
 					format(realstring, 50, "%s %d", id, seat);
 
-					if(seat != -1) cmd_loadpt(playerid, realstring);
+					if(seat != -1) pc_cmd_loadpt(playerid, realstring);
 				}
 				case 2: // Jailcuff
 				{
 					new id[3];
 					valstr(id, GetPVarInt(playerid, "pInteract"));
 
-					cmd_jailcuff(playerid, id);
+					pc_cmd_jailcuff(playerid, id);
 				}
 				case 3: // Triage
 				{
 					new id[3];
 					valstr(id, GetPVarInt(playerid, "pInteract"));
 
-					cmd_triage(playerid, id);
+					pc_cmd_triage(playerid, id);
 				}
 				case 4: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_HEAL, DIALOG_STYLE_INPUT, "Interaction Menu - Heal", "How much would you like to heal the patient for? ($200 - $1,000)", "Select", "Cancel");
 			}
@@ -291,22 +291,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new id[3];
 					valstr(id, GetPVarInt(playerid, "pInteract"));
 
-					if(PlayerCuffed[GetPVarInt(playerid, "pInteract")] > 1) cmd_uncuff(playerid, id);
-					else cmd_cuff(playerid, id);
+					if(PlayerCuffed[GetPVarInt(playerid, "pInteract")] > 1) pc_cmd_uncuff(playerid, id);
+					else pc_cmd_cuff(playerid, id);
 				}
 				case 1: // Jailcuff
 				{
 					new id[3];
 					valstr(id, GetPVarInt(playerid, "pInteract"));
 
-					cmd_jailcuff(playerid, id);
+					pc_cmd_jailcuff(playerid, id);
 				}
 				case 2: // Drag
 				{
 					new id[3];
 					valstr(id, GetPVarInt(playerid, "pInteract"));
 
-					cmd_drag(playerid, id);
+					pc_cmd_drag(playerid, id);
 				}
 				case 3: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_DETAIN, DIALOG_STYLE_INPUT, "Interaction Menu - Detain", "Please choose the number of seat you'd like to detain the suspect in. (1-3)", "Select", "Cancel");
 				case 4: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_CONFISCATE, DIALOG_STYLE_LIST, "Interaction Menu - Confiscate", "Weapons\nPot\nCrack\nMeth\nEcstasy\nMaterials\nRadio\nHeroin\nRawopium\nSyringes\nPotSeeds\nOpiumSeeds\nDrugCrates", "Select", "Cancel");

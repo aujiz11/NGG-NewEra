@@ -213,10 +213,9 @@ CMD:number(playerid, params[]) {
 	return 1;
 }
 
-CMD:tempnum(playerid, params[]) {
-	return cmd_tempnumber(playerid, params);
-}
 
+
+alias:tempnumber("tempnum")
 CMD:tempnumber(playerid, params[]){
 	if (PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][gTempNum] || IsAHitman(playerid)) {
         new num;
@@ -505,16 +504,11 @@ CMD:call(playerid, const params[])
 	return 1;
 }
 
-CMD:t(playerid, params[])
-{
-	return cmd_sms(playerid, params);
-}
 
-CMD:txt(playerid, params[])
-{
-	return cmd_sms(playerid, params);
-}
 
+
+
+alias:sms("t", "txt")
 CMD:sms(playerid, params[])
 {
 	if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You haven't logged in yet!");
@@ -636,10 +630,9 @@ CMD:sms(playerid, params[])
 	return 1;
 }
 
-CMD:p(playerid, params[]) {
-	return cmd_pickup(playerid, params);
-}
 
+
+alias:pickup("p")
 CMD:pickup(playerid, const params[])
 {
 	new string[128];
@@ -699,10 +692,9 @@ CMD:pickup(playerid, const params[])
 	return 1;
 }
 
-CMD:h(playerid, params[]) {
-	return cmd_hangup(playerid, params);
-}
 
+
+alias:hangup("h")
 CMD:hangup(playerid,params[])
 {
 	new string[128];
@@ -714,7 +706,7 @@ CMD:hangup(playerid,params[])
 	if(GetPVarType(playerid, "Has911Call")) {
 
 		if(GetPVarType(playerid, "PayPhone")) TogglePlayerControllable(playerid, true);
-		cmd_cancelcall(playerid, "");
+		pc_cmd_cancelcall(playerid, "");
 	}
 	new caller = Mobile[playerid];
 	if((IsPlayerConnected(caller)/* && caller != INVALID_PLAYER_ID*/))

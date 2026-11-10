@@ -262,12 +262,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(!response) return 1;
 			if(isnull(inputtext)) return 1;
-			cmd_call(playerid, inputtext);
+			pc_cmd_call(playerid, inputtext);
 			return 1;
 		}
 		case DIALOG_PHONE_PAYPHONES: {
 
-			cmd_call(playerid, arrPayPhoneData[ListItemTrackId[playerid][listitem]][pp_iNumber]);
+			pc_cmd_call(playerid, arrPayPhoneData[ListItemTrackId[playerid][listitem]][pp_iNumber]);
 			return 1;
 		}
 		case DIALOG_PHONE_CONTACTS:
@@ -339,13 +339,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						Car Dealerships\n\
 						Clubs", "Select", "Back");
 				}
-				case 1: cmd_call(playerid, "18004444");
-				case 2: cmd_call(playerid, "18001800");
-				case 3: cmd_call(playerid, "1738");
-				case 4: cmd_call(playerid, "18008080");
-				case 5: cmd_call(playerid, "18001111");
-				case 6: cmd_call(playerid, "18001020");
-				case 7: cmd_service(playerid, "mechanic");
+				case 1: pc_cmd_call(playerid, "18004444");
+				case 2: pc_cmd_call(playerid, "18001800");
+				case 3: pc_cmd_call(playerid, "1738");
+				case 4: pc_cmd_call(playerid, "18008080");
+				case 5: pc_cmd_call(playerid, "18001111");
+				case 6: pc_cmd_call(playerid, "18001020");
+				case 7: pc_cmd_service(playerid, "mechanic");
 			}
 
 		}
@@ -386,14 +386,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new id = ListItemTrackId[playerid][listitem];
 
 			SetPVarInt(playerid, "BUSICALL", id);
-			cmd_call(playerid, "000000");
+			pc_cmd_call(playerid, "000000");
 			return 1;
 		}
 		case DIALOG_PHONE_CONTACTLIST:
 		{
 			if(!response) return DeletePVar(playerid, PVAR_PHONEDELCONTACT), Phone_Contacts(playerid), 1;
 			format(szMiscArray, sizeof(szMiscArray), "%d", ListItemTrackId[playerid][listitem]);
-			cmd_call(playerid, szMiscArray);
+			pc_cmd_call(playerid, szMiscArray);
 			return 1;
 		}
 		case DIALOG_PHONE_ADDCONTACT:
@@ -434,9 +434,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!response) return 1;
 			switch(listitem)
 			{
-				case 0: cmd_picture(playerid, "");
-				case 1: cmd_selfie(playerid, "");
-				case 2: cmd_selfie(playerid, "");
+				case 0: pc_cmd_picture(playerid, "");
+				case 1: pc_cmd_selfie(playerid, "");
+				case 2: pc_cmd_selfie(playerid, "");
 			}
 		}
 		case DIALOG_PHONE_SETTINGS:
@@ -968,7 +968,7 @@ Phone_Contacts(iPlayerID)
 
 Phone_Ads(iPlayerID)
 {
-	cmd_ads(iPlayerID, "");
+	pc_cmd_advertisements(iPlayerID, "");
 }
 
 Phone_Camera(iPlayerID)
@@ -983,35 +983,35 @@ Phone_Settings(iPlayerID)
 
 Phone_Music(iPlayerID)
 {
-	cmd_mp3(iPlayerID, "");
+	pc_cmd_mp3(iPlayerID, "");
 }
 
 Phone_Map(iPlayerID)
 {
 	
 	DisablePlayerCheckpoint(iPlayerID);
-	cmd_mygps(iPlayerID, "");
+	pc_cmd_mygps(iPlayerID, "");
 }
 
 Phone_SAN(iPlayerID)
 {
-	cmd_shows(iPlayerID, "");
+	pc_cmd_shows(iPlayerID, "");
 }
 
 /*
 Phone_House(iPlayerID) {
 
-	cmd_houselistings(iPlayerID, "");
+	pc_cmd_houselistings(iPlayerID, "");
 }
 
 Phone_Medic(iPlayerID)
 {
-	cmd_call(iPlayerID, "911");
+	pc_cmd_call(iPlayerID, "911");
 }
 
 Phone_MDC(iPlayerID)
 {
-	cmd_mdc(iPlayerID, "");
+	pc_cmd_mdc(iPlayerID, "");
 }
 */
 
@@ -1298,12 +1298,12 @@ hook OnPlayerStateChange(playerid, newstate, oldstate) {
 */
 
 CMD:firstperson(playerid, params[]) {
-	return cmd_fpm(playerid, "");
+	return pc_cmd_fpm(playerid, "");
 }
 
 CMD:picture(playerid, const params[]) {
 
-	return cmd_fpm(playerid, "");
+	return pc_cmd_fpm(playerid, "");
 }
 
 

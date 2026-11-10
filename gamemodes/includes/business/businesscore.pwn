@@ -40,9 +40,9 @@
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 	if(newkeys & KEY_YES && InBusiness(playerid) != INVALID_BUSINESS_ID) {
-		if(IsAt247(playerid)) return cmd_buy(playerid, "");
-		else if(IsAtRestaurant(playerid)) return cmd_buyfood(playerid, "");
-		else if(IsAtClothingStore(playerid)) return cmd_buyclothes(playerid, "");
+		if(IsAt247(playerid)) return pc_cmd_buy(playerid, "");
+		else if(IsAtRestaurant(playerid)) return pc_cmd_buyfood(playerid, "");
+		else if(IsAtClothingStore(playerid)) return pc_cmd_buyclothes(playerid, "");
 	}
 	return 1;
 }
@@ -769,6 +769,7 @@ CMD:businessdate(playerid, params[]) {
 	return 1;
 }
 
+alias:businesshelp("bhelp")
 CMD:businesshelp(playerid, params[])
 {
     SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
@@ -800,9 +801,7 @@ CMD:businesshelp(playerid, params[])
     return 1;
 }
 
-CMD:bhelp(playerid, params[]) {
-	return cmd_businesshelp(playerid, params);
-}
+
 
 CMD:bonline(playerid, params[]) {
 	new iBusinessID = PlayerInfo[playerid][pBusiness];
@@ -2555,10 +2554,9 @@ CMD:deletegaspump(playerid, params[])
 	return 1;
 }
 
-CMD:addmats(playerid, params[]) {
-	return cmd_addmaterials(playerid, params);
-}
 
+
+alias:addmaterials("addmats")
 CMD:addmaterials(playerid, params[])
 {
     new	string[128], amount;
@@ -3012,11 +3010,9 @@ CMD:minrank(playerid, params[])
 	return 1;
 }
 
-CMD:br(playerid, params[])
-{
-	return cmd_bizradio(playerid, params);
-}
 
+
+alias:bizradio("br")
 CMD:bizradio(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");

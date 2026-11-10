@@ -147,7 +147,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						return ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
 				}
 			}
-			case 4: cmd_houselistings(playerid, "");
+			case 4: pc_cmd_houselistings(playerid, "");
 		}
 		case DIALOG_ADCATEGORYPLACE: {
 			if(response) switch(listitem) {
@@ -338,7 +338,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new params[32];
 				format(params, sizeof(params), "%d", GetPVarInt(playerid, "advertContact"));
 				DeletePVar(playerid, "adverContact");
-				return cmd_call(playerid, params);
+				return pc_cmd_call(playerid, params);
 			}
 		}		
 		case DIALOG_ADLIST: {
@@ -373,10 +373,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	return 0;
 }
 
-CMD:ads(playerid, const params[]) {
-	return cmd_advertisements(playerid, params);
-}
 
+
+alias:advertisements("ads")
 CMD:advertisements(playerid, const params[]) {
 	if(gPlayerLogged{playerid} == 0) {
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");

@@ -149,11 +149,9 @@ DestroyVLPTextDraws(playerid) {
 		PlayerTextDrawShow(playerid, VLPTextDraws[playerid][i]);
 }*/
 
-CMD:pickvehicle(playerid, params[])
-{
-	return cmd_pickveh(playerid, params);
-}
 
+
+alias:pickveh("pickvehicle")
 CMD:pickveh(playerid, params[])
 {
 	/*

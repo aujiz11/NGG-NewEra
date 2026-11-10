@@ -101,7 +101,7 @@ Dialog:wep_option(playerid, response, listitem, inputtext[]) {
 			}
 		}
 	} else {
-		return cmd_locker(playerid, "");
+		return pc_cmd_locker(playerid, "");
 	}
 	return 1;
 }
@@ -260,7 +260,7 @@ Dialog:crate_tran_option(playerid, response, listitem, inputtext[]) {
 			}
 		}
 	} else {
-		return cmd_locker(playerid, "");
+		return pc_cmd_locker(playerid, "");
 	}
 	return 1;
 }

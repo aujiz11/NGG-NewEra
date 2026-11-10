@@ -141,11 +141,9 @@ public ScrapMetal(playerid, vehicleid)
 }
 
 #if defined zombiemode
-CMD:zh(playerid, params[])
-{
-	return cmd_zombiehelp(playerid, params);
-}
 
+
+alias:zombiehelp("zh")
 CMD:zombiehelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_GREY, "*** ZOMBIE HELP *** /buycure /bite /curevirus /getvials (For Medics)");

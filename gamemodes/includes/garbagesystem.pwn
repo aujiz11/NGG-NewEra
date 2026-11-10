@@ -97,7 +97,7 @@ hook OnPlayerEnterCheckpoint(playerid)
  	return 1;
 }
 
-command(garbagerun, playerid, params[])
+CMD:garbagerun(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJob] == 27 || PlayerInfo[playerid][pJob2] == 27 || PlayerInfo[playerid][pJob3] == 27)
 	{
@@ -105,7 +105,7 @@ command(garbagerun, playerid, params[])
 	    {
 	        if(GetPVarInt(playerid, "pGarbageRun") <= 0)
 	        {
-	        	if(CheckPointCheck(playerid)) cmd_killcheckpoint(playerid, params);
+			if(CheckPointCheck(playerid)) pc_cmd_killcheckpoint(playerid, params);
 	        	
                 SetPVarInt(playerid, "pGarbageRun", 1);
                 DeletePVar(playerid, "pGarbageStage");

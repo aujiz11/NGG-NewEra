@@ -35,8 +35,9 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-CMD:hm(playerid, const params[]) return cmd_helmet(playerid, params);
 
+
+alias:helmet("hm")
 CMD:helmet(playerid, const params[])
 {
     if(!IsABike(GetPlayerVehicleID(playerid)))
@@ -80,8 +81,9 @@ CMD:helmet(playerid, const params[])
     return 1;
 }
 
-CMD:chm(playerid, params[]) return cmd_checkhelmet(playerid, params);
 
+
+alias:checkhelmet("chm")
 CMD:checkhelmet(playerid, params[])
 {
 	new giveplayerid;
