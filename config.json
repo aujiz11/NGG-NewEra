@@ -111,12 +111,19 @@
             "mysql",
             "profiler",
             "streamer",
-            "Whirlpool"
+            "samp_bcrypt"
         ],
         "main_scripts": [
             "NGRP 1"
         ],
-        "side_scripts": []
+        "side_scripts": [
+            "filterscripts/yom_buttons",
+            "filterscripts/Mapping/FurnitureSystem",
+            "filterscripts/Mapping/Gang",
+            "filterscripts/Mapping/PlayerExteriors",
+            "filterscripts/Mapping/PlayerInteriors",
+            "filterscripts/Mapping/Server"
+        ]
     },
     "rcon": {
         "allow_teleport": false,
