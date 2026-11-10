@@ -35,138 +35,6 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-new iBankVault;
-task Bank_VaultCheck[60000 * 15]() {
-
-	Bank_UpdateBank(iBankVault);
-}
-
-
-Bank_LoadBank() {
-	// Current Main Server vault: 216.000.000.000. Above 32-bit int limit. Divide by 1000 from bigint column to get a readable number for SA:MP.
-	mysql_tquery(MainPipeline, "SELECT money / 1000 FROM `bank` WHERE `id` = '1'", true, "Bank_OnLoadBank", "");
-}
-
-forward Bank_OnLoadBank();
-public Bank_OnLoadBank() {
-
-	new iRows,
-		iFields;
-
-	cache_get_data(iRows, iFields, MainPipeline);
-	iBankVault = cache_get_field_content_int(0, "money / 1000", MainPipeline);
-	print("[LS Bank] - Loaded all the $$$");
-	return 1;
-}
-*/
-
-Bank_UpdateBank(iAmount) {
-	
-	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `bank` SET `money` = money + %d WHERE `money` > 0", iAmount);
-	mysql_tquery(MainPipeline, szMiscArray, "Bank_OnUpdateBank", "i", iAmount);
-}
-
-forward Bank_OnUpdateBank(iAmount);
-public Bank_OnUpdateBank(iAmount) {
-
-	new iRows;
-	cache_get_row_count(iRows);
-
-	if(iRows) {
-		
-		format(szMiscArray, sizeof(szMiscArray), "[LS BANK] Processed $%s", iAmount);
-		Log("logs/bank.log", szMiscArray);
-		
-	}
-	else Bank_Bankrupt();
-	return 1;
-}
-
-
-forward Bank_FetchData(playerid);
-public Bank_FetchData(playerid) {
-
-	new iRows,
-		szMoney[16];
-	cache_get_row_count(iRows);
-	
-	if(iRows) {
-		cache_get_value_name(0, "money", szMoney, sizeof(szMoney));
-
-		format(szMiscArray, sizeof(szMiscArray), "[BANK]: Vault: {CCCCCC}$%s", szMoney);
-		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-	}
-	return 1;
-}
-
-
-
-Bank_Bankrupt() {
-	SetGVarInt("Bankrupt", 1);
-}
-
-Bank_TransferCheck(iAmount) {
-
-	/*
-	if((-2147483647 < iBankVault + iAmount < 2147483647)) {
-
-		if(iBankVault > (iAmount * -1)) { // If you withdraw, the bank will always be happy.
-			Bank_ProcessMoney(iAmount);
-		}
-		else Bank_UpdateBank(iAmount, 1);
-	}
-	else {
-		Bank_UpdateBank(iAmount, 1);
-	}
-	if(GetGVarInt("Bankrupt")) return 0;
-	*/
-
-	if(GetGVarInt("Bankrupt")) {
-		// SendClientMessageEx(playerid, COLOR_LIGHTRED, "[Bank]: We're terribly sorry, we are bankrupt.");
-		// return 0;
-		return 1;
-	}
-	else Bank_UpdateBank(iAmount);
-	return 1;
-}
-
-/*
-Bank_ProcessMoney(iAmount) {
-
-	iBankVault += iAmount;
-}
-*/
-
-CMD:bankvault(playerid, params[]) {
-
-	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
-	mysql_tquery(MainPipeline, "SELECT `money` FROM `bank` WHERE `id` = '1'", "Bank_FetchData", "i", playerid);
-	return 1;
-}
-
-CMD:resetbank(playerid, params[]) {
-	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
-	mysql_tquery(MainPipeline, "UPDATE `bank` SET `money` = (SELECT SUM(`money`) FROM `accounts`) WHERE `id` = 1", "Bank_ResetVault", "i", playerid);
-	return 1;
-}
-
-forward Bank_ResetVault(playerid);
-public Bank_ResetVault(playerid) {
-
-	if(mysql_errno(MainPipeline)) SendClientMessageEx(playerid, COLOR_GRAD1, "Something went wrong.");
-	mysql_tquery(MainPipeline, "SELECT `money` FROM `bank` WHERE `id` = '1'", "Bank_FetchData", "i", playerid);
-}
-
-/*
-CMD:updatevault(playerid, parmas[]) {
-	if(!IsAdminLevel(playerid, ADMIN_HEAD, 1)) return 1;
-	Bank_UpdateBank(iBankVault);
-	SendClientMessageEx(playerid, COLOR_YELLOW, "[BANK]: You updated the bank vault, resetting the cash flow.");
-	return 1;
-}
-*/
-
 PayDay(i) {
 	if(!gPlayerLogged{i}) return 1;
 	new
@@ -194,7 +62,6 @@ PayDay(i) {
 				SendClientMessageEx(i, COLOR_WHITE, "You have been evicted from your residence for failing to pay rent fees.");
 			}
 			else {
-				if(!Bank_TransferCheck(-HouseInfo[PlayerInfo[i][pRenting]][hRentFee])) return 1;
 				HouseInfo[PlayerInfo[i][pRenting]][hSafeMoney] += HouseInfo[PlayerInfo[i][pRenting]][hRentFee];
 				PlayerInfo[i][pAccount] -= HouseInfo[PlayerInfo[i][pRenting]][hRentFee];
 			}
@@ -213,7 +80,6 @@ PayDay(i) {
 				if(PlayerInfo[i][pDonateRank] < 4)
 				{
 					format(string, sizeof(string), "  Paycheck: $%s  |  SA Gov Tax: $%s (%d percent)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * TaxValue), TaxValue);
-					if(!Bank_TransferCheck((PlayerInfo[i][pPayCheck] / 100) * TaxValue)) return 1;
 					PlayerInfo[i][pAccount] -= (PlayerInfo[i][pPayCheck] / 100) * TaxValue;
 					Tax += (PlayerInfo[i][pPayCheck] / 100) * TaxValue;
 				}
@@ -222,7 +88,6 @@ PayDay(i) {
 					pVIPTax = TaxValue - 15;
 					if(pVIPTax < 0) { pVIPTax = 0; }
 					format(string, sizeof(string), "  Paycheck: $%s  |  SA Gov Tax: $%s (%d percent) {FFFF00}(Platinum VIP: 15 percent off)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * pVIPTax), pVIPTax);
-					if(!Bank_TransferCheck((PlayerInfo[i][pPayCheck] / 100) * pVIPTax)) return 1;
 					PlayerInfo[i][pAccount] -= (PlayerInfo[i][pPayCheck] / 100) * pVIPTax;
 					Tax += (PlayerInfo[i][pPayCheck] / 100) * pVIPTax;
 				}
@@ -232,7 +97,6 @@ PayDay(i) {
 				if(PlayerInfo[i][pDonateRank] < 4)
 				{
 					format(string, sizeof(string), "  Paycheck: $%s  |  NE Gov Tax: $%s (%d percent)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * TRTaxValue), TRTaxValue);	
-					if(!Bank_TransferCheck((PlayerInfo[i][pPayCheck] / 100) * TRTaxValue)) return 1;
 					PlayerInfo[i][pAccount] -= (PlayerInfo[i][pPayCheck] / 100) * TRTaxValue;
 					TRTax += (PlayerInfo[i][pPayCheck] / 100) * TRTaxValue;
 				}
@@ -241,7 +105,6 @@ PayDay(i) {
 					pVIPTax = TRTaxValue - 15;
 					if(pVIPTax < 0) { pVIPTax = 0; }
 					format(string, sizeof(string), "  Paycheck: $%s  |  NE Gov Tax: $%s (%d percent) {FFFF00}(Platinum VIP: 15 percent off)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * pVIPTax), pVIPTax);	
-					if(!Bank_TransferCheck((PlayerInfo[i][pPayCheck] / 100) * pVIPTax)) return 1;
 					PlayerInfo[i][pAccount] -= (PlayerInfo[i][pPayCheck] / 100) * pVIPTax;
 					TRTax += (PlayerInfo[i][pPayCheck] / 100) * pVIPTax;
 				}
@@ -317,7 +180,6 @@ PayDay(i) {
 					}
 				}
 			}
-			if(!Bank_TransferCheck(-interest)) return 1;
 			PlayerInfo[i][pAccount] += interest;
 			format(string, sizeof(string), "  Interest gained: $%s", number_format(interest));
 			SendClientMessageEx(i, COLOR_GRAD3, string);
@@ -708,62 +570,10 @@ stock IsAtATM(playerid)
 
 CMD:pay(playerid, params[])
 {
-	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
-
-	new id, storageid, amount;
-
-	if(sscanf(params, "ud", id, amount)) {
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pay [player] [amount]");
-	}
-
-	/*if(sscanf(params, "udd", id, storageid, amount)) {
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pay [player] [storageid] [amount]");
-		SendClientMessageEx(playerid, COLOR_GREY, "StorageIDs: (0) Pocket - (1) Equipped Storage Device");
-		return 1;
-	}
-
-	if(storageid < 0 || storageid > 1) {
-		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /pay [player] [storageid] [amount]");
-		SendClientMessageEx(playerid, COLOR_GREY, "StorageIDs: (0) Pocket - (1) Equipped Storage Device");
-		return 1;
-	}
-
-	// Find the storageid of the storagedevice.
-	if(storageid == 1) {
-		new bool:itemEquipped = false;
-		for(new i = 0; i < 3; i++)
-		{
-			if(StorageInfo[playerid][i][sAttached] == 1) {
-				storageid = i+1;
-				itemEquipped = true;
-			}
-		}
-		if(itemEquipped == false) return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have a storage device equipped!");
-	}*/
-	else if(!IsPlayerConnected(id)) {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-	}
-	else if(id == playerid) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You can not use this command on yourself!");
-	}
-	else if(!(1 <= amount <= 99999999)) {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot pay below $1, or above $99,999,999 at once.");
-	}
-	else if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");
-	}
-	else if(PlayerInfo[playerid][pCash] < 0 || PlayerInfo[playerid][pAccount] < 0) {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Your cash on-hand or in the bank is currently at a negative value!");
-	}
-	else if(2 <= PlayerInfo[playerid][pAdmin] <= 4 || 2 <= PlayerInfo[id][pAdmin] <= 4) return 1;
-	else if(ProxDetectorS(5.0, playerid, id)) {
-		TransferStorage(id, -1, playerid, storageid, 1, amount, -1, -1);
-		OnPlayerStatsUpdate(playerid);
-		OnPlayerStatsUpdate(id);
-		SetPVarInt(playerid, "LastTransaction", gettime());
-	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
-	return 1;
+	new id, amount, amountText[32];
+	if(sscanf(params, "us[32]", id, amountText)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pay [player] [amount]");
+	if(!ParseBankTransferAmount(amountText, amount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot pay below $1, or above $99,999,999 at once.");
+	return Interact_PayPlayer(playerid, id, amount);
 }
 
 CMD:writecheck(playerid, params[])
@@ -796,7 +606,6 @@ CMD:writecheck(playerid, params[])
 		{
 			//GivePlayerCashEx(playerid, TYPE_BANK, -monies);
 			//GivePlayerCashEx(giveplayerid, TYPE_BANK, monies);
-			if(!Bank_TransferCheck(-monies)) return 1;
 			PlayerInfo[playerid][pAccount] = PlayerInfo[playerid][pAccount] - monies;
      		PlayerInfo[giveplayerid][pCheckCash] = PlayerInfo[giveplayerid][pCheckCash]+monies;
        		if(PlayerInfo[playerid][pDonateRank] == 0)

@@ -146,7 +146,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				SetPVarInt(playerid, "LastTransaction", gettime());
 				
-				if(!Bank_TransferCheck(-iAmount)) return 1;
 				GivePlayerCash(playerid, iAmount);
 				PlayerInfo[playerid][pAccount] -= iAmount;
 				format(szMiscArray, sizeof(szMiscArray), "  You have withdrawn $%s from your account. ", number_format(iAmount));
@@ -182,7 +181,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				SetPVarInt(playerid, "LastTransaction", gettime());
 				
-				if(!Bank_TransferCheck(iAmount)) return 1;
 				GivePlayerCash(playerid, -iAmount);
 				PlayerInfo[playerid][pAccount] += iAmount; 
 				format(szMiscArray, sizeof(szMiscArray), "  You have deposited $%s to your account. ", number_format(iAmount));

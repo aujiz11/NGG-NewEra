@@ -3104,7 +3104,6 @@ public OnPlayerEnterCheckpoint(playerid)
 			case 225 .. 349: RandAmount = Random(24000, 27000);
 			default: RandAmount = Random(27000, 33000);
 		}
-		if(!Bank_TransferCheck(RandAmount)) return 1;
 		PlayerInfo[playerid][pAccount] += RandAmount;
 		format(szMessage, sizeof(szMessage), "SMS: Thank you for delivering a %s(%d) your reward is $%s, money will be transferred to your account, sender: Unknown", GetVehicleName(GetPVarInt(playerid, "LockPickVehicle")), GetPVarInt(playerid, "LockPickVehicle"), number_format(RandAmount));
 		SendClientMessageEx(playerid, COLOR_YELLOW, szMessage);

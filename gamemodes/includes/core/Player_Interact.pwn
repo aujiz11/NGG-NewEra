@@ -29,6 +29,8 @@
 
 Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 
+	if(giveplayerid < 0 || giveplayerid >= MAX_PLAYERS || !IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+
 	// if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot interact with yourself.");
 
 	szMiscArray[0] = 0;
@@ -49,6 +51,7 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 			DeletePVar(playerid, "Interact_Drug");
 
 			SetPVarInt(playerid, "Interact_Target", giveplayerid);
+			SetPVarInt(playerid, "Interact_TargetSession", g_arrQueryHandle[giveplayerid]);
 
 			format(szMiscArray, sizeof(szMiscArray), "Pay\nGive Item\nSell Item\nFrisk\nShow License");
 
@@ -365,6 +368,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case INTERACT_MAIN: {
 
 			if(!response) {
+				DeletePVar(playerid, "Interact_TargetSession");
 				return DeletePVar(playerid, "Interact_Target");
 			}
 
@@ -499,13 +503,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 
 		case PAY_PLAYER: {
-
-			new giveplayerid = GetPVarInt(playerid, "Interact_Target");
-
+			if(!GetPVarType(playerid, "Interact_Target") || !GetPVarType(playerid, "Interact_TargetSession")) return 1;
+			new giveplayerid = GetPVarInt(playerid, "Interact_Target"), session = GetPVarInt(playerid, "Interact_TargetSession");
+			DeletePVar(playerid, "Interact_TargetSession");
+			if(giveplayerid < 0 || giveplayerid >= MAX_PLAYERS || !IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+			if(session != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GRAD1, "That player has reconnected. Please open the interaction menu again.");
 			if(!response) return Player_InteractMenu(playerid, giveplayerid, 0);
-
-			new amount = strval(inputtext);
-
+			new amount;
+			if(!ParseBankTransferAmount(inputtext, amount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot pay below $1, or above $99,999,999 at once.");
 			Interact_PayPlayer(playerid, giveplayerid, amount);
 		}
 
@@ -773,32 +778,40 @@ Interact_GivePlayerDrug(playerid, giveplayerid, drugid, saleprice = 0) {
 }
 
 Interact_PayPlayer(playerid, giveplayerid, amount = -1) {
-
+	if(playerid < 0 || playerid >= MAX_PLAYERS) return 0;
+	if(!IsPlayerConnected(playerid) || IsPlayerNPC(playerid) || !gPlayerLogged{playerid}) 
+		return SendClientMessageEx(playerid, COLOR_RED, "You are not logged in.");
+	
+	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
+	if(giveplayerid < 0 || giveplayerid >= MAX_PLAYERS || !IsPlayerConnected(giveplayerid) || IsPlayerNPC(giveplayerid) || !gPlayerLogged{giveplayerid}) 
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+	
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You can not pay yourself!");
 
 	if(amount == -1) {
+		if(!GetPVarType(playerid, "Interact_TargetSession") || GetPVarInt(playerid, "Interact_TargetSession") != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GRAD1, "That player has reconnected. Please open the interaction menu again.");
 		format(szMiscArray, sizeof(szMiscArray), "Please enter an amount to give %s.", GetPlayerNameEx(giveplayerid));
 		return ShowPlayerDialogEx(playerid, PAY_PLAYER, DIALOG_STYLE_INPUT, "Pay Player", szMiscArray, "Pay", "");
 	}
-	else {
 
-		if(!(0 < amount <= 250000)) return SendClientMessageEx(playerid, COLOR_WHITE, "Maximum amount is $250,000, minimum is $1");
-		if (!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not near you.");
+	if(!(1 <= amount <= 99999999)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot pay below $1, or above $99,999,999 at once.");
+	if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");
+	if(PlayerInfo[playerid][pCash] < 0 || PlayerInfo[playerid][pAccount] < 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your cash on-hand or in the bank is currently at a negative value!");
+	if(2 <= PlayerInfo[playerid][pAdmin] <= 4 || 2 <= PlayerInfo[giveplayerid][pAdmin] <= 4) return 1;
+	if(PlayerInfo[playerid][pCash] < amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
+	if(PlayerInfo[giveplayerid][pCash] > cellmax - amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "That player cannot hold this much cash.");
 
-		if(PlayerInfo[playerid][pCash] < amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
+	new Float:pos[3];
+	GetPlayerPos(giveplayerid, pos[0], pos[1], pos[2]);
+	if((Spectating[giveplayerid] != 0 && PlayerInfo[playerid][pAdmin] < 2)
+		|| GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(giveplayerid)
+		|| GetPlayerInterior(playerid) != GetPlayerInterior(giveplayerid)
+		|| !IsPlayerInRangeOfPoint(playerid, 5.0, pos[0], pos[1], pos[2])) return SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
 
-		format(szMiscArray, sizeof(szMiscArray), "You have paid %s $%s", GetPlayerNameEx(giveplayerid), number_format(amount));
-		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "You have been paid $%s by %s", number_format(amount), GetPlayerNameEx(playerid));
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
-
-		GivePlayerCash(playerid, -amount);
-		GivePlayerCash(giveplayerid, amount);
-
-		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has paid %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], number_format(amount), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
-		Log("logs/pay.log", szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "has been paid $%s", number_format(amount));
-		DBLog(playerid, giveplayerid, "Pay_Log", szMiscArray);
-	}
+	if(!TransferStorage(giveplayerid, 0, playerid, 0, 1, amount, -1, -1)) return 1;
+	SetPVarInt(playerid, "LastTransaction", gettime());
+	format(szMiscArray, sizeof(szMiscArray), "has been paid $%s", number_format(amount));
+	DBLog(playerid, giveplayerid, "Pay_Log", szMiscArray);
 	return 1;
 }
 

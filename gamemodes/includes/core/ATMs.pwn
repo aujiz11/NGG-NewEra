@@ -130,7 +130,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				SetPVarInt(playerid, "LastTransaction", gettime());
 				
-				if(!Bank_TransferCheck(-iAmount)) return 1;
 				GivePlayerCash(playerid, iAmount);
 				PlayerInfo[playerid][pAccount] -= iAmount; 
 				format(szMiscArray, sizeof(szMiscArray), "  You have withdrawn $%s from your account. ", number_format(iAmount));
@@ -139,7 +138,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(PlayerInfo[playerid][pDonateRank] == 0) {
 					new fee;
 					fee = 3*iAmount/100;
-					if(!Bank_TransferCheck(-fee)) return 1;
 					PlayerInfo[playerid][pAccount] -= fee;
 					format(szMiscArray, sizeof(szMiscArray), "  You have been charged a 3 percent withdraw fee: -$%d.", fee);
 					SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
@@ -169,7 +167,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				SetPVarInt(playerid, "LastTransaction", gettime());
 				
-				if(!Bank_TransferCheck(iAmount)) return 1;
 				GivePlayerCash(playerid, -iAmount);
 				PlayerInfo[playerid][pAccount] += iAmount; 
 				format(szMiscArray, sizeof(szMiscArray), "  You have deposited $%s to your account. ", number_format(iAmount));
@@ -178,7 +175,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(PlayerInfo[playerid][pDonateRank] == 0) {
 					new fee;
 					fee = 3*iAmount/100;
-					if(!Bank_TransferCheck(-fee)) return 1;
 					PlayerInfo[playerid][pAccount] -= fee;
 					format(szMiscArray, sizeof(szMiscArray), "  You have been charged a 3 percent deposit fee: -$%d.", fee);
 					SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
