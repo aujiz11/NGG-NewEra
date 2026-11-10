@@ -381,7 +381,6 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][bTicket] = 0;
 		SetHealth(playerid, 50);
 		SetArmour(playerid, 0);
-		PlayerInfo[playerid][pLastPass][0] = 0;
 		PlayerInfo[playerid][pEventTokens] = 0;
 		PlayerInfo[playerid][pGroupToyBone] = 1;
 		PlayerInfo[playerid][pGroupToy][0] = 0.0;

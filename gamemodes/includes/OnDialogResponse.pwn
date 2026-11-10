@@ -2091,8 +2091,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(!isnull(inputtext) && strlen(inputtext) <= 64 && gPlayerLogged{playerid} == 0)
 			{
-				SetPVarString(playerid, "PassAuth", inputtext);
-				g_mysql_AccountLoginCheck(playerid);
+				g_mysql_AccountLoginCheck(playerid, inputtext);
 			}
 			else
 			{
@@ -2104,7 +2103,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(PassComplexCheck && CheckPasswordComplexity(inputtext) != 1) return ShowMainMenuDialog(playerid, 2);
 			if(!isnull(inputtext) && strlen(inputtext) <= 64)
 			{
-				SetPVarString(playerid, "PassAuth", inputtext);
 				g_mysql_CreateAccount(playerid, inputtext);
 			}
 			else ShowMainMenuDialog(playerid, 2);
@@ -3063,23 +3061,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(PassComplexCheck && CheckPasswordComplexity(inputtext) != 1) return ShowLoginDialogs(playerid, 0);
 			if(strlen(inputtext) > 64) return ShowLoginDialogs(playerid, 0), SendClientMessageEx(playerid, COLOR_GREY, "You can't select a password that's above 64 characters.");
-			if(!strcmp(PlayerInfo[playerid][pLastPass], inputtext, true)) return ShowLoginDialogs(playerid, 0), SendClientMessageEx(playerid, COLOR_RED, "There was an issue with processing your request.");
-			new
-				szBuffer[129],
-				szQuery[256],
-				salt[11];
+			StartPasswordChange(playerid, inputtext);
 
-			SetPVarString(playerid, "PassChange", inputtext);
-			randomString(salt);
-			format(szQuery, sizeof(szQuery), "%s%s", inputtext, salt);
-			WP_Hash(szBuffer, sizeof(szBuffer), szQuery);
-			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Key` = '%s', `Salt` = '%s' WHERE `id` = '%i'", szBuffer, salt, PlayerInfo[playerid][pId]);
-			mysql_tquery(MainPipeline, szQuery, "OnPlayerChangePass", "i", playerid);
-			SendClientMessageEx(playerid, COLOR_YELLOW, "Processing your request...");
-
-			if(strcmp(PlayerInfo[playerid][pBirthDate], "0000-00-00", true) == 0 && PlayerInfo[playerid][pTut] != 0) ShowLoginDialogs(playerid, 1);
-			else if(pMOTD[0] && GetPVarInt(playerid, "ViewedPMOTD") != 1) ShowLoginDialogs(playerid, 4);
-			else if(PlayerInfo[playerid][pReceivedCredits] != 0) ShowLoginDialogs(playerid, 5);
 		}
 	}
 	else if( dialogid == DIALOG_CHANGEPASS )
@@ -3092,20 +3075,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				- Your password must contain a combination of letters, numbers and special characters.\n\
 				- Invalid Character: %", "Change", "Exit" );
 			if(strlen(inputtext) > 64) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't select a password that's above 64 characters.");
-			if(!strcmp(PlayerInfo[playerid][pLastPass], inputtext, true)) return SendClientMessageEx(playerid, COLOR_RED, "There was an issue with processing your request.");
-			new
-				szBuffer[129],
-				szQuery[256],
-				salt[11];
-
-			SetPVarString(playerid, "PassChange", inputtext);
-			randomString(salt);
-			format(szQuery, sizeof(szQuery), "%s%s", inputtext, salt);
-			WP_Hash(szBuffer, sizeof(szBuffer), szQuery);
-
-			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Key` = '%s', `Salt` = '%s' WHERE `id` = '%i'", szBuffer, salt, PlayerInfo[playerid][pId]);
-			mysql_tquery(MainPipeline, szQuery, "OnPlayerChangePass", "i", playerid);
-			SendClientMessageEx(playerid, COLOR_YELLOW, "Processing your request...");
+			StartPasswordChange(playerid, inputtext);
 		}
 	}
 	else if(dialogid == DIALOG_NAMECHANGE)
@@ -9359,10 +9329,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return 1;
 			}
 
+			if(!gPlayerLogged{playerid}) return 0;
+			new request = Password_Begin(playerid);
+			if(!request) return 0;
 			SetPVarString(playerid, "PinNumber", inputtext);
-
-			mysql_format(MainPipeline, string, sizeof(string), "SELECT `Pin` FROM `accounts` WHERE `Username` = '%e'", GetPlayerNameExt(playerid));
-			mysql_tquery(MainPipeline, string, "OnPinCheck2", "i", playerid);
+			mysql_format(MainPipeline, string, sizeof(string), "SELECT `Pin` FROM `accounts` WHERE `id`=%d", GetPlayerSQLId(playerid));
+			mysql_tquery(MainPipeline, string, "OnPinCheck2", "iiii", playerid, g_arrQueryHandle[playerid], request, GetPlayerSQLId(playerid));
 
 		}
 	}
@@ -9430,18 +9402,19 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else
 			{
-				format(string, sizeof(string), "Your new pin number is '%s.'", inputtext);
-				SendClientMessageEx(playerid, COLOR_CYAN, string);
-
-				new passbuffer[258];
-				WP_Hash(passbuffer, sizeof(passbuffer), inputtext);
-
-				new query[256];
-				mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Pin`='%s' WHERE `id` = %d", passbuffer, GetPlayerSQLId(playerid));
-				mysql_tquery(MainPipeline, query, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+				if(!gPlayerLogged{playerid} || isnull(inputtext) || strlen(inputtext) > 4 || !IsNumericString(inputtext)) return 0;
+				new request = Password_Begin(playerid);
+				if(!request) return 0;
+				if(!bcrypt_hash(playerid, "OnPlayerPinHashed", inputtext, BCRYPT_COST, "iii", g_arrQueryHandle[playerid], request, GetPlayerSQLId(playerid))) {
+					gPasswordPending[playerid] = false;
+					return SendClientMessageEx(playerid, COLOR_RED, "Unable to process your PIN change."), 0;
+				}
 				DeletePVar(playerid, "PinConfirm");
-				DeletePVar(playerid, "ChangePin");
 			}
+		}
+		else {
+			DeletePVar(playerid, "PinConfirm");
+			DeletePVar(playerid, "ChangePin");
 		}
 	}
 	if(dialogid == DIALOG_MISCSHOP && response)

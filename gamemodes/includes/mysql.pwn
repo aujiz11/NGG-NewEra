@@ -305,6 +305,14 @@ public OnQueryFinish(resultid, extraid, handleid)
 		}
 		case LOADUSERDATA_THREAD:
 		{
+			gPasswordPending[extraid] = false;
+			DeletePVar(extraid, "BcryptName");
+			DeletePVar(extraid, "AuthAccount");
+			if(rows != 1) {
+				HideNoticeGUIFrame(extraid);
+				return ShowMainMenuDialog(extraid, 1);
+			}
+
 			if(IsPlayerConnected(extraid))
 			{
    				new szField[MAX_PLAYER_NAME], szResult[64];
@@ -845,61 +853,49 @@ public OnQueryFinish(resultid, extraid, handleid)
 		}
 		case LOGIN_THREAD:
 		{
-			for(new i;i < rows;i++)
-			{
-				CheckAdminWhitelist(extraid);
-				new
-					szPass[129],
-					szResult[129],
-					szBuffer[129],
-					salt[11];
-
-				cache_get_value_name(i, "Username", szResult, MAX_PLAYER_NAME);
-				if(strcmp(szResult, GetPlayerNameExt(extraid), true) != 0)
-				{
-					//g_mysql_AccountAuthCheck(extraid);
-					return 1;
-				}
-				cache_get_value_name(i, "Key", szResult, 129);
-				cache_get_value_name(i, "Salt", salt, 11);
-				GetPVarString(extraid, "PassAuth", szBuffer, sizeof(szBuffer));
-				if(!isnull(salt)) strcat(szBuffer, salt);
-				WP_Hash(szPass, sizeof(szPass), szBuffer);
-				/*if(cache_get_value_name_int(i, "Online")) {
-					SendClientMessage(extraid, COLOR_RED, "SERVER: This account has already logged in.");
-					SetTimerEx("KickEx", 1000, 0, "i", extraid);
-					return 1;
-				}*/
-
-				if((isnull(szPass)) || (isnull(szResult)) || (strcmp(szPass, szResult) != 0)) {
-					// Invalid Password - Try Again!
-					ShowMainMenuDialog(extraid, 3);
-					HideNoticeGUIFrame(extraid);
-					if(++gPlayerLogTries[extraid] == 2) {
-						SendClientMessage(extraid, COLOR_RED, "SERVER: Wrong password, you have been kicked out automatically.");
-						SetTimerEx("KickEx", 1000, false, "i", extraid);
-					}
-					return 1;
-				}
-				if(PassComplexCheck && CheckPasswordComplexity(szBuffer) != 1) ShowLoginDialogs(extraid, 0);
-				break;
+			if(!gPasswordPending[extraid] || gPlayerLogged{extraid}) return 0;
+			if(rows != 1) {
+				gPasswordPending[extraid] = false;
+				DeletePVar(extraid, "PassAuth");
+				HideNoticeGUIFrame(extraid);
+				ShowMainMenuDialog(extraid, 1);
+				return 0;
 			}
-			GetPVarString(extraid, "PassAuth", PlayerInfo[extraid][pLastPass], 65);
+			new name[MAX_PLAYER_NAME], hash[129], password[65], account;
+			cache_get_value_name(0, "Username", name, sizeof(name));
+			cache_get_value_name(0, "Key", hash, sizeof(hash));
+			cache_get_value_name_int(0, "id", account);
+			GetPVarString(extraid, "PassAuth", password, sizeof(password));
 			DeletePVar(extraid, "PassAuth");
-			HideNoticeGUIFrame(extraid);
-			g_mysql_LoadAccount(extraid);
+			if(strcmp(name, GetPlayerNameExt(extraid), true) || account <= 0 || !Password_IsHash(hash)) {
+				gPasswordPending[extraid] = false;
+				HideNoticeGUIFrame(extraid);
+				ShowMainMenuDialog(extraid, 3);
+				return 0;
+			}
+			SetPVarInt(extraid, "WeakPassword", PassComplexCheck && !CheckPasswordComplexity(password));
+			if(!bcrypt_verify(extraid, "OnAccountPasswordVerified", password, hash, "iii", g_arrQueryHandle[extraid], gPasswordRequest[extraid], account)) {
+				gPasswordPending[extraid] = false;
+				HideNoticeGUIFrame(extraid);
+				ShowMainMenuDialog(extraid, 1);
+			}
 			return 1;
 		}
 		case REGISTER_THREAD:
 		{
-			if(IsPlayerConnected(extraid))
-			{
-				AdvanceTutorial(extraid);
-				g_mysql_AccountLoginCheck(extraid);
-				format(szMiscArray, sizeof(szMiscArray), "WARNING: %s (ID: %d) has registered from %s", GetPlayerNameEx(extraid), extraid, GetPlayerCountry(extraid));
-				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
-				TotalRegister++;
+			if(!gPasswordPending[extraid] || gPlayerLogged{extraid}) return 0;
+			if(cache_affected_rows() != 1) {
+				gPasswordPending[extraid] = false;
+				HideNoticeGUIFrame(extraid);
+				return ShowMainMenuDialog(extraid, 2);
 			}
+			SetPVarInt(extraid, "AuthAccount", cache_insert_id());
+			AdvanceTutorial(extraid);
+			g_mysql_LoadAccount(extraid);
+			format(szMiscArray, sizeof(szMiscArray), "WARNING: %s (ID: %d) has registered from %s", GetPlayerNameEx(extraid), extraid, GetPlayerCountry(extraid));
+			ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
+			TotalRegister++;
+			return 1;
 		}
 		case LOADPTOYS_THREAD:
 		{
@@ -1363,6 +1359,15 @@ public OnQueryError(errorid, const error[], const callback[], const query[], MyS
 		Shop_QueryFailed(query);
 	}
 
+	new bool:credential = strfind(query, "`Key`", true) != -1 || strfind(query, "`Pin`", true) != -1 || strfind(query, "`Salt`", true) != -1
+		|| !strcmp(callback, "OnCredentialQuery");
+	if(credential) {
+		printf("[MySQL] Credential query failed (error %d, callback %s); details redacted.", errorid, callback);
+		SQL_Log("[credential query redacted]", "[credential error redacted]");
+		++iErrorID;
+		return 1;
+	}
+
 	printf("[MySQL] Query Error - (ErrorID: %d)",  errorid);
 	print("[MySQL] Check mysql_log.txt to review the query that threw the error.");
 	SQL_Log(query, error);
@@ -1378,6 +1383,7 @@ public OnQueryError(errorid, const error[], const callback[], const query[], MyS
 	format(szMiscArray, sizeof(szMiscArray), "     Query: %s", query);
 	SendDiscordMessage(3, szMiscArray);
 	iErrorID++;
+	return 1;
 }
 
 //--------------------------------[ CUSTOM STOCK FUNCTIONS ]---------------------------
@@ -1392,14 +1398,16 @@ stock g_mysql_ReturnEscaped(const unEscapedString[])
 }
 
 // g_mysql_AccountLoginCheck(playerid)
-stock g_mysql_AccountLoginCheck(playerid)
+stock g_mysql_AccountLoginCheck(playerid, const password[])
 {
+	if(gPlayerLogged{playerid} || gPlayerLogTries[playerid] >= 2 || isnull(password) || strlen(password) > 64) return 0;
+	new request = Password_Begin(playerid);
+	if(!request) return 0;
+	SetPVarString(playerid, "PassAuth", password);
 	ShowNoticeGUIFrame(playerid, 2);
-
-	new string[128];
-
-	mysql_format(MainPipeline, string, sizeof(string), "SELECT `Username`, `Key`, `Salt`, `Online` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
-	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOGIN_THREAD, playerid, g_arrQueryHandle[playerid]);
+	new query[256];
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT `id`,`Username`,`Key` FROM `accounts` WHERE `Username`='%e'", GetPlayerNameExt(playerid));
+	mysql_tquery(MainPipeline, query, "OnCredentialQuery", "iiii", LOGIN_THREAD, playerid, g_arrQueryHandle[playerid], request);
 	return 1;
 }
 
@@ -1449,17 +1457,178 @@ stock g_mysql_AccountOnlineReset()
 
 // g_mysql_CreateAccount(int playerid, string accountPassword[])
 // Description: Creates a new account in the database.
-stock g_mysql_CreateAccount(playerid, accountPassword[])
+stock g_mysql_CreateAccount(playerid, const accountPassword[])
 {
-	new string[300];
-	new passbuffer[129];
-	new salt[11];
-	randomString(salt);
-	format(string, sizeof(string), "%s%s", accountPassword, salt);
-	WP_Hash(passbuffer, sizeof(passbuffer), string);
+	if(gPlayerLogged{playerid} || isnull(accountPassword) || strlen(accountPassword) > 64) return 0;
+	new request = Password_Begin(playerid);
+	if(!request) return 0;
+	if(!bcrypt_hash(playerid, "OnAccountPasswordHashed", accountPassword, BCRYPT_COST, "ii", g_arrQueryHandle[playerid], request)) {
+		gPasswordPending[playerid] = false;
+		return ShowMainMenuDialog(playerid, 2);
+	}
+	return 1;
+}
 
-	mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `accounts` (`RegiDate`, `LastLogin`, `Username`, `Key`, `Salt`) VALUES (NOW(), NOW(), '%s', '%s', '%s')", GetPlayerNameExt(playerid), passbuffer, salt);
-	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", REGISTER_THREAD, playerid, g_arrQueryHandle[playerid]);
+Password_IsHash(const hash[])
+{
+	return strlen(hash) == BCRYPT_HASH_LENGTH-1 && hash[0] == '$' && hash[1] == '2'
+		&& (hash[2] == 'a' || hash[2] == 'b' || hash[2] == 'y') && hash[3] == '$'
+		&& '0' <= hash[4] <= '3' && '0' <= hash[5] <= '9' && hash[6] == '$';
+}
+
+Password_Begin(playerid)
+{
+	if(playerid < 0 || playerid >= MAX_PLAYERS || !IsPlayerConnected(playerid)) return 0;
+	if(gPasswordPending[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "A credential request is already in progress."), 0;
+	gPasswordPending[playerid] = true;
+	if(++gPasswordRequest[playerid] <= 0) gPasswordRequest[playerid] = 1;
+	SetPVarString(playerid, "BcryptName", GetPlayerNameExt(playerid));
+	SetTimerEx("OnCredentialTimeout", 30000, false, "iii", playerid, g_arrQueryHandle[playerid], gPasswordRequest[playerid]);
+	return gPasswordRequest[playerid];
+}
+
+Password_IsCurrent(playerid, session, request, account = 0)
+{
+	if(playerid < 0 || playerid >= MAX_PLAYERS || !IsPlayerConnected(playerid)) return 0;
+	if(g_arrQueryHandle[playerid] != session || !gPasswordPending[playerid] || gPasswordRequest[playerid] != request) return 0;
+	if(account) return gPlayerLogged{playerid} && PlayerInfo[playerid][pId] == account;
+	new name[MAX_PLAYER_NAME];
+	GetPVarString(playerid, "BcryptName", name, sizeof(name));
+	if(strcmp(name, GetPlayerNameExt(playerid), true)) {
+		gPasswordPending[playerid] = false;
+		DeletePVar(playerid, "PassAuth");
+		return 0;
+	}
+	return 1;
+}
+
+forward OnCredentialTimeout(playerid, session, request);
+public OnCredentialTimeout(playerid, session, request)
+{
+	if(!Password_IsCurrent(playerid, session, request)) return 0;
+	gPasswordPending[playerid] = false;
+	DeletePVar(playerid, "PassAuth");
+	DeletePVar(playerid, "PinNumber");
+	DeletePVar(playerid, "AuthAccount");
+	DeletePVar(playerid, "BcryptName");
+	HideNoticeGUIFrame(playerid);
+	SendClientMessageEx(playerid, COLOR_RED, "Your credential request timed out. Its result could not be confirmed. Please try again.");
+	if(!gPlayerLogged{playerid}) ShowMainMenuDialog(playerid, 1);
+	return 1;
+}
+
+forward OnCredentialQuery(resultid, playerid, session, request);
+public OnCredentialQuery(resultid, playerid, session, request)
+{
+	if(!Password_IsCurrent(playerid, session, request) || gPlayerLogged{playerid}) return 0;
+	return OnQueryFinish(resultid, playerid, session);
+}
+
+forward OnAccountPasswordHashed(playerid, session, request);
+public OnAccountPasswordHashed(playerid, session, request)
+{
+	if(!Password_IsCurrent(playerid, session, request) || gPlayerLogged{playerid}) return 0;
+	new hash[BCRYPT_HASH_LENGTH], query[640];
+	bcrypt_get_hash(hash, sizeof(hash));
+	if(!Password_IsHash(hash)) {
+		gPasswordPending[playerid] = false;
+		return ShowMainMenuDialog(playerid, 2);
+	}
+	mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `accounts` (`RegiDate`,`LastLogin`,`Username`,`Key`,`Salt`,`PlayerKills`,`PrisonMaterials`,`PrisonCell`,`PrisonWineTime`,`EventPoint`,`EventPrizeClaim`,`DrugSmuggler`,`Pot`,`StaffBanned`,`FurnitureSlots`,`Rags`,`HitmanBlacklisted`,`BlacklistReason`) VALUES (NOW(),NOW(),'%e','%e','',0,0,0,0,0,0,0,0,0,0,0,0,'')", GetPlayerNameExt(playerid), hash);
+	mysql_tquery(MainPipeline, query, "OnCredentialQuery", "iiii", REGISTER_THREAD, playerid, session, request);
+	return 1;
+}
+
+forward OnAccountPasswordVerified(playerid, bool:success, session, request, account);
+public OnAccountPasswordVerified(playerid, bool:success, session, request, account)
+{
+	if(!Password_IsCurrent(playerid, session, request) || gPlayerLogged{playerid}) return 0;
+	if(!success) {
+		gPasswordPending[playerid] = false;
+		DeletePVar(playerid, "WeakPassword");
+		HideNoticeGUIFrame(playerid);
+		ShowMainMenuDialog(playerid, 3);
+		if(++gPlayerLogTries[playerid] >= 2) {
+			SendClientMessageEx(playerid, COLOR_RED, "SERVER: Wrong password, you have been kicked out automatically.");
+			SetTimerEx("OnLoginRejectedKick", 1000, false, "ii", playerid, session);
+		}
+		return 0;
+	}
+	CheckAdminWhitelist(playerid);
+	SetPVarInt(playerid, "AuthAccount", account);
+	if(GetPVarInt(playerid, "WeakPassword")) ShowLoginDialogs(playerid, 0);
+	DeletePVar(playerid, "WeakPassword");
+	HideNoticeGUIFrame(playerid);
+	return g_mysql_LoadAccount(playerid);
+}
+
+forward OnLoginRejectedKick(playerid, session);
+public OnLoginRejectedKick(playerid, session)
+{
+	if(playerid < 0 || playerid >= MAX_PLAYERS || !IsPlayerConnected(playerid)) return 0;
+	if(g_arrQueryHandle[playerid] != session || gPlayerLogged{playerid}) return 0;
+	KickEx(playerid);
+	return 1;
+}
+
+StartPasswordChange(playerid, const password[])
+{
+	if(!gPlayerLogged{playerid} || isnull(password) || strlen(password) > 64) return 0;
+	new request = Password_Begin(playerid);
+	if(!request) return 0;
+	if(!bcrypt_hash(playerid, "OnPlayerPasswordHashed", password, BCRYPT_COST, "iii", g_arrQueryHandle[playerid], request, PlayerInfo[playerid][pId])) {
+		gPasswordPending[playerid] = false;
+		return SendClientMessageEx(playerid, COLOR_RED, "Unable to process your password change."), 0;
+	}
+	return SendClientMessageEx(playerid, COLOR_YELLOW, "Processing your request...");
+}
+
+forward OnPlayerPasswordHashed(playerid, session, request, account);
+public OnPlayerPasswordHashed(playerid, session, request, account)
+{
+	if(!Password_IsCurrent(playerid, session, request, account)) return 0;
+	new hash[BCRYPT_HASH_LENGTH], query[320];
+	bcrypt_get_hash(hash, sizeof(hash));
+	if(!Password_IsHash(hash)) return gPasswordPending[playerid] = false, 0;
+	mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Key`='%e',`Salt`='',`LastPassChange`=NOW(),`ForcePasswordChange`=0 WHERE `id`=%d", hash, account);
+	mysql_tquery(MainPipeline, query, "OnPlayerChangePass", "iiii", playerid, session, request, account);
+	return 1;
+}
+
+forward OnPlayerPinHashed(playerid, session, request, account);
+public OnPlayerPinHashed(playerid, session, request, account)
+{
+	if(!Password_IsCurrent(playerid, session, request, account)) return 0;
+	new hash[BCRYPT_HASH_LENGTH], query[256];
+	bcrypt_get_hash(hash, sizeof(hash));
+	if(!Password_IsHash(hash)) return gPasswordPending[playerid] = false, 0;
+	mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Pin`='%e' WHERE `id`=%d", hash, account);
+	mysql_tquery(MainPipeline, query, "OnPlayerPinSaved", "iiii", playerid, session, request, account);
+	return 1;
+}
+
+forward OnPlayerPinSaved(playerid, session, request, account);
+public OnPlayerPinSaved(playerid, session, request, account)
+{
+	if(!Password_IsCurrent(playerid, session, request, account)) return 0;
+	gPasswordPending[playerid] = false;
+	DeletePVar(playerid, "ChangePin");
+	if(cache_affected_rows() != 1) return SendClientMessageEx(playerid, COLOR_RED, "Unable to save your PIN. Please try again."), 0;
+	return SendClientMessageEx(playerid, COLOR_CYAN, "Your PIN has been changed.");
+}
+
+forward OnAdminCredentialHashed(playerid, session, request, account, pin);
+public OnAdminCredentialHashed(playerid, session, request, account, pin)
+{
+	if(!Password_IsCurrent(playerid, session, request, account)) return 0;
+	if(PlayerInfo[playerid][pAdmin] < 1337 && (!pin || PlayerInfo[playerid][pShopTech] < 2)) return gPasswordPending[playerid] = false, 0;
+	new hash[BCRYPT_HASH_LENGTH], name[MAX_PLAYER_NAME], query[320];
+	bcrypt_get_hash(hash, sizeof(hash));
+	if(!Password_IsHash(hash)) return gPasswordPending[playerid] = false, 0;
+	GetPVarString(playerid, "OnChangeUserPassword", name, sizeof(name));
+	if(pin) mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Pin`='%e' WHERE `Username`='%e' AND `AdminLevel` < 2", hash, name);
+	else mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Key`='%e',`Salt`='' WHERE `Username`='%e' AND `AdminLevel` < 2", hash, name);
+	mysql_tquery(MainPipeline, query, "OnChangeUserPassword", "iiiii", playerid, session, request, account, pin);
 	return 1;
 }
 
@@ -1497,10 +1666,11 @@ stock g_mysql_LoadPlayerToys(playerid)
 stock g_mysql_LoadAccount(playerid)
 {
 	ShowNoticeGUIFrame(playerid, 3);
-
-	new string[164];
-	mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
-	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOADUSERDATA_THREAD, playerid, g_arrQueryHandle[playerid]);
+	new query[256], account = GetPVarInt(playerid, "AuthAccount");
+	if(account > 0) mysql_format(MainPipeline, query, sizeof(query), "SELECT * FROM `accounts` WHERE `id`=%d AND `Username`='%e'", account, GetPlayerNameExt(playerid));
+	else mysql_format(MainPipeline, query, sizeof(query), "SELECT * FROM `accounts` WHERE `Username`='%e'", GetPlayerNameExt(playerid));
+	if(account > 0) mysql_tquery(MainPipeline, query, "OnCredentialQuery", "iiii", LOADUSERDATA_THREAD, playerid, g_arrQueryHandle[playerid], gPasswordRequest[playerid]);
+	else mysql_tquery(MainPipeline, query, "OnQueryFinish", "iii", LOADUSERDATA_THREAD, playerid, g_arrQueryHandle[playerid]);
 	return 1;
 }
 
@@ -3970,71 +4140,45 @@ public ParkRentedVehicle(playerid, vehicleid, modelid, Float:X, Float:Y, Float:Z
 	return 1;
 }
 
-forward OnPlayerChangePass(index);
-public OnPlayerChangePass(index)
+forward OnPlayerChangePass(index, session, request, account);
+public OnPlayerChangePass(index, session, request, account)
 {
-	if(cache_affected_rows()) {
-
-		new szMessage[103];
-
-		GetPVarString(index, "PassChange", PlayerInfo[index][pLastPass], 65);
-		format(szMessage, sizeof(szMessage), "You have changed your password to '%s'.", PlayerInfo[index][pLastPass]);
-		SendClientMessageEx(index, COLOR_YELLOW, szMessage);
-
-		format(szMessage, sizeof(szMessage), "%s(%d) (IP: %s) has changed their password.", GetPlayerNameEx(index), GetPlayerSQLId(index), PlayerInfo[index][pIP]);
-		Log("logs/password.log", szMessage);
-		DeletePVar(index, "PassChange");
-		mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `accounts` SET `LastPassChange` = NOW() WHERE `id` = '%i'", PlayerInfo[index][pId]);
-		mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
-		if(PlayerInfo[index][pForcePasswordChange] == 1)
-		{
-		    PlayerInfo[index][pForcePasswordChange] = 0;
-		    mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `accounts` SET `ForcePasswordChange` = '0' WHERE `id` = '%i'", PlayerInfo[index][pId]);
-			mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
-		}
-	}
-	else {
+	if(!Password_IsCurrent(index, session, request, account)) return 0;
+	gPasswordPending[index] = false;
+	if(cache_affected_rows() != 1) {
 		SendClientMessageEx(index, COLOR_RED, "There was an issue with processing your request. Your password will remain as it is.");
-		if(PlayerInfo[index][pForcePasswordChange] == 1) ShowLoginDialogs(index, 0);
+		if(PlayerInfo[index][pForcePasswordChange]) ShowLoginDialogs(index, 0);
+		return 0;
+	}
+	new message[144], bool:required = PlayerInfo[index][pForcePasswordChange] != 0;
+	PlayerInfo[index][pForcePasswordChange] = 0;
+	SendClientMessageEx(index, COLOR_YELLOW, "Your password has been changed.");
+	format(message, sizeof(message), "%s(%d) (IP: %s) has changed their password.", GetPlayerNameEx(index), account, PlayerInfo[index][pIP]);
+	Log("logs/password.log", message);
+	if(required) {
+		if(!strcmp(PlayerInfo[index][pBirthDate], "0000-00-00", true) && PlayerInfo[index][pTut]) ShowLoginDialogs(index, 1);
+		else if(pMOTD[0] && GetPVarInt(index, "ViewedPMOTD") != 1) ShowLoginDialogs(index, 4);
+		else if(PlayerInfo[index][pReceivedCredits]) ShowLoginDialogs(index, 5);
 	}
 	return 1;
 }
 
-forward OnChangeUserPassword(index);
-public OnChangeUserPassword(index)
+forward OnChangeUserPassword(index, session, request, account, pin);
+public OnChangeUserPassword(index, session, request, account, pin)
 {
-	if(GetPVarType(index, "ChangePin"))
-	{
-	    new string[128], name[24];
-		GetPVarString(index, "OnChangeUserPassword", name, 24);
-
-		if(cache_affected_rows()) {
-			format(string, sizeof(string), "You have successfully changed %s's pin.", name);
-			SendClientMessageEx(index, COLOR_WHITE, string);
-		}
-		else {
-			format(string, sizeof(string), "There was an issue with changing %s's pin.", name);
-			format(string, sizeof(string), "There was an issue with changing %s's pin.", name);
-			SendClientMessageEx(index, COLOR_WHITE, string);
-		}
-		DeletePVar(index, "ChangePin");
-		DeletePVar(index, "OnChangeUserPassword");
+	if(!Password_IsCurrent(index, session, request, account)) return 0;
+	gPasswordPending[index] = false;
+	new name[MAX_PLAYER_NAME], message[144];
+	GetPVarString(index, "OnChangeUserPassword", name, sizeof(name));
+	DeletePVar(index, "OnChangeUserPassword");
+	if(cache_affected_rows() != 1) {
+		format(message, sizeof(message), "There was an issue with changing %s's %s.", name, pin ? ("pin") : ("password"));
+		return SendClientMessageEx(index, COLOR_WHITE, message), 0;
 	}
-	else
-	{
-		new string[128], name[24];
-		GetPVarString(index, "OnChangeUserPassword", name, 24);
-
-		if(cache_affected_rows()) {
-			format(string, sizeof(string), "You have successfully changed %s's password.", name);
-			SendClientMessageEx(index, COLOR_WHITE, string);
-		}
-		else {
-			format(string, sizeof(string), "There was an issue with changing %s's password.", name);
-			SendClientMessageEx(index, COLOR_WHITE, string);
-		}
-		DeletePVar(index, "OnChangeUserPassword");
-	}
+	format(message, sizeof(message), "You have successfully changed %s's %s.", name, pin ? ("pin") : ("password"));
+	SendClientMessageEx(index, COLOR_WHITE, message);
+	format(message, sizeof(message), "AdmCmd: %s's credential was reset by %s.", name, GetPlayerNameEx(index));
+	Log(pin ? ("logs/pin.log") : ("logs/password.log"), message);
 	return 1;
 }
 
@@ -5113,66 +5257,59 @@ public OnWarnPlayer(index)
 	return 1;
 }
 
-forward OnPinCheck2(index);
-public OnPinCheck2(index)
+forward OnPinCheck2(index, session, request, account);
+public OnPinCheck2(index, session, request, account)
 {
-	if(IsPlayerConnected(index))
-	{
-		new rows;
-		cache_get_row_count(rows);
-		if(rows)
-		{
-		    new Pin[256];
-   			cache_get_value_name(0, "Pin", Pin, 256);
-   			if(isnull(Pin)) {
-   			    ShowPlayerDialogEx(index, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Pin Number", "Create a pin number so you can secure your account credits.", "Create", "Exit");
-   			}
-   			else
-   			{
-   			    new passbuffer[256], passbuffer2[64];
-            	GetPVarString(index, "PinNumber", passbuffer2, sizeof(passbuffer2));
-				WP_Hash(passbuffer, sizeof(passbuffer), passbuffer2);
-				if (strcmp(passbuffer, Pin) == 0)
-				{
-				    SetPVarInt(index, "PinConfirmed", 1);
-					SendClientMessageEx(index, COLOR_CYAN, "Pin confirmed, you will now be able to spend credits.");
-					switch(GetPVarInt(index, "OpenShop"))
-					{
-	    				case 1:
-						{
-							new szDialog[1024];
-							format(szDialog, sizeof(szDialog), "Poker Table (Credits: {FFD700}%s{A9C4E4})\nBoombox (Credits: {FFD700}%s{A9C4E4})\n100 Paintball Tokens (Credits: {FFD700}%s{A9C4E4})\nEXP Token (Credits: {FFD700}%s{A9C4E4})\nFireworks x5 (Credits: {FFD700}%s{A9C4E4})\nCustom License Plate (Credits: {FFD700}%s{A9C4E4})",
-							number_format(ShopItems[6][sItemPrice]), number_format(ShopItems[7][sItemPrice]), number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[9][sItemPrice]),
-							number_format(ShopItems[10][sItemPrice]), number_format(ShopItems[22][sItemPrice]));
-							format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (NEW) (Credits: {FFD700}%s{A9C4E4})\nRestricted Last Name (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (NEW) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})\nBackpacks\nDeluxe Car Alarm (Credits: {FFD700}%s{A9C4E4})",
-							szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]), number_format(ShopItems[35][sItemPrice]), number_format(ShopItems[39][sItemPrice]));
-							ShowPlayerDialogEx(index, DIALOG_MISCSHOP, DIALOG_STYLE_LIST, "Misc Shop", szDialog, "Select", "Cancel");
-						}
-						case 2: SetPVarInt(index, "RentaCar", 1), ShowModelSelectionMenu(index, CarList2, "Rent a Car!");
-						case 3: ShowModelSelectionMenu(index, CarList2, "Car Shop");
-						case 4: ShowPlayerDialogEx( index, DIALOG_HOUSESHOP, DIALOG_STYLE_LIST, "House Shop", "Purchase House\nHouse Interior Change\nHouse Move\nGarage - Small\nGarage - Medium\nGarage - Large\nGarage - Extra Large","Select", "Exit" );
-						case 5: ShowPlayerDialogEx( index, DIALOG_VIPSHOP, DIALOG_STYLE_LIST, "VIP Shop", "Purchase VIP\nRenew Gold VIP","Continue", "Exit" );
-						case 6: ShowPlayerDialogEx(index, DIALOG_SHOPBUSINESS, DIALOG_STYLE_LIST, "Businesses Shop", "Purchase Business\nRenew Business", "Select", "Exit");
-						case 7: ShowModelSelectionMenu(index, PlaneList, "Plane Shop");
-						case 8: ShowModelSelectionMenu(index, BoatList, "Boat Shop");
-						case 9: ShowModelSelectionMenu(index, CarList3, "Restricted Car Shop");
-						case 10: cmd_changename(index, "");
-						case 11: cmd_microshop(index, "");
-					}
-					DeletePVar(index, "OpenShop");
-				}
-				else
-				{
-					ShowPlayerDialogEx(index, DIALOG_ENTERPIN, DIALOG_STYLE_INPUT, "Pin Number", "(INVALID PIN)\n\nEnter your pin number to access credit shops.", "Confirm", "Exit");
-				}
-				DeletePVar(index, "PinNumber");
-  			}
-		}
-		else
-		{
-			SendClientMessageEx(index, COLOR_WHITE, "There was an issue, please try again.");
-		}
+	if(!Password_IsCurrent(index, session, request, account)) return 0;
+	new rows, hash[129], pin[5];
+	cache_get_row_count(rows);
+	GetPVarString(index, "PinNumber", pin, sizeof(pin));
+	DeletePVar(index, "PinNumber");
+	if(rows != 1) return gPasswordPending[index] = false, SendClientMessageEx(index, COLOR_WHITE, "There was an issue, please try again.");
+	cache_get_value_name(0, "Pin", hash, sizeof(hash));
+	if(isnull(hash)) {
+		gPasswordPending[index] = false;
+		return ShowPlayerDialogEx(index, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Pin Number", "Create a pin number so you can secure your account credits.", "Create", "Exit");
 	}
+	if(!Password_IsHash(hash) || !bcrypt_verify(index, "OnPlayerPinVerified", pin, hash, "iii", session, request, account)) {
+		gPasswordPending[index] = false;
+		return ShowPlayerDialogEx(index, DIALOG_ENTERPIN, DIALOG_STYLE_INPUT, "Pin Number", "(INVALID PIN)\n\nEnter your pin number to access credit shops.", "Confirm", "Exit");
+	}
+	return 1;
+}
+
+forward OnPlayerPinVerified(index, bool:success, session, request, account);
+public OnPlayerPinVerified(index, bool:success, session, request, account)
+{
+	if(!Password_IsCurrent(index, session, request, account)) return 0;
+	gPasswordPending[index] = false;
+	if(!success) return ShowPlayerDialogEx(index, DIALOG_ENTERPIN, DIALOG_STYLE_INPUT, "Pin Number", "(INVALID PIN)\n\nEnter your pin number to access credit shops.", "Confirm", "Exit");
+	SetPVarInt(index, "PinConfirmed", 1);
+	SendClientMessageEx(index, COLOR_CYAN, "Pin confirmed, you will now be able to spend credits.");
+	switch(GetPVarInt(index, "OpenShop"))
+	{
+		case 1:
+		{
+			new szDialog[1024];
+			format(szDialog, sizeof(szDialog), "Poker Table (Credits: {FFD700}%s{A9C4E4})\nBoombox (Credits: {FFD700}%s{A9C4E4})\n100 Paintball Tokens (Credits: {FFD700}%s{A9C4E4})\nEXP Token (Credits: {FFD700}%s{A9C4E4})\nFireworks x5 (Credits: {FFD700}%s{A9C4E4})\nCustom License Plate (Credits: {FFD700}%s{A9C4E4})",
+			number_format(ShopItems[6][sItemPrice]), number_format(ShopItems[7][sItemPrice]), number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[9][sItemPrice]),
+			number_format(ShopItems[10][sItemPrice]), number_format(ShopItems[22][sItemPrice]));
+			format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (NEW) (Credits: {FFD700}%s{A9C4E4})\nRestricted Last Name (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (NEW) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})\nBackpacks\nDeluxe Car Alarm (Credits: {FFD700}%s{A9C4E4})",
+			szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]), number_format(ShopItems[35][sItemPrice]), number_format(ShopItems[39][sItemPrice]));
+			ShowPlayerDialogEx(index, DIALOG_MISCSHOP, DIALOG_STYLE_LIST, "Misc Shop", szDialog, "Select", "Cancel");
+		}
+		case 2: SetPVarInt(index, "RentaCar", 1), ShowModelSelectionMenu(index, CarList2, "Rent a Car!");
+		case 3: ShowModelSelectionMenu(index, CarList2, "Car Shop");
+		case 4: ShowPlayerDialogEx( index, DIALOG_HOUSESHOP, DIALOG_STYLE_LIST, "House Shop", "Purchase House\nHouse Interior Change\nHouse Move\nGarage - Small\nGarage - Medium\nGarage - Large\nGarage - Extra Large","Select", "Exit" );
+		case 5: ShowPlayerDialogEx( index, DIALOG_VIPSHOP, DIALOG_STYLE_LIST, "VIP Shop", "Purchase VIP\nRenew Gold VIP","Continue", "Exit" );
+		case 6: ShowPlayerDialogEx(index, DIALOG_SHOPBUSINESS, DIALOG_STYLE_LIST, "Businesses Shop", "Purchase Business\nRenew Business", "Select", "Exit");
+		case 7: ShowModelSelectionMenu(index, PlaneList, "Plane Shop");
+		case 8: ShowModelSelectionMenu(index, BoatList, "Boat Shop");
+		case 9: ShowModelSelectionMenu(index, CarList3, "Restricted Car Shop");
+		case 10: cmd_changename(index, "");
+		case 11: cmd_microshop(index, "");
+	}
+	DeletePVar(index, "OpenShop");
 	return 1;
 }
 

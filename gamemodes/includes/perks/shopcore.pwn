@@ -416,67 +416,33 @@ CMD:resetstpay(playerid, params[])
 CMD:changeuserpin(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pShopTech] < 2)
-	{
-        SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
-        return 1;
-    }
-
-    new string[128], accountName[20], password[64], query[512];
-    if(sscanf(params, "s[20]s[64]", accountName, password))
-		return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /changeuserpin [player name] [new pin]");
-
-    if(strlen(password) > 4 || !IsNumericString(password))
-        return SendClientMessageEx(playerid, COLOR_GREY, "The pin must be numbers, and must have 4 digits.");
-
-    new passbuffer[129];
-    WP_Hash(passbuffer, sizeof(passbuffer), password);
-
-	format(string, sizeof(string), "Attempting to change %s's pin...", accountName);
-    SendClientMessageEx(playerid, COLOR_YELLOW, string);
-
-	format(string, sizeof(string), "AdmCmd: %s's pin was changed by %s.", accountName, GetPlayerNameEx(playerid));
-    Log("logs/pin.log", string);
-
-	SetPVarInt(playerid, "ChangePin", 1);
-
-	new tmpName[24];
-	mysql_escape_string(accountName, tmpName);
-
-    mysql_format(MainPipeline, query,sizeof(query),"UPDATE `accounts` SET `Pin`='%s' WHERE `Username`='%s' AND `AdminLevel` < 2", passbuffer, tmpName);
-	mysql_tquery(MainPipeline, query, "OnChangeUserPassword", "i", playerid);
-	SetPVarString(playerid, "OnChangeUserPassword", tmpName);
-	return 1;
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
+	new name[MAX_PLAYER_NAME], pin[64];
+	if(sscanf(params, "s[24]s[64]", name, pin)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /changeuserpin [player name] [new pin]");
+	if(isnull(pin) || strlen(pin) > 4 || !IsNumericString(pin)) return SendClientMessageEx(playerid, COLOR_GREY, "The pin must be numbers, and must have 4 digits.");
+	new request = Password_Begin(playerid);
+	if(!request) return 0;
+	SetPVarString(playerid, "OnChangeUserPassword", name);
+	if(!bcrypt_hash(playerid, "OnAdminCredentialHashed", pin, BCRYPT_COST, "iiii", g_arrQueryHandle[playerid], request, GetPlayerSQLId(playerid), 1)) {
+		gPasswordPending[playerid] = false;
+		return SendClientMessageEx(playerid, COLOR_RED, "Unable to process your PIN reset."), 0;
+	}
+	return SendClientMessageEx(playerid, COLOR_YELLOW, "Processing the PIN reset...");
 }
 
 CMD:changeuserpassword(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1337)
-	{
-        SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
-        return 1;
-    }
-
-    new string[128], accountName[20], password[64], query[512];
-    if(sscanf(params, "s[20]s[64]", accountName, password)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /changeuserpassword [player name] [new password]");
-
-    new passbuffer[129], salt[11];
-	randomString(salt);
-	format(string, sizeof(string), "%s%s", password, salt);
-    WP_Hash(passbuffer, sizeof(passbuffer), string);
-
-	format(string, sizeof(string), "Attempting to change %s's password...", accountName);
-    SendClientMessageEx(playerid, COLOR_YELLOW, string);
-
-	format(string, sizeof(string), "AdmCmd: %s's password was changed by %s.", accountName, GetPlayerNameEx(playerid));
-    Log("logs/password.log", string);
-
-	new tmpName[24];
-	mysql_escape_string(accountName, tmpName);
-
-    mysql_format(MainPipeline, query,sizeof(query),"UPDATE `accounts` SET `Key`='%s', `Salt`='%s' WHERE `Username`='%s' AND `AdminLevel` < 2", passbuffer, salt, tmpName);
-	mysql_tquery(MainPipeline, query, "OnChangeUserPassword", "i", playerid);
-	SetPVarString(playerid, "OnChangeUserPassword", tmpName);
-	return 1;
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
+	new name[MAX_PLAYER_NAME], password[65];
+	if(sscanf(params, "s[24]s[65]", name, password)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /changeuserpassword [player name] [new password]");
+	new request = Password_Begin(playerid);
+	if(!request) return 0;
+	SetPVarString(playerid, "OnChangeUserPassword", name);
+	if(!bcrypt_hash(playerid, "OnAdminCredentialHashed", password, BCRYPT_COST, "iiii", g_arrQueryHandle[playerid], request, GetPlayerSQLId(playerid), 0)) {
+		gPasswordPending[playerid] = false;
+		return SendClientMessageEx(playerid, COLOR_RED, "Unable to process your password reset."), 0;
+	}
+	return SendClientMessageEx(playerid, COLOR_YELLOW, "Processing the password reset...");
 }
 
 CMD:orders(playerid, params[])

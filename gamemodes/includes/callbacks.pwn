@@ -1203,6 +1203,7 @@ public OnPlayerStreamOut(playerid, forplayerid)
 public OnPlayerConnect(playerid)
 {
 	if(++g_arrQueryHandle[playerid] <= 0) g_arrQueryHandle[playerid] = 1;
+	gPasswordPending[playerid] = false;
 	if(IsPlayerNPC(playerid)) return 1;
 
 	TotalConnect++;
@@ -1517,8 +1518,6 @@ public OnPlayerConnect(playerid)
 	acstruct[playerid][LastOnFootPosition][0] = 0.0; acstruct[playerid][LastOnFootPosition][1] = 0.0; acstruct[playerid][LastOnFootPosition][2] = 0.0;
 	acstruct[playerid][checkmaptp] = 0; acstruct[playerid][maptplastclick] = 0;
 	acstruct[playerid][maptp][0] = 0.0; acstruct[playerid][maptp][1] = 0.0; acstruct[playerid][maptp][2] = 0.0;
-
-	PlayerInfo[playerid][pLastPass][0] = 0;
 	PlayerInfo[playerid][pGroupToy][0] = 0.0;
 	PlayerInfo[playerid][pGroupToy][1] = 0.0;
 	PlayerInfo[playerid][pGroupToy][2] = 0.0;
@@ -1613,6 +1612,12 @@ public OnPlayerConnect(playerid)
 
 public OnPlayerDisconnect(playerid, reason)
 {
+	gPasswordPending[playerid] = false;
+	DeletePVar(playerid, "PassAuth");
+	DeletePVar(playerid, "PinNumber");
+	DeletePVar(playerid, "PinConfirm");
+	DeletePVar(playerid, "BcryptName");
+	DeletePVar(playerid, "AuthAccount");
     if(gShopTimer[playerid]) {
 		KillTimer(gShopTimer[playerid]);
 	}
@@ -4919,7 +4924,12 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 	}*/
 
 	playerLastTyped[playerid] = 0;
-	printf("[zcmd] [%s]: %s", GetPlayerNameEx(playerid), (strfind(cmdtext, "/changepass", true) == 0 ? ("/changepass") : cmdtext));
+	if(strfind(cmdtext, "/changepass", true) == 0 || strfind(cmdtext, "/changeuserpassword", true) == 0 || strfind(cmdtext, "/changeuserpin", true) == 0) {
+		new command[32], space = strfind(cmdtext, " ");
+		strmid(command, cmdtext, 0, space == -1 ? strlen(cmdtext) : space, sizeof(command));
+		printf("[zcmd] [%s]: %s [arguments redacted]", GetPlayerNameEx(playerid), command);
+	}
+	else printf("[zcmd] [%s]: %s", GetPlayerNameEx(playerid), cmdtext);
 	if(PlayerInfo[playerid][pForcePasswordChange] == 1) return ShowLoginDialogs(playerid, 0), 0;
 	if(PlayerInfo[playerid][pMuted] == 1) {
 		SendClientMessageEx(playerid, COLOR_GREY, "You cannot speak, you have been silenced!");

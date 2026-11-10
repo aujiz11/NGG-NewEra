@@ -93,6 +93,8 @@
 
 #undef  MAX_PLAYERS
 #define MAX_PLAYERS (500)
+#define BCRYPT_COST (10)
+#include <samp_bcrypt>
 #include <a_mysql>
 #include <streamer>
 #include <yom_buttons>

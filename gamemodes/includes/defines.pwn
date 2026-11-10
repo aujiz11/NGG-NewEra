@@ -42,7 +42,6 @@
 			/*  ---------------- MEMORY ----------------- */
 // DYNAMIC_MEMORY is set before YSI imports in NGRP.pwn.
 			/*  ---------------- NATIVES ----------------- */
-native WP_Hash(buffer[], len, const str[]);
 // gpci and IsValidVehicle are declared by open.mp.
 #define PRESSED(%0) \
     (((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))

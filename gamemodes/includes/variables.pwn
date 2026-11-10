@@ -2805,3 +2805,4 @@ new
 
 new
 	bool:BuddyInvite = true;
+new bool:gPasswordPending[MAX_PLAYERS], gPasswordRequest[MAX_PLAYERS];
