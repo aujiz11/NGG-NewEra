@@ -10,6 +10,7 @@
 			},
 			"args": [
 				"${file}",
+				"-o${fileDirname}/${fileBasenameNoExtension}.amx",
 				"-Dgamemodes",
 				"'-;+'",
 				"'-(+'",
