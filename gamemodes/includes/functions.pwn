@@ -1953,9 +1953,9 @@ stock OnPlayerStatsUpdate(playerid) {
 				PlayerInfo[playerid][pPos_z] = GetPVarFloat(playerid, "pbOldZ");
 			}
 		}
-		g_mysql_SaveAccount(playerid);
+		return g_mysql_SaveAccount(playerid);
 	}
-	return 1;
+	return 0;
 }
 
 stock splits(const strsrc[], strdest[][], delimiter)
@@ -2104,17 +2104,22 @@ stock str_replace(const sSearch[], const sReplace[], const sSubject[], &iCount =
 	return sReturn;
 }
 
-stock SaveAllAccountsUpdate()
+stock SaveAllAccountsUpdate(bool:maintenance = false)
 {
-	foreach(new i: Player)
-	{
-		if(gPlayerLogged{i}) {
-			GetPlayerIp(i, PlayerInfo[i][pIP], 16);
-			SetPVarInt(i, "AccountSaving", 1);
-			OnPlayerStatsUpdate(i);
-			break; // We only need to save one person at a time.
-		}
-	}	
+	if(maintenance && gAccountSaveBatch == ACCOUNT_SAVE_AUTOMATIC) {
+		gAccountSaveBatch = ACCOUNT_SAVE_MAINTENANCE;
+		return 1;
+	}
+	if(gAccountSaveBatch != ACCOUNT_SAVE_NONE) return 0;
+	if(!gAccountSavesPending) gAccountSaveErrors = 0;
+	gAccountSaveBatch = maintenance ? ACCOUNT_SAVE_MAINTENANCE : ACCOUNT_SAVE_AUTOMATIC;
+	++gAccountSavesPending;
+	foreach(new i: Player) {
+		if(!gPlayerLogged{i}) continue;
+		GetPlayerIp(i, PlayerInfo[i][pIP], 16);
+		OnPlayerStatsUpdate(i);
+	}
+	return AccountSave_Finish(true);
 }
 
 stock SetPlayerToTeamColor(playerid)

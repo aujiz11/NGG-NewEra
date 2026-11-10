@@ -2806,3 +2806,7 @@ new
 new
 	bool:BuddyInvite = true;
 new bool:gPasswordPending[MAX_PLAYERS], gPasswordRequest[MAX_PLAYERS];
+
+enum E_ACCOUNT_SAVE_BATCH { ACCOUNT_SAVE_NONE, ACCOUNT_SAVE_AUTOMATIC, ACCOUNT_SAVE_MAINTENANCE, ACCOUNT_SAVE_WORLD };
+new gAccountSavesPending, gAccountSaveErrors;
+new E_ACCOUNT_SAVE_BATCH:gAccountSaveBatch;

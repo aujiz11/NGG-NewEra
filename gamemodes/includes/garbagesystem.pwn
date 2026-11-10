@@ -105,7 +105,7 @@ CMD:garbagerun(playerid, params[])
 	    {
 	        if(GetPVarInt(playerid, "pGarbageRun") <= 0)
 	        {
-			if(CheckPointCheck(playerid)) pc_cmd_killcheckpoint(playerid, params);
+                if(CheckPointCheck(playerid)) pc_cmd_killcheckpoint(playerid, params);
 	        	
                 SetPVarInt(playerid, "pGarbageRun", 1);
                 DeletePVar(playerid, "pGarbageStage");

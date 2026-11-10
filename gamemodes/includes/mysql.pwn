@@ -143,10 +143,10 @@ stock g_mysql_Init()
 	mysql_set_option(mainOptions, SERVER_PORT, SQL_PORT);
 	MainPipeline = mysql_connect(SQL_HOST, SQL_USER, SQL_PASS, SQL_DB, mainOptions);
 
-	printf("[MySQL] (Main Pipelines) Connecting to %s...", SQL_HOST);
+	print("[MySQL] MainPipeline connection initialized.");
 	if(mysql_errno(MainPipeline) != 0)
 	{
-		printf("[MySQL] (MainPipeline) Fatal Error! Could not connect to MySQL: Host %s - DB: %s - User: %s", SQL_HOST, SQL_DB, SQL_USER);
+		print("[MySQL] MainPipeline connection failed, check private connection configuration.");
 		print("[MySQL] Note: Make sure that you have provided the correct connection credentials.");
 		printf("[MySQL] Error number: %d", mysql_errno(MainPipeline));
 		SendRconCommand("exit");
@@ -157,10 +157,10 @@ stock g_mysql_Init()
 	{
 		ShopPipeline = mysql_connect(SQL_SHOST, SQL_SUSER, SQL_SPASS, SQL_SDB);
 
-		printf("[MySQL] (Shop Pipelines) Connecting to %s...", SQL_SHOST);
+		print("[MySQL] ShopPipeline connection initialized.");
 		if(mysql_errno(ShopPipeline) != 0)
 		{
-			printf("[MySQL] (ShopPipeline) Fatal Error! Could not connect to MySQL: Host %s - DB: %s - User: %s", SQL_SHOST, SQL_SDB, SQL_SUSER);
+			print("[MySQL] ShopPipeline connection failed, check private connection configuration.");
 			print("[MySQL] Note: Make sure that you have provided the correct connection credentials.");
 			printf("[MySQL] Error number: %d", mysql_errno(ShopPipeline));
 			//SendRconCommand("exit");
@@ -178,6 +178,7 @@ stock g_mysql_Init()
 // Description: Called with Gamemode Exit.
 stock g_mysql_Exit()
 {
+	foreach(new i: Player) if(gPlayerLogged{i}) OnPlayerStatsUpdate(i);
 	mysql_close(MainPipeline);
 	if(ShopToggle == 1) mysql_close(ShopPipeline);
 	return 1;
@@ -791,45 +792,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 			}
 			return 1;
 		}
-		case SENDDATA_THREAD:
-		{
-			if(GetPVarType(extraid, "RestartKick")) {
-				gPlayerLogged{extraid} = 0;
-				GameTextForPlayer(extraid, "Scheduled Maintenance...", 5000, 5);
-				SendClientMessage(extraid, COLOR_LIGHTBLUE, "* The server will be going down for Scheduled Maintenance. A brief period of downtime will follow.");
-				SendClientMessage(extraid, COLOR_GRAD2, "We will be going down to do some maintenance on the server/script, we will be back online shortly.");
-				SetTimerEx("KickEx", 1000, false, "i", extraid);
-
-				foreach(extraid: Player) if(gPlayerLogged{extraid}) {
-					SetPVarInt(extraid, "RestartKick", 1);
-					return OnPlayerStatsUpdate(extraid);
-				}
-				ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Account saving finished!", 1);
-				//g_mysql_DumpAccounts();
-
-				SetTimer("FinishMaintenance", 1500, false);
-			}
-			if(GetPVarType(extraid, "AccountSaving") && (GetPVarInt(extraid, "AccountSaved") == 0)) {
-				SetPVarInt(extraid, "AccountSaved", 1);
-				foreach(new i: Player)
-				{
-					if(gPlayerLogged{i} && (GetPVarInt(i, "AccountSaved") == 0))
-					{
-						SetPVarInt(i, "AccountSaving", 1);
-						OnPlayerStatsUpdate(i);
-					}
-				}
-				ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Account saving finished!", 2);
-				print("Account Saving Complete");
-				foreach(new i: Player)
-				{
-					DeletePVar(i, "AccountSaved");
-					DeletePVar(i, "AccountSaving");
-				}
-				//g_mysql_DumpAccounts();
-			}
-			return 1;
-		}
+		case SENDDATA_THREAD: return 1;
 		case AUTH_THREAD:
 		{
 			new name[24];
@@ -1354,15 +1317,24 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 public OnQueryError(errorid, const error[], const callback[], const query[], MySQL:handle) {
 	if(handle == MainPipeline) {
+		if(!strcmp(callback, "OnAccountSaved")) AccountSave_Finish(false);
+		else if(gAccountSaveBatch != ACCOUNT_SAVE_NONE) ++gAccountSaveErrors;
+	}
+	else if(gAccountSaveBatch != ACCOUNT_SAVE_NONE) ++gAccountSaveErrors;
+	if(!strcmp(callback, "OnMaintenanceSaved")) {
+		gAccountSaveBatch = ACCOUNT_SAVE_NONE;
+		print("[MySQL] Maintenance shutdown cancelled: queue confirmation failed.");
+	}
+	if(handle == MainPipeline) {
 		GangTag_QueryFailed(callback, query);
 		PayPhone_QueryFailed(callback, query);
 		Shop_QueryFailed(query);
 	}
 
 	new bool:credential = strfind(query, "`Key`", true) != -1 || strfind(query, "`Pin`", true) != -1 || strfind(query, "`Salt`", true) != -1
-		|| !strcmp(callback, "OnCredentialQuery");
+		|| !strcmp(callback, "OnCredentialQuery") || !strcmp(callback, "OnAccountSaved");
 	if(credential) {
-		printf("[MySQL] Credential query failed (error %d, callback %s); details redacted.", errorid, callback);
+		printf("[MySQL] Sensitive query failed (error %d, callback %s); details redacted.", errorid, callback);
 		SQL_Log("[credential query redacted]", "[credential error redacted]");
 		++iErrorID;
 		return 1;
@@ -2281,43 +2253,60 @@ stock IsAdminSpawnedVehicle(vehicleid)
 }
 
 // credits to Luk0r
-stock MySQLUpdateBuild(query[], sqlplayerid)
+stock MySQLUpdateBuild(query[], sqlplayerid, valueLength = 0)
 {
 	new querylen = strlen(query);
-	if (!query[0]) {
-		mysql_format(MainPipeline, query, 2048, "UPDATE `accounts` SET ");
+	if(!query[0]) {
+		format(query, 2048, "UPDATE `accounts` SET ");
 	}
-	else if (2048-querylen < 200)
-	{
-		new whereclause[32];
-		mysql_format(MainPipeline, whereclause, sizeof(whereclause), " WHERE `id`=%d", sqlplayerid);
-		strcat(query, whereclause, 2048);
-		mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
-		mysql_format(MainPipeline, query, 2048, "UPDATE `accounts` SET ");
+	else if(2048 - querylen < 200 || 2048 - querylen < valueLength + 33) {
+		MySQLUpdateFinish(query, sqlplayerid);
 	}
-	else if (strfind(query, "=", true) != -1) strcat(query, ",", 2048);
+	else if(strfind(query, "=", true) != -1) strcat(query, ",", 2048);
 	return 1;
 }
 
 stock MySQLUpdateFinish(query[], sqlplayerid)
 {
-	if (strcmp(query, "WHERE id=", false) == 0) mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
-	else
-	{
-		new whereclause[32];
-		mysql_format(MainPipeline, whereclause, sizeof(whereclause), " WHERE id=%d", sqlplayerid);
-		strcat(query, whereclause, 2048);
-		mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
-		mysql_format(MainPipeline, query, 2048, "UPDATE `accounts` SET ");
+	new whereclause[32];
+	format(whereclause, sizeof(whereclause), " WHERE `id`=%d", sqlplayerid);
+	strcat(query, whereclause, 2048);
+	++gAccountSavesPending;
+	new queued = mysql_tquery(MainPipeline, query, "OnAccountSaved");
+	format(query, 2048, "UPDATE `accounts` SET ");
+	if(!queued) AccountSave_Finish(false);
+	return queued;
+}
+
+forward OnAccountSaved();
+public OnAccountSaved()
+{
+	return AccountSave_Finish(true);
+}
+
+AccountSave_Finish(bool:success)
+{
+	if(!success) ++gAccountSaveErrors;
+	if(gAccountSavesPending > 0) --gAccountSavesPending;
+	if(gAccountSavesPending || gAccountSaveBatch == ACCOUNT_SAVE_NONE || gAccountSaveBatch == ACCOUNT_SAVE_WORLD) return 1;
+	new bool:maintenance = gAccountSaveBatch == ACCOUNT_SAVE_MAINTENANCE;
+	gAccountSaveBatch = ACCOUNT_SAVE_NONE;
+	if(gAccountSaveErrors) {
+		ABroadCastText(COLOR_RED, "Account saving failed. Check database errors before retrying; automatic shutdown was cancelled.", 1);
+		printf("[MySQL] Account save batch failed (%d errors).", gAccountSaveErrors);
+		return 0;
 	}
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Account saving finished!", maintenance ? 1 : 2);
+	print("Account Saving Complete");
+	if(maintenance) SetTimer("FinishMaintenance", 1500, false);
 	return 1;
 }
 
 stock SavePlayerInteger(query[], sqlid, const Value[], Integer)
 {
-	MySQLUpdateBuild(query, sqlid);
 	new updval[64];
 	mysql_format(MainPipeline, updval, sizeof(updval), "`%s`=%d", Value, Integer);
+	MySQLUpdateBuild(query, sqlid, strlen(updval));
 	strcat(query, updval, 2048);
 	return 1;
 }
@@ -2325,10 +2314,9 @@ stock SavePlayerInteger(query[], sqlid, const Value[], Integer)
 
 stock SavePlayerString(query[], sqlid, const Value[], const String[])
 {
-	MySQLUpdateBuild(query, sqlid);
-	new escapedstring[160], string[160];
-	mysql_escape_string(String, escapedstring);
-	mysql_format(MainPipeline, string, sizeof(string), "`%s`='%s'", Value, escapedstring);
+	new string[1024];
+	mysql_format(MainPipeline, string, sizeof(string), "`%s`='%e'", Value, String);
+	MySQLUpdateBuild(query, sqlid, strlen(string));
 	strcat(query, string, 2048);
 	return 1;
 }
@@ -2343,12 +2331,15 @@ stock SavePlayerFloat(query[], sqlid, const Value[], Float:Number)
 
 stock g_mysql_SaveAccount(playerid)
 {
-    new query[2048];
-
-	mysql_format(MainPipeline, query, 2048, "UPDATE `accounts` SET `SPos_x` = '%0.2f', `SPos_y` = '%0.2f', `SPos_z` = '%0.2f', `SPos_r` = '%0.2f' WHERE id = '%d'",PlayerInfo[playerid][pPos_x], PlayerInfo[playerid][pPos_y], PlayerInfo[playerid][pPos_z], PlayerInfo[playerid][pPos_r], GetPlayerSQLId(playerid));
-	mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
-
-    mysql_format(MainPipeline, query, 2048, "UPDATE `accounts` SET ");
+	if(playerid < 0 || playerid >= MAX_PLAYERS || GetPlayerSQLId(playerid) <= 0) {
+		++gAccountSaveErrors;
+		return 0;
+	}
+	new query[2048];
+	SavePlayerFloat(query, GetPlayerSQLId(playerid), "SPos_x", PlayerInfo[playerid][pPos_x]);
+	SavePlayerFloat(query, GetPlayerSQLId(playerid), "SPos_y", PlayerInfo[playerid][pPos_y]);
+	SavePlayerFloat(query, GetPlayerSQLId(playerid), "SPos_z", PlayerInfo[playerid][pPos_z]);
+	SavePlayerFloat(query, GetPlayerSQLId(playerid), "SPos_r", PlayerInfo[playerid][pPos_r]);
     SavePlayerString(query, GetPlayerSQLId(playerid), "IP", PlayerInfo[playerid][pIP]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Registered", PlayerInfo[playerid][pReg]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "ConnectedTime", PlayerInfo[playerid][pConnectHours]);
@@ -2831,9 +2822,8 @@ stock g_mysql_SaveAccount(playerid)
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szMiscArray, PlayerInfo[playerid][p_iPrisonDrug][d]);
 	} old */
 
-	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	if(FIFEnabled) g_mysql_SaveFIF(playerid);
-	return 1;
+	return MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 }
 
 stock SaveAuction(auction) {
@@ -6757,12 +6747,17 @@ stock g_mysql_SaveFIF(playerid)
 	{
 		new szQuery[128];
 		mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `fallintofun` SET `FIFHours` = %d, `FIFChances` = %d WHERE `player` = %d", FIFInfo[playerid][FIFHours], FIFInfo[playerid][FIFChances], PlayerInfo[playerid][pId]);
-		mysql_tquery(MainPipeline, szQuery, "OnSaveFIF", "i", playerid);
+		if(!mysql_tquery(MainPipeline, szQuery, "OnSaveFIF", "iii", playerid, g_arrQueryHandle[playerid], GetPlayerSQLId(playerid))) {
+			++gAccountSaveErrors;
+			print("[MySQL] FIF save could not be queued.");
+		}
 	}
 }
 
-forward OnSaveFIF(playerid);
-public OnSaveFIF(playerid) {
+forward OnSaveFIF(playerid, session, account);
+public OnSaveFIF(playerid, session, account) {
+	if(playerid < 0 || playerid >= MAX_PLAYERS || !IsPlayerConnected(playerid)
+		|| g_arrQueryHandle[playerid] != session || GetPlayerSQLId(playerid) != account) return 0;
 
 	printf("Saved %s's FIF stats", GetPlayerNameEx(playerid));
 

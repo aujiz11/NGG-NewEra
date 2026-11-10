@@ -2561,17 +2561,10 @@ ptask AFKUpdate[10000](i)
 }
 
 // Timer Name: SaveAccountsUpdate()
-// TickRate: 5 Minutes.
+// TickRate: 15 Minutes.
 task SaveAccountsUpdate[900000]()
 {
-	foreach(new i: Player)
-	{
-		if(gPlayerLogged{i}) {
-			SetPVarInt(i, "AccountSaving", 1);
-			OnPlayerStatsUpdate(i);
-			break; // We only need to save one person at a time.
-		}
-	}
+	SaveAllAccountsUpdate();
 }
 
 ptask PlayerUpdate[1000](i) {

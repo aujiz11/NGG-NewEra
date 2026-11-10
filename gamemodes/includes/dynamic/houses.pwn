@@ -530,6 +530,9 @@ stock SaveHouses()
 
 stock RehashHouse(houseid)
 {
+	if(HouseInfo[houseid][hFurnitureLoaded] == -1) {
+		HouseInfo[houseid][hFurnitureLoaded] = 0;
+	}
 	HouseInfo[houseid][hSQLId] = -1;
 	HouseInfo[houseid][hOwned] = 0;
 	HouseInfo[houseid][hLevel] = 0;

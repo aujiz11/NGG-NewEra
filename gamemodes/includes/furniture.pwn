@@ -1053,14 +1053,15 @@ FurniturePermit(playerid) {
 }
 
 stock LoadFurniture() {
-
-	mysql_tquery(MainPipeline, "SELECT * FROM `furniture` ORDER BY `houseid`,`slotid`", "OnLoadFurniture", "i", INVALID_HOUSE_ID);
+	mysql_tquery(MainPipeline, "SELECT * FROM `furniture` ORDER BY `houseid`,`slotid`", "OnLoadFurniture", "ii", INVALID_HOUSE_ID, 0);
 }
 
-forward OnLoadFurniture(iHouseID);
-public OnLoadFurniture(iHouseID) {
+forward OnLoadFurniture(iHouseID, request);
+public OnLoadFurniture(iHouseID, request) {
+	if(request && (iHouseID < 0 || iHouseID >= MAX_HOUSES || HouseInfo[iHouseID][hFurnitureLoaded] != -1
+		|| HouseInfo[iHouseID][hFurnitureLoadRequest] != request || HouseInfo[iHouseID][hSQLId] < 0)) return 0;
 	if(iHouseID != INVALID_HOUSE_ID && (iHouseID < 0 || iHouseID >= MAX_HOUSES)) return 0;
-	new rows, loaded, previousHouse = -1, previousSlot = -1;
+	new rows, loaded, bool:failed, previousHouse = -1, previousSlot = -1;
 	cache_get_row_count(rows);
 	for(new row; row < rows; ++row) {
 		new houseid = -1, slotid = -1, modelid, text0, text1, text2, text3, text4, col0, col1, col2, col3, col4;
@@ -1070,6 +1071,7 @@ public OnLoadFurniture(iHouseID) {
 		if(houseid < 0 || houseid >= MAX_HOUSES || slotid < 0 || slotid >= MAX_FURNITURE_SLOTS) continue;
 		if(iHouseID != INVALID_HOUSE_ID && houseid != iHouseID) continue;
 		if(houseid == previousHouse && slotid == previousSlot) continue;
+		if(IsValidDynamicObject(HouseInfo[houseid][hFurniture][slotid])) continue;
 		cache_get_value_name_int(row, "modelid", modelid);
 		cache_get_value_name_float(row, "x", x);
 		cache_get_value_name_float(row, "y", y);
@@ -1088,11 +1090,12 @@ public OnLoadFurniture(iHouseID) {
 		cache_get_value_name_int(row, "col3", col3);
 		cache_get_value_name_int(row, "col4", col4);
 		if(!ProcessFurniture(houseid, slotid, modelid, x, y, z, rx, ry, rz,
-			text0, text1, text2, text3, text4, col0, col1, col2, col3, col4)) continue;
+			text0, text1, text2, text3, text4, col0, col1, col2, col3, col4)) { failed = true; continue; }
 		previousHouse = houseid;
 		previousSlot = slotid;
 		++loaded;
 	}
+	if(iHouseID != INVALID_HOUSE_ID) HouseInfo[iHouseID][hFurnitureLoaded] = failed ? 0 : 1;
 	printf("[Furniture] Loaded %d of %d placement rows.", loaded, rows);
 	return 1;
 }
@@ -1100,52 +1103,29 @@ public OnLoadFurniture(iHouseID) {
 forward OnRehashHouseFurniture(iHouseID);
 public OnRehashHouseFurniture(iHouseID) {
 	if(iHouseID < 0 || iHouseID >= MAX_HOUSES) return 0;
-	return OnLoadFurniture(iHouseID);
+	return OnLoadFurniture(iHouseID, 0);
 }
 
-// Check first/last visitor
-// House_VistorCheck(playerid, iHouseID, choice) {
 House_VistorCheck(iHouseID) {
-	if(iHouseID < 0 || iHouseID >= MAX_HOUSES) return 0;
+	if(iHouseID < 0 || iHouseID >= MAX_HOUSES || HouseInfo[iHouseID][hSQLId] < 0) return 0;
+	if(HouseInfo[iHouseID][hFurnitureLoaded] == 1) return 1;
 
-	if(!HouseInfo[iHouseID][hFurnitureLoaded]) {
+	new 
+		tick = GetTickCount(), 
+		elapsed = tick - HouseInfo[iHouseID][hFurnitureLoadTick];
 
-		HouseInfo[iHouseID][hFurnitureLoaded] = 1;
-		for(new o = 0; o < MAX_FURNITURE_SLOTS; o++) {
-			HouseInfo[iHouseID][hFurniture][o] = -1;
-		}
-		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d' ORDER BY `slotid`", iHouseID);
-		mysql_tquery(MainPipeline, szMiscArray, "OnLoadFurniture", "i", iHouseID);
-
-		/*
-		new iCount;
-		foreach(new p : Player) {
-			
-			if(PlayerInfo[p][pVW] == HouseInfo[iHouseID][hIntVW] && IsPlayerInRangeOfPoint(p, 40, HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ])) {
-				if(p == playerid) continue;
-				iCount++;
-			}
-		}
-		if(!iCount) {
-
-			switch(choice) {
-
-				case 0: { // Enter House
-					
-					HouseInfo[iHouseID][hFurnitureLoaded] = 1;
-					format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d' ORDER BY `slotid`", iHouseID);
-					mysql_tquery(MainPipeline, szMiscArray, true, "OnLoadFurniture", ""); // load the furniture
-				}
-
-				
-				case 1: {
-					for(new i; i < MAX_FURNITURE_SLOTS; ++i) {
-						if(IsValidFurniture(iHouseID, i, 1)) DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][i]); // Exit House
-					}
-				}
-			}
-		}
-		*/
+	if(HouseInfo[iHouseID][hFurnitureLoaded] == -1 && elapsed >= 0 && elapsed < 30000) return 0;
+	
+	HouseInfo[iHouseID][hFurnitureLoadTick] = tick;
+	if(++HouseInfo[iHouseID][hFurnitureLoadRequest] <= 0) {
+		HouseInfo[iHouseID][hFurnitureLoadRequest] = 1;
+	}
+	
+	HouseInfo[iHouseID][hFurnitureLoaded] = -1;
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d' ORDER BY `slotid`", iHouseID);
+	if(!mysql_tquery(MainPipeline, szMiscArray, "OnLoadFurniture", "ii", iHouseID, HouseInfo[iHouseID][hFurnitureLoadRequest])) {
+		HouseInfo[iHouseID][hFurnitureLoaded] = 0;
+		return 0;
 	}
 	return 1;
 }

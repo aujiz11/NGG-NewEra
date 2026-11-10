@@ -194,18 +194,7 @@ public Maintenance()
     ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Accounts...", 1);
 	SendRconCommand("password asdatasdhwda");
 	SendRconCommand("hostname Next Generation Roleplay [Restarting for Maintenance]");
-	foreach(new i: Player)
-	{
-		if(gPlayerLogged{i}) {
-			SetPVarInt(i, "RestartKick", 1);
-			//g_mysql_SaveAccount(i);
-			OnPlayerStatsUpdate(i);
-			break; // We only need to save one person at a time.
-		}
-	}	
-	SetTimer("FinishMaintenance", 60000, false);
-	//g_mysql_DumpAccounts();
-
+	SaveAllAccountsUpdate(true);
 
 	return 1;
 }
@@ -213,6 +202,12 @@ public Maintenance()
 forward FinishMaintenance();
 public FinishMaintenance()
 {
+	if(gAccountSavesPending) {
+		SetTimer("FinishMaintenance", 1000, false);
+		return 0;
+	}
+	if(gAccountSaveErrors || gAccountSaveBatch != ACCOUNT_SAVE_NONE) return 0;
+	gAccountSaveBatch = ACCOUNT_SAVE_WORLD;
     foreach(new i: Player) Kick(i);
     ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Houses...", 1);
 	SaveHouses();
@@ -264,5 +259,45 @@ public FinishMaintenance()
 forward ShutDown();
 public ShutDown()
 {
+	if(gAccountSaveBatch != ACCOUNT_SAVE_WORLD) return 0;
+	if(mysql_unprocessed_queries(MainPipeline) || (ShopToggle == 1 && mysql_unprocessed_queries(ShopPipeline))) {
+		SetTimer("ShutDown", 1000, false);
+		return 0;
+	}
+	if(gAccountSaveErrors) {
+		print("[MySQL] Maintenance shutdown cancelled because a save query failed.");
+		gAccountSaveBatch = ACCOUNT_SAVE_NONE;
+		return 0;
+	}
+	if(!mysql_tquery(MainPipeline, "DO 0", "OnMaintenanceSaved", "i", 0)) {
+		gAccountSaveBatch = ACCOUNT_SAVE_NONE;
+		print("[MySQL] Maintenance shutdown cancelled: unable to confirm the write queue.");
+		return 0;
+	}
+	return 1;
+}
+
+forward OnMaintenanceSaved(pipeline);
+public OnMaintenanceSaved(pipeline)
+{
+	if(gAccountSaveBatch != ACCOUNT_SAVE_WORLD) return 0;
+	if(gAccountSaveErrors) {
+		gAccountSaveBatch = ACCOUNT_SAVE_NONE;
+		print("[MySQL] Maintenance shutdown cancelled because a save query failed.");
+		return 0;
+	}
+	if(!pipeline && ShopToggle == 1) {
+		if(!mysql_tquery(ShopPipeline, "DO 0", "OnMaintenanceSaved", "i", 1)) {
+			gAccountSaveBatch = ACCOUNT_SAVE_NONE;
+			print("[MySQL] Maintenance shutdown cancelled: unable to confirm the shop write queue.");
+			return 0;
+		}
+		return 1;
+	}
+	if(mysql_unprocessed_queries(MainPipeline) || (ShopToggle == 1 && mysql_unprocessed_queries(ShopPipeline))) {
+		SetTimer("ShutDown", 1000, false);
+		return 0;
+	}
+	print("[MySQL] Maintenance write queues acknowledged.");
 	return SendRconCommand("exit");
 }
