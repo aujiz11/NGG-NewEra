@@ -982,7 +982,7 @@ task hungerGames[1000]()
 task PlayerHeartBeat[1000]() {
 	foreach(new i : Player) 
 	{
-		if(IsPlayerNPC(i)) return 1;
+		if(IsPlayerNPC(i)) continue;
 
 		// alerttimer - Merged by Jingles
 		if(AlertTime[i] != 0) AlertTime[i]--;
@@ -1002,7 +1002,8 @@ task PlayerHeartBeat[1000]() {
 			if(playerTabbed[i] >= 1) {
 				if(++playerTabbed[i] >= 1200 && PlayerInfo[i][pAdmin] < 2) {
 					SendClientMessageEx(i, COLOR_WHITE, "You have been automatically kicked for alt-tabbing.");
-					return Disconnect(i);
+					Disconnect(i);
+					continue;
 				}
 			}
 			else if(++playerSeconds[i] < iTick && playerTabbed[i] == 0) {
@@ -1011,7 +1012,8 @@ task PlayerHeartBeat[1000]() {
 			else if((IsPlayerInRangeOfPoint(i, 2.0, PlayerPos[i][0], PlayerPos[i][1], PlayerPos[i][2]) || InsidePlane[i] != INVALID_PLAYER_ID) && ++playerLastTyped[i] >= 10) {
 				if(++playerAFK[i] >= 1200 && PlayerInfo[i][pAdmin] < 2) {
 					SendClientMessageEx(i, COLOR_WHITE, "You have been automatically kicked for idling.");
-					return Disconnect(i);
+					Disconnect(i);
+					continue;
 				}
 			}
 			else playerAFK[i] = 0;
@@ -2333,7 +2335,7 @@ task PlayerHeartBeat[1000]() {
 		}
 		if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_USEJETPACK && JetPack[i] == 0 && PlayerInfo[i][pAdmin] < 4)
 		{
-			if(GetPVarType(i, "Autoban")) return 1;
+			if(GetPVarType(i, "Autoban")) continue;
 			SetPVarInt(i, "Autoban", 1);
 			CreateBan(INVALID_PLAYER_ID, PlayerInfo[i][pId], i, PlayerInfo[i][pIP], "Jetpack Hacking", 180);
 			TotalAutoBan++;
@@ -2417,6 +2419,7 @@ task PlayerHeartBeat[1000]() {
 			KillTimer(GetPVarInt(i, "rccamtimer"));
 		}
 	}
+	return 1;
 }
 
 // Timer Name: SyncUp()
