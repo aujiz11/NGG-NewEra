@@ -82,20 +82,21 @@ CMD:staffban(playerid, params[])
 
 		if(PlayerInfo[iTarget][pStaffBanned]) return SendClientMessage(playerid, COLOR_GRAD2, "That player is already staff banned.");
 
-		// 7810 is the date just before 19 January 2038. Given that bans are specified in unix, anything above this goes above the max integer value. Crashes = :(
-		if(iDays < 0 || iDays > 7810) return SendClientMessage(playerid, COLOR_GRAD2, "You have specified an invalid amount of days. Days must be between 0 and 7,810.");
-
-		new iCreationDate, iExpireDate;
-		iCreationDate = gettime();
-		iExpireDate = gettime() + (iDays * 86400);
-
-		if(iDays == 0) iExpireDate = 2147483640;
+		new iCreationDate = gettime();
+		if(iCreationDate < 0) return SendClientMessage(playerid, COLOR_GRAD2, "The server time is outside the supported staff-ban range.");
+		new iMaxDays = (cellmax - iCreationDate) / 86400;
+		if(iDays < 0 || iDays > iMaxDays) {
+			format(szMiscArray, sizeof szMiscArray, "You have specified an invalid amount of days. Days must be between 0 and %d.", iMaxDays);
+			return SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
+		}
+		new iExpireDate = 2147483640;
+		if(iDays > 0) iExpireDate = iCreationDate + (iDays * 86400);
 
 		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "INSERT INTO `staffbans` (`details`, `issuer`, `playerid`, `expiredate`, `created`) VALUES('%e', %d, %d, %d, %d)",
 			szReason,  GetPlayerSQLId(playerid), GetPlayerSQLId(iTarget), iExpireDate, iCreationDate);
 
 		// We have to make sure the query goes through before they can be staff banned.
-		mysql_tquery(MainPipeline, szMiscArray, "OnlineStaffBan", "ddsdd", playerid, iTarget, szReason, iCreationDate, iDays);
+		mysql_tquery(MainPipeline, szMiscArray, "OnlineStaffBan", "ddsdd", playerid, iTarget, szReason, iExpireDate, iDays);
 	}
 	else SendClientMessage(playerid, COLOR_GRAD2, "You're not authorised to use this command.");
 
@@ -129,12 +130,20 @@ CMD:ostaffban(playerid, params[])
 
 		if(IsPlayerConnected(ReturnUser(szTarget))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /staffban.");
 
-		if(iDays < 0 || iDays > 7810) return SendClientMessage(playerid, COLOR_GRAD2, "You have specified an invalid amount of days. Days must be between 0 and 7,810.");
+		new iCreationDate = gettime();
+		if(iCreationDate < 0) return SendClientMessage(playerid, COLOR_GRAD2, "The server time is outside the supported staff-ban range.");
+		new iMaxDays = (cellmax - iCreationDate) / 86400;
+		if(iDays < 0 || iDays > iMaxDays) {
+			format(szMiscArray, sizeof szMiscArray, "You have specified an invalid amount of days. Days must be between 0 and %d.", iMaxDays);
+			return SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
+		}
+		new iExpireDate = 2147483640;
+		if(iDays > 0) iExpireDate = iCreationDate + (iDays * 86400);
 
 		mysql_format(MainPipeline, szMiscArray,sizeof(szMiscArray),"UPDATE `accounts` SET `AdminLevel` = 0, `HR` = 0, `AP` = 0, `Security` = 0, `ShopTech` = 0, `FactionModerator` = 0, `GangModerator` = 0, \
 			`Undercover` = 0, `BanAppealer` = 0, `Helper` = 0, `pVIPMod` = 0, `SecureIP` = '0.0.0.0', `SeniorModerator` = 0, `BanAppealer` = 0, `ShopTech` = 0, `StaffBanned` = 1 WHERE `Username`= '%s' AND `AdminLevel` < %d AND `StaffBanned` = 0", szTarget, PlayerInfo[playerid][pAdmin]);
 
-		mysql_tquery(MainPipeline, szMiscArray, "OfflineStaffBan", "dssd", playerid, szTarget, szReason, iDays);
+		mysql_tquery(MainPipeline, szMiscArray, "OfflineStaffBan", "dssddd", playerid, szTarget, szReason, iDays, iCreationDate, iExpireDate);
 
 		for(new i = 0; i < MAX_PLAYER_NAME; i++) if(szTarget[i] == '_') szTarget[i] = ' '; // Remove the underscore, looks nicer for the person using the command.
 
@@ -293,18 +302,18 @@ public ProcessOfflineUnStaffBan(iIssuer, szTarget[], iSQLID)
 	return 1;
 }
 
-forward OfflineStaffBan(iIssuer, szTarget[], szReason[], iDays);
-public OfflineStaffBan(iIssuer, szTarget[], szReason[], iDays)
+forward OfflineStaffBan(iIssuer, szTarget[], szReason[], iDays, iCreationDate, iExpireDate);
+public OfflineStaffBan(iIssuer, szTarget[], szReason[], iDays, iCreationDate, iExpireDate)
 {
 	if(!cache_affected_rows()) return SendClientMessage(iIssuer, COLOR_GRAD2, "There was an error offline staff banning that account.");
 
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `Username`, `id` FROM `accounts` WHERE `Username`='%s'", szTarget);
-	mysql_tquery(MainPipeline, szMiscArray, "RetrieveTargetID", "dssd", iIssuer, szTarget, szReason, iDays);
+	mysql_tquery(MainPipeline, szMiscArray, "RetrieveTargetID", "dssddd", iIssuer, szTarget, szReason, iDays, iCreationDate, iExpireDate);
 	return 1;
 }
 
-forward RetrieveTargetID(iIssuer, szTarget[], szReason[], iDays);
-public RetrieveTargetID(iIssuer, szTarget[], szReason[], iDays)
+forward RetrieveTargetID(iIssuer, szTarget[], szReason[], iDays, iCreationDate, iExpireDate);
+public RetrieveTargetID(iIssuer, szTarget[], szReason[], iDays, iCreationDate, iExpireDate)
 {
 	new szUsername[MAX_PLAYER_NAME], iSQLID;
 
@@ -319,15 +328,10 @@ public RetrieveTargetID(iIssuer, szTarget[], szReason[], iDays)
 		}
 
 		// Now we have their SQL ID we can insert into the table.
-		new iCreationDate = gettime();
-		new iExpireDate = gettime() + (iDays * 86400);
-
-		if(iDays == 0) iExpireDate = 2147483640;
-
 		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `staffbans` (`details`, `issuer`, `playerid`, `expiredate`, `created`) VALUES('%e', %d, %d, %d, %d)",
 			szReason,  GetPlayerSQLId(iIssuer), iSQLID, iExpireDate, iCreationDate);
 
-		mysql_tquery(MainPipeline, szMiscArray, "ProcessOfflineStaffBan", "dssdd", iIssuer, szTarget, szReason, iDays, iSQLID);
+		mysql_tquery(MainPipeline, szMiscArray, "ProcessOfflineStaffBan", "dssddd", iIssuer, szTarget, szReason, iDays, iSQLID, iExpireDate);
 	}
 	else // Because we don't have their SQL ID we shouldn't log it, because we can't track who the staff ban belongs to.
 	{
@@ -337,8 +341,8 @@ public RetrieveTargetID(iIssuer, szTarget[], szReason[], iDays)
 	return 1;
 }
 
-forward ProcessOfflineStaffBan(iIssuer, szTarget[], szReason[], iDays, iSQLID);
-public ProcessOfflineStaffBan(iIssuer, szTarget[], szReason[], iDays, iSQLID)
+forward ProcessOfflineStaffBan(iIssuer, szTarget[], szReason[], iDays, iSQLID, iExpireDate);
+public ProcessOfflineStaffBan(iIssuer, szTarget[], szReason[], iDays, iSQLID, iExpireDate)
 {
 	if(!cache_affected_rows())
 	{
@@ -353,8 +357,7 @@ public ProcessOfflineStaffBan(iIssuer, szTarget[], szReason[], iDays, iSQLID)
 		format(szMiscArray, sizeof szMiscArray, "You have successfully staff banned %s, reason: %s.", szTarget, szReason);
 		SendClientMessage(iIssuer, COLOR_GRAD1, szMiscArray);
 
-		// If the server is lagging then this may be off by about a second. Given the display isn't what is stored, it is not exactly important.
-		format(szMiscArray, sizeof szMiscArray, "Unban Date: %s", date(gettime() + (iDays * 86400), 1));
+		format(szMiscArray, sizeof szMiscArray, "Unban Date: %s", date(iExpireDate, 1));
 		SendClientMessage(iIssuer, COLOR_GRAD1, szMiscArray);	
 
 		// Inform the admins.
@@ -363,7 +366,7 @@ public ProcessOfflineStaffBan(iIssuer, szTarget[], szReason[], iDays, iSQLID)
 
 		// Log it.
 		format(szMiscArray, sizeof szMiscArray, "%s (%d) was offline staff banned by %s (%d), reason: %s | Duration: %d days | Unban Date: %s", szTarget, iSQLID, GetPlayerNameEx(iIssuer), GetPlayerSQLId(iIssuer),
-			szReason, iDays, date(gettime() + (iDays * 86400), 1));
+			szReason, iDays, date(iExpireDate, 1));
 		Log("logs/staffban.log", szMiscArray);
 	}
 	else
@@ -411,8 +414,8 @@ public RemoveStaffBan(iIssuer, iTarget, szReason[])
 	return 1;
 }
 
-forward OnlineStaffBan(iIssuer, iTarget, szReason[], iCreationDate, iDays);
-public OnlineStaffBan(iIssuer, iTarget, szReason[], iCreationDate, iDays)
+forward OnlineStaffBan(iIssuer, iTarget, szReason[], iExpireDate, iDays);
+public OnlineStaffBan(iIssuer, iTarget, szReason[], iExpireDate, iDays)
 {
 	if(!cache_affected_rows()) return SendClientMessage(iIssuer, COLOR_GRAD2, "There was an error staff banning that account.");
 	
@@ -442,14 +445,14 @@ public OnlineStaffBan(iIssuer, iTarget, szReason[], iCreationDate, iDays)
 		format(szMiscArray, sizeof szMiscArray, "You have successfully staff banned %s, reason: %s.", GetPlayerNameEx(iTarget), szReason);
 		SendClientMessage(iIssuer, COLOR_GRAD1, szMiscArray);
 
-		format(szMiscArray, sizeof szMiscArray, "Unban Date: %s", date(iCreationDate + (iDays * 86400), 1));
+		format(szMiscArray, sizeof szMiscArray, "Unban Date: %s", date(iExpireDate, 1));
 		SendClientMessage(iIssuer, COLOR_GRAD1, szMiscArray);	
 
 		// Inform the player.
 		format(szMiscArray, sizeof szMiscArray, "You have been staff banned by %s, reason: %s.", GetPlayerNameEx(iIssuer), szReason);
 		SendClientMessage(iTarget, COLOR_LIGHTRED, szMiscArray);
 
-		format(szMiscArray, sizeof szMiscArray, "Your unban date is %s.", date(iCreationDate + (iDays * 86400), 1));
+		format(szMiscArray, sizeof szMiscArray, "Your unban date is %s.", date(iExpireDate, 1));
 		SendClientMessage(iTarget, COLOR_LIGHTRED, szMiscArray);
 
 		// Inform the admins.
@@ -458,7 +461,7 @@ public OnlineStaffBan(iIssuer, iTarget, szReason[], iCreationDate, iDays)
 
 		// Log it.
 		format(szMiscArray, sizeof szMiscArray, "%s (%d) was staff banned by %s (%d), reason: %s | Duration: %d days | Unban Date: %s", GetPlayerNameEx(iTarget), GetPlayerSQLId(iTarget), GetPlayerNameEx(iIssuer), GetPlayerSQLId(iIssuer),
-			szReason, iDays, date(iCreationDate + (iDays * 86400), 1));
+			szReason, iDays, date(iExpireDate, 1));
 		Log("logs/staffban.log", szMiscArray);
 	}
 	else
