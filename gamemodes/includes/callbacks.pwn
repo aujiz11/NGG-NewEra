@@ -844,6 +844,9 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 {
 	new tableid = GetPVarInt(playerid, "pkrTableID")-1;
+	if(GetPVarType(playerid, "pkrTableID") && (playertextid == PlayerPokerUI[playerid][38] || playertextid == PlayerPokerUI[playerid][39] || playertextid == PlayerPokerUI[playerid][40])) {
+		if(!PokerCanAct(playerid)) return 1;
+	}
 	if(playertextid == PlayerPokerUI[playerid][38])
 	{
 		switch(GetPVarInt(playerid, "pkrActionOptions"))
@@ -851,7 +854,6 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			case 1: // Raise
 			{
 				PokerRaiseHand(playerid);
-				PokerTable[tableid][pkrRotations] = 0;
 			}
 			case 2: // Call
 			{
@@ -859,8 +861,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			}
 			case 3: // Check
 			{
-				PokerCheckHand(playerid);
-				PokerRotateActivePlayer(tableid);
+				if(PokerCheckHand(playerid)) PokerRotateActivePlayer(tableid);
 			}
  		}
 	}
@@ -870,18 +871,15 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 		{
 			case 1: // Check
 			{
-				PokerCheckHand(playerid);
-				PokerRotateActivePlayer(tableid);
+				if(PokerCheckHand(playerid)) PokerRotateActivePlayer(tableid);
 			}
 			case 2: // Raise
 			{
 				PokerRaiseHand(playerid);
-				PokerTable[tableid][pkrRotations] = 0;
 			}
 			case 3: // Fold
 			{
-				PokerFoldHand(playerid);
-				PokerRotateActivePlayer(tableid);
+				if(PokerFoldHand(playerid)) PokerRotateActivePlayer(tableid);
 			}
 		}
 	}
@@ -891,13 +889,11 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 		{
 			case 1: // Fold
 			{
-				PokerFoldHand(playerid);
-				PokerRotateActivePlayer(tableid);
+				if(PokerFoldHand(playerid)) PokerRotateActivePlayer(tableid);
 			}
 			case 2: // Fold
 			{
-				PokerFoldHand(playerid);
-				PokerRotateActivePlayer(tableid);
+				if(PokerFoldHand(playerid)) PokerRotateActivePlayer(tableid);
 			}
 		}
 	}

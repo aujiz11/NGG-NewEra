@@ -8749,6 +8749,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	{
 		ShowCasinoGamesMenu(playerid, DIALOG_CGAMESADMINMENU);
 	}
+	if(dialogid == DIALOG_CGAMESSETUPPGAME || dialogid == DIALOG_CGAMESSETUPPGAME2 || dialogid == DIALOG_CGAMESSETUPPGAME3
+		|| dialogid == DIALOG_CGAMESSETUPPGAME4 || dialogid == DIALOG_CGAMESSETUPPGAME5 || dialogid == DIALOG_CGAMESSETUPPGAME6 || dialogid == DIALOG_CGAMESSETUPPGAME7) {
+		new tableid = GetPVarInt(playerid, "pkrTableID")-1, slot = GetPVarInt(playerid, "pkrSlot");
+		if(tableid < 0 || tableid >= MAX_POKERTABLES || slot < 0 || slot >= 6 || PokerTable[tableid][pkrSlot][slot] != playerid
+			|| !GetPVarInt(playerid, "pkrRoomLeader") || PokerTable[tableid][pkrActive] != 1) return 1;
+	}
 	if(dialogid == DIALOG_CGAMESSETUPPGAME)
 	{
 		if(response) {
@@ -8824,7 +8830,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	if(dialogid == DIALOG_CGAMESSETUPPGAME4)
 	{
 		if(response) {
-			if(strval(inputtext) < 1 || strval(inputtext) > 10000) {
+			if(strval(inputtext) < 2 || strval(inputtext) > 10000) {
 				return ShowCasinoGamesMenu(playerid, DIALOG_CGAMESSETUPPGAME4);
 			}
 
@@ -8872,85 +8878,76 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	}
 	if(dialogid == DIALOG_CGAMESBUYINPOKER)
 	{
-		if(response) {
-			if(strval(inputtext) < PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrBuyInMin] || strval(inputtext) > PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrBuyInMax] || strval(inputtext) > GetPlayerCash(playerid)) {
-				return ShowCasinoGamesMenu(playerid, DIALOG_CGAMESBUYINPOKER);
-			}
-
-			PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrActivePlayers]++;
-			SetPVarInt(playerid, "pkrChips", GetPVarInt(playerid, "pkrChips")+strval(inputtext));
-			//SetPVarInt(playerid, "cgChips", GetPVarInt(playerid, "cgChips")-strval(inputtext));
-
-			GivePlayerCashEx(playerid, TYPE_ONHAND, -strval(inputtext));
-
-			format(string, sizeof(string), "%s(%d) (IP:%s) has bought in with the amount of $%s (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(playerid, "pkrChips")), GetPVarInt(playerid, "pkrTableID")-1);
-			Log("logs/poker.log", string);
-
-			if(PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrActive] == 3 && PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrRound] == 0 && PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrDelay] >= 6) {
-				SetPVarInt(playerid, "pkrStatus", 1);
-			}
-			else if(PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrActive] < 3) {
-				SetPVarInt(playerid, "pkrStatus", 1);
-			}
-
-			if(PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrActive] == 1 && GetPVarInt(playerid, "pkrRoomLeader")) {
-				PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrActive] = 2;
-				SelectTextDraw(playerid, COLOR_YELLOW);
-			}
-		} else {
-			return LeavePokerTable(playerid);
+		new tableid = GetPVarInt(playerid, "pkrTableID")-1, slot = GetPVarInt(playerid, "pkrSlot");
+		if(tableid < 0 || tableid >= MAX_POKERTABLES || slot < 0 || slot >= 6 || PokerTable[tableid][pkrSlot][slot] != playerid || !gPlayerLogged{playerid}) return 1;
+		if(!response) return LeavePokerTable(playerid);
+		if(PokerTable[tableid][pkrRound] || PokerTable[tableid][pkrActive] == 4) return SendClientMessageEx(playerid, COLOR_GREY, "Please wait until the hand finishes before buying chips.");
+		new amount, chips = GetPVarInt(playerid, "pkrChips");
+		if(!ParseBankTransferAmount(inputtext, amount) || amount < PokerTable[tableid][pkrBuyInMin]
+			|| amount > PokerTable[tableid][pkrBuyInMax] || chips > PokerTable[tableid][pkrBuyInMax]-amount
+			|| amount > GetPlayerCash(playerid)) return ShowCasinoGamesMenu(playerid, DIALOG_CGAMESBUYINPOKER);
+		new total = PokerTable[tableid][pkrPot];
+		for(new i; i < 6; ++i) {
+			new pid = PokerFindPlayerOrder(tableid, i);
+			if(pid == -1) continue;
+			new held = GetPVarInt(pid, "pkrChips");
+			if(held < 0 || total > cellmax-held) return 1;
+			total += held;
 		}
+		if(total > cellmax-amount) return SendClientMessageEx(playerid, COLOR_GREY, "This table cannot hold any more chips.");
+		SetPVarInt(playerid, "pkrChips", chips+amount);
+		SetPVarInt(playerid, "pkrStatus", 1);
+		GivePlayerCashEx(playerid, TYPE_ONHAND, -amount);
+		format(string, sizeof(string), "%s(%d) (IP:%s) has bought in with the amount of $%s (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(amount), tableid);
+		Log("logs/poker.log", string);
+		if(PokerTable[tableid][pkrActive] == 1 && GetPVarInt(playerid, "pkrRoomLeader")) PokerTable[tableid][pkrActive] = 2;
+		SelectTextDraw(playerid, COLOR_YELLOW);
+		return 1;
 	}
 	if(dialogid == DIALOG_CGAMESCALLPOKER)
 	{
-		if(response) {
-			new tableid = GetPVarInt(playerid, "pkrTableID")-1;
-
-			new actualBet = PokerTable[tableid][pkrActiveBet]-GetPVarInt(playerid, "pkrCurrentBet");
-
-			if(actualBet > GetPVarInt(playerid, "pkrChips")) {
-				PokerTable[tableid][pkrPot] += GetPVarInt(playerid, "pkrChips");
-				SetPVarInt(playerid, "pkrChips", 0);
-				SetPVarInt(playerid, "pkrCurrentBet", PokerTable[tableid][pkrActiveBet]);
-			} else {
-				PokerTable[tableid][pkrPot] += actualBet;
-				SetPVarInt(playerid, "pkrChips", GetPVarInt(playerid, "pkrChips")-actualBet);
-				SetPVarInt(playerid, "pkrCurrentBet", PokerTable[tableid][pkrActiveBet]);
-			}
-
-			SetPVarString(playerid, "pkrStatusString", "Call");
-			PokerRotateActivePlayer(tableid);
-
-			ApplyAnimation(playerid, "CASINO", "cards_raise", 4.1, false, true, true, true, 1, 1);
-		}
-
+		if(!PokerCanAct(playerid) || !GetPVarType(playerid, "pkrActionChoice")) return 1;
 		DeletePVar(playerid, "pkrActionChoice");
+		if(response) {
+			new tableid = GetPVarInt(playerid, "pkrTableID")-1, slot = GetPVarInt(playerid, "pkrSlot");
+			new current = GetPVarInt(playerid, "pkrCurrentBet"), needed = PokerTable[tableid][pkrActiveBet]-current;
+			if(needed <= 0) return 1;
+			new paid = min(needed, GetPVarInt(playerid, "pkrChips"));
+			PokerTable[tableid][pkrPot] += paid;
+			PokerTable[tableid][pkrCommitted][slot] += paid;
+			PokerTable[tableid][pkrActedBet][slot] = PokerTable[tableid][pkrActiveBet];
+			SetPVarInt(playerid, "pkrCurrentBet", current+paid);
+			SetPVarInt(playerid, "pkrChips", GetPVarInt(playerid, "pkrChips")-paid);
+			SetPVarString(playerid, "pkrStatusString", paid < needed ? "All-In" : "Call");
+			ApplyAnimation(playerid, "CASINO", "cards_raise", 4.1, false, true, true, true, 1, 1);
+			PokerRotateActivePlayer(tableid);
+		}
+		return 1;
 	}
 	if(dialogid == DIALOG_CGAMESRAISEPOKER)
 	{
-		if(response) {
-			new tableid = GetPVarInt(playerid, "pkrTableID")-1;
-
-			new actualRaise = strval(inputtext)-GetPVarInt(playerid, "pkrCurrentBet");
-
-			if(strval(inputtext) >= PokerTable[tableid][pkrActiveBet]+PokerTable[tableid][pkrBlind]/2 && strval(inputtext) <= GetPVarInt(playerid, "pkrCurrentBet")+GetPVarInt(playerid, "pkrChips")) {
-				PokerTable[tableid][pkrPot] += actualRaise;
-				PokerTable[tableid][pkrActiveBet] = strval(inputtext);
-				SetPVarInt(playerid, "pkrChips", GetPVarInt(playerid, "pkrChips")-actualRaise);
-				SetPVarInt(playerid, "pkrCurrentBet", PokerTable[tableid][pkrActiveBet]);
-
-				SetPVarString(playerid, "pkrStatusString", "Raise");
-
-				PokerTable[tableid][pkrRotations] = 0;
-				PokerRotateActivePlayer(tableid);
-
-				ApplyAnimation(playerid, "CASINO", "cards_raise", 4.1, false, true, true, true, 1, 1);
-			} else {
-				ShowCasinoGamesMenu(playerid, DIALOG_CGAMESRAISEPOKER);
-			}
-		}
-
+		if(!PokerCanAct(playerid) || !GetPVarType(playerid, "pkrActionChoice")) return 1;
 		DeletePVar(playerid, "pkrActionChoice");
+		if(response) {
+			new tableid = GetPVarInt(playerid, "pkrTableID")-1, slot = GetPVarInt(playerid, "pkrSlot"), amount;
+			new current = GetPVarInt(playerid, "pkrCurrentBet"), active = PokerTable[tableid][pkrActiveBet];
+			new maximum = current+GetPVarInt(playerid, "pkrChips"), acted = PokerTable[tableid][pkrActedBet][slot];
+			if(acted >= 0 && active-acted < PokerTable[tableid][pkrMinRaise] && !(acted == 0 && active > 0)) return SendClientMessageEx(playerid, COLOR_GREY, "This short all-in has not reopened raising for you.");
+			if(!ParseBankTransferAmount(inputtext, amount) || amount <= active || amount > maximum
+				|| (amount-active < PokerTable[tableid][pkrMinRaise] && amount != maximum)) return ShowCasinoGamesMenu(playerid, DIALOG_CGAMESRAISEPOKER);
+			new paid = amount-current;
+			PokerTable[tableid][pkrPot] += paid;
+			PokerTable[tableid][pkrCommitted][slot] += paid;
+			if(amount-active >= PokerTable[tableid][pkrMinRaise]) PokerTable[tableid][pkrMinRaise] = amount-active;
+			PokerTable[tableid][pkrActiveBet] = amount;
+			PokerTable[tableid][pkrActedBet][slot] = amount;
+			SetPVarInt(playerid, "pkrCurrentBet", amount);
+			SetPVarInt(playerid, "pkrChips", maximum-amount);
+			SetPVarString(playerid, "pkrStatusString", amount == maximum ? "All-In" : "Raise");
+			ApplyAnimation(playerid, "CASINO", "cards_raise", 4.1, false, true, true, true, 1, 1);
+			PokerRotateActivePlayer(tableid);
+		}
+		return 1;
 	}
 	if(dialogid == DIALOG_CHARGEPLAYER)
 	{

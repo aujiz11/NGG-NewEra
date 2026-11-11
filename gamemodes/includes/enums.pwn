@@ -375,6 +375,12 @@ enum pkrInfo
 	pkrPot,
 	pkrWinners,
 	pkrWinnerID,
+	pkrCommitted[6],
+	pkrActedBet[6],
+	pkrPayout[6],
+	pkrDealerSlot,
+	pkrBigBlindSlot,
+	pkrMinRaise,
 };
 
 enum ShopItem
