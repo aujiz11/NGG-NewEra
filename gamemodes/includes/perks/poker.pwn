@@ -619,220 +619,100 @@ DestroyPokerTable(tableid)
 // Note: 0, 1 should be the hand, the rest are community cards.
 AnaylzePokerHand(playerid, const Hand[])
 {
-	new pokerArray[7];
-	for(new i = 0; i < sizeof(pokerArray); i++) {
-		pokerArray[i] = Hand[i];
+	new ranks[15], suits[4], suitRanks[4], rankMask;
+	for(new i; i < 7; ++i) {
+		if(Hand[i] < 0 || Hand[i] >= 52) return 0;
+		new rank = Hand[i]%13, suit = Hand[i]/13;
+		rank = rank == 0 ? 14 : rank+1;
+		ranks[rank]++;
+		suits[suit]++;
+		rankMask |= 1<<rank;
+		suitRanks[suit] |= 1<<rank;
 	}
 
-	new suitArray[4][13];
-	new tmp = 0;
-	new pairs = 0;
-	new bool:isRoyalFlush = false;
-	new bool:isFlush = false;
-	new bool:isStraight = false;
-	new bool:isFour = false;
-	new bool:isThree = false;
-	new bool:isTwoPair = false;
-	new bool:isPair = false;
-
-	// Convert Hand[] (AKA pokerArray) to suitArray[]
-	for(new i = 0; i < sizeof(pokerArray); i++) {
-		if(pokerArray[i] < 13) { // Clubs (0 - 12)
-			suitArray[0][pokerArray[i]] = 1;
+	new flushSuit = -1, straight, straightFlush, four, three, pair, secondPair;
+	for(new suit; suit < 4; ++suit) if(suits[suit] >= 5) flushSuit = suit;
+	if(ranks[14]) rankMask |= 1<<1;
+	if(flushSuit != -1 && (suitRanks[flushSuit] & (1<<14))) suitRanks[flushSuit] |= 1<<1;
+	for(new rank = 14; rank >= 2; --rank) {
+		if(rank >= 5) {
+			new sequence = 31<<(rank-4);
+			if(!straight && (rankMask & sequence) == sequence) straight = rank;
+			if(flushSuit != -1 && !straightFlush && (suitRanks[flushSuit] & sequence) == sequence) straightFlush = rank;
 		}
-		if(12 < pokerArray[i] < 26) { // Diamonds (13 - 25)
-			suitArray[1][pokerArray[i]-13] = 1;
-		}
-		if(25 < pokerArray[i] < 39) { // Hearts (26 - 38)
-			suitArray[2][pokerArray[i]-26] = 1;
-		}
-		if(38 < pokerArray[i] < 52) { // Spades (39 - 51)
-			suitArray[3][pokerArray[i]-39] = 1;
-		}
-	}
-
-	// Royal Check
-	for(new i = 0; i < 4; i++) {
-		if(suitArray[i][8] == 1) { // Must be 8 (?) -> 10, Jack, Queen, King, Ace.
-			if(suitArray[i][9] == 1) {
-				if(suitArray[i][10] == 1) {
-					if(suitArray[i][11] == 1) {
-						if(suitArray[i][12] == 1) {
-							isRoyalFlush = true;
-							break;
-						}
-					}
-				}
+		switch(ranks[rank]) {
+			case 4: four = rank;
+			case 3: {
+				if(!three) three = rank;
+				else if(!pair) pair = rank;
+			}
+			case 2: {
+				if(!pair) pair = rank;
+				else if(!secondPair) secondPair = rank;
 			}
 		}
 	}
-	tmp = 0;
 
-	// Flush Check
-	for(new i = 0; i < 4; i++) {
-		for(new j = 0; j < 13; j++) {
-			if(suitArray[i][j] == 1) {
-				tmp++;
-			}
-		}
-
-		if(tmp > 4) {
-			isFlush = true;
-			break;
-		} else {
-			tmp = 0;
-		}
+	new category, tie[5], used, needed = 5, exclude, exclude2;
+	if(straightFlush) {
+		category = 8;
+		tie[0] = straightFlush;
+		used = needed = 1;
 	}
-	tmp = 0;
-
-	// Four of a Kind Check
-	// Three of a Kind Check
-	for(new i = 0; i < 4; i++) {
-		for(new j = 0; j < 13; j++) {
-			if(suitArray[i][j] == 1) {
-				for(new c = 0; c < 4; c++) {
-					if(suitArray[c][j] == 1) {
-						tmp++;
-					}
-				}
-				if(tmp == 4) {
-					isFour = true;
-				}
-				else if(tmp == 3) { // if tmp >= 3, then tmp = 4 is also ruled as a Three of a Kind.
-					isThree = true;
-				} else {
-					tmp = 0;
-				}
-			}
-		}
+	else if(four) {
+		category = 7;
+		tie[0] = exclude = four;
+		used = 1;
+		needed = 2;
 	}
-	tmp = 0;
-
-	// Two Pair & Pair Check
-	for(new j = 0; j < 13; j++) {
-		tmp = 0;
-		for(new i = 0; i < 4; i++) {
-			if(suitArray[i][j] == 1) {
-				tmp++;
-
-				if(tmp >= 2) {
-					isPair = true;
-					pairs++;
-
-					if(pairs >= 2) {
-						isTwoPair = true;
-					}
-				}
-			}
-		}
+	else if(three && pair) {
+		category = 6;
+		tie[0] = three;
+		tie[1] = pair;
+		used = needed = 2;
 	}
-	tmp = 0;
-
-	// Straight Check
-	for(new j = 0; j < 13; j++) {
-		for(new i = 0; i < 4; i++) {
-			if(suitArray[i][j] == 1) {
-				for(new s = 0; s < 5; s++) {
-					for(new c = 0; c < 4; c++) {
-						if(j+s == 13)
-						{
-							if(suitArray[c][0] == 1) {
-								tmp++;
-								break;
-							}
-						}
-						else if (j+s >= 14)
-						{
-							break;
-						}
-						else
-						{
-							if(suitArray[c][j+s] == 1) {
-								tmp++;
-								break;
-							}
-						}
-					}
-				}
-			}
-			if(tmp >= 5) {
-				isStraight = true;
-			}
-			tmp = 0;
-		}
+	else if(flushSuit != -1) {
+		category = 5;
+	}
+	else if(straight) {
+		category = 4;
+		tie[0] = straight;
+		used = needed = 1;
+	}
+	else if(three) {
+		category = 3;
+		tie[0] = exclude = three;
+		used = 1;
+		needed = 3;
+	}
+	else if(secondPair) {
+		category = 2;
+		tie[0] = exclude = pair;
+		tie[1] = exclude2 = secondPair;
+		used = 2;
+		needed = 3;
+	}
+	else if(pair) {
+		category = 1;
+		tie[0] = exclude = pair;
+		used = 1;
+		needed = 4;
+	}
+	for(new rank = 14; rank >= 2 && used < needed; --rank) {
+		if(!ranks[rank] || rank == exclude || rank == exclude2) continue;
+		if(category == 5 && !(suitRanks[flushSuit] & (1<<rank))) continue;
+		tie[used++] = rank;
 	}
 
-	// Convert Hand to Singles
-
-	// Card 1
-	if(pokerArray[0] > 12 && pokerArray[0] < 26) pokerArray[0] -= 13;
-	if(pokerArray[0] > 25 && pokerArray[0] < 39) pokerArray[0] -= 26;
-	if(pokerArray[0] > 38 && pokerArray[0] < 52) pokerArray[0] -= 39;
-	if(pokerArray[0] == 0) pokerArray[0] = 13; // Convert Aces to worth 13.
-
-	// Card 2
-	if(pokerArray[1] > 12 && pokerArray[1] < 26) pokerArray[1] -= 13;
-	if(pokerArray[1] > 25 && pokerArray[1] < 39) pokerArray[1] -= 26;
-	if(pokerArray[1] > 38 && pokerArray[1] < 52) pokerArray[1] -= 39;
-	if(pokerArray[1] == 0) pokerArray[1] = 13; // Convert Aces to worth 13.
-
-	// 10) POKER_RESULT_ROYAL_FLUSH - A, K, Q, J, 10 (SAME SUIT) * ROYAL + FLUSH *
-	if(isRoyalFlush) {
-		SetPVarString(playerid, "pkrResultString", "Royal Flush");
-		return 1000 + pokerArray[0] + pokerArray[1];
-	}
-
-	// 9) POKER_RESULT_STRAIGHT_FLUSH - Any five card squence. (SAME SUIT) * STRAIGHT + FLUSH *
-	if(isStraight && isFlush) {
-		SetPVarString(playerid, "pkrResultString", "Straight Flush");
-		return 900 + pokerArray[0] + pokerArray[1];
-	}
-
-	// 8) POKER_RESULT_FOUR_KIND - All four cards of the same rank. * FOUR KIND *
-	if(isFour) {
-		SetPVarString(playerid, "pkrResultString", "Four of a Kind");
-		return 800 + pokerArray[0] + pokerArray[1];
-	}
-
-	// 7) POKER_RESULT_FULL_HOUSE - Three of a kind combined with a pair. * THREE KIND + PAIR *
-	if(isThree && isTwoPair) {
-		SetPVarString(playerid, "pkrResultString", "Full House");
-		return 700 + pokerArray[0] + pokerArray[1];
-	}
-
-	// 6) POKER_RESULT_FLUSH - Any five cards of the same suit, no sequence. * FLUSH *
-	if(isFlush) {
-		SetPVarString(playerid, "pkrResultString", "Flush");
-		return 600 + pokerArray[0] + pokerArray[1];
-	}
-
-	// 5) POKER_RESULT_STRAIGHT - Five cards in sequence, but not in the same suit. * STRAIGHT *
-	if(isStraight) {
-		SetPVarString(playerid, "pkrResultString", "Straight");
-		return 500 + pokerArray[0] + pokerArray[1];
-	}
-
-	// 4) POKER_RESULT_THREE_KIND - Three cards of the same rank. * THREE KIND *
-	if(isThree) {
-		SetPVarString(playerid, "pkrResultString", "Three of a Kind");
-		return 400 + pokerArray[0] + pokerArray[1];
-	}
-
-	// 3) POKER_RESULT_TWO_PAIR - Two seperate pair. * TWO PAIR *
-	if(isTwoPair) {
-		SetPVarString(playerid, "pkrResultString", "Two Pair");
-		return 300 + pokerArray[0] + pokerArray[1];
-	}
-
-	// 2) POKER_RESULT_PAIR - Two cards of the same rank. * PAIR *
-	if(isPair) {
-		SetPVarString(playerid, "pkrResultString", "Pair");
-		return 200 + pokerArray[0] + pokerArray[1];
-	}
-
-	// 1) POKER_RESULT_HIGH_CARD - Highest card.
-	SetPVarString(playerid, "pkrResultString", "High Card");
-	return pokerArray[0] + pokerArray[1];
+	new score = category;
+	for(new i; i < 5; ++i) score = (score<<4) | tie[i];
+	static const names[][] = {
+		"High Card", "Pair", "Two Pair", "Three of a Kind", "Straight",
+		"Flush", "Full House", "Four of a Kind", "Straight Flush"
+	};
+	if(straightFlush == 14) SetPVarString(playerid, "pkrResultString", "Royal Flush");
+	else SetPVarString(playerid, "pkrResultString", names[category]);
+	return score;
 }
 
 forward PokerExit(playerid, session);
