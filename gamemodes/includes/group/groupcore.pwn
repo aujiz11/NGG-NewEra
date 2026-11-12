@@ -832,6 +832,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!response) return 1;
 
 			new iGroupID = PlayerInfo[playerid][pMember];
+			if(!ValidGroup(iGroupID)) return 1;
 
 			if (strcmp("Clothes", inputtext) == 0) {
 				if(IsACriminal(playerid) || IsARacer(playerid)) {
@@ -893,13 +894,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 					for(new i = 0; i != MAX_GROUP_WEAPONS; ++i) {
 						if(arrGroupData[iGroupID][g_iLockerGuns][i]) {
-							format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, arrGroupData[iGroupID][g_iLockerGuns][i], Weapon_ReturnName(arrGroupData[iGroupID][g_iLockerGuns][i]));
+							format(szDialog, sizeof szDialog, "%s%s(%i) %s", szDialog, szDialog[0] ? ("\n") : (""), arrGroupData[iGroupID][g_iLockerGuns][i], Weapon_ReturnName(arrGroupData[iGroupID][g_iLockerGuns][i]));
 							if (arrGroupData[iGroupID][g_iLockerCostType] == 2) format(szDialog, sizeof szDialog, "%s    $%d", szDialog, arrGroupData[iGroupID][g_iLockerCost][i]);
 						}
-						else strcat(szDialog, "\n(empty)");
+						else strcat(szDialog, szDialog[0] ? ("\n(empty)") : ("(empty)"));
 					}
 					strcat(szDialog, "\nAccessories");
 					format(string, sizeof(string), "%s Weapon Locker", arrGroupData[iGroupID][g_szGroupName]);
+					SetPVarInt(playerid, "WeaponLockerGroup", iGroupID);
 					ShowPlayerDialogEx(playerid, G_LOCKER_EQUIPMENT, DIALOG_STYLE_LIST, string, szDialog, "Purchase", "Cancel");
 				}
 			}
@@ -1088,6 +1090,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case G_LOCKER_EQUIPMENT: if(response)
 		{
 			new	iGroupID = PlayerInfo[playerid][pMember];
+			if(!CanUseGroupWeaponLocker(playerid) || !(0 <= listitem <= MAX_GROUP_WEAPONS)) return 1;
 
 			if (listitem == 16)
 			{
@@ -1097,6 +1100,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
 				new iGunID = arrGroupData[iGroupID][g_iLockerGuns][listitem];
+				if(!iGunID || GetLoadoutWeaponSlot(iGunID) < 0 || arrGroupData[iGroupID][g_iLockerCost][listitem] < 0
+					|| PlayerInfo[playerid][pRank] < LockerWep[iGroupID][lwRank][listitem]) return 1;
 				if(arrGroupData[iGroupID][g_iLockerCostType] == 0)
 				{
 					if(arrGroupData[iGroupID][g_iLockerStock] >= arrGroupData[iGroupID][g_iLockerCost][listitem])
@@ -2930,109 +2935,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SaveGroup(iGroupID);
 			}
 		}
-		case DIALOG_GROUP_WEAPONSAFE: {
-
-			//new iGroupID = PlayerInfo[playerid][pMember];
-
-			//if(!response) return 1;
-			if(response) {
-
-				if(strcmp(inputtext, "Deposit Weapon", true) == 0) {
-					for(new g = 0; g < 12; g++)	{
-						if(PlayerInfo[playerid][pGuns][g] != 0 && PlayerInfo[playerid][pAGuns][g] == 0) {
-							format(szMiscArray, sizeof(szMiscArray), "%s\n%s(%i)", szMiscArray, Weapon_ReturnName(PlayerInfo[playerid][pGuns][g]), PlayerInfo[playerid][pGuns][g]);
-						}
-					}
-					DeletePVar(playerid, "GRW_Count");
-					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_WEAPONSAFE_DEPOSIT, DIALOG_STYLE_LIST, "Safe Weapon Deposit", szMiscArray, "Deposit", "Cancel");
-				}
-				/*if(strcmp(inputtext, "Next Page", true) == 0) {
-					SetPVarInt(playerid, "GRW_Count", GetPVarInt(playerid, "GRW_Count") + (listitem-2));
-					ShowGroupWeapons(playerid, PlayerInfo[playerid][pMember]);
-					return 1;
-				}*/
-				else {
-					new gid;
-
-					if(listitem <= 18) gid = listitem + 1;
-					else if(listitem > 18) gid = listitem + 4;
-					if(gid == 21) gid++; // TODO: a real fix? i guess?
-					SetPVarInt(playerid, "GLGunTake", gid);
-
-					new str[9];
-					new stpos = strfind(inputtext, "(");
-					new fpos = strfind(inputtext, ")");
-					strmid(str, inputtext, stpos+1, fpos);
-					new id = strval(str);
-
-					if(id < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "There are none left.");
-
-					//WithdrawGroupSafeWeapon(playerid, iGroupID, id);
-
-					// add another dialog to see whether to place in crate or take
-					ShowPlayerDialogEx(playerid, DIALOG_WEAPONSAFE_WITHDRAW, DIALOG_STYLE_LIST, "Safe Withdraw", "Equip\nTransfer To Crate", "Select", "Cancel");
-					return 1;
-				}
-			}
-			else DeletePVar(playerid, "GRW_Count");
-		}
-
-		case DIALOG_WEAPONSAFE_WITHDRAW: {
-			new
-				iGroupID = PlayerInfo[playerid][pMember],
-				iWepID = GetPVarInt(playerid, "GLGunTake");
-
-			if(!response) {
-				DeletePVar(playerid, "GLGunTake");
-				return pc_cmd_locker(playerid, "");
-			}
-
-			switch(listitem) {
-
-				case 0: { // equip
-					DeletePVar(playerid, "GLGunTake");
-					WithdrawGroupSafeWeapon(playerid, iGroupID, iWepID);
-				}
-
-				case 1: { // transfer to crate
-					//TransferItemToCrate(playerid, itemid, iAmount, iCrateID)
-					ShowPlayerDialogEx(playerid, DIALOG_WEAPONSAFE_WITHDRAW_T, DIALOG_STYLE_INPUT, "Transfer To Crate", "Enter the crate ID you wish to transfer the item to", "Select", "Cancel");
-				}
-
-			}
-
-		}
-
-		case DIALOG_WEAPONSAFE_WITHDRAW_T: {
-			/*
-			new
-				iWepID = GetPVarInt(playerid, "GLGunTake"),
-				iCrateID = strval(inputtext);
-
-			if(!response) {
-				DeletePVar(playerid, "GLGunTake");
-				return pc_cmd_locker(playerid, "");
-			}
-
-			if(!IsValidDynamicObject(arrGCrateData[iCrateID][gcr_iObject])) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid crate ID.");
-
-			if(CanTransferToCrate(iWepID)) TransferItemToCrate(playerid, ReturnSlotForCrate(iWepID), 1, iCrateID);
-			else return SendClientMessageEx(playerid, COLOR_WHITE, "This item cannot be transfered to crates");*/
-			return SendClientMessageEx(playerid, COLOR_WHITE, "This has been disabled due to a re-work!");
-		}
-
-		case DIALOG_GROUP_WEAPONSAFE_DEPOSIT: {
-			if(!response) return 1;
-			new iGroupID = PlayerInfo[playerid][pMember];
-
-			new stpos = strfind(inputtext, "(");
-			new fpos = strfind(inputtext, ")");
-			new str[4], id;
-			strmid(str, inputtext, stpos+1, fpos);
-			id = strval(str);
-
-		    AddGroupSafeWeapon(playerid, iGroupID, id);
-		}
+		case DIALOG_GROUP_WEAPONSAFE, DIALOG_GROUP_WEAPONSAFE_DEPOSIT,
+			DIALOG_WEAPONSAFE_WITHDRAW, DIALOG_WEAPONSAFE_WITHDRAW_T: return 1;
 
 		case DIALOG_GROUP_TURNOUT:
 		{
@@ -6532,7 +6436,7 @@ public OnShowGroupWeapons(playerid, iGroupID) {
 	return 1;
 }
 
-WithdrawGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount = 1) {
+stock WithdrawGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount = 1) {
 
 	szMiscArray[0] = 0;
 
@@ -6571,7 +6475,7 @@ public OnWithdrawGroupWeapons(playerid, iGroupID, iWeaponID, iAmount) {
 	return 1;
 }
 
-AddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount = 1) {
+stock AddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount = 1) {
 
 	szMiscArray[0] = 0;
 

@@ -36,17 +36,39 @@
 */
 #include <YSI_Coding\y_hooks>
 
-new LockerReq[MAX_PLAYERS][3];
+new LockerReq[MAX_PLAYERS][4];
 
 hook OnPlayerConnect(playerid) {
 	LockerReq[playerid][0] = 0; // Gun ID
 	LockerReq[playerid][1] = -1; // Slot
 	LockerReq[playerid][2] = gettime(); // Time of request
+	LockerReq[playerid][3] = INVALID_GROUP_ID;
 	return 1;
 }
 
+stock CanUseGroupWeaponLocker(playerid) {
+	new group = PlayerInfo[playerid][pMember];
+	if(!gPlayerLogged{playerid} || !ValidGroup(group) || !GetPVarType(playerid, "WeaponLockerGroup")
+		|| GetPVarInt(playerid, "WeaponLockerGroup") != group) return 0;
+	if(PlayerInfo[playerid][pAccountRestricted] || PlayerInfo[playerid][pWRestricted] || PlayerInfo[playerid][pConnectHours] < 2
+		|| PlayerBusy(playerid) || PlayerInfo[playerid][pJailTime] || PlayerCuffed[playerid] || PlayerTied[playerid]
+		|| HungerPlayerInfo[playerid][hgInEvent] || (zombieevent && GetPVarType(playerid, "pIsZombie"))) return 0;
+	for(new i; i < MAX_GROUPS; ++i) {
+		if(i != group && arrGroupData[i][g_iGroupType] != arrGroupData[group][g_iGroupType]) continue;
+		for(new j; j < MAX_GROUP_LOCKERS; ++j) {
+			if(i != group && !arrGroupLockers[i][j][g_iLockerShare]) continue;
+			if(arrGroupLockers[i][j][g_fLockerPos][0] == 0.0 && arrGroupLockers[i][j][g_fLockerPos][1] == 0.0
+				&& arrGroupLockers[i][j][g_fLockerPos][2] == 0.0) continue;
+			if(arrGroupLockers[i][j][g_iLockerVW] == GetPlayerVirtualWorld(playerid)
+				&& IsPlayerInRangeOfPoint(playerid, 3.0, arrGroupLockers[i][j][g_fLockerPos][0], arrGroupLockers[i][j][g_fLockerPos][1], arrGroupLockers[i][j][g_fLockerPos][2])) return 1;
+		}
+	}
+	return 0;
+}
+
 stock ShowGroupWeapons(playerid, group) {
-	if(!ValidGroup(group)) return 1;
+	if(!ValidGroup(group) || group != PlayerInfo[playerid][pMember]) return 1;
+	SetPVarInt(playerid, "WeaponLockerGroup", group);
 	new title[54];
 	format(title, sizeof(title), "Weapon Safe - Mats: %s", number_format(arrGroupData[group][g_iLockerStock]));
 	new dialogInfo[] = "Withdraw Weapon\nDeposit Weapon";
@@ -57,9 +79,10 @@ stock ShowGroupWeapons(playerid, group) {
 stock WeaponMenu(playerid, group, crate = 0) {
 	szMiscArray[0] = 0;
 	new title[54];
-	if(!ValidGroup(group)) return 1;
+	if(!ValidGroup(group) || group != PlayerInfo[playerid][pMember]) return 1;
+	SetPVarInt(playerid, "WeaponLockerGroup", group);
 	format(title, sizeof(title), "Safe Weapon Withdraw - Mats: %s", number_format(arrGroupData[group][g_iLockerStock]));
-	format(szMiscArray, sizeof(szMiscArray), "Weapon\tCost\n");
+	format(szMiscArray, sizeof(szMiscArray), "Weapon\tCost");
 	for(new i = 0; i != MAX_GROUP_WEAPONS; ++i) {
 		if(arrGroupData[group][g_iLockerGuns][i]) {
 			format(szMiscArray, sizeof szMiscArray, "%s\n%s\t%d", szMiscArray, Weapon_ReturnName(arrGroupData[group][g_iLockerGuns][i]), arrGroupData[group][g_iLockerCost][i]);
@@ -76,11 +99,12 @@ stock WeaponMenu(playerid, group, crate = 0) {
 
 stock DepositMenu(playerid, group) {
 	szMiscArray[0] = 0;
-	if(!ValidGroup(group)) return 1;
+	if(!ValidGroup(group) || group != PlayerInfo[playerid][pMember]) return 1;
+	SetPVarInt(playerid, "WeaponLockerGroup", group);
 	for(new g = 0; g < 12; g++)	{
 		if(PlayerInfo[playerid][pGuns][g] != 0 && PlayerInfo[playerid][pAGuns][g] == 0) {
 			if(CanDeposit(PlayerInfo[playerid][pGuns][g])) {
-				format(szMiscArray, sizeof(szMiscArray), "%s\n(%i) %s", szMiscArray, PlayerInfo[playerid][pGuns][g], Weapon_ReturnName(PlayerInfo[playerid][pGuns][g]));
+				format(szMiscArray, sizeof(szMiscArray), "%s%s(%i) %s", szMiscArray, szMiscArray[0] ? ("\n") : (""), PlayerInfo[playerid][pGuns][g], Weapon_ReturnName(PlayerInfo[playerid][pGuns][g]));
 			}
 		}
 	}
@@ -111,11 +135,12 @@ Dialog:weapon_withdraw(playerid, response, listitem, inputtext[]) {
 	new group = PlayerInfo[playerid][pMember];
 	if(response) {
 		szMiscArray[0] = 0;
-		if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
-		if(PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't take weapons out as you're currently weapon restricted!");
+		if(!CanUseGroupWeaponLocker(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this weapon locker at this time.");
+		if(!(0 <= listitem < MAX_GROUP_WEAPONS)) return 1;
 		new GunID = arrGroupData[group][g_iLockerGuns][listitem];
 
-		if(!GunID) return SendClientMessageEx(playerid, COLOR_WHITE, "Theres no weapon assigned to that slot!"), WeaponMenu(playerid, PlayerInfo[playerid][pMember]);
+		if(GetLoadoutWeaponSlot(GunID) < 0 || !GunID) return SendClientMessageEx(playerid, COLOR_WHITE, "Theres no weapon assigned to that slot!"), WeaponMenu(playerid, PlayerInfo[playerid][pMember]);
+		if(arrGroupData[group][g_iLockerCost][listitem] < 0) return SendClientMessageEx(playerid, COLOR_RED, "This weapon has an invalid locker cost.");
 		if(PlayerInfo[playerid][pRank] < LockerWep[group][lwRank][listitem]) {
 			if(LockerReq[playerid][2] > gettime()) return SendClientMessageEx(playerid, COLOR_YELLOW, "A request was already sent please wait %d seconds before trying again!", LockerReq[playerid][2]-gettime()), WeaponMenu(playerid, PlayerInfo[playerid][pMember]);
 			SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to withdraw a %s from the locker! (Requires rank %d+)", Weapon_ReturnName(GunID), LockerWep[group][lwRank][listitem]);
@@ -123,6 +148,7 @@ Dialog:weapon_withdraw(playerid, response, listitem, inputtext[]) {
 			LockerReq[playerid][0] = GunID;
 			LockerReq[playerid][1] = listitem;
 			LockerReq[playerid][2] = gettime()+60;
+			LockerReq[playerid][3] = group;
 			foreach(new p: Player) {
 				if(PlayerInfo[p][pLeader] == PlayerInfo[playerid][pMember]) {
 					SendClientMessageEx(p, COLOR_YELLOW, "* %s is requesting to withdraw a %s from the locker. (( /allow %d ))", GetPlayerNameEx(playerid), Weapon_ReturnName(GunID), playerid);
@@ -152,16 +178,21 @@ Dialog:weapon_deposit(playerid, response, listitem, inputtext[]) {
 	if(response) {
 		szMiscArray[0] = 0;
 		if(!ValidGroup(PlayerInfo[playerid][pMember])) return 1;
-		new stpos = strfind(inputtext, "(");
-	    new fpos = strfind(inputtext, ")");
-	    new gid[6], id, slot;
-	    strmid(gid, inputtext, stpos+1, fpos);
-	    id = strval(gid);
-
-	    if(PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(id)] == 0) return SendClientMessageEx(playerid, COLOR_RED, "The weapon you tried to deposit doesn't exist!"), ShowGroupWeapons(playerid, PlayerInfo[playerid][pMember]);
-        if(!CanDeposit(PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(id)])) return SendClientMessageEx(playerid, COLOR_RED, "You can't deposit that weapon!"), ShowGroupWeapons(playerid, PlayerInfo[playerid][pMember]);
+		if(!CanUseGroupWeaponLocker(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this weapon locker at this time.");
+		new fpos = strfind(inputtext, ")"), gid[3], id, slot;
+		if(inputtext[0] != '(' || fpos < 2 || fpos > 3) return 1;
+		strmid(gid, inputtext, 1, fpos, sizeof(gid));
+		if(!IsNumericString(gid)) return 1;
+		id = strval(gid);
+		if(!CanDeposit(id)) return SendClientMessageEx(playerid, COLOR_RED, "You can't deposit that weapon!");
+		new weaponSlot = GetLoadoutWeaponSlot(id);
+		if(PlayerInfo[playerid][pGuns][weaponSlot] != id || PlayerInfo[playerid][pAGuns][weaponSlot] != 0)
+			return SendClientMessageEx(playerid, COLOR_RED, "The weapon you tried to deposit doesn't exist!");
 	    IsInSlot(PlayerInfo[playerid][pMember], id, slot);
 	    if(slot == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your locker doesn't have that weapon so it can't be stored!"), DepositMenu(playerid, PlayerInfo[playerid][pMember]);
+		new cost = arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerCost][slot];
+		if(cost < 0 || arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerStock] > cellmax - cost)
+			return SendClientMessageEx(playerid, COLOR_RED, "The locker cannot accept these materials.");
 		PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(id)] = 0;
 		SetPlayerWeaponsEx(playerid);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited a %s into the locker.", Weapon_ReturnName(id));
@@ -324,7 +355,10 @@ Dialog:crate_withdraw(playerid, response, listitem, inputtext[]) {
 	szMiscArray[0] = 0;
 	if(response) {
 		new group = PlayerInfo[playerid][pMember];
+		if(!CanUseGroupWeaponLocker(playerid) || PlayerInfo[playerid][pLeader] != group) return 1;
+		if(!(0 <= listitem < MAX_GROUP_WEAPONS)) return 1;
 		new GunID = arrGroupData[group][g_iLockerGuns][listitem];
+		if(arrGroupData[group][g_iLockerCost][listitem] < 0) return 1;
 
 		if(!GunID) return SendClientMessageEx(playerid, COLOR_WHITE, "Theres no weapon assigned to that slot!"), WeaponMenu(playerid, PlayerInfo[playerid][pMember], 1);
 		if(PlayerInfo[playerid][pRank] < LockerWep[group][lwRank][listitem]) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to withdraw a %s from the locker! (Requires rank %d+)", Weapon_ReturnName(GunID), LockerWep[group][lwRank][listitem]), WeaponMenu(playerid, PlayerInfo[playerid][pMember], 1);
@@ -345,15 +379,24 @@ Dialog:crate_tran_amount(playerid, response, listitem, inputtext[]) {
 	szMiscArray[0] = 0;
 	if(!ValidGroup(PlayerInfo[playerid][pMember])) return 1;
 	if(response) {
-		new gbox, amount = floatround(strval(inputtext));
+		new group = PlayerInfo[playerid][pMember], slot = GetPVarInt(playerid, "GunCrateSlot"), gun = GetPVarInt(playerid, "GunCrateID");
+		if(!CanUseGroupWeaponLocker(playerid) || PlayerInfo[playerid][pLeader] != group
+			|| !GetPVarType(playerid, "GunCrateSlot") || !(0 <= slot < MAX_GROUP_WEAPONS)) return 1;
+		if(arrGroupData[group][g_iLockerGuns][slot] != gun || !CanTransferToCrate(gun)
+			|| PlayerInfo[playerid][pRank] < LockerWep[group][lwRank][slot]) return 1;
+		new gbox, amount, cost = arrGroupData[group][g_iLockerCost][slot];
+		if(cost < 0 || !ParseBankTransferAmount(inputtext, amount)) return SendClientMessageEx(playerid, COLOR_RED, "Enter a valid positive amount.");
 		GetGroupCrate(playerid, gbox);
-		if(CarryCrate[playerid] != gbox) return SendClientMessageEx(playerid, COLOR_RED, "Your no longer holding the group crate.");
-		new total = (arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerCost][GetPVarInt(playerid, "GunCrateSlot")] * amount);
-		if(amount < 1 || total > arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerStock]) {
+		if(gbox < 0 || gbox >= MAX_CRATES || CarryCrate[playerid] != gbox || CrateBox[gbox][cbGroup] != group) return SendClientMessageEx(playerid, COLOR_RED, "Your no longer holding the group crate.");
+		if(arrGroupData[group][g_iLockerStock] < 0 || (cost > 0 && amount > arrGroupData[group][g_iLockerStock] / cost)) {
 			format(szMiscArray, sizeof(szMiscArray), "Please enter the amount you would like to transfer to the crate.\n\nLocker Stock: %s\nCost Per %s: %s\n\n{FF0000}Error: You can't go below 0 or you don't have enough materials.", number_format(arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerStock]), Weapon_ReturnName(GetPVarInt(playerid, "GunCrateID")), number_format(arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerCost][GetPVarInt(playerid, "GunCrateSlot")]));
 	    	Dialog_Show(playerid, crate_tran_amount, DIALOG_STYLE_INPUT, "How many to transfer?", szMiscArray, "Submit", "Go Back");
 			return 1;
 		}
+		if(CrateBox[gbox][cbWepAmount][slot] > cellmax - amount
+			|| (CrateBox[gbox][cbWepAmount][slot] > 0 && CrateBox[gbox][cbWep][slot] != gun))
+			return SendClientMessageEx(playerid, COLOR_RED, "The crate cannot accept these weapons.");
+		new total = cost * amount;
 		CrateBox[CarryCrate[playerid]][cbWep][GetPVarInt(playerid, "GunCrateSlot")] = GetPVarInt(playerid, "GunCrateID");
 		CrateBox[CarryCrate[playerid]][cbWepAmount][GetPVarInt(playerid, "GunCrateSlot")] += amount;
 		arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerStock] -= total;
@@ -362,6 +405,8 @@ Dialog:crate_tran_amount(playerid, response, listitem, inputtext[]) {
 		SaveCrate(CarryCrate[playerid]);
 		format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %d %ss from the weapon locker into the transfer crate (Cost: %d)", GetPlayerNameEx(playerid), amount, Weapon_ReturnName(GetPVarInt(playerid, "GunCrateID")), total);
 		GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
+		DeletePVar(playerid, "GunCrateID");
+		DeletePVar(playerid, "GunCrateSlot");
 		WeaponMenu(playerid, PlayerInfo[playerid][pMember], 1);
 	} else {
 		DeletePVar(playerid, "GunCrateID");
@@ -459,7 +504,7 @@ stock WeaponRankList(playerid) {
 
 	new group = PlayerInfo[playerid][pMember];
 
-	format(szMiscArray, sizeof(szMiscArray), "Weapon\tRank\n");
+	format(szMiscArray, sizeof(szMiscArray), "Weapon\tRank");
 	for(new i = 0; i != MAX_GROUP_WEAPONS; ++i) {
 		if(arrGroupData[group][g_iLockerGuns][i]) {
 			format(szMiscArray, sizeof szMiscArray, "%s\n%s\t%d", szMiscArray, Weapon_ReturnName(arrGroupData[group][g_iLockerGuns][i]), LockerWep[group][lwRank][i]);
@@ -475,6 +520,7 @@ Dialog:wep_restrict(playerid, response, listitem, inputtext[]) {
 	if(!IsGroupLeader(playerid)) return 1;
 	new group = PlayerInfo[playerid][pMember];
 	if(response) {
+		if(!(0 <= listitem < MAX_GROUP_WEAPONS)) return 1;
 		if(!arrGroupData[group][g_iLockerGuns][listitem]) return SendClientMessageEx(playerid, COLOR_GRAD1, "The selected slot is currently empty!"), WeaponRankList(playerid);
 		SetPVarInt(playerid, "RGunID", listitem);
 		format(szMiscArray, sizeof(szMiscArray), "Please specify what rank & above can access the %s.\n\nCurrent Rank: %d+", Weapon_ReturnName(arrGroupData[group][g_iLockerGuns][listitem]), LockerWep[group][lwRank][listitem]);
@@ -488,6 +534,7 @@ Dialog:set_weprank(playerid, response, listitem, inputtext[]) {
 	if(!IsGroupLeader(playerid)) return 1;
 	new group = PlayerInfo[playerid][pMember];
 	if(response) {
+		if(!GetPVarType(playerid, "RGunID") || !(0 <= GetPVarInt(playerid, "RGunID") < MAX_GROUP_WEAPONS)) return 1;
 		if(isnull(inputtext)) {
 			format(szMiscArray, sizeof(szMiscArray), "Please specify what rank & above can access the %s.\n\nCurrent Rank: %d+\n\n{FF0000}ERROR: You must specify a rank number!", Weapon_ReturnName(arrGroupData[group][g_iLockerGuns][GetPVarInt(playerid, "RGunID")]), LockerWep[group][lwRank][GetPVarInt(playerid, "RGunID")], MAX_GROUP_RANKS-1);
 			Dialog_Show(playerid, set_weprank, DIALOG_STYLE_INPUT, "Restrict Weapon Withdraw", szMiscArray, "Ok", "Go Back");
@@ -498,7 +545,7 @@ Dialog:set_weprank(playerid, response, listitem, inputtext[]) {
 			Dialog_Show(playerid, set_weprank, DIALOG_STYLE_INPUT, "Restrict Weapon Withdraw", szMiscArray, "Ok", "Go Back");
 			return 1;
 		}
-		if(!(0 <= strval(inputtext) < MAX_GROUP_RANKS)) {
+		if(strlen(inputtext) > 2 || !(0 <= strval(inputtext) < MAX_GROUP_RANKS)) {
 			format(szMiscArray, sizeof(szMiscArray), "Please specify what rank & above can access the %s.\n\nCurrent Rank: %d+\n\n{FF0000}ERROR: Invalid rank ID (0 - %d only!)", Weapon_ReturnName(arrGroupData[group][g_iLockerGuns][GetPVarInt(playerid, "RGunID")]), LockerWep[group][lwRank][GetPVarInt(playerid, "RGunID")], MAX_GROUP_RANKS-1);
 			Dialog_Show(playerid, set_weprank, DIALOG_STYLE_INPUT, "Restrict Weapon Withdraw", szMiscArray, "Ok", "Go Back");
 			return 1;
@@ -531,31 +578,23 @@ stock IsInSlot(group, id, &wep)
 }
 
 CMD:allow(playerid, params[]) {
-	new target, locker = -1;
+	new target;
 	if(!IsGroupLeader(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Only group leaders can use this command!");
 	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /allow [player]");
-	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "The player selected isn't connected!");
+	if(target < 0 || target >= MAX_PLAYERS || !IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "The player selected isn't connected!");
 	if(PlayerInfo[playerid][pMember] != PlayerInfo[target][pMember]) return SendClientMessageEx(playerid, COLOR_GRAD2, "%s isn't apart of your group!", GetPlayerNameEx(target));
 	if(playerid == target) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this weapon on yourself!");
 	if(!LockerReq[target][0]) return SendClientMessageEx(playerid, COLOR_GRAD2, "%s hasn't requested to withdraw a weapon!", GetPlayerNameEx(target));
-	if(LockerReq[target][2] < gettime()) return SendClientMessageEx(playerid, COLOR_GRAD2, "%s's request either expired or one wasn't made!", GetPlayerNameEx(target));
-	if(PlayerInfo[target][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Unable to process weapon - The player is restricted.");
-	if(PlayerInfo[target][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Unable to process weapon - The player is currently weapon restricted!");
-	if(PlayerBusy(playerid) || PlayerInfo[target][pJailTime] > 0 || PlayerCuffed[target] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Unable to process weapon - The player is currently busy!");
-	for(new i; i < MAX_GROUPS; i++)
-	{
-		for(new j; j < MAX_GROUP_LOCKERS; j++)
-		{
-			if(IsPlayerInRangeOfPoint(target, 3.0, arrGroupLockers[i][j][g_fLockerPos][0], arrGroupLockers[i][j][g_fLockerPos][1], arrGroupLockers[i][j][g_fLockerPos][2]) && arrGroupLockers[i][j][g_iLockerVW] == GetPlayerVirtualWorld(target))
-			{
-				if(i == PlayerInfo[target][pMember] || (arrGroupData[i][g_iGroupType] == arrGroupData[PlayerInfo[target][pMember]][g_iGroupType] && arrGroupLockers[i][j][g_iLockerShare]))
-				{
-					locker = j;
-				}
-			}
-		}
+	if(LockerReq[target][2] <= gettime()) return SendClientMessageEx(playerid, COLOR_GRAD2, "%s's request either expired or one wasn't made!", GetPlayerNameEx(target));
+	new group = PlayerInfo[target][pMember], slot = LockerReq[target][1], gun = LockerReq[target][0];
+	if(LockerReq[target][3] != group || !(0 <= slot < MAX_GROUP_WEAPONS)
+		|| arrGroupData[group][g_iLockerGuns][slot] != gun || GetLoadoutWeaponSlot(gun) < 0) {
+		LockerReq[target][0] = 0;
+		LockerReq[target][1] = -1;
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "The weapon request changed. Ask the player to request it again.");
 	}
-	if(locker == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "%s is no longer at a locker!", GetPlayerNameEx(target)), SendClientMessageEx(target, COLOR_GRAD2, "Your weapon request failed - Your not near any lockers!");
+	if(!CanUseGroupWeaponLocker(target)) return SendClientMessageEx(playerid, COLOR_GRAD1, "The player cannot use the weapon locker at this time.");
+	if(arrGroupData[group][g_iLockerCost][slot] < 0) return SendClientMessageEx(playerid, COLOR_RED, "This weapon has an invalid locker cost.");
 	if(arrGroupData[PlayerInfo[target][pMember]][g_iLockerStock] < arrGroupData[PlayerInfo[target][pMember]][g_iLockerCost][LockerReq[target][1]]) return SendClientMessageEx(playerid, COLOR_RED, "Your locker doesn't have the materials to craft a %s.", Weapon_ReturnName(LockerReq[target][0]));
 	if(PlayerInfo[target][pGuns][GetLoadoutWeaponSlot(LockerReq[target][0])] != LockerReq[target][0]) {
 		arrGroupData[PlayerInfo[target][pMember]][g_iLockerStock] -= arrGroupData[PlayerInfo[target][pMember]][g_iLockerCost][LockerReq[target][1]];
@@ -582,7 +621,7 @@ ptask LockerTimer[1000](i) {
 			LockerReq[i][1] = -1;
 			}
 		}
-		if(LockerReq[i][2] == gettime()) {
+		if(LockerReq[i][2] <= gettime()) {
 			SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Your weapon withdraw request for the %s has expired.", Weapon_ReturnName(LockerReq[i][0]));
 			LockerReq[i][0] = 0;
 			LockerReq[i][1] = -1;
