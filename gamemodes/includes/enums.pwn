@@ -1938,7 +1938,8 @@ enum e_PayPhoneData {
 	bool:pp_bPending,
 	pp_iRequester,
 	pp_iSession,
-	pp_iAccount
+	pp_iAccount,
+	pp_iUserID
 }
 new arrPayPhoneData[MAX_PAYPHONES][e_PayPhoneData];
 

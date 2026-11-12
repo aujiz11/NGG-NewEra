@@ -265,11 +265,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			pc_cmd_call(playerid, inputtext);
 			return 1;
 		}
-		case DIALOG_PHONE_PAYPHONES: {
-
-			pc_cmd_call(playerid, arrPayPhoneData[ListItemTrackId[playerid][listitem]][pp_iNumber]);
-			return 1;
-		}
 		case DIALOG_PHONE_CONTACTS:
 		{
 			if(!response) return DeletePVar(playerid, PVAR_PHONEDELCONTACT), 1;
@@ -285,29 +280,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					San Andreas Prison Service\t18001020\n\
 					Farva Car Repair Co.\t1-800-2232 ", "Select", "Cancel");
 
-				case 1: {
-
-					szMiscArray[0] = 0;
-
-					new x,
-						szZone[MAX_ZONE_NAME];
-
-					szMiscArray[0] = 0;
-					szMiscArray = "Area Code\tNumber\tZone\n";
-					for(new i = 0; i < MAX_PAYPHONES; ++i) {
-
-						if(IsValidDynamicArea(arrPayPhoneData[i][pp_iAreaID])) {
-
-							szZone[0] = 0;
-							GetPhoneZone(i, szZone, sizeof(szZone));
-							format(szMiscArray, sizeof(szMiscArray), "%sArea: %d\tNumber: %d\tZone: %s\n", szMiscArray, GetPhoneAreaCode(i), arrPayPhoneData[i][pp_iNumber], szZone);
-							ListItemTrackId[playerid][x] = arrPayPhoneData[i][pp_iNumber];
-							x++;
-						}
-					}
-					if(isnull(szMiscArray)) return SendClientMessageEx(playerid, COLOR_GRAD1, "There are no pay phones.");
-					ShowPlayerDialogEx(playerid, DIALOG_PHONE_PAYPHONES, DIALOG_STYLE_TABLIST_HEADERS, "Pay Phones", szMiscArray, "Call", "Cancel");
-				}
+				case 1: PayPhone_Directory(playerid);
 				case 2:	{
 
 					mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `phone_contacts` WHERE id = '%d'", GetPlayerSQLId(playerid));

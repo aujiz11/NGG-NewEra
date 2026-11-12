@@ -800,6 +800,7 @@ new FamedVehicles[39];
 new Homes[MAX_PLAYERS];
 new Locator[MAX_PLAYERS];
 new Mobile[MAX_PLAYERS];
+new bool:gPayPhonesLoading;
 new RingTone[MAX_PLAYERS];
 new CallCost[MAX_PLAYERS];
 new LockStatus[MAX_VEHICLES char];

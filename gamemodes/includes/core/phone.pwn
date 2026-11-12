@@ -299,8 +299,20 @@ CMD:setautoreply(playerid, params[])
 CMD:call(playerid, const params[])
 {
 	new string[128], phonenumb;
+	if(Mobile[playerid] != INVALID_PLAYER_ID || GetPVarType(playerid, "CallingPayPhone")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are already on a call.");
+	if(GetPVarType(playerid, "PayPhone")) {
+		new i = GetPVarInt(playerid, "PayPhone");
+		if(!PayPhone_Valid(i) || gPayPhonesLoading || arrPayPhoneData[i][pp_bPending]
+			|| arrPayPhoneData[i][pp_iUserID] != playerid || !IsPlayerInDynamicArea(playerid, arrPayPhoneData[i][pp_iAreaID])) {
+			PayPhone_EndCall(playerid);
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "You are no longer at an available pay phone.");
+		}
+	}
 
-	if(sscanf(params, "d", phonenumb)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /call [phonenumber]");
+	if(sscanf(params, "d", phonenumb) || phonenumb <= 0) {
+		if(GetPVarType(playerid, "PayPhone")) PayPhone_EndCall(playerid);
+		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /call [phonenumber]");
+	}
 
 	if(PlayerInfo[playerid][pJailTime] > 0 && !GetPVarType(playerid, "PayPhone"))
 	{
@@ -309,6 +321,7 @@ CMD:call(playerid, const params[])
 	}
 	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || GetPVarInt(playerid, "pBagged") >= 1)
 	{
+		if(GetPVarType(playerid, "PayPhone")) PayPhone_EndCall(playerid);
 		SendClientMessageEx(playerid,COLOR_GREY,"You can't use your phone whilist restrained.");
 		return 1;
 	}
@@ -326,6 +339,7 @@ CMD:call(playerid, const params[])
 		}
 	}
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] > 0) {
+		if(GetPVarType(playerid, "PayPhone")) PayPhone_EndCall(playerid);
    		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	}
 	format(string, sizeof(string), "* %s takes out a cellphone.", GetPlayerNameEx(playerid));
@@ -395,25 +409,28 @@ CMD:call(playerid, const params[])
 
 		new i = GetPVarInt(playerid, "PayPhone");
 		if(arrPayPhoneData[i][pp_iNumber] == phonenumb) {
-			DeletePVar(playerid, "PayPhone");
+			PayPhone_EndCall(playerid);
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot call the pay phone you're calling from.");
 		}
 	}
 	for(new i; i < MAX_PAYPHONES; ++i) {
-
-		if(IsValidDynamicArea(arrPayPhoneData[i][pp_iAreaID] && phonenumb == arrPayPhoneData[i][pp_iNumber])) {
-
-			if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This pay phone is already in use.");
-			SetPVarInt(playerid, "PayPhone", i);
-			arrPayPhoneData[i][pp_iCallerID] = playerid;
-			PayPhone_UpdateTextLabel(i, 1);
-			Mobile[playerid] = 2000; // trial
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Dialing pay phone...");
-			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: You now use T to talk on your cellphone, type /hangup to hang up.");
-			CellTime[playerid] = 1;
-			SetPlayerAttachedObject(playerid, 8, 330, 6);
-			return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
+		if(!PayPhone_Valid(i) || phonenumb != arrPayPhoneData[i][pp_iNumber]) continue;
+		if(gPayPhonesLoading || arrPayPhoneData[i][pp_bPending] || arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID || arrPayPhoneData[i][pp_iUserID] != INVALID_PLAYER_ID) {
+			if(GetPVarType(playerid, "PayPhone")) PayPhone_EndCall(playerid);
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "This pay phone is already in use or unavailable.");
 		}
+		SetPVarInt(playerid, "CallingPayPhone", i);
+		arrPayPhoneData[i][pp_iCallerID] = playerid;
+		PayPhone_UpdateTextLabel(i, 1);
+		if(GetPVarType(playerid, "PayPhone")) {
+			TogglePlayerControllable(playerid, false);
+			PayPhone_UpdateTextLabel(GetPVarInt(playerid, "PayPhone"), 2);
+		}
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Dialing pay phone...");
+		SendClientMessageEx(playerid, COLOR_WHITE, "HINT: You now use T to talk on your cellphone, type /hangup to hang up.");
+		CellTime[playerid] = 1;
+		SetPlayerAttachedObject(playerid, 8, 330, 6);
+		return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
 	}
 	for(new i; i < MAX_BUSINESSES; ++i) {
 
@@ -435,12 +452,8 @@ CMD:call(playerid, const params[])
 	}
 	if(phonenumb == PlayerInfo[playerid][pPnumber])
 	{
+		if(GetPVarType(playerid, "PayPhone")) PayPhone_EndCall(playerid);
 		SendClientMessageEx(playerid, COLOR_GRAD2, "  You cannot call yourself...");
-		return 1;
-	}
-	if(Mobile[playerid] != INVALID_PLAYER_ID)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "  You are already on a call...");
 		return 1;
 	}
 	foreach(new i: Player)
@@ -456,21 +469,21 @@ CMD:call(playerid, const params[])
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "That player's phone is switched off.");
 						Mobile[playerid] = INVALID_PLAYER_ID;
-						DeletePVar(playerid, "PayPhone");
+						if(GetPVarType(playerid, "PayPhone")) PayPhone_EndCall(playerid);
 						return 1;
 					}
-					if(Mobile[i] != INVALID_PLAYER_ID)
+					if(Mobile[i] != INVALID_PLAYER_ID || GetPVarType(i, "PayPhone") || GetPVarType(i, "CallingPayPhone"))
 					{
 						SendClientMessageEx(playerid, COLOR_GRAD2, "You just get a busy tone...");
 						Mobile[playerid] = INVALID_PLAYER_ID;
-						DeletePVar(playerid, "PayPhone");
+						if(GetPVarType(playerid, "PayPhone")) PayPhone_EndCall(playerid);
 						return 1;
 					}
 					if(Spectating[i]!=0)
 					{
 						SendClientMessageEx(playerid, COLOR_GRAD2, "You just get a busy tone...");
 						Mobile[playerid] = INVALID_PLAYER_ID;
-						DeletePVar(playerid, "PayPhone");
+						if(GetPVarType(playerid, "PayPhone")) PayPhone_EndCall(playerid);
 						return 1;
 					}
 					if(Mobile[i] == INVALID_PLAYER_ID)
@@ -479,6 +492,7 @@ CMD:call(playerid, const params[])
 
 							format(string, sizeof(string), "Your mobile is ringing - type /p to answer it. [Caller: Pay Phone (%d)]", arrPayPhoneData[GetPVarInt(playerid, "PayPhone")][pp_iNumber]);
 							TogglePlayerControllable(playerid, false);
+							PayPhone_UpdateTextLabel(GetPVarInt(playerid, "PayPhone"), 2);
 							SendClientMessageEx(i, COLOR_YELLOW, string);
 						}
 						else {
@@ -500,7 +514,7 @@ CMD:call(playerid, const params[])
 		}
 	}
 	SendClientMessageEx(playerid, COLOR_GRAD2, "Your call can not be completed as dialed, please check the number and try again.");
-	DeletePVar(playerid, "PayPhone");
+	if(GetPVarType(playerid, "PayPhone")) PayPhone_EndCall(playerid);
 	return 1;
 }
 
@@ -557,10 +571,8 @@ CMD:sms(playerid, params[])
 			if(Mobile[giveplayerid] != INVALID_PLAYER_ID)
 			{
 				ChatTrafficProcess(playerid, COLOR_GREY, "That player's phone is busy (on a call).", 7);
-				DeletePVar(playerid, "PayPhone");
 				return 1;
 			}
-			Mobile[playerid] = giveplayerid; //caller connecting
 			if(IsPlayerConnected(giveplayerid))
 			{
 				if(giveplayerid != INVALID_PLAYER_ID)
@@ -569,7 +581,6 @@ CMD:sms(playerid, params[])
 					if(PhoneOnline[giveplayerid] > 0)
 					{
 						ChatTrafficProcess(playerid, COLOR_GREY, "That player's phone is switched off.", 7);
-						Mobile[playerid] = INVALID_PLAYER_ID;
 						return 1;
 					}
 					foreach(new u: Player)
@@ -613,7 +624,6 @@ CMD:sms(playerid, params[])
 					//PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 					//SendAudioToPlayer(playerid, 47, 100);
 					//SendAudioToPlayer(giveplayerid, 47, 100);
-					Mobile[playerid] = INVALID_PLAYER_ID;
 
 					if(strcmp(PlayerInfo[giveplayerid][pAutoTextReply], "Nothing", true) != 0)
 					{
@@ -636,45 +646,36 @@ alias:pickup("p")
 CMD:pickup(playerid, const params[])
 {
 	new string[128];
-	if(Mobile[playerid] != INVALID_PLAYER_ID)
+	if(Mobile[playerid] != INVALID_PLAYER_ID || GetPVarType(playerid, "CallingPayPhone"))
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "  You are already on a call...");
 		return 1;
 	}
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] > 0) {
+		if(GetPVarType(playerid, "PayPhone")) PayPhone_EndCall(playerid);
    		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	}
 	if(GetPVarType(playerid, "PayPhone")) {
-
-		new x = GetPVarInt(playerid, "PayPhone");
-
-		if(arrPayPhoneData[x][pp_iCallerID] != INVALID_PLAYER_ID) {
-
-			if(arrPayPhoneData[x][pp_iCallerID] == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot answer the pay phone you're dialing.");
-
-			foreach(new i: Player) {
-
-				if(GetPVarInt(i, "PayPhone") == x) {
-					if(i != playerid) return SendClientMessage(playerid, COLOR_GRAD1, "Someone else is already using this pay phone.");
-				}
-			}
-			foreach(new i: Player) 	{
-
-
-				if(i == arrPayPhoneData[x][pp_iCallerID])
-				{
-					Mobile[playerid] = i;
-					Mobile[i] = playerid;
-					SendClientMessageEx(i,  COLOR_GRAD2, "   Someone picked up the call.");
-					format(string, sizeof(string), "* %s answers the pay phone.", GetPlayerNameEx(playerid));
-					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					TogglePlayerControllable(playerid, false);
-					SetPlayerAttachedObject(playerid, 8, 330, 6);
-					return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
-				}
-			}
+		new i = GetPVarInt(playerid, "PayPhone");
+		if(!PayPhone_Valid(i) || gPayPhonesLoading || arrPayPhoneData[i][pp_bPending] || !IsPlayerInDynamicArea(playerid, arrPayPhoneData[i][pp_iAreaID])) return PayPhone_EndCall(playerid), 1;
+		new caller = arrPayPhoneData[i][pp_iCallerID];
+		if(arrPayPhoneData[i][pp_iUserID] != INVALID_PLAYER_ID || caller == playerid || caller < 0 || caller >= MAX_PLAYERS || !IsPlayerConnected(caller)
+			|| !GetPVarType(caller, "CallingPayPhone") || GetPVarInt(caller, "CallingPayPhone") != i || Mobile[caller] != INVALID_PLAYER_ID) {
+			PayPhone_EndCall(playerid);
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "This pay phone is not ringing or is already in use.");
 		}
+		arrPayPhoneData[i][pp_iUserID] = playerid;
+		Mobile[playerid] = caller;
+		Mobile[caller] = playerid;
+		PayPhone_UpdateTextLabel(i, 2);
+		SendClientMessageEx(caller, COLOR_GRAD2, "Someone picked up the call.");
+		format(string, sizeof(string), "* %s answers the pay phone.", GetPlayerNameEx(playerid));
+		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+		TogglePlayerControllable(playerid, false);
+		SetPlayerAttachedObject(playerid, 8, 330, 6);
+		return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
 	}
+
 	foreach(new i: Player)
 	{
 		if(Mobile[i] == playerid)
@@ -708,6 +709,7 @@ CMD:hangup(playerid,params[])
 		if(GetPVarType(playerid, "PayPhone")) TogglePlayerControllable(playerid, true);
 		pc_cmd_cancelcall(playerid, "");
 	}
+	if(PayPhone_EndCall(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You hung up.");
 	new caller = Mobile[playerid];
 	if((IsPlayerConnected(caller)/* && caller != INVALID_PLAYER_ID*/))
 	{
@@ -727,23 +729,6 @@ CMD:hangup(playerid,params[])
 			Mobile[caller] = INVALID_PLAYER_ID;
 		}
 
-		if(GetPVarType(playerid, "PayPhone")) {
-
-			new x = GetPVarInt(playerid, "PayPhone");
-			DeletePVar(playerid, "PayPhone");
-			arrPayPhoneData[x][pp_iCallerID] = INVALID_PLAYER_ID;
-			TogglePlayerControllable(playerid, true);
-			PayPhone_UpdateTextLabel(x, 0);
-		}
-		if(GetPVarType(caller, "PayPhone")) {
-
-			new x = GetPVarInt(caller, "PayPhone");
-			DeletePVar(caller, "PayPhone");
-			arrPayPhoneData[x][pp_iCallerID] = INVALID_PLAYER_ID;
-			TogglePlayerControllable(caller, true);
-			PayPhone_UpdateTextLabel(x, 0);
-		}
-
 		DeletePVar(playerid, "GRPCALL");
 		DeletePVar(caller, "GRPCALL");
 		DeletePVar(playerid, "BUSICALL");
@@ -761,29 +746,6 @@ CMD:hangup(playerid,params[])
 		SetPlayerSpecialAction(caller, SPECIAL_ACTION_STOPUSECELLPHONE);
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
 		return 1;
-	}
-	else {
-
-		if(GetPVarType(playerid, "PayPhone")) {
-
-			CellTime[playerid] = 0;
-			SendClientMessageEx(playerid,  COLOR_GRAD2, "   You hung up.");
-			format(string, sizeof(string), "* %s puts away their cellphone.", GetPlayerNameEx(playerid));
-			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-			Mobile[playerid] = INVALID_PLAYER_ID;
-			CellTime[playerid] = 0;
-			RingTone[playerid] = 0;
-			RemovePlayerAttachedObject(playerid, 8);
-			RemovePlayerAttachedObject(caller, 8);
-			SetPlayerSpecialAction(caller, SPECIAL_ACTION_STOPUSECELLPHONE);
-			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
-
-			new x = GetPVarInt(playerid, "PayPhone");
-			DeletePVar(playerid, "PayPhone");
-			arrPayPhoneData[x][pp_iCallerID] = INVALID_PLAYER_ID;
-			PayPhone_UpdateTextLabel(x, 0);
-			return 1;
-		}
 	}
 	SendClientMessageEx(playerid,  COLOR_GRAD2, "   Your phone is in your pocket.");
 	return 1;

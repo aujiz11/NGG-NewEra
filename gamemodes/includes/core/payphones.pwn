@@ -37,8 +37,7 @@
 */
 
 #include <YSI_Coding\y_hooks>
-
-new bool:gPayPhonesLoading;
+`
 new gPayPhoneListCount[MAX_PLAYERS];
 
 PayPhone_Valid(i) {
@@ -53,6 +52,7 @@ PayPhone_Clear(i) {
 	arrPayPhoneData[i][pp_iAreaID] = 0;
 	arrPayPhoneData[i][pp_iTextID] = Text3D:0;
 	arrPayPhoneData[i][pp_iCallerID] = INVALID_PLAYER_ID;
+	arrPayPhoneData[i][pp_iUserID] = INVALID_PLAYER_ID;
 	++arrPayPhoneData[i][pp_iRevision];
 }
 
@@ -98,7 +98,7 @@ GetPhoneZone(id, zone[], len) {
 				&& y <= gMainZones[i][SAZONE_AREA][4]
 				&& z >= gMainZones[i][SAZONE_AREA][2]
 				&& z <= gMainZones[i][SAZONE_AREA][5]) {
-			format(zone, len, gMainZones[i][SAZONE_NAME], 0);
+			format(zone, len, "%s", gMainZones[i][SAZONE_NAME]);
 		}
 	}
 	
@@ -110,7 +110,7 @@ GetPhoneZone(id, zone[], len) {
 				&& y <= gSAZones[i][SAZONE_AREA][4]
 				&& z >= gSAZones[i][SAZONE_AREA][2]
 				&& z <= gSAZones[i][SAZONE_AREA][5]) {
-			return format(zone, len, gSAZones[i][SAZONE_NAME], 0);
+			return format(zone, len, "%s", gSAZones[i][SAZONE_NAME]);
 		}
 	}
 	return 0;
@@ -118,44 +118,134 @@ GetPhoneZone(id, zone[], len) {
 
 GetPhoneAreaCode(i) {
 
-	new iAreaCode;
-	GetPhoneZone(i, szMiscArray, sizeof(szMiscArray));
-	if(strcmp(szMiscArray, "DOC", true) == 0) iAreaCode = 420;
-	if(strcmp(szMiscArray, "Los Santos", true) == 0) iAreaCode = 500;
-	if(strcmp(szMiscArray, "Red County", true) == 0) iAreaCode = 300;
-	if(strcmp(szMiscArray, "Flint County", true) == 0) iAreaCode = 400;
-	if(strcmp(szMiscArray, "San Fierro", true) == 0) iAreaCode = 600;
-	if(strcmp(szMiscArray, "Las Venturas", true) == 0) iAreaCode = 700;
-	if(strcmp(szMiscArray, "Bone County", true) == 0) iAreaCode = 666;
-	if(strcmp(szMiscArray, "Tiera Robada", true) == 0) iAreaCode = 999;
-	if(strcmp(szMiscArray, "Downtown Los Santos", true) == 0) iAreaCode = 502;
-	if(strcmp(szMiscArray, "Pershing Square", true) == 0) iAreaCode = 503;
-	if(strcmp(szMiscArray, "Temple", true) == 0) iAreaCode = 504;
-	if(strcmp(szMiscArray, "Market", true) == 0) iAreaCode = 505;
-	if(strcmp(szMiscArray, "Rodeo", true) == 0) iAreaCode = 540;
-	if(strcmp(szMiscArray, "Idlewood", true) == 0) iAreaCode = 569;
-	if(strcmp(szMiscArray, "Glen Park", true) == 0) iAreaCode = 570;
-	if(strcmp(szMiscArray, "Jefferson", true) == 0) iAreaCode = 572;
-	if(strcmp(szMiscArray, "East Los Santos", true) == 0) iAreaCode = 580;
-	if(strcmp(szMiscArray, "Blueberry", true) == 0) iAreaCode = 444;
-	if(strcmp(szMiscArray, "Angel Pine", true) == 0) iAreaCode = 838;
+	new iAreaCode, zone[MAX_ZONE_NAME];
+	GetPhoneZone(i, zone, sizeof(zone));
+	if(strcmp(zone, "DOC", true) == 0) iAreaCode = 420;
+	if(strcmp(zone, "Los Santos", true) == 0) iAreaCode = 500;
+	if(strcmp(zone, "Red County", true) == 0) iAreaCode = 300;
+	if(strcmp(zone, "Flint County", true) == 0) iAreaCode = 400;
+	if(strcmp(zone, "San Fierro", true) == 0) iAreaCode = 600;
+	if(strcmp(zone, "Las Venturas", true) == 0) iAreaCode = 700;
+	if(strcmp(zone, "Bone County", true) == 0) iAreaCode = 666;
+	if(strcmp(zone, "Tiera Robada", true) == 0) iAreaCode = 999;
+	if(strcmp(zone, "Downtown Los Santos", true) == 0) iAreaCode = 502;
+	if(strcmp(zone, "Pershing Square", true) == 0) iAreaCode = 503;
+	if(strcmp(zone, "Temple", true) == 0) iAreaCode = 504;
+	if(strcmp(zone, "Market", true) == 0) iAreaCode = 505;
+	if(strcmp(zone, "Rodeo", true) == 0) iAreaCode = 540;
+	if(strcmp(zone, "Idlewood", true) == 0) iAreaCode = 569;
+	if(strcmp(zone, "Glen Park", true) == 0) iAreaCode = 570;
+	if(strcmp(zone, "Jefferson", true) == 0) iAreaCode = 572;
+	if(strcmp(zone, "East Los Santos", true) == 0) iAreaCode = 580;
+	if(strcmp(zone, "Blueberry", true) == 0) iAreaCode = 444;
+	if(strcmp(zone, "Angel Pine", true) == 0) iAreaCode = 838;
 	return iAreaCode;
 }
 
+PayPhone_EndCall(playerid) {
+	new peer = Mobile[playerid];
+	new bool:ownsPhone = GetPVarType(playerid, "PayPhone") != 0 || GetPVarType(playerid, "CallingPayPhone") != 0;
+	if(!ownsPhone && (peer < 0 || peer >= MAX_PLAYERS || !IsPlayerConnected(peer) || (!GetPVarType(peer, "PayPhone") && !GetPVarType(peer, "CallingPayPhone")))) 
+	{
+		peer = INVALID_PLAYER_ID;
+		for(new i; i < MAX_PLAYERS; ++i) {
+			if(i != playerid && IsPlayerConnected(i) && Mobile[i] == playerid && GetPVarType(i, "PayPhone")) {
+				peer = i;
+				break;
+			}
+		}
+		if(peer == INVALID_PLAYER_ID) return 0;
+	}
+	new bool:linked = 0 <= peer < MAX_PLAYERS && IsPlayerConnected(peer) && Mobile[peer] == playerid;
+	if(linked) Phone_HangupCall(playerid, peer);
+	if(!linked && 0 <= peer < MAX_PLAYERS && IsPlayerConnected(peer) && Mobile[peer] == INVALID_PLAYER_ID) RingTone[peer] = 0;
+	for(new n; n < 2; ++n) {
+		if(n == 1 && !linked) break;
+		new actor = n == 0 ? playerid : peer;
+		if(GetPVarType(actor, "PayPhone")) {
+			new i = GetPVarInt(actor, "PayPhone");
+			if(0 <= i < MAX_PAYPHONES && arrPayPhoneData[i][pp_iUserID] == actor) {
+				arrPayPhoneData[i][pp_iUserID] = INVALID_PLAYER_ID;
+				arrPayPhoneData[i][pp_iCallerID] = INVALID_PLAYER_ID;
+				PayPhone_UpdateTextLabel(i, 0);
+				TogglePlayerControllable(actor, true);
+			}
+			DeletePVar(actor, "PayPhone");
+		}
+		if(GetPVarType(actor, "CallingPayPhone")) {
+			new i = GetPVarInt(actor, "CallingPayPhone");
+			if(0 <= i < MAX_PAYPHONES && arrPayPhoneData[i][pp_iCallerID] == actor) {
+				arrPayPhoneData[i][pp_iCallerID] = INVALID_PLAYER_ID;
+				PayPhone_UpdateTextLabel(i, 0);
+			}
+			DeletePVar(actor, "CallingPayPhone");
+		}
+		Mobile[actor] = INVALID_PLAYER_ID;
+		CellTime[actor] = 0;
+		RingTone[actor] = 0;
+		DeletePVar(actor, "GRPCALL");
+		DeletePVar(actor, "BUSICALL");
+		RemovePlayerAttachedObject(actor, 8);
+		SetPlayerSpecialAction(actor, SPECIAL_ACTION_STOPUSECELLPHONE);
+		if(n == 1) SendClientMessageEx(actor, COLOR_GRAD2, "They hung up.");
+	}
+	return 1;
+}
+
+hook OnPlayerDisconnect(playerid, reason) {
+	PayPhone_EndCall(playerid);
+	for(new i; i < MAX_PLAYERS; ++i) {
+		if(i != playerid && IsPlayerConnected(i) && Mobile[i] == playerid && GetPVarType(i, "PayPhone")) PayPhone_EndCall(i);
+	}
+	gPayPhoneListCount[playerid] = 0;
+}
+
+hook OnPlayerDeath(playerid, killerid, reason) {
+	PayPhone_EndCall(playerid);
+	for(new i; i < MAX_PLAYERS; ++i) {
+		if(i != playerid && IsPlayerConnected(i) && Mobile[i] == playerid && GetPVarType(i, "PayPhone")) PayPhone_EndCall(i);
+	}
+}
+
+hook OnPlayerLeaveDynamicArea(playerid, STREAMER_TAG_AREA:areaid) {
+	if(!GetPVarType(playerid, "PayPhone")) return 1;
+	new i = GetPVarInt(playerid, "PayPhone");
+	if(PayPhone_Valid(i) && arrPayPhoneData[i][pp_iAreaID] == areaid && arrPayPhoneData[i][pp_iUserID] == playerid) PayPhone_EndCall(playerid);
+	return 1;
+}
+
+PayPhone_Directory(playerid) {
+	gPayPhoneListCount[playerid] = 0;
+	format(szMiscArray, sizeof(szMiscArray), "Area Code\tNumber\tZone\n");
+	new zone[MAX_ZONE_NAME], line[160];
+	for(new i; i < MAX_PAYPHONES; ++i) {
+		if(!PayPhone_Valid(i)) continue;
+		GetPhoneZone(i, zone, sizeof(zone));
+		format(line, sizeof(line), "Area: %d\t%d\t%s\n", GetPhoneAreaCode(i), arrPayPhoneData[i][pp_iNumber], zone);
+		if(strlen(szMiscArray)+strlen(line) >= sizeof(szMiscArray) || gPayPhoneListCount[playerid] >= sizeof(ListItemTrackId[])) break;
+		strcat(szMiscArray, line, sizeof(szMiscArray));
+		ListItemTrackId[playerid][gPayPhoneListCount[playerid]++] = i;
+	}
+	if(!gPayPhoneListCount[playerid]) return SendClientMessageEx(playerid, COLOR_GRAD1, "There are no pay phones.");
+	return ShowPlayerDialogEx(playerid, DIALOG_PHONE_PAYPHONES, DIALOG_STYLE_TABLIST_HEADERS, "Pay Phones", szMiscArray, "Call", "Cancel");
+}
+
 PayPhone_Menu(playerid, i) {
-	if(!PayPhone_Valid(i)) return 0;
-
-	szMiscArray[0] = 0;
-
+	if(!PayPhone_Valid(i) || gPayPhonesLoading || arrPayPhoneData[i][pp_bPending]
+		|| arrPayPhoneData[i][pp_iUserID] != INVALID_PLAYER_ID || arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID) return 0;
+	new zone[MAX_ZONE_NAME];
+	GetPhoneZone(i, zone, sizeof(zone));
 	SetPVarInt(playerid, "PayPhone", i);
-	GetPhoneZone(i, szMiscArray, sizeof(szMiscArray));
-	format(szMiscArray, sizeof(szMiscArray), "Number: %d\nArea Code: %d | {FFFF00}%s\n\n{FFFFFF}Please enter the number you would like to dial.", arrPayPhoneData[i][pp_iNumber], GetPhoneAreaCode(i), szMiscArray);
+	arrPayPhoneData[i][pp_iUserID] = playerid;
+	format(szMiscArray, sizeof(szMiscArray), "Number: %d\nArea Code: %d | {FFFF00}%s\n\n{FFFFFF}Please enter the number you would like to dial.", arrPayPhoneData[i][pp_iNumber], GetPhoneAreaCode(i), zone);
 	return ShowPlayerDialogEx(playerid, DIALOG_PAYPHONE, DIALOG_STYLE_INPUT, "Pay Phone", szMiscArray, "Dial", "<<");
 }
 
 LoadPayPhones() {
 	if(gPayPhonesLoading) return 0;
-	for(new i; i < MAX_PAYPHONES; ++i) if(arrPayPhoneData[i][pp_bPending]) return 0;
+	for(new i; i < MAX_PAYPHONES; ++i) {
+		if(arrPayPhoneData[i][pp_bPending] || (PayPhone_Valid(i) && (arrPayPhoneData[i][pp_iUserID] != INVALID_PLAYER_ID || arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID))) return 0;
+	}
 	gPayPhonesLoading = true;
 	new query[128];
 	mysql_format(MainPipeline, query, sizeof(query), "SELECT * FROM `payphones` WHERE `id` BETWEEN 1 AND %d ORDER BY `id`", MAX_PAYPHONES);
@@ -206,13 +296,19 @@ ProcessPayPhone(i, Float:X, Float:Y, Float:Z, Float:RZ, iVW, iINT) {
 
 PayPhone_UpdateTextLabel(i, choice) {
     if(!PayPhone_Valid(i)) return 0;
-    if(choice == 1) return UpdateDynamic3DTextLabelText(arrPayPhoneData[i][pp_iTextID], COLOR_PURPLE, "** The pay phone is ringing **\nPress ~k~~CONVERSATION_YES~ to answer.");
-    format(szMiscArray, sizeof(szMiscArray), "Pay Phone {DDDDDD}(ID: %d)\n{FFFF00} Number: %d\n\n{DDDDDD}Press ~k~~CONVERSATION_YES~ to dial.", i, arrPayPhoneData[i][pp_iNumber]);
+    if(choice == 2) 
+		return UpdateDynamic3DTextLabelText(arrPayPhoneData[i][pp_iTextID], COLOR_PURPLE, "** The pay phone is in use **");
+    
+	if(choice == 1) 
+		return UpdateDynamic3DTextLabelText(arrPayPhoneData[i][pp_iTextID], COLOR_PURPLE, "** The pay phone is ringing **\nPress ~k~~CONVERSATION_YES~ to answer.");
+    
+	format(szMiscArray, sizeof(szMiscArray), "Pay Phone {DDDDDD}(ID: %d)\n{FFFF00} Number: %d\n\n{DDDDDD}Press ~k~~CONVERSATION_YES~ to dial.", i, arrPayPhoneData[i][pp_iNumber]);
     return UpdateDynamic3DTextLabelText(arrPayPhoneData[i][pp_iTextID], COLOR_YELLOW, szMiscArray);
 }
 
 PayPhone_QueueEdit(i, number, Float:X, Float:Y, Float:Z, Float:RZ, iVW, iINT, playerid) {
 	if(i < 0 || i >= MAX_PAYPHONES || gPayPhonesLoading || arrPayPhoneData[i][pp_bPending]) return 0;
+	if(PayPhone_Valid(i) && (arrPayPhoneData[i][pp_iUserID] != INVALID_PLAYER_ID || arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID)) return 0;
 	if(playerid != INVALID_PLAYER_ID && (playerid < 0 || playerid >= MAX_PLAYERS || !IsPlayerConnected(playerid))) return 0;
 	arrPayPhoneData[i][pp_bPending] = true;
 	new revision = ++arrPayPhoneData[i][pp_iRevision];
@@ -256,9 +352,11 @@ public OnPayPhoneRead(i, revision) {
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	if(!(newkeys & KEY_YES) || IsPlayerInAnyVehicle(playerid)) return 1;
+	if(Mobile[playerid] != INVALID_PLAYER_ID || GetPVarType(playerid, "CallingPayPhone")) return 1;
 	DeletePVar(playerid, "AtPayPhone");
 	for(new i; i < MAX_PAYPHONES; ++i) {
-		if(!PayPhone_Valid(i) || !IsPlayerInDynamicArea(playerid, arrPayPhoneData[i][pp_iAreaID])) continue;
+		if(!PayPhone_Valid(i) || gPayPhonesLoading || arrPayPhoneData[i][pp_bPending] || !IsPlayerInDynamicArea(playerid, arrPayPhoneData[i][pp_iAreaID])) continue;
+		if(arrPayPhoneData[i][pp_iUserID] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This pay phone is already in use.");
 		if(GetPVarType(playerid, "PayPhone")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are already communicating with a pay phone.");
 		if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID) {
 			SetPVarInt(playerid, "PayPhone", i);
@@ -272,11 +370,22 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
+	if(dialogid == DIALOG_PHONE_PAYPHONES) {
+		new count = gPayPhoneListCount[playerid];
+		gPayPhoneListCount[playerid] = 0;
+		if(!response || listitem < 0 || listitem >= count) return 1;
+		new i = ListItemTrackId[playerid][listitem], number[16];
+		if(!PayPhone_Valid(i) || gPayPhonesLoading || arrPayPhoneData[i][pp_bPending]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This pay phone is unavailable. Open the directory again.");
+		format(number, sizeof(number), "%d", arrPayPhoneData[i][pp_iNumber]);
+		return pc_cmd_call(playerid, number);
+	}
 	if(dialogid == DIALOG_PAYPHONE) {
-		if(!response || isnull(inputtext) || !GetPVarType(playerid, "PayPhone")) return DeletePVar(playerid, "PayPhone"), 1;
+		if(!GetPVarType(playerid, "PayPhone")) return 1;
+		if(Mobile[playerid] != INVALID_PLAYER_ID || GetPVarType(playerid, "CallingPayPhone")) return 1;
+		if(!response || isnull(inputtext)) return PayPhone_EndCall(playerid), 1;
 		new i = GetPVarInt(playerid, "PayPhone");
-		if(!PayPhone_Valid(i) || !IsPlayerInDynamicArea(playerid, arrPayPhoneData[i][pp_iAreaID])) return DeletePVar(playerid, "PayPhone"), 1;
-		if(strval(inputtext) == PlayerInfo[playerid][pPnumber] || strval(inputtext) == 0) return DeletePVar(playerid, "PayPhone"), 1;
+		if(!PayPhone_Valid(i) || gPayPhonesLoading || arrPayPhoneData[i][pp_bPending] || arrPayPhoneData[i][pp_iUserID] != playerid || !IsPlayerInDynamicArea(playerid, arrPayPhoneData[i][pp_iAreaID])) return PayPhone_EndCall(playerid), 1;
+		if(strval(inputtext) <= 0) return PayPhone_EndCall(playerid), 1;
 		pc_cmd_call(playerid, inputtext);
 		return 1;
 	}
@@ -338,7 +447,7 @@ CMD:destroyphone(playerid, params[]) {
 	new i;
 	if(sscanf(params, "i", i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "/destroyphone [phoneid]");
 	if(!PayPhone_Valid(i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "The specified pay phone ID has not been used.");
-	if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "The phone is in use.");
+	if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID || arrPayPhoneData[i][pp_iUserID] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "The phone is in use.");
 	if(!PayPhone_QueueEdit(i, -1, 0.0, 0.0, 0.0, 0.0, 0, 0, playerid)) SendClientMessageEx(playerid, COLOR_GRAD1, "Pay phones are busy. Try again later.");
 	return 1;
 }
@@ -348,7 +457,7 @@ CMD:editphone(playerid, params[]) {
 	new i, Float:pos[4];
 	if(sscanf(params, "i", i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "/editphone [id]");
 	if(!PayPhone_Valid(i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "The specified pay phone ID has not been used.");
-	if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "The phone is in use.");
+	if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID || arrPayPhoneData[i][pp_iUserID] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "The phone is in use.");
 	GetDynamicObjectPos(arrPayPhoneData[i][pp_iObjectID], pos[0], pos[1], pos[2]);
 	if(!IsPlayerInRangeOfPoint(playerid, 50.0, pos[0], pos[1], pos[2])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be near the pay phone.");
 	GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
