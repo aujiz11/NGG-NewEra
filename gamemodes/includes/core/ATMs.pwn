@@ -232,65 +232,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return ShowATMMenu(playerid, 3);
 			}
 			if(!ParseBankTransferAmount(inputtext, iAmount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Enter a positive whole amount within the supported range.");
+			return TransferBankAccount(playerid, id, iAmount, true);
 
-
-			if(restarting) {
-				SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
-				return ShowATMMenu(playerid, 3);
-			}
-			if(PlayerInfo[playerid][pLevel] < 3) {
-				SendClientMessageEx(playerid, COLOR_GRAD1, "   You must be at least level 3 to use this feature!");
-				return ShowATMMenu(playerid, 3);
-			}
-			if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) {
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");
-				return ShowATMMenu(playerid, 3);
-			}
-
-			new fee, debit = BankTransferDebit(iAmount, PlayerInfo[playerid][pDonateRank] == 0, fee);
-			if(!debit || debit > PlayerInfo[playerid][pAccount] || PlayerInfo[id][pAccount] > cellmax - iAmount)
-				return SendClientMessageEx(playerid, COLOR_WHITE, "Insufficient funds including fees, or recipient balance limit exceeded.");
-			DeletePVar(playerid, "ATMTransferTo");
-			DeletePVar(playerid, "ATMTransferAccount");
-			DeletePVar(playerid, "ATMTransferSession");
-			if(!CommitBankTransfer(playerid, id, iAmount, debit)) {
-                SendClientMessageEx(playerid, COLOR_GRAD1, "Transfer was not confirmed. Wait and select the recipient again.");
-                return ShowATMMenu(playerid, 3);
-            }
-			if(fee) {
-				format(szMiscArray, sizeof(szMiscArray), "  You have been charged a 3 percent transfer fee: -$%d.", fee);
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-			}
-
-			format(szMiscArray, sizeof(szMiscArray), "   You have transferred $%s to %s's account.", number_format(iAmount), GetPlayerNameEx(id));
-			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-			
-			format(szMiscArray, sizeof(szMiscArray), "   $%s has been transferred to your bank account from %s.", number_format(iAmount), GetPlayerNameEx(playerid));
-			SendClientMessageEx(id, COLOR_YELLOW, szMiscArray);
-
-			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			PlayerPlaySound(id, 1052, 0.0, 0.0, 0.0);
-				
-				
-			new ip[32], ipex[32];
-			GetPlayerIp(playerid, ip, sizeof(ip));
-			GetPlayerIp(id, ipex, sizeof(ipex));
-			format(szMiscArray, sizeof(szMiscArray), "[ATM] %s(%d) (IP:%s) has transferred $%s to %s(%d) (IP:%s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, number_format(iAmount), GetPlayerNameEx(id), GetPlayerSQLId(id), ipex);
-			if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[id][pAdmin] >= 2) Log("logs/adminpay.log", szMiscArray); else Log("logs/pay.log", szMiscArray);
-			format(szMiscArray, sizeof(szMiscArray), "[ATM] %s (IP:%s) has transferred $%s to %s (IP:%s).", GetPlayerNameEx(playerid), ip, number_format(iAmount), GetPlayerNameEx(id), ipex);
-			
-
-			if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[id][pAdmin] >= 2) {
-				format(szMiscArray, sizeof(szMiscArray), "[ATM] Admin %s has transferred $%s to %s", GetPlayerNameEx(playerid), number_format(iAmount), GetPlayerNameEx(id));
-				if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(id), true)) strcat(szMiscArray, " (1)");
-				ABroadCast(COLOR_YELLOW,szMiscArray, 4);
-			}
-			else ABroadCast(COLOR_YELLOW,szMiscArray,2);
-			
-			SetPVarInt(playerid, "LastTransaction", gettime());
-			DeletePVar(playerid, "ATMTransferTo");
-
-			return ShowATMMenu(playerid);
 		}
 	}
 	return 0;

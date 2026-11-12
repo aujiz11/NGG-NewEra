@@ -37,7 +37,7 @@
 */
 
 #include <YSI_Coding\y_hooks>
-`
+
 new gPayPhoneListCount[MAX_PLAYERS];
 
 PayPhone_Valid(i) {
