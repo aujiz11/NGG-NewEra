@@ -1516,11 +1516,67 @@ CMD:setpumpkinstock(playerid, params[])
 	return 1;
 }
 
+stock Microshop_ChangePhoneNumber(playerid, number, price, oldnumber)
+{
+	if(!(0 <= playerid < MAX_PLAYERS) || !IsPlayerConnected(playerid) || !gPlayerLogged{playerid} || !GetPVarInt(playerid, "PinConfirmed")) return 0;
+	if(!(100000 <= number <= 999999) || number == oldnumber || oldnumber == 0 || oldnumber != PlayerInfo[playerid][pPnumber])
+		return SendClientMessageEx(playerid, COLOR_GREY, "Your phone number changed or the requested number is invalid. Please select again."), 0;
+	
+	if(TempNumber[playerid] || GetPVarType(playerid, "WantedPh") || GetPVarType(playerid, "tempnum"))
+		return SendClientMessageEx(playerid, COLOR_GREY, "Finish or cancel your other phone-number change first."), 0;
+	
+	if(Mobile[playerid] != INVALID_PLAYER_ID || GetPVarType(playerid, "PayPhone") || GetPVarType(playerid, "CallingPayPhone"))
+		return SendClientMessageEx(playerid, COLOR_GREY, "End your phone call before changing your number."), 0;
+	
+	if(price <= 0 || price != MicroItems[11] || PlayerInfo[playerid][pCredits] < price || PlayerInfo[playerid][pTotalCredits] < 0 || PlayerInfo[playerid][pTotalCredits] > cellmax - price)
+		return SendClientMessageEx(playerid, COLOR_GREY, "The price changed or you cannot afford this purchase. Please select again."), 0;
+	
+	if(restarting || gPayPhonesLoading || !gAccountsInnoDB || GetPlayerSQLId(playerid) <= 0 || mysql_unprocessed_queries(MainPipeline) != 0)
+		return SendClientMessageEx(playerid, COLOR_GREY, "The shop is busy. Please try again in a moment."), 0;
+	
+	foreach(new other : Player)
+	{
+		if(other == playerid || !gPlayerLogged{other}) continue;
+		if(PlayerInfo[other][pPnumber] == number || GetPVarInt(other, "WantedPh") == number || GetPVarInt(other, "tempnum") == number ||
+			(TempNumber[other] && GetPVarInt(other, "oldnum") == number))
+			return SendClientMessageEx(playerid, COLOR_GREY, "That phone number is already in use or reserved by another player."), 0;
+	}
+	
+	for(new phone; phone < MAX_PAYPHONES; phone++)
+	{
+		if(arrPayPhoneData[phone][pp_iNumber] == number)
+			return SendClientMessageEx(playerid, COLOR_GREY, "That phone number belongs to a payphone."), 0;
+	}
+	
+	new query[512], credits = PlayerInfo[playerid][pCredits] - price, spent = PlayerInfo[playerid][pTotalCredits] + price;
+	mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` a LEFT JOIN `accounts` used ON used.`PhoneNr`=%d AND used.`id`<>a.`id` SET a.`PhoneNr`=%d,a.`Credits`=%d,a.`TotalCredits`=%d WHERE a.`id`=%d AND a.`PhoneNr`=%d AND a.`Credits`=%d AND a.`TotalCredits`=%d AND used.`id` IS NULL",
+		number, number, credits, spent, GetPlayerSQLId(playerid), oldnumber, PlayerInfo[playerid][pCredits], PlayerInfo[playerid][pTotalCredits]);
+	new Cache:result = mysql_query(MainPipeline, query);
+	new affected;
+	if(cache_is_valid(result))
+	{
+		affected = cache_affected_rows();
+		cache_delete(result);
+	}
+	if(affected != 1)
+		return SendClientMessageEx(playerid, COLOR_GREY, "Unable to confirm this number change. Please try again later."), 0;
+	PlayerInfo[playerid][pPnumber] = number;
+	PlayerInfo[playerid][pCredits] = credits;
+	PlayerInfo[playerid][pTotalCredits] = spent;
+	new message[96];
+	format(message, sizeof(message), "Your phone number has changed from %d to %d.", oldnumber, number);
+	SendClientMessageEx(playerid, COLOR_CYAN, message);
+	return 1;
+}
+
 CMD:microshop(playerid, const params[])
 {
 	DeletePVar(playerid, "m_listitem");
 	DeletePVar(playerid, "m_Item");
 	DeletePVar(playerid, "m_Response");
+	DeletePVar(playerid, "m_PhoneNumber");
+	DeletePVar(playerid, "m_PhonePrice");
+	DeletePVar(playerid, "m_PhoneOld");
 	if(GetPVarInt(playerid, "PinConfirmed")) ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP, DIALOG_STYLE_LIST, "Microtransaction Shop", "Job & Experience\nVIP\nFood\nHouse\nVehicle\nMiscellaneous\nEvents", "Select", "Exit");
 	else SetPVarInt(playerid, "OpenShop", 11), PinLogin(playerid);
 	return 1;

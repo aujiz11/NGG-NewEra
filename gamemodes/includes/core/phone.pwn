@@ -223,6 +223,8 @@ CMD:tempnumber(playerid, params[]){
 			SendClientMessageEx(playerid, COLOR_GREY, "Your temporary number has been disabled and your original number has been restored.");
 			TempNumber[playerid] = 0;
 			PlayerInfo[playerid][pPnumber] = GetPVarInt(playerid, "oldnum");
+			DeletePVar(playerid, "oldnum");
+			DeletePVar(playerid, "tempnum");
 			return 1;
 		}
         if(sscanf(params, "i", num) && TempNumber[playerid] == 0)

@@ -12721,11 +12721,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 		SetTimerEx("UnholsterWeapon", 1000, false, "ii", playerid, listitem);
 	}
+	if((dialogid == DIALOG_MICROSHOP || dialogid == DIALOG_MICROSHOP2 || dialogid == DIALOG_MICROSHOP3 || dialogid == DIALOG_MICROPHONE) &&
+		(!gPlayerLogged{playerid} || !GetPVarInt(playerid, "PinConfirmed"))) return 1;
 	if(dialogid == DIALOG_MICROSHOP)
 	{
 		if(response)
 		{
-			new stringg[512];
+			new stringg[768];
 			if(listitem == 0)
 			{
 				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\nDouble EXP Tokens (Credits: {FFD700}%s{FFFFFF})", mItemName[0], number_format(MicroItems[0]), mItemName[1], number_format(MicroItems[1]), number_format(ShopItems[9][sItemPrice]));
@@ -12760,9 +12762,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(listitem == 5)
 			{
 				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\
-				\nFireworks x5 (Credits: {FFD700}%s{FFFFFF})\n100 Paintball Tokens (Credits: {FFD700}%s{FFFFFF})\nAdditional Toy Slots (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})",
+				\nFireworks x5 (Credits: {FFD700}%s{FFFFFF})\n100 Paintball Tokens (Credits: {FFD700}%s{FFFFFF})\nAdditional Toy Slots (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})",
 				mItemName[10], number_format(MicroItems[10]), mItemName[12], number_format(MicroItems[12]), mItemName[13], number_format(MicroItems[13]), mItemName[5], number_format(MicroItems[5]), number_format(ShopItems[10][sItemPrice]),
-				number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[28][sItemPrice]), mItemName[14], number_format(MicroItems[14]), mItemName[15], number_format(MicroItems[15])/*, mItemName[11], number_format(MicroItems[11])*/);
+				number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[28][sItemPrice]), mItemName[14], number_format(MicroItems[14]), mItemName[15], number_format(MicroItems[15]), mItemName[11], number_format(MicroItems[11]));
 				ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - Miscellaneous", stringg, "Select", "Exit");
 			}
 			if(listitem == 6)
@@ -12783,7 +12785,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		if(!response) return pc_cmd_microshop(playerid, "");
 		if(response)
 		{
-			new item;
+			new item = -1;
 			switch(GetPVarInt(playerid, "m_listitem")-1)
 			{
 				case 0://Job & Experience
@@ -12829,7 +12831,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(listitem == 6) item = 107;//Additional Toy Slot
 					if(listitem == 7) item = 14;
 					if(listitem == 8) item = 15;
-					//if(listitem == 9) item = 11; //Phone Change (TODO)
+					if(listitem == 9) item = 11;
 				}
 				case 6://Event
 				{
@@ -12839,6 +12841,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(listitem == 3) item = 19;
 				}
 			}
+			if(item == -1) return 1;
 			if(item == 100)//EXP Token
 			{
 				SetPVarInt(playerid, "MiscShop", 4);
@@ -12904,6 +12907,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return ShowPlayerDialogEx(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
 			}
 			SetPVarInt(playerid, "m_Item", item);
+			if(item == 11)
+			{
+				if(PlayerInfo[playerid][pPnumber] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You must own a cellphone before changing your number.");
+				return ShowPlayerDialogEx(playerid, DIALOG_MICROPHONE, DIALOG_STYLE_INPUT, "Micro Shop - Number Change", "Enter a new six-digit phone number (100000-999999). No credits are charged until you confirm the purchase.", "Continue", "Cancel");
+			}
 			if(item == 0)//Change a Job
 			{
 				if(gettime() < PlayerInfo[playerid][mCooldown][item])
@@ -12993,28 +13001,56 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP3, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
 		}
 	}
+	if(dialogid == DIALOG_MICROPHONE)
+	{
+		if(!response) return pc_cmd_microshop(playerid, "");
+		if(!GetPVarType(playerid, "m_Item") || GetPVarInt(playerid, "m_Item") != 11) return 1;
+		if(strlen(inputtext) != 6 || !IsNumericString(inputtext) || !(100000 <= strval(inputtext) <= 999999))
+			return ShowPlayerDialogEx(playerid, DIALOG_MICROPHONE, DIALOG_STYLE_INPUT, "Micro Shop - Number Change", "Enter exactly six digits, from 100000 to 999999.", "Continue", "Cancel");
+		new number = strval(inputtext), price = MicroItems[11];
+		if(number == PlayerInfo[playerid][pPnumber]) return SendClientMessageEx(playerid, COLOR_GREY, "You already have that phone number.");
+		if(price <= 0 || PlayerInfo[playerid][pCredits] < price) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot afford this purchase.");
+		SetPVarInt(playerid, "m_PhoneNumber", number);
+		SetPVarInt(playerid, "m_PhonePrice", price);
+		SetPVarInt(playerid, "m_PhoneOld", PlayerInfo[playerid][pPnumber]);
+		format(string, sizeof(string), "Change number: %d -> %d\nYour Credits: %s\nCost: %s\nCredits Left: %s", PlayerInfo[playerid][pPnumber], number, number_format(PlayerInfo[playerid][pCredits]), number_format(price), number_format(PlayerInfo[playerid][pCredits] - price));
+		return ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP3, DIALOG_STYLE_MSGBOX, "Micro Shop - Number Change", string, "Purchase", "Cancel");
+	}
 	if(dialogid == DIALOG_MICROSHOP3)
 	{
 		if(!response) return pc_cmd_microshop(playerid, "");
 		if(response)
 		{
+			if(!GetPVarType(playerid, "m_Item")) return 1;
 			new item = GetPVarInt(playerid, "m_Item");
+			if(!(0 <= item < MAX_MICROITEMS) || MicroItems[item] <= 0 || AmountSoldMicro[item] < 0 || AmountSoldMicro[item] == cellmax ||
+				AmountMadeMicro[item] < 0 || AmountMadeMicro[item] > cellmax - MicroItems[item]) return 1;
 			if(PlayerInfo[playerid][pCredits] < MicroItems[item]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+
+			DeletePVar(playerid, "m_Item");
+			if(item == 11)
+			{
+				new number = GetPVarInt(playerid, "m_PhoneNumber"), price = GetPVarInt(playerid, "m_PhonePrice"), oldnumber = GetPVarInt(playerid, "m_PhoneOld");
+				DeletePVar(playerid, "m_PhoneNumber");
+				DeletePVar(playerid, "m_PhonePrice");
+				DeletePVar(playerid, "m_PhoneOld");
+				if(!Microshop_ChangePhoneNumber(playerid, number, price, oldnumber)) return 1;
+			}
+			else GivePlayerCredits(playerid, -MicroItems[item], 1);
 
 			AmountSoldMicro[item]++;
 			AmountMadeMicro[item] += MicroItems[item];
-			new asString[128], amString[128];
+			new asString[MAX_MICROITEMS * 12], amString[MAX_MICROITEMS * 12];
 			for(new m; m < MAX_MICROITEMS; m++)
 			{
 				format(asString, sizeof(asString), "%s%d", asString, AmountSoldMicro[m]);
 				format(amString, sizeof(amString), "%s%d", amString, AmountMadeMicro[m]);
 				if(m != MAX_MICROITEMS-1) strcat(asString, "|"), strcat(amString, "|");
 			}
-			new szQuery[512];
+			new szQuery[MAX_MICROITEMS * 24 + 160];
 			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSoldMicro` = '%s', `AmountMadeMicro` = '%s' WHERE `Month` > NOW() - INTERVAL 1 MONTH", asString, amString);
 			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-			GivePlayerCredits(playerid, -MicroItems[item], 1);
 			printf("MicroPrice%d: %d", item, MicroItems[item]);
 
 			format(string, sizeof(string), "[MICROSHOP] [User: %s(%i)] [IP: %s] [Credits: %s] [%s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), mItemName[item], number_format(MicroItems[item]));
@@ -13099,10 +13135,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				PlayerInfo[playerid][pAdvertVoucher] += 3;
 				if(++PlayerInfo[playerid][mPurchaseCount][item] == 2) PlayerInfo[playerid][mCooldown][item] = gettime()+86400;
 				SendClientMessageEx(playerid, -1, "3 Advertisement vouchers have been added to your account.");
-			}
-			if(item == 11)//Number Change
-			{
-				//TODO
 			}
 			if(item == 12)//Quick Bank Access
 			{

@@ -222,7 +222,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 						//ShopItems[z][sMade] = strval(szResult);
 						printf("TotalSold%d: %d | AmountMade%d: %d", z, AmountSold[z], z, AmountMade[z]);
 					}
-					new result[128];
+					new result[MAX_MICROITEMS * 12];
 					cache_get_value_name(i, "TotalSoldMicro", result);
 					sscanf(result, MicroSpecifier, AmountSoldMicro);
 					cache_get_value_name(i, "AmountMadeMicro", result);
@@ -255,7 +255,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					if(ShopItems[z][sItemPrice] == 0) ShopItems[z][sItemPrice] = 99999999;
 					printf("Price%d: %d", z, ShopItems[z][sItemPrice]);
 				}
-				new result[128];
+				new result[MAX_MICROITEMS * 12];
 				cache_get_value_name(i, "MicroPrices", result);
 				sscanf(result, MicroSpecifier, MicroItems);
 				for(new m = 0; m < MAX_MICROITEMS; m++)
@@ -1769,7 +1769,7 @@ stock g_mysql_SavePrices()
 	{
 		format(query, sizeof(query), "%s`Price%d` = '%d', ", query, p, ShopItems[p][sItemPrice]);
 	}
-	new mString[128];
+	new mString[MAX_MICROITEMS * 12];
 	for(new m; m < MAX_MICROITEMS; m++)
 	{
 		format(mString, sizeof(mString), "%s%d", mString, MicroItems[m]);
@@ -2952,7 +2952,7 @@ public OnPhoneNumberCheck(index, extraid)
                 if(rows) {
                     SendClientMessageEx(index, COLOR_WHITE, "That phone number has already been taken.");
                     DeletePVar(index, "oldnum");
-                    DeletePVar(index, "newnum");
+                    DeletePVar(index, "tempnum");
                 }
                 else {
                     format(string, sizeof(string), "You have set your temporary number to %d, type /tempnum to disable it.", GetPVarInt(index, "tempnum"));
@@ -2961,6 +2961,13 @@ public OnPhoneNumberCheck(index, extraid)
                     TempNumber[index] = 1;
                 }
             }
+		}
+		if(rows && (extraid == 2 || extraid == 3 || extraid == 4))
+		{
+			DeletePVar(index, "PhChangerId");
+			DeletePVar(index, "WantedPh");
+			DeletePVar(index, "PhChangeCost");
+			DeletePVar(index, "CurrentPh");
 		}
 	}
 	return 1;

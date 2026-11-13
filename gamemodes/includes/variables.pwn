@@ -1201,7 +1201,7 @@ new mItemName[MAX_MICROITEMS][] = {
 	{"Jump Start"},
 	{"Restricted Car Colors"},
 	{"Priority Ads"},
-	{"Number Change (TODO)"},
+	{"Number Change"},
 	{"Quick Bank Access"},
 	{"Restricted Skin Voucher"},
 	{"Dynamic Door Move"},
