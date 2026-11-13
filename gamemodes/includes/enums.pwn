@@ -918,18 +918,6 @@ enum hNews
 	hContact21[64],
 };
 
-enum sInfo
-{
-	sStorage,
-	sAttached,
-	sCash,
-	sPot,
-	sCrack,
-	sMats,
-	sHouseID,
-	sVehicleSlot
-};
-
 enum pInfo
 {
 	pId,

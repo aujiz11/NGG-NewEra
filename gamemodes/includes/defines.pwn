@@ -600,8 +600,6 @@
 #define         REGISTERDAY                 (3192)
 #define         REGISTERYEAR                (3194)
 #define         REGISTERREF                 (3195)
-#define			STORAGESTORE                (3200)
-#define         STORAGEEQUIP                (3210)
 #define         DMRCONFIRM                  (3220)
 #define			SHOPOBJECT_ORDERID			(3230)
 #define			SHOPOBJECT_GIVEPLAYER		(3231)

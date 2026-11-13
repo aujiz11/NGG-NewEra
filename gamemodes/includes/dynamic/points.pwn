@@ -39,7 +39,7 @@
 #include <YSI_Coding\y_hooks>
 
 CMD:getmats(playerid, params[])
-{
+{	
 	if(PlayerInfo[playerid][pJob] != 9 && PlayerInfo[playerid][pJob2] != 9 && PlayerInfo[playerid][pJob3] != 9 && PlayerInfo[playerid][pJob] != 18 && PlayerInfo[playerid][pJob2] != 18 && PlayerInfo[playerid][pJob3] != 18) return SendClientMessageEx(playerid,COLOR_GREY,"   You are not an Arms Dealer or Craftsman!");
 	if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
 	new point, drank[64], vip = ((0 <= PlayerInfo[playerid][pDonateRank] < 5) ? PlayerInfo[playerid][pDonateRank] : 0);
@@ -55,6 +55,8 @@ CMD:getmats(playerid, params[])
 	if(point == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not at a material point!");
 	if(DynPoints[point][poType] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This point doesn't offer material runs!");
 	if(DynPoints[point][poAmount][vip] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "There is no material amount set up for %s for this point!", drank);
+	if(PlayerInfo[playerid][pMats] < 0 || PlayerInfo[playerid][pMats] > cellmax - DynPoints[point][poAmount][vip])
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot carry the materials from this delivery.");
 	if(DynPoints[point][poPos2][0] == 0.0 || DynPoints[point][poPos2][1] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "The end delivery point hasn't been setup yet!");
 	if(DynPoints[point][poBoat] && !IsABoat(GetPlayerVehicleID(playerid))) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be in a boat!");
 	if(vip == 0) {

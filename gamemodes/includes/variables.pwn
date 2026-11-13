@@ -419,18 +419,6 @@ new Float:HiddenTreasure[23][4] = {
 {709.3392,-1893.0990,3.1038,309.7114},
 {404.1025,-1882.6399,2.0538,350.5217} };
 
-new itemtype[][] = { "Nothing", "Cash", "Cannabis", "Crack", "Materials" };
-new storagetype[][] = { "Pocket", "Bag", "Backpack", "Briefcase", "PSF" };
-
-// Cash, Cannabis, Crack, Mats
-//new onhandlimit[] = { 250000, 20, 15, 0 };
-new const onhandlimit[] = { 2147483647, 50, 50, 2147483647 };
-new bbackpacklimit[] = { 250000, 20, 15, 25000 };
-new backpacklimit[] = { 500000, 200,  200, 75000 };
-new briefcaselimit[] = { 500000, 100, 100, 50000 };
-
-//new limits[][] = {{250000, 20, 15, 0}, {250000, 20, 15, 25000}, {500000, 200, 200, 75000}, {500000, 100, 100, 50000}};
-
 new servernumber, betaserver;
 new textdrawscount;
 
@@ -1137,7 +1125,6 @@ new TurfWars[MAX_TURFS][TurfWarsEnum];
 new Points[MAX_POINTS][fPoint];
 new Fishes[MAX_PLAYERS][pFishing];
 new News[hNews];
-new StorageInfo[MAX_PLAYERS][3][sInfo];
 new PlayerInfo[MAX_PLAYERS][pInfo];
 new PlayerVehicleInfo[MAX_PLAYERS][MAX_PLAYERVEHICLES][pvInfo];
 new PlayerToyInfo[MAX_PLAYERS][MAX_PLAYERTOYS][ptInfo];

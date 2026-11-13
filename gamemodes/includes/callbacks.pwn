@@ -3171,7 +3171,9 @@ public OnPlayerEnterCheckpoint(playerid)
 	// Dynamic Points System
 	if((0 <= MatDeliver[playerid] < MAX_POINTS)) {
 		new string[128], drugname[8];
-		if(IsPlayerInRangeOfPoint(playerid, 6.0, DynPoints[MatDeliver[playerid]][poPos2][0], DynPoints[MatDeliver[playerid]][poPos2][1], DynPoints[MatDeliver[playerid]][poPos2][2])) {
+		if(GetPlayerVirtualWorld(playerid) == DynPoints[MatDeliver[playerid]][po2VW]
+			&& GetPlayerInterior(playerid) == DynPoints[MatDeliver[playerid]][po2Int]
+			&& IsPlayerInRangeOfPoint(playerid, 6.0, DynPoints[MatDeliver[playerid]][poPos2][0], DynPoints[MatDeliver[playerid]][poPos2][1], DynPoints[MatDeliver[playerid]][poPos2][2])) {
 			switch(DynPoints[MatDeliver[playerid]][poType])
 			{
 				case 1: drugname = "Pot";
@@ -3184,8 +3186,8 @@ public OnPlayerEnterCheckpoint(playerid)
 				return 1;
 			}
 			if(DynPoints[MatDeliver[playerid]][poType] == 0) { // Materials
+				if(!TransferStorage(playerid, 0, -1, -1, 4, MatsAmount[playerid], -1, 2)) return 1;
 				SendClientMessageEx(playerid, COLOR_WHITE, "* The factory gave you %s materials for your materials packages.", number_format(MatsAmount[playerid]));
-				TransferStorage(playerid, -1, -1, -1, 4, MatsAmount[playerid], -1, 2);
 			}
 			if((1 <= DynPoints[MatDeliver[playerid]][poType] < 5)) {
 				SendClientMessageEx(playerid, COLOR_WHITE, "You have delivered the packages and gained %sg of %s", number_format(MatsAmount[playerid]), drugname);
@@ -3196,6 +3198,10 @@ public OnPlayerEnterCheckpoint(playerid)
 		    {
 		    	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport material/drug runs.", GetPlayerNameEx(playerid), playerid);
 		    	ABroadCast(COLOR_YELLOW, string, 2);
+			}
+			if(DynPoints[MatDeliver[playerid]][poType] == 0) {
+				DeletePVar(playerid, "Packages");
+				DeletePVar(playerid, "MatDeliver");
 			}
 			MatDeliver[playerid] = -1;
 			MatsAmount[playerid] = 0;
