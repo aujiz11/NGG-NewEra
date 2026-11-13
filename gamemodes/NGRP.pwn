@@ -84,7 +84,7 @@
 #include <open.mp>
 
 /*  ---------------- SCRIPT REVISION ----------------- */
-#define SERVER_GM_TEXT "NG:RP v4.0.15"
+#define SERVER_GM_TEXT "NG:RP v4.0.16"
 
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
@@ -106,7 +106,6 @@
 #include <mSelection>
 #include <gvar>
 #include <discord-connector>
-#include <geo_ip>
 #include <easyDialog>
 #include <callbacks>
 #include <attachments>
@@ -122,6 +121,7 @@
 #include "./includes/wrappers.pwn"
 #include "./includes/timers.pwn"
 #include "./includes/functions.pwn"
+#include "./includes/core/geoip.pwn"
 #include "./includes/mysql.pwn"
 #include "./includes/OnPlayerLoad.pwn"
 #include "./includes/callbacks.pwn"
