@@ -1,16 +1,49 @@
 #include <YSI_Coding\y_hooks>
 
 new DB:db_iHandle;
+static const DBLogTables[][] = {
+	"Admin", 
+	"AdminIPCheck", 
+	"AdminMole", 
+	"IPCheck", 
+	"ItemTransfer", 
+	"Kick", 
+	"Pay_Log", 
+	"PlayerVehicle", 
+	"StaffChat"
+};
 
 hook OnGameModeInit() {
-	
 	db_iHandle = db_open("logs.db");
+	if(!db_iHandle) return print("[SQLite] Unable to open logs.db. SQLite logging is unavailable."), 1;
+
+	for(new i; i < sizeof(DBLogTables); ++i) {
+		new DBResult:result = DB_ExecuteQuery(db_iHandle, "CREATE TABLE IF NOT EXISTS `%s` (`Timestamp` INTEGER NOT NULL, `PlayerID` INTEGER NOT NULL, `TargetID` INTEGER NOT NULL DEFAULT 0, `LogText` TEXT NOT NULL, `PlayerIP` TEXT NOT NULL, `TargetIP` TEXT NOT NULL DEFAULT '')", DBLogTables[i]);
+		if(!result) {
+			printf("[SQLite] Unable to initialize logs.db table %s; SQLite logging is unavailable.", DBLogTables[i]);
+			db_close(db_iHandle);
+			db_iHandle = DB:0;
+			return 1;
+		}
+		db_free_result(result);
+	}
+
+	new DBResult:result = DB_ExecuteQuery(db_iHandle, "CREATE TABLE IF NOT EXISTS `Connections` (`Timestamp` INTEGER NOT NULL, `PlayerID` INTEGER NOT NULL, `PlayerIP` TEXT NOT NULL)");
+	if(!result) {
+		print("[SQLite] Unable to initialize logs.db table Connections. SQLite logging is unavailable.");
+		db_close(db_iHandle);
+		db_iHandle = DB:0;
+		return 1;
+	}
+	db_free_result(result);
 
 	return 1;
 }
 
 hook OnGameModeExit() {
-	db_close(db_iHandle);
+	if(db_iHandle) db_close(db_iHandle);
+	db_iHandle = DB:0;
+	return 1;
 }
 
 /*
@@ -80,14 +113,13 @@ hook OnGameModeExit() {
 
 */		
 DBLog_TableAllowed(const table[]) {
-	static const tables[][] = {"Admin", "AdminIPCheck", "AdminMole", "IPCheck", "ItemTransfer", "Kick", "Pay_Log", "PlayerVehicle", "StaffChat"};
-	for(new i; i < sizeof(tables); ++i) if(!strcmp(table, tables[i])) return 1;
+	for(new i; i < sizeof(DBLogTables); ++i) if(!strcmp(table, DBLogTables[i])) return 1;
 	return 0;
 }
 
 DBLog_WriteEntry(const table[], actorid, targetid, const text[], const actorip[], const targetip[], bool:withTarget) {
 	new length = strlen(text), bool:longEntry = length > 2048;
-	if(length >= sizeof(szMiscArray) || !DBLog_TableAllowed(table)) return 0;
+	if(!db_iHandle || length >= sizeof(szMiscArray) || !DBLog_TableAllowed(table)) return 0;
 	new DBResult:result, chunk[2049];
 	if(longEntry) {
 		result = DB_ExecuteQuery(db_iHandle, "BEGIN IMMEDIATE");
@@ -186,7 +218,7 @@ GroupDBLog(iPlayerID, iGroupID, szLogText) {
 
 */
 ConnectionDBLog(iPlayerID) {
-	if(iPlayerID < 0 || iPlayerID >= MAX_PLAYERS || !IsPlayerConnected(iPlayerID)) return 0;
+	if(!db_iHandle || iPlayerID < 0 || iPlayerID >= MAX_PLAYERS || !IsPlayerConnected(iPlayerID)) return 0;
 	new query[256];
 	format(query, sizeof(query), "INSERT INTO `Connections` (`Timestamp`,`PlayerID`,`PlayerIP`) VALUES (%d,%d,'%q')", gettime(), PlayerInfo[iPlayerID][pId], PlayerInfo[iPlayerID][pIP]);
 	new DBResult:result = DB_ExecuteQuery(db_iHandle, "%s", query);
