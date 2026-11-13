@@ -37,453 +37,271 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* self notes & comments:
-
-	- A player may be staff banned by a head admin or above, or a member of HR (pAdmin 1337 | pHR > 1).
-	- Shane requested that we remove the pStaffBanned and instead use a separate table for quicker loading etc.
-	- Staff banning and the removal of must also be able to be done offline.
-
-	- For checking if a player is staff banned, there're one of two posibilities - retrieve from the table, or use an integer. Probably faster to use integer.
-
-	- TODO:
-		- /staffban
-		- /unstaffban
-
-		- /ostaffban
-		- /ounstaffban
-
-		- /staffbans
-
-		- Alter /makeadmin or any commands like that so they cannot be made an admin if they are staff banned, a la blacklist system for HMA.
-*/
+#define STAFFBAN_INDEFINITE (2147483640)
 
 stock IsStaffBanned(playerid)
 {
-	if(PlayerInfo[playerid][pStaffBanned]) return 1; 
-	return 0;
+	if(playerid < 0 || playerid >= MAX_PLAYERS || !IsPlayerConnected(playerid) || !gPlayerLogged{playerid}) return 1;
+	if(!PlayerInfo[playerid][pStaffBanned]) return 0;
+	if(!gAccountsInnoDB || !gStaffBansInnoDB || restarting || mysql_unprocessed_queries(MainPipeline)) return 1;
+
+	new query[384];
+	mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` a JOIN `staffbans` b ON b.`playerid`=a.`id` SET a.`StaffBanned`=0,b.`status`=3 WHERE a.`id`=%d AND b.`status`=1 AND b.`expiredate`<=%d AND b.`expiredate`<>%d", GetPlayerSQLId(playerid), gettime(), STAFFBAN_INDEFINITE);
+	new Cache:result = mysql_query(MainPipeline, query);
+	if(!cache_is_valid(result)) return 1;
+	new affected = cache_affected_rows();
+	cache_delete(result);
+	if(affected > 0) {
+		PlayerInfo[playerid][pStaffBanned] = 0;
+		SendClientMessage(playerid, COLOR_GRAD1, "Your staff ban has expired. Previous staff ranks have not been restored.");
+	}
+	return PlayerInfo[playerid][pStaffBanned];
+}
+
+ptask StaffBanExpiry[60000](playerid)
+{
+	if(gPlayerLogged{playerid} && PlayerInfo[playerid][pStaffBanned]) IsStaffBanned(playerid);
+}
+
+StaffBan_ParseReason(const text[], reason[], &days)
+{
+	new end = strlen(text), reasonEnd;
+	while(end > 0 && text[end - 1] <= ' ') --end;
+	reasonEnd = end;
+	while(reasonEnd > 0 && text[reasonEnd - 1] > ' ') --reasonEnd;
+	if(reasonEnd == 0 || end - reasonEnd > 5) return 0;
+	days = 0;
+	for(new i = reasonEnd; i < end; ++i) {
+		if(text[i] < '0' || text[i] > '9') return 0;
+		days = days * 10 + text[i] - '0';
+	}
+	while(reasonEnd > 0 && text[reasonEnd - 1] <= ' ') --reasonEnd;
+	if(reasonEnd == 0 || reasonEnd >= 128) return 0;
+	strmid(reason, text, 0, reasonEnd, 128);
+	return 1;
+}
+
+StaffBan_Change(playerid, targetid, const accountName[], const reason[], days, bool:ban)
+{
+	if(playerid < 0 || playerid >= MAX_PLAYERS || !IsPlayerConnected(playerid) || !gPlayerLogged{playerid} || GetPlayerSQLId(playerid) <= 0
+		|| (PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pHR] <= 0))
+		return SendClientMessage(playerid, COLOR_GRAD2, "You're not authorised to use this command.");
+	if(!gAccountsInnoDB || !gStaffBansInnoDB || restarting || mysql_unprocessed_queries(MainPipeline))
+		return SendClientMessage(playerid, COLOR_GRAD2, "Staff-ban storage is unavailable or busy. Please try again.");
+	if((targetid == INVALID_PLAYER_ID && !accountName[0])
+		|| (targetid != INVALID_PLAYER_ID && (targetid < 0 || targetid >= MAX_PLAYERS || !IsPlayerConnected(targetid) || !gPlayerLogged{targetid})))
+		return SendClientMessage(playerid, COLOR_GRAD2, "That player is not logged in.");
+
+	new created = gettime(), expires = STAFFBAN_INDEFINITE;
+	if(created < 0) return SendClientMessage(playerid, COLOR_GRAD2, "The server time is outside the supported staff-ban range.");
+	new maxDays = (cellmax - created) / 86400;
+	if(days < 0 || days > maxDays) return SendClientMessageEx(playerid, COLOR_GRAD2, "Days must be between 0 and %d.", maxDays);
+	if(days > 0) expires = created + days * 86400;
+
+	new query[1024], sqlid, admin, banned, previousExpiry, name[MAX_PLAYER_NAME + 1];
+	mysql_query(MainPipeline, "START TRANSACTION", false);
+	if(mysql_errno(MainPipeline)) return SendClientMessage(playerid, COLOR_GRAD2, "The staff-ban change was not confirmed.");
+	if(targetid == INVALID_PLAYER_ID)
+		mysql_format(MainPipeline, query, sizeof(query), "SELECT a.`id`,a.`Username`,a.`AdminLevel`,a.`StaffBanned`,b.`expiredate` FROM `accounts` a LEFT JOIN `staffbans` b ON b.`playerid`=a.`id` AND b.`status`=1 WHERE a.`Username`='%e' FOR UPDATE", accountName);
+	else
+		mysql_format(MainPipeline, query, sizeof(query), "SELECT a.`id`,a.`Username`,a.`AdminLevel`,a.`StaffBanned`,b.`expiredate` FROM `accounts` a LEFT JOIN `staffbans` b ON b.`playerid`=a.`id` AND b.`status`=1 WHERE a.`id`=%d FOR UPDATE", GetPlayerSQLId(targetid));
+	new Cache:result = mysql_query(MainPipeline, query);
+	new rows;
+	if(cache_is_valid(result)) {
+		cache_get_row_count(rows);
+		if(rows == 1) {
+			cache_get_value_name_int(0, "id", sqlid);
+			cache_get_value_name(0, "Username", name, sizeof(name));
+			cache_get_value_name_int(0, "AdminLevel", admin);
+			cache_get_value_name_int(0, "StaffBanned", banned);
+			new bool:missingExpiry;
+			cache_is_value_name_null(0, "expiredate", missingExpiry);
+			if(!missingExpiry) cache_get_value_name_int(0, "expiredate", previousExpiry);
+		}
+		cache_delete(result);
+	}
+	new error[128];
+	if(rows != 1 || sqlid <= 0) format(error, sizeof(error), "Account not found, or staff-ban storage could not be read consistently.");
+	else if(targetid == INVALID_PLAYER_ID) {
+		foreach(new i : Player) {
+			new connectedName[MAX_PLAYER_NAME + 1];
+			GetPlayerName(i, connectedName, sizeof(connectedName));
+			if((gPlayerLogged{i} && GetPlayerSQLId(i) == sqlid) || !strcmp(connectedName, name, true)) {
+				format(error, sizeof(error), "That player is connected. Use the online staff-ban command.");
+				break;
+			}
+		}
+	}
+	if(!error[0] && ban) {
+		if(PlayerInfo[playerid][pAdmin] != 99999 && ((admin > 0 && admin >= PlayerInfo[playerid][pAdmin])
+			|| (targetid != INVALID_PLAYER_ID && PlayerInfo[targetid][pAdmin] > 0 && PlayerInfo[targetid][pAdmin] >= PlayerInfo[playerid][pAdmin])))
+			format(error, sizeof(error), "You cannot perform this action on an equal or higher level administrator.");
+		else if(banned && !(previousExpiry > 0 && previousExpiry <= created && previousExpiry != STAFFBAN_INDEFINITE))
+			format(error, sizeof(error), "That account is already staff banned.");
+	}
+	else if(!error[0] && !banned) format(error, sizeof(error), "That account is not staff banned.");
+	if(error[0]) {
+		mysql_query(MainPipeline, "ROLLBACK", false);
+		return SendClientMessage(playerid, COLOR_GRAD2, error);
+	}
+
+	mysql_format(MainPipeline, query, sizeof(query), "UPDATE `staffbans` SET `status`=%d WHERE `playerid`=%d AND `status`=1", ban ? 3 : 2, sqlid);
+	mysql_query(MainPipeline, query, false);
+	new failed = mysql_errno(MainPipeline);
+	if(!failed && ban) {
+		mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `staffbans` (`details`,`issuer`,`playerid`,`expiredate`,`created`) VALUES ('%e',%d,%d,%d,%d)", reason, GetPlayerSQLId(playerid), sqlid, expires, created);
+		mysql_query(MainPipeline, query, false);
+		failed = mysql_errno(MainPipeline);
+	}
+	if(!failed) {
+		if(ban)
+			mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `AdminLevel`=0,`SeniorModerator`=0,`Helper`=0,`pVIPMod`=0,`Watchdog`=0,`HR`=0,`AP`=0,`Security`=0,`ShopTech`=0,`FactionModerator`=0,`GangModerator`=0,`Undercover`=0,`BanAppealer`=0,`PR`=0,`BM`=0,`ASM`=0,`SecureIP`='0.0.0.0',`StaffBanned`=1 WHERE `id`=%d", sqlid);
+		else
+			mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `StaffBanned`=0 WHERE `id`=%d", sqlid);
+		mysql_query(MainPipeline, query, false);
+		failed = mysql_errno(MainPipeline);
+	}
+	if(failed) {
+		mysql_query(MainPipeline, "ROLLBACK", false);
+		return SendClientMessage(playerid, COLOR_GRAD2, "The staff-ban change was not confirmed. Please try again.");
+	}
+	mysql_query(MainPipeline, "COMMIT", false);
+	if(mysql_errno(MainPipeline)) {
+		mysql_query(MainPipeline, "ROLLBACK", false);
+		return SendClientMessage(playerid, COLOR_GRAD2, "The staff-ban change was not confirmed. Please check its status before retrying.");
+	}
+
+	if(targetid != INVALID_PLAYER_ID) {
+		if(ban) {
+			new modeParams[4];
+			if(HelpingNewbie[targetid] != INVALID_PLAYER_ID) pc_cmd_finishhelp(targetid, modeParams);
+			if(GetPVarType(targetid, "pGodMode")) {
+				SetHealth(targetid, GetPVarFloat(targetid, "pPreGodHealth"));
+				SetArmour(targetid, GetPVarFloat(targetid, "pPreGodArmor"));
+				DeletePVar(targetid, "pGodMode");
+				DeletePVar(targetid, "pPreGodHealth");
+				DeletePVar(targetid, "pPreGodArmor");
+			}
+			if(GetPVarInt(targetid, "StartedWatching")) pc_cmd_stopwatch(targetid, modeParams);
+			if(Spectating[targetid] > 0) {
+				format(modeParams, sizeof(modeParams), "off");
+				pc_cmd_spec(targetid, modeParams);
+			}
+			DeletePVar(targetid, "BigEar");
+			DeletePVar(targetid, "BigEarGroup");
+			DeletePVar(targetid, "BigEarPlayer");
+			DeletePVar(targetid, "BigEarOOCGroup");
+			DeletePVar(targetid, "BigEarPM");
+			DeletePVar(targetid, "BigEarPlayerPM");
+			rBigEarT[targetid] = 0;
+			if(GetPVarInt(targetid, "AdvisorDuty") == 1) {
+				DeletePVar(targetid, "AdvisorDuty");
+				--Advisors;
+			}
+			PlayerInfo[targetid][pAdmin] = 0;
+			PlayerInfo[targetid][pSMod] = 0;
+			PlayerInfo[targetid][pVIPMod] = 0;
+			PlayerInfo[targetid][pHelper] = 0;
+			PlayerInfo[targetid][pWatchdog] = 0;
+			PlayerInfo[targetid][pFactionModerator] = 0;
+			PlayerInfo[targetid][pGangModerator] = 0;
+			PlayerInfo[targetid][pUndercover] = 0;
+			PlayerInfo[targetid][pBanAppealer] = 0;
+			PlayerInfo[targetid][pShopTech] = 0;
+			PlayerInfo[targetid][pPR] = 0;
+			PlayerInfo[targetid][pHR] = 0;
+			PlayerInfo[targetid][pAP] = 0;
+			PlayerInfo[targetid][pSecurity] = 0;
+			PlayerInfo[targetid][pBM] = 0;
+			PlayerInfo[targetid][pASM] = 0;
+			format(PlayerInfo[targetid][pSecureIP], 16, "0.0.0.0");
+		}
+		PlayerInfo[targetid][pStaffBanned] = ban;
+		SendClientMessageEx(targetid, COLOR_LIGHTRED, "Your staff ban was %s by %s. Reason: %s", ban ? ("issued") : ("removed"), GetPlayerNameEx(playerid), reason);
+	}
+	new expiryText[32] = "indefinite", message[512];
+	if(days > 0) format(expiryText, sizeof(expiryText), "%s", date(expires, 1));
+	format(message, sizeof(message), "{AA3333}AdmWarning{FFFF00}: %s's staff ban was %s by %s. Reason: %s", name, ban ? ("issued") : ("removed"), GetPlayerNameEx(playerid), reason);
+	ABroadCast(COLOR_YELLOW, message, 4);
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Staff ban %s for %s. Reason: %s", ban ? ("issued") : ("removed"), name, reason);
+	if(ban) {
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Staff-ban expiry: %s", expiryText);
+		if(targetid != INVALID_PLAYER_ID) SendClientMessageEx(targetid, COLOR_LIGHTRED, "Staff-ban expiry: %s", expiryText);
+	}
+	format(message, sizeof(message), "%s (%d): staff ban %s by %s (%d), reason: %s", name, sqlid, ban ? ("issued") : ("removed"), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), reason);
+	Log("logs/staffban.log", message);
+	if(ban) {
+		format(message, sizeof(message), "%s (%d): duration %d days; expiry %s", name, sqlid, days, expiryText);
+		Log("logs/staffban.log", message);
+	}
+	return 1;
 }
 
 CMD:staffban(playerid, params[])
 {
-
-	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pHR] > 0)
-	{
-		new iTarget, szReason[128], iDays;
-		if(sscanf(params, "ds[128]d", iTarget, szReason, iDays))
-		{
-			SendClientMessage(playerid, COLOR_GREY, "USAGE: /staffban [playerid] [reason] [duration (days)]");
-			SendClientMessage(playerid, COLOR_GREY, "Players will automatically be unbanned after the duration has expired. To make a ban indefinite, set days as 0.");
-			return 1;
-		}
-
-		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not connected.");
-
-		if(PlayerInfo[iTarget][pAdmin] >= PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pAdmin] != 99999) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot perform this action on an equal or higher level administrator.");
-
-		if(PlayerInfo[iTarget][pStaffBanned]) return SendClientMessage(playerid, COLOR_GRAD2, "That player is already staff banned.");
-
-		new iCreationDate = gettime();
-		if(iCreationDate < 0) return SendClientMessage(playerid, COLOR_GRAD2, "The server time is outside the supported staff-ban range.");
-		new iMaxDays = (cellmax - iCreationDate) / 86400;
-		if(iDays < 0 || iDays > iMaxDays) {
-			format(szMiscArray, sizeof szMiscArray, "You have specified an invalid amount of days. Days must be between 0 and %d.", iMaxDays);
-			return SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
-		}
-		new iExpireDate = 2147483640;
-		if(iDays > 0) iExpireDate = iCreationDate + (iDays * 86400);
-
-		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "INSERT INTO `staffbans` (`details`, `issuer`, `playerid`, `expiredate`, `created`) VALUES('%e', %d, %d, %d, %d)",
-			szReason,  GetPlayerSQLId(playerid), GetPlayerSQLId(iTarget), iExpireDate, iCreationDate);
-
-		// We have to make sure the query goes through before they can be staff banned.
-		mysql_tquery(MainPipeline, szMiscArray, "OnlineStaffBan", "ddsdd", playerid, iTarget, szReason, iExpireDate, iDays);
-	}
-	else SendClientMessage(playerid, COLOR_GRAD2, "You're not authorised to use this command.");
-
-	return 1;
+	new targetid, text[160], reason[128], days;
+	if(sscanf(params, "ds[160]", targetid, text) || !StaffBan_ParseReason(text, reason, days))
+		return SendClientMessage(playerid, COLOR_GREY, "USAGE: /staffban [playerid] [reason] [days; 0 = indefinite]");
+	return StaffBan_Change(playerid, targetid, "", reason, days, true);
 }
 
 CMD:unstaffban(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pHR] > 0)
-	{
-		new iTarget, szReason[128];
-		if(sscanf(params, "ds[128]", iTarget, szReason)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /unstaffban [playerid] [reason]");
-
-		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not connected.");
-
-		if(!PlayerInfo[iTarget][pStaffBanned]) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not staff banned.");
-
-		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `staffbans` SET `status`=2 WHERE `playerid`=%d AND `status`=1", GetPlayerSQLId(iTarget));
-		mysql_tquery(MainPipeline, szMiscArray, "RemoveStaffBan", "dds", playerid, iTarget, szReason);
-	}
-	else SendClientMessage(playerid, COLOR_GRAD2, "You're not authorised to use this command.");
-	return 1;
+	new targetid, reason[128];
+	if(sscanf(params, "ds[128]", targetid, reason)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /unstaffban [playerid] [reason]");
+	return StaffBan_Change(playerid, targetid, "", reason, 0, false);
 }
 
 CMD:ostaffban(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pHR] > 0)
-	{
-		new szTarget[MAX_PLAYER_NAME], szReason[128], iDays;
-		if(sscanf(params, "s[24]s[128]d", szTarget, szReason, iDays)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /ostaffban [account name] [reason] [duration (in days)]");
-
-		if(IsPlayerConnected(ReturnUser(szTarget))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /staffban.");
-
-		new iCreationDate = gettime();
-		if(iCreationDate < 0) return SendClientMessage(playerid, COLOR_GRAD2, "The server time is outside the supported staff-ban range.");
-		new iMaxDays = (cellmax - iCreationDate) / 86400;
-		if(iDays < 0 || iDays > iMaxDays) {
-			format(szMiscArray, sizeof szMiscArray, "You have specified an invalid amount of days. Days must be between 0 and %d.", iMaxDays);
-			return SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
-		}
-		new iExpireDate = 2147483640;
-		if(iDays > 0) iExpireDate = iCreationDate + (iDays * 86400);
-
-		mysql_format(MainPipeline, szMiscArray,sizeof(szMiscArray),"UPDATE `accounts` SET `AdminLevel` = 0, `HR` = 0, `AP` = 0, `Security` = 0, `ShopTech` = 0, `FactionModerator` = 0, `GangModerator` = 0, \
-			`Undercover` = 0, `BanAppealer` = 0, `Helper` = 0, `pVIPMod` = 0, `SecureIP` = '0.0.0.0', `SeniorModerator` = 0, `BanAppealer` = 0, `ShopTech` = 0, `StaffBanned` = 1 WHERE `Username`= '%s' AND `AdminLevel` < %d AND `StaffBanned` = 0", szTarget, PlayerInfo[playerid][pAdmin]);
-
-		mysql_tquery(MainPipeline, szMiscArray, "OfflineStaffBan", "dssddd", playerid, szTarget, szReason, iDays, iCreationDate, iExpireDate);
-
-		for(new i = 0; i < MAX_PLAYER_NAME; i++) if(szTarget[i] == '_') szTarget[i] = ' '; // Remove the underscore, looks nicer for the person using the command.
-
-		format(szMiscArray, sizeof szMiscArray, "Attempting to staff ban %s.", szTarget);
-		SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
-	}
-	else SendClientMessage(playerid, COLOR_GRAD2, "You're not authorised to use this command.");
-	return 1;
+	new name[MAX_PLAYER_NAME + 1], text[160], reason[128], days;
+	if(sscanf(params, "s[25]s[160]", name, text) || !StaffBan_ParseReason(text, reason, days))
+		return SendClientMessage(playerid, COLOR_GREY, "USAGE: /ostaffban [account name] [reason] [days; 0 = indefinite]");
+	return StaffBan_Change(playerid, INVALID_PLAYER_ID, name, reason, days, true);
 }
 
 CMD:ounstaffban(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pHR] > 0)
-	{
-		new szTarget[MAX_PLAYER_NAME];
-		if(sscanf(params, "s[24]", szTarget)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /ounstaffban [account name]");
-
-		if(IsPlayerConnected(ReturnUser(szTarget))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /unstaffban.");
-
-		mysql_format(MainPipeline, szMiscArray,sizeof(szMiscArray),"UPDATE `accounts` SET `StaffBanned`=0 WHERE `Username`= '%s' AND `StaffBanned` = 1", szTarget, PlayerInfo[playerid][pAdmin]);
-
-		mysql_tquery(MainPipeline, szMiscArray, "OfflineRemoveStaffBan", "ds", playerid, szTarget);
-
-		for(new i = 0; i < MAX_PLAYER_NAME; i++) if(szTarget[i] == '_') szTarget[i] = ' '; // Remove the underscore, looks nicer for the person using the command.
-
-		format(szMiscArray, sizeof szMiscArray, "Attempting to remove %s's staff ban.", szTarget);
-		SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
-	}
-	else SendClientMessage(playerid, COLOR_GRAD2, "You're not authorised to use this command.");
-	return 1;
+	new name[MAX_PLAYER_NAME + 1];
+	if(sscanf(params, "s[25]", name)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /ounstaffban [account name]");
+	return StaffBan_Change(playerid, INVALID_PLAYER_ID, name, "Offline removal", 0, false);
 }
 
 CMD:staffbans(playerid, params[])
 {
-	
-	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pHR] > 0)
-	{
-		SendClientMessage(playerid, COLOR_GREEN,"_______________________________________");
-		SendClientMessage(playerid, COLOR_GRAD3, "List of online staff bans: ");
-		foreach(new i: Player)
-		{
-			if(PlayerInfo[i][pStaffBanned] == 1) 
-			{
-				mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "SELECT * FROM `staffbans` WHERE `playerid`=%d", GetPlayerSQLId(i));
-				mysql_tquery(MainPipeline, szMiscArray, "DisplayStaffBan", "dd", playerid, i);
+	if(!gPlayerLogged{playerid} || (PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pHR] <= 0))
+		return SendClientMessage(playerid, COLOR_GRAD2, "You're not authorised to use this command.");
+	if(!gStaffBansInnoDB) return SendClientMessage(playerid, COLOR_GRAD2, "Staff-ban storage is unavailable.");
+	new query[512];
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT b.`playerid`,b.`issuer`,b.`details`,b.`expiredate`,i.`Username` FROM `staffbans` b JOIN `accounts` a ON a.`id`=b.`playerid` LEFT JOIN `accounts` i ON i.`id`=b.`issuer` WHERE b.`status`=1 AND a.`StaffBanned`=1 AND (b.`expiredate`>%d OR b.`expiredate`=%d) ORDER BY b.`id`", gettime(), STAFFBAN_INDEFINITE);
+	new Cache:result = mysql_query(MainPipeline, query);
+	if(!cache_is_valid(result)) return SendClientMessage(playerid, COLOR_GRAD2, "Staff bans could not be read.");
+	new rows, displayed;
+	cache_get_row_count(rows);
+	SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
+	SendClientMessage(playerid, COLOR_GRAD3, "List of online staff bans:");
+	for(new row; row < rows; ++row) {
+		new sqlid, issuer, expires, reason[128], issuerName[MAX_PLAYER_NAME + 1], expiryText[32] = "indefinite";
+		cache_get_value_name_int(row, "playerid", sqlid);
+		cache_get_value_name_int(row, "issuer", issuer);
+		cache_get_value_name_int(row, "expiredate", expires);
+		cache_get_value_name(row, "details", reason, sizeof(reason));
+		new bool:missingIssuer;
+		cache_is_value_name_null(row, "Username", missingIssuer);
+		if(missingIssuer) format(issuerName, sizeof(issuerName), "Account #%d", issuer);
+		else cache_get_value_name(row, "Username", issuerName, sizeof(issuerName));
+		if(expires != STAFFBAN_INDEFINITE) format(expiryText, sizeof(expiryText), "%s", date(expires, 1));
+		foreach(new i : Player) {
+			if(gPlayerLogged{i} && GetPlayerSQLId(i) == sqlid) {
+				SendClientMessageEx(playerid, COLOR_GRAD1, "%s (ID: %d) - issuer: %s - expires: %s", GetPlayerNameEx(i), i, issuerName, expiryText);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Reason: %s", reason);
+				++displayed;
+				break;
 			}
 		}
-
-		SendClientMessage(playerid, COLOR_GREEN,"_______________________________________");
 	}
-	else SendClientMessage(playerid, COLOR_GRAD2, "You're not authorised to use this command.");
+	cache_delete(result);
+	if(!displayed) SendClientMessage(playerid, COLOR_GRAD1, "No active online staff bans were found.");
+	SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
 	return 1;
 }
-
-forward DisplayStaffBan(iPlayer, iBanned);
-public DisplayStaffBan(iPlayer, iBanned)
-{
-	new szReason[128], iIssuedBy, iCreated, iExpire;
-	new rows;
-	cache_get_row_count(rows);
-
-	if(rows > 0)
-	{
-		for(new row = 0; row < rows; row++)
-		{
-			cache_get_value_name(row, "details", szReason, 128);
-			cache_get_value_name_int(row, "issuer", iIssuedBy);
-			cache_get_value_name_int(row, "created", iCreated);
-			cache_get_value_name_int(row, "expiredate", iExpire);
-		}
-
-		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "SELECT `Username` FROM `accounts` WHERE `id`=%d", iIssuedBy);
-		mysql_tquery(MainPipeline, szMiscArray, "FetchIssuer", "ddsddd", iPlayer, iBanned, szReason, iIssuedBy, iCreated, iExpire);
-	}
-	return 1;
-}
-
-forward FetchIssuer(iPlayer, iBanned, szReason[], iIssuedBy, iCreated, iExpire);
-public FetchIssuer(iPlayer, iBanned, szReason[], iIssuedBy, iCreated, iExpire)
-{
-	new rows;
-	cache_get_row_count(rows);
-	if(rows > 0)
-	{
-		new szUsername[MAX_PLAYER_NAME];
-
-		for(new row = 0; row < rows; row++)
-		{
-			cache_get_value_name(row, "Username", szUsername, MAX_PLAYER_NAME);
-		}
-
-		format(szMiscArray, sizeof szMiscArray, "%s (ID: %d) banned by %s, reason: %s - expire date: %s", GetPlayerNameEx(iBanned), iBanned, szUsername, szReason, date(iExpire, 1));
-		SendClientMessage(iPlayer, COLOR_GRAD1, szMiscArray);
-	}
-	return 1;
-}
-
-forward OfflineRemoveStaffBan(iIssuer, szTarget[]);
-public OfflineRemoveStaffBan(iIssuer, szTarget[])
-{
-	if(!cache_affected_rows()) return SendClientMessage(iIssuer, COLOR_GRAD2, "There was an error removing the staff ban from that account.");
-
-	mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "SELECT `Username`, `id` FROM `accounts` WHERE `Username`='%s'", szTarget);
-	mysql_tquery(MainPipeline, szMiscArray, "RetrieveTargetIDUnban", "ds", iIssuer, szTarget);
-	return 1;
-}
-
-forward RetrieveTargetIDUnban(iIssuer, szTarget[]);
-public RetrieveTargetIDUnban(iIssuer, szTarget[])
-{
-	new szUsername[MAX_PLAYER_NAME], iSQLID;
-
-	new rows;
-	cache_get_row_count(rows);
-	if(rows > 0)
-	{
-		for(new row = 0; row < rows; row++)
-		{
-			cache_get_value_name(row, "Username", szUsername, MAX_PLAYER_NAME);
-			cache_get_value_name_int(row, "id", iSQLID);
-		}
-
-		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `staffbans` SET `status`=2 WHERE `playerid`=%d AND `status`=1", iSQLID);
-		mysql_tquery(MainPipeline, szMiscArray, "ProcessOfflineUnStaffBan", "dsd", iIssuer, szTarget, iSQLID);
-	}
-	else // Because we don't have their SQL ID we shouldn't log it, because we can't track who the staff ban belongs to.
-	{
-		format(szMiscArray, sizeof szMiscArray, "%s's staff ban was removed but the row in `staffbans` could not be removed.", szTarget);
-		Log("logs/staffban.log", szMiscArray);
-	}
-	return 1;
-}
-
-forward ProcessOfflineUnStaffBan(iIssuer, szTarget[], iSQLID);
-public ProcessOfflineUnStaffBan(iIssuer, szTarget[], iSQLID)
-{
-	if(!cache_affected_rows())
-	{
-		format(szMiscArray, sizeof szMiscArray, "%s was un-staff banned but the row could not be deleted from `staffbans`.", szTarget);
-		Log("logs/staffban.log", szMiscArray);
-		return 1;
-	}
-
-	// Inform the issuer.
-	format(szMiscArray, sizeof szMiscArray, "You have successfully removed %s's staff ban.", szTarget);
-	SendClientMessage(iIssuer, COLOR_GRAD1, szMiscArray);
-
-	// Inform the admins.
-	format(szMiscArray, sizeof szMiscArray, "{AA3333}AdmWarning{FFFF00}: %s has had their staff ban removed by %s (offline).", szTarget, GetPlayerNameEx(iIssuer));
-	ABroadCast(COLOR_YELLOW, szMiscArray, 4);
-
-	// Log it.
-	format(szMiscArray, sizeof szMiscArray, "%s (%d) had their staff ban removed (offline) by %s (%d)", szTarget, iSQLID, GetPlayerNameEx(iIssuer), GetPlayerSQLId(iIssuer));
-	Log("logs/staffban.log", szMiscArray);
-
-	return 1;
-}
-
-forward OfflineStaffBan(iIssuer, szTarget[], szReason[], iDays, iCreationDate, iExpireDate);
-public OfflineStaffBan(iIssuer, szTarget[], szReason[], iDays, iCreationDate, iExpireDate)
-{
-	if(!cache_affected_rows()) return SendClientMessage(iIssuer, COLOR_GRAD2, "There was an error offline staff banning that account.");
-
-	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `Username`, `id` FROM `accounts` WHERE `Username`='%s'", szTarget);
-	mysql_tquery(MainPipeline, szMiscArray, "RetrieveTargetID", "dssddd", iIssuer, szTarget, szReason, iDays, iCreationDate, iExpireDate);
-	return 1;
-}
-
-forward RetrieveTargetID(iIssuer, szTarget[], szReason[], iDays, iCreationDate, iExpireDate);
-public RetrieveTargetID(iIssuer, szTarget[], szReason[], iDays, iCreationDate, iExpireDate)
-{
-	new szUsername[MAX_PLAYER_NAME], iSQLID;
-
-	new rows;
-	cache_get_row_count(rows);
-	if(rows > 0)
-	{
-		for(new row = 0; row < rows; row++)
-		{
-			cache_get_value_name(row, "Username", szUsername, MAX_PLAYER_NAME);
-			cache_get_value_name_int(row, "id", iSQLID);
-		}
-
-		// Now we have their SQL ID we can insert into the table.
-		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `staffbans` (`details`, `issuer`, `playerid`, `expiredate`, `created`) VALUES('%e', %d, %d, %d, %d)",
-			szReason,  GetPlayerSQLId(iIssuer), iSQLID, iExpireDate, iCreationDate);
-
-		mysql_tquery(MainPipeline, szMiscArray, "ProcessOfflineStaffBan", "dssddd", iIssuer, szTarget, szReason, iDays, iSQLID, iExpireDate);
-	}
-	else // Because we don't have their SQL ID we shouldn't log it, because we can't track who the staff ban belongs to.
-	{
-		format(szMiscArray, sizeof szMiscArray, "%s was staff banned but a row could not be added to `staffbans`.", szTarget);
-		Log("logs/staffban.log", szMiscArray);
-	}
-	return 1;
-}
-
-forward ProcessOfflineStaffBan(iIssuer, szTarget[], szReason[], iDays, iSQLID, iExpireDate);
-public ProcessOfflineStaffBan(iIssuer, szTarget[], szReason[], iDays, iSQLID, iExpireDate)
-{
-	if(!cache_affected_rows())
-	{
-		format(szMiscArray, sizeof szMiscArray, "%s was staff banned but a row could not be added to `staffbans`.", szTarget);
-		Log("logs/staffban.log", szMiscArray);
-		return 1;
-	}
-
-	if(iDays != 0)
-	{
-		// Inform the issuer.
-		format(szMiscArray, sizeof szMiscArray, "You have successfully staff banned %s, reason: %s.", szTarget, szReason);
-		SendClientMessage(iIssuer, COLOR_GRAD1, szMiscArray);
-
-		format(szMiscArray, sizeof szMiscArray, "Unban Date: %s", date(iExpireDate, 1));
-		SendClientMessage(iIssuer, COLOR_GRAD1, szMiscArray);	
-
-		// Inform the admins.
-		format(szMiscArray, sizeof szMiscArray, "{AA3333}AdmWarning{FFFF00}: %s has been offline staff banned by %s, reason: %s.", szTarget, GetPlayerNameEx(iIssuer), szReason);
-		ABroadCast(COLOR_YELLOW, szMiscArray, 4);
-
-		// Log it.
-		format(szMiscArray, sizeof szMiscArray, "%s (%d) was offline staff banned by %s (%d), reason: %s | Duration: %d days | Unban Date: %s", szTarget, iSQLID, GetPlayerNameEx(iIssuer), GetPlayerSQLId(iIssuer),
-			szReason, iDays, date(iExpireDate, 1));
-		Log("logs/staffban.log", szMiscArray);
-	}
-	else
-	{
-		// Inform the issuer.
-		format(szMiscArray, sizeof szMiscArray, "You have successfully staff banned %s indefinitely, reason: %s. ", szTarget, szReason);
-		SendClientMessage(iIssuer, COLOR_GRAD1, szMiscArray);
-
-		// Inform the admins.
-		format(szMiscArray, sizeof szMiscArray, "{AA3333}AdmWarning{FFFF00}: %s has been staff banned by %s, reason: %s.", szTarget, GetPlayerNameEx(iIssuer), szReason);
-		ABroadCast(COLOR_YELLOW, szMiscArray, 4);
-
-		// Log it.
-		format(szMiscArray, sizeof szMiscArray, "%s (%d) was staff banned by %s (%d), reason: %s | Duration: indefinite", szTarget, iSQLID, GetPlayerNameEx(iIssuer), GetPlayerSQLId(iIssuer), szReason);
-		Log("logs/staffban.log", szMiscArray);
-	}
-
-	return 1;
-}
-
-forward RemoveStaffBan(iIssuer, iTarget, szReason[]);
-public RemoveStaffBan(iIssuer, iTarget, szReason[])
-{
-	if(!cache_affected_rows()) return SendClientMessage(iIssuer, COLOR_GRAD2, "There was an error removing the staff ban from that account.");
-
-	PlayerInfo[iTarget][pStaffBanned] = 0;
-
-	// Inform the issuer.
-	format(szMiscArray, sizeof szMiscArray, "You have successfully removed %s's staff ban, reason: %s.", GetPlayerNameEx(iTarget), szReason);
-	SendClientMessage(iIssuer, COLOR_GRAD1, szMiscArray);
-
-	// Inform the player.
-	format(szMiscArray, sizeof szMiscArray, "Your staff ban was removed by %s, reason: %s.", GetPlayerNameEx(iIssuer), szReason);
-	SendClientMessage(iTarget, COLOR_LIGHTRED, szMiscArray);
-
-	// Inform the admins.
-	format(szMiscArray, sizeof szMiscArray, "{AA3333}AdmWarning{FFFF00}: %s (ID %d) has had their staff ban removed by %s, reason: %s.", GetPlayerNameEx(iTarget), iTarget, GetPlayerNameEx(iIssuer), szReason);
-	ABroadCast(COLOR_YELLOW, szMiscArray, 4);
-
-	// Log it.
-	format(szMiscArray, sizeof szMiscArray, "%s's (%d) staff ban was removed by %s (%d), reason: %s", GetPlayerNameEx(iTarget), GetPlayerSQLId(iTarget), GetPlayerNameEx(iIssuer), GetPlayerSQLId(iIssuer), szReason);
-	Log("logs/staffban.log", szMiscArray);
-
-	g_mysql_SaveAccount(iTarget);
-	return 1;
-}
-
-forward OnlineStaffBan(iIssuer, iTarget, szReason[], iExpireDate, iDays);
-public OnlineStaffBan(iIssuer, iTarget, szReason[], iExpireDate, iDays)
-{
-	if(!cache_affected_rows()) return SendClientMessage(iIssuer, COLOR_GRAD2, "There was an error staff banning that account.");
-	
-	// Main staff variables.
-	PlayerInfo[iTarget][pAdmin] = 0;
-	PlayerInfo[iTarget][pSMod] = 0;
-	PlayerInfo[iTarget][pVIPMod] = 0;
-	PlayerInfo[iTarget][pHelper] = 0;
-
-	// Secondary tasks.
-	PlayerInfo[iTarget][pFactionModerator] = 0;
-	PlayerInfo[iTarget][pGangModerator] = 0;
-	PlayerInfo[iTarget][pUndercover] = 0;
-	PlayerInfo[iTarget][pBanAppealer] = 0;
-	PlayerInfo[iTarget][pShopTech] = 0;
-	PlayerInfo[iTarget][pPR] = 0;
-	PlayerInfo[iTarget][pHR] = 0;
-	PlayerInfo[iTarget][pSecurity] = 0;
-	PlayerInfo[iTarget][pBM] = 0;
-	PlayerInfo[iTarget][pASM] = 0;
-	
-	PlayerInfo[iTarget][pStaffBanned] = 1;
-
-	if(iDays != 0)
-	{
-		// Inform the issuer.
-		format(szMiscArray, sizeof szMiscArray, "You have successfully staff banned %s, reason: %s.", GetPlayerNameEx(iTarget), szReason);
-		SendClientMessage(iIssuer, COLOR_GRAD1, szMiscArray);
-
-		format(szMiscArray, sizeof szMiscArray, "Unban Date: %s", date(iExpireDate, 1));
-		SendClientMessage(iIssuer, COLOR_GRAD1, szMiscArray);	
-
-		// Inform the player.
-		format(szMiscArray, sizeof szMiscArray, "You have been staff banned by %s, reason: %s.", GetPlayerNameEx(iIssuer), szReason);
-		SendClientMessage(iTarget, COLOR_LIGHTRED, szMiscArray);
-
-		format(szMiscArray, sizeof szMiscArray, "Your unban date is %s.", date(iExpireDate, 1));
-		SendClientMessage(iTarget, COLOR_LIGHTRED, szMiscArray);
-
-		// Inform the admins.
-		format(szMiscArray, sizeof szMiscArray, "{AA3333}AdmWarning{FFFF00}: %s (ID %d) has been staff banned by %s, reason: %s.", GetPlayerNameEx(iTarget), iTarget, GetPlayerNameEx(iIssuer), szReason);
-		ABroadCast(COLOR_YELLOW, szMiscArray, 4);
-
-		// Log it.
-		format(szMiscArray, sizeof szMiscArray, "%s (%d) was staff banned by %s (%d), reason: %s | Duration: %d days | Unban Date: %s", GetPlayerNameEx(iTarget), GetPlayerSQLId(iTarget), GetPlayerNameEx(iIssuer), GetPlayerSQLId(iIssuer),
-			szReason, iDays, date(iExpireDate, 1));
-		Log("logs/staffban.log", szMiscArray);
-	}
-	else
-	{
-		// Inform the issuer.
-		format(szMiscArray, sizeof szMiscArray, "You have successfully staff banned %s indefinitely, reason: %s. ", GetPlayerNameEx(iTarget), szReason);
-		SendClientMessage(iIssuer, COLOR_GRAD1, szMiscArray);
-
-		// Inform the player.
-		format(szMiscArray, sizeof szMiscArray, "You have been staff banned indefinitely by %s, reason: %s.", GetPlayerNameEx(iIssuer), szReason);
-		SendClientMessage(iTarget, COLOR_LIGHTRED, szMiscArray);
-
-		// Inform the admins.
-		format(szMiscArray, sizeof szMiscArray, "{AA3333}AdmWarning{FFFF00}: %s (ID %d) has been staff banned by %s, reason: %s.", GetPlayerNameEx(iTarget), iTarget, GetPlayerNameEx(iIssuer), szReason);
-		ABroadCast(COLOR_YELLOW, szMiscArray, 4);
-
-		// Log it.
-		format(szMiscArray, sizeof szMiscArray, "%s (%d) was staff banned by %s (%d), reason: %s | Duration: indefinite", GetPlayerNameEx(iTarget), GetPlayerSQLId(iTarget), GetPlayerNameEx(iIssuer), GetPlayerSQLId(iIssuer), szReason);
-		Log("logs/staffban.log", szMiscArray);
-	}
-
-	g_mysql_SaveAccount(iTarget);
-	return 1;
-}
-

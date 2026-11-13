@@ -1314,7 +1314,7 @@ CMD:makevipmod(playerid, params[])
 	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
 	if(!(0 <= level <= 2)) return SendClientMessageEx(playerid, COLOR_GREY, "Valid levels are 0 - 2");
 	if(PlayerInfo[target][pVIPMod] == level) return SendClientMessageEx(playerid, COLOR_GREY, "This person already has this level.");
-	if(PlayerInfo[target][pStaffBanned] >= 1) return SendClientMessage(playerid, COLOR_WHITE, "That player is currently staff banned.");
+	if(IsStaffBanned(target)) return SendClientMessage(playerid, COLOR_WHITE, "That player is currently staff banned.");
 	switch(level)
 	{
 		case 0: format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has removed %s's VIP Moderator rank.", GetPlayerNameEx(playerid), GetPlayerNameEx(target));

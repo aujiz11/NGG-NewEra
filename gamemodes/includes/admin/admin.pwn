@@ -1498,6 +1498,9 @@ CMD:setsec(playerid, params[])
 		}
 		if(giveplayerid != INVALID_PLAYER_ID)
 		{
+			if(IsStaffBanned(giveplayerid)) 
+				return SendClientMessage(playerid, COLOR_WHITE, "That player is currently staff banned.");
+			
 			if(PlayerInfo[giveplayerid][pAdmin] > 2)
 			{
 				if(strcmp(task, "fmod", true) == 0)
@@ -1793,7 +1796,8 @@ CMD:makeadmin(playerid, params[])  {
 			if(PlayerInfo[iTargetID][pAdmin] == iAdminValue) return SendClientMessageEx(playerid, COLOR_GREY, "This person already has this administrator level.");
 			else {
 
-				if(PlayerInfo[iTargetID][pStaffBanned] >= 1) return SendClientMessage(playerid, COLOR_WHITE, "That player is currently staff banned.");
+				if(IsStaffBanned(iTargetID)) 
+					return SendClientMessage(playerid, COLOR_WHITE, "That player is currently staff banned.");
 
 				/*new
 					szMessage[47 + (MAX_PLAYER_NAME * 2)];*/
@@ -5238,7 +5242,9 @@ CMD:makemoderator(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this to current admins!");
 				return 1;
 			}
-			if(PlayerInfo[giveplayerid][pStaffBanned] >= 1) return SendClientMessage(playerid, COLOR_WHITE, "That player is currently staff banned.");
+			if(IsStaffBanned(giveplayerid)) 
+				return SendClientMessage(playerid, COLOR_WHITE, "That player is currently staff banned.");
+			
 			PlayerInfo[giveplayerid][pAdmin] = 1;
 			if(level == 1) {
 				PlayerInfo[giveplayerid][pSMod] = 0;

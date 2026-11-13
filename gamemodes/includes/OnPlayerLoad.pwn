@@ -718,6 +718,7 @@ public OnPlayerLoad(playerid)
 	defer SkinDelay(playerid);
 
 	gPlayerLogged{playerid} = 1;
+	if(PlayerInfo[playerid][pStaffBanned]) IsStaffBanned(playerid);
 	g_mysql_AccountOnline(playerid, servernumber);
 	GetHomeCount(playerid);
 

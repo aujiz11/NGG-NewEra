@@ -168,7 +168,7 @@ stock g_mysql_Init()
 		else print("[MySQL] (ShopPipeline) Connection successful toward MySQL Database Server!");
 	}
 
-	mysql_tquery(MainPipeline, "SELECT `TABLE_NAME` AS `name`, `ENGINE` AS `engine` FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA`=DATABASE() AND `TABLE_NAME` IN ('accounts','shop_orders')", "OnShopDeliverySchema");
+	mysql_tquery(MainPipeline, "SELECT `TABLE_NAME` AS `name`, `ENGINE` AS `engine` FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA`=DATABASE() AND `TABLE_NAME` IN ('accounts','shop_orders','staffbans')", "OnShopDeliverySchema");
 	InitiateGamemode(); // Start the server
 
 	return 1;
@@ -6202,9 +6202,12 @@ public OnShopDeliverySchema() {
         if(strcmp(engine, "InnoDB", true)) continue;
         if(!strcmp(name, "accounts", true)) found |= 1;
         if(!strcmp(name, "shop_orders", true)) found |= 2;
+        if(!strcmp(name, "staffbans", true)) found |= 4;
     }
     gAccountsInnoDB = (found & 1) != 0;
-    gShopDeliveryReady = found == 3;
+    gStaffBansInnoDB = (found & 4) != 0;
+    gShopDeliveryReady = (found & 3) == 3;
+    if(!gStaffBansInnoDB) print("[StaffBan] Staff-ban storage unavailable: import database/staffbans.sql with InnoDB.");
     if(!gShopDeliveryReady) print("[Shop] Automatic delivery paused: accounts and shop_orders must both use InnoDB.");
     return 1;
 }
