@@ -3,6 +3,10 @@
 	- Jingles (September 2015)
 */
 
+// TODO: Keep InteractSprites inactive until gameplay entry and completion rules are defined.
+// Before activation, isolate player textdraws, fix directional input and prompt timing,
+// and complete cancellation, timer/session cleanup and result handling.
+
 #include <YSI_Coding\y_hooks>
 
 #define PVAR_INTERACT "1000"
