@@ -398,6 +398,7 @@ stock StopRefueling(playerid, iBusinessID, iPumpID)
 	Businesses[iBusinessID][bSafeBalance] += TaxSale(iCost);
 
 	KillTimer(Businesses[iBusinessID][GasPumpTimer][iPumpID]);
+	Businesses[iBusinessID][GasPumpTimer][iPumpID] = 0;
 
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
 
@@ -453,14 +454,19 @@ stock IsValidBusinessID(id)
 
 stock DestroyDynamicGasPump(iBusiness, iPump)
 {
-	DestroyDynamicObject(Businesses[iBusiness][GasPumpObjectID][iPump]);
-	DestroyDynamic3DTextLabel(Businesses[iBusiness][GasPumpInfoTextID][iPump]);
-	DestroyDynamic3DTextLabel(Businesses[iBusiness][GasPumpSaleTextID][iPump]);
-
 	#if defined TEXTLABEL_DEBUG
 	Streamer_SetIntData(STREAMER_TYPE_3D_TEXT_LABEL, Businesses[iBusiness][GasPumpInfoTextID][iPump], E_STREAMER_EXTRA_ID, 10);
 	Streamer_SetIntData(STREAMER_TYPE_3D_TEXT_LABEL, Businesses[iBusiness][GasPumpSaleTextID][iPump], E_STREAMER_EXTRA_ID, 1);
 	#endif
+
+	KillTimer(Businesses[iBusiness][GasPumpTimer][iPump]);
+	Businesses[iBusiness][GasPumpTimer][iPump] = 0;
+	DestroyDynamicObject(Businesses[iBusiness][GasPumpObjectID][iPump]);
+	DestroyDynamic3DTextLabel(Businesses[iBusiness][GasPumpInfoTextID][iPump]);
+	DestroyDynamic3DTextLabel(Businesses[iBusiness][GasPumpSaleTextID][iPump]);
+	Businesses[iBusiness][GasPumpObjectID][iPump] = INVALID_STREAMER_ID;
+	Businesses[iBusiness][GasPumpInfoTextID][iPump] = Text3D:INVALID_STREAMER_ID;
+	Businesses[iBusiness][GasPumpSaleTextID][iPump] = Text3D:INVALID_STREAMER_ID;
 }
 
 stock CreateDynamicGasPump(iPlayerID = INVALID_PLAYER_ID, iBusiness, iPump)
@@ -500,6 +506,15 @@ stock RefreshBusinessPickup(i)
   	DestroyDynamicPickup(Businesses[i][bPickup_int]);
   	if(IsValidDynamicArea(Businesses[i][bAreaID][0])) DestroyDynamicArea(Businesses[i][bAreaID][0]);
   	if(IsValidDynamicArea(Businesses[i][bAreaID][1])) DestroyDynamicArea(Businesses[i][bAreaID][1]);
+	Businesses[i][bDoorText] = Text3D:INVALID_STREAMER_ID;
+	Businesses[i][bStateText] = Text3D:INVALID_STREAMER_ID;
+	Businesses[i][bSupplyText] = Text3D:INVALID_STREAMER_ID;
+	Businesses[i][bPickup] = INVALID_STREAMER_ID;
+	Businesses[i][bPickup_int] = INVALID_STREAMER_ID;
+	Businesses[i][bAreaID][0] = INVALID_STREAMER_ID;
+	Businesses[i][bAreaID][1] = INVALID_STREAMER_ID;
+	
+	if(!Businesses[i][bType]) return 1;
     
     if (!(Businesses[i][bExtPos][0] == 0.0 && Businesses[i][bExtPos][1] == 0.0 && Businesses[i][bExtPos][2] == 0.0)) {
 
@@ -543,9 +558,74 @@ stock RefreshBusinessPickup(i)
 
 	format(szMiscArray, sizeof(szMiscArray), "[Business] Created Business: %d | Exterior Area ID: %d | Interior Area ID: %d", i, Businesses[i][bAreaID][0], Businesses[i][bAreaID][1]);
 	Log("debug/door_business.log", szMiscArray);
-
+	return 1;
 }
 
+
+stock DeleteBusiness(playerid, businessid)
+{
+	if(Businesses[businessid][bOrderState] == 2) {
+		SendClientMessageEx(playerid, COLOR_GREY, "You can't delete a business while a delivery is on its way.");
+		return 0;
+	}
+	for(new i = 1; i < MAX_VEHICLES; ++i) {
+		if(TruckDeliveringTo[i] == businessid) {
+			SendClientMessageEx(playerid, COLOR_GREY, "Cancel the business delivery before deleting it.");
+			return 0;
+		}
+	}
+	for(new i; i < MAX_BUSINESS_GAS_PUMPS; ++i) {
+		if(Businesses[businessid][GasPumpVehicleID][i]) {
+			SendClientMessageEx(playerid, COLOR_GREY, "You can't delete a business while a gas pump is in use.");
+			return 0;
+		}
+	}
+	foreach(new i: Player) {
+		if(InBusiness(i) == businessid) {
+			SendClientMessageEx(playerid, COLOR_GREY, "All players must leave the business before it can be deleted.");
+			return 0;
+		}
+	}
+
+	for(new i; i < MAX_BUSINESS_GAS_PUMPS; ++i) DestroyDynamicGasPump(businessid, i);
+	for(new i; i < MAX_BUSINESS_DEALERSHIP_VEHICLES; ++i) {
+		if(IsValidVehicle(Businesses[businessid][bVehID][i])) DestroyVehicle(Businesses[businessid][bVehID][i]);
+		DestroyDynamic3DTextLabel(Businesses[businessid][bVehicleLabel][i]);
+	}
+	for(new i; i < 10; ++i) {
+		if(IsValidVehicle(Businesses[businessid][bGymBikeVehicles][i])) DestroyVehicle(Businesses[businessid][bGymBikeVehicles][i]);
+	}
+	Businesses[businessid][bType] = 0;
+	RefreshBusinessPickup(businessid);
+
+	new empty[eBiz], orderDate[30];
+	strcpy(orderDate, Businesses[businessid][bOrderDate], sizeof(orderDate));
+	Businesses[businessid] = empty;
+	strcpy(Businesses[businessid][bOrderDate], orderDate, 30);
+	Businesses[businessid][bOwner] = -1;
+	for(new i; i < 2; ++i) {
+		Businesses[businessid][bGymBoxingArena1][i] = INVALID_PLAYER_ID;
+		Businesses[businessid][bGymBoxingArena2][i] = INVALID_PLAYER_ID;
+	}
+	for(new i; i < 10; ++i) {
+		Businesses[businessid][bGymBikePlayers][i] = INVALID_PLAYER_ID;
+		Businesses[businessid][bGymBikeVehicles][i] = INVALID_VEHICLE_ID;
+	}
+	foreach(new i: Player) {
+		if(PlayerInfo[i][pBusiness] == businessid) {
+			PlayerInfo[i][pBusiness] = INVALID_BUSINESS_ID;
+			PlayerInfo[i][pBusinessRank] = 0;
+			SendClientMessageEx(i, COLOR_WHITE, "Your business has been deleted. Your business membership has been cleared.");
+		}
+	}
+	new query[160];
+	mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Business` = "#INVALID_BUSINESS_ID", `BusinessRank` = 0 WHERE `Business` = %d", businessid);
+	mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
+	for(new i; i < MAX_BUSINESS_DEALERSHIP_VEHICLES; ++i) SaveDealershipVehicle(businessid, i);
+	SaveDealershipSpawn(businessid);
+	SaveBusiness(businessid);
+	return 1;
+}
 
 stock GetBusinessDefaultPickup(business)
 {
@@ -1566,31 +1646,13 @@ CMD:shopbusiness(playerid, params[])
 
 	else if(!strcmp(choice, "delete", true))
 	{
-		Businesses[businessid][bExtPos][0] = 0;
-		Businesses[businessid][bExtPos][1] = 0;
-		Businesses[businessid][bExtPos][2] = 0;
-		Businesses[businessid][bName][0] = 0;
-		Businesses[businessid][bType] = 0;
+		if(!DeleteBusiness(playerid, businessid)) return 1;
 		format(string, sizeof(string), "You have deleted the business.", amount);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 		format(string, sizeof(string), "[SHOPBUSINESS] %s has deleted BusinessID %d.", GetPlayerNameEx(playerid), businessid);
 		Log("logs/bedit.log", string);
-		//TODO IMPROVE
-		for (new i; i < MAX_BUSINESS_GAS_PUMPS; i++) {
-			DestroyDynamicGasPump(businessid, i);
-		}
-		for (new i; i < MAX_BUSINESS_DEALERSHIP_VEHICLES; i++) {
-			if(IsValidVehicle(Businesses[businessid][bVehID][i])) DestroyVehicle(Businesses[businessid][bVehID][i]);
-			if(IsValidDynamic3DTextLabel(Businesses[businessid][bVehicleLabel][i])) DestroyDynamic3DTextLabel(Businesses[businessid][bVehicleLabel][i]), Businesses[businessid][bVehicleLabel][i] = Text3D:-1;
-			Businesses[businessid][bModel][i] = 0;
-			Businesses[businessid][bParkPosX][i] = 0;
-			Businesses[businessid][bParkPosY][i] = 0;
-			Businesses[businessid][bParkPosZ][i] = 0;
-			Businesses[businessid][bParkAngle][i] = 0;
-			Businesses[businessid][bVehID][i] = 0;
-			Businesses[businessid][bPrice][i] = 0;
-			SaveDealershipVehicle(businessid, i);
-		}
+		Streamer_Update(playerid);
+		return 1;
 	}
 
 	RefreshBusinessPickup(businessid);
@@ -2147,31 +2209,14 @@ CMD:bedit(playerid, params[])
 
 	else if(!strcmp(choice, "delete", true))
 	{
-		Businesses[businessid][bExtPos][0] = 0;
-		Businesses[businessid][bExtPos][1] = 0;
-		Businesses[businessid][bExtPos][2] = 0;
-		Businesses[businessid][bName][0] = 0;
-		Businesses[businessid][bType] = 0;
+		if(!DeleteBusiness(playerid, businessid)) return 1;
 		format(string, sizeof(string), "You have deleted the business.", amount);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 		format(string, sizeof(string), "%s has deleted BusinessID %d.", GetPlayerNameEx(playerid), businessid);
 		Log("logs/bedit.log", string);
 
-		for (new i; i < MAX_BUSINESS_GAS_PUMPS; i++) {
-			DestroyDynamicGasPump(businessid, i);
-		}
-		for (new i; i < MAX_BUSINESS_DEALERSHIP_VEHICLES; i++) {
-			if(IsValidVehicle(Businesses[businessid][bVehID][i])) DestroyVehicle(Businesses[businessid][bVehID][i]);
-			if(IsValidDynamic3DTextLabel(Businesses[businessid][bVehicleLabel][i])) DestroyDynamic3DTextLabel(Businesses[businessid][bVehicleLabel][i]), Businesses[businessid][bVehicleLabel][i] = Text3D:-1;
-			Businesses[businessid][bModel][i] = 0;
-			Businesses[businessid][bParkPosX][i] = 0;
-			Businesses[businessid][bParkPosY][i] = 0;
-			Businesses[businessid][bParkPosZ][i] = 0;
-			Businesses[businessid][bParkAngle][i] = 0;
-			Businesses[businessid][bVehID][i] = 0;
-			Businesses[businessid][bPrice][i] = 0;
-			SaveDealershipVehicle(businessid, i);
-		}
+		Streamer_Update(playerid);
+		return 1;
 	}
 
 	RefreshBusinessPickup(businessid);
@@ -3382,8 +3427,8 @@ stock SaveBusiness(id)
 	Businesses[id][bInt], Businesses[id][bCustomExterior], Businesses[id][bCustomInterior], Businesses[id][bGrade], Businesses[id][bVW], Businesses[id][bSupplyPos][0],Businesses[id][bSupplyPos][1], Businesses[id][bSupplyPos][2]);
 
 	for (new i; i < sizeof(StoreItems); i++) mysql_format(MainPipeline, query, sizeof(query), "%s`Item%dPrice` = %d, ", query, i+1, Businesses[id][bItemPrices][i]);
-	for (new i; i < 5; i++)	mysql_format(MainPipeline, query, sizeof(query), "%s`Rank%dPay` = %d, ", query, i, Businesses[id][bRankPay][i], id);
-	for (new i; i < MAX_BUSINESS_GAS_PUMPS; i++) mysql_format(MainPipeline, query, sizeof(query), "%s `GasPump%dPosX` = %f, `GasPump%dPosY` = %f, `GasPump%dPosZ` = %f, `GasPump%dAngle` = %f, `GasPump%dModel` = %d, `GasPump%dCapacity` = %f, `GasPump%dGas` = %f, ", query, i+1, Businesses[id][GasPumpPosX][i],	i+1, Businesses[id][GasPumpPosY][i], i+1, Businesses[id][GasPumpPosZ][i], i+1, Businesses[id][GasPumpAngle][i], i+1, 1646,i+1, Businesses[id][GasPumpCapacity],	i+1, Businesses[id][GasPumpGallons]);
+	for (new i; i < 6; i++)	mysql_format(MainPipeline, query, sizeof(query), "%s`Rank%dPay` = %d, ", query, i, Businesses[id][bRankPay][i], id);
+	for (new i; i < MAX_BUSINESS_GAS_PUMPS; i++) mysql_format(MainPipeline, query, sizeof(query), "%s `GasPump%dPosX` = %f, `GasPump%dPosY` = %f, `GasPump%dPosZ` = %f, `GasPump%dAngle` = %f, `GasPump%dModel` = %d, `GasPump%dCapacity` = %f, `GasPump%dGas` = %f, ", query, i+1, Businesses[id][GasPumpPosX][i],	i+1, Businesses[id][GasPumpPosY][i], i+1, Businesses[id][GasPumpPosZ][i], i+1, Businesses[id][GasPumpAngle][i], i+1, 1646,i+1, Businesses[id][GasPumpCapacity][i],	i+1, Businesses[id][GasPumpGallons][i]);
 
 	mysql_format(MainPipeline, query, sizeof(query), "%s \
 	`Pay` = %d, `GasPrice` = %f, `MinInviteRank` = %d, `MinSupplyRank` = %d, `MinGiveRankRank` = %d, `MinSafeRank` = %d, `GymEntryFee` = %d, `GymType` = %d, `TotalProfits` = %d, `MaxLevel` = %d WHERE `Id` = %d",
@@ -3439,7 +3484,7 @@ stock SaveBusinessSale(id)
 stock SaveDealershipSpawn(businessid) {
 	new query[200];
 	mysql_format(MainPipeline, query, sizeof(query), "UPDATE `businesses` SET");
-	mysql_format(MainPipeline, query, sizeof(query), "%s `PurchaseX` = %0.5f, `PurchaseY` = %0.5f, `PurchaseZ` = %0.5f, `PurchaseAngle` = %0.5f", query, Businesses[businessid][bPurchaseX], Businesses[businessid][bPurchaseY], Businesses[businessid][bPurchaseZ], Businesses[businessid][bPurchaseAngle]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `PurchaseX` = %0.5f, `PurchaseY` = %0.5f, `PurchaseZ` = %0.5f, `PurchaseAngle` = %0.5f", query, Businesses[businessid][bPurchaseX][0], Businesses[businessid][bPurchaseY][0], Businesses[businessid][bPurchaseZ][0], Businesses[businessid][bPurchaseAngle][0]);
     mysql_format(MainPipeline, query, sizeof(query), "%s WHERE `Id` = %d", query, businessid+1);
     mysql_tquery(MainPipeline, query, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
 }
