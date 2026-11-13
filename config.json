@@ -63,6 +63,13 @@
         "use_prefix": true,
         "use_timestamp": true
     },
+    "crashdetect": {
+        "trace": "",
+        "trace_filter": "",
+        "crashdetect_log": "logs/plugins/crashdetect.log",
+        "logtimeformat": "[%H:%M:%S]",
+        "long_call_time": 5000
+    },
     "max_bots": 0,
     "max_players": 50,
     "name": "I love Open Multiplayer!",
@@ -106,8 +113,7 @@
     "pawn": {
         "legacy_plugins": [
             "crashdetect", 
-            "gvar", 
-            "irc",
+            "gvar",
             "mysql",
             "profiler",
             "streamer",
