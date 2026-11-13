@@ -959,32 +959,6 @@ public RadarCooldown(playerid)
 
 public OnPlayerPickUpDynamicPickup(playerid, pickupid)
 {	
-	new vehicleid = GetPlayerVehicleID(playerid);
-	for(new iGroup; iGroup < MAX_GROUPS; iGroup++)
-	{
-		for(new x = 0; x < MAX_SPIKES; ++x)
-		{
-			if(SpikeStrips[iGroup][x][sX] != 0 && pickupid == SpikeStrips[iGroup][x][sPickupID])
-			{
-				DestroyDynamicPickup(SpikeStrips[iGroup][x][sPickupID]);
-				SpikeStrips[iGroup][x][sPickupID] = CreateDynamicPickup(19300, 14, SpikeStrips[iGroup][x][sX], SpikeStrips[iGroup][x][sY], SpikeStrips[iGroup][x][sZ]);
-				if(GetVehicleDistanceFromPoint(vehicleid, SpikeStrips[iGroup][x][sX], SpikeStrips[iGroup][x][sY], SpikeStrips[iGroup][x][sZ]) <= 6.0) 
-				{
-					new Float:pos[4];
-					GetVehiclePos(vehicleid, pos[0], pos[1], pos[2]);
-					GetVehicleZAngle(vehicleid, pos[3]);
-					// TODO: This should be more specific to the vehicle
-					// TODO: Bike tires should be checked differently
-
-					if(GetDistanceBetweenPoints(pos[0], pos[1], pos[2], SpikeStrips[iGroup][x][sX], SpikeStrips[iGroup][x][sY], SpikeStrips[iGroup][x][sZ]) <= 4)
-					{
-							// Pop Front
-						SetVehicleTireState(vehicleid, 0, 0, 0, 0);
-					}
-				}
-			}	
-		}
-	}
 	if (GetPVarInt(playerid, "_BikeParkourStage") > 0)
 	{
 		new stage = GetPVarInt(playerid, "_BikeParkourStage");

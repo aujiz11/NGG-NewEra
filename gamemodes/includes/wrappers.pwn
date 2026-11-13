@@ -107,6 +107,10 @@ Internal_CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, c
 
 Internal_DestroyVehicle(vehicleid) {
 	
+	foreach(new playerid : Player)
+	{
+		if(SpikeVehicle[playerid] == vehicleid) SpikeVehicle[playerid] = 0;
+	}
 	Iter_Remove(Vehicles, vehicleid);
 	return DestroyVehicle(vehicleid);
 }

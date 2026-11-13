@@ -556,10 +556,13 @@ enum Spikes
 	Float:sY,
 	Float:sZ,
 	sObjectID,
-	sPickupID,
 	sDeployedBy[MAX_PLAYER_NAME],
 	sDeployedByStatus,
-	sDeployedAt[MAX_ZONE_NAME]
+	sDeployedAt[MAX_ZONE_NAME],
+	sWorldID,
+	sInteriorID,
+	Float:sCosAngle,
+	Float:sSinAngle
 }
 
 enum Ladder

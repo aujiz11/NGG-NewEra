@@ -2975,3 +2975,77 @@ ptask ShopItemQueue[60000](i)
 {
 	Shop_QueuePlayer(i);
 }
+
+ptask SpikeStripUpdate[100](playerid)
+{
+	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || !Iter_Count(DeployedSpikes))
+	{
+		SpikeVehicle[playerid] = 0;
+		return;
+	}
+	new vehicleid = GetPlayerVehicleID(playerid), model = GetVehicleModel(vehicleid);
+	if(!IsValidVehicle(vehicleid) || IsAPlane(vehicleid) || IsABoat(vehicleid) || IsATrain(model))
+	{
+		SpikeVehicle[playerid] = 0;
+		return;
+	}
+	new world = GetPlayerVirtualWorld(playerid), interior = GetPlayerInterior(playerid);
+	if(GetVehicleVirtualWorld(vehicleid) != world)
+	{
+		SpikeVehicle[playerid] = 0;
+		return;
+	}
+	new Float:pos[3], Float:matrix[3][3];
+	GetVehiclePos(vehicleid, pos[0], pos[1], pos[2]);
+	GetVehicleMatrix(vehicleid, matrix[0][0], matrix[0][1], matrix[0][2], matrix[1][0], matrix[1][1], matrix[1][2], matrix[2][0], matrix[2][1], matrix[2][2]);
+	new tick = GetTickCount(), elapsed = tick - SpikeSampleTick[playerid];
+	new Float:distance = VectorSize(pos[0] - SpikeVehiclePos[playerid][0], pos[1] - SpikeVehiclePos[playerid][1], pos[2] - SpikeVehiclePos[playerid][2]);
+	new bool:sweep = SpikeVehicle[playerid] == vehicleid && SpikeWorld[playerid] == world && SpikeInterior[playerid] == interior && 0 < elapsed <= 250 && distance <= 50.0;
+	new Float:wheels[6][3], wheelFlags, Float:reach = 0.0;
+	new bool:bike = IsABike(vehicleid) && model != 471;
+	new const VEHICLE_MODEL_INFO:axles[3] = {VEHICLE_MODEL_INFO_WHEELS_REAR, VEHICLE_MODEL_INFO_WHEELS_FRONT, VEHICLE_MODEL_INFO_WHEELS_MID};
+	for(new axle; axle < sizeof(axles); axle++)
+	{
+		if(bike && axle == 2) continue;
+		new Float:offset[3];
+		GetVehicleModelInfo(model, axles[axle], offset[0], offset[1], offset[2]);
+		if(offset[0] == 0.0 && offset[1] == 0.0 && offset[2] == 0.0) continue;
+		new Float:radius = VectorSize(offset[0], offset[1], offset[2]);
+		if(radius > reach) reach = radius;
+		for(new side; side < (bike ? 1 : 2); side++)
+		{
+			new wheel = axle * 2 + side;
+			new Float:x = side == 0 ? floatabs(offset[0]) : -floatabs(offset[0]);
+			for(new axis; axis < 3; axis++)
+			{
+				wheels[wheel][axis] = pos[axis] + x * matrix[0][axis] + offset[1] * matrix[1][axis] + offset[2] * matrix[2][axis];
+				if(!sweep) SpikeWheelPos[playerid][wheel][axis] = wheels[wheel][axis];
+			}
+			wheelFlags |= 1 << wheel;
+		}
+	}
+	new panels, doors, lights, tires;
+	GetVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
+	new original = tires;
+	new const tireBits[6] = {1, 4, 2, 8, 1, 4};
+	// Middle truck wheels share their side's rear tire damage bit.
+	reach += 3.0 + (sweep ? distance : 0.0);
+	foreach(new spike : DeployedSpikes)
+	{
+		new groupid = spike / MAX_SPIKES, slot = spike % MAX_SPIKES;
+		if(SpikeStrips[groupid][slot][sWorldID] != world || SpikeStrips[groupid][slot][sInteriorID] != interior || !IsValidDynamicObject(SpikeStrips[groupid][slot][sObjectID])) continue;
+		if(floatabs(SpikeStrips[groupid][slot][sX] - pos[0]) > reach || floatabs(SpikeStrips[groupid][slot][sY] - pos[1]) > reach || floatabs(SpikeStrips[groupid][slot][sZ] - pos[2]) > reach) continue;
+		for(new wheel; wheel < sizeof(wheels); wheel++)
+		{
+			if(!(wheelFlags & (1 << wheel)) || (tires & tireBits[wheel])) continue;
+			if(SpikeStripIntersectsWheel(groupid, slot, SpikeWheelPos[playerid][wheel], wheels[wheel])) tires |= tireBits[wheel];
+		}
+	}
+	if(tires != original) UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
+	for(new wheel; wheel < sizeof(wheels); wheel++) SpikeWheelPos[playerid][wheel] = wheels[wheel];
+	SpikeVehiclePos[playerid] = pos;
+	SpikeVehicle[playerid] = vehicleid;
+	SpikeWorld[playerid] = world;
+	SpikeInterior[playerid] = interior;
+	SpikeSampleTick[playerid] = tick;
+}

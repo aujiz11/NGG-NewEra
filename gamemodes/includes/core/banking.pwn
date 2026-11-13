@@ -736,9 +736,11 @@ TransferBankAccount(playerid, targetid, amount, bool:atATM) {
 	new fee, debit = BankTransferDebit(amount, atATM && PlayerInfo[playerid][pDonateRank] == 0, fee);
 	if(!debit || debit > PlayerInfo[playerid][pAccount] || PlayerInfo[targetid][pAccount] > cellmax - amount)
 		return SendClientMessageEx(playerid, COLOR_WHITE, "Insufficient funds including fees, or recipient balance limit exceeded.");
+	
 	DeletePVar(playerid, atATM ? ("ATMTransferTo") : ("BankTransferTo"));
 	DeletePVar(playerid, atATM ? ("ATMTransferAccount") : ("BankTransferAccount"));
 	DeletePVar(playerid, atATM ? ("ATMTransferSession") : ("BankTransferSession"));
+	
 	if(!CommitBankTransfer(playerid, targetid, amount, debit)) {
 		SendClientMessageEx(playerid, COLOR_GRAD1, "Transfer was not confirmed. Wait and select the recipient again.");
 		return atATM ? ShowATMMenu(playerid, 3) : ShowBankMenu(playerid, 3);

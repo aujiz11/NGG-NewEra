@@ -42,6 +42,8 @@ Group_DisbandGroup(iGroupID) {
 		i = 0,
 		szQuery[128];
 
+	for(new spikeid; spikeid < MAX_SPIKES; spikeid++) DeleteSpikeStrip(iGroupID, spikeid);
+
 	arrGroupData[iGroupID][g_iAllegiance] = 0;
 	arrGroupData[iGroupID][g_iBugAccess] = INVALID_RANK;
 	arrGroupData[iGroupID][g_iFindAccess] = INVALID_RANK;
@@ -790,8 +792,14 @@ ReturnCrimeGroupType(iType)
 	return szReturn;
 }
 
+hook OnPlayerConnect(playerid)
+{
+	SpikeVehicle[playerid] = 0;
+}
+
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
+	SpikeVehicle[playerid] = 0;
     if(oldstate == PLAYER_STATE_ONFOOT && newstate == PLAYER_STATE_DRIVER)
     {
     	GetPlayerName(playerid, VehInfo[GetPlayerVehicleID(playerid)][vLastDriver], MAX_PLAYER_NAME);
@@ -2979,6 +2987,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 hook OnVehicleSpawn(vehicleid)
 {
+	foreach(new playerid : Player)
+	{
+		if(SpikeVehicle[playerid] == vehicleid) SpikeVehicle[playerid] = 0;
+	}
+
 	if(GetGVarType("VehSiren", vehicleid)) ToggleSiren(vehicleid, 1);
 }
 
@@ -4042,7 +4055,7 @@ CMD:siren(playerid, params[])
 
 CMD:deploy(playerid, params[])
 {
-	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID)
+	if(ValidGroup(PlayerInfo[playerid][pMember]))
 	{
 		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot do this right now.");
 		if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
@@ -4072,14 +4085,24 @@ CMD:deploy(playerid, params[])
 			{
 				for(new i; i < MAX_SPIKES; i++)
 				{
-					if(SpikeStrips[iGroup][i][sX] == 0 && SpikeStrips[iGroup][i][sY] == 0 && SpikeStrips[iGroup][i][sZ] == 0)
+					if(!IsValidDynamicObject(SpikeStrips[iGroup][i][sObjectID]))
 					{
 						new Float: f_TempAngle;
 
+						DeleteSpikeStrip(iGroup, i);
 						GetPlayerPos(playerid, SpikeStrips[iGroup][i][sX], SpikeStrips[iGroup][i][sY], SpikeStrips[iGroup][i][sZ]);
 						GetPlayerFacingAngle(playerid, f_TempAngle);
-						SpikeStrips[iGroup][i][sObjectID] = CreateDynamicObject(2899, SpikeStrips[iGroup][i][sX], SpikeStrips[iGroup][i][sY], SpikeStrips[iGroup][i][sZ]-0.8, 0.0, 0.0, f_TempAngle);
-						SpikeStrips[iGroup][i][sPickupID] = CreateDynamicPickup(19300, 14, SpikeStrips[iGroup][i][sX], SpikeStrips[iGroup][i][sY], SpikeStrips[iGroup][i][sZ]);
+						SpikeStrips[iGroup][i][sWorldID] = GetPlayerVirtualWorld(playerid);
+						SpikeStrips[iGroup][i][sInteriorID] = GetPlayerInterior(playerid);
+						SpikeStrips[iGroup][i][sObjectID] = CreateDynamicObject(2899, SpikeStrips[iGroup][i][sX], SpikeStrips[iGroup][i][sY], SpikeStrips[iGroup][i][sZ]-0.8, 0.0, 0.0, f_TempAngle, SpikeStrips[iGroup][i][sWorldID], SpikeStrips[iGroup][i][sInteriorID]);
+						if(!IsValidDynamicObject(SpikeStrips[iGroup][i][sObjectID]))
+						{
+							DeleteSpikeStrip(iGroup, i);
+							return SendClientMessageEx(playerid, COLOR_GREY, "Unable to create the spike strip. Please try again.");
+						}
+						SpikeStrips[iGroup][i][sCosAngle] = floatcos(f_TempAngle, degrees);
+						SpikeStrips[iGroup][i][sSinAngle] = floatsin(f_TempAngle, degrees);
+						Iter_Add(DeployedSpikes, iGroup * MAX_SPIKES + i);
 						GetPlayer3DZone(playerid, SpikeStrips[iGroup][i][sDeployedAt], MAX_ZONE_NAME);
 						SpikeStrips[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
 						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) SpikeStrips[iGroup][i][sDeployedByStatus] = 1;
@@ -4357,7 +4380,7 @@ CMD:deploy(playerid, params[])
 
 CMD:destroy(playerid, params[])
 {
-	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID)
+	if(ValidGroup(PlayerInfo[playerid][pMember]))
 	{
 		new type, object[12];
 		if(sscanf(params, "s[12]d", object, type))
@@ -4411,19 +4434,12 @@ CMD:destroy(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iSpikeStrips])
 			{
-				if(!(0 <= type < MAX_SPIKES) || (SpikeStrips[iGroup][type][sX] == 0 && SpikeStrips[iGroup][type][sY] == 0 && SpikeStrips[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid spike ID.");
+				if(!(0 <= type < MAX_SPIKES) || !IsValidDynamicObject(SpikeStrips[iGroup][type][sObjectID])) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid spike ID.");
 				else if(PlayerInfo[playerid][pAdmin] < 2 && SpikeStrips[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a spikestrip that an Administrator deployed.");
 				else
 				{
 					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
-					if(IsValidDynamicObject(SpikeStrips[iGroup][type][sObjectID])) DestroyDynamicObject(SpikeStrips[iGroup][type][sObjectID]);
-					DestroyDynamicPickup(SpikeStrips[iGroup][type][sPickupID]);
-					SpikeStrips[iGroup][type][sX] = 0;
-					SpikeStrips[iGroup][type][sY] = 0;
-					SpikeStrips[iGroup][type][sZ] = 0;
-					SpikeStrips[iGroup][type][sObjectID] = -1;
-					SpikeStrips[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
-					SpikeStrips[iGroup][type][sDeployedByStatus] = 0;
+					DeleteSpikeStrip(iGroup, type);
 					format(string,sizeof(string),"Spike %d successfully deleted.", type);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					/*format(string, sizeof(string), "** HQ: A spike has been destroyed by %s at %s **", GetPlayerNameEx(playerid), SpikeStrips[iGroup][type][sDeployedAt]);
@@ -4647,7 +4663,7 @@ CMD:aspikes(playerid, params[]) {
 
 	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
 		for(new iSpike; iSpike < MAX_SPIKES; iSpike++) {
-			if(SpikeStrips[iGroupID][iSpike][sX] != 0 && SpikeStrips[iGroupID][iSpike][sY] != 0 && SpikeStrips[iGroupID][iSpike][sZ] != 0) {
+			if(IsValidDynamicObject(SpikeStrips[iGroupID][iSpike][sObjectID])) {
 				format(szMiscArray, sizeof(szMiscArray), "%s\n%s(%d)\t%d\t%s\t%s", szMiscArray, arrGroupData[iGroupID][g_szGroupName], iGroupID, iSpike, SpikeStrips[iGroupID][iSpike][sDeployedAt], SpikeStrips[iGroupID][iSpike][sDeployedBy]);
 			}
 		}
@@ -4660,13 +4676,13 @@ CMD:aspikes(playerid, params[]) {
 
 CMD:spikes(playerid, params[])
 {
-	if (PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iSpikeStrips])
+	if (ValidGroup(PlayerInfo[playerid][pMember]) && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iSpikeStrips])
 	{
 		new iGroup = PlayerInfo[playerid][pMember];
 		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed spikes:");
 		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < MAX_SPIKES; i++)
 		{
-			if(SpikeStrips[iGroup][i][sX] != 0 && SpikeStrips[iGroup][i][sY] != 0 && SpikeStrips[iGroup][i][sZ] != 0) // Checking for next available ID.
+			if(IsValidDynamicObject(SpikeStrips[iGroup][i][sObjectID]))
 			{
 				format(string, sizeof(string), "HQ: Spike ID: %d | Deployed location: %s | Deployed by: %s", i, SpikeStrips[iGroup][i][sDeployedAt], SpikeStrips[iGroup][i][sDeployedBy]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
@@ -6557,4 +6573,62 @@ public GetGroupBudget(groupid) {
 		return arrGroupData[groupid][g_iBudget];
 	}
 	return 0;
+}
+
+stock DeleteSpikeStrip(groupid, spikeid)
+{
+	if(!ValidGroup(groupid) || !(0 <= spikeid < MAX_SPIKES)) return 0;
+	if(IsValidDynamicObject(SpikeStrips[groupid][spikeid][sObjectID]))
+		DestroyDynamicObject(SpikeStrips[groupid][spikeid][sObjectID]);
+
+	Iter_Remove(DeployedSpikes, groupid * MAX_SPIKES + spikeid);
+
+	new empty[Spikes];
+	SpikeStrips[groupid][spikeid] = empty;
+	return 1;
+}
+
+stock SpikeStripIntersectsWheel(groupid, slot, const Float:from[3], const Float:to[3])
+{
+	new 
+		Float:c = SpikeStrips[groupid][slot][sCosAngle], 
+		Float:s = SpikeStrips[groupid][slot][sSinAngle];
+
+	new 
+		Float:dx = from[0] - SpikeStrips[groupid][slot][sX], 
+		Float:dy = from[1] - SpikeStrips[groupid][slot][sY];
+	
+	new Float:start[3], Float:delta[3];
+	
+	start[0] = dx * c + dy * s;
+	start[1] = -dx * s + dy * c;
+	start[2] = from[2] - (SpikeStrips[groupid][slot][sZ] - 0.8);
+	dx = to[0] - from[0];
+	dy = to[1] - from[1];
+	delta[0] = dx * c + dy * s;
+	delta[1] = -dx * s + dy * c;
+	delta[2] = to[2] - from[2];
+
+	// Model 2899 footprint, wheel-center height includes tire/suspension clearance.
+	new const Float:lower[3] = {-0.575711, -2.49439, -0.2}, Float:upper[3] = {0.575711, 2.49439, 0.8};
+	new Float:enter = 0.0, Float:leave = 1.0;
+	for(new axis; axis < 3; axis++)
+	{
+		if(floatabs(delta[axis]) < 0.00001)
+		{
+			if(start[axis] < lower[axis] || start[axis] > upper[axis]) return 0;
+			continue;
+		}
+		new Float:a = (lower[axis] - start[axis]) / delta[axis], Float:b = (upper[axis] - start[axis]) / delta[axis];
+		if(a > b)
+		{
+			new Float:swap = a;
+			a = b;
+			b = swap;
+		}
+		if(a > enter) enter = a;
+		if(b < leave) leave = b;
+		if(enter > leave) return 0;
+	}
+	return 1;
 }

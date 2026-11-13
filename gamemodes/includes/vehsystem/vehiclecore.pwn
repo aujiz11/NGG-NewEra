@@ -1321,7 +1321,7 @@ UnLockPlayerVehicle(ownerid, carid, type)
 	}
 }
 
-encode_tires(tire1, tire2, tire3, tire4)
+stock encode_tires(tire1, tire2, tire3, tire4)
 {
 	return tire1 | (tire2 << 1) | (tire3 << 2) | (tire4 << 3);
 }
