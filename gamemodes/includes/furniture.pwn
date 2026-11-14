@@ -504,6 +504,7 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 
 
 	if(GetPVarType(playerid, "copdestroyfur")) {
+		// TODO: Define permanent police destruction behavior and remove the persisted placement if destruction is permanent.
 
 		new iHouseID = GetHouseID(playerid),
 			i,
@@ -976,6 +977,7 @@ GetFurniturePrice(iModelID) {
 }
 
 SellFurniture(playerid, iHouseID, iSlotID, iPrice) {
+	// TODO: Confirm the refund policy and credit the approved amount when furniture is sold.
 
 	format(szMiscArray, sizeof(szMiscArray), "You have sold the %s for $%s", GetFurnitureName(GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][iSlotID])), number_format(iPrice));
 	SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
@@ -1278,6 +1280,7 @@ ProcessFurnitureTexture(iHouseID, iSlotID, iObjectID, materialindex, input, colo
 }
 
 ReloadFurniture(playerid) {
+	// TODO: Include text4 when clearing all persisted texture slots.
 
 	new iObjectID = GetPVarInt(playerid, PVAR_FURNITURE_EDITING),
 		iModelID = Streamer_GetIntData(STREAMER_TYPE_OBJECT, iObjectID, E_STREAMER_MODEL_ID),
@@ -1316,6 +1319,7 @@ ReloadFurniture(playerid) {
 }
 
 DestroyFurniture(iHouseID, iSlotID) {
+	// TODO: Audit door-area ownership and cleanup when deleting furniture, resetting objects or deleting houses.
 
 	if(IsValidFurniture(iHouseID, iSlotID, 1)) {
 		DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID]);
