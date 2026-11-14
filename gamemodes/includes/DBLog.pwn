@@ -17,6 +17,10 @@ hook OnGameModeInit() {
 	db_iHandle = db_open("logs.db");
 	if(!db_iHandle) return print("[SQLite] Unable to open logs.db. SQLite logging is unavailable."), 1;
 
+	new DBResult:journal = DB_ExecuteQuery(db_iHandle, "PRAGMA journal_mode=PERSIST");
+	if(journal) db_free_result(journal);
+	else print("[SQLite] Unable to reuse the log journal. Continuing with the current journal mode.");
+
 	for(new i; i < sizeof(DBLogTables); ++i) {
 		new DBResult:result = DB_ExecuteQuery(db_iHandle, "CREATE TABLE IF NOT EXISTS `%s` (`Timestamp` INTEGER NOT NULL, `PlayerID` INTEGER NOT NULL, `TargetID` INTEGER NOT NULL DEFAULT 0, `LogText` TEXT NOT NULL, `PlayerIP` TEXT NOT NULL, `TargetIP` TEXT NOT NULL DEFAULT '')", DBLogTables[i]);
 		if(!result) {

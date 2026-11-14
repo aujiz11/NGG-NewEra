@@ -1,5 +1,15 @@
 // by Le Tuan Kiet (aujiz11)
 
+#include <YSI_Coding\y_hooks>
+
+static DB:GeoIPDatabase;
+
+hook OnGameModeExit() {
+	if(GeoIPDatabase) DB_Close(GeoIPDatabase);
+	GeoIPDatabase = DB:0;
+	return 1;
+}
+
 stock bool:GetIPLocation(const ip[], country[], province[], city[], countrySize = sizeof(country), provinceSize = sizeof(province), citySize = sizeof(city)) {
 	format(country, countrySize, "Unknown");
 	format(province, provinceSize, "Unknown");
@@ -11,10 +21,10 @@ stock bool:GetIPLocation(const ip[], country[], province[], city[], countrySize 
 		return true;
 	}
 
-	new DB:database = DB_Open("IPList.db", SQLITE_OPEN_READONLY);
-	if(!database) return print("[GeoIP] Unable to open IPList.db, location lookup is unavailable."), false;
+	if(!GeoIPDatabase) GeoIPDatabase = DB_Open("IPList.db", SQLITE_OPEN_READONLY);
+	if(!GeoIPDatabase) return print("[GeoIP] Unable to open IPList.db, location lookup is unavailable."), false;
 
-	new DBResult:result = DB_ExecuteQuery(database, "SELECT `isofull`.`fullname`,`locations`.`province`,`locations`.`city` FROM `IPTable` JOIN `isofull` ON `IPTable`.`country`=`isofull`.`alpha_two` JOIN `locations` ON `IPTable`.`location`=`locations`.`id` WHERE `IPTable`.`start`=(SELECT max(`start`) FROM `IPTable` WHERE `start`<=%u) AND `IPTable`.`end`>=%u", address, address);
+	new DBResult:result = DB_ExecuteQuery(GeoIPDatabase, "SELECT `isofull`.`fullname`,`locations`.`province`,`locations`.`city` FROM `IPTable` JOIN `isofull` ON `IPTable`.`country`=`isofull`.`alpha_two` JOIN `locations` ON `IPTable`.`location`=`locations`.`id` WHERE `IPTable`.`start`=(SELECT max(`start`) FROM `IPTable` WHERE `start`<=%u) AND `IPTable`.`end`>=%u", address, address);
 	new bool:found;
 	if(result) {
 		if(DB_GetRowCount(result)) {
@@ -28,7 +38,6 @@ stock bool:GetIPLocation(const ip[], country[], province[], city[], countrySize 
 		DB_FreeResultSet(result);
 	}
 	else print("[GeoIP] Unable to query IPList.db, location lookup is unavailable.");
-	DB_Close(database);
 	return found;
 }
 
