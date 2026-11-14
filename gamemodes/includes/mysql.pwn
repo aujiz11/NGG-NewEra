@@ -2305,7 +2305,7 @@ AccountSave_Finish(bool:success)
 stock SavePlayerInteger(query[], sqlid, const Value[], Integer)
 {
 	new updval[64];
-	mysql_format(MainPipeline, updval, sizeof(updval), "`%s`=%d", Value, Integer);
+	format(updval, sizeof(updval), "`%s`=%d", Value, Integer);
 	MySQLUpdateBuild(query, sqlid, strlen(updval));
 	strcat(query, updval, 2048);
 	return 1;

@@ -267,12 +267,17 @@ stock LoadHouses()
 forward OnLoadHouse(index);
 public OnLoadHouse(index)
 {
-	new rows, szField[24];
+	new rows, szField[24], bool:bulk = index == INVALID_HOUSE_ID;
 	szMiscArray[0] = 0;
 	cache_get_row_count(rows);
 
 	for(new row; row < rows; row++)
 	{
+		if(bulk) {
+			cache_get_value_name_int(row, "id", index);
+			--index;
+		}
+		if(index < 0 || index >= MAX_HOUSES) continue;
 		cache_get_value_name_int(row, "id", HouseInfo[index][hSQLId]);
 		cache_get_value_name_int(row, "Owned", HouseInfo[index][hOwned]);
 		cache_get_value_name_int(row, "Level", HouseInfo[index][hLevel]);
@@ -370,100 +375,10 @@ public OnLoadHouse(index)
 forward OnLoadHouses();
 public OnLoadHouses()
 {
-	new i, rows;
-	szMiscArray[0] = 0;
+	new rows;
 	cache_get_row_count(rows);
-
-	while(i < rows)
-	{
-		/*HouseInfo[i][hSQLId] = cache_get_field_content_int(i, "id", MainPipeline); 
-		HouseInfo[i][hOwned] = cache_get_field_content_int(i, "Owned", MainPipeline); 
-		HouseInfo[i][hLevel] = cache_get_field_content_int(i, "Level", MainPipeline); 
-		cache_get_field_content(i, "Description", HouseInfo[i][hDescription], MainPipeline, 16);
-		HouseInfo[i][hOwnerID] = cache_get_field_content_int(i, "OwnerID", MainPipeline);
-		cache_get_field_content(i, "Username", HouseInfo[i][hOwnerName], MainPipeline, MAX_PLAYER_NAME);
-		HouseInfo[i][hExteriorX] = cache_get_field_content_float(i, "ExteriorX", MainPipeline);
-		HouseInfo[i][hExteriorY] = cache_get_field_content_float(i, "ExteriorY", MainPipeline);
-		HouseInfo[i][hExteriorZ] = cache_get_field_content_float(i, "ExteriorZ", MainPipeline);
-		HouseInfo[i][hExteriorR] = cache_get_field_content_float(i, "ExteriorR", MainPipeline);
-		HouseInfo[i][hExteriorA] = cache_get_field_content_float(i, "ExteriorA", MainPipeline);
-		HouseInfo[i][hCustomExterior] = cache_get_field_content_int(i, "CustomExterior", MainPipeline);
-		HouseInfo[i][hInteriorX] = cache_get_field_content_float(i, "InteriorX", MainPipeline);
-		HouseInfo[i][hInteriorY] = cache_get_field_content_float(i, "InteriorY", MainPipeline);
-		HouseInfo[i][hInteriorZ] = cache_get_field_content_float(i, "InteriorZ", MainPipeline);
-		HouseInfo[i][hInteriorR] = cache_get_field_content_float(i, "InteriorR", MainPipeline);
-		HouseInfo[i][hInteriorA] = cache_get_field_content_float(i, "InteriorA", MainPipeline);
-		HouseInfo[i][hCustomInterior] = cache_get_field_content_int(i, "CustomInterior", MainPipeline); 
-		HouseInfo[i][hExtIW] = cache_get_field_content_int(i, "ExtIW", MainPipeline); 
-		HouseInfo[i][hExtVW] = cache_get_field_content_int(i, "ExtVW", MainPipeline); 
-		HouseInfo[i][hIntIW] = cache_get_field_content_int(i, "IntIW", MainPipeline); 
-		HouseInfo[i][hIntVW] = cache_get_field_content_int(i, "IntVW", MainPipeline); 
-		HouseInfo[i][hLock] = cache_get_field_content_int(i, "Lock", MainPipeline); 
-		HouseInfo[i][hRentable] = cache_get_field_content_int(i, "Rentable", MainPipeline); 
-		HouseInfo[i][hRentFee] = cache_get_field_content_int(i, "RentFee", MainPipeline); 
-		HouseInfo[i][hValue] = cache_get_field_content_int(i, "Value", MainPipeline); 
-		HouseInfo[i][hSafeMoney] = cache_get_field_content_int(i, "SafeMoney", MainPipeline); 
-		HouseInfo[i][hPot] = cache_get_field_content_int(i, "Pot", MainPipeline);
-		HouseInfo[i][hCrack] = cache_get_field_content_int(i, "Crack", MainPipeline); 
-		HouseInfo[i][hMaterials] = cache_get_field_content_int(i, "Materials", MainPipeline); 
-		HouseInfo[i][hHeroin] = cache_get_field_content_int(i, "Heroin", MainPipeline); 
-		for(new j; j < 5; j++)
-		{
-			format(szField, sizeof(szField), "Weapons%d", j);
-			HouseInfo[i][hWeapons][j] = cache_get_field_content_int(i, szField, MainPipeline);
-		}
-		HouseInfo[i][hGLUpgrade] = cache_get_field_content_int(i, "GLUpgrade", MainPipeline); 
-		HouseInfo[i][hPickupID] = cache_get_field_content_int(i, "PickupID", MainPipeline); 
-		HouseInfo[i][hMailX] = cache_get_field_content_float(i, "MailX", MainPipeline); 
-		HouseInfo[i][hMailY] = cache_get_field_content_float(i, "MailY", MainPipeline); 
-		HouseInfo[i][hMailZ] = cache_get_field_content_float(i, "MailZ", MainPipeline); 
-		HouseInfo[i][hMailA] = cache_get_field_content_float(i, "MailA", MainPipeline); 
-		HouseInfo[i][hMailType] = cache_get_field_content_int(i, "MailType", MainPipeline);
-		HouseInfo[i][hClosetX] = cache_get_field_content_float(i, "ClosetX", MainPipeline);
-		HouseInfo[i][hClosetY] = cache_get_field_content_float(i, "ClosetY", MainPipeline);
-		HouseInfo[i][hClosetZ] = cache_get_field_content_float(i, "ClosetZ", MainPipeline);
-
-		cache_get_field_content(i, "SignDesc", HouseInfo[i][hSignDesc], MainPipeline, 64);
-		HouseInfo[i][hSign][0] = cache_get_field_content_float(i, "SignX", MainPipeline);
-		HouseInfo[i][hSign][1] = cache_get_field_content_float(i, "SignY", MainPipeline);
-		HouseInfo[i][hSign][2] = cache_get_field_content_float(i, "SignZ", MainPipeline);
-		HouseInfo[i][hSign][3] = cache_get_field_content_float(i, "SignA", MainPipeline);
-		HouseInfo[i][hSignExpire] = cache_get_field_content_int(i, "SignExpire", MainPipeline);
-
-		HouseInfo[i][hLastLogin] = cache_get_field_content_int(i, "LastLogin", MainPipeline);
-		HouseInfo[i][hExpire] = cache_get_field_content_int(i, "Expire", MainPipeline);
-		HouseInfo[i][hInactive] = cache_get_field_content_int(i, "Inactive", MainPipeline);
-		HouseInfo[i][hIgnore] = cache_get_field_content_int(i, "Ignore", MainPipeline);
-		HouseInfo[i][hCounter] = cache_get_field_content_int(i, "Counter", MainPipeline);
-		
-		HouseInfo[i][Listed] = cache_get_field_content_int(i, "Listed", MainPipeline); 
-		HouseInfo[i][PendingApproval] = cache_get_field_content_int(i, "PendingApproval", MainPipeline);
-		HouseInfo[i][ListedTimeStamp] = cache_get_field_content_int(i, "ListedTimeStamp", MainPipeline);
-		HouseInfo[i][ListingPrice] = cache_get_field_content_int(i, "ListingPrice", MainPipeline); 
-		cache_get_field_content(i, "ListingDescription", HouseInfo[i][ListingDescription], MainPipeline, 128);
-		for(new l = 0; l < 5; l ++)
-		{
-			format(szField, sizeof(szField), "LinkedDoor%d", l);
-			HouseInfo[i][LinkedDoor][l] = cache_get_field_content_int(i, szField, MainPipeline);
-		}
-		
-		HouseInfo[i][LinkedGarage][0] = cache_get_field_content_int(i, "LinkedGarage0", MainPipeline);
-		HouseInfo[i][LinkedGarage][1] = cache_get_field_content_int(i, "LinkedGarage1", MainPipeline);
-		
-		if(HouseInfo[i][hExteriorX] != 0.0) ReloadHousePickup(i);
-		if(HouseInfo[i][hClosetX] != 0.0) HouseInfo[i][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[i][hClosetX], HouseInfo[i][hClosetY], HouseInfo[i][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[i][hIntVW], .interiorid = HouseInfo[i][hIntIW], .streamdistance = 10.0);
-		if(HouseInfo[i][hMailX] != 0.0) RenderHouseMailbox(i);
-		if(HouseInfo[i][hSignExpire] != 0 && gettime() >= HouseInfo[i][hSignExpire]) 
-		{
-			format(szMiscArray, sizeof(szMiscArray), "[EXPIRE - OnLoad] House Sale Sign Expired - Housed ID: %d", i);
-			Log("logs/house.log", szMiscArray);
-			DeleteHouseSaleSign(i);
-		}
-		if(HouseInfo[i][hSign][0] != 0.0) CreateHouseSaleSign(i);*/
-		LoadHouse(i);
-		i++;
-	}
-	if(i > 0) printf("[LoadHouses] %d houses rehashed/loaded.", i);
+	OnLoadHouse(INVALID_HOUSE_ID);
+	if(rows > 0) printf("[LoadHouses] %d houses rehashed/loaded.", rows);
 	else printf("[LoadHouses] Failed to load any houses.");
 }
 
