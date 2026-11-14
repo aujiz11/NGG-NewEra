@@ -168,7 +168,7 @@ stock g_mysql_Init()
 		else print("[MySQL] (ShopPipeline) Connection successful toward MySQL Database Server!");
 	}
 
-	mysql_tquery(MainPipeline, "SELECT `TABLE_NAME` AS `name`, `ENGINE` AS `engine` FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA`=DATABASE() AND `TABLE_NAME` IN ('accounts','shop_orders','staffbans')", "OnShopDeliverySchema");
+	mysql_tquery(MainPipeline, "SELECT `TABLE_NAME` AS `name`, `ENGINE` AS `engine` FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA`=DATABASE() AND `TABLE_NAME` IN ('accounts','shop_orders','staffbans','furniture')", "OnShopDeliverySchema");
 	InitiateGamemode(); // Start the server
 
 	return 1;
@@ -2331,7 +2331,7 @@ stock SavePlayerFloat(query[], sqlid, const Value[], Float:Number)
 
 stock g_mysql_SaveAccount(playerid)
 {
-	if(playerid < 0 || playerid >= MAX_PLAYERS || GetPlayerSQLId(playerid) <= 0) {
+	if(playerid < 0 || playerid >= MAX_PLAYERS || GetPlayerSQLId(playerid) <= 0 || GetPVarInt(playerid, "FurniturePurchaseUncertain")) {
 		++gAccountSaveErrors;
 		return 0;
 	}
@@ -6203,9 +6203,12 @@ public OnShopDeliverySchema() {
         if(!strcmp(name, "accounts", true)) found |= 1;
         if(!strcmp(name, "shop_orders", true)) found |= 2;
         if(!strcmp(name, "staffbans", true)) found |= 4;
+        if(!strcmp(name, "furniture", true)) found |= 8;
     }
     gAccountsInnoDB = (found & 1) != 0;
     gStaffBansInnoDB = (found & 4) != 0;
+    gFurnitureInnoDB = (found & 8) != 0;
+    if(!gFurnitureInnoDB) print("[Furniture] Purchases unavailable: import database/furniture.sql with InnoDB.");
     gShopDeliveryReady = (found & 3) == 3;
     if(!gStaffBansInnoDB) print("[StaffBan] Staff-ban storage unavailable: import database/staffbans.sql with InnoDB.");
     if(!gShopDeliveryReady) print("[Shop] Automatic delivery paused: accounts and shop_orders must both use InnoDB.");
@@ -6325,7 +6328,7 @@ stock CheckAdminWhitelist(playerid)
 
 stock GivePlayerCashEx(playerid, type, amount)
 {
-	if(IsPlayerConnected(playerid) && gPlayerLogged{playerid})
+	if(IsPlayerConnected(playerid) && gPlayerLogged{playerid} && !GetPVarInt(playerid, "FurniturePurchaseUncertain"))
 	{
 		new szQuery[128];
 		switch(type)

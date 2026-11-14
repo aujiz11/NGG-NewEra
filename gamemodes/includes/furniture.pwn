@@ -73,6 +73,7 @@ hook OnGameModeInit() {
 
 hook OnPlayerConnect(playerid) {
 
+	DeletePVar(playerid, "FurniturePurchaseUncertain");
 	Furniture_ResetPVars(playerid);
 	FurniturePlayerTDInit(playerid);
 	Reset3DTextureMenuVars(playerid);
@@ -144,91 +145,74 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 		}
 		case DIALOG_FURNITURE_BUY: {
-			
+			DeletePVar(playerid, PVAR_FURNITURE_BUYMODEL);
+			DeletePVar(playerid, "FurnitureBuyPrice");
+			DeletePVar(playerid, "FurnitureBuyRows");
 			if(!response) return FurnitureMenu(playerid, 0);
+			if(!gPlayerLogged{playerid} || !GetPVarInt(playerid, PVAR_FURNITURE)) return 1;
+			if(listitem < 0 || listitem >= sizeof(szFurnitureCategories)) return 1;
 			szMiscArray[0] = 0;
-
-			new x;
+			new count, line[128];
 			for(new i; i < MAX_CATALOG; ++i) {
-				if(arrFurnitureCatalog[i][fc_iTypeID] == listitem) {
-					
-					if(arrFurnitureCatalog[i][fc_iModelID] != 0) {
-
-						if(arrFurnitureCatalog[i][fc_iVIP] == 1) format(szMiscArray, sizeof(szMiscArray), "%s{FFFF00}(VIP) %s ($%s){FFFFFF}\n", szMiscArray, arrFurnitureCatalog[i][fc_szName], number_format(arrFurnitureCatalog[i][fc_iPrice]));
-						else format(szMiscArray, sizeof(szMiscArray), "%s\n%s ($%s)", szMiscArray, arrFurnitureCatalog[i][fc_szName], number_format(arrFurnitureCatalog[i][fc_iPrice]));
-
-						ListItemTrackId[playerid][x] = i;
-						++x;
-					}
-					else break;
+				if(arrFurnitureCatalog[i][fc_iModelID] <= 0 || arrFurnitureCatalog[i][fc_iTypeID] != listitem) continue;
+				format(line, sizeof(line), "%s%s ($%s){FFFFFF}\n", arrFurnitureCatalog[i][fc_iVIP] > 0 ? ("{FFFF00}(VIP) ") : (""), arrFurnitureCatalog[i][fc_szName], number_format(arrFurnitureCatalog[i][fc_iPrice]));
+				if(count >= sizeof(ListItemTrackId[]) || strlen(szMiscArray) + strlen(line) >= sizeof(szMiscArray)) {
+					SendClientMessageEx(playerid, COLOR_GRAD1, "This category exceeds the menu capacity, some items are not displayed.");
+					break;
 				}
+				strcat(szMiscArray, line, sizeof(szMiscArray));
+				ListItemTrackId[playerid][count++] = arrFurnitureCatalog[i][fc_iModelID];
 			}
-
-			new szTitle[32];
-			format(szTitle, sizeof(szTitle), "Furniture - %s", szFurnitureCategories[listitem]);
-			ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_BUYSELECT, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Buy", "Cancel");
+			if(!count) return SendClientMessageEx(playerid, COLOR_GRAD1, "No furniture is available in this category.");
+			SetPVarInt(playerid, "FurnitureBuyRows", count);
+			new title[48];
+			format(title, sizeof(title), "Furniture - %s", szFurnitureCategories[listitem]);
+			ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_BUYSELECT, DIALOG_STYLE_LIST, title, szMiscArray, "Buy", "Cancel");
 		}
 		case DIALOG_FURNITURE_BUYSELECT: {
-
-			if(response) {
-
-				new i = ListItemTrackId[playerid][listitem];
-				SetPVarInt(playerid, "frncat", i);
-				if(PlayerInfo[playerid][pDonateRank] < arrFurnitureCatalog[i][fc_iVIP] && PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your VIP level is not high enough to buy this piece of furniture.");
-				PreviewFurniture(playerid, arrFurnitureCatalog[i][fc_iModelID], true);
-				SetPVarInt(playerid, PVAR_FURNITURE_BUYMODEL, arrFurnitureCatalog[i][fc_iModelID]);
-				format(szMiscArray, sizeof(szMiscArray), "Would you like to buy this %s for $%s and %s materials?", GetFurnitureName(arrFurnitureCatalog[i][fc_iModelID]), number_format(GetFurniturePrice(arrFurnitureCatalog[i][fc_iModelID])), number_format(GetFurniturePrice(arrFurnitureCatalog[i][fc_iModelID]) / 10));
-				ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_BUYCONFIRM, DIALOG_STYLE_MSGBOX, "Furniture Menu | Confirm Purchase", szMiscArray, "Buy", "Cancel");
+			new count = GetPVarInt(playerid, "FurnitureBuyRows");
+			DeletePVar(playerid, "FurnitureBuyRows");
+			if(!response) return FurnitureMenu(playerid, 1);
+			if(!gPlayerLogged{playerid} || !GetPVarInt(playerid, PVAR_FURNITURE)) return 1;
+			if(listitem < 0 || listitem >= count || listitem >= sizeof(ListItemTrackId[])) return 1;
+			
+			new i = GetFurnitureCatalogIndex(ListItemTrackId[playerid][listitem]);
+			if(i == -1) {
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "The catalog has changed. Please select the furniture again.");
 			}
-			else FurnitureMenu(playerid, 1);
+
+			if(PlayerInfo[playerid][pDonateRank] < arrFurnitureCatalog[i][fc_iVIP] && PlayerInfo[playerid][pAdmin] < 4) {
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "Your VIP level is not high enough to buy this piece of furniture.");
+			}
+
+			PreviewFurniture(playerid, arrFurnitureCatalog[i][fc_iModelID], true);
+			SetPVarInt(playerid, PVAR_FURNITURE_BUYMODEL, arrFurnitureCatalog[i][fc_iModelID]);
+			SetPVarInt(playerid, "FurnitureBuyPrice", arrFurnitureCatalog[i][fc_iPrice]);
+			format(szMiscArray, sizeof(szMiscArray), "Would you like to buy this %s for $%s and %s materials?", arrFurnitureCatalog[i][fc_szName], number_format(arrFurnitureCatalog[i][fc_iPrice]), number_format(arrFurnitureCatalog[i][fc_iPrice] / 10));
+			ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_BUYCONFIRM, DIALOG_STYLE_MSGBOX, "Furniture Menu | Confirm Purchase", szMiscArray, "Buy", "Cancel");
 		}
 		case DIALOG_FURNITURE_BUYCONFIRM: {
-
 			PreviewFurniture(playerid, -1, false);
-			if(!response) {
-
-				FurnitureMenu(playerid, 1);
-				DeletePVar(playerid, PVAR_FURNITURE_BUYMODEL);
+			new modelid = GetPVarInt(playerid, PVAR_FURNITURE_BUYMODEL), price = GetPVarInt(playerid, "FurnitureBuyPrice");
+			DeletePVar(playerid, PVAR_FURNITURE_BUYMODEL);
+			DeletePVar(playerid, "FurnitureBuyPrice");
+			if(!response) return FurnitureMenu(playerid, 1);
+			if(!gPlayerLogged{playerid} || !GetPVarInt(playerid, PVAR_FURNITURE) || modelid <= 0 || price <= 0) return 1;
+			
+			new entry = GetFurnitureCatalogIndex(modelid);
+			if(entry == -1 || arrFurnitureCatalog[entry][fc_iPrice] != price) {
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "The catalog or price has changed. Please select the furniture again.");
 			}
-			else {
 
-				new iModelID = GetPVarInt(playerid, PVAR_FURNITURE_BUYMODEL),
-					iHouseID = GetHouseID(playerid),
-					iSlotID = GetNextFurnitureSlotID(playerid, iHouseID);
-				if(iSlotID > GetMaxFurnitureSlots(playerid) || iSlotID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have any furniture slots left.");
-				
-				new iPrice = GetFurniturePrice(iModelID);
-				if(GetPlayerMoney(playerid) < iPrice) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough money to buy this.");
-				if(PlayerInfo[playerid][pMats] < floatround((iPrice / 10))) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough materials to make this.");
-
-				new Float:fPos[3],
-					iVW = GetPlayerVirtualWorld(playerid);
-
-				GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-				defer FurnitureControl(playerid, fPos[0], fPos[1], fPos[2]);
-				GetXYInFrontOfPlayer(playerid, fPos[0], fPos[1], 1.5);
-				HouseInfo[iHouseID][hFurniture][iSlotID] = CreateDynamicObject(iModelID, fPos[0], fPos[1], fPos[2], 0.0, 0.0, 0.0, iVW);
-				if(IsADoor(iModelID)) {
-
-					new iLocalDoorArea = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0, HouseInfo[iHouseID][hIntVW]),
-						szData[3];
-
-					szData[0] = iHouseID;
-					szData[1] = HouseInfo[iHouseID][hFurniture][iSlotID];
-					szData[2] = 0;
-					Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
-				}
-				Streamer_SetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][iSlotID], E_STREAMER_EXTRA_ID, iHouseID);
-				GivePlayerCash(playerid, -iPrice);
-				PlayerInfo[playerid][pMats] -= (iPrice / 10);
-				
-				SetPVarInt(playerid, PVAR_FURNITURE_SLOT, iSlotID);
-				SetPVarInt(playerid, PVAR_FURNITURE_EDITING, HouseInfo[iHouseID][hFurniture][iSlotID]);
-				TogglePlayerControllable(playerid, false);
-				CreateFurniture(playerid, iHouseID, iSlotID, iModelID, fPos[0], fPos[1], fPos[2], 0.0, 0.0, 0.0);
-				EditDynamicObject(playerid, HouseInfo[iHouseID][hFurniture][iSlotID]);
-				FurnitureEditObject(playerid);
-			}
+			new houseid = GetHouseID(playerid), slotid = GetNextFurnitureSlotID(playerid, houseid);
+			new Float:position[3];
+			GetPlayerPos(playerid, position[0], position[1], position[2]);
+			GetXYInFrontOfPlayer(playerid, position[0], position[1], 1.5);
+			if(!CreateFurniture(playerid, houseid, slotid, modelid, position[0], position[1], position[2], 0.0, 0.0, 0.0)) return 1;
+			SetPVarInt(playerid, PVAR_FURNITURE_SLOT, slotid);
+			SetPVarInt(playerid, PVAR_FURNITURE_EDITING, HouseInfo[houseid][hFurniture][slotid]);
+			EditDynamicObject(playerid, HouseInfo[houseid][hFurniture][slotid]);
+			FurnitureEditObject(playerid);
 		}
 		case DIALOG_FURNITURE_EDIT: {
 
@@ -622,12 +606,6 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 }
 
 
-timer FurnitureControl[1000](playerid, Float:X, Float:Y, Float:Z) {
-	TogglePlayerControllable(playerid, true);
-	SetPlayerPos(playerid, X, Y, Z);
-}
-
-
 timer FurnitureEditObject[5000](playerid) {
 	
 	new Float:fPos[6];
@@ -784,15 +762,8 @@ FurnitureListInit() {
 
 forward OnLoadFurnitureList();
 public OnLoadFurnitureList() {
-
-	szMiscArray[0] = 0;
-
-	new iRows,
-		iCount;
-
-	cache_get_row_count(iRows);
-	if(!iRows) print("[Furniture System] No catalog found in the database.");
-
+	new rows, count, rejected, row;
+	cache_get_row_count(rows);
 	for(new i; i < MAX_CATALOG; ++i) {
 		arrFurnitureCatalog[i][fc_iModelID] = 0;
 		arrFurnitureCatalog[i][fc_szName][0] = 0;
@@ -800,16 +771,26 @@ public OnLoadFurnitureList() {
 		arrFurnitureCatalog[i][fc_iVIP] = 0;
 		arrFurnitureCatalog[i][fc_iTypeID] = -1;
 	}
-	while(iCount < iRows && iCount < MAX_CATALOG) {
-		cache_get_value_name_int(iCount, "type", arrFurnitureCatalog[iCount][fc_iTypeID]);
-		cache_get_value_name_int(iCount, "modelid", arrFurnitureCatalog[iCount][fc_iModelID]);
-		cache_get_value_name(iCount, "name", arrFurnitureCatalog[iCount][fc_szName], 32);
-		cache_get_value_name_int(iCount, "price", arrFurnitureCatalog[iCount][fc_iPrice]);
-		cache_get_value_name_int(iCount, "vip", arrFurnitureCatalog[iCount][fc_iVIP]);
-		++iCount;
+	for(row = 0; row < rows && count < MAX_CATALOG; ++row) {
+		new modelid, category, price, vip, name[125];
+		cache_get_value_name_int(row, "modelid", modelid);
+		cache_get_value_name_int(row, "type", category);
+		cache_get_value_name(row, "name", name, sizeof(name));
+		cache_get_value_name_int(row, "price", price);
+		cache_get_value_name_int(row, "vip", vip);
+		if(modelid <= 0 || modelid > 19999 || category < 0 || category >= sizeof(szFurnitureCategories)
+			|| price <= 0 || vip < 0 || !name[0] || strlen(name) > 31) {
+			++rejected;
+			continue;
+		}
+		arrFurnitureCatalog[count][fc_iModelID] = modelid;
+		arrFurnitureCatalog[count][fc_iTypeID] = category;
+		format(arrFurnitureCatalog[count][fc_szName], 32, "%s", name);
+		arrFurnitureCatalog[count][fc_iPrice] = price;
+		arrFurnitureCatalog[count][fc_iVIP] = vip;
+		++count;
 	}
-	if(iRows > MAX_CATALOG) printf("[Furniture System] Catalog exceeds capacity; skipped %d rows.", iRows - MAX_CATALOG);
-	printf("[Furniture System] Loaded %d pieces of furniture from the catalog.", iCount);
+	printf("[Furniture] Loaded %d catalog entries, rejected %d invalid rows, skipped %d rows over capacity.", count, rejected, rows - row);
 	return 1;
 }
 
@@ -977,32 +958,21 @@ FurnitureCatalog() {
 }
 
 
+GetFurnitureCatalogIndex(modelid) {
+	if(modelid <= 0) return -1;
+	for(new i; i < MAX_CATALOG; ++i) if(arrFurnitureCatalog[i][fc_iModelID] == modelid) return i;
+	return -1;
+}
+
 GetFurnitureName(iModelID) {
-	
-	new szName[32];
-	for(new i; i < MAX_CATALOG; ++i) {
-
-		if(iModelID == arrFurnitureCatalog[i][fc_iModelID]) {
-
-			strins(szName, arrFurnitureCatalog[i][fc_szName], 0, sizeof(szName));
-			return szName;
-
-		}
-	}
-	szName = "None";
-	return szName;
+	new name[32] = "None", index = GetFurnitureCatalogIndex(iModelID);
+	if(index != -1) format(name, sizeof(name), "%s", arrFurnitureCatalog[index][fc_szName]);
+	return name;
 }
 
 GetFurniturePrice(iModelID) {
-	
-	for(new i; i < MAX_CATALOG; ++i) {
-
-		if(iModelID == arrFurnitureCatalog[i][fc_iModelID]) {
-
-			return arrFurnitureCatalog[i][fc_iPrice];
-		}
-	}
-	return 0;
+	new index = GetFurnitureCatalogIndex(iModelID);
+	return index == -1 ? 0 : arrFurnitureCatalog[index][fc_iPrice];
 }
 
 SellFurniture(playerid, iHouseID, iSlotID, iPrice) {
@@ -1035,6 +1005,9 @@ public OnRevokeBuildPerms() {
 
 Furniture_ResetPVars(playerid) {
 
+	DeletePVar(playerid, PVAR_FURNITURE_BUYMODEL);
+	DeletePVar(playerid, "FurnitureBuyPrice");
+	DeletePVar(playerid, "FurnitureBuyRows");
 	DeletePVar(playerid, "SellFurniture");
 	DeletePVar(playerid, "color");
 	DeletePVar(playerid, "textslot");
@@ -1131,10 +1104,113 @@ House_VistorCheck(iHouseID) {
 }
 
 CreateFurniture(playerid, iHouseID, iSlotID, iModelID, Float:X, Float:Y, Float:Z, Float:RX, Float:RY, Float:RZ) {
+	if(playerid < 0 || playerid >= MAX_PLAYERS || !IsPlayerConnected(playerid) || !gPlayerLogged{playerid} || GetPlayerSQLId(playerid) <= 0) return 0;
+	if(iHouseID < 0 || iHouseID >= MAX_HOUSES || GetHouseID(playerid) != iHouseID || !GetPVarInt(playerid, PVAR_FURNITURE)
+		|| GetPVarInt(playerid, PVAR_INHOUSE) != iHouseID || !HousePermissionCheck(playerid, iHouseID)) 
+	{
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not allowed to buy furniture in this house."), 0;
+	}
 
-	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `furniture` (`houseid`, `sqlid`, `modelid`, `slotid`, `x`,`y`,`z`, `rx`, `ry`, `rz`) \
-		VALUES ('%d','%d','%d','%d','%f','%f','%f','%f','%f','%f')", iHouseID, PlayerInfo[playerid][pId], iModelID, iSlotID, X, Y, Z, RX, RY, RZ);
-	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
+	if(HouseInfo[iHouseID][hFurnitureLoaded] != 1) {
+		House_VistorCheck(iHouseID);
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "This house's furniture is still loading. Please try again."), 0;
+	}
+
+	if(iSlotID < 0 || iSlotID >= MAX_FURNITURE_SLOTS || iSlotID >= GetMaxFurnitureSlots(playerid) || IsValidFurniture(iHouseID, iSlotID, 0)) {
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have any furniture slots left."), 0;
+	}
+
+	new entry = GetFurnitureCatalogIndex(iModelID);
+	if(entry == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This furniture is no longer in the catalog."), 0;
+	if(PlayerInfo[playerid][pDonateRank] < arrFurnitureCatalog[entry][fc_iVIP] && PlayerInfo[playerid][pAdmin] < 4)
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Your VIP level is not high enough to buy this piece of furniture."), 0;
+	
+	new price = arrFurnitureCatalog[entry][fc_iPrice], materials = price / 10;
+	if(price <= 0 || GetPlayerCash(playerid) < price)
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough money to buy this."), 0;
+	
+	if(PlayerInfo[playerid][pMats] < materials)
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough materials to make this."), 0;
+	
+	if(!FurnitureSystem || restarting || !gAccountsInnoDB || !gFurnitureInnoDB || mysql_unprocessed_queries(MainPipeline)
+		|| GetPVarInt(playerid, "FurniturePurchaseUncertain"))
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Furniture storage is unavailable or busy. Please try again."), 0;
+
+	new account = GetPlayerSQLId(playerid), cash = GetPlayerCash(playerid) - price, mats = PlayerInfo[playerid][pMats] - materials;
+	new query[1024], connection[24];
+	new Cache:result = mysql_query(MainPipeline, "SELECT CONNECTION_ID() AS connectionid");
+	if(cache_is_valid(result)) {
+		cache_get_value_name(0, "connectionid", connection, sizeof(connection));
+		cache_delete(result);
+	}
+	
+	if(!connection[0]) {
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "The furniture purchase was not confirmed."), 0;
+	}
+	
+	new objectid = CreateDynamicObject(iModelID, X, Y, Z, RX, RY, RZ, HouseInfo[iHouseID][hIntVW], HouseInfo[iHouseID][hIntIW]);
+	if(!IsValidDynamicObject(objectid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "The furniture object could not be created."), 0;
+	new areaid = INVALID_STREAMER_ID;
+	if(IsADoor(iModelID)) {
+		areaid = CreateDynamicSphere(X, Y, Z, 5.0, HouseInfo[iHouseID][hIntVW], HouseInfo[iHouseID][hIntIW]);
+		if(!IsValidDynamicArea(areaid)) {
+			DestroyDynamicObject(objectid);
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "The furniture door area could not be created."), 0;
+		}
+		new data[3];
+		data[0] = iHouseID;
+		data[1] = objectid;
+		Streamer_SetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data, sizeof(data));
+	}
+	Streamer_SetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_EXTRA_ID, iHouseID);
+
+	mysql_query(MainPipeline, "START TRANSACTION", false);
+	new bool:failed = mysql_errno(MainPipeline) != 0, bool:committed;
+	if(!failed) {
+		// A reconnect must not continue the purchase outside its original transaction.
+		mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Money`=%d,`Materials`=%d WHERE `id`=%d AND CONNECTION_ID()=%s", cash, mats, account, connection);
+		mysql_query(MainPipeline, query, false);
+		failed = mysql_errno(MainPipeline) != 0;
+	}
+	if(!failed) {
+		mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `furniture` (`houseid`,`sqlid`,`modelid`,`slotid`,`x`,`y`,`z`,`rx`,`ry`,`rz`) SELECT %d,`id`,%d,%d,%f,%f,%f,%f,%f,%f FROM `accounts` WHERE `id`=%d AND CONNECTION_ID()=%s", iHouseID, iModelID, iSlotID, X, Y, Z, RX, RY, RZ, account, connection);
+		result = mysql_query(MainPipeline, query);
+		new affected;
+		if(cache_is_valid(result)) {
+			affected = cache_affected_rows();
+			cache_delete(result);
+		}
+		failed = affected != 1;
+	}
+	if(failed) mysql_query(MainPipeline, "ROLLBACK", false);
+	else {
+		mysql_query(MainPipeline, "COMMIT", false);
+		if(mysql_errno(MainPipeline)) mysql_query(MainPipeline, "ROLLBACK", false);
+		mysql_format(MainPipeline, query, sizeof(query), "SELECT a.`id` FROM `accounts` a JOIN `furniture` f ON f.`sqlid`=a.`id` WHERE a.`id`=%d AND a.`Money`=%d AND a.`Materials`=%d AND f.`houseid`=%d AND f.`slotid`=%d AND f.`modelid`=%d", account, cash, mats, iHouseID, iSlotID, iModelID);
+		result = mysql_query(MainPipeline, query);
+		new rows;
+		if(cache_is_valid(result)) {
+			cache_get_row_count(rows);
+			cache_delete(result);
+		}
+		committed = rows == 1;
+		if(!committed) {
+			SetPVarInt(playerid, "FurniturePurchaseUncertain", 1);
+			HouseInfo[iHouseID][hFurnitureLoaded] = 0;
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Your purchase could not be verified. Reconnect to reload your saved data.");
+			Kick(playerid);
+		}
+	}
+	if(!committed) {
+		if(IsValidDynamicArea(areaid)) DestroyDynamicArea(areaid);
+		DestroyDynamicObject(objectid);
+		if(failed) SendClientMessageEx(playerid, COLOR_GRAD1, "The furniture purchase was not confirmed. Your money and materials were not charged.");
+		return 0;
+	}
+	HouseInfo[iHouseID][hFurniture][iSlotID] = objectid;
+	PlayerInfo[playerid][pCash] = cash;
+	PlayerInfo[playerid][pMats] = mats;
+	return 1;
 }
 
 ProcessFurniture(iHouseID, iSlotID, iModelID, Float:X, Float:Y, Float:Z, Float:RX, Float:RY, Float:RZ, text0 = -1, text1 = -1, text2 = -1, text3 = -1, text4 = -1, col0 = -1, col1 = -1, col2 = -1, col3 = -1, col4 = -1) {
@@ -2416,13 +2492,6 @@ CMD:door(playerid, params[]) {
 CMD:rehashcatalog(playerid, params[]) {
 
 	if(IsAdminLevel(playerid, ADMIN_HEAD, 1)) {
-		for(new i; i < MAX_CATALOG; ++i) {
-
-			arrFurnitureCatalog[i][fc_iModelID] = 0;
-			arrFurnitureCatalog[i][fc_iTypeID] = 0;
-			arrFurnitureCatalog[i][fc_szName][0] = 0;
-			arrFurnitureCatalog[i][fc_iPrice] = 0;
-		}
 		FurnitureListInit();
 		SendClientMessageEx(playerid, COLOR_GRAD1, "Rehasing the furniture catalog...");
 	}

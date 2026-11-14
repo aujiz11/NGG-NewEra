@@ -39,6 +39,7 @@ new MySQL: ShopPipeline;
 new ShopToggle = 0;
 new bool:gShopDeliveryReady;
 new bool:gAccountsInnoDB;
+new bool:gFurnitureInnoDB;
 new bool:gStaffBansInnoDB;
 new bool:gShopPending[MAX_PLAYERS];
 new gShopOperation[MAX_PLAYERS];
