@@ -9,5 +9,8 @@
 *.rar
 
 # Temporary
+*.log
 log.txt
 logs/
+scriptfiles/logs.db
+scriptfiles/logs.db-journal
