@@ -2255,14 +2255,18 @@ stock IsAdminSpawnedVehicle(vehicleid)
 // credits to Luk0r
 stock MySQLUpdateBuild(query[], sqlplayerid, valueLength = 0)
 {
+	static const updatePrefix[] = "UPDATE `accounts` SET ";
 	new querylen = strlen(query);
 	if(!query[0]) {
-		format(query, 2048, "UPDATE `accounts` SET ");
+		format(query, 2048, updatePrefix);
 	}
 	else if(2048 - querylen < 200 || 2048 - querylen < valueLength + 33) {
 		MySQLUpdateFinish(query, sqlplayerid);
 	}
-	else if(strfind(query, "=", true) != -1) strcat(query, ",", 2048);
+	else if(querylen > sizeof(updatePrefix) - 1) {
+		query[querylen] = ',';
+		query[querylen + 1] = '\0';
+	}
 	return 1;
 }
 
@@ -2335,394 +2339,394 @@ stock g_mysql_SaveAccount(playerid)
 		++gAccountSaveErrors;
 		return 0;
 	}
-	new query[2048];
-	SavePlayerFloat(query, GetPlayerSQLId(playerid), "SPos_x", PlayerInfo[playerid][pPos_x]);
-	SavePlayerFloat(query, GetPlayerSQLId(playerid), "SPos_y", PlayerInfo[playerid][pPos_y]);
-	SavePlayerFloat(query, GetPlayerSQLId(playerid), "SPos_z", PlayerInfo[playerid][pPos_z]);
-	SavePlayerFloat(query, GetPlayerSQLId(playerid), "SPos_r", PlayerInfo[playerid][pPos_r]);
-    SavePlayerString(query, GetPlayerSQLId(playerid), "IP", PlayerInfo[playerid][pIP]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Registered", PlayerInfo[playerid][pReg]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "ConnectedTime", PlayerInfo[playerid][pConnectHours]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Sex", PlayerInfo[playerid][pSex]);
-    SavePlayerString(query, GetPlayerSQLId(playerid), "BirthDate", PlayerInfo[playerid][pBirthDate]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Band", PlayerInfo[playerid][pBanned]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "PermBand", PlayerInfo[playerid][pPermaBanned]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Warnings", PlayerInfo[playerid][pWarns]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Disabled", PlayerInfo[playerid][pDisabled]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Level", PlayerInfo[playerid][pLevel]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "AdminLevel", PlayerInfo[playerid][pAdmin]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "SeniorModerator", PlayerInfo[playerid][pSMod]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Helper", PlayerInfo[playerid][pHelper]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "DonateRank", PlayerInfo[playerid][pDonateRank]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Respect", PlayerInfo[playerid][pExp]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Money", GetPlayerCash(playerid));
+	new query[2048], sqlid = GetPlayerSQLId(playerid);
+	SavePlayerFloat(query, sqlid, "SPos_x", PlayerInfo[playerid][pPos_x]);
+	SavePlayerFloat(query, sqlid, "SPos_y", PlayerInfo[playerid][pPos_y]);
+	SavePlayerFloat(query, sqlid, "SPos_z", PlayerInfo[playerid][pPos_z]);
+	SavePlayerFloat(query, sqlid, "SPos_r", PlayerInfo[playerid][pPos_r]);
+    SavePlayerString(query, sqlid, "IP", PlayerInfo[playerid][pIP]);
+    SavePlayerInteger(query, sqlid, "Registered", PlayerInfo[playerid][pReg]);
+    SavePlayerInteger(query, sqlid, "ConnectedTime", PlayerInfo[playerid][pConnectHours]);
+    SavePlayerInteger(query, sqlid, "Sex", PlayerInfo[playerid][pSex]);
+    SavePlayerString(query, sqlid, "BirthDate", PlayerInfo[playerid][pBirthDate]);
+    SavePlayerInteger(query, sqlid, "Band", PlayerInfo[playerid][pBanned]);
+    SavePlayerInteger(query, sqlid, "PermBand", PlayerInfo[playerid][pPermaBanned]);
+    SavePlayerInteger(query, sqlid, "Warnings", PlayerInfo[playerid][pWarns]);
+    SavePlayerInteger(query, sqlid, "Disabled", PlayerInfo[playerid][pDisabled]);
+    SavePlayerInteger(query, sqlid, "Level", PlayerInfo[playerid][pLevel]);
+    SavePlayerInteger(query, sqlid, "AdminLevel", PlayerInfo[playerid][pAdmin]);
+	SavePlayerInteger(query, sqlid, "SeniorModerator", PlayerInfo[playerid][pSMod]);
+	SavePlayerInteger(query, sqlid, "Helper", PlayerInfo[playerid][pHelper]);
+    SavePlayerInteger(query, sqlid, "DonateRank", PlayerInfo[playerid][pDonateRank]);
+    SavePlayerInteger(query, sqlid, "Respect", PlayerInfo[playerid][pExp]);
+    SavePlayerInteger(query, sqlid, "Money", GetPlayerCash(playerid));
 
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Bank", PlayerInfo[playerid][pAccount]);
+    SavePlayerInteger(query, sqlid, "Bank", PlayerInfo[playerid][pAccount]);
 	if(PlayerInfo[playerid][pHealth] > 150) PlayerInfo[playerid][pHealth] = 150;
 	if(PlayerInfo[playerid][pArmor] > 150) PlayerInfo[playerid][pArmor] = 150;
-    SavePlayerFloat(query, GetPlayerSQLId(playerid), "pHealth", PlayerInfo[playerid][pHealth]);
-    SavePlayerFloat(query, GetPlayerSQLId(playerid), "pArmor", PlayerInfo[playerid][pArmor]);
-    SavePlayerFloat(query, GetPlayerSQLId(playerid), "pSHealth", PlayerInfo[playerid][pSHealth]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Int", PlayerInfo[playerid][pInt]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "VirtualWorld", PlayerInfo[playerid][pVW]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Model", PlayerInfo[playerid][pModel]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "BanAppealer", PlayerInfo[playerid][pBanAppealer]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "PR", PlayerInfo[playerid][pPR]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "HR", PlayerInfo[playerid][pHR]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "AP", PlayerInfo[playerid][pAP]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Security", PlayerInfo[playerid][pSecurity]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "ShopTech", PlayerInfo[playerid][pShopTech]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FactionModerator", PlayerInfo[playerid][pFactionModerator]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "GangModerator", PlayerInfo[playerid][pGangModerator]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Undercover", PlayerInfo[playerid][pUndercover]);
+    SavePlayerFloat(query, sqlid, "pHealth", PlayerInfo[playerid][pHealth]);
+    SavePlayerFloat(query, sqlid, "pArmor", PlayerInfo[playerid][pArmor]);
+    SavePlayerFloat(query, sqlid, "pSHealth", PlayerInfo[playerid][pSHealth]);
+    SavePlayerInteger(query, sqlid, "Int", PlayerInfo[playerid][pInt]);
+    SavePlayerInteger(query, sqlid, "VirtualWorld", PlayerInfo[playerid][pVW]);
+    SavePlayerInteger(query, sqlid, "Model", PlayerInfo[playerid][pModel]);
+    SavePlayerInteger(query, sqlid, "BanAppealer", PlayerInfo[playerid][pBanAppealer]);
+    SavePlayerInteger(query, sqlid, "PR", PlayerInfo[playerid][pPR]);
+	SavePlayerInteger(query, sqlid, "HR", PlayerInfo[playerid][pHR]);
+	SavePlayerInteger(query, sqlid, "AP", PlayerInfo[playerid][pAP]);
+	SavePlayerInteger(query, sqlid, "Security", PlayerInfo[playerid][pSecurity]);
+    SavePlayerInteger(query, sqlid, "ShopTech", PlayerInfo[playerid][pShopTech]);
+	SavePlayerInteger(query, sqlid, "FactionModerator", PlayerInfo[playerid][pFactionModerator]);
+    SavePlayerInteger(query, sqlid, "GangModerator", PlayerInfo[playerid][pGangModerator]);
+    SavePlayerInteger(query, sqlid, "Undercover", PlayerInfo[playerid][pUndercover]);
 
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "TogReports", PlayerInfo[playerid][pTogReports]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Radio", PlayerInfo[playerid][pRadio]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "RadioFreq", PlayerInfo[playerid][pRadioFreq]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "UpgradePoints", PlayerInfo[playerid][gPupgrade]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Origin", PlayerInfo[playerid][pOrigin]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Muted", PlayerInfo[playerid][pMuted]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Crimes", PlayerInfo[playerid][pCrimes]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Accent", PlayerInfo[playerid][pAccent]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "CHits", PlayerInfo[playerid][pCHits]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "FHits", PlayerInfo[playerid][pFHits]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Arrested", PlayerInfo[playerid][pArrested]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Phonebook", PlayerInfo[playerid][pPhoneBook]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "LottoNr", PlayerInfo[playerid][pLottoNr]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Fishes", PlayerInfo[playerid][pFishes]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "BiggestFish", PlayerInfo[playerid][pBiggestFish]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Job", PlayerInfo[playerid][pJob]);
+    SavePlayerInteger(query, sqlid, "TogReports", PlayerInfo[playerid][pTogReports]);
+    SavePlayerInteger(query, sqlid, "Radio", PlayerInfo[playerid][pRadio]);
+    SavePlayerInteger(query, sqlid, "RadioFreq", PlayerInfo[playerid][pRadioFreq]);
+    SavePlayerInteger(query, sqlid, "UpgradePoints", PlayerInfo[playerid][gPupgrade]);
+    SavePlayerInteger(query, sqlid, "Origin", PlayerInfo[playerid][pOrigin]);
+    SavePlayerInteger(query, sqlid, "Muted", PlayerInfo[playerid][pMuted]);
+    SavePlayerInteger(query, sqlid, "Crimes", PlayerInfo[playerid][pCrimes]);
+    SavePlayerInteger(query, sqlid, "Accent", PlayerInfo[playerid][pAccent]);
+    SavePlayerInteger(query, sqlid, "CHits", PlayerInfo[playerid][pCHits]);
+    SavePlayerInteger(query, sqlid, "FHits", PlayerInfo[playerid][pFHits]);
+    SavePlayerInteger(query, sqlid, "Arrested", PlayerInfo[playerid][pArrested]);
+    SavePlayerInteger(query, sqlid, "Phonebook", PlayerInfo[playerid][pPhoneBook]);
+    SavePlayerInteger(query, sqlid, "LottoNr", PlayerInfo[playerid][pLottoNr]);
+    SavePlayerInteger(query, sqlid, "Fishes", PlayerInfo[playerid][pFishes]);
+    SavePlayerInteger(query, sqlid, "BiggestFish", PlayerInfo[playerid][pBiggestFish]);
+    SavePlayerInteger(query, sqlid, "Job", PlayerInfo[playerid][pJob]);
 
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Job2", PlayerInfo[playerid][pJob2]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Job3", PlayerInfo[playerid][pJob3]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Paycheck", PlayerInfo[playerid][pPayCheck]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "HeadValue", PlayerInfo[playerid][pHeadValue]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "JailTime", PlayerInfo[playerid][pJailTime]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "WRestricted", PlayerInfo[playerid][pWRestricted]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Materials", PlayerInfo[playerid][pMats]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Crates", PlayerInfo[playerid][pCrates]);
+    SavePlayerInteger(query, sqlid, "Job2", PlayerInfo[playerid][pJob2]);
+	SavePlayerInteger(query, sqlid, "Job3", PlayerInfo[playerid][pJob3]);
+    SavePlayerInteger(query, sqlid, "Paycheck", PlayerInfo[playerid][pPayCheck]);
+    SavePlayerInteger(query, sqlid, "HeadValue", PlayerInfo[playerid][pHeadValue]);
+    SavePlayerInteger(query, sqlid, "JailTime", PlayerInfo[playerid][pJailTime]);
+    SavePlayerInteger(query, sqlid, "WRestricted", PlayerInfo[playerid][pWRestricted]);
+    SavePlayerInteger(query, sqlid, "Materials", PlayerInfo[playerid][pMats]);
+    SavePlayerInteger(query, sqlid, "Crates", PlayerInfo[playerid][pCrates]);
     // SavePlayerInteger(query, GetPlayerSQLId(playerid), "Pot", PlayerInfo[playerid][pPot]);
     // SavePlayerInteger(query, GetPlayerSQLId(playerid), "Crack", PlayerInfo[playerid][pCrack]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Nation", PlayerInfo[playerid][pNation]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Leader", PlayerInfo[playerid][pLeader]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Member", PlayerInfo[playerid][pMember]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Division", PlayerInfo[playerid][pDivision]);
-	SavePlayerString(query, GetPlayerSQLId(playerid), "Badge", PlayerInfo[playerid][pBadge]);
+	SavePlayerInteger(query, sqlid, "Nation", PlayerInfo[playerid][pNation]);
+    SavePlayerInteger(query, sqlid, "Leader", PlayerInfo[playerid][pLeader]);
+    SavePlayerInteger(query, sqlid, "Member", PlayerInfo[playerid][pMember]);
+    SavePlayerInteger(query, sqlid, "Division", PlayerInfo[playerid][pDivision]);
+	SavePlayerString(query, sqlid, "Badge", PlayerInfo[playerid][pBadge]);
 
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Rank", PlayerInfo[playerid][pRank]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "DetSkill", PlayerInfo[playerid][pDetSkill]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "SexSkill", PlayerInfo[playerid][pSexSkill]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "BoxSkill", PlayerInfo[playerid][pBoxSkill]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "LawSkill", PlayerInfo[playerid][pLawSkill]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "MechSkill", PlayerInfo[playerid][pMechSkill]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "TruckSkill", PlayerInfo[playerid][pTruckSkill]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "DrugSmuggler", PlayerInfo[playerid][pDrugSmuggler]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "ArmsSkill", PlayerInfo[playerid][pArmsSkill]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "FishSkill", PlayerInfo[playerid][pFishSkill]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "CheckCash", PlayerInfo[playerid][pCheckCash]);
+    SavePlayerInteger(query, sqlid, "Rank", PlayerInfo[playerid][pRank]);
+    SavePlayerInteger(query, sqlid, "DetSkill", PlayerInfo[playerid][pDetSkill]);
+    SavePlayerInteger(query, sqlid, "SexSkill", PlayerInfo[playerid][pSexSkill]);
+    SavePlayerInteger(query, sqlid, "BoxSkill", PlayerInfo[playerid][pBoxSkill]);
+    SavePlayerInteger(query, sqlid, "LawSkill", PlayerInfo[playerid][pLawSkill]);
+    SavePlayerInteger(query, sqlid, "MechSkill", PlayerInfo[playerid][pMechSkill]);
+    SavePlayerInteger(query, sqlid, "TruckSkill", PlayerInfo[playerid][pTruckSkill]);
+    SavePlayerInteger(query, sqlid, "DrugSmuggler", PlayerInfo[playerid][pDrugSmuggler]);
+    SavePlayerInteger(query, sqlid, "ArmsSkill", PlayerInfo[playerid][pArmsSkill]);
+    SavePlayerInteger(query, sqlid, "FishSkill", PlayerInfo[playerid][pFishSkill]);
+    SavePlayerInteger(query, sqlid, "CheckCash", PlayerInfo[playerid][pCheckCash]);
 
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Checks", PlayerInfo[playerid][pChecks]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "BoatLic", PlayerInfo[playerid][pBoatLic]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "FlyLic", PlayerInfo[playerid][pFlyLic]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "GunLic", PlayerInfo[playerid][pGunLic]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "FishLic", PlayerInfo[playerid][pFishLic]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "FishSkill", PlayerInfo[playerid][pFishSkill]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "FightingStyle", PlayerInfo[playerid][pFightStyle]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "PhoneNr", PlayerInfo[playerid][pPnumber]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Apartment", PlayerInfo[playerid][pPhousekey]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Apartment2", PlayerInfo[playerid][pPhousekey2]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Apartment3", PlayerInfo[playerid][pPhousekey3]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Renting", PlayerInfo[playerid][pRenting]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "CarLic", PlayerInfo[playerid][pCarLic]);
+    SavePlayerInteger(query, sqlid, "Checks", PlayerInfo[playerid][pChecks]);
+    SavePlayerInteger(query, sqlid, "BoatLic", PlayerInfo[playerid][pBoatLic]);
+    SavePlayerInteger(query, sqlid, "FlyLic", PlayerInfo[playerid][pFlyLic]);
+    SavePlayerInteger(query, sqlid, "GunLic", PlayerInfo[playerid][pGunLic]);
+    SavePlayerInteger(query, sqlid, "FishLic", PlayerInfo[playerid][pFishLic]);
+    SavePlayerInteger(query, sqlid, "FishSkill", PlayerInfo[playerid][pFishSkill]);
+    SavePlayerInteger(query, sqlid, "FightingStyle", PlayerInfo[playerid][pFightStyle]);
+    SavePlayerInteger(query, sqlid, "PhoneNr", PlayerInfo[playerid][pPnumber]);
+    SavePlayerInteger(query, sqlid, "Apartment", PlayerInfo[playerid][pPhousekey]);
+    SavePlayerInteger(query, sqlid, "Apartment2", PlayerInfo[playerid][pPhousekey2]);
+	SavePlayerInteger(query, sqlid, "Apartment3", PlayerInfo[playerid][pPhousekey3]);
+    SavePlayerInteger(query, sqlid, "Renting", PlayerInfo[playerid][pRenting]);
+    SavePlayerInteger(query, sqlid, "CarLic", PlayerInfo[playerid][pCarLic]);
 
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "DrugsTime", PlayerInfo[playerid][pDrugsTime]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "LawyerTime", PlayerInfo[playerid][pLawyerTime]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "LawyerFreeTime", PlayerInfo[playerid][pLawyerFreeTime]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "MechTime", PlayerInfo[playerid][pMechTime]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "SexTime", PlayerInfo[playerid][pSexTime]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "PayDay", PlayerInfo[playerid][pConnectSeconds]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "PayDayHad", PlayerInfo[playerid][pPayDayHad]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "CDPlayer", PlayerInfo[playerid][pCDPlayer]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Dice", PlayerInfo[playerid][pDice]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Spraycan", PlayerInfo[playerid][pSpraycan]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Rope", PlayerInfo[playerid][pRope]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Rags", PlayerInfo[playerid][pRags]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Cigars", PlayerInfo[playerid][pCigar]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Sprunk", PlayerInfo[playerid][pSprunk]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Bombs", PlayerInfo[playerid][pBombs]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Wins", PlayerInfo[playerid][pWins]);
+    SavePlayerInteger(query, sqlid, "DrugsTime", PlayerInfo[playerid][pDrugsTime]);
+    SavePlayerInteger(query, sqlid, "LawyerTime", PlayerInfo[playerid][pLawyerTime]);
+    SavePlayerInteger(query, sqlid, "LawyerFreeTime", PlayerInfo[playerid][pLawyerFreeTime]);
+    SavePlayerInteger(query, sqlid, "MechTime", PlayerInfo[playerid][pMechTime]);
+    SavePlayerInteger(query, sqlid, "SexTime", PlayerInfo[playerid][pSexTime]);
+    SavePlayerInteger(query, sqlid, "PayDay", PlayerInfo[playerid][pConnectSeconds]);
+    SavePlayerInteger(query, sqlid, "PayDayHad", PlayerInfo[playerid][pPayDayHad]);
+    SavePlayerInteger(query, sqlid, "CDPlayer", PlayerInfo[playerid][pCDPlayer]);
+    SavePlayerInteger(query, sqlid, "Dice", PlayerInfo[playerid][pDice]);
+    SavePlayerInteger(query, sqlid, "Spraycan", PlayerInfo[playerid][pSpraycan]);
+    SavePlayerInteger(query, sqlid, "Rope", PlayerInfo[playerid][pRope]);
+    SavePlayerInteger(query, sqlid, "Rags", PlayerInfo[playerid][pRags]);
+    SavePlayerInteger(query, sqlid, "Cigars", PlayerInfo[playerid][pCigar]);
+    SavePlayerInteger(query, sqlid, "Sprunk", PlayerInfo[playerid][pSprunk]);
+    SavePlayerInteger(query, sqlid, "Bombs", PlayerInfo[playerid][pBombs]);
+    SavePlayerInteger(query, sqlid, "Wins", PlayerInfo[playerid][pWins]);
 
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Loses", PlayerInfo[playerid][pLoses]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Tutorial", PlayerInfo[playerid][pTut]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "OnDuty", PlayerInfo[playerid][pDuty]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Hospital", PlayerInfo[playerid][pHospital]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "MarriedID", PlayerInfo[playerid][pMarriedID]);
-    SavePlayerString(query, GetPlayerSQLId(playerid), "ContractBy", PlayerInfo[playerid][pContractBy]);
-    SavePlayerString(query, GetPlayerSQLId(playerid), "ContractDetail", PlayerInfo[playerid][pContractDetail]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "WantedLevel", PlayerInfo[playerid][pWantedLevel]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Insurance", PlayerInfo[playerid][pInsurance]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "911Muted", PlayerInfo[playerid][p911Muted]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "NewMuted", PlayerInfo[playerid][pNMute]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "NewMutedTotal", PlayerInfo[playerid][pNMuteTotal]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "AdMuted", PlayerInfo[playerid][pADMute]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "AdMutedTotal", PlayerInfo[playerid][pADMuteTotal]);
+    SavePlayerInteger(query, sqlid, "Loses", PlayerInfo[playerid][pLoses]);
+    SavePlayerInteger(query, sqlid, "Tutorial", PlayerInfo[playerid][pTut]);
+    SavePlayerInteger(query, sqlid, "OnDuty", PlayerInfo[playerid][pDuty]);
+    SavePlayerInteger(query, sqlid, "Hospital", PlayerInfo[playerid][pHospital]);
+    SavePlayerInteger(query, sqlid, "MarriedID", PlayerInfo[playerid][pMarriedID]);
+    SavePlayerString(query, sqlid, "ContractBy", PlayerInfo[playerid][pContractBy]);
+    SavePlayerString(query, sqlid, "ContractDetail", PlayerInfo[playerid][pContractDetail]);
+    SavePlayerInteger(query, sqlid, "WantedLevel", PlayerInfo[playerid][pWantedLevel]);
+    SavePlayerInteger(query, sqlid, "Insurance", PlayerInfo[playerid][pInsurance]);
+	SavePlayerInteger(query, sqlid, "911Muted", PlayerInfo[playerid][p911Muted]);
+    SavePlayerInteger(query, sqlid, "NewMuted", PlayerInfo[playerid][pNMute]);
+    SavePlayerInteger(query, sqlid, "NewMutedTotal", PlayerInfo[playerid][pNMuteTotal]);
+    SavePlayerInteger(query, sqlid, "AdMuted", PlayerInfo[playerid][pADMute]);
+    SavePlayerInteger(query, sqlid, "AdMutedTotal", PlayerInfo[playerid][pADMuteTotal]);
 
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "HelpMute", PlayerInfo[playerid][pHelpMute]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "ReportMuted", PlayerInfo[playerid][pRMuted]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "ReportMutedTotal", PlayerInfo[playerid][pRMutedTotal]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "ReportMutedTime", PlayerInfo[playerid][pRMutedTime]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "DMRMuted", PlayerInfo[playerid][pDMRMuted]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPMuted", PlayerInfo[playerid][pVMuted]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPMutedTime", PlayerInfo[playerid][pVMutedTime]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "GiftTime", PlayerInfo[playerid][pGiftTime]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "AdvisorDutyHours", PlayerInfo[playerid][pDutyHours]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "AcceptedHelp", PlayerInfo[playerid][pAcceptedHelp]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "AcceptReport", PlayerInfo[playerid][pAcceptReport]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "TrashReport", PlayerInfo[playerid][pTrashReport]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "GangWarn", PlayerInfo[playerid][pGangWarn]);
+    SavePlayerInteger(query, sqlid, "HelpMute", PlayerInfo[playerid][pHelpMute]);
+    SavePlayerInteger(query, sqlid, "ReportMuted", PlayerInfo[playerid][pRMuted]);
+    SavePlayerInteger(query, sqlid, "ReportMutedTotal", PlayerInfo[playerid][pRMutedTotal]);
+    SavePlayerInteger(query, sqlid, "ReportMutedTime", PlayerInfo[playerid][pRMutedTime]);
+    SavePlayerInteger(query, sqlid, "DMRMuted", PlayerInfo[playerid][pDMRMuted]);
+    SavePlayerInteger(query, sqlid, "VIPMuted", PlayerInfo[playerid][pVMuted]);
+    SavePlayerInteger(query, sqlid, "VIPMutedTime", PlayerInfo[playerid][pVMutedTime]);
+    SavePlayerInteger(query, sqlid, "GiftTime", PlayerInfo[playerid][pGiftTime]);
+    SavePlayerInteger(query, sqlid, "AdvisorDutyHours", PlayerInfo[playerid][pDutyHours]);
+    SavePlayerInteger(query, sqlid, "AcceptedHelp", PlayerInfo[playerid][pAcceptedHelp]);
+    SavePlayerInteger(query, sqlid, "AcceptReport", PlayerInfo[playerid][pAcceptReport]);
+    SavePlayerInteger(query, sqlid, "TrashReport", PlayerInfo[playerid][pTrashReport]);
+    SavePlayerInteger(query, sqlid, "GangWarn", PlayerInfo[playerid][pGangWarn]);
 
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "CSFBanned", PlayerInfo[playerid][pCSFBanned]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPInviteDay", PlayerInfo[playerid][pVIPInviteDay]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "TempVIP", PlayerInfo[playerid][pTempVIP]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "BuddyInvite", PlayerInfo[playerid][pBuddyInvited]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Tokens", PlayerInfo[playerid][pTokens]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "PTokens", PlayerInfo[playerid][pPaintTokens]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "TriageTime", PlayerInfo[playerid][pTriageTime]);
-    SavePlayerString(query, GetPlayerSQLId(playerid), "PrisonedBy", PlayerInfo[playerid][pPrisonedBy]);
-    SavePlayerString(query, GetPlayerSQLId(playerid), "PrisonReason", PlayerInfo[playerid][pPrisonReason]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "TaxiLicense", PlayerInfo[playerid][pTaxiLicense]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "TicketTime", PlayerInfo[playerid][pTicketTime]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Screwdriver", PlayerInfo[playerid][pScrewdriver]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Smslog", PlayerInfo[playerid][pSmslog]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Speedo", PlayerInfo[playerid][pSpeedo]);
+    SavePlayerInteger(query, sqlid, "CSFBanned", PlayerInfo[playerid][pCSFBanned]);
+    SavePlayerInteger(query, sqlid, "VIPInviteDay", PlayerInfo[playerid][pVIPInviteDay]);
+    SavePlayerInteger(query, sqlid, "TempVIP", PlayerInfo[playerid][pTempVIP]);
+    SavePlayerInteger(query, sqlid, "BuddyInvite", PlayerInfo[playerid][pBuddyInvited]);
+    SavePlayerInteger(query, sqlid, "Tokens", PlayerInfo[playerid][pTokens]);
+    SavePlayerInteger(query, sqlid, "PTokens", PlayerInfo[playerid][pPaintTokens]);
+    SavePlayerInteger(query, sqlid, "TriageTime", PlayerInfo[playerid][pTriageTime]);
+    SavePlayerString(query, sqlid, "PrisonedBy", PlayerInfo[playerid][pPrisonedBy]);
+    SavePlayerString(query, sqlid, "PrisonReason", PlayerInfo[playerid][pPrisonReason]);
+    SavePlayerInteger(query, sqlid, "TaxiLicense", PlayerInfo[playerid][pTaxiLicense]);
+    SavePlayerInteger(query, sqlid, "TicketTime", PlayerInfo[playerid][pTicketTime]);
+    SavePlayerInteger(query, sqlid, "Screwdriver", PlayerInfo[playerid][pScrewdriver]);
+    SavePlayerInteger(query, sqlid, "Smslog", PlayerInfo[playerid][pSmslog]);
+    SavePlayerInteger(query, sqlid, "Speedo", PlayerInfo[playerid][pSpeedo]);
 
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Wristwatch", PlayerInfo[playerid][pWristwatch]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Surveillance", PlayerInfo[playerid][pSurveillance]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Tire", PlayerInfo[playerid][pTire]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Firstaid", PlayerInfo[playerid][pFirstaid]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Rccam", PlayerInfo[playerid][pRccam]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Receiver", PlayerInfo[playerid][pReceiver]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "GPS", PlayerInfo[playerid][pGPS]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Sweep", PlayerInfo[playerid][pSweep]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "SweepLeft", PlayerInfo[playerid][pSweepLeft]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Bugged", PlayerInfo[playerid][pBugged]);
+    SavePlayerInteger(query, sqlid, "Wristwatch", PlayerInfo[playerid][pWristwatch]);
+    SavePlayerInteger(query, sqlid, "Surveillance", PlayerInfo[playerid][pSurveillance]);
+    SavePlayerInteger(query, sqlid, "Tire", PlayerInfo[playerid][pTire]);
+    SavePlayerInteger(query, sqlid, "Firstaid", PlayerInfo[playerid][pFirstaid]);
+    SavePlayerInteger(query, sqlid, "Rccam", PlayerInfo[playerid][pRccam]);
+    SavePlayerInteger(query, sqlid, "Receiver", PlayerInfo[playerid][pReceiver]);
+    SavePlayerInteger(query, sqlid, "GPS", PlayerInfo[playerid][pGPS]);
+    SavePlayerInteger(query, sqlid, "Sweep", PlayerInfo[playerid][pSweep]);
+    SavePlayerInteger(query, sqlid, "SweepLeft", PlayerInfo[playerid][pSweepLeft]);
+    SavePlayerInteger(query, sqlid, "Bugged", PlayerInfo[playerid][pBugged]);
 
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "pWExists", PlayerInfo[playerid][pWeedObject]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "pWSeeds", PlayerInfo[playerid][pWSeeds]);
-    SavePlayerString(query, GetPlayerSQLId(playerid), "Warrants", PlayerInfo[playerid][pWarrant]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "JudgeJailTime", PlayerInfo[playerid][pJudgeJailTime]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "JudgeJailType", PlayerInfo[playerid][pJudgeJailType]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "BeingSentenced", PlayerInfo[playerid][pBeingSentenced]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "ProbationTime", PlayerInfo[playerid][pProbationTime]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "DMKills", PlayerInfo[playerid][pDMKills]);
+    SavePlayerInteger(query, sqlid, "pWExists", PlayerInfo[playerid][pWeedObject]);
+    SavePlayerInteger(query, sqlid, "pWSeeds", PlayerInfo[playerid][pWSeeds]);
+    SavePlayerString(query, sqlid, "Warrants", PlayerInfo[playerid][pWarrant]);
+    SavePlayerInteger(query, sqlid, "JudgeJailTime", PlayerInfo[playerid][pJudgeJailTime]);
+    SavePlayerInteger(query, sqlid, "JudgeJailType", PlayerInfo[playerid][pJudgeJailType]);
+    SavePlayerInteger(query, sqlid, "BeingSentenced", PlayerInfo[playerid][pBeingSentenced]);
+    SavePlayerInteger(query, sqlid, "ProbationTime", PlayerInfo[playerid][pProbationTime]);
+    SavePlayerInteger(query, sqlid, "DMKills", PlayerInfo[playerid][pDMKills]);
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "OrderConfirmed", PlayerInfo[playerid][pOrderConfirmed]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FreezeHouse", PlayerInfo[playerid][pFreezeHouse]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FreezeCar", PlayerInfo[playerid][pFreezeCar]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Firework", PlayerInfo[playerid][pFirework]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Boombox", PlayerInfo[playerid][pBoombox]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Hydration", PlayerInfo[playerid][pHydration]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "DoubleEXP", PlayerInfo[playerid][pDoubleEXP]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "EXPToken", PlayerInfo[playerid][pEXPToken]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "RacePlayerLaps", PlayerInfo[playerid][pRacePlayerLaps]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ringtone", PlayerInfo[playerid][pRingtone]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Wallpaper", PlayerInfo[playerid][pWallpaper]);
+	SavePlayerInteger(query, sqlid, "OrderConfirmed", PlayerInfo[playerid][pOrderConfirmed]);
+	SavePlayerInteger(query, sqlid, "FreezeHouse", PlayerInfo[playerid][pFreezeHouse]);
+	SavePlayerInteger(query, sqlid, "FreezeCar", PlayerInfo[playerid][pFreezeCar]);
+	SavePlayerInteger(query, sqlid, "Firework", PlayerInfo[playerid][pFirework]);
+	SavePlayerInteger(query, sqlid, "Boombox", PlayerInfo[playerid][pBoombox]);
+	SavePlayerInteger(query, sqlid, "Hydration", PlayerInfo[playerid][pHydration]);
+	SavePlayerInteger(query, sqlid, "DoubleEXP", PlayerInfo[playerid][pDoubleEXP]);
+	SavePlayerInteger(query, sqlid, "EXPToken", PlayerInfo[playerid][pEXPToken]);
+	SavePlayerInteger(query, sqlid, "RacePlayerLaps", PlayerInfo[playerid][pRacePlayerLaps]);
+	SavePlayerInteger(query, sqlid, "Ringtone", PlayerInfo[playerid][pRingtone]);
+	SavePlayerInteger(query, sqlid, "Wallpaper", PlayerInfo[playerid][pWallpaper]);
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Order", PlayerInfo[playerid][pOrder]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "CallsAccepted", PlayerInfo[playerid][pCallsAccepted]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PatientsDelivered", PlayerInfo[playerid][pPatientsDelivered]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "LiveBanned", PlayerInfo[playerid][pLiveBanned]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FreezeBank", PlayerInfo[playerid][pFreezeBank]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPM", PlayerInfo[playerid][pVIPM]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPMO", PlayerInfo[playerid][pVIPMO]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPExpire", PlayerInfo[playerid][pVIPExpire]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "GVip", PlayerInfo[playerid][pGVip]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Watchdog", PlayerInfo[playerid][pWatchdog]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPSold", PlayerInfo[playerid][pVIPSold]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "GoldBoxTokens", PlayerInfo[playerid][pGoldBoxTokens]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "DrawChance", PlayerInfo[playerid][pRewardDrawChance]);
-	SavePlayerFloat(query, GetPlayerSQLId(playerid), "RewardHours", PlayerInfo[playerid][pRewardHours]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "CarsRestricted", PlayerInfo[playerid][pRVehRestricted]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "LastCarWarning", PlayerInfo[playerid][pLastRVehWarn]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "CarWarns", PlayerInfo[playerid][pRVehWarns]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Flagged", PlayerInfo[playerid][pFlagged]);
+	SavePlayerInteger(query, sqlid, "Order", PlayerInfo[playerid][pOrder]);
+	SavePlayerInteger(query, sqlid, "CallsAccepted", PlayerInfo[playerid][pCallsAccepted]);
+	SavePlayerInteger(query, sqlid, "PatientsDelivered", PlayerInfo[playerid][pPatientsDelivered]);
+	SavePlayerInteger(query, sqlid, "LiveBanned", PlayerInfo[playerid][pLiveBanned]);
+	SavePlayerInteger(query, sqlid, "FreezeBank", PlayerInfo[playerid][pFreezeBank]);
+	SavePlayerInteger(query, sqlid, "VIPM", PlayerInfo[playerid][pVIPM]);
+	SavePlayerInteger(query, sqlid, "VIPMO", PlayerInfo[playerid][pVIPMO]);
+	SavePlayerInteger(query, sqlid, "VIPExpire", PlayerInfo[playerid][pVIPExpire]);
+	SavePlayerInteger(query, sqlid, "GVip", PlayerInfo[playerid][pGVip]);
+	SavePlayerInteger(query, sqlid, "Watchdog", PlayerInfo[playerid][pWatchdog]);
+	SavePlayerInteger(query, sqlid, "VIPSold", PlayerInfo[playerid][pVIPSold]);
+	SavePlayerInteger(query, sqlid, "GoldBoxTokens", PlayerInfo[playerid][pGoldBoxTokens]);
+	SavePlayerInteger(query, sqlid, "DrawChance", PlayerInfo[playerid][pRewardDrawChance]);
+	SavePlayerFloat(query, sqlid, "RewardHours", PlayerInfo[playerid][pRewardHours]);
+	SavePlayerInteger(query, sqlid, "CarsRestricted", PlayerInfo[playerid][pRVehRestricted]);
+	SavePlayerInteger(query, sqlid, "LastCarWarning", PlayerInfo[playerid][pLastRVehWarn]);
+	SavePlayerInteger(query, sqlid, "CarWarns", PlayerInfo[playerid][pRVehWarns]);
+	SavePlayerInteger(query, sqlid, "Flagged", PlayerInfo[playerid][pFlagged]);
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Paper", PlayerInfo[playerid][pPaper]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "MailEnabled", PlayerInfo[playerid][pMailEnabled]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Mailbox", PlayerInfo[playerid][pMailbox]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Business", PlayerInfo[playerid][pBusiness]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "BusinessRank", PlayerInfo[playerid][pBusinessRank]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "TreasureSkill", PlayerInfo[playerid][pTreasureSkill]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "MetalDetector", PlayerInfo[playerid][pMetalDetector]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "HelpedBefore", PlayerInfo[playerid][pHelpedBefore]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Trickortreat", PlayerInfo[playerid][pTrickortreat]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "LastCharmReceived", PlayerInfo[playerid][pLastCharmReceived]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "RHMutes", PlayerInfo[playerid][pRHMutes]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "RHMuteTime", PlayerInfo[playerid][pRHMuteTime]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "GiftCode", PlayerInfo[playerid][pGiftCode]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Table", PlayerInfo[playerid][pTable]);
+	SavePlayerInteger(query, sqlid, "Paper", PlayerInfo[playerid][pPaper]);
+    SavePlayerInteger(query, sqlid, "MailEnabled", PlayerInfo[playerid][pMailEnabled]);
+    SavePlayerInteger(query, sqlid, "Mailbox", PlayerInfo[playerid][pMailbox]);
+    SavePlayerInteger(query, sqlid, "Business", PlayerInfo[playerid][pBusiness]);
+    SavePlayerInteger(query, sqlid, "BusinessRank", PlayerInfo[playerid][pBusinessRank]);
+    SavePlayerInteger(query, sqlid, "TreasureSkill", PlayerInfo[playerid][pTreasureSkill]);
+    SavePlayerInteger(query, sqlid, "MetalDetector", PlayerInfo[playerid][pMetalDetector]);
+    SavePlayerInteger(query, sqlid, "HelpedBefore", PlayerInfo[playerid][pHelpedBefore]);
+    SavePlayerInteger(query, sqlid, "Trickortreat", PlayerInfo[playerid][pTrickortreat]);
+	SavePlayerInteger(query, sqlid, "LastCharmReceived", PlayerInfo[playerid][pLastCharmReceived]);
+	SavePlayerInteger(query, sqlid, "RHMutes", PlayerInfo[playerid][pRHMutes]);
+	SavePlayerInteger(query, sqlid, "RHMuteTime", PlayerInfo[playerid][pRHMuteTime]);
+	SavePlayerInteger(query, sqlid, "GiftCode", PlayerInfo[playerid][pGiftCode]);
+	SavePlayerInteger(query, sqlid, "Table", PlayerInfo[playerid][pTable]);
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "OpiumSeeds", PlayerInfo[playerid][pOpiumSeeds]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "RawOpium", PlayerInfo[playerid][pRawOpium]);
+	SavePlayerInteger(query, sqlid, "OpiumSeeds", PlayerInfo[playerid][pOpiumSeeds]);
+	SavePlayerInteger(query, sqlid, "RawOpium", PlayerInfo[playerid][pRawOpium]);
 	//SavePlayerInteger(query, GetPlayerSQLId(playerid), "Heroin", PlayerInfo[playerid][pHeroin]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Syringe", PlayerInfo[playerid][pSyringes]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Skins", PlayerInfo[playerid][pSkins]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Fitness", PlayerInfo[playerid][pFitness]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "HealthCare", PlayerInfo[playerid][pHealthCare]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "ReceivedCredits", PlayerInfo[playerid][pReceivedCredits]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "RimMod", PlayerInfo[playerid][pRimMod]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Tazer", PlayerInfo[playerid][pHasTazer]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Cuff", PlayerInfo[playerid][pHasCuff]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "CarVoucher", PlayerInfo[playerid][pCarVoucher]);
+	SavePlayerInteger(query, sqlid, "Syringe", PlayerInfo[playerid][pSyringes]);
+	SavePlayerInteger(query, sqlid, "Skins", PlayerInfo[playerid][pSkins]);
+	SavePlayerInteger(query, sqlid, "Fitness", PlayerInfo[playerid][pFitness]);
+	SavePlayerInteger(query, sqlid, "HealthCare", PlayerInfo[playerid][pHealthCare]);
+	SavePlayerInteger(query, sqlid, "ReceivedCredits", PlayerInfo[playerid][pReceivedCredits]);
+	SavePlayerInteger(query, sqlid, "RimMod", PlayerInfo[playerid][pRimMod]);
+	SavePlayerInteger(query, sqlid, "Tazer", PlayerInfo[playerid][pHasTazer]);
+	SavePlayerInteger(query, sqlid, "Cuff", PlayerInfo[playerid][pHasCuff]);
+	SavePlayerInteger(query, sqlid, "CarVoucher", PlayerInfo[playerid][pCarVoucher]);
 
-	SavePlayerString(query, GetPlayerSQLId(playerid), "ReferredBy", PlayerInfo[playerid][pReferredBy]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PendingRefReward", PlayerInfo[playerid][pPendingRefReward]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Refers", PlayerInfo[playerid][pRefers]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Famed", PlayerInfo[playerid][pFamed]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FamedMuted", PlayerInfo[playerid][pFMuted]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "DefendTime", PlayerInfo[playerid][pDefendTime]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PVIPVoucher", PlayerInfo[playerid][pPVIPVoucher]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VehicleSlot", PlayerInfo[playerid][pVehicleSlot]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "ToySlot", PlayerInfo[playerid][pToySlot]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "RFLTeam", PlayerInfo[playerid][pRFLTeam]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "RFLTeamL", PlayerInfo[playerid][pRFLTeamL]);
+	SavePlayerString(query, sqlid, "ReferredBy", PlayerInfo[playerid][pReferredBy]);
+	SavePlayerInteger(query, sqlid, "PendingRefReward", PlayerInfo[playerid][pPendingRefReward]);
+	SavePlayerInteger(query, sqlid, "Refers", PlayerInfo[playerid][pRefers]);
+	SavePlayerInteger(query, sqlid, "Famed", PlayerInfo[playerid][pFamed]);
+	SavePlayerInteger(query, sqlid, "FamedMuted", PlayerInfo[playerid][pFMuted]);
+	SavePlayerInteger(query, sqlid, "DefendTime", PlayerInfo[playerid][pDefendTime]);
+	SavePlayerInteger(query, sqlid, "PVIPVoucher", PlayerInfo[playerid][pPVIPVoucher]);
+	SavePlayerInteger(query, sqlid, "VehicleSlot", PlayerInfo[playerid][pVehicleSlot]);
+	SavePlayerInteger(query, sqlid, "ToySlot", PlayerInfo[playerid][pToySlot]);
+	SavePlayerInteger(query, sqlid, "RFLTeam", PlayerInfo[playerid][pRFLTeam]);
+	SavePlayerInteger(query, sqlid, "RFLTeamL", PlayerInfo[playerid][pRFLTeamL]);
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VehVoucher", PlayerInfo[playerid][pVehVoucher]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "SVIPVoucher", PlayerInfo[playerid][pSVIPVoucher]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "GVIPVoucher", PlayerInfo[playerid][pGVIPVoucher]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "GiftVoucher", PlayerInfo[playerid][pGiftVoucher]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FallIntoFun", PlayerInfo[playerid][pFallIntoFun]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "HungerVoucher", PlayerInfo[playerid][pHungerVoucher]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BoughtCure", PlayerInfo[playerid][pBoughtCure]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Vials", PlayerInfo[playerid][pVials]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "AdvertVoucher", PlayerInfo[playerid][pAdvertVoucher]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "ShopCounter", PlayerInfo[playerid][pShopCounter]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "ShopNotice", PlayerInfo[playerid][pShopNotice]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "SVIPExVoucher", PlayerInfo[playerid][pSVIPExVoucher]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "GVIPExVoucher", PlayerInfo[playerid][pGVIPExVoucher]);
+	SavePlayerInteger(query, sqlid, "VehVoucher", PlayerInfo[playerid][pVehVoucher]);
+	SavePlayerInteger(query, sqlid, "SVIPVoucher", PlayerInfo[playerid][pSVIPVoucher]);
+	SavePlayerInteger(query, sqlid, "GVIPVoucher", PlayerInfo[playerid][pGVIPVoucher]);
+	SavePlayerInteger(query, sqlid, "GiftVoucher", PlayerInfo[playerid][pGiftVoucher]);
+	SavePlayerInteger(query, sqlid, "FallIntoFun", PlayerInfo[playerid][pFallIntoFun]);
+	SavePlayerInteger(query, sqlid, "HungerVoucher", PlayerInfo[playerid][pHungerVoucher]);
+	SavePlayerInteger(query, sqlid, "BoughtCure", PlayerInfo[playerid][pBoughtCure]);
+	SavePlayerInteger(query, sqlid, "Vials", PlayerInfo[playerid][pVials]);
+	SavePlayerInteger(query, sqlid, "AdvertVoucher", PlayerInfo[playerid][pAdvertVoucher]);
+	SavePlayerInteger(query, sqlid, "ShopCounter", PlayerInfo[playerid][pShopCounter]);
+	SavePlayerInteger(query, sqlid, "ShopNotice", PlayerInfo[playerid][pShopNotice]);
+	SavePlayerInteger(query, sqlid, "SVIPExVoucher", PlayerInfo[playerid][pSVIPExVoucher]);
+	SavePlayerInteger(query, sqlid, "GVIPExVoucher", PlayerInfo[playerid][pGVIPExVoucher]);
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPSellable", PlayerInfo[playerid][pVIPSellable]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "ReceivedPrize", PlayerInfo[playerid][pReceivedPrize]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPSpawn", PlayerInfo[playerid][pVIPSpawn]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FreeAdsDay", PlayerInfo[playerid][pFreeAdsDay]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FreeAdsLeft", PlayerInfo[playerid][pFreeAdsLeft]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BuddyInvites", PlayerInfo[playerid][pBuddyInvites]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "ReceivedBGift", PlayerInfo[playerid][pReceivedBGift]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pVIPJob", PlayerInfo[playerid][pVIPJob]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "LastBirthday", PlayerInfo[playerid][pLastBirthday]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "AccountRestricted", PlayerInfo[playerid][pAccountRestricted]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Watchlist", PlayerInfo[playerid][pWatchlist]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WatchlistTime", PlayerInfo[playerid][pWatchlistTime]);
+	SavePlayerInteger(query, sqlid, "VIPSellable", PlayerInfo[playerid][pVIPSellable]);
+	SavePlayerInteger(query, sqlid, "ReceivedPrize", PlayerInfo[playerid][pReceivedPrize]);
+	SavePlayerInteger(query, sqlid, "VIPSpawn", PlayerInfo[playerid][pVIPSpawn]);
+	SavePlayerInteger(query, sqlid, "FreeAdsDay", PlayerInfo[playerid][pFreeAdsDay]);
+	SavePlayerInteger(query, sqlid, "FreeAdsLeft", PlayerInfo[playerid][pFreeAdsLeft]);
+	SavePlayerInteger(query, sqlid, "BuddyInvites", PlayerInfo[playerid][pBuddyInvites]);
+	SavePlayerInteger(query, sqlid, "ReceivedBGift", PlayerInfo[playerid][pReceivedBGift]);
+	SavePlayerInteger(query, sqlid, "pVIPJob", PlayerInfo[playerid][pVIPJob]);
+	SavePlayerInteger(query, sqlid, "LastBirthday", PlayerInfo[playerid][pLastBirthday]);
+	SavePlayerInteger(query, sqlid, "AccountRestricted", PlayerInfo[playerid][pAccountRestricted]);
+	SavePlayerInteger(query, sqlid, "Watchlist", PlayerInfo[playerid][pWatchlist]);
+	SavePlayerInteger(query, sqlid, "WatchlistTime", PlayerInfo[playerid][pWatchlistTime]);
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Backpack", PlayerInfo[playerid][pBackpack]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BEquipped", PlayerInfo[playerid][pBEquipped]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BStoredH", PlayerInfo[playerid][pBStoredH]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BStoredV", PlayerInfo[playerid][pBStoredV]);
+	SavePlayerInteger(query, sqlid, "Backpack", PlayerInfo[playerid][pBackpack]);
+	SavePlayerInteger(query, sqlid, "BEquipped", PlayerInfo[playerid][pBEquipped]);
+	SavePlayerInteger(query, sqlid, "BStoredH", PlayerInfo[playerid][pBStoredH]);
+	SavePlayerInteger(query, sqlid, "BStoredV", PlayerInfo[playerid][pBStoredV]);
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonCredits", PlayerInfo[playerid][pPrisonCredits]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonMaterials", PlayerInfo[playerid][pPrisonMaterials]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonWineTime", PlayerInfo[playerid][pPrisonWineTime]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonCell", PlayerInfo[playerid][pPrisonCell]);
+	SavePlayerInteger(query, sqlid, "PrisonCredits", PlayerInfo[playerid][pPrisonCredits]);
+	SavePlayerInteger(query, sqlid, "PrisonMaterials", PlayerInfo[playerid][pPrisonMaterials]);
+	SavePlayerInteger(query, sqlid, "PrisonWineTime", PlayerInfo[playerid][pPrisonWineTime]);
+	SavePlayerInteger(query, sqlid, "PrisonCell", PlayerInfo[playerid][pPrisonCell]);
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonSoap", GetPVarInt(playerid, "pPrisonSoap"));
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonSugar", GetPVarInt(playerid, "pPrisonSugar"));
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonBread", GetPVarInt(playerid, "pPrisonBread"));
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonShank", GetPVarInt(playerid, "pPrisonShank"));
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonShankOut", GetPVarInt(playerid, "pPrisonShankOut"));
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "ShankUsages", GetPVarInt(playerid, "pShankUsages"));
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonWine", GetPVarInt(playerid, "pPrisonWine"));
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonMWine", GetPVarInt(playerid, "pPrisonMWine"));
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonChisel", GetPVarInt(playerid, "pPrisonChisel"));
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonCellChisel", GetPVarInt(playerid, "pPrisonCellChisel"));
+	SavePlayerInteger(query, sqlid, "PrisonSoap", GetPVarInt(playerid, "pPrisonSoap"));
+	SavePlayerInteger(query, sqlid, "PrisonSugar", GetPVarInt(playerid, "pPrisonSugar"));
+	SavePlayerInteger(query, sqlid, "PrisonBread", GetPVarInt(playerid, "pPrisonBread"));
+	SavePlayerInteger(query, sqlid, "PrisonShank", GetPVarInt(playerid, "pPrisonShank"));
+	SavePlayerInteger(query, sqlid, "PrisonShankOut", GetPVarInt(playerid, "pPrisonShankOut"));
+	SavePlayerInteger(query, sqlid, "ShankUsages", GetPVarInt(playerid, "pShankUsages"));
+	SavePlayerInteger(query, sqlid, "PrisonWine", GetPVarInt(playerid, "pPrisonWine"));
+	SavePlayerInteger(query, sqlid, "PrisonMWine", GetPVarInt(playerid, "pPrisonMWine"));
+	SavePlayerInteger(query, sqlid, "PrisonChisel", GetPVarInt(playerid, "pPrisonChisel"));
+	SavePlayerInteger(query, sqlid, "PrisonCellChisel", GetPVarInt(playerid, "pPrisonCellChisel"));
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FishingSkill", PlayerInfo[playerid][pFishingSkill]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FishWeight", PlayerInfo[playerid][pFishWeight]);
+	SavePlayerInteger(query, sqlid, "FishingSkill", PlayerInfo[playerid][pFishingSkill]);
+	SavePlayerInteger(query, sqlid, "FishWeight", PlayerInfo[playerid][pFishWeight]);
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "GarbageSkill", PlayerInfo[playerid][pGarbageSkill]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Pot", PlayerInfo[playerid][pDrugs][0]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Crack", PlayerInfo[playerid][pDrugs][1]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Meth", PlayerInfo[playerid][pDrugs][2]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ecstasy", PlayerInfo[playerid][pDrugs][3]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Heroin", PlayerInfo[playerid][pDrugs][4]);
+	SavePlayerInteger(query, sqlid, "GarbageSkill", PlayerInfo[playerid][pGarbageSkill]);
+	SavePlayerInteger(query, sqlid, "Pot", PlayerInfo[playerid][pDrugs][0]);
+	SavePlayerInteger(query, sqlid, "Crack", PlayerInfo[playerid][pDrugs][1]);
+	SavePlayerInteger(query, sqlid, "Meth", PlayerInfo[playerid][pDrugs][2]);
+	SavePlayerInteger(query, sqlid, "Ecstasy", PlayerInfo[playerid][pDrugs][3]);
+	SavePlayerInteger(query, sqlid, "Heroin", PlayerInfo[playerid][pDrugs][4]);
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "CopKit", GetPVarInt(playerid, "MedVestKit"));
+	SavePlayerInteger(query, sqlid, "CopKit", GetPVarInt(playerid, "MedVestKit"));
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Hitman", PlayerInfo[playerid][pHitman]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "HitmanLeader", PlayerInfo[playerid][pHitmanLeader]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "HitmanBlacklisted", PlayerInfo[playerid][pHitmanBlacklisted]);
-	SavePlayerString(query, GetPlayerSQLId(playerid), "BlacklistReason", PlayerInfo[playerid][pBlacklistReason]);
+	SavePlayerInteger(query, sqlid, "Hitman", PlayerInfo[playerid][pHitman]);
+	SavePlayerInteger(query, sqlid, "HitmanLeader", PlayerInfo[playerid][pHitmanLeader]);
+	SavePlayerInteger(query, sqlid, "HitmanBlacklisted", PlayerInfo[playerid][pHitmanBlacklisted]);
+	SavePlayerString(query, sqlid, "BlacklistReason", PlayerInfo[playerid][pBlacklistReason]);
 
 	new szForLoop[16];
 	for(new x = 0; x < 12; x++) {
 
-		mysql_format(MainPipeline, szForLoop, sizeof(szForLoop), "BItem%d", x);
-		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pBItems][x]);
+		format(szForLoop, sizeof(szForLoop), "BItem%d", x);
+		SavePlayerInteger(query, sqlid, szForLoop, PlayerInfo[playerid][pBItems][x]);
 	}
 	for(new x = 0; x < sizeof(Drugs); x++) {
 
-		mysql_format(MainPipeline, szForLoop, sizeof(szForLoop), "BDrug%d", x);
-		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pBDrugs][x]);
+		format(szForLoop, sizeof(szForLoop), "BDrug%d", x);
+		SavePlayerInteger(query, sqlid, szForLoop, PlayerInfo[playerid][pBDrugs][x]);
 	}
 	for(new x = 0; x < 12; x++) {
 
-		mysql_format(MainPipeline, szForLoop, sizeof(szForLoop), "Gun%d", x);
-		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pGuns][x]);
+		format(szForLoop, sizeof(szForLoop), "Gun%d", x);
+		SavePlayerInteger(query, sqlid, szForLoop, PlayerInfo[playerid][pGuns][x]);
 	}
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BRTimeout", PlayerInfo[playerid][pBugReportTimeout]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDigCooldown", PlayerInfo[playerid][pDigCooldown]);
+	SavePlayerInteger(query, sqlid, "BRTimeout", PlayerInfo[playerid][pBugReportTimeout]);
+	SavePlayerInteger(query, sqlid, "pDigCooldown", PlayerInfo[playerid][pDigCooldown]);
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "ToolBox", PlayerInfo[playerid][pToolBox]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "CrowBar", PlayerInfo[playerid][pCrowBar]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "CarLockPickSkill", PlayerInfo[playerid][pCarLockPickSkill]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "LockPickVehCount", PlayerInfo[playerid][pLockPickVehCount]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "LockPickTime", PlayerInfo[playerid][pLockPickTime]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "SEC", PlayerInfo[playerid][pSEC]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BM", PlayerInfo[playerid][pBM]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "ASM", PlayerInfo[playerid][pASM]);
+	SavePlayerInteger(query, sqlid, "ToolBox", PlayerInfo[playerid][pToolBox]);
+	SavePlayerInteger(query, sqlid, "CrowBar", PlayerInfo[playerid][pCrowBar]);
+	SavePlayerInteger(query, sqlid, "CarLockPickSkill", PlayerInfo[playerid][pCarLockPickSkill]);
+	SavePlayerInteger(query, sqlid, "LockPickVehCount", PlayerInfo[playerid][pLockPickVehCount]);
+	SavePlayerInteger(query, sqlid, "LockPickTime", PlayerInfo[playerid][pLockPickTime]);
+	SavePlayerInteger(query, sqlid, "SEC", PlayerInfo[playerid][pSEC]);
+	SavePlayerInteger(query, sqlid, "BM", PlayerInfo[playerid][pBM]);
+	SavePlayerInteger(query, sqlid, "ASM", PlayerInfo[playerid][pASM]);
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Isolated", PlayerInfo[playerid][pIsolated]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WantedJailTime", PlayerInfo[playerid][pWantedJailTime]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WantedJailFine", PlayerInfo[playerid][pWantedJailFine]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "NextNameChange", PlayerInfo[playerid][pNextNameChange]);
-	SavePlayerString(query, GetPlayerSQLId(playerid), "pExamineDesc", PlayerInfo[playerid][pExamineDesc]);
-	SavePlayerString(query, GetPlayerSQLId(playerid), "FavStation", PlayerInfo[playerid][pFavStation]);
+	SavePlayerInteger(query, sqlid, "Isolated", PlayerInfo[playerid][pIsolated]);
+	SavePlayerInteger(query, sqlid, "WantedJailTime", PlayerInfo[playerid][pWantedJailTime]);
+	SavePlayerInteger(query, sqlid, "WantedJailFine", PlayerInfo[playerid][pWantedJailFine]);
+	SavePlayerInteger(query, sqlid, "NextNameChange", PlayerInfo[playerid][pNextNameChange]);
+	SavePlayerString(query, sqlid, "pExamineDesc", PlayerInfo[playerid][pExamineDesc]);
+	SavePlayerString(query, sqlid, "FavStation", PlayerInfo[playerid][pFavStation]);
 
 	// Austin's DP System
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedPlayer", PlayerInfo[playerid][pDedicatedPlayer]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedEnabled", PlayerInfo[playerid][pDedicatedEnabled]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedMuted", PlayerInfo[playerid][pDedicatedMuted]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedWarn", PlayerInfo[playerid][pDedicatedWarn]);
+	SavePlayerInteger(query, sqlid, "pDedicatedPlayer", PlayerInfo[playerid][pDedicatedPlayer]);
+	SavePlayerInteger(query, sqlid, "pDedicatedEnabled", PlayerInfo[playerid][pDedicatedEnabled]);
+	SavePlayerInteger(query, sqlid, "pDedicatedMuted", PlayerInfo[playerid][pDedicatedMuted]);
+	SavePlayerInteger(query, sqlid, "pDedicatedWarn", PlayerInfo[playerid][pDedicatedWarn]);
 
 	new mistring[64], mpstring[64], mcstring[256];
 	for(new m; m < MAX_MICROITEMS; m++)
 	{
-		mysql_format(MainPipeline, mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][mInventory][m]);
-		mysql_format(MainPipeline, mpstring, sizeof(mpstring), "%s%d", mpstring, PlayerInfo[playerid][mPurchaseCount][m]);
-		mysql_format(MainPipeline, mcstring, sizeof(mcstring), "%s%d", mcstring, PlayerInfo[playerid][mCooldown][m]);
+		format(mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][mInventory][m]);
+		format(mpstring, sizeof(mpstring), "%s%d", mpstring, PlayerInfo[playerid][mPurchaseCount][m]);
+		format(mcstring, sizeof(mcstring), "%s%d", mcstring, PlayerInfo[playerid][mCooldown][m]);
 		if(m != MAX_MICROITEMS-1) strcat(mistring, "|"), strcat(mpstring, "|"), strcat(mcstring, "|");
 	}
-	SavePlayerString(query, GetPlayerSQLId(playerid), "mInventory", mistring);
-	SavePlayerString(query, GetPlayerSQLId(playerid), "mPurchaseCounts", mpstring);
-	SavePlayerString(query, GetPlayerSQLId(playerid), "mCooldowns", mcstring);
-	mysql_format(MainPipeline, mpstring, sizeof(mpstring), "%d|%d", PlayerInfo[playerid][mBoost][0], PlayerInfo[playerid][mBoost][1]);
-	SavePlayerString(query, GetPlayerSQLId(playerid), "mBoost", mpstring);
-	mysql_format(MainPipeline, mpstring, sizeof(mpstring), "%d|%d", PlayerInfo[playerid][mShopCounter], PlayerInfo[playerid][mNotice]);
-	SavePlayerString(query, GetPlayerSQLId(playerid), "mShopNotice", mpstring);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "zFuelCan", PlayerInfo[playerid][zFuelCan]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "bTicket", PlayerInfo[playerid][bTicket]);
+	SavePlayerString(query, sqlid, "mInventory", mistring);
+	SavePlayerString(query, sqlid, "mPurchaseCounts", mpstring);
+	SavePlayerString(query, sqlid, "mCooldowns", mcstring);
+	format(mpstring, sizeof(mpstring), "%d|%d", PlayerInfo[playerid][mBoost][0], PlayerInfo[playerid][mBoost][1]);
+	SavePlayerString(query, sqlid, "mBoost", mpstring);
+	format(mpstring, sizeof(mpstring), "%d|%d", PlayerInfo[playerid][mShopCounter], PlayerInfo[playerid][mNotice]);
+	SavePlayerString(query, sqlid, "mShopNotice", mpstring);
+	SavePlayerInteger(query, sqlid, "zFuelCan", PlayerInfo[playerid][zFuelCan]);
+	SavePlayerInteger(query, sqlid, "bTicket", PlayerInfo[playerid][bTicket]);
 
 	// Austin's Punishment Revamp
-	mysql_format(MainPipeline, mistring, 64, "%d|%d|%d|%d|%d", PlayerInfo[playerid][pJailedInfo][0], PlayerInfo[playerid][pJailedInfo][1],
+	format(mistring, 64, "%d|%d|%d|%d|%d", PlayerInfo[playerid][pJailedInfo][0], PlayerInfo[playerid][pJailedInfo][1],
 		PlayerInfo[playerid][pJailedInfo][2], PlayerInfo[playerid][pJailedInfo][3], PlayerInfo[playerid][pJailedInfo][4]);
-	SavePlayerString(query, GetPlayerSQLId(playerid), "JailedInfo", mistring);
+	SavePlayerString(query, sqlid, "JailedInfo", mistring);
 	mistring[0] = 0;
 	for(new jailX = 0; jailX < 12; jailX++)
 	{
-		mysql_format(MainPipeline, mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][pJailedWeapons][jailX]);
+		format(mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][pJailedWeapons][jailX]);
 		if(jailX != 11) strcat(mistring, "|");
 	}
-	SavePlayerString(query, GetPlayerSQLId(playerid), "JailedWeapons", mistring);
+	SavePlayerString(query, sqlid, "JailedWeapons", mistring);
 
 	/*for(new idrugs = 0; idrugs < sizeof(Drugs); ++idrugs)
 	{
@@ -2764,8 +2768,8 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerString(query, GetPlayerSQLId(playerid), "ToggledChats", szMiscArray);*/
 
 	for(new c = 0; c < MAX_CHATSETS; c++) {
-		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "ChatTog%d", c);
-		SavePlayerInteger(query, GetPlayerSQLId(playerid), szMiscArray, PlayerInfo[playerid][pToggledChats][c]);
+		format(szMiscArray, sizeof(szMiscArray), "ChatTog%d", c);
+		SavePlayerInteger(query, sqlid, szMiscArray, PlayerInfo[playerid][pToggledChats][c]);
 	}
 
 	/*format(szMiscArray, sizeof(szMiscArray), "%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d",
@@ -2792,25 +2796,25 @@ stock g_mysql_SaveAccount(playerid)
 
 	SavePlayerString(query, GetPlayerSQLId(playerid), "ChatBoxSettings", szMiscArray);*/
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pVIPMod", PlayerInfo[playerid][pVIPMod]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pEventTokens", PlayerInfo[playerid][pEventTokens]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPGunsCount", PlayerInfo[playerid][pVIPGuncount]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pBailPrice", PlayerInfo[playerid][pBailPrice]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pLastPoll", PlayerInfo[playerid][pLastPoll]);
-	SavePlayerString(query, GetPlayerSQLId(playerid), "PollKeyA", PlayerInfo[playerid][pPollKey1]);
-    SavePlayerString(query, GetPlayerSQLId(playerid), "PollKeyB", PlayerInfo[playerid][pPollKey2]);
-    SavePlayerString(query, GetPlayerSQLId(playerid), "PollKeyC", PlayerInfo[playerid][pPollKey3]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FurnitureSlots", PlayerInfo[playerid][pFurnitureSlots]);
+	SavePlayerInteger(query, sqlid, "pVIPMod", PlayerInfo[playerid][pVIPMod]);
+	SavePlayerInteger(query, sqlid, "pEventTokens", PlayerInfo[playerid][pEventTokens]);
+	SavePlayerInteger(query, sqlid, "VIPGunsCount", PlayerInfo[playerid][pVIPGuncount]);
+	SavePlayerInteger(query, sqlid, "pBailPrice", PlayerInfo[playerid][pBailPrice]);
+	SavePlayerInteger(query, sqlid, "pLastPoll", PlayerInfo[playerid][pLastPoll]);
+	SavePlayerString(query, sqlid, "PollKeyA", PlayerInfo[playerid][pPollKey1]);
+    SavePlayerString(query, sqlid, "PollKeyB", PlayerInfo[playerid][pPollKey2]);
+    SavePlayerString(query, sqlid, "PollKeyC", PlayerInfo[playerid][pPollKey3]);
+	SavePlayerInteger(query, sqlid, "FurnitureSlots", PlayerInfo[playerid][pFurnitureSlots]);
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "StaffBanned", PlayerInfo[playerid][pStaffBanned]);
+	SavePlayerInteger(query, sqlid, "StaffBanned", PlayerInfo[playerid][pStaffBanned]);
 
-	SavePlayerString(query, GetPlayerSQLId(playerid), "DedicatedDaymarker", PlayerInfo[playerid][pDedicatedDaymarker]);
-	SavePlayerString(query, GetPlayerSQLId(playerid), "DedicatedTimestamp", PlayerInfo[playerid][pDedicatedTimestamp]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "DedicatedHours", PlayerInfo[playerid][pDedicatedHours]);
+	SavePlayerString(query, sqlid, "DedicatedDaymarker", PlayerInfo[playerid][pDedicatedDaymarker]);
+	SavePlayerString(query, sqlid, "DedicatedTimestamp", PlayerInfo[playerid][pDedicatedTimestamp]);
+	SavePlayerInteger(query, sqlid, "DedicatedHours", PlayerInfo[playerid][pDedicatedHours]);
 	
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WalkStyle", PlayerInfo[playerid][pWalkStyle]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FlagCredits", PlayerInfo[playerid][pFlagCredits]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FlagClaimed", PlayerInfo[playerid][pFlagClaimed]);
+	SavePlayerInteger(query, sqlid, "WalkStyle", PlayerInfo[playerid][pWalkStyle]);
+	SavePlayerInteger(query, sqlid, "FlagCredits", PlayerInfo[playerid][pFlagCredits]);
+	SavePlayerInteger(query, sqlid, "FlagClaimed", PlayerInfo[playerid][pFlagClaimed]);
 
 	//for(new d; d < sizeof(Drugs); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), GetDrugName(d), PlayerInfo[playerid][pDrugs][d]);
 	//for(new d; d < sizeof(szIngredients); ++d) if(d != 9) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Ingredients_GetSQLName(d), PlayerInfo[playerid][p_iIngredient][d]);	
@@ -2823,7 +2827,7 @@ stock g_mysql_SaveAccount(playerid)
 	} old */
 
 	if(FIFEnabled) g_mysql_SaveFIF(playerid);
-	return MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
+	return MySQLUpdateFinish(query, sqlid);
 }
 
 stock SaveAuction(auction) {
