@@ -1241,7 +1241,23 @@ task PlayerHeartBeat[1000]() {
 				new Float: vehSize[3],
 					Float: Pos[3],
 					vehicleid = GetPVarInt(i, "LockPickVehicle"),
-					ownerid = GetPVarInt(i, "LockPickPlayer");
+					ownerid = GetPVarInt(i, "LockPickPlayer"),
+					slot = -1;
+					
+				if(!GetPVarType(i, "LockPickVehicleSQLId")) {
+					if(0 <= ownerid < MAX_PLAYERS && IsPlayerConnected(ownerid) && IsValidVehicle(vehicleid)) slot = GetPlayerVehicle(ownerid, vehicleid);
+					if(!(0 <= slot < MAX_PLAYERVEHICLES)) {
+						DeletePVar(i, "AttemptingLockPick");
+						DeletePVar(i, "LockPickCountdown");
+						DeletePVar(i, "LockPickTotalTime");
+						DeletePVar(i, "LockPickVehicle");
+						DeletePVar(i, "LockPickPlayer");
+						DestroyVLPTextDraws(i);
+						ClearAnimationsEx(i, 1);
+						SendClientMessageEx(i, COLOR_YELLOW, "The vehicle is no longer available. Your lock pick has been cancelled.");
+						continue;
+					}
+				}
 				GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, vehSize[0], vehSize[1], vehSize[2]);
 				GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_FRONTSEAT, Pos[0], Pos[1], Pos[2]);
 				GetVehicleRelativePos(vehicleid, Pos[0], Pos[1], Pos[2], Pos[0]+((vehSize[0] / 2)-(vehSize[0])), Pos[1], 0.0);
@@ -1264,7 +1280,6 @@ task PlayerHeartBeat[1000]() {
 						}
 					}
 					else {
-						new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
 						if(!PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] && (GetPVarInt(i, "LockPickCountdown") <= floatround((GetPVarInt(i, "LockPickTotalTime") * 0.4), floatround_ceil))) {
 							TriggerVehicleAlarm(i, ownerid, vehicleid);
 						}
@@ -1345,9 +1360,8 @@ task PlayerHeartBeat[1000]() {
 							DestroyVehicle(GetPVarInt(i, "LockPickVehicle"));
 						}
 						else {
-							new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
-							PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
-							PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+							PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 0;
+							PlayerVehicleInfo[ownerid][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
 						}
 						DeletePVar(i, "LockPickVehicle");
 						DeletePVar(i, "LockPickPlayer");
@@ -1367,9 +1381,8 @@ task PlayerHeartBeat[1000]() {
 						DestroyVehicle(GetPVarInt(i, "LockPickVehicle"));
 					}
 					else {
-						new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
-						PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
-						PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+						PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 0;
+						PlayerVehicleInfo[ownerid][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
 					}
 					DeletePVar(i, "LockPickVehicle");
 					DeletePVar(i, "LockPickPlayer");
@@ -1413,7 +1426,7 @@ task PlayerHeartBeat[1000]() {
 								new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
 								GetPlayerIp(i, ip, sizeof(ip));
 								GetPlayerIp(ownerid, ip2, sizeof(ip2));
-								format(szMiscArray, sizeof(szMiscArray), "[LOCK PICK] %s(%s) (IP:%s) successfully cracked the trunk of a %s(VID:%d Slot %d Weapon ID: %d) owned by %s(IP:%s)", GetPlayerNameEx(i), GetPlayerSQLId(i), ip, GetVehicleName(vehicleid), vehicleid, slot, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], GetPlayerNameEx(ownerid), ip2);
+								format(szMiscArray, sizeof(szMiscArray), "[LOCK PICK] %s(%d) (IP:%s) successfully cracked the trunk of a %s(VID:%d Slot %d Weapon ID: %d) owned by %s(IP:%s)", GetPlayerNameEx(i), GetPlayerSQLId(i), ip, GetVehicleName(vehicleid), vehicleid, slot, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], GetPlayerNameEx(ownerid), ip2);
 								Log("logs/playervehicle.log", szMiscArray);
 							}
 							else SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: There was nothing inside the trunk.");
@@ -2159,7 +2172,7 @@ task PlayerHeartBeat[1000]() {
 						new biz = InBusiness(i),
 							biz2 = InBusiness(ii);
 
-						if(biz == biz2)
+						if(0 <= biz < MAX_BUSINESSES && biz == biz2)
 						{
 							if (Businesses[biz][bGymBoxingArena1][0] == INVALID_PLAYER_ID)
 							{
