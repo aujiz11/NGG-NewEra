@@ -539,7 +539,9 @@ public OnLoadGarages()
 		cache_get_value_name_int(i, "InteriorVW", GarageInfo[i][gar_InteriorVW]);
 		cache_get_value_name(i, "Pass", GarageInfo[i][gar_Pass], 24);
 		cache_get_value_name_int(i, "Locked", GarageInfo[i][gar_Locked]);
-		if(GarageInfo[i][gar_ExteriorX] != 0.0) CreateGarage(i);
+		if(GarageInfo[i][gar_ExteriorX] != 0.0 || GarageInfo[i][gar_AreaID] != INVALID_STREAMER_ID || GarageInfo[i][gar_AreaID_int] != INVALID_STREAMER_ID) {
+			CreateGarage(i);
+		}
 		i++;
 	}
 	if(i > 0) printf("[LoadGarages] %d garages rehashed/loaded.", i);
@@ -591,16 +593,20 @@ stock SaveGarage(garageid)
 
 stock CreateGarage(garageid)
 {
-	if(IsValidDynamic3DTextLabel(GarageInfo[garageid][gar_TextID])) DestroyDynamic3DTextLabel(GarageInfo[garageid][gar_TextID]), GarageInfo[garageid][gar_TextID] = Text3D:-1;
+	if(IsValidDynamic3DTextLabel(GarageInfo[garageid][gar_TextID])) DestroyDynamic3DTextLabel(GarageInfo[garageid][gar_TextID]);
+	if(IsValidDynamicArea(GarageInfo[garageid][gar_AreaID])) DestroyDynamicArea(GarageInfo[garageid][gar_AreaID]);
+	if(IsValidDynamicArea(GarageInfo[garageid][gar_AreaID_int])) DestroyDynamicArea(GarageInfo[garageid][gar_AreaID_int]);
+	GarageInfo[garageid][gar_TextID] = Text3D:INVALID_STREAMER_ID;
+	GarageInfo[garageid][gar_AreaID] = INVALID_STREAMER_ID;
+	GarageInfo[garageid][gar_AreaID_int] = INVALID_STREAMER_ID;
+	
 	if(GarageInfo[garageid][gar_ExteriorX] == 0.0) return 1;
 	new string[128];
 	format(string, sizeof(string), "Garage | Owner: %s\nID: %d", StripUnderscore(GarageInfo[garageid][gar_OwnerName]), garageid);
 	GarageInfo[garageid][gar_TextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, GarageInfo[garageid][gar_ExteriorX], GarageInfo[garageid][gar_ExteriorY], GarageInfo[garageid][gar_ExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, GarageInfo[garageid][gar_ExteriorVW], GarageInfo[garageid][gar_ExteriorInt], -1);
 
-	if(IsValidDynamicArea(GarageInfo[garageid][gar_AreaID])) DestroyDynamicArea(GarageInfo[garageid][gar_AreaID]);
 	GarageInfo[garageid][gar_AreaID] = CreateDynamicSphere(GarageInfo[garageid][gar_ExteriorX], GarageInfo[garageid][gar_ExteriorY], GarageInfo[garageid][gar_ExteriorZ], 3, .worldid = GarageInfo[garageid][gar_ExteriorVW], .interiorid = GarageInfo[garageid][gar_ExteriorInt]);
 
-	if(IsValidDynamicArea(GarageInfo[garageid][gar_AreaID_int])) DestroyDynamicArea(GarageInfo[garageid][gar_AreaID_int]);
 	GarageInfo[garageid][gar_AreaID_int] = CreateDynamicSphere(GarageInfo[garageid][gar_InteriorX], GarageInfo[garageid][gar_InteriorY], GarageInfo[garageid][gar_InteriorZ], 3, .worldid = GarageInfo[garageid][gar_InteriorVW]);
 
 	Streamer_SetIntData(STREAMER_TYPE_AREA, GarageInfo[garageid][gar_AreaID], E_STREAMER_EXTRA_ID, garageid);

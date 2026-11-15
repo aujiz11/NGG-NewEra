@@ -3338,7 +3338,9 @@ public BusinessesLoadQueryFinish()
 		    Businesses[i][bOrderState] = 1;
 		}
 
-		if(Businesses[i][bExtPos][0] != 0.0) RefreshBusinessPickup(i); // If the business is at blueberry, do not spawn it
+		if(Businesses[i][bExtPos][0] != 0.0 || Businesses[i][bAreaID][0] != INVALID_STREAMER_ID || Businesses[i][bAreaID][1] != INVALID_STREAMER_ID) {
+			RefreshBusinessPickup(i);
+		}
 
 		for (new j; j <= 5; j++)
 		{

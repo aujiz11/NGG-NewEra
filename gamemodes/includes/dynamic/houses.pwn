@@ -358,7 +358,7 @@ public OnLoadHouse(index)
 
 		cache_get_value_name_int(row, "Lights", HouseInfo[index][h_iLights]);
 		
-		if(HouseInfo[index][hExteriorX] != 0.0) ReloadHousePickup(index);
+		if(HouseInfo[index][hExteriorX] != 0.0 || HouseInfo[index][hAreaID][0] != INVALID_STREAMER_ID || HouseInfo[index][hAreaID][1] != INVALID_STREAMER_ID) ReloadHousePickup(index);
 		if(HouseInfo[index][hClosetX] != 0.0) HouseInfo[index][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[index][hClosetX], HouseInfo[index][hClosetY], HouseInfo[index][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[index][hIntVW], .interiorid = HouseInfo[index][hIntIW], .streamdistance = 10.0);
 		if(HouseInfo[index][hMailX] != 0.0) RenderHouseMailbox(index);
 		if(HouseInfo[index][hSignExpire] != 0 && gettime() >= HouseInfo[index][hSignExpire]) 
@@ -396,12 +396,19 @@ stock ReloadHouseText(houseid)
 
 stock ReloadHousePickup(houseid)
 {
-	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]), HouseInfo[houseid][hPickupID] = -1;
-	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]), HouseInfo[houseid][hTextID] = Text3D:-1;
-	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID_int])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID_int]), HouseInfo[houseid][hTextID_int] = Text3D:-1;
-	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID_int])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID_int]), HouseInfo[houseid][hPickupID_int] = -1;
-	if(IsValidDynamicArea(HouseInfo[houseid][hAreaID][0])) DestroyDynamicArea(HouseInfo[houseid][hAreaID][0]), HouseInfo[houseid][hAreaID][0] = -1;
-	if(IsValidDynamicArea(HouseInfo[houseid][hAreaID][1])) DestroyDynamicArea(HouseInfo[houseid][hAreaID][1]), HouseInfo[houseid][hAreaID][1] = -1;
+	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]);
+	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]);
+	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID_int])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID_int]);
+	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID_int])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID_int]);
+	if(IsValidDynamicArea(HouseInfo[houseid][hAreaID][0])) DestroyDynamicArea(HouseInfo[houseid][hAreaID][0]);
+	if(IsValidDynamicArea(HouseInfo[houseid][hAreaID][1])) DestroyDynamicArea(HouseInfo[houseid][hAreaID][1]);
+
+	HouseInfo[houseid][hPickupID] = INVALID_STREAMER_ID;
+	HouseInfo[houseid][hPickupID_int] = INVALID_STREAMER_ID;
+	HouseInfo[houseid][hTextID] = Text3D:INVALID_STREAMER_ID;
+	HouseInfo[houseid][hTextID_int] = Text3D:INVALID_STREAMER_ID;
+	HouseInfo[houseid][hAreaID][0] = INVALID_STREAMER_ID;
+	HouseInfo[houseid][hAreaID][1] = INVALID_STREAMER_ID;
 
 	if(HouseInfo[houseid][hExteriorX] == 0.0) return 1;
 	new string[128];
@@ -419,8 +426,6 @@ stock ReloadHousePickup(houseid)
 	HouseInfo[houseid][hPickupID] = CreateDynamicPickup(HouseInfo[houseid][hInactive] ? 1272 : 1273, 23, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], .worldid = HouseInfo[houseid][hExtVW], .interiorid = HouseInfo[houseid][hExtIW]);
 	HouseInfo[houseid][hPickupID_int] = CreateDynamicPickup(1559, 23, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], .worldid = HouseInfo[houseid][hIntVW], .interiorid = HouseInfo[houseid][hIntIW]);
 	
-	if(IsValidDynamicArea(HouseInfo[houseid][hAreaID][0])) DestroyDynamicArea(HouseInfo[houseid][hAreaID][0]);
-	if(IsValidDynamicArea(HouseInfo[houseid][hAreaID][1])) DestroyDynamicArea(HouseInfo[houseid][hAreaID][1]);
 
 	HouseInfo[houseid][hAreaID][0] = CreateDynamicSphere(HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], 2.5, HouseInfo[houseid][hExtVW], HouseInfo[houseid][hExtIW]);
 	HouseInfo[houseid][hAreaID][1] = CreateDynamicSphere(HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], 2.5, HouseInfo[houseid][hIntVW], HouseInfo[houseid][hIntIW]);
@@ -485,8 +490,6 @@ stock RehashHouse(houseid)
 	HouseInfo[houseid][hWeapons][3] = 0;
 	HouseInfo[houseid][hWeapons][4] = 0;
 	HouseInfo[houseid][hGLUpgrade] = 0;
-	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]);
-	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]);
 	HouseInfo[houseid][hCustomExterior] = 0;
 	HouseInfo[houseid][hMailX] = 0.0;
 	HouseInfo[houseid][hMailY] = 0.0;
@@ -499,6 +502,7 @@ stock RehashHouse(houseid)
 	HouseInfo[houseid][hClosetY] = 0.0;
 	HouseInfo[houseid][hClosetZ] = 0.0;
 	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hClosetTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hClosetTextID]);
+	ReloadHousePickup(houseid);
 	LoadHouse(houseid);
 }
 
@@ -994,8 +998,6 @@ CMD:hedit(playerid, params[])
 		HouseInfo[houseid][hWeapons][3] = 0;
 		HouseInfo[houseid][hWeapons][4] = 0;
 		HouseInfo[houseid][hGLUpgrade] = 0;
-		if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]);
-		if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]);
 		HouseInfo[houseid][hCustomExterior] = 0;
 		HouseInfo[houseid][hMailX] = 0.0;
 		HouseInfo[houseid][hMailY] = 0.0;
@@ -1008,6 +1010,7 @@ CMD:hedit(playerid, params[])
 		HouseInfo[houseid][hClosetY] = 0.0;
 		HouseInfo[houseid][hClosetZ] = 0.0;
 		if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hClosetTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hClosetTextID]);
+		ReloadHousePickup(houseid);
 		SaveHouse(houseid);
 		format(string, sizeof(string), "You have deleted house id %d.", houseid);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -1090,6 +1093,7 @@ CMD:hedit(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 
 		SaveHouse(houseid);
+		ReloadHousePickup(houseid);
 		format(string, sizeof(string), "%s has edited House ID %d's interior VW to %d.", GetPlayerNameEx(playerid), houseid, amount);
 		Log("logs/hedit.log", string);
 		return 1;
@@ -1746,8 +1750,6 @@ public DeleteHouse(houseid, adminid)
 	HouseInfo[houseid][hWeapons][3] = 0;
 	HouseInfo[houseid][hWeapons][4] = 0;
 	HouseInfo[houseid][hGLUpgrade] = 0;
-	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]), HouseInfo[houseid][hPickupID] = -1;
-	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]), HouseInfo[houseid][hTextID] = Text3D:-1;
 	HouseInfo[houseid][hCustomExterior] = 0;
 	HouseInfo[houseid][hMailX] = 0.0;
 	HouseInfo[houseid][hMailY] = 0.0;
@@ -1772,6 +1774,7 @@ public DeleteHouse(houseid, adminid)
 	HouseInfo[houseid][hInactive] = 0;
 	HouseInfo[houseid][hIgnore] = 0;
 	HouseInfo[houseid][hCounter] = 0;
+	ReloadHousePickup(houseid);
 	SaveHouse(houseid);
 	szMiscArray[0] = 0;
 	format(szMiscArray, sizeof(szMiscArray), "%s has deleted house id %d", adminid != INVALID_PLAYER_ID ? GetPlayerNameEx(adminid) : ("(Inactive Player Resource System)"), houseid);

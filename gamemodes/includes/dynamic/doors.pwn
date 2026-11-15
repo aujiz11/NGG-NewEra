@@ -73,6 +73,11 @@ stock CreateDynamicDoor(doorid)
 	if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
 	if(IsValidDynamicArea(DDoorsInfo[doorid][ddAreaID])) DestroyDynamicArea(DDoorsInfo[doorid][ddAreaID]);
 	if(IsValidDynamicArea(DDoorsInfo[doorid][ddAreaID_int])) DestroyDynamicArea(DDoorsInfo[doorid][ddAreaID_int]);
+	DDoorsInfo[doorid][ddPickupID] = INVALID_STREAMER_ID;
+	DDoorsInfo[doorid][ddPickupID_int] = INVALID_STREAMER_ID;
+	DDoorsInfo[doorid][ddTextID] = Text3D:INVALID_STREAMER_ID;
+	DDoorsInfo[doorid][ddAreaID] = INVALID_STREAMER_ID;
+	DDoorsInfo[doorid][ddAreaID_int] = INVALID_STREAMER_ID;
 	if(DDoorsInfo[doorid][ddExteriorX] == 0.0) return 1;
 	new string[128];
 	if(DDoorsInfo[doorid][ddType] != 0) format(string, sizeof(string), "%s | Owner: %s\nID: %d", DDoorsInfo[doorid][ddDescription], StripUnderscore(DDoorsInfo[doorid][ddOwnerName]), doorid);
@@ -291,7 +296,9 @@ public OnLoadDynamicDoor(index)
 		cache_get_value_name_int(row, "Inactive", DDoorsInfo[index][ddInactive]);
 		cache_get_value_name_int(row, "Ignore", DDoorsInfo[index][ddIgnore]);
 		cache_get_value_name_int(row, "Counter", DDoorsInfo[index][ddCounter]);
-		if(DDoorsInfo[index][ddExteriorX] != 0.0) CreateDynamicDoor(index);
+		if(DDoorsInfo[index][ddExteriorX] != 0.0 || DDoorsInfo[index][ddAreaID] != INVALID_STREAMER_ID || DDoorsInfo[index][ddAreaID_int] != INVALID_STREAMER_ID) {
+			CreateDynamicDoor(index);
+		}
 	}
 	return 1;
 }
@@ -363,8 +370,6 @@ stock SaveDynamicDoors()
 
 stock RehashDynamicDoor(doorid)
 {
-	DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-	if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
 	DDoorsInfo[doorid][ddSQLId] = -1;
 	DDoorsInfo[doorid][ddOwner] = -1;
 	DDoorsInfo[doorid][ddCustomInterior] = 0;
@@ -393,6 +398,7 @@ stock RehashDynamicDoor(doorid)
 	DDoorsInfo[doorid][ddColor] = 0;
 	DDoorsInfo[doorid][ddPickupModel] = 0;
 	DDoorsInfo[doorid][ddLocked] = 0;
+	CreateDynamicDoor(doorid);
 	LoadDynamicDoor(doorid);
 }
 
@@ -1076,8 +1082,6 @@ CMD:ddedit(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 				return 1;
 			}
-			if(IsValidDynamicPickup(DDoorsInfo[doorid][ddPickupID])) DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-			if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
 			DDoorsInfo[doorid][ddDescription] = 0;
 			DDoorsInfo[doorid][ddCustomInterior] = 0;
 			DDoorsInfo[doorid][ddExteriorVW] = 0;
@@ -1107,6 +1111,7 @@ CMD:ddedit(playerid, params[])
 			DDoorsInfo[doorid][ddColor] = 0;
 			DDoorsInfo[doorid][ddPass] = 0;
 			DDoorsInfo[doorid][ddLocked] = 0;
+			CreateDynamicDoor(doorid);
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "You have deleted DoorID %d.", doorid);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -1216,8 +1221,6 @@ public DeleteDynamicDoor(doorid, adminid)
 	format(DDoorsInfo[doorid][ddDescription], 128, "None");
 	DDoorsInfo[doorid][ddOwner] = -1;
 	format(DDoorsInfo[doorid][ddOwnerName], MAX_PLAYER_NAME, "Nobody");
-	if(IsValidDynamicPickup(DDoorsInfo[doorid][ddPickupID])) DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]), DDoorsInfo[doorid][ddPickupID] = -1;
-	if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]), DDoorsInfo[doorid][ddTextID] = Text3D:-1;
 	DDoorsInfo[doorid][ddCustomInterior] = 0;
 	DDoorsInfo[doorid][ddExteriorVW] = 0;
 	DDoorsInfo[doorid][ddExteriorInt] = 0;
@@ -1252,6 +1255,7 @@ public DeleteDynamicDoor(doorid, adminid)
 	DDoorsInfo[doorid][ddInactive] = 0;
 	DDoorsInfo[doorid][ddIgnore] = 0;
 	DDoorsInfo[doorid][ddCounter] = 0;
+	CreateDynamicDoor(doorid);
 	SaveDynamicDoor(doorid);
 	szMiscArray[0] = 0;
 	format(szMiscArray, sizeof(szMiscArray), "%s has deleted door id %d", adminid != INVALID_PLAYER_ID ? GetPlayerNameEx(adminid) : ("(Inactive Player Resource System)"), doorid);
