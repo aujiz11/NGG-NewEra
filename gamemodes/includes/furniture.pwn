@@ -2465,6 +2465,7 @@ CMD:door(playerid, params[]) {
 		GetPlayerDynamicAreas(playerid, areaid);
 		for(new i; i < sizeof(areaid); ++i) {
 
+			if(areaid[i] == INVALID_STREAMER_ID || Streamer_GetArrayDataLength(STREAMER_TYPE_AREA, areaid[i], E_STREAMER_EXTRA_ID) != sizeof(szData)) continue;
 			Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid[i], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
 			iObjectID = szData[1];
 			iState = szData[2];

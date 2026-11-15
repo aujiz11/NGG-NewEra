@@ -136,11 +136,14 @@ stock CreateDynamicDoor(doorid)
 	}
 
 	DDoorsInfo[doorid][ddPickupID_int] = CreateDynamicPickup(1559, 23, DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ], DDoorsInfo[doorid][ddInteriorVW]);
-	DDoorsInfo[doorid][ddAreaID] = CreateDynamicSphere(DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], 2.5, .worldid = DDoorsInfo[doorid][ddExteriorVW], .interiorid = DDoorsInfo[doorid][ddExteriorInt]);
-	DDoorsInfo[doorid][ddAreaID_int] = CreateDynamicSphere(DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ], 2.5, .worldid = DDoorsInfo[doorid][ddInteriorVW], .interiorid = DDoorsInfo[doorid][ddInteriorInt]);
+	DDoorsInfo[doorid][ddAreaID] = CreateDynamicSphere(DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], 2.0, .worldid = DDoorsInfo[doorid][ddExteriorVW], .interiorid = DDoorsInfo[doorid][ddExteriorInt]);
+	DDoorsInfo[doorid][ddAreaID_int] = CreateDynamicSphere(DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ], 2.0, .worldid = DDoorsInfo[doorid][ddInteriorVW], .interiorid = DDoorsInfo[doorid][ddInteriorInt]);
 
-	Streamer_SetIntData(STREAMER_TYPE_AREA, DDoorsInfo[doorid][ddAreaID], E_STREAMER_EXTRA_ID, doorid);
-	Streamer_SetIntData(STREAMER_TYPE_AREA, DDoorsInfo[doorid][ddAreaID_int], E_STREAMER_EXTRA_ID, doorid);
+	new areaData[2];
+	areaData[0] = STREAMER_AREATYPE_DOOR;
+	areaData[1] = doorid;
+	Streamer_SetArrayData(STREAMER_TYPE_AREA, DDoorsInfo[doorid][ddAreaID], E_STREAMER_EXTRA_ID, areaData, sizeof(areaData));
+	Streamer_SetArrayData(STREAMER_TYPE_AREA, DDoorsInfo[doorid][ddAreaID_int], E_STREAMER_EXTRA_ID, areaData, sizeof(areaData));
 
 	format(szMiscArray, sizeof(szMiscArray), "[DDoor] Created Door: %d | Exterior Area ID: %d | Interior Area ID: %d", doorid, DDoorsInfo[doorid][ddAreaID], DDoorsInfo[doorid][ddAreaID_int]);
 	Log("debug/door_ddoor.log", szMiscArray);

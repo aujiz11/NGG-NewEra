@@ -1,26 +1,24 @@
-#include <YSI_Coding\y_hooks>
+/*
+	Author: Jingles
+	Modified: Le Tuan Kiet (aujiz11)
+	
+	Originally, there were two functions responsible for handling property entry and exit. 
+	However, the original implementation still relied on iterating through all properties 
+	to check the player's position against their entrance and exit coordinates.
 
-/* 	Jingles:
+	Jingles introduced a new approach using Dynamic Areas instead of loops to detect player 
+	proximity. However, this implementation was incomplete and was never officially adopted.
 
-	DDoor / Houses / Businesses pickup model rework.
-	Enter/exit by pressing F/Enter or using /enter or /exit.
+	I have since fixed the issues with the property area system, improved its reliability, 
+	and ensured that the entry/exit mechanism operates more smoothly and efficiently.
 
-	Put:
-	CreateDynamicDoor_int(doorid); under stock CreateDynamicDoor(doorid);
-	CreateHouse_int(houseid) under stock CreateHouse(houseid);
-	CreateBusiness_int(businessid) under stock CreateBusiness(businessid);
-
-	And it'll hopefully work like a charm! :)
 */
+
+#include <YSI_Coding\y_hooks>
 
 #define 		ENTRANCE_SHORTCUT		KEY_NO
 
-new iNewEnterSystem, DoorTimer[MAX_PLAYERS];
-
-/*
-new g_iEntranceID[MAX_PLAYERS],
-	g_iEntranceAID[MAX_PLAYERS];
-*/
+new DoorTimer[MAX_PLAYERS];
 
 hook OnPlayerConnect(playerid) {
 	DoorTimer[playerid] = gettime();
@@ -30,222 +28,126 @@ hook OnPlayerConnect(playerid) {
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 	if(newkeys & ENTRANCE_SHORTCUT) {
-
-		if(iNewEnterSystem) EntExit_GetID_New(playerid);
-		else EntExit_GetID(playerid);
+		EntExit_GetID(playerid);
 	}
 	return 1;
 }
 
-// New Method:
-stock EntExit_GetID_New(playerid) {
+stock EntExit_GetID(playerid)
+{
+	new areas[128], data[2];
+	Streamer_Update(playerid, STREAMER_TYPE_AREA);
+	new count = GetPlayerNumberDynamicAreas(playerid);
+	if(count > sizeof(areas))
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "Entrance unavailable. Please contact an administrator.");
+		return 1;
+	}
+	count = GetPlayerDynamicAreas(playerid, areas, sizeof(areas));
 
-	new szAreaID[1];
-	GetPlayerDynamicAreas(playerid, szAreaID, sizeof(szAreaID));
-
-	if(szAreaID[0] != INVALID_STREAMER_ID) {
-
-		new iData = Streamer_GetIntData(STREAMER_TYPE_AREA, szAreaID[0], E_STREAMER_EXTRA_ID);
-
-		if(szAreaID[0] == DDoorsInfo[iData][ddAreaID]) return DDoor_Enter(playerid, iData);
-		else if(szAreaID[0] == DDoorsInfo[iData][ddAreaID_int]) return DDoor_Exit(playerid, iData);
-		else if(szAreaID[0] == HouseInfo[iData][hAreaID][0]) return House_Enter(playerid, iData);
-		else if(szAreaID[0] == HouseInfo[iData][hAreaID][1]) return House_Exit(playerid, iData);
-		else if(szAreaID[0] == Businesses[iData][bAreaID][0]) return Business_Enter(playerid, iData);
-		else if(szAreaID[0] == Businesses[iData][bAreaID][1]) return Business_Exit(playerid, iData);
-		else if(szAreaID[0] == GarageInfo[iData][gar_AreaID]) return Garage_Enter(playerid, iData);
-		else if(szAreaID[0] == GarageInfo[iData][gar_AreaID_int]) return Garage_Exit(playerid, iData);
-		else EntExit_GetID(playerid); // Old method
-		/*
-		switch(szData[0]) {
-
-			case STREAMER_AREATYPE_DOOR: {
-				if(szAreaID[0] == DDoorsInfo[szData[1]][ddAreaID]) DDoor_Enter(playerid, szData[1]);
-				if(szAreaID[0] == DDoorsInfo[szData[1]][ddAreaID_int]) DDoor_Exit(playerid, szData[1]);
+	new selectedType, selectedID = -1, selectedPriority = 4;
+	new bool:selectedExit;
+	for(new n; n < count; n++)
+	{
+		if(Streamer_GetArrayDataLength(STREAMER_TYPE_AREA, areas[n], E_STREAMER_EXTRA_ID) != sizeof(data)) 
+		{
+			continue;
+		}
+		
+		Streamer_GetArrayData(STREAMER_TYPE_AREA, areas[n], E_STREAMER_EXTRA_ID, data, sizeof(data));
+		new id = data[1], priority, bool:exiting;
+		switch(data[0])
+		{
+			case STREAMER_AREATYPE_DOOR:
+			{
+				if(id < 0 || id >= MAX_DDOORS) continue;
+				if(areas[n] == DDoorsInfo[id][ddAreaID]) exiting = false;
+				else if(areas[n] == DDoorsInfo[id][ddAreaID_int]) exiting = true;
+				else continue;
+				priority = 0;
 			}
-			case STREAMER_AREATYPE_HOUSE: {
-				if(szAreaID[0] == HouseInfo[szData[1]][hAreaID][0]) House_Enter(playerid, szData[1]);
-				if(szAreaID[0] == HouseInfo[szData[1]][hAreaID][1]) House_Exit(playerid, szData[1]);
+			case STREAMER_AREATYPE_HOUSE:
+			{
+				if(id < 0 || id >= MAX_HOUSES) continue;
+				if(areas[n] == HouseInfo[id][hAreaID][0]) exiting = false;
+				else if(areas[n] == HouseInfo[id][hAreaID][1]) exiting = true;
+				else continue;
+				priority = 1;
 			}
-			case STREAMER_AREATYPE_BUSINESS: {
-				if(szAreaID[0] == Businesses[szData[1]][bAreaID][0]) Business_Enter(playerid, szData[1]);
-				if(szAreaID[0] == Businesses[szData[1]][bAreaID][1]) Business_Exit(playerid, szData[1]);
+			case STREAMER_AREATYPE_GARAGE:
+			{
+				if(id < 0 || id >= MAX_GARAGES) continue;
+				if(areas[n] == GarageInfo[id][gar_AreaID]) exiting = false;
+				else if(areas[n] == GarageInfo[id][gar_AreaID_int]) exiting = true;
+				else continue;
+				priority = 2;
 			}
-			case STREAMER_AREATYPE_GARAGE: {
-				if(szAreaID[0] == GarageInfo[szData[1]][gar_AreaID]) Garage_Enter(playerid, szData[1]);
-				if(szAreaID[0] == GarageInfo[szData[1]][gar_AreaID_int]) Garage_Exit(playerid, szData[1]);
+			case STREAMER_AREATYPE_BUSINESS:
+			{
+				if(id < 0 || id >= MAX_BUSINESSES) continue;
+				if(areas[n] == Businesses[id][bAreaID][0]) exiting = false;
+				else if(areas[n] == Businesses[id][bAreaID][1]) exiting = true;
+				else continue;
+				priority = 3;
+			}
+			default: continue;
+		}
+		if(priority > selectedPriority) continue;
+		if(priority == selectedPriority && (id > selectedID || (id == selectedID && exiting))) continue;
+		selectedType = data[0];
+		selectedID = id;
+		selectedPriority = priority;
+		selectedExit = exiting;
+	}
+
+	if(selectedID != -1)
+	{
+		switch(selectedType)
+		{
+			case STREAMER_AREATYPE_DOOR:
+			{
+				if(selectedExit) return DDoor_Exit(playerid, selectedID);
+				return DDoor_Enter(playerid, selectedID);
+			}
+			case STREAMER_AREATYPE_HOUSE:
+			{
+				if(selectedExit) return House_Exit(playerid, selectedID);
+				return House_Enter(playerid, selectedID);
+			}
+			case STREAMER_AREATYPE_GARAGE:
+			{
+				if(selectedExit) return Garage_Exit(playerid, selectedID);
+				return Garage_Enter(playerid, selectedID);
+			}
+			case STREAMER_AREATYPE_BUSINESS:
+			{
+				if(selectedExit) return Business_Exit(playerid, selectedID);
+				return Business_Enter(playerid, selectedID);
 			}
 		}
-		*/
 	}
-	return 1;
-}
 
-//Old method
-EntExit_GetID(playerid) {
-
-	for(new i; i < MAX_DDOORS; ++i) {
-
-		if(IsPlayerInRangeOfPoint(playerid, 2.0, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]) &&
-			PlayerInfo[playerid][pVW] == DDoorsInfo[i][ddExteriorVW] && PlayerInfo[playerid][pInt] == DDoorsInfo[i][ddExteriorInt])
-			return DDoor_Enter(playerid, i);
-		if(IsPlayerInRangeOfPoint(playerid, 2.0, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]) &&
-			PlayerInfo[playerid][pVW] == DDoorsInfo[i][ddInteriorVW] && PlayerInfo[playerid][pInt] == DDoorsInfo[i][ddInteriorInt])
-			return DDoor_Exit(playerid, i);		
-	}
-	for(new i; i < MAX_HOUSES; ++i) {
-
-		if(IsPlayerInRangeOfPoint(playerid, 2.0, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) &&
-			PlayerInfo[playerid][pVW] == HouseInfo[i][hExtVW] && PlayerInfo[playerid][pInt] == HouseInfo[i][hExtIW]) {
-			return House_Enter(playerid, i);
-		}
-		if(IsPlayerInRangeOfPoint(playerid, 2.0, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) &&
-			PlayerInfo[playerid][pVW] == HouseInfo[i][hIntVW] && PlayerInfo[playerid][pInt] == HouseInfo[i][hIntIW]) {
-			return House_Exit(playerid, i);
-		}
-	}
-	for(new i; i < MAX_GARAGES; ++i) {
-		if(IsPlayerInRangeOfPoint(playerid, 2.0, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]) &&
-			PlayerInfo[playerid][pVW] == GarageInfo[i][gar_ExteriorVW]) {
-			return Garage_Enter(playerid, i);
-		}
-		if(IsPlayerInRangeOfPoint(playerid, 2.0, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]) &&
-			PlayerInfo[playerid][pVW] == GarageInfo[i][gar_InteriorVW]) {
-			return Garage_Exit(playerid, i);
-		}
-	}
-	for(new i; i < MAX_BUSINESSES; ++i) {
-		if(IsPlayerInRangeOfPoint(playerid, 2.0, Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2])) {
-			if(PlayerInfo[playerid][pLevel] < 3 && Businesses[i][bType] == 13) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "Sadly, you can't enter the Casino");
-			return Business_Enter(playerid, i);
-		}
-		if(IsPlayerInRangeOfPoint(playerid, 2.0, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2])) {
-
-			if(Businesses[i][bVW] == 0 && PlayerInfo[playerid][pVW] == BUSINESS_BASE_VW + i) return Business_Exit(playerid, i);
-			if(PlayerInfo[playerid][pLevel] < 3 && Businesses[i][bType] == 13) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "Sadly, you can't enter the Casino");
-			else if(PlayerInfo[playerid][pVW] == Businesses[i][bVW]) return Business_Exit(playerid, i);
-		}
-	}
-	if(!IsPlayerInAnyVehicle(playerid)) {
-
+	if(!IsPlayerInAnyVehicle(playerid))
+	{
 		if(InsidePlane[playerid] != INVALID_VEHICLE_ID) return Vehicle_Exit(playerid);
-
-		new iVehModel;
-		for(new i = 0; i < MAX_VEHICLES; i++) {
-			iVehModel = GetVehicleModel(i);
-			if((iVehModel == 508 || iVehModel == 519 || iVehModel == 553 || iVehModel == 570) && IsPlayerInRangeOfVehicle(playerid, i, 5.0)) return Vehicle_Enter(playerid, i);
+		for(new i = 1; i < MAX_VEHICLES; i++)
+		{
+			new model = GetVehicleModel(i);
+			if((model == 508 || model == 519 || model == 553 || model == 570) && IsPlayerInRangeOfVehicle(playerid, i, 5.0)) return Vehicle_Enter(playerid, i);
 		}
 	}
 	return 1;
 }
 
-CMD:entersystem(playerid, params[]) {
-
-	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
-	if(iNewEnterSystem) {
-
-		iNewEnterSystem = 0;
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You turned off the new enter/exit system.");
-	}
-	else {
-		iNewEnterSystem = 1;
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You turned on the new enter/exit system.");
-	}
-	return 1;
+CMD:enter(playerid)
+{
+	return EntExit_GetID(playerid);
 }
 
-CMD:enter(playerid) {
-
-	if(iNewEnterSystem) EntExit_GetID_New(playerid);
-	else EntExit_GetID(playerid);
-	return 1;
+CMD:exit(playerid)
+{
+	return EntExit_GetID(playerid);
 }
-
-CMD:exit(playerid) {
-
-	if(iNewEnterSystem) EntExit_GetID_New(playerid);
-	else EntExit_GetID(playerid);
-	return 1;
-}
-
-/*
-Process_Entrance(playerid, areaid) {
-
-	if(GetPVarType(playerid, "IsInArena")) return 1;
-
-	if(IsPlayerInAnyDynamicArea(playerid)) {
-		for(new i = 0; i < MAX_DDOORS; i++) {
-			if(DDoorsInfo[i][ddAreaID] == areaid) return DDoor_Enter(playerid, i);
-			if(DDoorsInfo[i][ddAreaID_int] == areaid) return DDoor_Exit(playerid, i);
-
-		}
-		for(new i = 0; i < MAX_HOUSES; i++) {
-			if(HouseInfo[i][hAreaID][0] == areaid) return House_Enter(playerid, i);
-			if(HouseInfo[i][hAreaID][1] == areaid) return House_Exit(playerid, i);
-		}
-		for(new i = 0; i < MAX_GARAGES; i++) {
-			if(GarageInfo[i][gar_AreaID] == areaid) return Garage_Enter(playerid, i);
-			if(GarageInfo[i][gar_AreaID_int] == areaid) return Garage_Exit(playerid, i);
-		}
-		for(new i = 0; i < MAX_BUSINESSES; i++) {
-			if(Businesses[i][bAreaID][0] == areaid) return Business_Enter(playerid, i);
-			if(Businesses[i][bAreaID][1] == areaid) return Business_Exit(playerid, i);
-		} 
-	}
-	if(!IsPlayerInAnyVehicle(playerid)) {
-
-		if(InsidePlane[playerid] != INVALID_VEHICLE_ID) return Vehicle_Exit(playerid);
-
-		new vehModel;
-		for(new i = 0; i < MAX_VEHICLES; i++) {
-			vehModel = GetVehicleModel(i);
-			if((vehModel == 508 || vehModel == 519 || vehModel == 553) && IsPlayerInRangeOfVehicle(playerid, i, 5.0)) return Vehicle_Enter(playerid, i);
-		}
-	}
-
-	return 1;
-}*/
-
-
-/*
-public OnPlayerEnterDynamicArea(playerid, areaid) {
-
-	// printf("DEBUG: %d entered area %d", playerid, areaid);
-	new i = GetIDFromArea(areaid);
-
-	// printf("DEBUG: Area %d was detected as a door area: ID: %d, VW: %d, Int: %d.", areaid, i, Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_WORLD_ID), Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_INTERIOR_ID));
-	g_iEntranceAID[playerid] = areaid;
-	g_iEntranceID[playerid] = i;
-
-	if(i < sizeof(iVehExits)) {
-		if(iVehExits[i] == areaid) {
-			SetPVarInt(playerid, "VEHA_ID", i);
-		}
-	}
-	if(i < MAX_VEHICLES) {
-		if(iVehEnterAreaID[i] == areaid) {
-			// printf("DEBUG: Area %d was detected as a vehicle area.", areaid);
-			SetPVarInt(playerid, "VEHA_ID", i);
-		}
-	}
-	return 1;
-}
-*/
-
-/*
-public OnPlayerLeaveDynamicArea(playerid, areaid) {
-	printf("DEBUG: %d left area %d.", playerid, areaid);
-	DeletePVar(playerid, "VEHA_ID");
-	ENT_DelVar(playerid);
-	return 1;
-}
-
-ENT_DelVar(playerid) {
-	
-	g_iEntranceID[playerid] = -1;
-	g_iEntranceAID[playerid] = -1;
-}
-*/
 
 hook OnPlayerStateChange(playerid, newstate, oldstate) {
 
@@ -607,6 +509,7 @@ House_Exit(playerid, i) {
 
 Business_Enter(playerid, i)
 {
+	if(PlayerInfo[playerid][pLevel] < 3 && Businesses[i][bType] == BUSINESS_TYPE_CASINO) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "Sadly, you can't enter the Casino");
 	if(Businesses[i][bExtPos][1] == 0.0) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot enter this business.");
 	if(Businesses[i][bStatus]) {
 		if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");

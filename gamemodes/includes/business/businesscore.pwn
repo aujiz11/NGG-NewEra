@@ -519,7 +519,7 @@ stock RefreshBusinessPickup(i)
     if (!(Businesses[i][bExtPos][0] == 0.0 && Businesses[i][bExtPos][1] == 0.0 && Businesses[i][bExtPos][2] == 0.0)) {
 
 		Businesses[i][bPickup] = CreateDynamicPickup(GetBusinessDefaultPickup(i), 23, Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2]);
-		Businesses[i][bAreaID][0] = CreateDynamicSphere(Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2], 2.5);
+		Businesses[i][bAreaID][0] = CreateDynamicSphere(Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2], 2.0, .worldid = 0, .interiorid = 0);
 
         if (Businesses[i][bOwner] < 1) {
 			format(szMiscArray,sizeof(szMiscArray),"%s\n\nBusiness For Sale!\nCost: %s\nID: %d", GetBusinessTypeName(Businesses[i][bType]), number_format(Businesses[i][bValue]), i);
@@ -543,18 +543,19 @@ stock RefreshBusinessPickup(i)
 	if(Businesses[i][bVW] == 0)	{
 
 		Businesses[i][bPickup_int] = CreateDynamicPickup(1559, 23, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], .worldid = BUSINESS_BASE_VW + i);
-		Businesses[i][bAreaID][1] = CreateDynamicSphere(Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], 2.5, .worldid = BUSINESS_BASE_VW + i);
+		Businesses[i][bAreaID][1] = CreateDynamicSphere(Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], 2.0, .worldid = BUSINESS_BASE_VW + i, .interiorid = Businesses[i][bInt]);
 	}
 	else {
 
 		Businesses[i][bPickup_int] = CreateDynamicPickup(1559, 23, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], .worldid = Businesses[i][bVW]);
-		Businesses[i][bAreaID][1] = CreateDynamicSphere(Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], 2.5, .worldid = Businesses[i][bVW]);
+		Businesses[i][bAreaID][1] = CreateDynamicSphere(Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], 2.0, .worldid = Businesses[i][bVW], .interiorid = Businesses[i][bInt]);
 	}
 
-	/*
-	Streamer_SetIntData(STREAMER_TYPE_AREA, Businesses[i][bAreaID][0], E_STREAMER_EXTRA_ID, i);
-	Streamer_SetIntData(STREAMER_TYPE_AREA, Businesses[i][bAreaID][1], E_STREAMER_EXTRA_ID, i);
-	*/
+	new areaData[2];
+	areaData[0] = STREAMER_AREATYPE_BUSINESS;
+	areaData[1] = i;
+	if(Businesses[i][bAreaID][0] != INVALID_STREAMER_ID) Streamer_SetArrayData(STREAMER_TYPE_AREA, Businesses[i][bAreaID][0], E_STREAMER_EXTRA_ID, areaData, sizeof(areaData));
+	Streamer_SetArrayData(STREAMER_TYPE_AREA, Businesses[i][bAreaID][1], E_STREAMER_EXTRA_ID, areaData, sizeof(areaData));
 
 	format(szMiscArray, sizeof(szMiscArray), "[Business] Created Business: %d | Exterior Area ID: %d | Interior Area ID: %d", i, Businesses[i][bAreaID][0], Businesses[i][bAreaID][1]);
 	Log("debug/door_business.log", szMiscArray);
