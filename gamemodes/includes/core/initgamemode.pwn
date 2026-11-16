@@ -56,17 +56,9 @@ InitiateGamemode()
 	ResetElevatorQueue();
 	Elevator_Initialize();
 	AntiDeAMX();
-	EnableStuntBonusForAll(false);
-	//ShowNameTags(0);
-	ShowPlayerMarkers(PLAYER_MARKERS_MODE_STREAMED);
-	DisableInteriorEnterExits();
 	ClearReports();
 	//NationSel_InitTextDraws();
 	CountCitizens();
-	SetNameTagDrawDistance(40.0);
-	AllowInteriorWeapons(true);
-	UsePlayerPedAnims();
-	ManualVehicleEngineAndLights();
 	GiftAllowed = 1;
 	ResetNews();
 	ResetVariables();
