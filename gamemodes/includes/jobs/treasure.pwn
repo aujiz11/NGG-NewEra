@@ -35,530 +35,181 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-FoundTreasure(playerid)
+enum eTreasureItem
 {
-	new szMessage[128];
+	treasureKey[16],
+	treasureName[20],
+	treasurePrice
+}
 
-	switch(PlayerInfo[playerid][pTreasureSkill])
+new const TreasureItems[][eTreasureItem] = {
+	{"junkmetal", "junk metal", 150},
+	{"newcoin", "new coin", 50},
+	{"oldcoin", "old coin", 100},
+	{"brokenwatch", "broken watch", 5},
+	{"oldkey", "old key", 20},
+	{"goldwatch", "gold watch", 50000},
+	{"silvernugget", "silver nugget", 25000},
+	{"goldnugget", "gold nugget", 100000},
+	{"treasure", "treasure chest", 1000000}
+};
+
+stock FoundTreasure(playerid)
+{
+	new skill = PlayerInfo[playerid][pTreasureSkill], message[128];
+	if(Random(1, skill < 300 ? 101 : 126) > (skill < 150 ? 50 : 75))
 	{
-	    case 1..149:
-	    {
-	        new FoundAnything = Random(1, 100);
-	        if(FoundAnything >= 1 && FoundAnything <= 50)
-	        {
-	            new ItemFound = Random(1, 10);
-	            if(ItemFound >= 1 && ItemFound <= 2)
-	            {
-	                SetPVarInt(playerid, "junkmetal", GetPVarInt(playerid, "junkmetal")+1);
-	                SaveTreasureInventory(playerid);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You did not discover anything.");
+		format(message, sizeof(message), "%s's metal detector seems to have malfunctioned.", GetPlayerNameEx(playerid));
+		ProxDetector(30.0, playerid, message, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
+		return 1;
+	}
 
-	                format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds junk metal.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	            }
-	            else if(ItemFound >= 3 && ItemFound <= 4)
-	            {
-	                SetPVarInt(playerid, "newcoin", GetPVarInt(playerid, "newcoin")+1);
-	                SaveTreasureInventory(playerid);
-
-	                format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a new coin.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	            }
-                else if(ItemFound >= 5 && ItemFound <= 6)
-	            {
-	                SetPVarInt(playerid, "oldcoin", GetPVarInt(playerid, "oldcoin")+1);
-	                SaveTreasureInventory(playerid);
-
-	                format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a old coin.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	            }
-	            else if(ItemFound >= 7 && ItemFound <= 8)
-	            {
-	                SetPVarInt(playerid, "brokenwatch", GetPVarInt(playerid, "brokenwatch")+1);
-	                SaveTreasureInventory(playerid);
-
-	                format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a broken watch.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	            }
-	            else if(ItemFound >= 9 && ItemFound <= 10)
-	            {
-	                SetPVarInt(playerid, "oldkey", GetPVarInt(playerid, "oldkey")+1);
-	                SaveTreasureInventory(playerid);
-
-	                format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a old key.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	            }
-	        }
-	        else
-	        {
-	            SendClientMessageEx(playerid, COLOR_WHITE, "You did not discover anything.");
-
-	            format(szMessage, 128, "%s's metal detector has seemed to malfunctioned", GetPlayerNameEx(playerid));
-  				ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	        }
-	    }
-	    case 150..299:
-	    {
-	        new FoundAnything = Random(1, 100);
-	        if(FoundAnything >= 1 && FoundAnything <= 75)
-	        {
-	            new ItemFound = Random(1, 10);
-         		if(ItemFound >= 1 && ItemFound <= 2)
-          		{
-       	    		SetPVarInt(playerid, "junkmetal", GetPVarInt(playerid, "junkmetal")+1);
-         	    	SaveTreasureInventory(playerid);
-
-         	    	format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds junk metal.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-           		}
-            	else if(ItemFound == 3 && ItemFound <= 4)
-            	{
-      	    		SetPVarInt(playerid, "newcoin", GetPVarInt(playerid, "newcoin")+1);
-        	    	SaveTreasureInventory(playerid);
-
-        	    	format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a new coin.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-            	}
-            	else if(ItemFound == 5 && ItemFound <= 6)
-            	{
-        	    	SetPVarInt(playerid, "oldcoin", GetPVarInt(playerid, "oldcoin")+1);
-         	    	SaveTreasureInventory(playerid);
-
-         	    	format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a old coin.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-            	}
-            	else if(ItemFound == 7)
-            	{
-        	    	SetPVarInt(playerid, "brokenwatch", GetPVarInt(playerid, "brokenwatch")+1);
-         	    	SaveTreasureInventory(playerid);
-
-         	    	format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a broken watch.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-            	}
-            	else if(ItemFound == 8 || ItemFound == 9)
-            	{
-        	    	SetPVarInt(playerid, "oldkey", GetPVarInt(playerid, "oldkey")+1);
-         	    	SaveTreasureInventory(playerid);
-
-         	    	format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a old key.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-            	}
-				else if(ItemFound == 10)
-				{
-				    new VeryRare = Random(1, 90);
-				    if(VeryRare >= 1 && VeryRare <= 30)
-				    {
-				        SetPVarInt(playerid, "goldwatch", GetPVarInt(playerid, "goldwatch")+1);
-	            	    SaveTreasureInventory(playerid);
-
-	            	    format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a gold watch!", GetPlayerNameEx(playerid));
-  						ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				    }
-				    else if(VeryRare >= 31 && VeryRare <= 60)
-				    {
-				        SetPVarInt(playerid, "silvernugget", GetPVarInt(playerid, "silvernugget")+1);
-	            	    SaveTreasureInventory(playerid);
-
-	            	    format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a silver nugget!", GetPlayerNameEx(playerid));
-  						ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				    }
-				    else if(VeryRare >= 61 && VeryRare <= 90)
-				    {
-				        SetPVarInt(playerid, "goldnugget", GetPVarInt(playerid, "goldnugget")+1);
-	            	    SaveTreasureInventory(playerid);
-
-	            	    format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a gold nugget!", GetPlayerNameEx(playerid));
-  						ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				    }
-				}
-	        }
-	        else
-	        {
-	            SendClientMessageEx(playerid, COLOR_WHITE, "You did not discover anything.");
-
-	            format(szMessage, 128, "%s's metal detector has seemed to malfunctioned", GetPlayerNameEx(playerid));
-  				ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	        }
-	    }
-	    case 300..499:
-	    {
-	        new FoundAnything = Random(1, 125);
-	        if(FoundAnything >= 1 && FoundAnything <= 75)
-	        {
-                new ItemFound = Random(1, 10);
-         		if(ItemFound >= 1 && ItemFound <= 2)
-          		{
-       	    		SetPVarInt(playerid, "junkmetal", GetPVarInt(playerid, "junkmetal")+1);
-         	    	SaveTreasureInventory(playerid);
-
-         	    	format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds junk metal.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-           		}
-            	else if(ItemFound == 3 && ItemFound <= 4)
-            	{
-      	    		SetPVarInt(playerid, "newcoin", GetPVarInt(playerid, "newcoin")+1);
-        	    	SaveTreasureInventory(playerid);
-
-        	    	format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a new coin.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-            	}
-            	else if(ItemFound == 5 && ItemFound <= 6)
-            	{
-        	    	SetPVarInt(playerid, "oldcoin", GetPVarInt(playerid, "oldcoin")+1);
-         	    	SaveTreasureInventory(playerid);
-
-         	    	format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a old coin.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-            	}
-            	else if(ItemFound == 7)
-            	{
-        	    	SetPVarInt(playerid, "brokenwatch", GetPVarInt(playerid, "brokenwatch")+1);
-         	    	SaveTreasureInventory(playerid);
-
-         	    	format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a broken watch.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-            	}
-            	else if(ItemFound == 8 || ItemFound == 9)
-            	{
-        	    	SetPVarInt(playerid, "oldkey", GetPVarInt(playerid, "oldkey")+1);
-         	    	SaveTreasureInventory(playerid);
-
-         	    	format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a old key.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-            	}
-				else if(ItemFound == 10)
-				{
-				    new VeryRare = Random(1, 90);
-				    if(VeryRare >= 1 && VeryRare <= 30)
-				    {
-				        SetPVarInt(playerid, "goldwatch", GetPVarInt(playerid, "goldwatch")+1);
-	            	    SaveTreasureInventory(playerid);
-
-	            	    format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a gold watch!", GetPlayerNameEx(playerid));
-  						ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				    }
-				    else if(VeryRare >= 31 && VeryRare <= 60)
-				    {
-				        SetPVarInt(playerid, "silvernugget", GetPVarInt(playerid, "silvernugget")+1);
-	            	    SaveTreasureInventory(playerid);
-
-	            	    format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a silver nugget!", GetPlayerNameEx(playerid));
-  						ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				    }
-				    else if(VeryRare >= 61 && VeryRare <= 90)
-				    {
-				        SetPVarInt(playerid, "goldnugget", GetPVarInt(playerid, "goldnugget")+1);
-	            	    SaveTreasureInventory(playerid);
-
-	            	    format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a gold nugget!", GetPlayerNameEx(playerid));
-  						ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				    }
-				}
-	        }
-	        else
-	        {
-	            SendClientMessageEx(playerid, COLOR_WHITE, "You did not discover anything.");
-
-	            format(szMessage, 128, "%s's metal detector has seemed to malfunctioned", GetPlayerNameEx(playerid));
-  				ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	        }
-	    }
-		case 500..9999:
+	new roll = Random(1, 11), item;
+	if(skill < 150) item = (roll - 1) / 2;
+	else if(roll < (skill >= 600 ? 9 : 10))
+	{
+		switch(roll)
 		{
-		    new FoundAnything = Random(1, 125);
-	        if(FoundAnything >= 1 && FoundAnything <= 75)
-	        {
-                new ItemFound = Random(1, 10);
-         		if(ItemFound >= 1 && ItemFound <= 2)
-          		{
-       	    		SetPVarInt(playerid, "junkmetal", GetPVarInt(playerid, "junkmetal")+1);
-         	    	SaveTreasureInventory(playerid);
-
-         	    	format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds junk metal.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-           		}
-            	else if(ItemFound == 3 && ItemFound <= 4)
-            	{
-      	    		SetPVarInt(playerid, "newcoin", GetPVarInt(playerid, "newcoin")+1);
-        	    	SaveTreasureInventory(playerid);
-
-        	    	format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a new coin.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-            	}
-            	else if(ItemFound == 5 && ItemFound <= 6)
-            	{
-        	    	SetPVarInt(playerid, "oldcoin", GetPVarInt(playerid, "oldcoin")+1);
-         	    	SaveTreasureInventory(playerid);
-
-         	    	format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a old coin.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-            	}
-            	else if(ItemFound == 7)
-            	{
-        	    	SetPVarInt(playerid, "brokenwatch", GetPVarInt(playerid, "brokenwatch")+1);
-         	    	SaveTreasureInventory(playerid);
-
-         	    	format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a broken watch.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-            	}
-            	else if(ItemFound == 8)
-            	{
-        	    	SetPVarInt(playerid, "oldkey", GetPVarInt(playerid, "oldkey")+1);
-         	    	SaveTreasureInventory(playerid);
-
-         	    	format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a old key.", GetPlayerNameEx(playerid));
-  					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-            	}
-				else if(ItemFound == 9 || ItemFound == 10)
-				{
-				    new VeryRare = Random(1, 100);
-				    if(VeryRare >= 1 && VeryRare <= 35)
-				    {
-				        SetPVarInt(playerid, "goldwatch", GetPVarInt(playerid, "goldwatch")+1);
-	            	    SaveTreasureInventory(playerid);
-
-	            	    format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a gold watch!", GetPlayerNameEx(playerid));
-  						ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				    }
-				    else if(VeryRare >= 36 && VeryRare <= 65)
-				    {
-				        SetPVarInt(playerid, "silvernugget", GetPVarInt(playerid, "silvernugget")+1);
-	            	    SaveTreasureInventory(playerid);
-
-	            	    format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a silver nugget!", GetPlayerNameEx(playerid));
-  						ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				    }
-				    else if(VeryRare >= 66 && VeryRare <= 99)
-				    {
-				        SetPVarInt(playerid, "goldnugget", GetPVarInt(playerid, "goldnugget")+1);
-	            	    SaveTreasureInventory(playerid);
-
-	            	    format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a gold nugget!", GetPlayerNameEx(playerid));
-  						ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				    }
-				    else if(VeryRare == 100)
-				    {
-				        SetPVarInt(playerid, "treasure", GetPVarInt(playerid, "treasure")+1);
-	            	    SaveTreasureInventory(playerid);
-
-	            	    format(szMessage, 128, "%s's sweeps the ground with a metal detector and finds a hidden treasure!", GetPlayerNameEx(playerid));
-  						ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-
-  						format(szMessage, 128, "{AA3333}AdmWarning{FFFF00}: %s has just found hidden treasure ($1,000,000)", GetPlayerNameEx(playerid));
-						ABroadCast(COLOR_YELLOW, szMessage, 2);
-				    }
-				}
-	        }
-	        else
-	        {
-	            SendClientMessageEx(playerid, COLOR_WHITE, "You did not discover anything.");
-
-	            format(szMessage, 128, "%s's metal detector has seemed to malfunctioned", GetPlayerNameEx(playerid));
-  				ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	        }
+			case 1, 2: item = 0;
+			case 3, 4: item = 1;
+			case 5, 6: item = 2;
+			case 7: item = 3;
+			case 8, 9: item = 4;
 		}
+	}
+	else if(skill < 600) item = 5 + random(3);
+	else
+	{
+		switch(Random(1, 101))
+		{
+			case 1..35: item = 5;
+			case 36..65: item = 6;
+			case 66..99: item = 7;
+			case 100: item = 8;
+		}
+	}
+
+	new count = GetPVarInt(playerid, TreasureItems[item][treasureKey]);
+	if(count < 0 || count == cellmax) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot carry any more of this item.");
+	SetPVarInt(playerid, TreasureItems[item][treasureKey], count + 1);
+	SaveTreasureInventory(playerid);
+	format(message, sizeof(message), "%s sweeps the ground with a metal detector and finds %s.", GetPlayerNameEx(playerid), TreasureItems[item][treasureName]);
+	ProxDetector(30.0, playerid, message, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
+	if(item == 8)
+	{
+		format(message, sizeof(message), "{AA3333}AdmWarning{FFFF00}: %s has just found hidden treasure ($1,000,000)", GetPlayerNameEx(playerid));
+		ABroadCast(COLOR_YELLOW, message, 2);
 	}
 	return 1;
 }
 
+forward HideTreasureCheckpoint(playerid, session, target);
+public HideTreasureCheckpoint(playerid, session, target)
+{
+	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session || CheckPointCheck(playerid)) return 1;
+	new Float:x, Float:y, Float:z, Float:radius;
+	if(GetPlayerCheckpoint(playerid, x, y, z, radius) && x == HiddenTreasure[target][0]
+		&& y == HiddenTreasure[target][1] && z == HiddenTreasure[target][2] && radius == 3.0)
+		DisablePlayerCheckpoint(playerid);
+	return 1;
+}
 
 CMD:search(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJob] != 22 && PlayerInfo[playerid][pJob2] != 22 && PlayerInfo[playerid][pJob3] != 22) {
+	if(PlayerInfo[playerid][pJob] != 22 && PlayerInfo[playerid][pJob2] != 22 && PlayerInfo[playerid][pJob3] != 22)
 		return SendClientMessageEx(playerid, COLOR_GREY, "You are not a treasure hunter.");
-	}
-	else if(PlayerInfo[playerid][pMetalDetector] == 0) {
-		return SendClientMessageEx(playerid, COLOR_GREY, "You don't have a metal detector. You can recieve one from a craftsman.");
-	}
-	else if(IsPlayerInAnyVehicle(playerid)) {
-		return SendClientMessageEx(playerid, COLOR_GREY, "You are not allowed to metal detect while in a vehicle. " );
-	}
-	else if(gettime()-GetPVarInt(playerid, "LastScan") < GetPVarInt(playerid, "ScanReload")) {
+	if(!GetPVarInt(playerid, "TreasureLoaded"))
+		return SendClientMessageEx(playerid, COLOR_GREY, "Your treasure inventory is still loading. Please try again shortly.");
+	if(PlayerInfo[playerid][pMetalDetector] <= 0)
+		return SendClientMessageEx(playerid, COLOR_GREY, "You don't have a charged metal detector. You can receive one from a craftsman.");
+	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT || PlayerIsDead[playerid] || GetPVarInt(playerid, "Injured")
+		|| GetPVarInt(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged"))
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your metal detector right now.");
+	if(GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0
+		|| !IsPlayerInArea(playerid, 402.2964, 737.5547, -1923.9410, -1752.8732))
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not at a beach.");
+	if(gettime() - GetPVarInt(playerid, "LastScan") < GetPVarInt(playerid, "ScanReload"))
 		return SendClientMessageEx(playerid, COLOR_GRAD2, "Your metal detector is still charging.");
+	if(CheckPointCheck(playerid) || IsPlayerCheckpointActive(playerid))
+		return SendClientMessageEx(playerid, COLOR_GREY, "Finish or cancel your current checkpoint before searching for treasure.");
+
+	new target = GetPVarInt(playerid, "HiddenTreasure");
+	if(!GetPVarType(playerid, "HiddenTreasure") || !(0 <= target < sizeof(HiddenTreasure)))
+	{
+		target = random(sizeof(HiddenTreasure));
+		SetPVarInt(playerid, "HiddenTreasure", target);
+	}
+	new skill = PlayerInfo[playerid][pTreasureSkill];
+	SetPVarInt(playerid, "ScanReload", skill < 25 ? 20 : (skill < 300 ? 15 : (skill < 600 ? 10 : 5)));
+	SetPVarInt(playerid, "LastScan", gettime());
+	--PlayerInfo[playerid][pMetalDetector];
+	if(PlayerInfo[playerid][pMetalDetector] == 1)
+		SendClientMessageEx(playerid, COLOR_WHITE, "INFO: You only have 1 metal detector charge left.");
+
+	new Float:distance = GetPlayerDistanceFromPoint(playerid, HiddenTreasure[target][0], HiddenTreasure[target][1], HiddenTreasure[target][2]);
+	if(distance > 3.0)
+	{
+		new message[128];
+		SetPlayerCheckpoint(playerid, HiddenTreasure[target][0], HiddenTreasure[target][1], HiddenTreasure[target][2], 3.0);
+		SetTimerEx("HideTreasureCheckpoint", 2000, false, "iii", playerid, g_arrQueryHandle[playerid], target);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You are %.1f meters away from the treasure.", distance);
+		format(message, sizeof(message), "%s sweeps the ground with a metal detector.", GetPlayerNameEx(playerid));
+		ProxDetector(30.0, playerid, message, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
+		return 1;
 	}
 
-	else if(!GetPVarType(playerid, "HiddenTreasure")) { // New Treasure
- 		SetPVarInt(playerid, "HiddenTreasure", random(sizeof(HiddenTreasure)));
+	DeletePVar(playerid, "HiddenTreasure");
+	FoundTreasure(playerid);
+	if(skill < cellmax) ++PlayerInfo[playerid][pTreasureSkill];
+	switch(PlayerInfo[playerid][pTreasureSkill])
+	{
+		case 25: SendClientMessageEx(playerid, COLOR_WHITE, "* Your Treasure Hunting Skill is now Level 2, your metal detector now charges in 15 seconds!");
+		case 150: SendClientMessageEx(playerid, COLOR_WHITE, "* Your Treasure Hunting Skill is now Level 3, found items now have a 10% chance of being rare!");
+		case 300: SendClientMessageEx(playerid, COLOR_WHITE, "* Your Treasure Hunting Skill is now Level 4, your metal detector now charges in 10 seconds!");
+		case 600: SendClientMessageEx(playerid, COLOR_WHITE, "* Your Treasure Hunting Skill is now Level 5, found items now have a 20% chance of being rare!");
 	}
-
-	new
-		szMessage[128],
-		Float:distance = GetPlayerDistanceFromPoint(playerid, HiddenTreasure[GetPVarInt(playerid, "HiddenTreasure")][0], HiddenTreasure[GetPVarInt(playerid, "HiddenTreasure")][1], HiddenTreasure[GetPVarInt(playerid, "HiddenTreasure")][2]);
-
-    if(IsPlayerInArea(playerid, 402.2964, 737.5547, -1923.9410, -1752.8732) && distance > 3)
-  	{
-   		PlayerInfo[playerid][pMetalDetector]--;
-
-   		if(PlayerInfo[playerid][pMetalDetector] == 1) {
-			SendClientMessageEx(playerid, COLOR_WHITE, "INFO: You only have 1 metal detector charge left.");
-		}
-
-        SetPlayerCheckpoint(playerid,HiddenTreasure[GetPVarInt(playerid, "HiddenTreasure")][0], HiddenTreasure[GetPVarInt(playerid, "HiddenTreasure")][1], HiddenTreasure[GetPVarInt(playerid, "HiddenTreasure")][2], 3);
-        SetTimerEx("DisableCheckPoint", 2000, false, "i", playerid);
-
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are %f meters away from the treasure. ", distance);
-
-      	format(szMessage, 128, "%s sweeps the ground with a metal detector.", GetPlayerNameEx(playerid));
-       	ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-
-        if(PlayerInfo[playerid][pTreasureSkill] >=0 && PlayerInfo[playerid][pTreasureSkill] <= 24) SetPVarInt(playerid, "ScanReload", 20);
-		else if(PlayerInfo[playerid][pTreasureSkill] >=25 && PlayerInfo[playerid][pTreasureSkill] <= 299) SetPVarInt(playerid, "ScanReload", 15);
-		else if(PlayerInfo[playerid][pTreasureSkill] >=300 && PlayerInfo[playerid][pTreasureSkill] <= 599) SetPVarInt(playerid, "ScanReload", 10);
-		else if(PlayerInfo[playerid][pTreasureSkill] >=600) SetPVarInt(playerid, "ScanReload", 5);
-
-  		SetPVarInt(playerid, "LastScan", gettime());
-
-	}
- 	else if(distance <= 3) // Finds Treasure
-  	{
-  	    FoundTreasure(playerid);
-  	    PlayerInfo[playerid][pMetalDetector]--;
-		/*if(PlayerInfo[playerid][pDoubleEXP] > 0)
-		{
-			format(szMessage, 128, "You have gained 2 treasure hunting skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-			SendClientMessageEx(playerid, COLOR_YELLOW, szMessage);
-			PlayerInfo[playerid][pTreasureSkill] += 2;
-		}
-		else ++PlayerInfo[playerid][pTreasureSkill];*/
-		++PlayerInfo[playerid][pTreasureSkill];
-  	    DeletePVar(playerid, "HiddenTreasure");
-
-  	    if(PlayerInfo[playerid][pMetalDetector] == 1) {
-			SendClientMessageEx(playerid, COLOR_WHITE, "INFO: You only have 1 metal detector charge left.");
-		}
-
-  	    if(PlayerInfo[playerid][pTreasureSkill] == 25) {
-  	        SendClientMessageEx(playerid, COLOR_WHITE, "* Your Treasure Hunting Skill is now Level 2, the time it takes for your metal detector to charge is now 15 seconds!");
-  	    }
-  	    if(PlayerInfo[playerid][pTreasureSkill] == 150) {
-  	        SendClientMessageEx(playerid, COLOR_WHITE, "* Your Treasure Hunting Skill is now Level 3, your chance to find a rare is now 10%!");
-  	    }
-  	    if(PlayerInfo[playerid][pTreasureSkill] == 300) {
-  	        SendClientMessageEx(playerid, COLOR_WHITE, "* Your Treasure Hunting Skill is now Level 4, the time it takes for your metal detector to charge is now 10 seconds!");
-  	    }
-  	    if(PlayerInfo[playerid][pTreasureSkill] == 600) {
-  	        SendClientMessageEx(playerid, COLOR_WHITE, "* Your Treasure Hunting Skill is now Level 5, your chance to find a rare is now 20%!");
-  	    }
-   	}
-    else {
-    	SendClientMessageEx(playerid, COLOR_GREY, "You are not at a beach.");
-    }
 	return 1;
 }
 
 CMD:selltreasure(playerid, params[])
 {
 	new choice[32], amount;
-    if(sscanf(params, "s[32]d", choice, amount))
+	if(sscanf(params, "s[32]d", choice, amount))
 	{
-	    SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /selltreasure [name] [amount]");
+		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /selltreasure [name] [amount]");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: junkmetal ($150), newcoin ($50), oldcoin ($100), brokenwatch ($5), oldkey ($20), goldwatch ($50000)");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: goldnugget ($100000), silvernugget ($25000), treasurechest ($1000000)");
 		return 1;
 	}
-	else if(!IsPlayerInRangeOfPoint(playerid, 3 , 164.9517, -1779.5931, 4.3000)) {
-	    return SendClientMessageEx(playerid, COLOR_GREY, "You are not at a treasure sell point.");
+	if(!GetPVarInt(playerid, "TreasureLoaded"))
+		return SendClientMessageEx(playerid, COLOR_GREY, "Your treasure inventory is still loading. Please try again shortly.");
+	if(GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0 || !IsPlayerInRangeOfPoint(playerid, 3.0, 164.9517, -1779.5931, 4.3000))
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not at a treasure sell point.");
+	if(amount <= 0) return SendClientMessageEx(playerid, COLOR_GREY, "Enter a positive amount to sell.");
+
+	new item = -1;
+	for(new i; i < sizeof(TreasureItems); ++i)
+	{
+		if(i == 8)
+		{
+			if(strcmp(choice, "treasurechest", true)) continue;
+		}
+		else if(strcmp(choice, TreasureItems[i][treasureKey], true)) continue;
+		item = i;
+		break;
 	}
-	else if(amount < 0) {
-		return SendClientMessageEx(playerid, COLOR_GREY, "You can't sell negative of an item.");
-	}
-	if(strcmp(choice, "junkmetal", true) == 0) {
-	    if(amount <= GetPVarInt(playerid, "junkmetal") && amount > 0) {
-	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d junk metals for $%d.", amount, amount*150);
-	        GivePlayerCash(playerid, amount*150);
-	        SetPVarInt(playerid, "junkmetal", GetPVarInt(playerid, "junkmetal")-amount);
-	        SaveTreasureInventory(playerid);
-	    }
-	    else {
-	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
-	    }
-	}
-	else if(strcmp(choice, "newcoin", true) == 0) {
-	    if(amount <= GetPVarInt(playerid, "newcoin") && amount > 0) {
-	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d new coins for $%d.", amount, amount*50);
-	        GivePlayerCash(playerid, amount*50);
-	        SetPVarInt(playerid, "newcoin", GetPVarInt(playerid, "newcoin")-amount);
-	        SaveTreasureInventory(playerid);
-	    }
-	    else {
-	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
-	    }
-	}
-	else if(strcmp(choice, "oldcoin", true) == 0) {
-	    if(amount <= GetPVarInt(playerid, "oldcoin") && amount > 0) {
-	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d old coins for $%d.", amount, amount*100);
-	        GivePlayerCash(playerid, amount*100);
-	        SetPVarInt(playerid, "oldcoin", GetPVarInt(playerid, "oldcoin")-amount);
-	        SaveTreasureInventory(playerid);
-	    }
-	    else {
-	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
-	    }
-	}
-	else if(strcmp(choice, "brokenwatch", true) == 0) {
-	    if(amount <= GetPVarInt(playerid, "brokenwatch") && amount > 0) {
-	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d broken watchs for $%d.", amount, amount*5);
-	        GivePlayerCash(playerid, amount*5);
-	        SetPVarInt(playerid, "brokenwatch", GetPVarInt(playerid, "brokenwatch")-amount);
-	        SaveTreasureInventory(playerid);
-	    }
-	    else {
-	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
-	    }
-	}
-	else if(strcmp(choice, "oldkey", true) == 0) {
-	    if(amount <= GetPVarInt(playerid, "oldkey") && amount > 0) {
-	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d old keys for $%d.", amount, amount*20);
-	        GivePlayerCash(playerid, amount*20);
-	        SetPVarInt(playerid, "oldkey", GetPVarInt(playerid, "oldkey")-amount);
-	        SaveTreasureInventory(playerid);
-	    }
-	    else {
-	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
-	    }
-	}
-	else if(strcmp(choice, "goldwatch", true) == 0) {
-	    if(amount <= GetPVarInt(playerid, "goldwatch") && amount > 0) {
-	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d gold watchs for $%d.", amount, amount*50000);
-	        GivePlayerCash(playerid, amount*50000);
-	        SetPVarInt(playerid, "goldwatch", GetPVarInt(playerid, "goldwatch")-amount);
-	        SaveTreasureInventory(playerid);
-	    }
-	    else {
-	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
-	    }
-	}
-	else if(strcmp(choice, "goldnugget", true) == 0) {
-	    if(amount <= GetPVarInt(playerid, "goldnugget") && amount > 0) {
-	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d gold nuggets for $%d.", amount, amount*100000);
-	        GivePlayerCash(playerid, amount*100000);
-	        SetPVarInt(playerid, "goldnugget", GetPVarInt(playerid, "goldnugget")-amount);
-	        SaveTreasureInventory(playerid);
-	    }
-	    else {
-	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
-	    }
-	}
-	else if(strcmp(choice, "silvernugget", true) == 0) {
-	    if(amount <= GetPVarInt(playerid, "silvernugget") && amount > 0) {
-	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d silver nuggets for $%d.", amount, amount*25000);
-	        GivePlayerCash(playerid, amount*25000);
-	        SetPVarInt(playerid, "silvernugget", GetPVarInt(playerid, "silvernugget")-amount);
-	        SaveTreasureInventory(playerid);
-	    }
-	    else {
-	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
-	    }
-	}
-	else if(strcmp(choice, "treasurechest", true) == 0) {
-	    if(amount <= GetPVarInt(playerid, "treasurechest") && amount > 0) {
-	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d treasure chests for $%d.", amount, amount*1000000);
-	        GivePlayerCash(playerid, amount*1000000);
-	        SetPVarInt(playerid, "treasure", GetPVarInt(playerid, "treasure")-amount);
-	        SaveTreasureInventory(playerid);
-	    }
-	    else {
-	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
-	    }
-	}
+	if(item == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Unknown treasure item. Use /selltreasure to see the available names.");
+	new count = GetPVarInt(playerid, 
+	[item][treasureKey]), price = TreasureItems[item][treasurePrice];
+	if(amount > count) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
+	if(amount > cellmax / price) return SendClientMessageEx(playerid, COLOR_GREY, "That sale is too large. Sell fewer items at a time.");
+	new payment = amount * price;
+	if(GetPlayerCash(playerid) > cellmax - payment) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot carry that much cash.");
+
+	SetPVarInt(playerid, TreasureItems[item][treasureKey], count - amount);
+	GivePlayerCash(playerid, payment);
+	SaveTreasureInventory(playerid);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d x %s for $%d.", amount, TreasureItems[item][treasureName], payment);
 	return 1;
 }

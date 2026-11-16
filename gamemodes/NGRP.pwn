@@ -84,7 +84,7 @@
 #include <open.mp>
 
 /*  ---------------- SCRIPT REVISION ----------------- */
-#define SERVER_GM_TEXT "NG:RP v4.0.33"
+#define SERVER_GM_TEXT "NG:RP v4.0.35"
 
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG

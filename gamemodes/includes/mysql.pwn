@@ -2170,15 +2170,16 @@ stock CountTickets(playerid)
 
 stock LoadTreasureInventory(playerid)
 {
+	DeletePVar(playerid, "TreasureLoaded");
 	new query[175];
 	mysql_format(MainPipeline, query, sizeof(query), "SELECT `junkmetal`, `newcoin`, `oldcoin`, `brokenwatch`, `oldkey`, `treasure`, `goldwatch`, `silvernugget`, `goldnugget` FROM `jobstuff` WHERE `pId` = %d", GetPlayerSQLId(playerid));
-    mysql_tquery(MainPipeline, query, "LoadTreasureInvent", "i", playerid);
+    mysql_tquery(MainPipeline, query, "LoadTreasureInvent", "ii", playerid, g_arrQueryHandle[playerid]);
 	return 1;
 }
 
 stock SaveTreasureInventory(playerid)
 {
-    new string[220];
+    new string[384];
 	mysql_format(MainPipeline, string, sizeof(string), "UPDATE `jobstuff` SET `junkmetal` = %d, `newcoin` = %d, `oldcoin` = %d, `brokenwatch` = %d, `oldkey` = %d, \
  	`treasure` = %d, `goldwatch` = %d, `silvernugget` = %d, `goldnugget` =%d  WHERE `pId` = %d", GetPVarInt(playerid, "junkmetal"), GetPVarInt(playerid, "newcoin"), GetPVarInt(playerid, "oldcoin"),
  	GetPVarInt(playerid, "brokenwatch"), GetPVarInt(playerid, "oldkey"), GetPVarInt(playerid, "treasure"), GetPVarInt(playerid, "goldwatch"), GetPVarInt(playerid, "silvernugget"), GetPVarInt(playerid, "goldnugget"), GetPlayerSQLId(playerid));
@@ -3767,36 +3768,40 @@ public LoadTicket(playerid) {
 	return 1;
 }
 
-forward LoadTreasureInvent(playerid);
-public LoadTreasureInvent(playerid)
+forward LoadTreasureInvent(playerid, session);
+public LoadTreasureInvent(playerid, session)
 {
-    new rows, szResult[10];
+	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session) return 1;
+	new rows, value;
 	cache_get_row_count(rows);
-
-    if(IsPlayerConnected(playerid))
-    {
-        if(!rows)
-        {
-            new query[60];
-            mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `jobstuff` (`pId`) VALUES ('%d')", GetPlayerSQLId(playerid));
-			mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
-        }
-        else
-        {
-    		for(new row;row < rows;row++)
-			{
-				cache_get_value_name(row, "junkmetal", szResult); SetPVarInt(playerid, "JunkMetal", strval(szResult));
-				cache_get_value_name(row, "newcoin", szResult); SetPVarInt(playerid, "newcoin", strval(szResult));
-				cache_get_value_name(row, "oldcoin", szResult); SetPVarInt(playerid, "oldcoin", strval(szResult));
-				cache_get_value_name(row, "brokenwatch", szResult); SetPVarInt(playerid, "brokenwatch", strval(szResult));
-				cache_get_value_name(row, "oldkey", szResult); SetPVarInt(playerid, "oldkey", strval(szResult));
-				cache_get_value_name(row, "treasure", szResult); SetPVarInt(playerid, "treasure", strval(szResult));
-				cache_get_value_name(row, "goldwatch", szResult); SetPVarInt(playerid, "goldwatch", strval(szResult));
-				cache_get_value_name(row, "silvernugget", szResult); SetPVarInt(playerid, "silvernugget", strval(szResult));
-				cache_get_value_name(row, "goldnugget", szResult); SetPVarInt(playerid, "goldnugget", strval(szResult));
-			}
-		}
+	if(!rows)
+	{
+		new query[80];
+		mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `jobstuff` (`pId`) VALUES (%d)", GetPlayerSQLId(playerid));
+		mysql_tquery(MainPipeline, query, "OnTreasureInventoryCreated", "ii", playerid, session);
+		return 1;
 	}
+	else
+	{
+		cache_get_value_name_int(0, "junkmetal", value); SetPVarInt(playerid, "junkmetal", value);
+		cache_get_value_name_int(0, "newcoin", value); SetPVarInt(playerid, "newcoin", value);
+		cache_get_value_name_int(0, "oldcoin", value); SetPVarInt(playerid, "oldcoin", value);
+		cache_get_value_name_int(0, "brokenwatch", value); SetPVarInt(playerid, "brokenwatch", value);
+		cache_get_value_name_int(0, "oldkey", value); SetPVarInt(playerid, "oldkey", value);
+		cache_get_value_name_int(0, "treasure", value); SetPVarInt(playerid, "treasure", value);
+		cache_get_value_name_int(0, "goldwatch", value); SetPVarInt(playerid, "goldwatch", value);
+		cache_get_value_name_int(0, "silvernugget", value); SetPVarInt(playerid, "silvernugget", value);
+		cache_get_value_name_int(0, "goldnugget", value); SetPVarInt(playerid, "goldnugget", value);
+	}
+	SetPVarInt(playerid, "TreasureLoaded", 1);
+	return 1;
+}
+
+forward OnTreasureInventoryCreated(playerid, session);
+public OnTreasureInventoryCreated(playerid, session)
+{
+	if(IsPlayerConnected(playerid) && g_arrQueryHandle[playerid] == session && cache_affected_rows() == 1)
+		SetPVarInt(playerid, "TreasureLoaded", 1);
 	return 1;
 }
 
