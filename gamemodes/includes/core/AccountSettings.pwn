@@ -75,8 +75,7 @@ ShowAccountSettings(playerid, menu = 0) {
 				(PlayerInfo[playerid][pToggledChats][15] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][22] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][16] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][17] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][18] == 0) ? ("{00FF00}On") : ("{FF0000}Off")
+				(PlayerInfo[playerid][pToggledChats][17] == 0) ? ("{00FF00}On") : ("{FF0000}Off")
 			);
 			ShowPlayerDialogEx(playerid, ACCOUNT_TOGGLEMENU, DIALOG_STYLE_TABLIST_HEADERS, "Toggle Menu", szMiscArray, "Select", "Cancel");
 		}
