@@ -229,7 +229,9 @@ Calls_Group(playerid) {
 
 	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)
 	{
-		new iGroupID = PlayerInfo[playerid][pMember];
+		new iGroupID = PlayerInfo[playerid][pMember], mainZoneName[28], mainZoneName2[28];
+		strunpack(mainZoneName, gMainZones[9][SAZONE_NAME], sizeof(mainZoneName));
+		strunpack(mainZoneName2, gMainZones[3][SAZONE_NAME], sizeof(mainZoneName2));
 
 		switch(arrGroupData[iGroupID][g_iGroupType]) {
 
@@ -248,7 +250,7 @@ Calls_Group(playerid) {
 
 					for(new j; j < arrGroupData[PlayerInfo[playerid][pMember]][g_iJCount]; j++)
 					{
-						if(strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][Area], true) == 0 || strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][MainZone], true) == 0 || (!strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], gMainZones[9][SAZONE_NAME], true) && strcmp(Calls[i][MainZone], gMainZones[3][SAZONE_NAME], true) == -1))
+						if(strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][Area], true) == 0 || strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][MainZone], true) == 0 || (!strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], mainZoneName, true) && strcmp(Calls[i][MainZone], mainZoneName2, true) == -1))
 						{
 							if(Calls[i][Type] == 0 && IsACop(playerid))
 							{

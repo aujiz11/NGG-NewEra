@@ -627,12 +627,12 @@ enum BusinessSale
 }
 
 enum SAZONE_MAIN { //Betamaster
-	SAZONE_NAME[28],
+	SAZONE_NAME[28 char],
 	Float:SAZONE_AREA[6]
 };
 
 enum MAIN_ZONES { //Betamaster
-	SAZONE_NAME[28],
+	SAZONE_NAME[28 char],
 	Float:SAZONE_AREA[6]
 };
 
@@ -1661,14 +1661,14 @@ enum HoldingEnumAll
 {
 	holdingmodelid,
 	holdingprice,
-	holdingmodelname[24]
+	holdingmodelname[24 char]
 }
 
 enum HoldingEnum
 {
 	holdingmodelid,
 	holdingprice,
-	holdingmodelname[24]
+	holdingmodelname[24 char]
 }
 
 enum AC_STRUCT_INFO {

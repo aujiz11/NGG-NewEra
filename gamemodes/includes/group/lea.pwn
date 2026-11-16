@@ -945,7 +945,9 @@ CMD:vmdc(playerid, params[])
 	    		}
 				else if(PlayerVehicleInfo[giveplayerid][i][pvImpounded])
 				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: Voided (impounded) | Vehicle Name: %s | Ticket: $%d.",VehicleName[PlayerVehicleInfo[giveplayerid][i][pvModelId]-400],PlayerVehicleInfo[giveplayerid][i][pvTicket]);
+					new vehicleName[18];
+					strunpack(vehicleName, VehicleName[PlayerVehicleInfo[giveplayerid][i][pvModelId]-400], sizeof(vehicleName));
+					SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: Voided (impounded) | Vehicle Name: %s | Ticket: $%d.",vehicleName,PlayerVehicleInfo[giveplayerid][i][pvTicket]);
 	    		}
 	    	}
 	    	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
@@ -977,11 +979,13 @@ CMD:vticket(playerid, params[])
 			}
 			if((veh = IsDynamicCrateVehicle(vehid)) != -1) {
 				if(ValidGroup(CrateVehicle[veh][cvGroupID])) {
+					new vehicleName[18];
 					if(PlayerInfo[playerid][pMember] == CrateVehicle[veh][cvGroupID]) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your group owns this vehicle you can't put a ticket on it!");
 					CrateVehicle[veh][cvTickets] += amount;
 					PlayerInfo[playerid][pTicketTime] = 60;
-					SendClientMessageEx(playerid, COLOR_WHITE, "You have issued a $%s ticket on the %s.", number_format(amount), VehicleName[CrateVehicle[veh][cvModel] - 400]);
-					format(string, sizeof(string), "[VTICKET] Officer %s has ticketed %s's %s (%d) for $%s.", GetPlayerNameEx(playerid), arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], VehicleName[CrateVehicle[veh][cvModel] - 400], CrateVehicle[veh][cvId], number_format(amount));
+					strunpack(vehicleName, VehicleName[CrateVehicle[veh][cvModel] - 400], sizeof(vehicleName));
+					SendClientMessageEx(playerid, COLOR_WHITE, "You have issued a $%s ticket on the %s.", number_format(amount), vehicleName);
+					format(string, sizeof(string), "[VTICKET] Officer %s has ticketed %s's %s (%d) for $%s.", GetPlayerNameEx(playerid), arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], vehicleName, CrateVehicle[veh][cvId], number_format(amount));
 					GroupLog(PlayerInfo[playerid][pMember], string);
 					SaveCrateVehicle(veh);
 				} else veh = -1;

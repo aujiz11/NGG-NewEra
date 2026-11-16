@@ -163,6 +163,7 @@ GangTag_ReadRow(row)
 
 GangTag_AdmProcess(i, Float:X, Float:Y, Float:Z, Float:RX, Float:RY, Float:RZ, const text[], fontid, color)
 {
+	new fontName[19];
 	if(i < 0 || i >= MAX_GANGTAGS || fontid < 0 || fontid >= sizeof(szFonts) || !strlen(text) || strlen(text) >= MAX_GANGTAGS_LEN) return 0;
 	new objectid = CreateDynamicObject(GANGTAGS_OBJECTID, X, Y, Z, RX, RY, RZ), label[48];
 	format(label, sizeof(label), "Gang Tag Point (ID %d)", i);
@@ -177,7 +178,8 @@ GangTag_AdmProcess(i, Float:X, Float:Y, Float:Z, Float:RX, Float:RY, Float:RZ, c
 	if(IsValidDynamic3DTextLabel(arrGangTags[i][gt_iTextID])) DestroyDynamic3DTextLabel(arrGangTags[i][gt_iTextID]);
 	arrGangTags[i][gt_iObjectID] = objectid;
 	arrGangTags[i][gt_iTextID] = textid;
-	SetDynamicObjectMaterialText(arrGangTags[i][gt_iObjectID], 0, text, OBJECT_MATERIAL_SIZE_512x512, szFonts[fontid], 1000 / strlen(text), 1, GangTag_IntColor(color), 0, 1);
+	strunpack(fontName, szFonts[fontid], sizeof(fontName));
+	SetDynamicObjectMaterialText(arrGangTags[i][gt_iObjectID], 0, text, OBJECT_MATERIAL_SIZE_512x512, fontName, 1000 / strlen(text), 1, GangTag_IntColor(color), 0, 1);
 	arrGangTags[i][gt_iFont] = fontid;
 	arrGangTags[i][gt_iColor] = color;
 	format(arrGangTags[i][gt_szText], MAX_GANGTAGS_LEN, "%s", text);
@@ -290,6 +292,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		case DIALOG_GANGTAGS_INPUT:
 		{
+			new fontName[19];
 			if(!GetPVarType(playerid, PVAR_GANGTAGID)) return 1;
 			if(GetPVarType(playerid, PVAR_GANGTAGTEXT)) return 1;
 			if(!response || !strlen(inputtext) || strlen(inputtext) >= MAX_GANGTAGS_LEN)
@@ -302,7 +305,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 			SetPVarString(playerid, PVAR_GANGTAGTEXT, inputtext);
 			szMiscArray[0] = 0;
-			for(new j; j < sizeof(szFonts); ++j) format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, szFonts[j]);
+			for(new j; j < sizeof(szFonts); ++j) {
+				strunpack(fontName, szFonts[j], sizeof(fontName));
+				format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, fontName);
+			}
 			ShowPlayerDialogEx(playerid, DIALOG_GANGTAGS_FONT, DIALOG_STYLE_LIST, "Gang Tags | Font", szMiscArray, "Select", "");
 			return 1;
 		}

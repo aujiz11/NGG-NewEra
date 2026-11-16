@@ -145,6 +145,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 		}
 		case DIALOG_FURNITURE_BUY: {
+			new furnitureCategoryName[14];
 			DeletePVar(playerid, PVAR_FURNITURE_BUYMODEL);
 			DeletePVar(playerid, "FurnitureBuyPrice");
 			DeletePVar(playerid, "FurnitureBuyRows");
@@ -166,7 +167,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!count) return SendClientMessageEx(playerid, COLOR_GRAD1, "No furniture is available in this category.");
 			SetPVarInt(playerid, "FurnitureBuyRows", count);
 			new title[48];
-			format(title, sizeof(title), "Furniture - %s", szFurnitureCategories[listitem]);
+			strunpack(furnitureCategoryName, szFurnitureCategories[listitem], sizeof(furnitureCategoryName));
+			format(title, sizeof(title), "Furniture - %s", furnitureCategoryName);
 			ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_BUYSELECT, DIALOG_STYLE_LIST, title, szMiscArray, "Buy", "Cancel");
 		}
 		case DIALOG_FURNITURE_BUYSELECT: {
@@ -951,7 +953,9 @@ FurnitureCatalog() {
 
 	szMiscArray[0] = 0;
 	for(new i; i < sizeof(szFurnitureCategories); ++i) {
-		format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, szFurnitureCategories[i]);
+		new furnitureCategoryName[14];
+		strunpack(furnitureCategoryName, szFurnitureCategories[i], sizeof(furnitureCategoryName));
+		format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, furnitureCategoryName);
 	}
 	return szMiscArray;
 }

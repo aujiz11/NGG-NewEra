@@ -46,6 +46,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 }
 
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+	new vehicleName[18], boneName[16], copToyName[24], toyName[24], legacyToyName[24], microItemName[36], restaurantItemName[13], storeItemName[19], drinkName[9];
+#if defined SHOPAUTOMATED
+	new shopVehicleName[24];
+#endif
 
 	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	if(dialogid == DIALOG_DISABLED) return ShowPlayerDialogEx(playerid, DIALOG_DISABLED, DIALOG_STYLE_MSGBOX, "Account Disabled - Visit http://www.ng-gaming.net/forums", "Your account has been disabled as it has been inactive for more than six months.\nPlease visit the forums and post an Administrative Request to begin the process to reactivate your account.", "Okay", "");
@@ -399,7 +403,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						SendClientMessageEx(playerid, COLOR_WHITE, "Your vehicle had active tickets on it. You have been charged the amount of the tickets ($%s).", number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
 					}
 
-					format(szMiscArray, sizeof(szMiscArray), "[DELETECAR] %s (IP: %s) (SQLID: %d) has deleted their %s (%d) (SQLID: %d).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerSQLId(playerid), VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], PlayerVehicleInfo[playerid][i][pvModelId], PlayerVehicleInfo[playerid][i][pvSlotId]);
+					strunpack(vehicleName, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], sizeof(vehicleName));
+					format(szMiscArray, sizeof(szMiscArray), "[DELETECAR] %s (IP: %s) (SQLID: %d) has deleted their %s (%d) (SQLID: %d).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerSQLId(playerid), vehicleName, PlayerVehicleInfo[playerid][i][pvModelId], PlayerVehicleInfo[playerid][i][pvSlotId]);
 					Log("logs/playervehicle.log", szMiscArray);
 
 					PlayerVehicleInfo[playerid][i][pvId] = 0;
@@ -449,8 +454,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					szDialogStr[256];
 
 				SetPVarInt(playerid, "vDel", listitem);
-				if(PlayerVehicleInfo[playerid][listitem][pvTicket] != 0) format(szDialogStr, sizeof(szDialogStr), "{FFFFFF}Your {FF0000}%s{FFFFFF} will be {FF0000}permanently deleted{FFFFFF}.\n\n{FF0000}This vehicle currently has active tickets.\n{FFFFFF}You will be fined {FF0000}$%s{FFFFFF} upon vehicle deletion.\n\nYou may now confirm or cancel the deletion.", VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400], number_format(PlayerVehicleInfo[playerid][listitem][pvTicket]));
-				else format(szDialogStr, sizeof(szDialogStr), "{FFFFFF}Your {FF0000}%s{FFFFFF} will be {FF0000}permanently deleted{FFFFFF}.\n\nYou may now confirm or cancel the deletion.", VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400]);
+				if(PlayerVehicleInfo[playerid][listitem][pvTicket] != 0) {
+					strunpack(vehicleName, VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400], sizeof(vehicleName));
+					format(szDialogStr, sizeof(szDialogStr), "{FFFFFF}Your {FF0000}%s{FFFFFF} will be {FF0000}permanently deleted{FFFFFF}.\n\n{FF0000}This vehicle currently has active tickets.\n{FFFFFF}You will be fined {FF0000}$%s{FFFFFF} upon vehicle deletion.\n\nYou may now confirm or cancel the deletion.", vehicleName, number_format(PlayerVehicleInfo[playerid][listitem][pvTicket]));
+				}
+				else {
+					strunpack(vehicleName, VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400], sizeof(vehicleName));
+					format(szDialogStr, sizeof(szDialogStr), "{FFFFFF}Your {FF0000}%s{FFFFFF} will be {FF0000}permanently deleted{FFFFFF}.\n\nYou may now confirm or cancel the deletion.", vehicleName);
+				}
 				return ShowPlayerDialogEx(playerid, DIALOG_DELETECAR, DIALOG_STYLE_MSGBOX, "Delete Vehicle", szDialogStr, "Delete", "Cancel");
 			}
 			else return DeletePVar(playerid, "vDel");
@@ -822,7 +833,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new carstring[5012];
 					for(new x;x<sizeof(VehicleNameShop);x++)
 					{
-						format(carstring, sizeof(carstring), "%s%d - %s\n", carstring, VehicleNameShop[x][svehicleid], VehicleNameShop[x][svehiclename]);
+						strunpack(shopVehicleName, VehicleNameShop[x][svehiclename], sizeof(shopVehicleName));
+						format(carstring, sizeof(carstring), "%s%d - %s\n", carstring, VehicleNameShop[x][svehicleid], shopVehicleName);
 					}
 					ShowPlayerDialogEx(playerid, DIALOG_SHOPDELIVERCAR, DIALOG_STYLE_LIST, "Shop Car Delivery", carstring, "Select Car", "Cancel");
 				}
@@ -837,7 +849,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new dialogstring[256], name[64];
 			GetPVarString(playerid, "DShop_name", name, sizeof(name));
 			SetPVarInt(playerid, "DShop_listitem", listitem);
-			format(dialogstring, sizeof(dialogstring), "You are about to redeem: %s\nOrder ID: %d\nWith vehicle: %s (ID %d)\n\nAre you sure?", name, GetPVarInt(playerid, "DShop_order_id"), VehicleNameShop[listitem][svehicleid], VehicleNameShop[listitem][svehiclename]);
+			strunpack(shopVehicleName, VehicleNameShop[listitem][svehiclename], sizeof(shopVehicleName));
+			format(dialogstring, sizeof(dialogstring), "You are about to redeem: %s\nOrder ID: %d\nWith vehicle: %s (ID %d)\n\nAre you sure?", name, GetPVarInt(playerid, "DShop_order_id"), VehicleNameShop[listitem][svehicleid], shopVehicleName);
 			ShowPlayerDialogEx(playerid, DIALOG_SHOPDELIVERCAR2, DIALOG_STYLE_MSGBOX, "Shop Car Delivery", dialogstring, "Reedem", "Cancel");
 		}
 	}
@@ -977,14 +990,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
 				{
-					format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+					strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 				}
 			}
 			if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
 			{
 				format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 			}
-			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
+			strunpack(boneName, HoldingBones[PlayerToyInfo[playerid][x][ptBone]], sizeof(boneName));
+			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x, name, boneName);
 		}
 		ShowPlayerDialogEx(playerid, BUYTOYSCOP2, DIALOG_STYLE_LIST, "Select a Slot", szMiscArray, "Select", "Cancel");
 	}
@@ -1007,7 +1021,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		new stringg[1024];
 		for(new x;x<sizeof(HoldingObjectsCop);x++)
 		{
-			format(stringg, sizeof(stringg), "%s%s ($%d)\n", stringg, HoldingObjectsCop[x][holdingmodelname], HoldingObjectsCop[x][holdingprice]);
+			strunpack(copToyName, HoldingObjectsCop[x][holdingmodelname], sizeof(copToyName));
+			format(stringg, sizeof(stringg), "%s%s ($%d)\n", stringg, copToyName, HoldingObjectsCop[x][holdingprice]);
 		}
 		ShowPlayerDialogEx(playerid, BUYTOYSCOP3, DIALOG_STYLE_LIST, "Select an Item", stringg, "Buy", "Cancel");
 	}
@@ -1100,7 +1115,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			g_mysql_NewToy(playerid, GetPVarInt(playerid, "ToySlot"));
 
-			format(string, sizeof(string), "* You have purchased %s for $%d (Slot: %d)", HoldingObjectsCop[listitem][holdingmodelname], HoldingObjectsCop[listitem][holdingprice], GetPVarInt(playerid, "ToySlot"));
+			strunpack(copToyName, HoldingObjectsCop[listitem][holdingmodelname], sizeof(copToyName));
+			format(string, sizeof(string), "* You have purchased %s for $%d (Slot: %d)", copToyName, HoldingObjectsCop[listitem][holdingprice], GetPVarInt(playerid, "ToySlot"));
 			SendClientMessageEx(playerid, COLOR_RED, string);
 			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Use /toys to wear/edit this");
 		}
@@ -1117,14 +1133,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
 				{
-					format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+					strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 				}
 			}
 			if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
 			{
 				format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 			}
-			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
+			strunpack(boneName, HoldingBones[PlayerToyInfo[playerid][x][ptBone]], sizeof(boneName));
+			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x, name, boneName);
 		}
 		ShowPlayerDialogEx(playerid, BUYTOYSGOLD2, DIALOG_STYLE_LIST, "Select a Slot", szMiscArray, "Select", "Cancel");
 	}
@@ -1141,7 +1158,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 		for(new x;x<sizeof(HoldingObjectsAll);x++)
 		{
-			format(szMiscArray, sizeof(szMiscArray), "%s%s ($%d)\n", szMiscArray, HoldingObjectsAll[x][holdingmodelname], HoldingObjectsAll[x][holdingprice]);
+			strunpack(toyName, HoldingObjectsAll[x][holdingmodelname], sizeof(toyName));
+			format(szMiscArray, sizeof(szMiscArray), "%s%s ($%d)\n", szMiscArray, toyName, HoldingObjectsAll[x][holdingprice]);
 		}
 		ShowPlayerDialogEx(playerid, BUYTOYSGOLD3, DIALOG_STYLE_LIST, "Select an Item", szMiscArray, "Buy", "Cancel");
 	}
@@ -1236,7 +1254,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			g_mysql_NewToy(playerid, GetPVarInt(playerid, "ToySlot"));
 
-			format(string, sizeof(string), "* You have purchased %s for $%d (Slot: %d)", HoldingObjectsAll[listitem][holdingmodelname], HoldingObjectsAll[listitem][holdingprice], GetPVarInt(playerid, "ToySlot"));
+			strunpack(toyName, HoldingObjectsAll[listitem][holdingmodelname], sizeof(toyName));
+			format(string, sizeof(string), "* You have purchased %s for $%d (Slot: %d)", toyName, HoldingObjectsAll[listitem][holdingprice], GetPVarInt(playerid, "ToySlot"));
 			SendClientMessageEx(playerid, COLOR_RED, string);
 			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Use /toys to wear/edit this");
 
@@ -1255,14 +1274,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
 				{
-					format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+					strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 				}
 			}
 			if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
 			{
 				format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 			}
-			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
+			strunpack(boneName, HoldingBones[PlayerToyInfo[playerid][x][ptBone]], sizeof(boneName));
+			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x, name, boneName);
 		}
 		ShowPlayerDialogEx(playerid, BUYTOYS2, DIALOG_STYLE_LIST, "Select a Slot", szMiscArray, "Select", "Cancel");
 	}
@@ -1284,7 +1304,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		new stringg[5000];
 		for(new x;x<sizeof(HoldingObjects);x++)
 		{
-			format(stringg, sizeof(stringg), "%s%s ($%d)\n", stringg, HoldingObjects[x][holdingmodelname], HoldingObjects[x][holdingprice]);
+			strunpack(legacyToyName, HoldingObjects[x][holdingmodelname], sizeof(legacyToyName));
+			format(stringg, sizeof(stringg), "%s%s ($%d)\n", stringg, legacyToyName, HoldingObjects[x][holdingprice]);
 		}
 		ShowPlayerDialogEx(playerid, BUYTOYS3, DIALOG_STYLE_LIST, "Select an Item", stringg, "Buy", "Cancel");
 	}
@@ -1377,7 +1398,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			g_mysql_NewToy(playerid, GetPVarInt(playerid, "ToySlot"));
 
-			format(string, sizeof(string), "* You have purchased %s for $%d (Slot: %d)", HoldingObjects[listitem][holdingmodelname], HoldingObjects[listitem][holdingprice], GetPVarInt(playerid, "ToySlot"));
+			strunpack(legacyToyName, HoldingObjects[listitem][holdingmodelname], sizeof(legacyToyName));
+			format(string, sizeof(string), "* You have purchased %s for $%d (Slot: %d)", legacyToyName, HoldingObjects[listitem][holdingprice], GetPVarInt(playerid, "ToySlot"));
 			SendClientMessageEx(playerid, COLOR_RED, string);
 			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Use /toys to wear/edit this");
 		}
@@ -1395,14 +1417,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
 				{
-					format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+					strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 				}
 			}
 			if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
 			{
 				format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 			}
-			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x+1, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]); // x+1 Since the toys list starts of from 1( As players see it )
+			strunpack(boneName, HoldingBones[PlayerToyInfo[playerid][x][ptBone]], sizeof(boneName));
+			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x+1, name, boneName); // x+1 Since the toys list starts of from 1( As players see it )
 		}
 		format(szMiscArray, sizeof(szMiscArray), "%s\n{40FFFF}Additional Toy Slot {FFD700}(Credits: %s){A9C4E4}", szMiscArray, number_format(ShopItems[28][sItemPrice]));
 		switch(listitem) {
@@ -1482,14 +1505,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
 					{
-						format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+						strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 					}
 				}
 				if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
 				{
 					format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 				}
-				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x+1, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]); // x+1 since toys list starts off from 1 (From players view)
+				strunpack(boneName, HoldingBones[PlayerToyInfo[playerid][x][ptBone]], sizeof(boneName));
+				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x+1, name, boneName); // x+1 since toys list starts off from 1 (From players view)
 			}
 			format(szMiscArray, sizeof(szMiscArray), "%s\n{40FFFF}Additional Toy Slot {FFD700}(Credits: %s){A9C4E4}", szMiscArray, number_format(ShopItems[28][sItemPrice]));
 			ShowPlayerDialogEx(playerid, EDITTOYS, DIALOG_STYLE_LIST, "Select a Toy", szMiscArray, "Select", "Cancel");
@@ -1560,7 +1584,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(HoldingObjectsAll[i][holdingmodelid] == toyid)
 					{
-						format(name, sizeof(name), "(%s)", HoldingObjectsAll[i][holdingmodelname]);
+						strunpack(toyName, HoldingObjectsAll[i][holdingmodelname], sizeof(toyName));
+						format(name, sizeof(name), "(%s)", toyName);
 					}
 				}
 				if(PlayerToyInfo[playerid][listitem][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
@@ -1640,10 +1665,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][listitem][ptModelID])
 					{
-						format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+						strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 					}
 				}
-				format(string, sizeof(string), "Successfully dettached %s (Bone: %s) (Slot: %d)", name, HoldingBones[PlayerToyInfo[playerid][listitem][ptBone]], listitem);
+				strunpack(boneName, HoldingBones[PlayerToyInfo[playerid][listitem][ptBone]], sizeof(boneName));
+				format(string, sizeof(string), "Successfully dettached %s (Bone: %s) (Slot: %d)", name, boneName, listitem);
 				SendClientMessageEx(playerid, COLOR_RED, string);
 				RemovePlayerAttachedObject(playerid, toys);
 				for(new i; i < 10; i++)
@@ -2455,7 +2481,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					PlayerVehicleInfo[playerid][listitem][pvId] = INVALID_PLAYER_VEHICLE_ID;
 					g_mysql_SaveVehicle(playerid, listitem);
 
-					SendClientMessageEx(playerid, COLOR_WHITE, "You have stored your %s. The vehicle has been despawned.", VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400]);
+					strunpack(vehicleName, VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400], sizeof(vehicleName));
+					SendClientMessageEx(playerid, COLOR_WHITE, "You have stored your %s. The vehicle has been despawned.", vehicleName);
 					CheckPlayerVehiclesForDesync(playerid);
 				}
 			}
@@ -2517,7 +2544,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				LoadPlayerVehicleMods(playerid, listitem);
 				g_mysql_SaveVehicle(playerid, listitem);
 
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have taken your %s out of storage.", VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400]);
+				strunpack(vehicleName, VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400], sizeof(vehicleName));
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have taken your %s out of storage.", vehicleName);
 				CheckPlayerVehiclesForDesync(playerid);
 				Vehicle_ResetData(iVeh);
 				VehicleFuel[iVeh] = PlayerVehicleInfo[playerid][listitem][pvFuel];
@@ -2631,15 +2659,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						{
 							Get3DZone(PlayerVehicleInfo[playerid][i][pvPosX], PlayerVehicleInfo[playerid][i][pvPosY], PlayerVehicleInfo[playerid][i][pvPosZ], szCarLocation, sizeof(szCarLocation));
 							if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
-								format(vstring, sizeof(vstring), "%s\n%s (impounded) | Location: DMV", vstring, VehicleName[iModelID]);
+								strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
+								format(vstring, sizeof(vstring), "%s\n%s (impounded) | Location: DMV", vstring, vehicleName);
 							}
 							else if(PlayerVehicleInfo[playerid][i][pvDisabled]) {
-								format(vstring, sizeof(vstring), "%s\n%s (disabled) | Location: Unknown", vstring, VehicleName[iModelID]);
+								strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
+								format(vstring, sizeof(vstring), "%s\n%s (disabled) | Location: Unknown", vstring, vehicleName);
 							}
 							else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
-								format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, VehicleName[iModelID]);
+								strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
+								format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, vehicleName);
 							}
-							else format(vstring, sizeof(vstring), "%s\n%s | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
+							else {
+								strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
+								format(vstring, sizeof(vstring), "%s\n%s | Location: %s", vstring, vehicleName, szCarLocation);
+							}
 						}
 						else strcat(vstring, "\nEmpty");
 					}
@@ -2704,7 +2738,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						DynVehicleObjInfo[carid][i][gv_iAttachedObjectID] = INVALID_OBJECT_ID;
 					}
 				}
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have stored your dynamic group vehicle (%s)", VehicleName[DynVehicleInfo[carid][gv_iModel] - 400]);
+				strunpack(vehicleName, VehicleName[DynVehicleInfo[carid][gv_iModel] - 400], sizeof(vehicleName));
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have stored your dynamic group vehicle (%s)", vehicleName);
 			}
 			else
 				return SendClientMessageEx(playerid, COLOR_GRAD1, "This vehicle is currently occupied.");
@@ -2713,7 +2748,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		else {
 			DynVehicleInfo[carid][gv_iDisabled] = 0;
 			DynVeh_Spawn(carid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have spawned your dynamic group vehicle (%s)", VehicleName[DynVehicleInfo[carid][gv_iModel] - 400]);
+			strunpack(vehicleName, VehicleName[DynVehicleInfo[carid][gv_iModel] - 400], sizeof(vehicleName));
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have spawned your dynamic group vehicle (%s)", vehicleName);
 		}
 	}
 	if(dialogid == DV_TRACKCAR && response) {
@@ -3781,7 +3817,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		if(GetPVarInt(playerid, "m_Item") == 1)
 		{
 			if(GetJobLevel(playerid, GetPVarInt(playerid, "jobSelection")) == 5) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your skill level for this job is already at its highest.");
-			format(string, sizeof(string), "Item: %s - %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", mItemName[1], GetJobName(GetPVarInt(playerid, "jobSelection")), number_format(PlayerInfo[playerid][pCredits]), number_format(MicroItems[1]), number_format(PlayerInfo[playerid][pCredits]-MicroItems[1]));
+			strunpack(microItemName, mItemName[1], sizeof(microItemName));
+			format(string, sizeof(string), "Item: %s - %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", microItemName, GetJobName(GetPVarInt(playerid, "jobSelection")), number_format(PlayerInfo[playerid][pCredits]), number_format(MicroItems[1]), number_format(PlayerInfo[playerid][pCredits]-MicroItems[1]));
 			return ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP3, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
 		}
 		if(GetPVarType(playerid, "m_Item") && GetPVarInt(playerid, "m_Item") == 0) strcat(string, "Micro Shop: Change a Job"); else strcat(string, "Locker: Job Center");
@@ -3805,7 +3842,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		if(GetPVarType(playerid, "m_Item") && GetPVarInt(playerid, "m_Item") == 0)
 		{
 			SetPVarInt(playerid, "m_Response", listitem);
-			format(string, sizeof(string), "Item: %s - %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", mItemName[0], GetJobName(GetPVarInt(playerid, "jobSelection")), number_format(PlayerInfo[playerid][pCredits]), number_format(MicroItems[0]), number_format(PlayerInfo[playerid][pCredits]-MicroItems[0]));
+			strunpack(microItemName, mItemName[0], sizeof(microItemName));
+			format(string, sizeof(string), "Item: %s - %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", microItemName, GetJobName(GetPVarInt(playerid, "jobSelection")), number_format(PlayerInfo[playerid][pCredits]), number_format(MicroItems[0]), number_format(PlayerInfo[playerid][pCredits]-MicroItems[0]));
 			return ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP3, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
 		}
 		switch(listitem)
@@ -3896,20 +3934,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][listitem]), number_format(cost));
 				}
-				format(string,sizeof(string),"%s(%d) (IP: %s) has bought a %s in %s (%d) for $%d.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid),RestaurantItems[iItem], Businesses[iBusiness][bName], iBusiness, cost);
+				strunpack(restaurantItemName, RestaurantItems[iItem], sizeof(restaurantItemName));
+				format(string,sizeof(string),"%s(%d) (IP: %s) has bought a %s in %s (%d) for $%d.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid),restaurantItemName, Businesses[iBusiness][bName], iBusiness, cost);
 				Log("logs/business.log", string);
-				format(string,sizeof(string),"* You have purchased a %s from %s for $%d.",RestaurantItems[iItem],Businesses[iBusiness][bName], cost);
+				format(string,sizeof(string),"* You have purchased a %s from %s for $%d.",restaurantItemName,Businesses[iBusiness][bName], cost);
 				SendClientMessage(playerid, COLOR_GRAD2, string);
 
-				printf("%s\n%i", RestaurantItems[iItem], iItem);
-				if (strcmp("Starter Meal", RestaurantItems[iItem]) == 0) // starter
+				printf("%s\n%i", restaurantItemName, iItem);
+				if (strcmp("Starter Meal", restaurantItemName) == 0) // starter
 				{
 					if (PlayerInfo[playerid][pFitness] >= 3)
 						PlayerInfo[playerid][pFitness] -= 3;
 					else
 						PlayerInfo[playerid][pFitness] = 0;
 				}
-				if (strcmp("Full Meal", RestaurantItems[iItem]) == 0) // full meal
+				strunpack(restaurantItemName, RestaurantItems[iItem], sizeof(restaurantItemName));
+				if (strcmp("Full Meal", restaurantItemName) == 0) // full meal
 				{
 					switch(PlayerInfo[playerid][pBackpack]) {
 						case 1: if(PlayerInfo[playerid][pBItems][0] < 1 && PlayerInfo[playerid][pBEquipped]) {
@@ -3952,7 +3992,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			Businesses[business][bTotalSales]++;
 			Businesses[business][bTotalProfits] += Businesses[business][bItemPrices][listitem];
 
-			SendClientMessageEx(playerid, COLOR_GRAD4, "You have purchased a '%s'.", RestaurantItems[listitem]);
+			strunpack(restaurantItemName, RestaurantItems[listitem], sizeof(restaurantItemName));
+			SendClientMessageEx(playerid, COLOR_GRAD4, "You have purchased a '%s'.", restaurantItemName);
 		}
 
 		return 1;
@@ -4118,19 +4159,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iTargetID = GetPVarInt(playerid, "vRel");
 
 			if(PlayerVehicleInfo[iTargetID][listitem][pvTicket]) {
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You have paid the $%s ticket on %s's %s.", number_format(PlayerVehicleInfo[iTargetID][listitem][pvTicket]), GetPlayerNameEx(iTargetID), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
+				strunpack(vehicleName, VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400], sizeof(vehicleName));
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have paid the $%s ticket on %s's %s.", number_format(PlayerVehicleInfo[iTargetID][listitem][pvTicket]), GetPlayerNameEx(iTargetID), vehicleName);
 
-				SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "%s has paid all tickets on your %s (%i).", GetPlayerNameEx(playerid), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400], PlayerVehicleInfo[iTargetID][listitem][pvTicket]);
+				SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "%s has paid all tickets on your %s (%i).", GetPlayerNameEx(playerid), vehicleName, PlayerVehicleInfo[iTargetID][listitem][pvTicket]);
 				PlayerVehicleInfo[iTargetID][listitem][pvTicket] = 0;
 				g_mysql_SaveVehicle(iTargetID, listitem);
 			}
 			else if(PlayerVehicleInfo[iTargetID][listitem][pvImpounded])
 			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have released %s's %s.", GetPlayerNameEx(iTargetID), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
+				strunpack(vehicleName, VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400], sizeof(vehicleName));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have released %s's %s.", GetPlayerNameEx(iTargetID), vehicleName);
 
-				SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "%s has released your %s from the impound. (/vstorage to spawn it)", GetPlayerNameEx(playerid), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
+				SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "%s has released your %s from the impound. (/vstorage to spawn it)", GetPlayerNameEx(playerid), vehicleName);
 
-				format(szMessage, sizeof(szMessage), "HQ: %s has released %s's %s from the impound.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
+				format(szMessage, sizeof(szMessage), "HQ: %s has released %s's %s from the impound.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), vehicleName);
 				SendGroupMessage(GROUP_TYPE_LEA, RADIO, szMessage);
 				SendGroupMessage(GROUP_TYPE_TOWING, RADIO, szMessage);
 
@@ -4182,7 +4225,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 				}
 				Misc_Save();
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You have paid the $%s ticket on your %s.", number_format(PlayerVehicleInfo[playerid][listitem][pvTicket]), VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400]);
+				strunpack(vehicleName, VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400], sizeof(vehicleName));
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have paid the $%s ticket on your %s.", number_format(PlayerVehicleInfo[playerid][listitem][pvTicket]), vehicleName);
 				PlayerVehicleInfo[playerid][listitem][pvTicket] = 0;
 				g_mysql_SaveVehicle(playerid, listitem);
 			}
@@ -4196,7 +4240,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 
 
-				format(szMessage, sizeof(szMessage), "You have released your %s for $%i.", VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400], iCost);
+				strunpack(vehicleName, VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400], sizeof(vehicleName));
+				format(szMessage, sizeof(szMessage), "You have released your %s for $%i.", vehicleName, iCost);
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, szMessage);
 				GivePlayerCash(playerid, -iCost);
 				Tax += iCost;
@@ -6200,7 +6245,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new stringg[1024];
 			for(new x;x<sizeof(HoldingObjectsShop);x++)
 			{
-				format(stringg, sizeof(stringg), "%s%s\n", stringg, HoldingObjectsShop[x][holdingmodelname]);
+				new shopToyName[24];
+				strunpack(shopToyName, HoldingObjectsShop[x][holdingmodelname], sizeof(shopToyName));
+				format(stringg, sizeof(stringg), "%s%s\n", stringg, shopToyName);
 			}
 			ShowPlayerDialogEx(playerid, SHOPOBJECT_OBJECTID, DIALOG_STYLE_LIST, "Shop Objects - Object ID", stringg, "Select", "Cancel");
 		}
@@ -6228,11 +6275,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[giveplayerid][x][ptModelID])
 					{
-						format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+						strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 					}
 				}
 
-				format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[giveplayerid][x][ptBone]]);
+				strunpack(boneName, HoldingBones[PlayerToyInfo[giveplayerid][x][ptBone]], sizeof(boneName));
+				format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, boneName);
 			}
 			ShowPlayerDialogEx(playerid, SHOPOBJECT_TOYSLOT, DIALOG_STYLE_LIST, "Shop Objects - Select a Slot", stringg, "Select", "Cancel");
 		}
@@ -6488,17 +6536,26 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						{
 							Get3DZone(PlayerVehicleInfo[playerid][i][pvPosX], PlayerVehicleInfo[playerid][i][pvPosY], PlayerVehicleInfo[playerid][i][pvPosZ], szCarLocation, sizeof(szCarLocation));
 							if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
-								format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded) | Location: DMV", szMiscArray, VehicleName[iModelID]);
+								strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
+								format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded) | Location: DMV", szMiscArray, vehicleName);
 							}
 							else if(PlayerVehicleInfo[playerid][i][pvDisabled]) {
-								format(szMiscArray, sizeof(szMiscArray), "%s\n%s (disabled) | Location: Unknown", szMiscArray, VehicleName[iModelID]);
+								strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
+								format(szMiscArray, sizeof(szMiscArray), "%s\n%s (disabled) | Location: Unknown", szMiscArray, vehicleName);
 							}
 							else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
-								format(szMiscArray, sizeof(szMiscArray), "%s\n%s (stored) | Location: %s", szMiscArray, VehicleName[iModelID], szCarLocation);
+								strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
+								format(szMiscArray, sizeof(szMiscArray), "%s\n%s (stored) | Location: %s", szMiscArray, vehicleName, szCarLocation);
 							}
 							else {
-								if(PlayerVehicleInfo[playerid][i][pvAlarmTriggered]) format(szMiscArray, sizeof(szMiscArray), "%s\n%s (alarm triggered) | Location: %s", szMiscArray, VehicleName[iModelID], szCarLocation);
-								else format(szMiscArray, sizeof(szMiscArray), "%s\n%s | Location: %s", szMiscArray, VehicleName[iModelID], szCarLocation);
+								if(PlayerVehicleInfo[playerid][i][pvAlarmTriggered]) {
+									strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
+									format(szMiscArray, sizeof(szMiscArray), "%s\n%s (alarm triggered) | Location: %s", szMiscArray, vehicleName, szCarLocation);
+								}
+								else {
+									strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
+									format(szMiscArray, sizeof(szMiscArray), "%s\n%s | Location: %s", szMiscArray, vehicleName, szCarLocation);
+								}
 							}
 						}
 					}
@@ -6646,7 +6703,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new crimeid = -1;
 			for(new i; i < sizeof(SuspectCrimes); i++)
 			{
-				if(strcmp(inputtext, SuspectCrimes[i]) == 0)
+				new crimeName[41];
+				strunpack(crimeName, SuspectCrimes[i], sizeof(crimeName));
+				if(strcmp(inputtext, crimeName) == 0)
 				{
 					crimeid = i;
 					break;
@@ -7798,7 +7857,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			DeletePVar(playerid, "EditingBusiness");
 		}
 		else {
-			format(string, sizeof(string), "{FFFFFF}Enter the new sale price for %s\n(Items with the price of $0 will not be for sale)", StoreItems[listitem]);
+			strunpack(storeItemName, StoreItems[listitem], sizeof(storeItemName));
+			format(string, sizeof(string), "{FFFFFF}Enter the new sale price for %s\n(Items with the price of $0 will not be for sale)", storeItemName);
 			ShowPlayerDialogEx(playerid, DIALOG_STOREITEMPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
 			SetPVarInt(playerid, "EditingStoreItem", listitem);
 		}
@@ -7811,7 +7871,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			DeletePVar(playerid, "EditingBusiness");
 		}
 		else {
-			format(string, sizeof(string), "{FFFFFF}Enter the new sale price for %s\n(Items with the price of $0 will not be for sale)", Drinks[listitem]);
+			strunpack(drinkName, Drinks[listitem], sizeof(drinkName));
+			format(string, sizeof(string), "{FFFFFF}Enter the new sale price for %s\n(Items with the price of $0 will not be for sale)", drinkName);
 			ShowPlayerDialogEx(playerid, DIALOG_BARPRICE2, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
 			SetPVarInt(playerid, "EditingStoreItem", listitem);
 		}
@@ -7823,7 +7884,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			DeletePVar(playerid, "EditingBusiness");
 		}
 		else {
-			format(string, sizeof(string), "{FFFFFF}Enter the new sale price for %s\n(Items with the price of $0 will not be for sale)", Drinks[listitem]);
+			strunpack(drinkName, Drinks[listitem], sizeof(drinkName));
+			format(string, sizeof(string), "{FFFFFF}Enter the new sale price for %s\n(Items with the price of $0 will not be for sale)", drinkName);
 			ShowPlayerDialogEx(playerid, DIALOG_SEXSHOP2, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
 			SetPVarInt(playerid, "EditingStoreItem", listitem);
 		}
@@ -7837,7 +7899,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		else
 		{
-			format(string, sizeof(string), "{FFFFFF}Enter the new sale price for %s\n(Items with the price of $0 will not be for sale)", RestaurantItems[listitem]);
+			strunpack(restaurantItemName, RestaurantItems[listitem], sizeof(restaurantItemName));
+			format(string, sizeof(string), "{FFFFFF}Enter the new sale price for %s\n(Items with the price of $0 will not be for sale)", restaurantItemName);
 			ShowPlayerDialogEx(playerid, DIALOG_RESTAURANT2, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
 			SetPVarInt(playerid, "EditingStoreItem", listitem);
 		}
@@ -7854,21 +7917,28 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		new iBusiness = PlayerInfo[playerid][pBusiness];
 
 		if (response) {
+			new sexItemName[15];
 			new iPrice = strval(inputtext), item = GetPVarInt(playerid, "EditingStoreItem");
 
 			if (iPrice < 0 || iPrice > 500000) {
-				format(string, sizeof(string), "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for %s", Drinks[item]);
+				strunpack(drinkName, Drinks[item], sizeof(drinkName));
+				format(string, sizeof(string), "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for %s", drinkName);
 				ShowPlayerDialogEx(playerid, DIALOG_STOREITEMPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
 				return 1;
 			}
 
-			format(string,sizeof(string), "%s price has been set to $%s!", SexItems[item], number_format(iPrice));
+			strunpack(sexItemName, SexItems[item], sizeof(sexItemName));
+			format(string,sizeof(string), "%s price has been set to $%s!", sexItemName, number_format(iPrice));
 			Businesses[iBusiness][bItemPrices][item] = iPrice;
 			SaveBusiness(iBusiness);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "%s %s(%d) (IP: %s) has set the %s price to %s in %s ($%d)", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), SexItems[item], number_format(iPrice), Businesses[iBusiness][bName], iBusiness);
+			strunpack(sexItemName, SexItems[item], sizeof(sexItemName));
+			format(string, sizeof(string), "%s %s(%d) (IP: %s) has set the %s price to %s in %s ($%d)", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), sexItemName, number_format(iPrice), Businesses[iBusiness][bName], iBusiness);
 			new szDialog[302];
-			for (new i = 0; i <= 13; i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, SexItems[i], number_format(Businesses[iBusiness][bItemPrices][i]));
+			for (new i = 0; i < sizeof(SexItems); i++) {
+				strunpack(sexItemName, SexItems[i], sizeof(sexItemName));
+				format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, sexItemName, number_format(Businesses[iBusiness][bItemPrices][i]));
+			}
 			ShowPlayerDialogEx(playerid, DIALOG_BARPRICE, DIALOG_STYLE_LIST, "Edit Business Prices", szDialog, "Okay", "Cancel");
 			Log("logs/business.log", string);
 		}
@@ -7892,18 +7962,24 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if (price < 0 || price > 500000)
 			{
-				format(string, sizeof(string), "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for %s", RestaurantItems[item]);
+				strunpack(restaurantItemName, RestaurantItems[item], sizeof(restaurantItemName));
+				format(string, sizeof(string), "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for %s", restaurantItemName);
 				ShowPlayerDialogEx(playerid, DIALOG_RESTAURANT2, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
 				return 1;
 			}
 
-			format(string,sizeof(string), "%s price has been set to $%s!", RestaurantItems[item], number_format(price));
+			strunpack(restaurantItemName, RestaurantItems[item], sizeof(restaurantItemName));
+			format(string,sizeof(string), "%s price has been set to $%s!", restaurantItemName, number_format(price));
 			Businesses[business][bItemPrices][item] = price;
 			SaveBusiness(business);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "%s %s(%d) (IP: %s) has set the %s price to %s in %s ($%d)", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), RestaurantItems[item], number_format(price), Businesses[business][bName], business);
+			strunpack(restaurantItemName, RestaurantItems[item], sizeof(restaurantItemName));
+			format(string, sizeof(string), "%s %s(%d) (IP: %s) has set the %s price to %s in %s ($%d)", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), restaurantItemName, number_format(price), Businesses[business][bName], business);
 			new szDialog[302];
-			for (new i = 0; i <= 13; i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, RestaurantItems[i], number_format(Businesses[business][bItemPrices][i]));
+			for (new i = 0; i < sizeof(RestaurantItems); i++) {
+				strunpack(restaurantItemName, RestaurantItems[i], sizeof(restaurantItemName));
+				format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, restaurantItemName, number_format(Businesses[business][bItemPrices][i]));
+			}
 			ShowPlayerDialogEx(playerid, DIALOG_RESTAURANT, DIALOG_STYLE_LIST, "Edit Business Prices", szDialog, "Okay", "Cancel");
 			Log("logs/business.log", string);
 		}
@@ -7926,18 +8002,24 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new iPrice = strval(inputtext), item = GetPVarInt(playerid, "EditingStoreItem");
 
 			if (iPrice < 0 || iPrice > 500000) {
-				format(string, sizeof(string), "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for %s", Drinks[item]);
+				strunpack(drinkName, Drinks[item], sizeof(drinkName));
+				format(string, sizeof(string), "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for %s", drinkName);
 				ShowPlayerDialogEx(playerid, DIALOG_STOREITEMPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
 				return 1;
 			}
 
-			format(string,sizeof(string), "%s price has been set to $%s!", Drinks[item], number_format(iPrice));
+			strunpack(drinkName, Drinks[item], sizeof(drinkName));
+			format(string,sizeof(string), "%s price has been set to $%s!", drinkName, number_format(iPrice));
 			Businesses[iBusiness][bItemPrices][item] = iPrice;
 			SaveBusiness(iBusiness);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "%s %s(%d) (IP: %s) has set the %s price to $%s in %s (%d)", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), Drinks[item], number_format(iPrice), Businesses[iBusiness][bName], iBusiness);
+			strunpack(drinkName, Drinks[item], sizeof(drinkName));
+			format(string, sizeof(string), "%s %s(%d) (IP: %s) has set the %s price to $%s in %s (%d)", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), drinkName, number_format(iPrice), Businesses[iBusiness][bName], iBusiness);
 			new szDialog[302];
-			for (new i = 0; i <= 13; i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, Drinks[i], number_format(Businesses[iBusiness][bItemPrices][i]));
+			for (new i = 0; i < sizeof(Drinks); i++) {
+				strunpack(drinkName, Drinks[i], sizeof(drinkName));
+				format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, drinkName, number_format(Businesses[iBusiness][bItemPrices][i]));
+			}
 			ShowPlayerDialogEx(playerid, DIALOG_BARPRICE, DIALOG_STYLE_LIST, "Edit Business Prices", szDialog, "Okay", "Cancel");
 			Log("logs/business.log", string);
 		}
@@ -7959,18 +8041,24 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new iPrice = strval(inputtext), item = GetPVarInt(playerid, "EditingStoreItem");
 
 			if (iPrice < 0 || iPrice > 500000) {
-				format(string, sizeof(string), "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for %s", StoreItems[item]);
+				strunpack(storeItemName, StoreItems[item], sizeof(storeItemName));
+				format(string, sizeof(string), "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for %s", storeItemName);
 				ShowPlayerDialogEx(playerid, DIALOG_STOREITEMPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "OK", "Cancel");
 				return 1;
 			}
 
-			format(string,sizeof(string), "%s price has been set to $%s!", StoreItems[item], number_format(iPrice));
+			strunpack(storeItemName, StoreItems[item], sizeof(storeItemName));
+			format(string,sizeof(string), "%s price has been set to $%s!", storeItemName, number_format(iPrice));
 			Businesses[iBusiness][bItemPrices][item] = iPrice;
 			SaveBusiness(iBusiness);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "%s %s(%d) (IP: %s) has set the %s price to $%s in %s (%d)", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), StoreItems[item], number_format(iPrice), Businesses[iBusiness][bName], iBusiness);
+			strunpack(storeItemName, StoreItems[item], sizeof(storeItemName));
+			format(string, sizeof(string), "%s %s(%d) (IP: %s) has set the %s price to $%s in %s (%d)", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), storeItemName, number_format(iPrice), Businesses[iBusiness][bName], iBusiness);
 			new szDialog[912];
-			for (new i = 0; i < sizeof(StoreItems); i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s) (Cost of Good: $%s)\n", szDialog, StoreItems[i], number_format(Businesses[iBusiness][bItemPrices][i]), number_format(floatround(StoreItemCost[i][ItemValue] * BUSINESS_ITEMS_COST)));
+			for (new i = 0; i < sizeof(StoreItems); i++) {
+				strunpack(storeItemName, StoreItems[i], sizeof(storeItemName));
+				format(szDialog, sizeof(szDialog), "%s%s  ($%s) (Cost of Good: $%s)\n", szDialog, storeItemName, number_format(Businesses[iBusiness][bItemPrices][i]), number_format(floatround(StoreItemCost[i][ItemValue] * BUSINESS_ITEMS_COST)));
+			}
 			ShowPlayerDialogEx(playerid, DIALOG_STOREPRICES, DIALOG_STYLE_LIST, "Edit 24/7 Prices", szDialog, "OK", "Cancel");
 			Log("logs/business.log", string);
 		}
@@ -8031,7 +8119,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new iPrice = strval(inputtext), item = GetPVarInt(playerid, "EditingStoreItem");
 
 			if (iPrice < 0 || iPrice > 500000) {
-				format(string, sizeof(string), "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for %s", StoreItems[item]);
+				strunpack(storeItemName, StoreItems[item], sizeof(storeItemName));
+				format(string, sizeof(string), "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for %s", storeItemName);
 				ShowPlayerDialogEx(playerid, DIALOG_GUNSHOPPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "OK", "Cancel");
 				return 1;
 			}
@@ -8223,7 +8312,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new car = CreatePlayerVehicle(playerid, playervehicleid, Businesses[d][bModel][v], Businesses[d][bPurchaseX], Businesses[d][bPurchaseY], Businesses[d][bPurchaseZ], Businesses[d][bPurchaseAngle], randcolor1, randcolor2, cost, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 			PutPlayerInVehicle(playerid, car, 0);
 			SaveBusiness(d);
-			format(string, sizeof(string), "%s(%d) has purchased a %s(%d) from %s for $%s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), VehicleName[Businesses[d][bModel][v] - 400], Businesses[d][bModel][v], Businesses[d][bName], number_format(Businesses[d][bPrice][v]));
+			strunpack(vehicleName, VehicleName[Businesses[d][bModel][v] - 400], sizeof(vehicleName));
+			format(string, sizeof(string), "%s(%d) has purchased a %s(%d) from %s for $%s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), vehicleName, Businesses[d][bModel][v], Businesses[d][bName], number_format(Businesses[d][bPrice][v]));
 			Log("logs/dealership.log", string);
 		}
 		else
@@ -8969,7 +9059,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				for(new i; i < MAX_MICROITEMS; i++)
 				{
-					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (Credits: %s)", szMiscArray, mItemName[i], number_format(MicroItems[i]));
+					strunpack(microItemName, mItemName[i], sizeof(microItemName));
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (Credits: %s)", szMiscArray, microItemName, number_format(MicroItems[i]));
 				}
 				ShowPlayerDialogEx(playerid, DIALOG_EDITMICROSHOP, DIALOG_STYLE_LIST, "Edit Micro Shop Prices", szMiscArray, "Edit", "Exit");
 			}
@@ -10133,7 +10224,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			format(szQuery, sizeof(szQuery), "[RentaCar] [User: %s(%i)] [IP: %s] [Model: %d] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "VehicleID"), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[20][sItemPrice]));
 			Log("logs/credits.log", szQuery), print(szQuery);
 
-			SendClientMessageEx(playerid, COLOR_CYAN, "[Rent a Car] You have rented a %s for %s credits, the vehicle will last 3 hours.", VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[20][sItemPrice]));
+			strunpack(vehicleName, VehicleName[GetPVarInt(playerid, "VehicleID") - 400], sizeof(vehicleName));
+			SendClientMessageEx(playerid, COLOR_CYAN, "[Rent a Car] You have rented a %s for %s credits, the vehicle will last 3 hours.", vehicleName, number_format(ShopItems[20][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, "Commands Available: /park, /stoprentacar, /trackcar");
 
 			SetPVarInt(playerid, "RentedHours", 180);
@@ -10195,10 +10287,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					GetPlayerPos(playerid, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2]);
 					GetPlayerFacingAngle(playerid, arr_fPlayerPos[3]);
 
-					format(string, sizeof(string), "[CAR %i] [User: %s(%i)] [IP: %s] [Credits: %s] [Vehicle: %s] [Price: %s]", AmountSold[5], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[5][sItemPrice]));
+					strunpack(vehicleName, VehicleName[GetPVarInt(playerid, "VehicleID") - 400], sizeof(vehicleName));
+					format(string, sizeof(string), "[CAR %i] [User: %s(%i)] [IP: %s] [Credits: %s] [Vehicle: %s] [Price: %s]", AmountSold[5], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), vehicleName, number_format(ShopItems[5][sItemPrice]));
 					Log("logs/credits.log", string), print(string);
 
-					format(string, sizeof(string), "[Car Shop] You have purchased a %s for %s credits.", VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[5][sItemPrice]));
+					strunpack(vehicleName, VehicleName[GetPVarInt(playerid, "VehicleID") - 400], sizeof(vehicleName));
+					format(string, sizeof(string), "[Car Shop] You have purchased a %s for %s credits.", vehicleName, number_format(ShopItems[5][sItemPrice]));
 					SendClientMessageEx(playerid, COLOR_CYAN, string);
 					DeletePVar(playerid, "BoatShop");
 				}
@@ -10236,12 +10330,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						DeletePVar(playerid, "ShopTP");
 					}
 					createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2], arr_fPlayerPos[3], 0, 0, 2000000, 0, 0);
-					format(string, sizeof(string), "[CAR %i] [User: %s(%i)] [IP: %s] [Credits: %s] [Vehicle: %s] [Price: %s]", AmountSold[5], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[5][sItemPrice]));
+					strunpack(vehicleName, VehicleName[GetPVarInt(playerid, "VehicleID") - 400], sizeof(vehicleName));
+					format(string, sizeof(string), "[CAR %i] [User: %s(%i)] [IP: %s] [Credits: %s] [Vehicle: %s] [Price: %s]", AmountSold[5], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), vehicleName, number_format(ShopItems[5][sItemPrice]));
 					Log("logs/credits.log", string), print(string);
 					IsPlayerEntering{playerid} = true;
 					SetPlayerVirtualWorld(playerid, 0);
 					PutPlayerInVehicle(playerid, createdcar, 0);
-					format(string, sizeof(string), "[Car Shop] You have purchased a %s for %s credits.", VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[5][sItemPrice]));
+					strunpack(vehicleName, VehicleName[GetPVarInt(playerid, "VehicleID") - 400], sizeof(vehicleName));
+					format(string, sizeof(string), "[Car Shop] You have purchased a %s for %s credits.", vehicleName, number_format(ShopItems[5][sItemPrice]));
 					SendClientMessageEx(playerid, COLOR_CYAN, string);
 				}
 			}
@@ -10268,12 +10364,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				GetPlayerPos(playerid, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2]);
 				GetPlayerFacingAngle(playerid, arr_fPlayerPos[3]);
 				createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2], arr_fPlayerPos[3], 0, 0, 2000000, 0, 0);
-				format(string, sizeof(string), "[CAR %i] [User: %s(%i)] [IP: %s] [Credits: %s] [Vehicle: %s] [Price: %s]", AmountSold[5], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[5][sItemPrice]));
+				strunpack(vehicleName, VehicleName[GetPVarInt(playerid, "VehicleID") - 400], sizeof(vehicleName));
+				format(string, sizeof(string), "[CAR %i] [User: %s(%i)] [IP: %s] [Credits: %s] [Vehicle: %s] [Price: %s]", AmountSold[5], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), vehicleName, number_format(ShopItems[5][sItemPrice]));
 				Log("logs/carvoucher.log", string), print(string);
 				IsPlayerEntering{playerid} = true;
 				SetPlayerVirtualWorld(playerid, 0);
 				PutPlayerInVehicle(playerid, createdcar, 0);
-				format(string, sizeof(string), "[Car Shop] You have purchased a %s for 1 restricted car voucher.", VehicleName[GetPVarInt(playerid, "VehicleID") - 400]);
+				strunpack(vehicleName, VehicleName[GetPVarInt(playerid, "VehicleID") - 400], sizeof(vehicleName));
+				format(string, sizeof(string), "[Car Shop] You have purchased a %s for 1 restricted car voucher.", vehicleName);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
 			}
 		}
@@ -11495,11 +11593,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][z][ptModelID])
 				{
-					format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+					strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 				}
 			}
 
-			format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, z, name, HoldingBones[PlayerToyInfo[playerid][z][ptBone]]);
+			strunpack(boneName, HoldingBones[PlayerToyInfo[playerid][z][ptBone]], sizeof(boneName));
+			format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, z, name, boneName);
 		}
 		ShowPlayerDialogEx(playerid, DIALOG_SHOPBUYTOYS, DIALOG_STYLE_LIST, "Select a Slot", stringg, "Select", "Cancel");
 	}
@@ -11510,7 +11609,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(HoldingObjectsShop[i][holdingmodelid] == GetPVarInt(playerid, "ToyID"))
 			{
-				format(name, sizeof(name), "%s", HoldingObjectsShop[i][holdingmodelname]);
+				strunpack(name, HoldingObjectsShop[i][holdingmodelname], sizeof(name));
 			}
 		}
 		format(string, sizeof(string), "Item: %s\n\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", name, number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[4][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[4][sItemPrice]));
@@ -11534,7 +11633,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(HoldingObjectsShop[i][holdingmodelid] == GetPVarInt(playerid, "ToyID"))
 				{
-					format(name, sizeof(name), "%s", HoldingObjectsShop[i][holdingmodelname]);
+					strunpack(name, HoldingObjectsShop[i][holdingmodelname], sizeof(name));
 				}
 			}
 
@@ -12598,26 +12697,33 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	{
 		if(response)
 		{
+			new microItemName2[36], microItemName3[36], microItemName4[36];
 			new stringg[768];
 			if(listitem == 0)
 			{
-				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\nDouble EXP Tokens (Credits: {FFD700}%s{FFFFFF})", mItemName[0], number_format(MicroItems[0]), mItemName[1], number_format(MicroItems[1]), number_format(ShopItems[9][sItemPrice]));
+				strunpack(microItemName, mItemName[0], sizeof(microItemName));
+				strunpack(microItemName2, mItemName[1], sizeof(microItemName2));
+				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\nDouble EXP Tokens (Credits: {FFD700}%s{FFFFFF})", microItemName, number_format(MicroItems[0]), microItemName2, number_format(MicroItems[1]), number_format(ShopItems[9][sItemPrice]));
 				ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - Job & Experience", stringg, "Select", "Exit");
 			}
 			if(listitem == 1)
 			{
-				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})", mItemName[2], number_format(MicroItems[2]), mItemName[3], number_format(MicroItems[3]));
+				strunpack(microItemName, mItemName[2], sizeof(microItemName));
+				strunpack(microItemName2, mItemName[3], sizeof(microItemName2));
+				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})", microItemName, number_format(MicroItems[2]), microItemName2, number_format(MicroItems[3]));
 				ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - VIP", stringg, "Select", "Exit");
 			}
 			if(listitem == 2)
 			{
-				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})", mItemName[4], number_format(MicroItems[4]));
+				strunpack(microItemName, mItemName[4], sizeof(microItemName));
+				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})", microItemName, number_format(MicroItems[4]));
 				ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - Food", stringg, "Select", "Exit");
 			}
 			if(listitem == 3)
 			{
+				strunpack(microItemName, mItemName[6], sizeof(microItemName));
 				format(szMiscArray, sizeof(szMiscArray), "%s (Credits: {FFD700}%s{FFFFFF})\nHouse Move (Credits: {FFD700}%s{FFFFFF})\nHouse Interior Change (Credits: {FFD700}%s{FFFFFF})",
-					mItemName[6], number_format(MicroItems[6]), number_format(ShopItems[16][sItemPrice]), number_format(ShopItems[15][sItemPrice]));
+					microItemName, number_format(MicroItems[6]), number_format(ShopItems[16][sItemPrice]), number_format(ShopItems[15][sItemPrice]));
 
 				format(szMiscArray, sizeof(szMiscArray), "%s\nFurniture Slots - Bronze Pack (25 slots) (Credits: {FFD700}%s{FFFFFF})\nFurniture Slots - Silver Pack (40 slots) (Credits: {FFD700}%s{FFFFFF})\n\
 					Furniture Slots - Gold Pack (50 slots) (Credits: {FFD700}%s{FFFFFF})", szMiscArray, number_format(ShopItems[41][sItemPrice]), number_format(ShopItems[42][sItemPrice]), number_format(ShopItems[43][sItemPrice]));
@@ -12626,24 +12732,39 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			if(listitem == 4)
 			{
+				strunpack(microItemName, mItemName[7], sizeof(microItemName));
+				strunpack(microItemName2, mItemName[8], sizeof(microItemName2));
+				strunpack(microItemName3, mItemName[9], sizeof(microItemName3));
 				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\nDeluxe Car Alarm (Credits: {FFD700}%s{FFFFFF})\nAdditional Vehicle Slots (Credits: {FFD700}%s{FFFFFF})",
-				mItemName[7], number_format(MicroItems[7]), mItemName[8], number_format(MicroItems[8]), mItemName[9], number_format(MicroItems[9]), number_format(ShopItems[39][sItemPrice]), number_format(ShopItems[23][sItemPrice]));
+				microItemName, number_format(MicroItems[7]), microItemName2, number_format(MicroItems[8]), microItemName3, number_format(MicroItems[9]), number_format(ShopItems[39][sItemPrice]), number_format(ShopItems[23][sItemPrice]));
 				ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - Vehicle", stringg, "Select", "Exit");
 			}
 			if(listitem == 5)
 			{
+				new microItemName5[36], microItemName6[36], microItemName7[36];
+				strunpack(microItemName, mItemName[10], sizeof(microItemName));
+				strunpack(microItemName2, mItemName[12], sizeof(microItemName2));
+				strunpack(microItemName3, mItemName[13], sizeof(microItemName3));
+				strunpack(microItemName4, mItemName[5], sizeof(microItemName4));
+				strunpack(microItemName5, mItemName[14], sizeof(microItemName5));
+				strunpack(microItemName6, mItemName[15], sizeof(microItemName6));
+				strunpack(microItemName7, mItemName[11], sizeof(microItemName7));
 				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\
 				\nFireworks x5 (Credits: {FFD700}%s{FFFFFF})\n100 Paintball Tokens (Credits: {FFD700}%s{FFFFFF})\nAdditional Toy Slots (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})",
-				mItemName[10], number_format(MicroItems[10]), mItemName[12], number_format(MicroItems[12]), mItemName[13], number_format(MicroItems[13]), mItemName[5], number_format(MicroItems[5]), number_format(ShopItems[10][sItemPrice]),
-				number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[28][sItemPrice]), mItemName[14], number_format(MicroItems[14]), mItemName[15], number_format(MicroItems[15]), mItemName[11], number_format(MicroItems[11]));
+				microItemName, number_format(MicroItems[10]), microItemName2, number_format(MicroItems[12]), microItemName3, number_format(MicroItems[13]), microItemName4, number_format(MicroItems[5]), number_format(ShopItems[10][sItemPrice]),
+				number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[28][sItemPrice]), microItemName5, number_format(MicroItems[14]), microItemName6, number_format(MicroItems[15]), microItemName7, number_format(MicroItems[11]));
 				ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - Miscellaneous", stringg, "Select", "Exit");
 			}
 			if(listitem == 6)
 			{
 				if(prezombie || zombieevent)
 				{
+					strunpack(microItemName, mItemName[16], sizeof(microItemName));
+					strunpack(microItemName2, mItemName[17], sizeof(microItemName2));
+					strunpack(microItemName3, mItemName[18], sizeof(microItemName3));
+					strunpack(microItemName4, mItemName[19], sizeof(microItemName4));
 					format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})",
-					mItemName[16], number_format(MicroItems[16]), mItemName[17], number_format(MicroItems[17]), mItemName[18], number_format(MicroItems[18]), mItemName[19], number_format(MicroItems[19]));
+					microItemName, number_format(MicroItems[16]), microItemName2, number_format(MicroItems[17]), microItemName3, number_format(MicroItems[18]), microItemName4, number_format(MicroItems[19]));
 					ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - Events", stringg, "Select", "Exit");
 				}
 				if(!strlen(stringg)) ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Microtransaction Shop - Events", "Nothing available to purchase at this time!", "Okay", "");
@@ -12860,7 +12981,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				PlayerInfo[playerid][mCooldown][item] = 0;
 			}
-			format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", mItemName[item], number_format(PlayerInfo[playerid][pCredits]), number_format(MicroItems[item]), number_format(PlayerInfo[playerid][pCredits]-MicroItems[item]));
+			strunpack(microItemName, mItemName[item], sizeof(microItemName));
+			format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", microItemName, number_format(PlayerInfo[playerid][pCredits]), number_format(MicroItems[item]), number_format(PlayerInfo[playerid][pCredits]-MicroItems[item]));
 			ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP3, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
 		}
 	}
@@ -12916,9 +13038,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			printf("MicroPrice%d: %d", item, MicroItems[item]);
 
-			format(string, sizeof(string), "[MICROSHOP] [User: %s(%i)] [IP: %s] [Credits: %s] [%s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), mItemName[item], number_format(MicroItems[item]));
+			strunpack(microItemName, mItemName[item], sizeof(microItemName));
+			format(string, sizeof(string), "[MICROSHOP] [User: %s(%i)] [IP: %s] [Credits: %s] [%s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), microItemName, number_format(MicroItems[item]));
 			Log("logs/micro.log", string), print(string);
-			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased \"%s\" for %s credits.", mItemName[item], number_format(MicroItems[item]));
+			strunpack(microItemName, mItemName[item], sizeof(microItemName));
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased \"%s\" for %s credits.", microItemName, number_format(MicroItems[item]));
 			if(item == 0)//Change a Job
 			{
 				if(GetPVarInt(playerid, "m_Response") == 0) PlayerInfo[playerid][pJob] = GetPVarInt(playerid, "jobSelection"), SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed your first job!");
@@ -13043,7 +13167,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!GetPVarType(playerid, "mEditingPrice"))
 			{
 				SetPVarInt(playerid, "mEditingPrice", listitem);
-				format(string, sizeof(string), "You are currently editing the price of %s. The current credit cost is %s.", mItemName[listitem], number_format(MicroItems[listitem]));
+				strunpack(microItemName, mItemName[listitem], sizeof(microItemName));
+				format(string, sizeof(string), "You are currently editing the price of %s. The current credit cost is %s.", microItemName, number_format(MicroItems[listitem]));
 				return ShowPlayerDialogEx(playerid, DIALOG_EDITMICROSHOP, DIALOG_STYLE_INPUT, "Editing Price", string, "Change", "Back");
 			}
 			else
@@ -13053,13 +13178,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new price;
 					if(sscanf(inputtext, "d", price) || price <= 0)
 					{
-						format(string, sizeof(string), "The price can't be below 1.\n\nYou are currently editing the price of %s. The current credit cost is %s.", mItemName[GetPVarInt(playerid, "mEditingPrice")], number_format(MicroItems[GetPVarInt(playerid, "mEditingPrice")]));
+						strunpack(microItemName, mItemName[GetPVarInt(playerid, "mEditingPrice")], sizeof(microItemName));
+						format(string, sizeof(string), "The price can't be below 1.\n\nYou are currently editing the price of %s. The current credit cost is %s.", microItemName, number_format(MicroItems[GetPVarInt(playerid, "mEditingPrice")]));
 						return ShowPlayerDialogEx(playerid, DIALOG_EDITMICROSHOP, DIALOG_STYLE_INPUT, "Editing Price - Error", string, "Change", "Back");
 					}
 					else
 					{
 						SetPVarInt(playerid, "mEditingPriceValue", price);
-						format(string,sizeof(string),"Are you sure you want to edit the cost of %s?\n\nOld Cost: %s\nNew Cost: %s", mItemName[GetPVarInt(playerid, "mEditingPrice")], number_format(MicroItems[GetPVarInt(playerid, "mEditingPrice")]), number_format(price));
+						strunpack(microItemName, mItemName[GetPVarInt(playerid, "mEditingPrice")], sizeof(microItemName));
+						format(string,sizeof(string),"Are you sure you want to edit the cost of %s?\n\nOld Cost: %s\nNew Cost: %s", microItemName, number_format(MicroItems[GetPVarInt(playerid, "mEditingPrice")]), number_format(price));
 						return ShowPlayerDialogEx(playerid, DIALOG_EDITMICROSHOP, DIALOG_STYLE_MSGBOX, "Confirmation", string, "Confirm", "Cancel");
 					}
 				}
@@ -13067,8 +13194,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(GetPVarInt(playerid, "mEditingPriceValue") == 0) SetPVarInt(playerid, "mEditingPriceValue", 999999);
 					MicroItems[GetPVarInt(playerid, "mEditingPrice")] = GetPVarInt(playerid, "mEditingPriceValue");
-					SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited the price of %s to %s.", mItemName[GetPVarInt(playerid, "mEditingPrice")], number_format(GetPVarInt(playerid, "mEditingPriceValue")));
-					format(string, sizeof(string), "[EDITMICROSHOPPRICES] [User: %s(%i)] [IP: %s] [%s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), mItemName[GetPVarInt(playerid, "mEditingPrice")], number_format(MicroItems[GetPVarInt(playerid, "mEditingPrice")]));
+					strunpack(microItemName, mItemName[GetPVarInt(playerid, "mEditingPrice")], sizeof(microItemName));
+					SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited the price of %s to %s.", microItemName, number_format(GetPVarInt(playerid, "mEditingPriceValue")));
+					format(string, sizeof(string), "[EDITMICROSHOPPRICES] [User: %s(%i)] [IP: %s] [%s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), microItemName, number_format(MicroItems[GetPVarInt(playerid, "mEditingPrice")]));
 					Log("logs/editshop.log", string), print(string);
 					g_mysql_SavePrices();
 					DeletePVar(playerid, "mEditingPrice");

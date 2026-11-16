@@ -201,7 +201,9 @@ public TurfWars_OnTask() {
 			}
 			arrTurfWars[iCount][tw_bVulnerable] = true;
 			if(arrTurfWars[iCount][tw_iGroupID] != INVALID_GROUP_ID) {
-				format(szMiscArray, sizeof(szMiscArray), "[TURF]: {FFFF00}%s (ID %d) has become vulnerable!", gSAZones[iCount][SAZONE_NAME], iCount);
+				new zoneName[28];
+				strunpack(zoneName, gSAZones[iCount][SAZONE_NAME], sizeof(zoneName));
+				format(szMiscArray, sizeof(szMiscArray), "[TURF]: {FFFF00}%s (ID %d) has become vulnerable!", zoneName, iCount);
 				TurfWars_SendGroupMessage(arrTurfWars[iCount][tw_iGroupID], COLOR_GREEN, szMiscArray);
 			}
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `vulnerable` = '1', `shutdown` = '0', `timestamp` = '0' WHERE `id` = '%d'", iCount);
@@ -272,6 +274,7 @@ TurfWars_InitZones() {
 	// new j;
 
 	for(new i; i < sizeof(gSAZones); ++i) {
+		new zoneName[28];
 
 		arrTurfWars[i][tw_iAreaID] = CreateDynamicRectangle(gSAZones[i][SAZONE_AREA][0], gSAZones[i][SAZONE_AREA][1], gSAZones[i][SAZONE_AREA][3], gSAZones[i][SAZONE_AREA][4], 0, 0);
 		arrTurfWars[i][tw_iGZoneID] = GangZoneCreate(gSAZones[i][SAZONE_AREA][0], gSAZones[i][SAZONE_AREA][1], gSAZones[i][SAZONE_AREA][3], gSAZones[i][SAZONE_AREA][4]);
@@ -292,7 +295,8 @@ TurfWars_InitZones() {
 
 		// arrTurfWars[i][tw_iLinkedID] = j;
 		// Streamer_SetIntData(STREAMER_TYPE_AREA, arrTurfWars[i][tw_iAreaID], E_STREAMER_EXTRA_ID, i);
-		printf("[TW] Created zone (%d): %s", i, gSAZones[i][SAZONE_NAME]);
+		strunpack(zoneName, gSAZones[i][SAZONE_NAME], sizeof(zoneName));
+		printf("[TW] Created zone (%d): %s", i, zoneName);
 	}
 }
 
@@ -314,8 +318,10 @@ CMD:turflist(playerid, params[]) {
 
 	szMiscArray[0] = 0;
 	for(new i; i < sizeof(gMainZones) - 1; ++i) {
+		new mainZoneName[28];
 
-		format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, gMainZones[i][SAZONE_NAME]);
+		strunpack(mainZoneName, gMainZones[i][SAZONE_NAME], sizeof(mainZoneName));
+		format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, mainZoneName);
 	}
 	ShowPlayerDialogEx(playerid, DIALOG_TURFS_AREA, DIALOG_STYLE_LIST, "Turf List | Choose Area", szMiscArray, "Select", "Cancel");
 	return 1;
@@ -392,6 +398,7 @@ CMD:rehashturfs(playerid, params[]) {
 }
 
 CMD:claim(playerid, params[]) {
+	new zoneName[28];
 
 	if(!IsACriminal(playerid) && !IsAGovernment(playerid) && !IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot claim turfs.");
 	if(GetPVarType(playerid, "CapCheck")) {
@@ -418,7 +425,8 @@ CMD:claim(playerid, params[]) {
     if(TurfWars_CapCheck(playerid, iTurfID) == 0) return 1;
 	if(arrTurfWars[iTurfID][tw_iGroupID] != INVALID_GROUP_ID) {
 
-		format(szMiscArray, sizeof(szMiscArray), "[TURF]: {FFFF00} %s is attempting to capture %s.", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], gSAZones[iTurfID][SAZONE_NAME]);
+		strunpack(zoneName, gSAZones[iTurfID][SAZONE_NAME], sizeof(zoneName));
+		format(szMiscArray, sizeof(szMiscArray), "[TURF]: {FFFF00} %s is attempting to capture %s.", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], zoneName);
 		foreach(new p : Player) {
 			if(PlayerInfo[p][pMember] == arrTurfWars[iTurfID][tw_iGroupID]) SendClientMessageEx(p, COLOR_GREEN, szMiscArray);
 		}
@@ -437,7 +445,8 @@ CMD:claim(playerid, params[]) {
 		}
 	}
 
-	format(szMiscArray, sizeof(szMiscArray), "[TURF]: {FFFF00}%s is attempting to take over %s (ID %d).", GetPlayerNameEx(playerid), gSAZones[iTurfID][SAZONE_NAME], iTurfID);
+	strunpack(zoneName, gSAZones[iTurfID][SAZONE_NAME], sizeof(zoneName));
+	format(szMiscArray, sizeof(szMiscArray), "[TURF]: {FFFF00}%s is attempting to take over %s (ID %d).", GetPlayerNameEx(playerid), zoneName, iTurfID);
 	foreach(new p : Player) if(PlayerInfo[p][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(p, COLOR_GREEN, szMiscArray);
 	SetPVarInt(playerid, "CapCheck", 1);
 	SendClientMessageEx(playerid, COLOR_GRAD1, "You will start capturing the turf in 1 minute if you do not die or leave it.");
@@ -504,10 +513,12 @@ CMD:myturfs(playerid, params[]) {
 
 			iMyTurfs++;
 			if(iLastID != arrTurfWars[i][tw_iLinkedID] || arrTurfWars[i][tw_iLinkedID] == 0) {
+				new zoneName[28];
 
 				if(arrTurfWars[i][tw_iLinkedID] != 0) iLastID = arrTurfWars[i][tw_iLinkedID];
+				strunpack(zoneName, gSAZones[i][SAZONE_NAME], sizeof(zoneName));
 				format(szMiscArray, sizeof(szMiscArray), "%s\n%s (ID %d)\t%dHP - LVL %d\t %dT - %dD",
-					szMiscArray, gSAZones[i][SAZONE_NAME], iMyTurfs, arrTurfWars[i][tw_iHealth], arrTurfWars[i][tw_iLevel], arrTurfWars[i][tw_iTraffic], arrTurfWars[i][tw_iDeaths]);
+					szMiscArray, zoneName, iMyTurfs, arrTurfWars[i][tw_iHealth], arrTurfWars[i][tw_iLevel], arrTurfWars[i][tw_iTraffic], arrTurfWars[i][tw_iDeaths]);
 				iMyTurfs = 0;
 				iTurfCount = 0;
 			}
@@ -544,6 +555,7 @@ CMD:turfs(playerid, params[])
 }
 
 CMD:turfstats(playerid, params[]) {
+	new zoneName[28];
 
 	new iTurfID = TurfWars_GetTurfID(playerid);
 	/*
@@ -557,8 +569,9 @@ CMD:turfstats(playerid, params[]) {
 	if(arrTurfWars[iTurfID][tw_iGroupID] != PlayerInfo[playerid][pMember] &&
 		!IsAdminLevel(playerid, ADMIN_SENIOR, 0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "This turf doesn't belong to you.");
 	
+	strunpack(zoneName, gSAZones[iTurfID][SAZONE_NAME], sizeof(zoneName));
 	format(szMiscArray, sizeof(szMiscArray), "%s {CCCCCC}- {FFFF00}Revenue: {CCCCCC}$%s - {FFFF00}Deaths: {CCCCCC}%d - {FFFF00}Traffic: {CCCCCC}%d",
-		gSAZones[iTurfID][SAZONE_NAME],
+		zoneName,
 		number_format(arrTurfWars[iTurfID][tw_iRevenue]),
 		arrTurfWars[iTurfID][tw_iDeaths],
 		arrTurfWars[iTurfID][tw_iTraffic]);
@@ -577,10 +590,12 @@ CMD:turftime(playerid, params[]) {
 	for(new i; i < MAX_TURFS; ++i) {
 
 		if(GetGVarType("TW_Time", i)) {
+			new zoneName[28];
 			iSeconds = GetGVarInt("TW_Time", i);
 			iMinutes = floatround(iSeconds / 60, floatround_floor);
 			iSeconds = iSeconds - (iMinutes * 60);
-			format(szMiscArray, sizeof(szMiscArray), "%s - {CCCCCC}%s - {FFFF00}%d:%02d {CCCCCC}minutes.", gSAZones[i][SAZONE_NAME], arrGroupData[GetGVarInt("TW_Capturer", i)][g_szGroupName], iMinutes, iSeconds);
+			strunpack(zoneName, gSAZones[i][SAZONE_NAME], sizeof(zoneName));
+			format(szMiscArray, sizeof(szMiscArray), "%s - {CCCCCC}%s - {FFFF00}%d:%02d {CCCCCC}minutes.", zoneName, arrGroupData[GetGVarInt("TW_Capturer", i)][g_szGroupName], iMinutes, iSeconds);
 			SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
 		}
 	}
@@ -860,6 +875,7 @@ Turf_GetMaxHealth(iTurfID) {
 
 forward TurfWars_FetchData(playerid, area);
 public TurfWars_FetchData(playerid, area) {
+	new mainZoneName[28];
 
 	new iRows,
 		iFields,
@@ -916,7 +932,8 @@ public TurfWars_FetchData(playerid, area) {
 		}
 		iCount++;
 	}
-	format(szTitle, sizeof(szTitle), "%s | Turfs", gMainZones[area][SAZONE_NAME]);
+	strunpack(mainZoneName, gMainZones[area][SAZONE_NAME], sizeof(mainZoneName));
+	format(szTitle, sizeof(szTitle), "%s | Turfs", mainZoneName);
 	return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<<", "");
 }
 
@@ -1380,6 +1397,7 @@ TurfWars_SetHealth(iTurfID, iHealth) {
 }
 
 TurfWars_SyncGUI(playerid, iTurfID) {
+	new zoneName[28];
 
 	szMiscArray[0] = 0;
 	if(playerid == INVALID_PLAYER_ID) {
@@ -1435,7 +1453,8 @@ TurfWars_SyncGUI(playerid, iTurfID) {
 				else strins(szMiscArray, arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_szGroupName], 0, sizeof(szMiscArray));
 				PlayerTextDrawSetString(p, TW_PTextDraws[p][0], szMiscArray);
 			}
-			format(szMiscArray, sizeof(szMiscArray), "%s (ID %d)", gSAZones[iTurfID][SAZONE_NAME], iTurfID);
+			strunpack(zoneName, gSAZones[iTurfID][SAZONE_NAME], sizeof(zoneName));
+			format(szMiscArray, sizeof(szMiscArray), "%s (ID %d)", zoneName, iTurfID);
 			PlayerTextDrawSetString(p, TW_PTextDraws[p][2], szMiscArray);
 			format(szMiscArray, sizeof(szMiscArray), "%d", arrTurfWars[iTurfID][tw_iHealth]);
 			PlayerTextDrawSetString(p, TW_PTextDraws[p][1], szMiscArray);
@@ -1505,7 +1524,8 @@ TurfWars_SyncGUI(playerid, iTurfID) {
 			else strins(szMiscArray, arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_szGroupName], 0, sizeof(szMiscArray));
 			PlayerTextDrawSetString(playerid, TW_PTextDraws[playerid][0], szMiscArray);
 		}
-		format(szMiscArray, sizeof(szMiscArray), "%s (ID %d)", gSAZones[iTurfID][SAZONE_NAME], iTurfID);
+		strunpack(zoneName, gSAZones[iTurfID][SAZONE_NAME], sizeof(zoneName));
+		format(szMiscArray, sizeof(szMiscArray), "%s (ID %d)", zoneName, iTurfID);
 		PlayerTextDrawSetString(playerid, TW_PTextDraws[playerid][2], szMiscArray);
 		format(szMiscArray, sizeof(szMiscArray), "%d", arrTurfWars[iTurfID][tw_iHealth]);
 		PlayerTextDrawSetString(playerid, TW_PTextDraws[playerid][1], szMiscArray);

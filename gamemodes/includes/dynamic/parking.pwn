@@ -115,7 +115,7 @@ task ParkingMeters[30000]()
 				time = ParkingMeterInformation[i][PaymentExpiry] - gettime();
 				if(time < 60) format(string, sizeof(string), "Less Than 1 Minute");
 				else if(time >= 60) format(string, sizeof(string), "%s Minute(s)", number_format(time / 60));
-				format(string, sizeof(string), "{FFFFFF}Parking Meter {AFAFAF}(ID: %d)\n{FFFFFF}Meter Rate: {AFAFAF}$%s Per 5 Minutes\n{FFFFFF}Current Vehicle: {AFAFAF}%s\n{FFFFFF}Time Remaining: {AFAFAF}%s", i, number_format(ParkingMeterInformation[i][MeterRate]), VehicleName[GetVehicleModel(ParkingMeterInformation[i][AssignedVehicle]) - 400], string);
+				format(string, sizeof(string), "{FFFFFF}Parking Meter {AFAFAF}(ID: %d)\n{FFFFFF}Meter Rate: {AFAFAF}$%s Per 5 Minutes\n{FFFFFF}Current Vehicle: {AFAFAF}%s\n{FFFFFF}Time Remaining: {AFAFAF}%s", i, number_format(ParkingMeterInformation[i][MeterRate]), GetVehicleName(ParkingMeterInformation[i][AssignedVehicle]), string);
 				UpdateDynamic3DTextLabelText(ParkingMeterInformation[i][ParkingMeterText], COLOR_WHITE, string);
 				if(GetVehicleDistanceFromPoint(ParkingMeterInformation[i][AssignedVehicle], ParkingMeterInformation[i][ParkedPosition][0], ParkingMeterInformation[i][ParkedPosition][1], ParkingMeterInformation[i][ParkedPosition][2]) > 5.0)
 				{
@@ -198,7 +198,7 @@ CMD:meterstatus(playerid, params[])
 		case INVALID_VEHICLE_ID: return SendClientMessageEx(playerid, COLOR_GREY, "� Current vehicle: Unoccupied and vacant.");
 		default:
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "� Current vehicle: %s (ID: %d).", VehicleName[GetVehicleModel(ParkingMeterInformation[meterid][AssignedVehicle]) - 400], ParkingMeterInformation[meterid][AssignedVehicle]);
+			SendClientMessageEx(playerid, COLOR_GREY, "� Current vehicle: %s (ID: %d).", GetVehicleName(ParkingMeterInformation[meterid][AssignedVehicle]), ParkingMeterInformation[meterid][AssignedVehicle]);
 			return 1;
 		}
 	}

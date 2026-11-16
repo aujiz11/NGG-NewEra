@@ -583,6 +583,7 @@ CreatePokerGUI(playerid)
  
 forward LoadTextDraws();
 public LoadTextDraws() {
+	new tooltip[109];
 
 	//HouseLights
 	g_tHouseLights = TextDrawCreate(-1.000000, 0.000000, "`");
@@ -713,7 +714,8 @@ public LoadTextDraws() {
 	textdrawscount++;
 
 	// NG-RP Tooltips
-	MainMenuTxtdraw[7] = TextDrawCreate(319.000000, 391.000000, Tooltips[random(sizeof(Tooltips))]);
+	strunpack(tooltip, Tooltips[random(sizeof(Tooltips))], sizeof(tooltip));
+	MainMenuTxtdraw[7] = TextDrawCreate(319.000000, 391.000000, tooltip);
 	TextDrawAlignment(MainMenuTxtdraw[7], 2);
 	TextDrawBackgroundColor(MainMenuTxtdraw[7], 255);
 	TextDrawFont(MainMenuTxtdraw[7], 2);

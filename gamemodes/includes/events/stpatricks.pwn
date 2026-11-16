@@ -38,7 +38,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(HoldingObjectsAll[i][holdingmodelid] == GetPVarInt(playerid, "StPatrickToy"))
 			{
-				format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+				strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 				break;
 			}
 		}

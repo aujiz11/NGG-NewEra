@@ -38,6 +38,7 @@ CMD:impound(playerid, params[]) {
 	if(IsACop(playerid) || IsATowman(playerid)) {
 		if(!IsAtImpoundingPoint(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near the impound point, you can't impound!");
 		if(IsTrailerAttachedToVehicle(GetPlayerVehicleID(playerid))) {
+			new vehicleName[18];
 			new veh = -1, iVehTowed = GetVehicleTrailer(GetPlayerVehicleID(playerid)), szMessage[128];
 			if(!GetVehicleModel(iVehTowed)) return SendClientMessageEx(playerid, COLOR_GREY, "The vehicle in tow has been desynced and therefore cannot be impounded.");
 			// Player Vehicle.
@@ -57,14 +58,15 @@ CMD:impound(playerid, params[]) {
 					PlayerVehicleInfo[i][veh][pvId] = INVALID_PLAYER_VEHICLE_ID;
 					g_mysql_SaveVehicle(playerid, veh);
 
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have impounded %s's %s.",GetPlayerNameEx(i), VehicleName[PlayerVehicleInfo[i][veh][pvModelId] - 400]);
+					strunpack(vehicleName, VehicleName[PlayerVehicleInfo[i][veh][pvModelId] - 400], sizeof(vehicleName));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have impounded %s's %s.",GetPlayerNameEx(i), vehicleName);
 
-					SendClientMessageEx(i, COLOR_LIGHTBLUE, "Your %s has been impounded. You may release it at the DMV in Dillimore.", VehicleName[PlayerVehicleInfo[i][veh][pvModelId] - 400]);
+					SendClientMessageEx(i, COLOR_LIGHTBLUE, "Your %s has been impounded. You may release it at the DMV in Dillimore.", vehicleName);
 
-					format(szMessage, sizeof(szMessage), "HQ: %s has impounded %s's %s ($%s unpaid tickets).", GetPlayerNameEx(playerid), GetPlayerNameEx(i), VehicleName[PlayerVehicleInfo[i][veh][pvModelId] - 400], number_format(PlayerVehicleInfo[i][veh][pvTicket]));
+					format(szMessage, sizeof(szMessage), "HQ: %s has impounded %s's %s ($%s unpaid tickets).", GetPlayerNameEx(playerid), GetPlayerNameEx(i), vehicleName, number_format(PlayerVehicleInfo[i][veh][pvTicket]));
 					SendGroupMessage(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType], RADIO, szMessage);
 					
-					format(szMessage, sizeof(szMessage), "IMPOUND: %s has impounded %s's %s and gained $%s", GetPlayerNameEx(playerid), GetPlayerNameEx(i), VehicleName[PlayerVehicleInfo[i][veh][pvModelId] - 400], number_format(iCost));
+					format(szMessage, sizeof(szMessage), "IMPOUND: %s has impounded %s's %s and gained $%s", GetPlayerNameEx(playerid), GetPlayerNameEx(i), vehicleName, number_format(iCost));
 					GroupLog(PlayerInfo[playerid][pMember], szMessage);
 					break;
 				}
@@ -87,19 +89,21 @@ CMD:impound(playerid, params[]) {
 					CrateVehCheck(veh); // Ensure we check for crates!
 					SaveCrateVehicle(veh);
 
-					format(szMessage, sizeof(szMessage), "* Your %s has been impounded you can recover it from your garage. (( /cvstorage ))", VehicleName[CrateVehicle[veh][cvModel] - 400]);
+					strunpack(vehicleName, VehicleName[CrateVehicle[veh][cvModel] - 400], sizeof(vehicleName));
+					format(szMessage, sizeof(szMessage), "* Your %s has been impounded you can recover it from your garage. (( /cvstorage ))", vehicleName);
 					foreach(new i: Player) {
 						if(PlayerInfo[i][pLeader] == CrateVehicle[veh][cvGroupID]) {
 							ChatTrafficProcess(i, arrGroupData[CrateVehicle[veh][cvGroupID]][g_hRadioColour] * 256 + 255, szMessage, 12);
 						}
 					}
 
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have impounded %s's %s.", arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], VehicleName[CrateVehicle[veh][cvModel] - 400]);
+					strunpack(vehicleName, VehicleName[CrateVehicle[veh][cvModel] - 400], sizeof(vehicleName));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have impounded %s's %s.", arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], vehicleName);
 
-					format(szMessage, sizeof(szMessage), "HQ: %s has impounded %s's %s ($%s unpaid tickets).", GetPlayerNameEx(playerid), arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], VehicleName[CrateVehicle[veh][cvModel] - 400], number_format(CrateVehicle[veh][cvTickets]));
+					format(szMessage, sizeof(szMessage), "HQ: %s has impounded %s's %s ($%s unpaid tickets).", GetPlayerNameEx(playerid), arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], vehicleName, number_format(CrateVehicle[veh][cvTickets]));
 					SendGroupMessage(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType], RADIO, szMessage);
 
-					format(szMessage, sizeof(szMessage), "IMPOUND: %s has impounded %s's %s and gained $%s", GetPlayerNameEx(playerid), arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], VehicleName[CrateVehicle[veh][cvModel] - 400], number_format(iCost));
+					format(szMessage, sizeof(szMessage), "IMPOUND: %s has impounded %s's %s and gained $%s", GetPlayerNameEx(playerid), arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], vehicleName, number_format(iCost));
 					GroupLog(PlayerInfo[playerid][pMember], szMessage);
 
 				}

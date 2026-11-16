@@ -901,10 +901,12 @@ CMD:vehname(playerid, params[]) {
 		if(!params[2]) return SendClientMessageEx(playerid, COLOR_GREY, "Search keyword too short.");
 		szMiscArray[0] = 0;
 		for(new v; v < sizeof(VehicleName); v++) {
-			if(strfind(VehicleName[v], params, true) != -1) {
+			new vehicleName[18];
+			strunpack(vehicleName, VehicleName[v], sizeof(vehicleName));
+			if(strfind(vehicleName, params, true) != -1) {
 
-				if(isnull(szMiscArray)) format(szMiscArray, sizeof(szMiscArray), "%s (ID %d)", VehicleName[v], v+400);
-				else format(szMiscArray, sizeof(szMiscArray), "%s | %s (ID %d)", szMiscArray, VehicleName[v], v+400);
+				if(isnull(szMiscArray)) format(szMiscArray, sizeof(szMiscArray), "%s (ID %d)", vehicleName, v+400);
+				else format(szMiscArray, sizeof(szMiscArray), "%s | %s (ID %d)", szMiscArray, vehicleName, v+400);
 			}
 		}
 
@@ -1738,16 +1740,20 @@ CMD:removepvehicle(playerid, params[])
 
 		for(new i, iModelID; i < GetPlayerVehicleSlots(giveplayerid); i++) {
 			if((iModelID = PlayerVehicleInfo[giveplayerid][i][pvModelId] - 400) >= 0) {
+				new vehicleName[18];
+				strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
 				if(PlayerVehicleInfo[giveplayerid][i][pvImpounded]) {
-					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded)", szMiscArray, VehicleName[iModelID]);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded)", szMiscArray, vehicleName);
 				}
 				else if(PlayerVehicleInfo[giveplayerid][i][pvDisabled]) {
-					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (disabled)", szMiscArray, VehicleName[iModelID]);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (disabled)", szMiscArray, vehicleName);
 				}
 				else if(!PlayerVehicleInfo[giveplayerid][i][pvSpawned]) {
-					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (stored)", szMiscArray, VehicleName[iModelID]);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (stored)", szMiscArray, vehicleName);
 				}
-				else format(szMiscArray, sizeof(szMiscArray), "%s\n%s (spawned)", szMiscArray, VehicleName[iModelID]);
+				else {
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (spawned)", szMiscArray, vehicleName);
+				}
 			}
 			else strcat(szMiscArray, "\nEmpty");
 		}
@@ -1853,6 +1859,7 @@ CMD:apark(playerid, params[]) {
 			{
 				if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[ownerid][d][pvId]))
 				{
+					new vehicleName[18];
 					if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "You must be in the driver seat.");
 					new Float:x, Float:y, Float:z, Float:angle, Float:health;
 					if(PlayerInfo[playerid][pLockCar] == GetPlayerVehicleID(playerid)) PlayerInfo[playerid][pLockCar] = INVALID_VEHICLE_ID;
@@ -1872,9 +1879,10 @@ CMD:apark(playerid, params[]) {
 					SetPlayerArmedWeapon(playerid, 0);
 
 
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have parked %s's %s.",GetPlayerNameEx(ownerid), VehicleName[PlayerVehicleInfo[ownerid][d][pvModelId] - 400]);
+					strunpack(vehicleName, VehicleName[PlayerVehicleInfo[ownerid][d][pvModelId] - 400], sizeof(vehicleName));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have parked %s's %s.",GetPlayerNameEx(ownerid), vehicleName);
 
-					SendClientMessageEx(ownerid, COLOR_LIGHTBLUE, "Your %s has been parked at another location by an admin. Use /trackcar to find it.", VehicleName[PlayerVehicleInfo[ownerid][d][pvModelId] - 400]);
+					SendClientMessageEx(ownerid, COLOR_LIGHTBLUE, "Your %s has been parked at another location by an admin. Use /trackcar to find it.", vehicleName);
 					return 1;
 				}
 			}
@@ -2074,16 +2082,20 @@ CMD:gotopveh(playerid, params[]) {
 				Get3DZone(PlayerVehicleInfo[iTargetID][i][pvPosX], PlayerVehicleInfo[iTargetID][i][pvPosY], PlayerVehicleInfo[iTargetID][i][pvPosZ], szCarLocation, sizeof(szCarLocation));
 				if((iModelID = PlayerVehicleInfo[iTargetID][i][pvModelId] - 400) >= 0)
 				{
+					new vehicleName[18];
+					strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
 					if(PlayerVehicleInfo[iTargetID][i][pvImpounded]) {
-						format(szVehString, sizeof(szVehString), "%s\n%s (impounded) | Location: DMV", szVehString, VehicleName[iModelID]);
+						format(szVehString, sizeof(szVehString), "%s\n%s (impounded) | Location: DMV", szVehString, vehicleName);
 					}
 					else if(PlayerVehicleInfo[iTargetID][i][pvDisabled]) {
-						format(szVehString, sizeof(szVehString), "%s\n%s (disabled) | Location: Unknown", szVehString, VehicleName[iModelID]);
+						format(szVehString, sizeof(szVehString), "%s\n%s (disabled) | Location: Unknown", szVehString, vehicleName);
 					}
 					else if(!PlayerVehicleInfo[iTargetID][i][pvSpawned]) {
-						format(szVehString, sizeof(szVehString), "%s\n%s (stored)", szVehString, VehicleName[iModelID]);
+						format(szVehString, sizeof(szVehString), "%s\n%s (stored)", szVehString, vehicleName);
 					}
-					else format(szVehString, sizeof(szVehString), "%s\n%s (ID %i) | Location: %s", szVehString, VehicleName[iModelID], PlayerVehicleInfo[iTargetID][i][pvId], szCarLocation);
+					else {
+						format(szVehString, sizeof(szVehString), "%s\n%s (ID %i) | Location: %s", szVehString, vehicleName, PlayerVehicleInfo[iTargetID][i][pvId], szCarLocation);
+					}
 				}
 			}
 		    ShowPlayerDialogEx(playerid, GOTOPLAYERCAR, DIALOG_STYLE_LIST, "Vehicle Teleportation", szVehString, "Teleport", "Cancel");
@@ -2158,16 +2170,18 @@ CMD:createpvehicle(playerid, params[]) {
 		else if(PlayerInfo[iTargetID][pLevel] == 1 && PlayerInfo[iTargetID][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_RED, "You can't use /givemoney on level 1's");
 		else
 		{
+			new vehicleName[18];
 			new Float: arr_fPlayerPos[4], szMessage[84];
 
 			GetPlayerPos(iTargetID, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2]);
 			GetPlayerFacingAngle(iTargetID, arr_fPlayerPos[3]);
 			CreatePlayerVehicle(iTargetID, GetPlayerFreeVehicleId(iTargetID), iModelID, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2], arr_fPlayerPos[3], iColors[0], iColors[1], 2000000, GetPlayerVirtualWorld(iTargetID), GetPlayerInterior(iTargetID));
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully created a %s for %s.", VehicleName[iModelID - 400], GetPlayerNameEx(iTargetID));
-			format(szMessage, sizeof(szMessage), "%s created a %s (%i) for %s(%d)", GetPlayerNameEx(playerid), VehicleName[iModelID - 400], iModelID, GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
+			strunpack(vehicleName, VehicleName[iModelID - 400], sizeof(vehicleName));
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully created a %s for %s.", vehicleName, GetPlayerNameEx(iTargetID));
+			format(szMessage, sizeof(szMessage), "%s created a %s (%i) for %s(%d)", GetPlayerNameEx(playerid), vehicleName, iModelID, GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
 			Log("logs/playervehicle.log", szMessage);
-			format(szMiscArray, sizeof(szMiscArray), "created a %s (%d)", VehicleName[iModelID - 400], iModelID);
+			format(szMiscArray, sizeof(szMiscArray), "created a %s (%d)", vehicleName, iModelID);
 			DBLog(playerid, iTargetID, "PlayerVehicle", szMiscArray);
 		}
 	}
@@ -5890,6 +5904,7 @@ CMD:checkwdcount(playerid, params[])
 
 CMD:aimpound(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] >= 3) {
+		new vehicleName[18];
 		new iVehTowed, szMessage[128], veh = -1;
 		if(sscanf(params, "d", iVehTowed)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /aimpound [carid]");
 		if(!GetVehicleModel(iVehTowed)) return SendClientMessageEx(playerid, COLOR_GREY, "The vehicle your trying to impound has been desynced and therefore cannot be impounded.");
@@ -5907,9 +5922,10 @@ CMD:aimpound(playerid, params[]) {
 				PlayerVehicleInfo[i][veh][pvId] = INVALID_PLAYER_VEHICLE_ID;
 				g_mysql_SaveVehicle(playerid, veh);
 
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have impounded %s's %s.", GetPlayerNameEx(i), VehicleName[PlayerVehicleInfo[i][veh][pvModelId] - 400]);
+				strunpack(vehicleName, VehicleName[PlayerVehicleInfo[i][veh][pvModelId] - 400], sizeof(vehicleName));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have impounded %s's %s.", GetPlayerNameEx(i), vehicleName);
 
-				SendClientMessageEx(i, COLOR_LIGHTBLUE, "Your %s has been impounded by an admin. You may release it at the DMV in Dillimore.", VehicleName[PlayerVehicleInfo[i][veh][pvModelId] - 400]);
+				SendClientMessageEx(i, COLOR_LIGHTBLUE, "Your %s has been impounded by an admin. You may release it at the DMV in Dillimore.", vehicleName);
 				break;
 			}
 		}
@@ -5928,13 +5944,15 @@ CMD:aimpound(playerid, params[]) {
 				CrateVehCheck(veh); // Ensure we check for crates!
 				SaveCrateVehicle(veh);
 
-				format(szMessage, sizeof(szMessage), "* Your %s has been impounded by an admin you can recover it from your garage. (( /cvstorage ))", VehicleName[CrateVehicle[veh][cvModel] - 400]);
+				strunpack(vehicleName, VehicleName[CrateVehicle[veh][cvModel] - 400], sizeof(vehicleName));
+				format(szMessage, sizeof(szMessage), "* Your %s has been impounded by an admin you can recover it from your garage. (( /cvstorage ))", vehicleName);
 				foreach(new i: Player) {
 					if(PlayerInfo[i][pLeader] == CrateVehicle[veh][cvGroupID]) {
 						ChatTrafficProcess(i, arrGroupData[CrateVehicle[veh][cvGroupID]][g_hRadioColour] * 256 + 255, szMessage, 12);
 					}
 				}
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have impounded %s's %s.", arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], VehicleName[CrateVehicle[veh][cvModel] - 400]);
+				strunpack(vehicleName, VehicleName[CrateVehicle[veh][cvModel] - 400], sizeof(vehicleName));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have impounded %s's %s.", arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], vehicleName);
 			}
 			else veh = -1;
 		}

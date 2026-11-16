@@ -369,6 +369,7 @@ CMD:showlicenses(playerid, params[])
 }
 
 ShowDMVMenu(playerid, menu = 0, iTargetID = INVALID_PLAYER_ID) {
+	new vehicleName[18];
 
 	switch(menu) {
 
@@ -393,13 +394,18 @@ ShowDMVMenu(playerid, menu = 0, iTargetID = INVALID_PLAYER_ID) {
 				{
 					if(PlayerVehicleInfo[playerid][i][pvId] > INVALID_PLAYER_VEHICLE_ID) {
 						if(PlayerVehicleInfo[playerid][i][pvTicket]) {
-							format(szMiscArray, sizeof(szMiscArray), "%s\n%s (ticket - $%i)", szMiscArray, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], PlayerVehicleInfo[playerid][i][pvTicket]);
+							strunpack(vehicleName, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], sizeof(vehicleName));
+							format(szMiscArray, sizeof(szMiscArray), "%s\n%s (ticket - $%i)", szMiscArray, vehicleName, PlayerVehicleInfo[playerid][i][pvTicket]);
 							++icount;
 						}
-						else format(szMiscArray, sizeof(szMiscArray), "%s\n%s", szMiscArray, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400]);
+						else {
+							strunpack(vehicleName, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], sizeof(vehicleName));
+							format(szMiscArray, sizeof(szMiscArray), "%s\n%s", szMiscArray, vehicleName);
+						}
 					}
 					else if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
-						format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded - $%i release)", szMiscArray, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], (PlayerVehicleInfo[playerid][i][pvPrice] / 20) + PlayerVehicleInfo[playerid][i][pvTicket] + (PlayerInfo[playerid][pLevel] * 3000));
+						strunpack(vehicleName, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], sizeof(vehicleName));
+						format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded - $%i release)", szMiscArray, vehicleName, (PlayerVehicleInfo[playerid][i][pvPrice] / 20) + PlayerVehicleInfo[playerid][i][pvTicket] + (PlayerInfo[playerid][pLevel] * 3000));
 						++icount;
 					}
 					else format(szMiscArray, sizeof(szMiscArray), "%s\nNone", szMiscArray);
@@ -429,13 +435,18 @@ ShowDMVMenu(playerid, menu = 0, iTargetID = INVALID_PLAYER_ID) {
 				if(PlayerVehicleInfo[iTargetID][i][pvPrice] < 1) PlayerVehicleInfo[iTargetID][i][pvPrice] = 2000000;
 				if(PlayerVehicleInfo[iTargetID][i][pvId] > INVALID_PLAYER_VEHICLE_ID) {
 					if(PlayerVehicleInfo[iTargetID][i][pvTicket]) {
-						format(szMiscArray, sizeof(szMiscArray), "%s\n%s (ticket - $%i)", szMiscArray, VehicleName[PlayerVehicleInfo[iTargetID][i][pvModelId] - 400], PlayerVehicleInfo[iTargetID][i][pvTicket]);
+						strunpack(vehicleName, VehicleName[PlayerVehicleInfo[iTargetID][i][pvModelId] - 400], sizeof(vehicleName));
+						format(szMiscArray, sizeof(szMiscArray), "%s\n%s (ticket - $%i)", szMiscArray, vehicleName, PlayerVehicleInfo[iTargetID][i][pvTicket]);
 						++iCount;
 					}
-					else format(szMiscArray, sizeof(szMiscArray), "%s\n%s", szMiscArray, VehicleName[PlayerVehicleInfo[iTargetID][i][pvModelId] - 400]);
+					else {
+						strunpack(vehicleName, VehicleName[PlayerVehicleInfo[iTargetID][i][pvModelId] - 400], sizeof(vehicleName));
+						format(szMiscArray, sizeof(szMiscArray), "%s\n%s", szMiscArray, vehicleName);
+					}
 				}
 				else if(PlayerVehicleInfo[iTargetID][i][pvImpounded]) {
-					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded - $%i release)", szMiscArray, VehicleName[PlayerVehicleInfo[iTargetID][i][pvModelId] - 400], (PlayerVehicleInfo[iTargetID][i][pvPrice] / 20) + PlayerVehicleInfo[iTargetID][i][pvTicket] + (PlayerInfo[iTargetID][pLevel] * 3000));
+					strunpack(vehicleName, VehicleName[PlayerVehicleInfo[iTargetID][i][pvModelId] - 400], sizeof(vehicleName));
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded - $%i release)", szMiscArray, vehicleName, (PlayerVehicleInfo[iTargetID][i][pvPrice] / 20) + PlayerVehicleInfo[iTargetID][i][pvTicket] + (PlayerInfo[iTargetID][pLevel] * 3000));
 					++iCount;
 				}
 				else format(szMiscArray, sizeof(szMiscArray), "%s\nNone", szMiscArray);

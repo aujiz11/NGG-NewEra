@@ -906,6 +906,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 public OnPlayerModelSelection(playerid, response, listid, modelid)
 {
+	new vehicleName[18];
 	/*if(!response)
 	{
  		if(listid == CarList)
@@ -931,6 +932,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 				szMiscArray[0] = 0;
 				for(new z;z<MAX_PLAYERTOYS;z++)
 				{
+					new boneName[16];
 					new name[24];
    					format(name, sizeof(name), "None");
 
@@ -938,11 +940,12 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 					{
 						if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][z][ptModelID])
 						{
-							format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+							strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 						}
 					}
 
-					format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, z, name, HoldingBones[PlayerToyInfo[playerid][z][ptBone]]);
+					strunpack(boneName, HoldingBones[PlayerToyInfo[playerid][z][ptBone]], sizeof(boneName));
+					format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, z, name, boneName);
 				}
 				printf("MODELID: %d", modelid);
 				ShowPlayerDialogEx(playerid, DIALOG_SHOPBUYTOYS, DIALOG_STYLE_LIST, "Select a Slot", szMiscArray, "Select", "Cancel");
@@ -958,7 +961,8 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 		{
 			new string[128];
 			SetPVarInt(playerid, "VehicleID", modelid), SetPVarInt(playerid, "BoatShop", 1);
-			format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", VehicleName[modelid-400], number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[5][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[5][sItemPrice]));
+			strunpack(vehicleName, VehicleName[modelid-400], sizeof(vehicleName));
+			format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", vehicleName, number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[5][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[5][sItemPrice]));
 			ShowPlayerDialogEx(playerid, DIALOG_CARSHOP, DIALOG_STYLE_MSGBOX, "Vehicle Shop", string, "Purchase", "Cancel");
 		}
 	}
@@ -968,7 +972,8 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 		{
 			new string[128];
 			SetPVarInt(playerid, "VehicleID", modelid);
-			format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", VehicleName[modelid-400], number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[5][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[5][sItemPrice]));
+			strunpack(vehicleName, VehicleName[modelid-400], sizeof(vehicleName));
+			format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", vehicleName, number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[5][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[5][sItemPrice]));
 			ShowPlayerDialogEx(playerid, DIALOG_CARSHOP, DIALOG_STYLE_MSGBOX, "Vehicle Shop", string, "Purchase", "Cancel");
 		}
 	}
@@ -994,14 +999,16 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 				{
 					new string[128];
 					SetPVarInt(playerid, "VehicleID", modelid);
-					format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", VehicleName[modelid-400], number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[5][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[5][sItemPrice]));
+					strunpack(vehicleName, VehicleName[modelid-400], sizeof(vehicleName));
+					format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", vehicleName, number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[5][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[5][sItemPrice]));
 					ShowPlayerDialogEx(playerid, DIALOG_CARSHOP, DIALOG_STYLE_MSGBOX, "Vehicle Shop", string, "Purchase", "Cancel");
 				}
 				else
 				{
 					new string[128];
 					SetPVarInt(playerid, "VehicleID", modelid);
-					format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", VehicleName[modelid-400], number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[20][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[20][sItemPrice]));
+					strunpack(vehicleName, VehicleName[modelid-400], sizeof(vehicleName));
+					format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", vehicleName, number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[20][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[20][sItemPrice]));
 					ShowPlayerDialogEx(playerid, DIALOG_RENTACAR, DIALOG_STYLE_MSGBOX, "Rent a Car", string, "Purchase", "Cancel");
 				}
 			}
@@ -1035,7 +1042,8 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 	    {
 	        new string[128];
        		SetPVarInt(playerid, "VehicleID", modelid);
-       		format(string, sizeof(string), "Item: %s\nCost: 1 Restricted Car Voucher", VehicleName[modelid-400]);
+			strunpack(vehicleName, VehicleName[modelid-400], sizeof(vehicleName));
+			format(string, sizeof(string), "Item: %s\nCost: 1 Restricted Car Voucher", vehicleName);
    			ShowPlayerDialogEx(playerid, DIALOG_CARSHOP2, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Shop", string, "Purchase", "Cancel");
 	    }
 	}
@@ -5634,6 +5642,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 	{
 		if(response)
 		{
+			new boneName[16];
 			new toycount = GetFreeToySlot(playerid), string[144];
 			if(toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot attach more than 10 objects, please detach one in order to use helmet.");
 			if(toycount == 9 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach another toy to slot 10 since you have a backpack equipped.");
@@ -5650,10 +5659,11 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 			{
 				if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][extralist_id][ptModelID])
 				{
-					format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+					strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 				}
 			}
-			SendClientMessageEx(playerid, COLOR_RED, "Successfully attached %s(%d) (Bone: %s) (Slot: %d)", name, PlayerToyInfo[playerid][extralist_id][ptModelID], HoldingBones[PlayerToyInfo[playerid][extralist_id][ptBone]], extralist_id);
+			strunpack(boneName, HoldingBones[PlayerToyInfo[playerid][extralist_id][ptBone]], sizeof(boneName));
+			SendClientMessageEx(playerid, COLOR_RED, "Successfully attached %s(%d) (Bone: %s) (Slot: %d)", name, PlayerToyInfo[playerid][extralist_id][ptModelID], boneName, extralist_id);
 			SetPVarInt(playerid, "HelmetOn", extralist_id);
 			PlayerHoldingObject[playerid][toycount] = extralist_id;
 			SetPlayerAttachedObject(playerid, toycount, PlayerToyInfo[playerid][extralist_id][ptModelID], PlayerToyInfo[playerid][extralist_id][ptBone], PlayerToyInfo[playerid][extralist_id][ptPosX], PlayerToyInfo[playerid][extralist_id][ptPosY], PlayerToyInfo[playerid][extralist_id][ptPosZ],
@@ -5675,7 +5685,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		{
 			if(HoldingObjectsAll[i][holdingmodelid] == modelid)
 			{
-				format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+				strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 				break;
 			}
 		}
@@ -5691,7 +5701,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		{
 			if(HoldingObjectsAll[i][holdingmodelid] == modelid)
 			{
-				format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+				strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 				break;
 			}
 		}

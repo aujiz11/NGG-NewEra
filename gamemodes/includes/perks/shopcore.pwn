@@ -329,6 +329,7 @@ CMD:shopcar(playerid, params[]) {
 			SendClientMessageEx(playerid, COLOR_GREY, "That person has too many vehicles spawned - they must store one first.");
 		}
 		else {
+			new vehicleName[18];
 
 			new
 				Float: arr_fPlayerPos[4],
@@ -338,9 +339,10 @@ CMD:shopcar(playerid, params[]) {
 			GetPlayerFacingAngle(iTargetID, arr_fPlayerPos[3]);
 			CreatePlayerVehicle(iTargetID, GetPlayerFreeVehicleId(iTargetID), iModelID, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2], arr_fPlayerPos[3], iColors[0], iColors[1], 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully created a %s for %s (invoice %s).", VehicleName[iModelID - 400], GetPlayerNameEx(iTargetID), szInvoice);
+			strunpack(vehicleName, VehicleName[iModelID - 400], sizeof(vehicleName));
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully created a %s for %s (invoice %s).", vehicleName, GetPlayerNameEx(iTargetID), szInvoice);
 
-			format(szMessage, sizeof(szMessage), "%s created a %s (%i) for %s(%d) (invoice %s).", GetPlayerNameEx(playerid), VehicleName[iModelID - 400], iModelID, GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), szInvoice);
+			format(szMessage, sizeof(szMessage), "%s created a %s (%i) for %s(%d) (invoice %s).", GetPlayerNameEx(playerid), vehicleName, iModelID, GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), szInvoice);
 			Log("logs/shoplog.log", szMessage);
 		}
 	}
@@ -1752,7 +1754,9 @@ CMD:cooldowns(playerid, params[])
 	{
 		if(gettime() < PlayerInfo[playerid][mCooldown][item])
 		{
-			SendClientMessageEx(playerid, -1, "You can purchase another \"%s\" in %s.", mItemName[item], ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
+			new microItemName[36];
+			strunpack(microItemName, mItemName[item], sizeof(microItemName));
+			SendClientMessageEx(playerid, -1, "You can purchase another \"%s\" in %s.", microItemName, ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
 		}
 	}
 	return 1;

@@ -625,6 +625,7 @@ Group_ReturnType(iGroupType) {
 }
 
 Group_DisplayDialog(iPlayerID, iGroupID) {
+	new lockerCostName[13];
 
 	new
 		szTitle[22 + GROUP_MAX_NAME_LEN],
@@ -690,6 +691,7 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		Array_Count(arrGroupData[iGroupID][g_iLockerGuns], MAX_GROUP_WEAPONS)
 	);
 
+	strunpack(lockerCostName, lockercosttype[arrGroupData[iGroupID][g_iLockerCostType]], sizeof(lockerCostName));
 	format(szDialog, sizeof(szDialog),
 		"%s\
 		{BBBBBB}Edit Payments\n\
@@ -706,7 +708,7 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		String_Count(arrGroupDivisions[iGroupID], MAX_GROUP_DIVS),
 		String_Count(arrGroupRanks[iGroupID], MAX_GROUP_RANKS),
 		GetPlayerDistanceFromPoint(iPlayerID, arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2]),
-		lockercosttype[arrGroupData[iGroupID][g_iLockerCostType]],
+		lockerCostName,
 		GetPlayerDistanceFromPoint(iPlayerID, arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2]),
 		(arrGroupData[iGroupID][g_iTackleAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iTackleAccess],
 		(arrGroupData[iGroupID][g_iWheelClamps] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iWheelClamps],
@@ -826,6 +828,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+	new areaName[27];
 
 	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	new sendername[MAX_PLAYER_NAME];
@@ -2402,7 +2405,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				for(new i = 0; i < 161; ++i)
 				{
-					strcat(szDialog, "\n"), strcat(szDialog, AreaName[i]);
+					strunpack(areaName, AreaName[i], sizeof(areaName));
+					strcat(szDialog, "\n"), strcat(szDialog, areaName);
 				}
 
 				format(szTitle, sizeof szTitle, "Add Group Jurisdiction {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
@@ -2415,12 +2419,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response)
 			{
 				new query[256];
-				mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `jurisdictions` (`id`, `GroupID`, `JurisdictionID`, `AreaName`) VALUES (NULL, %d, %d, '%s')", iGroupID, listitem,AreaName[listitem]);
+				strunpack(areaName, AreaName[listitem], sizeof(areaName));
+				mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `jurisdictions` (`id`, `GroupID`, `JurisdictionID`, `AreaName`) VALUES (NULL, %d, %d, '%s')", iGroupID, listitem,areaName);
 				mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 				mysql_tquery(MainPipeline, "SELECT * FROM `jurisdictions`", "Group_QueryFinish", "ii", GROUP_QUERY_JURISDICTIONS, 0);
-				format(string, sizeof(string), "You have successfully assigned %s to %s.", AreaName[listitem], arrGroupData[iGroupID][g_szGroupName]);
+				strunpack(areaName, AreaName[listitem], sizeof(areaName));
+				format(string, sizeof(string), "You have successfully assigned %s to %s.", areaName, arrGroupData[iGroupID][g_szGroupName]);
 				SendClientMessage(playerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "%s has assigned %s to %s", GetPlayerNameEx(playerid), AreaName[listitem], arrGroupData[iGroupID][g_szGroupName]);
+				format(string, sizeof(string), "%s has assigned %s to %s", GetPlayerNameEx(playerid), areaName, arrGroupData[iGroupID][g_szGroupName]);
 				Log("logs/editgroup.log", string);
 			}
 			else return Group_DisplayDialog(playerid, iGroupID);
@@ -3526,14 +3532,18 @@ CMD:dvtrackcar(playerid, params[])
 		for(new i; i < MAX_DYNAMIC_VEHICLES; i++) {
 			new iModelID = DynVehicleInfo[i][gv_iModel];
 			if(400 <= iModelID < 612 && DynVehicleInfo[i][gv_igID] == iGroupID) {
+				new vehicleName[18];
 				if(DynVehicleInfo[i][gv_iDisabled] == 1) {
-					format(vstring, sizeof(vstring), "%s\n(%d)%s (Upkeep: $%s) (repo'd)", vstring, i, VehicleName[iModelID - 400], number_format(DynVehicleInfo[i][gv_iUpkeep]));
+					strunpack(vehicleName, VehicleName[iModelID - 400], sizeof(vehicleName));
+					format(vstring, sizeof(vstring), "%s\n(%d)%s (Upkeep: $%s) (repo'd)", vstring, i, vehicleName, number_format(DynVehicleInfo[i][gv_iUpkeep]));
 				}
 				else if(DynVehicleInfo[i][gv_iDisabled] == 2) {
-					format(vstring, sizeof(vstring), "%s\n(%d)%s (Upkeep: $%s) (stored)", vstring, i, VehicleName[iModelID - 400], number_format(DynVehicleInfo[i][gv_iUpkeep]));
+					strunpack(vehicleName, VehicleName[iModelID - 400], sizeof(vehicleName));
+					format(vstring, sizeof(vstring), "%s\n(%d)%s (Upkeep: $%s) (stored)", vstring, i, vehicleName, number_format(DynVehicleInfo[i][gv_iUpkeep]));
 				}
 				else if(DynVehicleInfo[i][gv_iSpawnedID] != INVALID_VEHICLE_ID) {
-					format(vstring, sizeof(vstring), "%s\n(%d) %s (Upkeep: $%s) (VID: %d)", vstring, i, VehicleName[iModelID - 400], number_format(DynVehicleInfo[i][gv_iUpkeep]), DynVehicleInfo[i][gv_iSpawnedID]);
+					strunpack(vehicleName, VehicleName[iModelID - 400], sizeof(vehicleName));
+					format(vstring, sizeof(vstring), "%s\n(%d) %s (Upkeep: $%s) (VID: %d)", vstring, i, vehicleName, number_format(DynVehicleInfo[i][gv_iUpkeep]), DynVehicleInfo[i][gv_iSpawnedID]);
 				}
 			}
 		}
@@ -3557,7 +3567,9 @@ CMD:grepocars(playerid, params[])
 			    {
 			        if(DynVehicleInfo[iDvSlotID][gv_iDisabled] == 1)
 			        {
-			            SendClientMessageEx(playerid, COLOR_GRAD1, "Vehicle ID: %d - %s - Buyback Cost $%d.", iDvSlotID, VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel] - 400], floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2));
+			            new vehicleName[18];
+			            strunpack(vehicleName, VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel] - 400], sizeof(vehicleName));
+			            SendClientMessageEx(playerid, COLOR_GRAD1, "Vehicle ID: %d - %s - Buyback Cost $%d.", iDvSlotID, vehicleName, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2));
 					}
 			    }
 			}
@@ -3573,6 +3585,7 @@ CMD:gvbuyback(playerid, params[])
 	new iGroupID = PlayerInfo[playerid][pLeader];
 	if((0 <= iGroupID <= MAX_GROUPS) && PlayerInfo[playerid][pRank] == Group_GetMaxRank(iGroupID))
 	{
+		new vehicleName[18];
 		if(sscanf(params, "s[6]", iVehicle)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gvbuyback [ID/all] *You may buy an individual car back, or all of your repo'd cars.");
 			return SendClientMessageEx(playerid, COLOR_GREY, "Note: ID is indicated under /grepocars");
@@ -3594,14 +3607,16 @@ CMD:gvbuyback(playerid, params[])
 								DynVehicleInfo[iDvSlotID][gv_iDisabled] = 0;
 								DynVeh_Save(iDvSlotID);
 								DynVeh_Spawn(iDvSlotID);
-								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have bought back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
+								strunpack(vehicleName, VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], sizeof(vehicleName));
+								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have bought back your %s with ID %d for $%d", vehicleName, iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
 								new str[128];
 								format(str, sizeof(str), "Vehicle Slot ID %d buyback fee cost $%d to %s's budget fund.",iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), arrGroupData[iGroupID][g_szGroupName]);
 								GroupPayLog(iGroupID, str);
 							}
 							else
 							{
-								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your agency could not afford to buy back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
+								strunpack(vehicleName, VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], sizeof(vehicleName));
+								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your agency could not afford to buy back your %s with ID %d for $%d", vehicleName, iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
 								return 1;
 							}
 						}
@@ -3622,7 +3637,8 @@ CMD:gvbuyback(playerid, params[])
 					DynVehicleInfo[iDvSlotID][gv_iDisabled] = 0;
 					DynVeh_Save(iDvSlotID);
 					DynVeh_Spawn(iDvSlotID);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have bought back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
+					strunpack(vehicleName, VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], sizeof(vehicleName));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have bought back your %s with ID %d for $%d", vehicleName, iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
 					new str[128];
 					format(str, sizeof(str), "Vehicle Slot ID %d buyback fee cost $%d to %s's budget fund.",iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), arrGroupData[iGroupID][g_szGroupName]);
 					GroupPayLog(iGroupID, str);
@@ -3630,7 +3646,8 @@ CMD:gvbuyback(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your agency could not afford to buy back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
+					strunpack(vehicleName, VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], sizeof(vehicleName));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your agency could not afford to buy back your %s with ID %d for $%d", vehicleName, iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
 					return 1;
 				}
 			}
@@ -4926,14 +4943,16 @@ CMD:dvstorage(playerid, params[])
 					new iModelID = DynVehicleInfo[i][gv_iModel];
 					if(400 <= iModelID < 612 && DynVehicleInfo[i][gv_igID] == iGroupID)
 					{
+						new vehicleName[18];
+						strunpack(vehicleName, VehicleName[iModelID - 400], sizeof(vehicleName));
 						if(DynVehicleInfo[i][gv_iDisabled] == 1) {
-							format(vstring, sizeof(vstring), "%s\n(%d)%s (Disabled)", vstring, i, VehicleName[iModelID - 400]);
+							format(vstring, sizeof(vstring), "%s\n(%d)%s (Disabled)", vstring, i, vehicleName);
 						}
 						else if(DynVehicleInfo[i][gv_iDisabled] == 2) {
-							format(vstring, sizeof(vstring), "%s\n(%d) %s (Stored)", vstring, i, VehicleName[iModelID - 400], DynVehicleInfo[i][gv_iSpawnedID]);
+							format(vstring, sizeof(vstring), "%s\n(%d) %s (Stored)", vstring, i, vehicleName, DynVehicleInfo[i][gv_iSpawnedID]);
 						}
 						else if(DynVehicleInfo[i][gv_iSpawnedID] != INVALID_VEHICLE_ID) {
-							format(vstring, sizeof(vstring), "%s\n(%d) %s (Spawned) [VehicleID : %d]", vstring, i, VehicleName[iModelID - 400], DynVehicleInfo[i][gv_iSpawnedID]);
+							format(vstring, sizeof(vstring), "%s\n(%d) %s (Spawned) [VehicleID : %d]", vstring, i, vehicleName, DynVehicleInfo[i][gv_iSpawnedID]);
 						}
 					}
 				}
@@ -6260,6 +6279,7 @@ CMD:clothes(playerid, params[])
 
 stock ShowPlayerCrimeDialog(playerid)
 {
+	new crimeName[41];
 	new szCrime[1200];
 	format(szCrime, sizeof(szCrime), "----Misdemeanors----\n");
 	for(new i = 0; i < sizeof(SuspectCrimes); i++)
@@ -6267,7 +6287,8 @@ stock ShowPlayerCrimeDialog(playerid)
 		if(SuspectCrimeInfo[i][0] == 0)
 		{
 		    strcat(szCrime, "{FFFF00}");
-		    strcat(szCrime, SuspectCrimes[i]);
+		    strunpack(crimeName, SuspectCrimes[i], sizeof(crimeName));
+		    strcat(szCrime, crimeName);
 		    strcat(szCrime, "\n");
 		}
 	}
@@ -6277,7 +6298,8 @@ stock ShowPlayerCrimeDialog(playerid)
 		if(SuspectCrimeInfo[i][0] == 1)
 		{
 		    strcat(szCrime, "{AA3333}");
-		    strcat(szCrime, SuspectCrimes[i]);
+		    strunpack(crimeName, SuspectCrimes[i], sizeof(crimeName));
+		    strcat(szCrime, crimeName);
 			strcat(szCrime, "\n");
 		}
 	}

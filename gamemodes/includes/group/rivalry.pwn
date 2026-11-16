@@ -156,7 +156,9 @@ CMD:grouptoy(playerid, params[]) {
 
 		szMiscArray[0] = 0;
 		for(new i; i < sizeof(HoldingBones); ++i) {
-			format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, HoldingBones[i]);
+			new boneName[16];
+			strunpack(boneName, HoldingBones[i], sizeof(boneName));
+			format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, boneName);
 		}
 		ShowPlayerDialogEx(playerid, DIALOG_TOYS_GROUP, DIALOG_STYLE_LIST, "Edit Group Toy", szMiscArray, "Select", "Cancel");
 	}
@@ -343,13 +345,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 		}
 		case DIALOG_TOYS_GROUP: {
+			new boneName[16];
 
 			if(!response) return 1;
 			PlayerInfo[playerid][pGroupToyBone] = listitem;
 			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `GroupToyBone` = %d WHERE `id` = %d", listitem, GetPlayerSQLId(playerid));
 			mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-			SendClientMessageEx(playerid, COLOR_GRAD1, "[Group Toy]: Attached to %s", HoldingBones[listitem]);
+			strunpack(boneName, HoldingBones[listitem], sizeof(boneName));
+			SendClientMessageEx(playerid, COLOR_GRAD1, "[Group Toy]: Attached to %s", boneName);
 			RemovePlayerAttachedObject(playerid, 8);
 			SetPlayerAttachedObject(playerid, 8, arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupToyID], PlayerInfo[playerid][pGroupToyBone],
 				PlayerInfo[playerid][pGroupToy][0], PlayerInfo[playerid][pGroupToy][1], PlayerInfo[playerid][pGroupToy][2],

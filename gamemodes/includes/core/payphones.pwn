@@ -98,7 +98,7 @@ GetPhoneZone(id, zone[], len) {
 				&& y <= gMainZones[i][SAZONE_AREA][4]
 				&& z >= gMainZones[i][SAZONE_AREA][2]
 				&& z <= gMainZones[i][SAZONE_AREA][5]) {
-			format(zone, len, "%s", gMainZones[i][SAZONE_NAME]);
+			strunpack(zone, gMainZones[i][SAZONE_NAME], len);
 		}
 	}
 	
@@ -110,7 +110,7 @@ GetPhoneZone(id, zone[], len) {
 				&& y <= gSAZones[i][SAZONE_AREA][4]
 				&& z >= gSAZones[i][SAZONE_AREA][2]
 				&& z <= gSAZones[i][SAZONE_AREA][5]) {
-			return format(zone, len, "%s", gSAZones[i][SAZONE_NAME]);
+			return strunpack(zone, gSAZones[i][SAZONE_NAME], len);
 		}
 	}
 	return 0;

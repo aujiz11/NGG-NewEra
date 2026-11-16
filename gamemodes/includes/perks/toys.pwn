@@ -46,7 +46,9 @@ stock CompleteToyTrade(playerid)
 	{
 		if(HoldingObjectsAll[i][holdingmodelid] == toyid)
 		{
-			format(name, sizeof(name), "(%s)", HoldingObjectsAll[i][holdingmodelname]);
+			new toyName[24];
+			strunpack(toyName, HoldingObjectsAll[i][holdingmodelname], sizeof(toyName));
+			format(name, sizeof(name), "(%s)", toyName);
 		}
 	}
 	if(toyid != 0 && (strcmp(name, "None", true) == 0))
@@ -191,6 +193,7 @@ stock CompleteToyTrade(playerid)
 
 stock ShowEditMenu(playerid)
 {
+	new boneName[16];
 	new
 		iIndex = GetPVarInt(playerid, "ToySlot");
 
@@ -227,7 +230,8 @@ stock ShowEditMenu(playerid)
 	PlayerToyInfo[playerid][iIndex][ptScaleY], PlayerToyInfo[playerid][iIndex][ptScaleZ]);
 
     new stringg[128];
-    format(stringg, sizeof(stringg), "Bone (%s)\nOffset\nToggle Auto-Attach", HoldingBones[PlayerToyInfo[playerid][iIndex][ptBone]]);
+    strunpack(boneName, HoldingBones[PlayerToyInfo[playerid][iIndex][ptBone]], sizeof(boneName));
+    format(stringg, sizeof(stringg), "Bone (%s)\nOffset\nToggle Auto-Attach", boneName);
  	ShowPlayerDialogEx(playerid, EDITTOYS2, DIALOG_STYLE_LIST, "Toy Menu: Edit", stringg, "Select", "Cancel");
 	return 1;
 }
@@ -322,12 +326,14 @@ AttachToy(playerid, toyid, msg = 1)
 	{
 		if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][toyid][ptModelID])
 		{
-			format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+			strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 		}
 	}
 	if(msg)
 	{
-		SendClientMessageEx(playerid, COLOR_RED, "Successfully attached %s (Bone: %s) (Slot: %d)", name, HoldingBones[PlayerToyInfo[playerid][toyid][ptBone]], toyid);
+		new boneName[16];
+		strunpack(boneName, HoldingBones[PlayerToyInfo[playerid][toyid][ptBone]], sizeof(boneName));
+		SendClientMessageEx(playerid, COLOR_RED, "Successfully attached %s (Bone: %s) (Slot: %d)", name, boneName, toyid);
 	}
 	PlayerHoldingObject[playerid][toycount] = toyid;
 	SetPlayerAttachedObject(playerid, toycount, PlayerToyInfo[playerid][toyid][ptModelID], PlayerToyInfo[playerid][toyid][ptBone], PlayerToyInfo[playerid][toyid][ptPosX], PlayerToyInfo[playerid][toyid][ptPosY], PlayerToyInfo[playerid][toyid][ptPosZ],
@@ -396,13 +402,14 @@ CMD:listtoys(playerid, params[]) {
 			new icount = GetPlayerToySlots(giveplayerid);
 		    for(new x;x<icount;x++)
 			{
+				new boneName[16];
 				new name[24] = "None";
 
 				for(new i;i<sizeof(HoldingObjectsAll);i++)
 				{
 					if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[giveplayerid][x][ptModelID])
 					{
-						format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+						strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 						break;
 					}
 				}
@@ -410,7 +417,8 @@ CMD:listtoys(playerid, params[]) {
 				{
 				    format(name, sizeof(name), "ID: %d", PlayerToyInfo[giveplayerid][x][ptModelID]);
 				}
-				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s%s)\n", szMiscArray, x, name, HoldingBones[PlayerToyInfo[giveplayerid][x][ptBone]], (PlayerToyInfo[giveplayerid][x][ptSpecial] > 1) ? (", Special") : (""));
+				strunpack(boneName, HoldingBones[PlayerToyInfo[giveplayerid][x][ptBone]], sizeof(boneName));
+				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s%s)\n", szMiscArray, x, name, boneName, (PlayerToyInfo[giveplayerid][x][ptSpecial] > 1) ? (", Special") : (""));
 			}
 			format(string, sizeof(string), "Listing %s's Toys - Select a Slot", GetPlayerNameEx(giveplayerid));
 			ShowPlayerDialogEx(playerid, LISTTOYS_DELETETOY, DIALOG_STYLE_LIST, string, szMiscArray, "Delete", "Cancel");
@@ -496,6 +504,7 @@ CMD:giveobject(playerid, params[])
 		new icount = GetPlayerToySlots(giveplayerid);
 		for(new x;x<icount;x++)
 		{
+		    new boneName[16];
 		    new name[24];
 		    format(name, sizeof(name), "None");
 
@@ -503,14 +512,15 @@ CMD:giveobject(playerid, params[])
 			{
 				if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[giveplayerid][x][ptModelID])
 		        {
-          			format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+					strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 				}
 			}
 			if(PlayerToyInfo[giveplayerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
 			{
 			    format(name, sizeof(name), "ID: %d", PlayerToyInfo[giveplayerid][x][ptModelID]);
 			}
-			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x, name, HoldingBones[PlayerToyInfo[giveplayerid][x][ptBone]]);
+			strunpack(boneName, HoldingBones[PlayerToyInfo[giveplayerid][x][ptBone]], sizeof(boneName));
+			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x, name, boneName);
 		}
    		ShowPlayerDialogEx(playerid, GIVETOY, DIALOG_STYLE_LIST, "Select a slot", szMiscArray, "Select", "Cancel");
 	}
@@ -737,7 +747,7 @@ CMD:selltoy(playerid, params[])
 		{
 			if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
 			{
-				format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+				strunpack(name, HoldingObjectsAll[i][holdingmodelname], sizeof(name));
 			}
 		}
 		if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))

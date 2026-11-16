@@ -66,6 +66,7 @@ stock TaxSale(amount)
 
 stock GivePlayerStoreItem(playerid, type, business, item, price)
 {
+	new storeItemName[19];
 	if(Businesses[business][bInventory] <= StoreItemCost[item-1][ItemValue]) return SendClientMessageEx(playerid, COLOR_GRAD2, "The store does not have enough stock for that item!");
 	new string[256];
 	switch (item)
@@ -269,19 +270,21 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 	{
 		case 0:
 		{
-			format(string,sizeof(string),"%s(%d) (IP: %s) has bought a %s in %s (%d) for $%s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), StoreItems[item-1], Businesses[business][bName], business, number_format(price));
+			strunpack(storeItemName, StoreItems[item-1], sizeof(storeItemName));
+			format(string,sizeof(string),"%s(%d) (IP: %s) has bought a %s in %s (%d) for $%s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), storeItemName, Businesses[business][bName], business, number_format(price));
 			Log("logs/business.log", string);
-			format(string,sizeof(string),"* You have purchased a %s from %s for $%s.", StoreItems[item-1], Businesses[business][bName], number_format(price));
+			format(string,sizeof(string),"* You have purchased a %s from %s for $%s.", storeItemName, Businesses[business][bName], number_format(price));
 			SendClientMessage(playerid, COLOR_GRAD2, string);
 		}
 		case 1:
 		{
 			new offerer = GetPVarInt(playerid, "Business_ItemOfferer");
-			format(string, sizeof(string), "%s %s(%d) (IP: %s) has sold a %s to %s (IP: %s) for $%s in %s (%d)", GetBusinessRankName(PlayerInfo[offerer][pBusinessRank]), GetPlayerNameEx(offerer), GetPlayerSQLId(offerer), GetPlayerIpEx(offerer), StoreItems[item-1], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(price), Businesses[business][bName], business);
+			strunpack(storeItemName, StoreItems[item-1], sizeof(storeItemName));
+			format(string, sizeof(string), "%s %s(%d) (IP: %s) has sold a %s to %s (IP: %s) for $%s in %s (%d)", GetBusinessRankName(PlayerInfo[offerer][pBusinessRank]), GetPlayerNameEx(offerer), GetPlayerSQLId(offerer), GetPlayerIpEx(offerer), storeItemName, GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(price), Businesses[business][bName], business);
 			Log("logs/business.log", string);
-			format(string,sizeof(string),"* %s has purchased the %s from you for $%s.", GetPlayerNameEx(playerid), StoreItems[item-1], number_format(price));
+			format(string,sizeof(string),"* %s has purchased the %s from you for $%s.", GetPlayerNameEx(playerid), storeItemName, number_format(price));
 			SendClientMessage(offerer, COLOR_GRAD2, string);
-			format(string,sizeof(string),"* You have purchased the %s from %s for $%s.", StoreItems[item-1], GetPlayerNameEx(offerer), number_format(price));
+			format(string,sizeof(string),"* You have purchased the %s from %s for $%s.", storeItemName, GetPlayerNameEx(offerer), number_format(price));
 			SendClientMessage(playerid, COLOR_GRAD2, string);
 			DeletePVar(playerid, "Business_ItemType");
 			DeletePVar(playerid, "Business_ItemPrice");
@@ -303,11 +306,21 @@ stock DisplayItemPricesDialog(businessid, playerid)
 
 	for(new item; item < i; item++)
 	{
+	    new storeItemName[19], sexItemName[15], restaurantItemName[13];
 	    if(Businesses[businessid][bItemPrices][item] == 0) continue;
 		new cost = (PlayerInfo[playerid][pDonateRank] >= 1) ? (floatround(Businesses[businessid][bItemPrices][item] * 0.8)) : (Businesses[businessid][bItemPrices][item]);
-	    if(Businesses[businessid][bType] == BUSINESS_TYPE_STORE || Businesses[businessid][bType] == BUSINESS_TYPE_GASSTATION) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, StoreItems[item], number_format(cost));
-	    else if(Businesses[businessid][bType] == BUSINESS_TYPE_SEXSHOP) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, SexItems[item], number_format(cost));
-	    else if(Businesses[businessid][bType] == BUSINESS_TYPE_RESTAURANT) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, RestaurantItems[item], number_format(cost));
+	    if(Businesses[businessid][bType] == BUSINESS_TYPE_STORE || Businesses[businessid][bType] == BUSINESS_TYPE_GASSTATION) {
+			strunpack(storeItemName, StoreItems[item], sizeof(storeItemName));
+			format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, storeItemName, number_format(cost));
+	    }
+	    else if(Businesses[businessid][bType] == BUSINESS_TYPE_SEXSHOP) {
+			strunpack(sexItemName, SexItems[item], sizeof(sexItemName));
+			format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, sexItemName, number_format(cost));
+	    }
+	    else if(Businesses[businessid][bType] == BUSINESS_TYPE_RESTAURANT) {
+			strunpack(restaurantItemName, RestaurantItems[item], sizeof(restaurantItemName));
+			format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, restaurantItemName, number_format(cost));
+	    }
 		format(pvar, sizeof(pvar), "Business_MenuItem%d", iListIndex);
 		SetPVarInt(playerid, pvar, item + 1);
 	    format(pvar, sizeof(pvar), "Business_MenuItemPrice%d", iListIndex++);
@@ -2676,8 +2689,10 @@ CMD:offermenu(playerid, params[])
 	{
 		for (new item; item < sizeof(Drinks); item++)
 		{
+			new drinkName[9];
 			new cost = (PlayerInfo[playerid][pDonateRank] >= 1) ? (floatround(Businesses[iBusiness][bItemPrices][item] * 0.8)) : (Businesses[iBusiness][bItemPrices][item]);
-			format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, Drinks[item], number_format(cost));
+			strunpack(drinkName, Drinks[item], sizeof(drinkName));
+			format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, drinkName, number_format(cost));
 			format(pvar, sizeof(pvar), "Business_MenuItem%d", line);
 			SetPVarInt(playerid, pvar, item);
 			format(pvar, sizeof(pvar), "Business_MenuItemPrice%d", line);
@@ -2689,8 +2704,10 @@ CMD:offermenu(playerid, params[])
 	{
 		for (new item; item < sizeof(RestaurantItems); ++item)
 		{
+			new restaurantItemName[13];
 			new cost = (PlayerInfo[playerid][pDonateRank] >= 1) ? (floatround(Businesses[iBusiness][bItemPrices][item] * 0.8)) : (Businesses[iBusiness][bItemPrices][item]);
-			format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, RestaurantItems[item], number_format(cost));
+			strunpack(restaurantItemName, RestaurantItems[item], sizeof(restaurantItemName));
+			format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, restaurantItemName, number_format(cost));
 			format(pvar, sizeof(pvar), "Business_MenuItem%d", line);
 			SetPVarInt(playerid, pvar, item);
 			format(pvar, sizeof(pvar), "Business_MenuItemPrice%d", line);
@@ -2730,7 +2747,9 @@ CMD:buyfood(playerid, const params[])
 
 	for (new item; item < sizeof(RestaurantItems); ++item)
 	{
-		format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, RestaurantItems[item], number_format(Businesses[iBusiness][bItemPrices][item]));
+		new restaurantItemName[13];
+		strunpack(restaurantItemName, RestaurantItems[item], sizeof(restaurantItemName));
+		format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, restaurantItemName, number_format(Businesses[iBusiness][bItemPrices][item]));
 		format(pvar, sizeof(pvar), "Business_MenuItem%d", line);
 		SetPVarInt(playerid, pvar, item);
 		format(pvar, sizeof(pvar), "Business_MenuItemPrice%d", line);
@@ -2832,6 +2851,7 @@ CMD:binventory(playerid, params[])
 
 CMD:offeritem(playerid, params[])
 {
+	new storeItemName[19];
 	new buyerid, item;
 	if (PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID || Businesses[PlayerInfo[playerid][pBusiness]][bType] != BUSINESS_TYPE_STORE && Businesses[PlayerInfo[playerid][pBusiness]][bType] != BUSINESS_TYPE_GASSTATION) {
 		return SendClientMessageEx(playerid, COLOR_GREY, "You are not working for a 24/7 store!");
@@ -2864,8 +2884,9 @@ CMD:offeritem(playerid, params[])
 		return SendClientMessageEx(playerid, COLOR_GREY, "The customer is not near you!");
     }
 
-    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to buy a %s.", GetPlayerNameEx(buyerid), StoreItems[item-1]);
-    SendClientMessageEx(buyerid, COLOR_LIGHTBLUE, "* %s wants to sell you a %s for $%s (type /accept item to buy)", GetPlayerNameEx(playerid), StoreItems[item-1], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bItemPrices][item-1]));
+    strunpack(storeItemName, StoreItems[item-1], sizeof(storeItemName));
+    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to buy a %s.", GetPlayerNameEx(buyerid), storeItemName);
+    SendClientMessageEx(buyerid, COLOR_LIGHTBLUE, "* %s wants to sell you a %s for $%s (type /accept item to buy)", GetPlayerNameEx(playerid), storeItemName, number_format(Businesses[PlayerInfo[playerid][pBusiness]][bItemPrices][item-1]));
 
 	SetPVarInt(buyerid, "Business_ItemType", item-1);
 	SetPVarInt(buyerid, "Business_ItemPrice", Businesses[PlayerInfo[playerid][pBusiness]][bItemPrices][item-1]);
@@ -3133,8 +3154,12 @@ CMD:editprices(playerid, params[])
 	    if(PlayerInfo[playerid][pBusinessRank] >= 5)
 		{
 			if(Businesses[iBusiness][bType] == BUSINESS_TYPE_STORE || Businesses[iBusiness][bType] == BUSINESS_TYPE_GASSTATION) {
+				new storeItemName[19];
 	    		new szDialog[912];
-				for (new i = 0; i < sizeof(StoreItems); i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s) (Cost of Good: $%s)\n", szDialog, StoreItems[i], number_format(Businesses[iBusiness][bItemPrices][i]), number_format(floatround(StoreItemCost[i][ItemValue] * BUSINESS_ITEMS_COST)) );
+				for (new i = 0; i < sizeof(StoreItems); i++) {
+					strunpack(storeItemName, StoreItems[i], sizeof(storeItemName));
+					format(szDialog, sizeof(szDialog), "%s%s  ($%s) (Cost of Good: $%s)\n", szDialog, storeItemName, number_format(Businesses[iBusiness][bItemPrices][i]), number_format(floatround(StoreItemCost[i][ItemValue] * BUSINESS_ITEMS_COST)) );
+				}
 				ShowPlayerDialogEx(playerid, DIALOG_STOREPRICES, DIALOG_STYLE_LIST, "Edit 24/7 Prices", szDialog, "Edit", "Cancel");
 				SetPVarInt(playerid, "EditingBusiness", iBusiness);
 			}
@@ -3151,15 +3176,23 @@ CMD:editprices(playerid, params[])
 			}
 			else if(Businesses[iBusiness][bType] == BUSINESS_TYPE_BAR || Businesses[iBusiness][bType] == BUSINESS_TYPE_CLUB /*|| Businesses[iBusiness][bType] == BUSINESS_TYPE_RESTAURANT*/)
 			{
+			    new drinkName[9];
 			    new szDialog[512];
-				for (new i; i < sizeof(Drinks); i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, Drinks[i], number_format(Businesses[iBusiness][bItemPrices][i]));
+				for (new i; i < sizeof(Drinks); i++) {
+					strunpack(drinkName, Drinks[i], sizeof(drinkName));
+					format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, drinkName, number_format(Businesses[iBusiness][bItemPrices][i]));
+				}
 				ShowPlayerDialogEx(playerid, DIALOG_BARPRICE, DIALOG_STYLE_LIST, "Edit Business Prices", szDialog, "Edit", "Cancel");
 				SetPVarInt(playerid, "EditingBusiness", iBusiness);
 			}
 			else if(Businesses[iBusiness][bType] == BUSINESS_TYPE_SEXSHOP)
 			{
+			    new sexItemName[15];
 			    new szDialog[512];
-				for (new i = 0; i < sizeof(SexItems); i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, SexItems[i], number_format(Businesses[iBusiness][bItemPrices][i]));
+				for (new i = 0; i < sizeof(SexItems); i++) {
+					strunpack(sexItemName, SexItems[i], sizeof(sexItemName));
+					format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, sexItemName, number_format(Businesses[iBusiness][bItemPrices][i]));
+				}
 				ShowPlayerDialogEx(playerid, DIALOG_SEXSHOP, DIALOG_STYLE_LIST, "Edit Business Prices", szDialog, "Edit", "Cancel");
 				SetPVarInt(playerid, "EditingBusiness", iBusiness);
 			}
@@ -3168,7 +3201,9 @@ CMD:editprices(playerid, params[])
 				new buf[512];
 				for (new i = 0; i < sizeof(RestaurantItems); ++i)
 				{
-					format(buf, sizeof(buf), "%s%s  ($%s)\n", buf, RestaurantItems[i], number_format(Businesses[iBusiness][bItemPrices][i]));
+					new restaurantItemName[13];
+					strunpack(restaurantItemName, RestaurantItems[i], sizeof(restaurantItemName));
+					format(buf, sizeof(buf), "%s%s  ($%s)\n", buf, restaurantItemName, number_format(Businesses[iBusiness][bItemPrices][i]));
 				}
 
 				ShowPlayerDialogEx(playerid, DIALOG_RESTAURANT, DIALOG_STYLE_LIST, "Edit Business Prices", buf, "Edit", "Cancel");

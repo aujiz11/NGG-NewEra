@@ -38,45 +38,45 @@
 
 new const gLocalZones[][SAZONE_MAIN] = { 
 	//	NAME                         
-	{"The Big Ear",	                {-410.00,1403.30,-3.00,-137.90,1681.20,200.00}},
-	{"Angel Pine",                  {-2324.90,-2584.20,-6.10,-1964.20,-2212.10,200.00}},
-	{"Bayside",                     {-2741.00,2175.10,0.00,-2353.10,2722.70,200.00}},
-	{"Blueberry",                   {19.60,-404.10,3.80,349.60,-220.10,200.00}},
-	{"City Hall",                   {-2867.80,277.40,-9.10,-2593.40,458.40,200.00}},
-	{"Dillimore",                   {580.70,-674.80,-9.50,861.00,-404.70,200.00}},
-	{"Doherty",                     {-2270.00,-324.10,-0.00,-1794.90,-222.50,200.00}},
-	{"Downtown",                    {-1993.20,265.20,-9.10,-1794.90,578.30,200.00}},
-	{"Downtown Los Santos",         {1463.90,-1430.80,-89.00,1724.70,-1290.80,110.90}},
-	{"East Beach",                  {2632.80,-1852.80,-89.00,2959.30,-1668.10,110.90}},
-	{"Flint Intersection",          {-187.70,-1596.70,-89.00,17.00,-1276.60,110.90}},
-	{"Flint Range",                 {-594.10,-1648.50,0.00,-187.70,-1276.60,200.00}},
-	{"Ganton",                      {2222.50,-1722.30,-89.00,2632.80,-1628.50,110.90}},
-	{"Glen Park",                   {1812.60,-1350.70,-89.00,2056.80,-1100.80,110.90}},
-	{"Hilltop Farm",                {967.30,-450.30,-3.00,1176.70,-217.90,200.00}},
-	{"Idlewood",                    {1971.60,-1852.80,-89.00,2222.50,-1742.30,110.90}},
-	{"Jefferson",                   {2056.80,-1449.60,-89.00,2266.20,-1372.00,110.90}},
-	{"Little Mexico",               {1758.90,-1722.20,-89.00,1812.60,-1577.50,110.90}},
-	{"Los Santos International",    {2051.60,-2597.20,-39.00,2152.40,-2394.30,60.90}},
-	{"Marina",                      {807.90,-1577.50,-89.00,926.90,-1416.20,110.90}},
-	{"Market",                      {787.40,-1416.20,-89.00,1072.60,-1310.20,110.90}},
-	{"Montgomery",                  {1119.50,119.50,-3.00,1451.40,493.30,200.00}},
-	{"Montgomery Intersection",     {1582.40,347.40,0.00,1664.60,401.70,200.00}},
-	{"Mulholland",                  {1414.00,-768.00,-89.00,1667.60,-452.40,110.90}},
-	{"Mulholland Intersection",     {1463.90,-1150.80,-89.00,1812.60,-768.00,110.90}},
-	{"Ocean Docks",                 {2324.00,-2145.10,-89.00,2703.50,-2059.20,110.90}},
-	{"Palomino Creek",              {2160.20,-149.00,0.00,2576.90,228.30,200.00}},
-	{"Pershing Square",             {1440.90,-1722.20,-89.00,1583.50,-1577.50,110.90}},
-	{"Richman",                     {647.50,-1118.20,-89.00,787.40,-954.60,110.90}},
-	{"Rodeo",                       {334.50,-1406.00,-89.00,466.20,-1292.00,110.90}},
-	{"Santa Maria Beach",           {342.60,-2173.20,-89.00,647.70,-1684.60,110.90}},
-	{"Temple",                      {1252.30,-1130.80,-89.00,1378.30,-1026.30,110.90}},
-	{"The Panopticon",              {-947.90,-304.30,-1.10,-319.60,327.00,200.00}},
-	{"The Sherman Dam",             {-968.70,1929.40,-3.00,-481.10,2155.20,200.00}},
-	{"Unity Station",               {1692.60,-1971.80,-20.40,1812.60,-1932.80,79.50}},
-	{"Verdant Bluffs",              {1249.60,-2179.20,-89.00,1692.60,-1842.20,110.90}},
-	{"Verona Beach",                {647.70,-2173.20,-89.00,930.20,-1804.20,110.90}},
-	{"Vinewood",                    {787.40,-1310.20,-89.00,952.60,-1130.80,110.90}},
-	{"Willowfield",                 {2541.70,-2059.20,-89.00,2703.50,-1941.40,110.90}}
+	{!"The Big Ear",	                {-410.00,1403.30,-3.00,-137.90,1681.20,200.00}},
+	{!"Angel Pine",                  {-2324.90,-2584.20,-6.10,-1964.20,-2212.10,200.00}},
+	{!"Bayside",                     {-2741.00,2175.10,0.00,-2353.10,2722.70,200.00}},
+	{!"Blueberry",                   {19.60,-404.10,3.80,349.60,-220.10,200.00}},
+	{!"City Hall",                   {-2867.80,277.40,-9.10,-2593.40,458.40,200.00}},
+	{!"Dillimore",                   {580.70,-674.80,-9.50,861.00,-404.70,200.00}},
+	{!"Doherty",                     {-2270.00,-324.10,-0.00,-1794.90,-222.50,200.00}},
+	{!"Downtown",                    {-1993.20,265.20,-9.10,-1794.90,578.30,200.00}},
+	{!"Downtown Los Santos",         {1463.90,-1430.80,-89.00,1724.70,-1290.80,110.90}},
+	{!"East Beach",                  {2632.80,-1852.80,-89.00,2959.30,-1668.10,110.90}},
+	{!"Flint Intersection",          {-187.70,-1596.70,-89.00,17.00,-1276.60,110.90}},
+	{!"Flint Range",                 {-594.10,-1648.50,0.00,-187.70,-1276.60,200.00}},
+	{!"Ganton",                      {2222.50,-1722.30,-89.00,2632.80,-1628.50,110.90}},
+	{!"Glen Park",                   {1812.60,-1350.70,-89.00,2056.80,-1100.80,110.90}},
+	{!"Hilltop Farm",                {967.30,-450.30,-3.00,1176.70,-217.90,200.00}},
+	{!"Idlewood",                    {1971.60,-1852.80,-89.00,2222.50,-1742.30,110.90}},
+	{!"Jefferson",                   {2056.80,-1449.60,-89.00,2266.20,-1372.00,110.90}},
+	{!"Little Mexico",               {1758.90,-1722.20,-89.00,1812.60,-1577.50,110.90}},
+	{!"Los Santos International",    {2051.60,-2597.20,-39.00,2152.40,-2394.30,60.90}},
+	{!"Marina",                      {807.90,-1577.50,-89.00,926.90,-1416.20,110.90}},
+	{!"Market",                      {787.40,-1416.20,-89.00,1072.60,-1310.20,110.90}},
+	{!"Montgomery",                  {1119.50,119.50,-3.00,1451.40,493.30,200.00}},
+	{!"Montgomery Intersection",     {1582.40,347.40,0.00,1664.60,401.70,200.00}},
+	{!"Mulholland",                  {1414.00,-768.00,-89.00,1667.60,-452.40,110.90}},
+	{!"Mulholland Intersection",     {1463.90,-1150.80,-89.00,1812.60,-768.00,110.90}},
+	{!"Ocean Docks",                 {2324.00,-2145.10,-89.00,2703.50,-2059.20,110.90}},
+	{!"Palomino Creek",              {2160.20,-149.00,0.00,2576.90,228.30,200.00}},
+	{!"Pershing Square",             {1440.90,-1722.20,-89.00,1583.50,-1577.50,110.90}},
+	{!"Richman",                     {647.50,-1118.20,-89.00,787.40,-954.60,110.90}},
+	{!"Rodeo",                       {334.50,-1406.00,-89.00,466.20,-1292.00,110.90}},
+	{!"Santa Maria Beach",           {342.60,-2173.20,-89.00,647.70,-1684.60,110.90}},
+	{!"Temple",                      {1252.30,-1130.80,-89.00,1378.30,-1026.30,110.90}},
+	{!"The Panopticon",              {-947.90,-304.30,-1.10,-319.60,327.00,200.00}},
+	{!"The Sherman Dam",             {-968.70,1929.40,-3.00,-481.10,2155.20,200.00}},
+	{!"Unity Station",               {1692.60,-1971.80,-20.40,1812.60,-1932.80,79.50}},
+	{!"Verdant Bluffs",              {1249.60,-2179.20,-89.00,1692.60,-1842.20,110.90}},
+	{!"Verona Beach",                {647.70,-2173.20,-89.00,930.20,-1804.20,110.90}},
+	{!"Vinewood",                    {787.40,-1310.20,-89.00,952.60,-1130.80,110.90}},
+	{!"Willowfield",                 {2541.70,-2059.20,-89.00,2703.50,-1941.40,110.90}}
 };
 
 #include <YSI_Coding\y_hooks>
@@ -254,18 +254,21 @@ CreateNatDisZone(playerid, iTypeID, iZoneTypeID, iZoneID, iStatus) {
 forward OnCreateNatDisZone(playerid, i, iTypeID, iZoneTypeID, iZoneID, iStatus);
 public OnCreateNatDisZone(playerid, i, iTypeID, iZoneTypeID, iZoneID, iStatus) 
 {
+	new mainZoneName[28];
 	szMiscArray[0] = 0;
 	GetPlayerName(playerid, szMiscArray, sizeof(szMiscArray));
 	switch(iZoneTypeID)
 	{
 		case 1:
 		{
-			format(szMiscArray, sizeof(szMiscArray), "[NATDIS ZONE] [Deployed by: %s] [Location: %s]", szMiscArray, gMainZones[iZoneID][SAZONE_NAME]);
+			strunpack(mainZoneName, gMainZones[iZoneID][SAZONE_NAME], sizeof(mainZoneName));
+			format(szMiscArray, sizeof(szMiscArray), "[NATDIS ZONE] [Deployed by: %s] [Location: %s]", szMiscArray, mainZoneName);
 			
 		}
 		case 2:
 		{
-			format(szMiscArray, sizeof(szMiscArray), "[NATDIS ZONE] [Deployed by: %s] [Location: %s]", szMiscArray, gMainZones[iZoneID][SAZONE_NAME]);			
+			strunpack(mainZoneName, gMainZones[iZoneID][SAZONE_NAME], sizeof(mainZoneName));
+			format(szMiscArray, sizeof(szMiscArray), "[NATDIS ZONE] [Deployed by: %s] [Location: %s]", szMiscArray, mainZoneName);
 		}
 	}
 	Log("logs/NatDisZones.log", szMiscArray);
@@ -1444,6 +1447,7 @@ NatDis_EditZones(playerid, iZoneTypeID) {
 		case 1:
 		{
 			for(new i; i < sizeof(gMainZones); ++i) {
+				new mainZoneName[28];
 
 				switch(NatDis[i][nat_iStatus]) // needs rework
 				{
@@ -1452,7 +1456,8 @@ NatDis_EditZones(playerid, iZoneTypeID) {
 					case 3: szStatus = "{00FF00}Safe Zone";
 					default: szStatus = "{FFFFFF}Inactive Zone";
 				}
-				format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}%s%s\t%s\n", szMiscArray, gMainZones[i][SAZONE_NAME], szStatus);
+				strunpack(mainZoneName, gMainZones[i][SAZONE_NAME], sizeof(mainZoneName));
+				format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}%s%s\t%s\n", szMiscArray, mainZoneName, szStatus);
 			}
 			
 		}
@@ -1460,6 +1465,7 @@ NatDis_EditZones(playerid, iZoneTypeID) {
 		{
 			for(new i; i < sizeof(gLocalZones); ++i)
 			{
+				new localZoneName[28];
 
 				switch(NatDis[i][nat_iStatus]) // needs rework
 				{
@@ -1468,7 +1474,8 @@ NatDis_EditZones(playerid, iZoneTypeID) {
 					case 3: szStatus = "{00FF00}Safe Zone";
 					default: szStatus = "{FFFFFF}Inactive Zone";
 				}
-				format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}%s%s\t%s\n", szMiscArray, gLocalZones[i][SAZONE_NAME], szStatus);
+				strunpack(localZoneName, gLocalZones[i][SAZONE_NAME], sizeof(localZoneName));
+				format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}%s%s\t%s\n", szMiscArray, localZoneName, szStatus);
 			}
 		}
 	}

@@ -813,6 +813,7 @@ public PokerPulse(tableid)
 		}
 
 		if(playerid != -1) {
+			new cardTexture[15];
 			// Debug
 		/*	new string[512];
 			format(string, sizeof(string), "Debug:~n~pkrActive: %d~n~pkrPlayers: %d~n~pkrActivePlayers: %d~n~pkrActiveHands: %d~n~pkrPos: %d~n~pkrDelay: %d~n~pkrRound: %d~n~pkrStage: %d~n~pkrActiveBet: %d~n~pkrRotations: %d",
@@ -874,19 +875,20 @@ public PokerPulse(tableid)
 					if(GetPVarInt(playerid, "pkrActiveHand")) {
 						if(playerid != pid) {
 							if(PokerTable[tableid][pkrActive] == 4 && PokerTable[tableid][pkrDelay] <= 19 && GetPVarInt(playerid, "pkrHide") != 1) {
-								format(tmpString, sizeof(tmpString), "%s", DeckTextdrw[GetPVarInt(playerid, "pkrCard1")+1]);
+								strunpack(tmpString, DeckTextdrw[GetPVarInt(playerid, "pkrCard1")+1], sizeof(tmpString));
 								PlayerTextDrawSetString(pid, PlayerPokerUI[pid][2+tmp], tmpString);
-								format(tmpString, sizeof(tmpString), "%s", DeckTextdrw[GetPVarInt(playerid, "pkrCard2")+1]);
+								strunpack(tmpString, DeckTextdrw[GetPVarInt(playerid, "pkrCard2")+1], sizeof(tmpString));
 								PlayerTextDrawSetString(pid, PlayerPokerUI[pid][3+tmp], tmpString);
 							} else {
-								PlayerTextDrawSetString(pid, PlayerPokerUI[pid][2+tmp], DeckTextdrw[0]);
-								PlayerTextDrawSetString(pid, PlayerPokerUI[pid][3+tmp], DeckTextdrw[0]);
+								strunpack(cardTexture, DeckTextdrw[0], sizeof(cardTexture));
+								PlayerTextDrawSetString(pid, PlayerPokerUI[pid][2+tmp], cardTexture);
+								PlayerTextDrawSetString(pid, PlayerPokerUI[pid][3+tmp], cardTexture);
 							}
 						} else {
-							format(tmpString, sizeof(tmpString), "%s", DeckTextdrw[GetPVarInt(playerid, "pkrCard1")+1]);
+							strunpack(tmpString, DeckTextdrw[GetPVarInt(playerid, "pkrCard1")+1], sizeof(tmpString));
 							PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][2+tmp], tmpString);
 
-							format(tmpString, sizeof(tmpString), "%s", DeckTextdrw[GetPVarInt(playerid, "pkrCard2")+1]);
+							strunpack(tmpString, DeckTextdrw[GetPVarInt(playerid, "pkrCard2")+1], sizeof(tmpString));
 							PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][3+tmp], tmpString);
 						}
 					} else {
@@ -963,35 +965,52 @@ public PokerPulse(tableid)
 				}
 				case 1: // Flop
 				{
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][31], DeckTextdrw[PokerTable[tableid][pkrCCards][0]+1]);
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][32], DeckTextdrw[PokerTable[tableid][pkrCCards][1]+1]);
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][33], DeckTextdrw[PokerTable[tableid][pkrCCards][2]+1]);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][0]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][31], cardTexture);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][1]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][32], cardTexture);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][2]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][33], cardTexture);
 					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][34], "LD_CARD:cdback");
 					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][35], "LD_CARD:cdback");
 				}
 				case 2: // Turn
 				{
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][31], DeckTextdrw[PokerTable[tableid][pkrCCards][0]+1]);
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][32], DeckTextdrw[PokerTable[tableid][pkrCCards][1]+1]);
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][33], DeckTextdrw[PokerTable[tableid][pkrCCards][2]+1]);
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][34], DeckTextdrw[PokerTable[tableid][pkrCCards][3]+1]);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][0]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][31], cardTexture);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][1]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][32], cardTexture);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][2]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][33], cardTexture);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][3]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][34], cardTexture);
 					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][35], "LD_CARD:cdback");
 				}
 				case 3: // River
 				{
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][31], DeckTextdrw[PokerTable[tableid][pkrCCards][0]+1]);
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][32], DeckTextdrw[PokerTable[tableid][pkrCCards][1]+1]);
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][33], DeckTextdrw[PokerTable[tableid][pkrCCards][2]+1]);
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][34], DeckTextdrw[PokerTable[tableid][pkrCCards][3]+1]);
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][35], DeckTextdrw[PokerTable[tableid][pkrCCards][4]+1]);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][0]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][31], cardTexture);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][1]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][32], cardTexture);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][2]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][33], cardTexture);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][3]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][34], cardTexture);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][4]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][35], cardTexture);
 				}
 				case 4: // Win
 				{
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][31], DeckTextdrw[PokerTable[tableid][pkrCCards][0]+1]);
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][32], DeckTextdrw[PokerTable[tableid][pkrCCards][1]+1]);
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][33], DeckTextdrw[PokerTable[tableid][pkrCCards][2]+1]);
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][34], DeckTextdrw[PokerTable[tableid][pkrCCards][3]+1]);
-					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][35], DeckTextdrw[PokerTable[tableid][pkrCCards][4]+1]);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][0]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][31], cardTexture);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][1]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][32], cardTexture);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][2]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][33], cardTexture);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][3]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][34], cardTexture);
+					strunpack(cardTexture, DeckTextdrw[PokerTable[tableid][pkrCCards][4]+1], sizeof(cardTexture));
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][35], cardTexture);
 				}
 			}
 		} else {

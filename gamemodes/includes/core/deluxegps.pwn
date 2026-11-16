@@ -210,7 +210,7 @@ GetEntity3DZone(entityID, type, zone[], len, Float:x2 = 0.0, Float:y2 = 0.0, Flo
 				&& y <= gSAZones[i][SAZONE_AREA][4]
 				&& z >= gSAZones[i][SAZONE_AREA][2]
 				&& z <= gSAZones[i][SAZONE_AREA][5]) {
-			return format(zone, len, gSAZones[i][SAZONE_NAME], 0);
+			return strunpack(zone, gSAZones[i][SAZONE_NAME], len);
 		}
 	}
 	return 0;

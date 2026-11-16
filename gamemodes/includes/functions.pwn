@@ -1621,6 +1621,13 @@ stock GetPlayerSQLId(playerid)
 	return -1;
 }
 
+stock GetVehicleName(vehicleid)
+{
+	new name[18];
+	strunpack(name, VehicleName[GetVehicleModel(vehicleid)-400], sizeof(name));
+	return name;
+}
+
 stock GetPlayerNameExt(playerid)
 {
 	new name[MAX_PLAYER_NAME];

@@ -3706,7 +3706,9 @@ public CheckSales3(index)
 			szDialog[0] = 0;
 			for(new m; m < MAX_MICROITEMS; m++)
 			{
-				format(szDialog, sizeof(szDialog), "%s%s: %s | Total Credits: %s\n", szDialog, mItemName[m], number_format(mSolds[m]), number_format(mAmount[m]));
+				new microItemName[36];
+				strunpack(microItemName, mItemName[m], sizeof(microItemName));
+				format(szDialog, sizeof(szDialog), "%s%s: %s | Total Credits: %s\n", szDialog, microItemName, number_format(mSolds[m]), number_format(mAmount[m]));
 				mTotal += mAmount[m];
 			}
 			format(szDialog, sizeof(szDialog), "%sTotal Amount of Credits spent: %s", szDialog, number_format(Total+mTotal));

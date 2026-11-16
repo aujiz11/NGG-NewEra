@@ -170,7 +170,6 @@
     strcat((%0[0] = '\0', %0), %1, %2)*/
 
 			/*  ---------------- FUNCTIONS ----------------- */
-#define 		GetVehicleName(%0) VehicleName[GetVehicleModel(%0)-400]
 #define 		GetPlayerCash(%0) PlayerInfo[%0][pCash]
 #define 		GivePlayerCash(%0,%1) PlayerInfo[%0][pCash] += (%1)
 #define 		ini_SetString(%0,%1,%2)			if(%2[0]) fwrite(%0, %1), fputchar(%0, '=', false) && fwrite(%0, %2) && fwrite(%0, "\r\n")
