@@ -2992,7 +2992,7 @@ CMD:cancelresupply(playerid, params[])
 		else if (orderstate == 2) {
 		    foreach(new i : Player)
 			{			
-				if(TruckDeliveringTo[GetPlayerVehicleID(i)] == PlayerInfo[playerid][pBusiness])
+				if(0 < TruckUsed[i] < MAX_VEHICLES && TruckDeliveringTo[TruckUsed[i]] == PlayerInfo[playerid][pBusiness])
 				{
 					SendClientMessageEx(playerid, COLOR_WHITE, "You can't cancel an order while it is being shipped!");
 					return 1;

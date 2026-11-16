@@ -621,14 +621,6 @@ public OtherTimerEx(playerid, type)
 				SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPDRUGRUNTIMER);
 			}
 		}
-		case TYPE_TPTRUCKRUNTIMER:
-		{
-			if(GetPVarInt(playerid, "tpTruckRunTimer") > 0)
-			{
-				SetPVarInt(playerid, "tpTruckRunTimer", GetPVarInt(playerid, "tpTruckRunTimer")-1);
-				SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPTRUCKRUNTIMER);
-			}
-		}
 		case TYPE_ARMSTIMER:
 		{
 			if(GetPVarInt(playerid, "ArmsTimer") > 0)
@@ -1154,12 +1146,6 @@ forward DisableCheckPoint(playerid);
 public DisableCheckPoint(playerid)
 {
     return DisablePlayerCheckpoint(playerid);
-}
-
-forward AttachGasTrailer(trailerid,vehicleid);
-public AttachGasTrailer(trailerid,vehicleid)
-{
-	return AttachTrailerToVehicle(trailerid, vehicleid);
 }
 
 forward Float: GetDistanceToCar(playerid, veh);

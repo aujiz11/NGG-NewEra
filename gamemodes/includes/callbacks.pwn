@@ -1605,6 +1605,7 @@ public OnPlayerConnect(playerid)
 
 public OnPlayerDisconnect(playerid, reason)
 {
+	CancelTruckDelivery(playerid, true, false);
 	Mechanic_CancelFix(playerid, false);
 	Craftsman_StopFirstAid(playerid);
 	gPasswordPending[playerid] = false;
@@ -1878,20 +1879,6 @@ public OnPlayerDisconnect(playerid, reason)
 				PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
 				PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
 			}
-		}
-		if(GetPVarType(playerid, "Gas_TrailerID"))
-		{
-		    if(GetVehicleModel(GetPVarInt(playerid, "Gas_TrailerID")) == 584)
-		    {
-		        printf("Deleting Trailer. Veh ID %d Player %s", GetPVarInt(playerid, "Gas_TrailerID"), GetPlayerNameExt(playerid));
-		        DestroyVehicle(GetPVarInt(playerid, "Gas_TrailerID"));
-		    }
-		}
-
-		// added to prevent trucks holding shit after logging out. hotfix #1069
-		if(TruckUsed[playerid] != INVALID_VEHICLE_ID)
-		{
-			SetVehicleToRespawn(TruckUsed[playerid]);
 		}
 
 		if (GetPVarType(playerid, "_BoxingFight"))
@@ -2676,21 +2663,13 @@ public OnVehicleDeath(vehicleid) {
 	new Float:X, Float:Y, Float:Z;
 	new Float:XB, Float:YB, Float:ZB;
 	VehicleStatus{vehicleid} = 1;
-	TruckContents{vehicleid} = 0;
 	foreach(new i: Player)
 	{
 		Mechanic_ClearVehicleWork(i, vehicleid);
 		if(GetPVarInt(i, "rccam") && GetPVarInt(i, "rcveh") == vehicleid) {
 			Craftsman_StopRCCam(i, !PlayerIsDead[i]);
 		}	
-		if(TruckUsed[i] == vehicleid)
-		{
-			DeletePVar(i, "LoadTruckTime");
-			DeletePVar(i, "TruckDeliver");
-			TruckUsed[i] = INVALID_VEHICLE_ID;
-			gPlayerCheckpointStatus[i] = CHECKPOINT_NONE;
-			DisablePlayerCheckpoint(i);
-		}
+		Shipment_ClearVehicleWork(i, vehicleid);
 		if(InsidePlane[i] == vehicleid)
 		{
 			TogglePlayerSpectating(i, 0);
@@ -2718,6 +2697,8 @@ public OnVehicleDeath(vehicleid) {
 	{
 		DynVeh_Spawn(DynVeh[vehicleid]);
 	}*/
+	TruckContents{vehicleid} = 0;
+	TruckDeliveringTo[vehicleid] = INVALID_BUSINESS_ID;
 	arr_Engine{vehicleid} = 0;
 }
 
@@ -3237,7 +3218,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			DisablePlayerCheckpoint(playerid);
 		}
 	}
-	if(GetPVarInt(playerid, "TruckDeliver") > 0 && gPlayerCheckpointStatus[playerid] != CHECKPOINT_RETURNTRUCK)
+	if(GetPVarInt(playerid, "TruckDeliver") > 0 && !GetPVarType(playerid, "LoadTruckTime") && gPlayerCheckpointStatus[playerid] != CHECKPOINT_RETURNTRUCK)
 	{
 	    new vehicleid = GetPlayerVehicleID(playerid);
 	    if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
@@ -3245,7 +3226,7 @@ public OnPlayerEnterCheckpoint(playerid)
 	        SendClientMessageEx(playerid, COLOR_WHITE, "You are not in a Truck!");
 	        return 1;
 	    }
-	    if(TruckUsed[playerid] != INVALID_VEHICLE_ID && vehicleid != TruckUsed[playerid])
+	    if(!(0 < vehicleid < MAX_VEHICLES) || TruckUsed[playerid] != vehicleid)
 	    {
 	        SendClientMessageEx(playerid, COLOR_WHITE, "This is not your Truck with the goods you are suppose to deliver!");
 	        return 1;
@@ -3258,7 +3239,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			return 1;
    		}
 
-		if(GetPVarInt(playerid, "tpTruckRunTimer") != 0)
+		if(GetPVarInt(playerid, "TruckRunDeadline") > gettime())
 		{
   			new string[128];
 			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport truck/boat running.", GetPlayerNameEx(playerid), playerid);
@@ -3267,6 +3248,7 @@ public OnPlayerEnterCheckpoint(playerid)
 	    	// Log("logs/hack.log", string);
 		}
 		new truckdeliver = GetPVarInt(playerid, "TruckDeliver");
+		if(!(1 <= truckdeliver <= 7) || TruckContents{vehicleid} != truckdeliver) return 1;
 		TruckContents{vehicleid} = 0;
 
 		if(truckdeliver == 1)
@@ -3313,8 +3295,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Return to the Palamino Docks (see checkpoint on radar).");
 		}
 
-		SetPVarInt(playerid, "tpTruckRunTimer", 30);
-		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPTRUCKRUNTIMER);
+		SetPVarInt(playerid, "TruckRunDeadline", gettime() + 30);
 		return 1;
 	}
 	if(gPlayerCheckpointStatus[playerid] == CHECKPOINT_DELIVERY)
@@ -3325,17 +3306,19 @@ public OnPlayerEnterCheckpoint(playerid)
 	        SendClientMessageEx(playerid, COLOR_WHITE, "You are not in a truck!");
 	        return 1;
 	    }
-	    if(TruckUsed[playerid] != INVALID_VEHICLE_ID && vehicleid != TruckUsed[playerid])
+	    if(!(0 < vehicleid < MAX_VEHICLES) || TruckUsed[playerid] != vehicleid)
 	    {
 	        SendClientMessageEx(playerid, COLOR_WHITE, "This is not your vehicle with the goods you are suppose to deliver!");
 	        return 1;
 	    }
 
 		new business = TruckDeliveringTo[vehicleid];
+		if(!(0 <= business < MAX_BUSINESSES) || Businesses[business][bOrderState] != 2) return CancelTruckDelivery(playerid, false);
+		if(GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0) return 1;
 
 		if (!IsPlayerInRangeOfPoint(playerid, 20.0, Businesses[business][bSupplyPos][0], Businesses[business][bSupplyPos][1], Businesses[business][bSupplyPos][2])) return 1;
 
-		if(GetPVarInt(playerid, "tpTruckRunTimer") != 0)
+		if(GetPVarInt(playerid, "TruckRunDeadline") > gettime())
 		{
   			new string[128];
 			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport truck/boat running.", GetPlayerNameEx(playerid), playerid);
@@ -3344,10 +3327,11 @@ public OnPlayerEnterCheckpoint(playerid)
 	    	// Log("logs/hack.log", string);
 		}
 
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have delivered %s to %s. Return the truck to the San Fierro Docks to collect your pay.", GetInventoryType(business), Businesses[business][bName]);
-
+		if(Businesses[business][bType] == BUSINESS_TYPE_GASSTATION && (!GetPVarInt(playerid, "Gas_TrailerID") || GetVehicleTrailer(vehicleid) != GetPVarInt(playerid, "Gas_TrailerID"))) return CancelTruckDelivery(playerid, false);
+		if(Businesses[business][bOrderAmount] < 0 || Businesses[business][bInventory] > cellmax - Businesses[business][bOrderAmount]) return CancelTruckDelivery(playerid, false);
 		Businesses[business][bOrderState] = 3;
 		Businesses[business][bInventory] += Businesses[business][bOrderAmount];
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have delivered %s to %s. Return the truck to the San Fierro Docks to collect your pay.", GetInventoryType(business), Businesses[business][bName]);
 		foreach (new i: Player)
 		{
 			if (PlayerInfo[i][pBusiness] == business) SendClientMessageEx(i, COLOR_WHITE, "An order has just been delivered to your business.");
@@ -3370,8 +3354,9 @@ public OnPlayerEnterCheckpoint(playerid)
 			{
 				Businesses[business][GasPumpGallons][i] = Businesses[business][GasPumpCapacity][i];
 			}
-			DestroyVehicle(GetVehicleTrailer(vehicleid));
+			new trailerid = GetPVarInt(playerid, "Gas_TrailerID");
 			DeletePVar(playerid, "Gas_TrailerID");
+			DestroyVehicle(trailerid);
 		}
 		SaveBusiness(business);
 		DisablePlayerCheckpoint(playerid);
@@ -3381,8 +3366,6 @@ public OnPlayerEnterCheckpoint(playerid)
 		GameTextForPlayer(playerid, "~w~Waypoint set ~r~San Fierro Docks", 5000, 1);
 		SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Return to the San Fierro Docks (see checkpoint on radar).");
 
-		//SetPVarInt(playerid, "tpTruckRunTimer", 30);
-		//SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPTRUCKRUNTIMER);
 		return 1;
 	}
 	// Pizza Delivery
@@ -3484,6 +3467,8 @@ public OnPlayerEnterCheckpoint(playerid)
 				    	PlayerPlaySound(playerid, 1058, 0.0, 0.0, 0.0);
 				    	DisablePlayerCheckpoint(playerid);
 				    	gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+						if(TruckUsed[playerid] != vehicleid || TruckContents{vehicleid} != 0 || TruckDeliveringTo[vehicleid] != INVALID_BUSINESS_ID) return 1;
+						SetPVarInt(playerid, "ShipmentVehicle", vehicleid);
 						TogglePlayerControllable(playerid, false);
 						SetPVarInt(playerid, "IsFrozen", 1);
 						DisplayOrders(playerid);
@@ -3499,7 +3484,7 @@ public OnPlayerEnterCheckpoint(playerid)
                     SendClientMessageEx(playerid, COLOR_REALRED, "ERROR: Wrong checkpoint entered. Truck delivery canceled completely.");
 					return 1;
 			    }
- 				if(GetPVarInt(playerid, "tpTruckRunTimer") != 0)
+				if(GetPVarInt(playerid, "TruckRunDeadline") > gettime())
 				{
   					new string[128];
 					format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport truck/boat running.", GetPlayerNameEx(playerid), playerid);
@@ -3513,16 +3498,21 @@ public OnPlayerEnterCheckpoint(playerid)
 	        		SendClientMessageEx(playerid, COLOR_WHITE, "You are not in a Shipment Transport Vehicle!");
 	        		return 1;
 	    		}
-	    		if(TruckUsed[playerid] != INVALID_VEHICLE_ID && vehicleid != TruckUsed[playerid])
+				if(!(0 < vehicleid < MAX_VEHICLES) || TruckUsed[playerid] != vehicleid || GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0)
 	    		{
 	        		SendClientMessageEx(playerid, COLOR_WHITE, "This is not the vehicle you used, return the vehicle you used in order to receive your pay!");
 	        		return 1;
 	    		}
 
+				new business = TruckDeliveringTo[vehicleid], cargo = GetPVarInt(playerid, "TruckDeliver");
+				if(business != INVALID_BUSINESS_ID) {
+					if(!(0 <= business < MAX_BUSINESSES) || Businesses[business][bOrderState] != 3) return CancelTruckDelivery(playerid, false);
+				} else if(!(1 <= cargo <= 7) || TruckContents{vehicleid} != 0) return CancelTruckDelivery(playerid, false);
+				new route = TruckRoute[vehicleid];
+				if(business == INVALID_BUSINESS_ID && ((IsABoat(vehicleid) && !(0 <= route < sizeof(BoatDropoffs))) || (!IsABoat(vehicleid) && !(0 <= route < sizeof(TruckerDropoffs))))) return CancelTruckDelivery(playerid, false);
 			    PlayerPlaySound(playerid, 1058, 0.0, 0.0, 0.0);
 			    DisablePlayerCheckpoint(playerid);
 			    gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
-				new route = TruckRoute[vehicleid];
    				new string[128], payment;
 				new level = PlayerInfo[playerid][pTruckSkill];
 				switch(level) {
@@ -3534,7 +3524,11 @@ public OnPlayerEnterCheckpoint(playerid)
 					default: payment = 10500;
 				}
 				new Float:distancepay;
-				if(IsABoat(vehicleid))
+				if(business != INVALID_BUSINESS_ID)
+				{
+					distancepay = GetDistanceBetweenPoints(-1572.767822, 81.137527, 3.554687, Businesses[business][bSupplyPos][0], Businesses[business][bSupplyPos][1], Businesses[business][bSupplyPos][2]) * 1.5;
+				}
+				else if(IsABoat(vehicleid))
 				{
 				    distancepay = floatmul(GetDistanceBetweenPoints(2098.6543,-104.3568,-0.4820, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ]), 1.5);
 				}
@@ -3550,12 +3544,14 @@ public OnPlayerEnterCheckpoint(playerid)
 				 	payment = floatround(iDist / 3000 * payment);
 					if (payment > 25000) payment = 25000;
 
+					if(GetPlayerCash(playerid) > cellmax - payment) return CancelTruckDelivery(playerid, false);
 					GivePlayerCash(playerid, payment);
 
 				    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were paid $%d for delivering the goods and returning the vehicle.", payment);
 				    SetVehicleToRespawn(vehicleid);
 				}
 				else {
+					if(GetPlayerCash(playerid) > cellmax - floatround(payment * 1.25)) return CancelTruckDelivery(playerid, false);
 				    DeletePVar(playerid, "LoadType");
 				    new truckdeliver = GetPVarInt(playerid, "TruckDeliver");
 					TruckContents{vehicleid} = 0;
@@ -3580,11 +3576,10 @@ public OnPlayerEnterCheckpoint(playerid)
 						{
 							switch(level) {
 								case 0 .. 49: GivePlayerValidWeapon(playerid, WEAPON_COLT45);
-								case 50 .. 100: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun", "Select", "");
-								case 101 .. 200: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5", "Select", "");
-								case 201 .. 400: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle", "Select", "");
-								case 401: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle\nAK-47", "Select", "");
-								default: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle\nAK-47", "Select", "");
+								case 50 .. 100: Shipment_ShowWeaponReward(playerid, 2);
+								case 101 .. 200: Shipment_ShowWeaponReward(playerid, 3);
+								case 201 .. 400: Shipment_ShowWeaponReward(playerid, 4);
+								default: Shipment_ShowWeaponReward(playerid, 5);
 							}
 						}
 						else
@@ -3669,6 +3664,7 @@ public OnPlayerEnterCheckpoint(playerid)
 
 				TruckUsed[playerid] = INVALID_VEHICLE_ID;
 				DeletePVar(playerid, "TruckDeliver");
+				DeletePVar(playerid, "TruckRunDeadline");
 
 				new mypoint = -1;
 				for (new i=0; i<MAX_POINTS; i++)
@@ -3676,9 +3672,10 @@ public OnPlayerEnterCheckpoint(playerid)
 					if(strcmp(Points[i][Name], "San Fierro Docks", true) == 0)
 					{
 						mypoint = i;
+						break;
 					}
 				}
-				for(new i = 0; i < MAX_GROUPS; i++)
+				for(new i = 0; mypoint != -1 && i < MAX_GROUPS; i++)
 				{
 					if(strcmp(Points[mypoint][Owner], arrGroupData[i][g_szGroupName], true) == 0)
 					{
@@ -4212,6 +4209,11 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 public OnPlayerStateChange(playerid, newstate, oldstate)
 {
+	if(GetPVarType(playerid, "ShipmentVehicle") && (newstate != PLAYER_STATE_DRIVER || GetPlayerVehicleID(playerid) != GetPVarInt(playerid, "ShipmentVehicle")))
+	{
+		if(TruckUsed[playerid] != INVALID_VEHICLE_ID) CancelTruckDelivery(playerid, false, newstate != PLAYER_STATE_WASTED);
+		else Shipment_StopLoading(playerid, newstate != PLAYER_STATE_WASTED);
+	}
 	if(newstate != PLAYER_STATE_ONFOOT) Mechanic_CancelFix(playerid, newstate != PLAYER_STATE_WASTED);
 	if(GetPVarInt(playerid, "rccam") && (newstate != PLAYER_STATE_DRIVER || GetPlayerVehicleID(playerid) != GetPVarInt(playerid, "rcveh")))
 		Craftsman_StopRCCam(playerid, newstate == PLAYER_STATE_ONFOOT || newstate == PLAYER_STATE_WASTED);

@@ -242,6 +242,7 @@ stock TacklePlayer(playerid, tacklee)
 	format(string, sizeof(string), "%s %s %s has tackled you.  Do you wish to comply or resist?", group, rank, GetPlayerNameEx(playerid));
 	ShowPlayerDialogEx(tacklee, DIALOG_TACKLED, DIALOG_STYLE_MSGBOX, "You've been tackled", string, "Comply", "Resist");
 	Mechanic_CancelFix(tacklee, false);
+	CancelTruckDelivery(tacklee, false, false);
 	return 1;
 }
 
@@ -686,7 +687,8 @@ CMD:clearcargo(playerid, params[])
 
 	new carid = GetPlayerVehicleID(playerid);
  	new closestcar = GetClosestCar(playerid, carid);
-  	if(IsPlayerInRangeOfVehicle(playerid, closestcar, 6.0) && IsATruckerCar(closestcar))
+	if(0 < closestcar < MAX_VEHICLES && IsValidVehicle(closestcar) && GetVehicleVirtualWorld(closestcar) == GetPlayerVirtualWorld(playerid)
+		&& GetVehicleInterior(closestcar) == GetPlayerInterior(playerid) && IsPlayerInRangeOfVehicle(playerid, closestcar, 6.0) && IsATruckerCar(closestcar))
 	{
 		if(IsPlayerInAnyVehicle(playerid))
 		{
@@ -695,7 +697,7 @@ CMD:clearcargo(playerid, params[])
 		}
 		if(TruckContents{closestcar} == 0)
 		{
-		 	if(TruckDeliveringTo[closestcar] != INVALID_BUSINESS_ID && (Businesses[TruckDeliveringTo[closestcar]][bType] != BUSINESS_TYPE_GASSTATION || Businesses[TruckDeliveringTo[closestcar]][bType] == BUSINESS_TYPE_NEWCARDEALERSHIP))
+			if(0 <= TruckDeliveringTo[closestcar] < MAX_BUSINESSES && (Businesses[TruckDeliveringTo[closestcar]][bType] != BUSINESS_TYPE_GASSTATION || Businesses[TruckDeliveringTo[closestcar]][bType] == BUSINESS_TYPE_NEWCARDEALERSHIP))
 			{
 				SendClientMessageEx(playerid, COLOR_WHITE, "You cannot take the content away.");
 				return 1;
@@ -722,18 +724,15 @@ CMD:clearcargo(playerid, params[])
 		else format(truckcontentname, sizeof(truckcontentname), "{FF0606}illegal materials");
  		foreach(new i: Player)
 		{
-			if(TruckUsed[i] == closestcar)
+			if(TruckUsed[i] == closestcar || GetPVarInt(i, "ShipmentVehicle") == closestcar)
 			{
-				TruckUsed[i] = INVALID_VEHICLE_ID;
-				TruckDeliveringTo[closestcar] = INVALID_BUSINESS_ID;
-				TruckContents{closestcar} = 0;
-				TruckRoute[closestcar] = 0;
-				DisablePlayerCheckpoint(i);
-				gPlayerCheckpointStatus[i] = CHECKPOINT_NONE;
-				DeletePVar(i, "TruckDeliver");
+				Shipment_ClearVehicleWork(i, closestcar);
 				SendClientMessageEx(i, COLOR_WHITE, "Your delivery has failed. Law enforcement has confiscated the illegal goods.");
 			}
 		}	
+		TruckDeliveringTo[closestcar] = INVALID_BUSINESS_ID;
+		TruckContents{closestcar} = 0;
+		TruckRoute[closestcar] = 0;
 		new string[128];
 		SendClientMessageEx(playerid, COLOR_WHITE, "You removed the %s {FFFFFF}from the Vehicle.", truckcontentname);
 		format(string, sizeof(string), "* %s has taken the illegal items from the Vehicle.", GetPlayerNameEx(playerid));

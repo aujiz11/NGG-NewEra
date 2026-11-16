@@ -458,6 +458,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				PlayerTextDrawShow(damagedid, _vhudFlash[damagedid]);
 				SetTimerEx("TurnOffFlash", 800, false, "i", damagedid);
 				Mechanic_CancelFix(damagedid, false);
+				CancelTruckDelivery(damagedid, false, false);
 				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~r~Tazer reloading... ~w~12", 1500,3);
 				return 1;
 			}
@@ -492,6 +493,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	    		format(szMiscArray, sizeof(szMiscArray), "* %s fires their beanbag shotgun at %s, stunning them.", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid));
 				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				Mechanic_CancelFix(damagedid, false);
+				CancelTruckDelivery(damagedid, false, false);
 	    		return 1;
 	    	}
 		}
@@ -761,6 +763,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 	// if(GetPVarType(playerid, "pTut")) return 1;
 	if(PlayerIsDead[playerid]) return 1;
 	PlayerIsDead[playerid] = true;
+	CancelTruckDelivery(playerid, false, false);
 	Mechanic_CancelFix(playerid, false);
 	Craftsman_StopFirstAid(playerid);
 	Craftsman_StopRCCam(playerid);

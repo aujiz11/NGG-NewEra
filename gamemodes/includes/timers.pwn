@@ -2575,7 +2575,7 @@ ptask PlayerUpdate[1000](i) {
 			SetHealth(i, 1000);
 			SetArmour(i, GetPVarFloat(i, "cuffarmor"));
 		}
-		if(IsPlayerInAnyVehicle(i) && TruckUsed[i] != INVALID_VEHICLE_ID)
+		if(IsPlayerInAnyVehicle(i) && 0 < TruckUsed[i] < MAX_VEHICLES)
 		{
 			if(TruckUsed[i] == GetPlayerVehicleID(i) && GetPVarInt(i, "Gas_TrailerID") != 0)
 			{
@@ -2591,6 +2591,7 @@ ptask PlayerUpdate[1000](i) {
 							SendClientMessageEx(i, COLOR_REALRED, "You have failed your delivery as you lost your load!");
 						}
 					}
+					else DeletePVar(i, "GasWarnings");
 				} else {
 					CancelTruckDelivery(i);
 					SendClientMessageEx(i, COLOR_REALRED, "There was an issue with the delivery unknown bussiness specified.");

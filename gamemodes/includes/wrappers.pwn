@@ -111,6 +111,7 @@ Internal_DestroyVehicle(vehicleid) {
 	{
 		if(SpikeVehicle[playerid] == vehicleid) SpikeVehicle[playerid] = 0;
 		Mechanic_ClearVehicleWork(playerid, vehicleid);
+		Shipment_ClearVehicleWork(playerid, vehicleid);
 	}
 	Iter_Remove(Vehicles, vehicleid);
 	return DestroyVehicle(vehicleid);

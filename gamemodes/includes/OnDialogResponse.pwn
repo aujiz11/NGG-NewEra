@@ -936,47 +936,23 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	}
 	if(dialogid == DIALOG_LOADTRUCK)
 	{
-		if(response)
+		if(!Shipment_CanLoad(playerid) || !response) return CancelTruckDelivery(playerid, false);
+		new count = GetPVarInt(playerid, "ShipmentOrderCount"), next = GetPVarInt(playerid, "ShipmentOrderNext");
+		if(listitem == count && next > 0) return DisplayOrders(playerid, next);
+		if(!(0 <= listitem < count) || listitem >= sizeof(ListItemTrackId[])) return CancelTruckDelivery(playerid, false);
+		new business = ListItemTrackId[playerid][listitem], vehicleid = TruckUsed[playerid];
+		if(!(0 <= business < MAX_BUSINESSES)) return CancelTruckDelivery(playerid, false);
+		if(Businesses[business][bOrderState] != 1 || Businesses[business][bType] <= 0 || !Shipment_OrderFits(GetVehicleModel(vehicleid), Businesses[business][bType]))
 		{
-			new iBusiness = ListItemTrackId[playerid][listitem];
-			if (Businesses[iBusiness][bOrderState] != 1) {
-				SendClientMessageEx(playerid, COLOR_WHITE, "That order cannot be taken anymore (either taken by another Shipment Contractor or the business has cancelled it)");
-				return 1;
-			}
-			new iTruckModel = GetVehicleModel(GetPlayerVehicleID(playerid));
-			if (iTruckModel != 443 && Businesses[iBusiness][bType] == BUSINESS_TYPE_NEWCARDEALERSHIP) {
-				SendClientMessageEx(playerid, COLOR_WHITE, "You need to be driving a Packer in order to accept orders from car dealerships.");
-				TogglePlayerControllable(playerid, true);
-				DeletePVar(playerid, "IsFrozen");
-				return 1;
-			}
-			if (iTruckModel != 514 && Businesses[iBusiness][bType] == BUSINESS_TYPE_GASSTATION) {
-				SendClientMessageEx(playerid, COLOR_WHITE, "You need to be driving a tank truck in order to accept orders from gas stations.");
-				TogglePlayerControllable(playerid, true);
-				DeletePVar(playerid, "IsFrozen");
-				return 1;
-			}
-			if ((iTruckModel == 443 || iTruckModel == 514) && Businesses[iBusiness][bType] != BUSINESS_TYPE_NEWCARDEALERSHIP && Businesses[iBusiness][bType] != BUSINESS_TYPE_GASSTATION)
-			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "You need to be driving a regular truck (i.e not packer or tank truck) in order to accept orders from this type of business.");
-				TogglePlayerControllable(playerid, true);
-				DeletePVar(playerid, "IsFrozen");
-				return 1;
-			}
-			Businesses[iBusiness][bOrderState] = 2;
-			TruckDeliveringTo[GetPlayerVehicleID(playerid)] = iBusiness;
-			SaveBusiness(iBusiness);
-			format(string,sizeof(string),"* Please wait a moment while the vehicle is being loaded with %s...", GetInventoryType(iBusiness));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			SetPVarInt(playerid, "LoadTruckTime", 10);
-			SetTimerEx("LoadTruck", 1000, false, "d", playerid);
+			SendClientMessageEx(playerid, COLOR_WHITE, "That order is no longer available. Please choose another order.");
+			return DisplayOrders(playerid);
 		}
-		else
-		{
-			DeletePVar(playerid, "IsFrozen");
-			TogglePlayerControllable(playerid, true);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You canceled the loading of the shipment, type /loadshipment to try again.");
-		}
+		Businesses[business][bOrderState] = 2;
+		TruckDeliveringTo[vehicleid] = business;
+		SaveBusiness(business);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait while the vehicle is being loaded with %s...", GetInventoryType(business));
+		Shipment_BeginLoading(playerid, vehicleid, "LoadTruck");
+		return 1;
 	}
 	if((dialogid == BUYTOYSCOP) && response)
 	{
@@ -8328,6 +8304,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	}
 	else if(dialogid == DIALOG_LOADTRUCKOLD) // TRUCKER JOB LOAD TRUCK
 	{
+		if(!Shipment_CanLoad(playerid)) return CancelTruckDelivery(playerid, false);
+		if(response && !(0 <= listitem < 2)) return CancelTruckDelivery(playerid, false);
 		if(response)
 		{
 			if(listitem == 0) // Legal goods
@@ -8362,14 +8340,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		else
 		{
-			DeletePVar(playerid, "IsFrozen");
-			TogglePlayerControllable(playerid, true);
+			CancelTruckDelivery(playerid, false);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You canceled the loading of the shipment, type /loadshipment to try again.");
 		}
 	}
 
 	else if(dialogid == DIALOG_LOADTRUCKL) // TRUCKER JOB LEGAL GOODS
 	{
+		if(!Shipment_CanLoad(playerid)) return CancelTruckDelivery(playerid, false);
+		if(response && !(0 <= listitem < 4)) return CancelTruckDelivery(playerid, false);
 		if(response)
 		{
 
@@ -8393,20 +8372,19 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetPVarInt(playerid, "TruckDeliver", 4);
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait a moment while the vehicle is being loaded with 24/7 items....");
 			}
-			SetPVarInt(playerid, "LoadType", 1);
-			SetPVarInt(playerid, "LoadTruckTime", 10);
-			SetTimerEx("LoadTruckOld", 1000, false, "d", playerid);
+			Shipment_BeginLoading(playerid, TruckUsed[playerid], "LoadTruckOld");
 		}
 		else
 		{
-			DeletePVar(playerid, "IsFrozen");
-			TogglePlayerControllable(playerid, true);
+			CancelTruckDelivery(playerid, false);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You canceled the loading of the shipment, type /loadshipment to try again.");
 		}
 	}
 
 	else if(dialogid == DIALOG_LOADTRUCKI) // TRUCKER JOB ILLEGAL GOODS
 	{
+		if(!Shipment_CanLoad(playerid)) return CancelTruckDelivery(playerid, false);
+		if(response && !(0 <= listitem < 3)) return CancelTruckDelivery(playerid, false);
 		if(response)
 		{
 			// 1 = food and bev
@@ -8432,14 +8410,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetPVarInt(playerid, "TruckDeliver", 7);
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait a moment while the vehicle is being loaded with illegal materials....");
 			}
-			SetPVarInt(playerid, "LoadType", 1);
-			SetPVarInt(playerid, "LoadTruckTime", 10);
-			SetTimerEx("LoadTruckOld", 1000, false, "d", playerid);
+			Shipment_BeginLoading(playerid, TruckUsed[playerid], "LoadTruckOld");
 		}
 		else
 		{
-			DeletePVar(playerid, "IsFrozen");
-			TogglePlayerControllable(playerid, true);
+			CancelTruckDelivery(playerid, false);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You canceled the loading of the shipment, type /loadshipment to try again.");
 		}
 	}

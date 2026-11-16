@@ -1245,20 +1245,11 @@ Vehicle_ResetData(iVehicleID) {
 		WheelClamp{iVehicleID} = 0;
 		arr_Engine{iVehicleID} = 0;
 		stationidv[iVehicleID][0] = 0;
-		TruckContents{iVehicleID} = 0;
-		TruckDeliveringTo[iVehicleID] = INVALID_BUSINESS_ID;
 		VehicleFuel[iVehicleID] = 100.0;
 		
 		foreach(new i: Player)
 		{
-			if(TruckUsed[i] == iVehicleID)
-			{
-				DeletePVar(i, "LoadTruckTime");
-				DeletePVar(i, "TruckDeliver");
-				TruckUsed[i] = INVALID_VEHICLE_ID;
-				gPlayerCheckpointStatus[i] = CHECKPOINT_NONE;
-				DisablePlayerCheckpoint(i);
-			}
+			Shipment_ClearVehicleWork(i, iVehicleID);
 			if(LockStatus{iVehicleID}) {
 				if(PlayerInfo[i][pLockCar] == iVehicleID) {
 					PlayerInfo[i][pLockCar] = INVALID_VEHICLE_ID;
@@ -1274,6 +1265,8 @@ Vehicle_ResetData(iVehicleID) {
 				}
 			}
 		}
+		TruckContents{iVehicleID} = 0;
+		TruckDeliveringTo[iVehicleID] = INVALID_BUSINESS_ID;
 	}
 }
 

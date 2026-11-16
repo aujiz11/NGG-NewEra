@@ -37,418 +37,306 @@
 
 #include <YSI_Coding\y_hooks>
 
-forward HijackTruck(playerid);
-public HijackTruck(playerid)
+stock Shipment_IsDriver(playerid, vehicleid)
 {
-    new vehicleid = GetPlayerVehicleID(playerid);
-  	new business = TruckDeliveringTo[vehicleid];
+	return 0 < vehicleid < MAX_VEHICLES && IsValidVehicle(vehicleid) && IsATruckerCar(vehicleid)
+		&& GetPlayerState(playerid) == PLAYER_STATE_DRIVER && GetPlayerVehicleID(playerid) == vehicleid
+		&& GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0
+		&& GetVehicleVirtualWorld(vehicleid) == 0 && GetVehicleInterior(vehicleid) == 0
+		&& !PlayerIsDead[playerid] && !GetPVarType(playerid, "Injured") && !GetPVarType(playerid, "PlayerCuffed") && !GetPVarInt(playerid, "pBagged")
+		&& (PlayerInfo[playerid][pJob] == 20 || PlayerInfo[playerid][pJob2] == 20 || PlayerInfo[playerid][pJob3] == 20);
+}
 
-	SetPVarInt(playerid, "LoadTruckTime", GetPVarInt(playerid, "LoadTruckTime")-1);
-	new string[128];
-	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", GetPVarInt(playerid, "LoadTruckTime"));
-	GameTextForPlayer(playerid, string, 1100, 3);
-	if(GetPVarInt(playerid, "LoadTruckTime") > 0) SetTimerEx("HijackTruck", 1000, false, "d", playerid);
+stock Shipment_OrderFits(model, type)
+{
+	if(type == BUSINESS_TYPE_NEWCARDEALERSHIP) return model == 443;
+	if(type == BUSINESS_TYPE_GASSTATION) return model == 514;
+	return model != 443 && model != 514;
+}
 
-	if(GetPVarInt(playerid, "LoadTruckTime") <= 0)
+stock Shipment_CanLoad(playerid)
+{
+	new vehicleid = GetPVarInt(playerid, "ShipmentVehicle");
+	if(!Shipment_IsDriver(playerid, vehicleid) || TruckUsed[playerid] != vehicleid || GetPVarType(playerid, "ShipmentTimer")) 
+		return 0;
+	
+	if(TruckContents{vehicleid} != 0 || TruckDeliveringTo[vehicleid] != INVALID_BUSINESS_ID) 
+		return 0;
+	
+	if(IsABoat(vehicleid)) return IsPlayerInRangeOfPoint(playerid, 6.0, 2098.6543, -104.3568, -0.4820);
+	
+	return IsPlayerInRangeOfPoint(playerid, 6.0, -1572.767822, 81.137527, 3.554687);
+}
+
+stock Shipment_StopLoading(playerid, bool:restore = true)
+{
+	new bool:loading = GetPVarType(playerid, "ShipmentVehicle") != 0;
+	KillTimer(GetPVarInt(playerid, "ShipmentTimer"));
+	DeletePVar(playerid, "ShipmentTimer");
+	DeletePVar(playerid, "ShipmentVehicle");
+	DeletePVar(playerid, "ShipmentOrderCount");
+	DeletePVar(playerid, "ShipmentOrderNext");
+	DeletePVar(playerid, "LoadTruckTime");
+	if(loading && restore && !PlayerIsDead[playerid] && !GetPVarType(playerid, "PlayerCuffed")
+		&& !GetPVarInt(playerid, "pBagged") && !GetPVarType(playerid, "Injured") && !GetPVarType(playerid, "IsTackled"))
 	{
 		DeletePVar(playerid, "IsFrozen");
 		TogglePlayerControllable(playerid, true);
-  		DeletePVar(playerid, "LoadTruckTime");
-
-        if(!IsPlayerInVehicle(playerid, vehicleid))
-        {
-			TruckUsed[playerid] = INVALID_VEHICLE_ID;
-			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
- 			DisablePlayerCheckpoint(playerid);
-            SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You failed to hijack the shipment.");
-			return 1;
-        }
-
-
-		foreach(new i: Player)
-		{
-			if(TruckUsed[i] == vehicleid)
-			{
-				DeletePVar(i, "LoadTruckTime");
-				TruckUsed[i] = INVALID_VEHICLE_ID;
-				DisablePlayerCheckpoint(i);
-				gPlayerCheckpointStatus[i] = CHECKPOINT_NONE;
-				SendClientMessageEx(i, COLOR_WHITE, "Your shipment delivery has failed. Your shipment was Hijacked.");
-			}
-		}	
-
-  		TruckUsed[playerid] = vehicleid;
-  		if(!IsABoat(vehicleid))
-  		{
-			new route = TruckRoute[vehicleid];
-			SetPVarInt(playerid, "TruckDeliver", TruckContents{vehicleid});
-			switch(TruckContents{vehicleid}) {
-			    case 0: {
-			        if(business != INVALID_BUSINESS_ID)
-			        {
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You hijacked a shipment of %s", GetInventoryType(TruckDeliveringTo[vehicleid]));
-
-				        SetPlayerCheckpoint(playerid, Businesses[business][bSupplyPos][0], Businesses[business][bSupplyPos][1], Businesses[business][bSupplyPos][2], 10.0);
-					}
-				}
-				case 1: {
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"You hijacked a shipment of food & beverages.");
-					SetPlayerCheckpoint(playerid, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ], 5);
-				}
-				case 2:
-				{
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"You hijacked a shipment of clothing.");
-					SetPlayerCheckpoint(playerid, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ], 5);
-				}
-				case 3:
-				{
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"You hijacked a shipment of materials.");
-					SetPlayerCheckpoint(playerid, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ], 5);
-				}
-				case 4:
-				{
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You hijacked a shipment of stolen 24/7 items - watch out for law enforcement!");
-					SetPlayerCheckpoint(playerid, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ], 5);
-				}
-				case 5:
-				{
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You hijacked a shipment of weapons - watch out for law enforcement!");
-					SetPlayerCheckpoint(playerid, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ], 5);
-				}
-				case 6:
-				{
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"You hijacked a shipment of drugs - watch out for law enforcement!");
-					SetPlayerCheckpoint(playerid, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ], 5);
-				}
-				case 7:
-				{
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"You hijacked a shipment of illegal materials - watch out for law enforcement!");
-					SetPlayerCheckpoint(playerid, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ], 5);
-				}
-			}
-			SendClientMessageEx(playerid, COLOR_REALRED, "WARNING: Watch out for Truck hijackers, they can hijack your truck and get away with the goods.");
-		}
-		else
-		{
-		    SetPVarInt(playerid, "TruckDeliver", TruckContents{vehicleid});
-			new route = TruckRoute[vehicleid];
-			switch(TruckContents{vehicleid}) {
-				case 1: {
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"You hijacked a shipment of food & beverages.");
-					SetPlayerCheckpoint(playerid, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ], 5);
-				}
-				case 2:
-				{
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"You hijacked a shipment of clothing.");
-					SetPlayerCheckpoint(playerid, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ], 5);
-				}
-				case 3:
-				{
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"You hijacked a shipment of materials.");
-					SetPlayerCheckpoint(playerid, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ], 5);
-				}
-				case 4:
-				{
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You hijacked a shipment of stolen 24/7 items - watch out for law enforcement!");
-					SetPlayerCheckpoint(playerid, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ], 5);
-				}
-				case 5:
-				{
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You hijacked a shipment of weapons - watch out for law enforcement!");
-					SetPlayerCheckpoint(playerid, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ], 5);
-				}
-				case 6:
-				{
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"You hijacked a shipment of drugs - watch out for law enforcement!");
-					SetPlayerCheckpoint(playerid, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ], 5);
-				}
-				case 7:
-				{
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"You hijacked a shipment of illegal materials - watch out for law enforcement!");
-					SetPlayerCheckpoint(playerid, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ], 5);
-				}
-				default: return SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle is not loaded with hijackable goods.");
-			}
-			SendClientMessageEx(playerid, COLOR_REALRED, "WARNING: Watch out for boat hijackers, they can hijack your boat and get away with the goods.");
-		}
-		SendClientMessageEx(playerid, COLOR_WHITE, "Deliver the goods to the specified location (see checkpoint on radar).");
 	}
 	return 1;
 }
 
-forward LoadTruckOld(playerid);
-public LoadTruckOld(playerid)
+stock Shipment_BeginLoading(playerid, vehicleid, const callback[])
 {
-    SetPVarInt(playerid, "LoadTruckTime", GetPVarInt(playerid, "LoadTruckTime")-1);
-	new string[128];
-	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", GetPVarInt(playerid, "LoadTruckTime"));
-	GameTextForPlayer(playerid, string, 1100, 3);
-
-	if(GetPVarInt(playerid, "LoadTruckTime") > 0) SetTimerEx("LoadTruckOld", 1000, false, "d", playerid);
-
-	if(GetPVarInt(playerid, "LoadTruckTime") <= 0)
-	{
-		DeletePVar(playerid, "LoadTruckTime");
-		DeletePVar(playerid, "IsFrozen");
-		TogglePlayerControllable(playerid, true);
-
-  		new vehicleid = GetPlayerVehicleID(playerid);
-  		new truckdeliver = GetPVarInt(playerid, "TruckDeliver");
-  		TruckContents{vehicleid} = truckdeliver;
-  		TruckUsed[playerid] = vehicleid;
-  		if(!IsABoat(vehicleid))
-  		{
-	  		new route = random(sizeof(TruckerDropoffs));
-	  		TruckRoute[vehicleid] = route;
-			// 1 = food and bev
-			// 2 = clothing
-			// 3 = legal mats
-			// 4 = 24/7 items
-			// 5 = weapons
-			// 6 = illegal drugs
-			// 7 = illegal materials
-			if(truckdeliver == 1)
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Your Truck was filled with food & beverages.");
-				SetPlayerCheckpoint(playerid, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ], 5);
-			}
-			else if(truckdeliver == 2)
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Your Truck was filled with clothing.");
-				SetPlayerCheckpoint(playerid, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ], 5);
-			}
-			else if(truckdeliver == 3)
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Your Truck was filled with materials.");
-				SetPlayerCheckpoint(playerid, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ], 5);
-			}
-			else if(truckdeliver == 4)
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Your Truck was filled with 24/7 items.");
-				SetPlayerCheckpoint(playerid, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ], 5);
-			}
-			else if(truckdeliver == 5)
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Your Truck was filled with weapons.");
-				SetPlayerCheckpoint(playerid, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ], 5);
-			}
-			else if(truckdeliver == 6)
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Your Truck was filled with drugs.");
-				SetPlayerCheckpoint(playerid, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ], 5);
-			}
-			else if(truckdeliver == 7)
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Your Truck was filled with illegal materials.");
-				SetPlayerCheckpoint(playerid, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ], 5);
-			}
-			SendClientMessageEx(playerid, COLOR_REALRED, "WARNING: Watch out for Truck hijackers, they can hijack your truck and get away with the goods.");
-		}
-		else
-		{
-			new route = random(sizeof(BoatDropoffs));
-	  		TruckRoute[vehicleid] = route;
-
-			if(truckdeliver == 1)
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Your Boat was filled with food & beverages.");
-				SetPlayerCheckpoint(playerid, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ], 5);
-			}
-			else if(truckdeliver == 2)
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Your Boat was filled with clothing.");
-				SetPlayerCheckpoint(playerid, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ], 5);
-			}
-			else if(truckdeliver == 3)
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Your Boat was filled with materials.");
-				SetPlayerCheckpoint(playerid, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ], 5);
-			}
-			else if(truckdeliver == 4)
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Your Boat was filled with 24/7 items.");
-				SetPlayerCheckpoint(playerid, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ], 5);
-			}
-			else if(truckdeliver == 5)
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Your Boat was filled with weapons.");
-				SetPlayerCheckpoint(playerid, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ], 5);
-			}
-			else if(truckdeliver == 6)
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Your Boat was filled with drugs.");
-				SetPlayerCheckpoint(playerid, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ], 5);
-			}
-			else if(truckdeliver == 7)
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Your Boat was filled with illegal materials.");
-				SetPlayerCheckpoint(playerid, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ], 5);
-			}
-			SendClientMessageEx(playerid, COLOR_REALRED, "WARNING: Watch out for boat hijackers, they can hijack your boat and get away with the goods.");
-		}
-		if(truckdeliver >= 5)
-		{
-			SendClientMessageEx(playerid, COLOR_REALRED, "WARNING #2: You are transporting illegal goods so watch out for law enforcement.");
-		}
-		SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Deliver the goods to the specified location (see checkpoint on radar).");
-		SetPVarInt(playerid, "tpTruckRunTimer", 30);
-		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPTRUCKRUNTIMER);
-	}
+	SetPVarInt(playerid, "ShipmentVehicle", vehicleid);
+	SetPVarInt(playerid, "LoadTruckTime", 10);
+	SetPVarInt(playerid, "ShipmentTimer", SetTimerEx(callback, 1000, true, "iii", playerid, vehicleid, g_arrQueryHandle[playerid]));
+	TogglePlayerControllable(playerid, false);
+	SetPVarInt(playerid, "IsFrozen", 1);
 	return 1;
 }
 
-forward LoadTruck(playerid);
-public LoadTruck(playerid)
+stock Shipment_LoadTick(playerid, vehicleid, session)
 {
-    SetPVarInt(playerid, "LoadTruckTime", GetPVarInt(playerid, "LoadTruckTime")-1);
-	new string[128];
-	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", GetPVarInt(playerid, "LoadTruckTime"));
-	GameTextForPlayer(playerid, string, 1100, 3);
-
-	if(GetPVarInt(playerid, "LoadTruckTime") > 0) SetTimerEx("LoadTruck", 1000, false, "d", playerid);
-
-	if(GetPVarInt(playerid, "LoadTruckTime") <= 0)
+	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session) return 0;
+	if(!GetPVarType(playerid, "ShipmentTimer") || GetPVarInt(playerid, "ShipmentVehicle") != vehicleid) return 0;
+	if(!Shipment_IsDriver(playerid, vehicleid))
 	{
-		DeletePVar(playerid, "LoadTruckTime");
-		DeletePVar(playerid, "IsFrozen");
-		TogglePlayerControllable(playerid, true);
+		if(TruckUsed[playerid] == vehicleid) CancelTruckDelivery(playerid, false);
+		else Shipment_StopLoading(playerid);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Shipment loading was cancelled because you are no longer driving the original vehicle.");
+		return 0;
+	}
+	new remaining = GetPVarInt(playerid, "LoadTruckTime") - 1, string[96];
+	SetPVarInt(playerid, "LoadTruckTime", remaining);
+	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", remaining);
+	GameTextForPlayer(playerid, string, 1100, 3);
+	return remaining <= 0;
+}
 
-  		new vehicleid = GetPlayerVehicleID(playerid);
-  		new business = TruckDeliveringTo[vehicleid];
-  		TruckUsed[playerid] = vehicleid;
-
-
+stock Shipment_SetDestination(playerid, vehicleid, bool:hijacked = false)
+{
+	new business = TruckDeliveringTo[vehicleid], cargo = TruckContents{vehicleid};
+	if(cargo == 0)
+	{
+		if(!(0 <= business < MAX_BUSINESSES) || Businesses[business][bOrderState] != 2) return 0;
 		gPlayerCheckpointStatus[playerid] = CHECKPOINT_DELIVERY;
-
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your Truck was filled with %s", GetInventoryType(business));
-
-        SetPlayerCheckpoint(playerid, Businesses[business][bSupplyPos][0], Businesses[business][bSupplyPos][1], Businesses[business][bSupplyPos][2], 10.0);
-
-		SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Deliver the goods to the specified location (see checkpoint on radar).");
-		SendClientMessageEx(playerid, COLOR_REALRED, "WARNING: Watch out for truck hijackers, they can hijack your truck and get away with the goods.");
-
-		if (Businesses[business][bType] == BUSINESS_TYPE_GUNSHOP)
-		{
-			SendClientMessageEx(playerid, COLOR_REALRED, "WARNING #2: You are transporting illegal goods so watch out for law enforcement.");
-		}
-		else if (Businesses[business][bType] == BUSINESS_TYPE_GASSTATION)
-		{
-		  	new Float:x, Float:y, Float:z, Float:ang;
-		  	SetVehiclePos(vehicleid, -1570.9833,96.7547,4.1442);
-		  	SetVehicleZAngle(vehicleid, 136.18);
-		    GetPlayerPos(playerid, x, y, z);
-		    GetVehicleZAngle(vehicleid, ang);
-		    new iTrailer = CreateVehicle(584, x, y, z+1, ang, -1, -1, 1000);
-		    SetPVarInt(playerid, "Gas_TrailerID", iTrailer);
-			SetTimerEx("AttachGasTrailer", 500, false, "ii", iTrailer, vehicleid);
-		}
-		/*else if (Businesses[business][bType] == BUSINESS_TYPE_NEWCARDEALERSHIP)
-		{
-			new iModel, iSlot;
-		    for (new i; i < MAX_BUSINESS_DEALERSHIP_VEHICLES; i++)
-		    {
-			    if (Businesses[business][DealershipVehOrder][i]) {
-					iModel = Businesses[business][bModel][i];
-					iSlot = i;
-	 			}
-		    }
-			new Float: fVehPos[4];
-			GetVehiclePos(vehicleid, fVehPos[0], fVehPos[1], fVehPos[2]);
-			GetVehicleZAngle(vehicleid, fVehPos[3]);
-			new iDeliveredVeh = CreateVehicle(iModel, fVehPos[0], fVehPos[1], fVehPos[2] + 3, fVehPos[3], 1, 1, -1);
-			SetVehicleZAngle(iDeliveredVeh, fVehPos[3]);
-			vehicle_lock_doors(iDeliveredVeh);
-
-			SetPVarInt(playerid, "CarryingVehicle", iDeliveredVeh);
-			SetPVarInt(playerid, "CarryingSlot", iSlot);
-		} */
-		SetPVarInt(playerid, "tpTruckRunTimer", floatround(GetPlayerDistanceFromPoint(playerid, Businesses[business][bSupplyPos][0], Businesses[business][bSupplyPos][1], Businesses[business][bSupplyPos][2]) / 100));
-		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPTRUCKRUNTIMER);
-	}
-	return 1;
-}
-
-stock DisplayOrders(playerid)
-{
-	new szDialog[2048];
-	for (new i, j; i < MAX_BUSINESSES; i++)
-	{
-	    if (Businesses[i][bOrderState] == 1)
-	    {
-	        if(Businesses[i][bType] > 0)
-	        {
-		    	format(szDialog, sizeof(szDialog), "%s%s\t%s\n", szDialog, Businesses[i][bName], GetInventoryType(i));
-				ListItemTrackId[playerid][j++] = i;
-			}
-		}
-	}
-
-	if (!szDialog[0] || IsABoat(GetPlayerVehicleID(playerid)))
-	{
-
-		/*ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Error", "No jobs available right now. Try again later.", "OK", "");
-		TogglePlayerControllable(playerid, 1);
-		DeletePVar(playerid, "IsFrozen"); */
-		if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 456 || GetVehicleModel(GetPlayerVehicleID(playerid)) == 414 || GetVehicleModel(GetPlayerVehicleID(playerid)) == 413 || GetVehicleModel(GetPlayerVehicleID(playerid)) == 440 || GetVehicleModel(GetPlayerVehicleID(playerid)) == 482 || IsABoat(GetPlayerVehicleID(playerid)))
-		{
-			ShowPlayerDialogEx(playerid,DIALOG_LOADTRUCKOLD,DIALOG_STYLE_LIST,"What do you want to transport?","{00F70C}Legal goods {FFFFFF}(no risk but also no bonuses)\n{FF0606}Illegal goods {FFFFFF}(risk of getting caught but a bonus)","Select","Cancel");
-		}
-		else
-		{
-			ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Error", "No jobs available for this type of truck right now. Try again later.", "OK", "");
-			TogglePlayerControllable(playerid, true);
-			DeletePVar(playerid, "IsFrozen");
-		}
+		SetPlayerCheckpoint(playerid, Businesses[business][bSupplyPos][0], Businesses[business][bSupplyPos][1], Businesses[business][bSupplyPos][2], 10.0);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "%s %s.", hijacked ? ("You hijacked a shipment of") : ("Your truck was filled with"), GetInventoryType(business));
+		SetPVarInt(playerid, "TruckRunDeadline", gettime() + floatround(GetPlayerDistanceFromPoint(playerid, Businesses[business][bSupplyPos][0], Businesses[business][bSupplyPos][1], Businesses[business][bSupplyPos][2]) / 100));
 	}
 	else
 	{
-	    ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCK, DIALOG_STYLE_LIST, "Available Orders", szDialog, "Take", "Close");
-	}
-	return 1;
-}
-
-IsAtTruckDeliveryPoint(playerid)
-{
-	for(new i = 0; i < sizeof(TruckerDropoffs); i++)
-	{
-		if(IsPlayerInRangeOfPoint(playerid, 6, TruckerDropoffs[i][PosX], TruckerDropoffs[i][PosY], TruckerDropoffs[i][PosZ])) {
-		    return 1;
-		}
-	}
-	for(new i = 0; i < sizeof(BoatDropoffs); i++)
-	{
-		if(IsPlayerInRangeOfPoint(playerid, 6, BoatDropoffs[i][PosX], BoatDropoffs[i][PosY], BoatDropoffs[i][PosZ])) {
-		    return 1;
-		}
-	}
-	return false;
-}
-
-CancelTruckDelivery(playerid)
-{
-	new vehicleid = GetPlayerVehicleID(playerid);
-	if(TruckDeliveringTo[TruckUsed[playerid]] != INVALID_BUSINESS_ID)
-	{
-		if(Businesses[TruckDeliveringTo[TruckUsed[playerid]]][bType] == BUSINESS_TYPE_GASSTATION)
+		if(!(1 <= cargo <= 7)) return 0;
+		new route = TruckRoute[vehicleid];
+		if(IsABoat(vehicleid))
 		{
-			DestroyVehicle(GetPVarInt(playerid, "Gas_TrailerID"));
-			DeletePVar(playerid, "Gas_TrailerID");
+			if(!(0 <= route < sizeof(BoatDropoffs))) return 0;
+			SetPlayerCheckpoint(playerid, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ], 5.0);
 		}
-		Businesses[TruckDeliveringTo[TruckUsed[playerid]]][bOrderState] = 1;
-		SaveBusiness(TruckDeliveringTo[TruckUsed[playerid]]);
+		else
+		{
+			if(!(0 <= route < sizeof(TruckerDropoffs))) return 0;
+			SetPlayerCheckpoint(playerid, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ], 5.0);
+		}
+		static const names[][] = {"food & beverages", "clothing", "materials", "24/7 items", "weapons", "drugs", "illegal materials"};
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "%s %s.", hijacked ? ("You hijacked a shipment of") : ("Your vehicle was filled with"), names[cargo - 1]);
+		SetPVarInt(playerid, "TruckDeliver", cargo);
+		SetPVarInt(playerid, "TruckRunDeadline", gettime() + 30);
 	}
-	if(1 <= TruckUsed[playerid] <= MAX_VEHICLES){
-		TruckDeliveringTo[TruckUsed[playerid]] = INVALID_BUSINESS_ID, TruckContents{TruckUsed[playerid]} = 0;
-	}
-	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-	{
-		if(IsATruckerCar(vehicleid)) SetVehicleToRespawn(vehicleid);
-	}
-	gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
-	TruckUsed[playerid] = INVALID_VEHICLE_ID;
- 	DisablePlayerCheckpoint(playerid);
- 	DeletePVar(playerid, "TruckDeliver");
+	SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Deliver the goods to the specified location (see checkpoint on radar).");
+	SendClientMessageEx(playerid, COLOR_REALRED, "WARNING: Watch out for shipment hijackers, they can get away with the goods.");
+	if(cargo >= 5 || (cargo == 0 && Businesses[business][bType] == BUSINESS_TYPE_GUNSHOP))
+		SendClientMessageEx(playerid, COLOR_REALRED, "WARNING #2: You are transporting illegal goods so watch out for law enforcement.");
 	return 1;
+}
+
+forward HijackTruck(playerid, vehicleid, session);
+public HijackTruck(playerid, vehicleid, session)
+{
+	if(!Shipment_LoadTick(playerid, vehicleid, session)) return 1;
+	Shipment_StopLoading(playerid);
+	new trailerid;
+	foreach(new i: Player)
+	{
+		if(i == playerid || TruckUsed[i] != vehicleid) continue;
+		trailerid = GetPVarInt(i, "Gas_TrailerID");
+		DeletePVar(i, "Gas_TrailerID");
+		KillTimer(GetPVarInt(i, "ShipmentTrailerTimer"));
+		DeletePVar(i, "ShipmentTrailerTimer");
+		Shipment_StopLoading(i);
+		TruckUsed[i] = INVALID_VEHICLE_ID;
+		DeletePVar(i, "TruckDeliver");
+		DeletePVar(i, "TruckRunDeadline");
+		gPlayerCheckpointStatus[i] = CHECKPOINT_NONE;
+		DisablePlayerCheckpoint(i);
+		SendClientMessageEx(i, COLOR_WHITE, "Your shipment delivery has failed. Your shipment was hijacked.");
+	}
+	TruckUsed[playerid] = vehicleid;
+	if(trailerid && IsValidVehicle(trailerid)) SetPVarInt(playerid, "Gas_TrailerID", trailerid);
+	if(!Shipment_SetDestination(playerid, vehicleid, true))
+	{
+		CancelTruckDelivery(playerid, false);
+		SendClientMessageEx(playerid, COLOR_WHITE, "This shipment is no longer available.");
+	}
+	return 1;
+}
+
+forward LoadTruckOld(playerid, vehicleid, session);
+public LoadTruckOld(playerid, vehicleid, session)
+{
+	if(!Shipment_LoadTick(playerid, vehicleid, session)) return 1;
+	new cargo = GetPVarInt(playerid, "TruckDeliver");
+	Shipment_StopLoading(playerid);
+	if(!(1 <= cargo <= 7) || TruckContents{vehicleid} != 0 || TruckDeliveringTo[vehicleid] != INVALID_BUSINESS_ID)
+	{
+		CancelTruckDelivery(playerid, false);
+		return 1;
+	}
+	TruckContents{vehicleid} = cargo;
+	TruckRoute[vehicleid] = IsABoat(vehicleid) ? random(sizeof(BoatDropoffs)) : random(sizeof(TruckerDropoffs));
+	Shipment_SetDestination(playerid, vehicleid);
+	return 1;
+}
+
+forward LoadTruck(playerid, vehicleid, session);
+public LoadTruck(playerid, vehicleid, session)
+{
+	if(!Shipment_LoadTick(playerid, vehicleid, session)) return 1;
+	Shipment_StopLoading(playerid);
+	if(!Shipment_SetDestination(playerid, vehicleid))
+	{
+		CancelTruckDelivery(playerid, false);
+		return 1;
+	}
+	new business = TruckDeliveringTo[vehicleid];
+	if(Businesses[business][bType] == BUSINESS_TYPE_GASSTATION)
+	{
+		SetVehiclePos(vehicleid, -1570.9833, 96.7547, 4.1442);
+		SetVehicleZAngle(vehicleid, 136.18);
+		new trailerid = CreateVehicle(584, -1570.9833, 96.7547, 5.1442, 136.18, -1, -1, -1);
+		if(trailerid == INVALID_VEHICLE_ID)
+		{
+			CancelTruckDelivery(playerid, false);
+			return SendClientMessageEx(playerid, COLOR_WHITE, "Unable to create the shipment trailer. Please try again.");
+		}
+		SetPVarInt(playerid, "Gas_TrailerID", trailerid);
+		SetPVarInt(playerid, "ShipmentTrailerTimer", SetTimerEx("AttachGasTrailer", 500, false, "iiii", playerid, vehicleid, trailerid, session));
+	}
+	return 1;
+}
+
+forward AttachGasTrailer(playerid, vehicleid, trailerid, session);
+public AttachGasTrailer(playerid, vehicleid, trailerid, session)
+{
+	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session) return 1;
+	if(TruckUsed[playerid] != vehicleid || GetPVarInt(playerid, "Gas_TrailerID") != trailerid) return 1;
+	DeletePVar(playerid, "ShipmentTrailerTimer");
+	if(!IsValidVehicle(vehicleid) || !IsValidVehicle(trailerid) || !AttachTrailerToVehicle(trailerid, vehicleid)) CancelTruckDelivery(playerid, false);
+	return 1;
+}
+
+stock DisplayOrders(playerid, offset = 0)
+{
+	if(!Shipment_CanLoad(playerid)) return CancelTruckDelivery(playerid, false);
+	new vehicleid = TruckUsed[playerid], model = GetVehicleModel(vehicleid);
+	new szDialog[2048], row[96], shown, skipped;
+	DeletePVar(playerid, "ShipmentOrderNext");
+	for(new i; i < MAX_BUSINESSES; ++i)
+	{
+		if(IsABoat(vehicleid) || Businesses[i][bOrderState] != 1 || Businesses[i][bType] <= 0 || !Shipment_OrderFits(model, Businesses[i][bType])) continue;
+		if(skipped++ < offset) continue;
+		if(shown == sizeof(ListItemTrackId[]) || strlen(szDialog) + 96 >= sizeof(szDialog))
+		{
+			strcat(szDialog, "More orders...\n", sizeof(szDialog));
+			SetPVarInt(playerid, "ShipmentOrderNext", offset + shown);
+			break;
+		}
+		format(row, sizeof(row), "%s\t%s\n", Businesses[i][bName], GetInventoryType(i));
+		strcat(szDialog, row, sizeof(szDialog));
+		ListItemTrackId[playerid][shown++] = i;
+	}
+	SetPVarInt(playerid, "ShipmentOrderCount", shown);
+	if(shown) ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCK, DIALOG_STYLE_LIST, "Available Orders", szDialog, "Take", "Close");
+	else if(model == 456 || model == 414 || model == 413 || model == 440 || model == 482 || IsABoat(vehicleid))
+		ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCKOLD, DIALOG_STYLE_LIST, "What do you want to transport?", "{00F70C}Legal goods {FFFFFF}(no risk but also no bonuses)\n{FF0606}Illegal goods {FFFFFF}(risk of getting caught but a bonus)", "Select", "Cancel");
+	else
+	{
+		CancelTruckDelivery(playerid, false);
+		ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Error", "No jobs available for this type of truck right now. Try again later.", "OK", "");
+	}
+	return 1;
+}
+
+stock IsAtTruckDeliveryPoint(playerid)
+{
+	new vehicleid = TruckUsed[playerid];
+	if(!Shipment_IsDriver(playerid, vehicleid)) return 0;
+	new route = TruckRoute[vehicleid];
+	if(IsABoat(vehicleid))
+	{
+		if(!(0 <= route < sizeof(BoatDropoffs))) return 0;
+		return IsPlayerInRangeOfPoint(playerid, 6.0, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ]);
+	}
+	if(!(0 <= route < sizeof(TruckerDropoffs))) return 0;
+	return IsPlayerInRangeOfPoint(playerid, 6.0, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ]);
+}
+
+stock CancelTruckDelivery(playerid, bool:respawn = true, bool:restore = true)
+{
+	new vehicleid = TruckUsed[playerid], trailerid = GetPVarInt(playerid, "Gas_TrailerID");
+	TruckUsed[playerid] = INVALID_VEHICLE_ID;
+	Shipment_StopLoading(playerid, restore);
+	KillTimer(GetPVarInt(playerid, "ShipmentTrailerTimer"));
+	DeletePVar(playerid, "ShipmentTrailerTimer");
+	DeletePVar(playerid, "Gas_TrailerID");
+	DeletePVar(playerid, "GasWarnings");
+	DeletePVar(playerid, "TruckDeliver");
+	DeletePVar(playerid, "TruckRunDeadline");
+	DeletePVar(playerid, "LoadType");
+	if(gPlayerCheckpointStatus[playerid] == CHECKPOINT_LOADTRUCK || gPlayerCheckpointStatus[playerid] == CHECKPOINT_DELIVERY
+		|| gPlayerCheckpointStatus[playerid] == CHECKPOINT_RETURNTRUCK || 0 < vehicleid < MAX_VEHICLES)
+	{
+		gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+		DisablePlayerCheckpoint(playerid);
+	}
+	if(0 < vehicleid < MAX_VEHICLES)
+	{
+		new business = TruckDeliveringTo[vehicleid];
+		TruckDeliveringTo[vehicleid] = INVALID_BUSINESS_ID;
+		TruckContents{vehicleid} = 0;
+		TruckRoute[vehicleid] = 0;
+		if(0 <= business < MAX_BUSINESSES && Businesses[business][bOrderState] == 2)
+		{
+			Businesses[business][bOrderState] = 1;
+			SaveBusiness(business);
+		}
+	}
+	if(trailerid && IsValidVehicle(trailerid)) DestroyVehicle(trailerid);
+	if(respawn && 0 < vehicleid < MAX_VEHICLES && IsValidVehicle(vehicleid) && IsATruckerCar(vehicleid)) SetVehicleToRespawn(vehicleid);
+	return 1;
+}
+
+stock Shipment_ClearVehicleWork(playerid, vehicleid)
+{
+	if(!(0 < vehicleid < MAX_VEHICLES)) return 0;
+	if(TruckUsed[playerid] == vehicleid || GetPVarInt(playerid, "Gas_TrailerID") == vehicleid)
+	{
+		if(GetPVarInt(playerid, "Gas_TrailerID") == vehicleid) DeletePVar(playerid, "Gas_TrailerID");
+		CancelTruckDelivery(playerid, false);
+	}
+	else if(GetPVarInt(playerid, "ShipmentVehicle") == vehicleid) Shipment_StopLoading(playerid);
+	return 1;
+}
+
+stock Shipment_ShowWeaponReward(playerid, count)
+{
+	new menu[64] = "9mm\nShotgun";
+	if(count >= 3) strcat(menu, "\nMP5", sizeof(menu));
+	if(count >= 4) strcat(menu, "\nDeagle", sizeof(menu));
+	if(count >= 5) strcat(menu, "\nAK-47", sizeof(menu));
+	SetPVarInt(playerid, "ShipmentWeaponReward", count);
+	return ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", menu, "Select", "");
 }
 
 CMD:checkcargo(playerid, params[])
@@ -461,7 +349,8 @@ CMD:checkcargo(playerid, params[])
 
 	new carid = GetPlayerVehicleID(playerid);
  	new closestcar = GetClosestCar(playerid, carid);
-  	if(IsPlayerInRangeOfVehicle(playerid, closestcar, 6.0) && IsATruckerCar(closestcar))
+	if(0 < closestcar < MAX_VEHICLES && IsValidVehicle(closestcar) && GetVehicleVirtualWorld(closestcar) == GetPlayerVirtualWorld(playerid)
+		&& GetVehicleInterior(closestcar) == GetPlayerInterior(playerid) && IsPlayerInRangeOfVehicle(playerid, closestcar, 6.0) && IsATruckerCar(closestcar))
 	{
 		if(IsPlayerInAnyVehicle(playerid))
 		{
@@ -478,7 +367,7 @@ CMD:checkcargo(playerid, params[])
 
 
      	SendClientMessageEx(playerid, COLOR_GREEN,"_______________ SHIPMENT CONTRACTOR LOAD SHEET _______________");
-		if(IsPlayerInVehicle(playerid, closestcar))
+		if(GetVehicleDriver(closestcar) != INVALID_PLAYER_ID)
   		{
     		SendClientMessageEx(playerid, COLOR_WHITE, "There is a person in that truck. In order to check the content of the truck, the driver must be removed.");
       		return 1;
@@ -501,7 +390,11 @@ CMD:checkcargo(playerid, params[])
 		{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Illegal materials"); }
 		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %s (%d)", GetVehicleName(closestcar), closestcar);
 		if(iTruckContents == 0)
-		{ format(truckcontentname, sizeof(truckcontentname), "%s",  GetInventoryType(TruckDeliveringTo[closestcar])); }
+		{
+			new business = TruckDeliveringTo[closestcar];
+			if(0 <= business < MAX_BUSINESSES) format(truckcontentname, sizeof(truckcontentname), "%s", GetInventoryType(business));
+			else truckcontentname = "Empty";
+		}
 		SendClientMessageEx(playerid, COLOR_WHITE, "Content: %s", truckcontentname);
 
 		if(IsACop(playerid))
@@ -511,7 +404,7 @@ CMD:checkcargo(playerid, params[])
 
 		if(PlayerInfo[playerid][pJob] == 20 || PlayerInfo[playerid][pJob2] == 20 || PlayerInfo[playerid][pJob3] == 20)
 		{
-			if(TruckDeliveringTo[closestcar] > 0 && TruckUsed[playerid] == INVALID_VEHICLE_ID)
+			if((TruckContents{closestcar} > 0 || (0 <= TruckDeliveringTo[closestcar] < MAX_BUSINESSES && Businesses[TruckDeliveringTo[closestcar]][bOrderState] == 2)) && TruckUsed[playerid] == INVALID_VEHICLE_ID)
 			{
 				SendClientMessageEx(playerid, COLOR_YELLOW, "To deliver the goods, type /hijackcargo as the driver.");
 			}
@@ -546,7 +439,7 @@ CMD:hijackcargo(playerid, params[])
 	if(PlayerInfo[playerid][pJob] == 20 || PlayerInfo[playerid][pJob2] == 20 || PlayerInfo[playerid][pJob3] == 20)
 	{
 	    new vehicleid = GetPlayerVehicleID(playerid);
-	    if(IsATruckerCar(vehicleid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+	    if(Shipment_IsDriver(playerid, vehicleid))
 	    {
      		if(!CheckPointCheck(playerid))
 	        {
@@ -560,7 +453,8 @@ CMD:hijackcargo(playerid, params[])
 	                SendClientMessageEx(playerid, COLOR_WHITE, "You are already on another delivery, type /cancel shipment to cancel that delivery.");
 					return 1;
 	            }
-				if(TruckDeliveringTo[vehicleid] == 0 && TruckContents{vehicleid} == 0)
+				new business = TruckDeliveringTo[vehicleid];
+				if(TruckContents{vehicleid} == 0 && (!(0 <= business < MAX_BUSINESSES) || Businesses[business][bOrderState] != 2))
 				{
 				    SendClientMessageEx(playerid, COLOR_WHITE, "This Truck is empty, it does not contain any goods!");
 				    return 1;
@@ -583,11 +477,7 @@ CMD:hijackcargo(playerid, params[])
 					else return SendClientMessageEx(playerid, COLOR_WHITE, "Water shipments are restricted to Level 4+ Shipment Contracter.");
 				}
 
-				TogglePlayerControllable(playerid, false);
-				SetPVarInt(playerid, "IsFrozen", 1);
-
-				SetPVarInt(playerid, "LoadTruckTime", 10);
-				SetTimerEx("HijackTruck", 1000, false, "dd", playerid);
+				Shipment_BeginLoading(playerid, vehicleid, "HijackTruck");
 	        }
 	        else return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
 	    }
@@ -602,7 +492,7 @@ CMD:loadshipment(playerid, params[])
 	if(PlayerInfo[playerid][pJob] == 20 || PlayerInfo[playerid][pJob2] == 20 || PlayerInfo[playerid][pJob3] == 20)
 	{
 	    new vehicleid = GetPlayerVehicleID(playerid);
-	    if(IsATruckerCar(vehicleid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+	    if(Shipment_IsDriver(playerid, vehicleid))
 	    {
 	        if(!CheckPointCheck(playerid))
 	        {
@@ -624,14 +514,14 @@ CMD:loadshipment(playerid, params[])
 				{
 				    return SendClientMessageEx(playerid, COLOR_GRAD2, "That vehicle is already loaded.");
 				}
-				if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 440 || GetVehicleModel(GetPlayerVehicleID(playerid)) == 413) // Level Three Vehicle Check
+				if(GetVehicleModel(vehicleid) == 440 || GetVehicleModel(vehicleid) == 413) // Level Three Vehicle Check
 				{
 					if(PlayerInfo[playerid][pTruckSkill] < 100) 
 					{
 						return SendClientMessageEx(playerid, COLOR_GRAD2, "Only level 3 Shipment Contractors may use this vehicle.");
 					}
 				}
-				if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 482) // Level Five Vehicle Check
+				if(GetVehicleModel(vehicleid) == 482) // Level Five Vehicle Check
 				{
 					if(PlayerInfo[playerid][pTruckSkill] < 400)  
 					{
@@ -654,6 +544,7 @@ CMD:loadshipment(playerid, params[])
 					}
 					else return SendClientMessageEx(playerid, COLOR_WHITE, "Water shipments are restricted to Level 4+ Shipment Contracter.");
 				}
+				TruckUsed[playerid] = vehicleid;
 				gPlayerCheckpointStatus[playerid] = CHECKPOINT_LOADTRUCK;
 	        }
 	        else return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
@@ -664,35 +555,26 @@ CMD:loadshipment(playerid, params[])
 	return 1;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
-
-	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
-	switch(dialogid) {
-		case D_TRUCKDELIVER_WEPCHOICE: {
-
-			if(!response) {
-				
-				switch(PlayerInfo[playerid][pTruckSkill]) {
-					case 0 .. 49: GivePlayerValidWeapon(playerid, WEAPON_COLT45);
-					case 50 .. 100: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun", "Select", "");
-					case 101 .. 200: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5", "Select", "");
-					case 201 .. 400: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle", "Select", "");
-					case 401: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle\nAK-47", "Select", "");
-					default: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle\nAK-47", "Select", "");
-				}
-				return 1;
-			}
-			else {
-				switch(listitem) {
-					case 0: GivePlayerValidWeapon(playerid, WEAPON_COLT45);
-					case 1: GivePlayerValidWeapon(playerid, WEAPON_SHOTGUN);
-					case 2: GivePlayerValidWeapon(playerid, WEAPON_MP5);
-					case 3: GivePlayerValidWeapon(playerid, WEAPON_DEAGLE);
-					case 4: GivePlayerValidWeapon(playerid, WEAPON_AK47);
-				}
-				return 1;
-			}
-		}
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	if(dialogid != D_TRUCKDELIVER_WEPCHOICE) return 0;
+	new count = GetPVarInt(playerid, "ShipmentWeaponReward");
+	if(!gPlayerLogged{playerid} || !(2 <= count <= 5)) return 1;
+	if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0)
+	{
+		DeletePVar(playerid, "ShipmentWeaponReward");
+		return 1;
 	}
-	return 0;
+	if(!response) return Shipment_ShowWeaponReward(playerid, count);
+	if(!(0 <= listitem < count)) return 1;
+	DeletePVar(playerid, "ShipmentWeaponReward");
+	switch(listitem)
+	{
+		case 0: GivePlayerValidWeapon(playerid, WEAPON_COLT45);
+		case 1: GivePlayerValidWeapon(playerid, WEAPON_SHOTGUN);
+		case 2: GivePlayerValidWeapon(playerid, WEAPON_MP5);
+		case 3: GivePlayerValidWeapon(playerid, WEAPON_DEAGLE);
+		case 4: GivePlayerValidWeapon(playerid, WEAPON_AK47);
+	}
+	return 1;
 }

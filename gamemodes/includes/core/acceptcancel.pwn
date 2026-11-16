@@ -2420,18 +2420,7 @@ CMD:cancel(playerid, params[])
 	}
 	else if(strcmp(choice,"shipment",true) == 0)
 	{
-		new vehicleid = GetPlayerVehicleID(playerid);
-		if(vehicleid == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You need to be in a valid vehicle.");
- 		DeletePVar(playerid, "LoadTruckTime");
-		DeletePVar(playerid, "TruckDeliver");
-
-		TruckContents{vehicleid} = 0;
-		if((0 <= TruckDeliveringTo[vehicleid] < MAX_BUSINESSES)) Businesses[TruckDeliveringTo[vehicleid]][bOrderState] = 0;
-		TruckDeliveringTo[vehicleid] = INVALID_BUSINESS_ID;
-
-		TruckUsed[playerid] = INVALID_VEHICLE_ID;
-		gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
- 		DisablePlayerCheckpoint(playerid);
+		CancelTruckDelivery(playerid);
 	}
 	else if(strcmp(choice,"garbage",true) == 0)
 	{
