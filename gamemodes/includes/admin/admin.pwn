@@ -243,7 +243,7 @@ CMD:givegun(playerid, params[])
     if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
         new playa, gun;
 
-        if(sscanf(params, "udd", playa, gun)) {
+        if(sscanf(params, "ud", playa, gun)) {
             SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givegun [player] [weaponid]");
             SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
             SendClientMessageEx(playerid, COLOR_GRAD4, "(1)Brass Knuckles (2)Golf Club (3)Nite Stick (4)Knife (5)Baseball Bat (6)Shovel (7)Pool Cue (8)Katana (9)Chainsaw");
