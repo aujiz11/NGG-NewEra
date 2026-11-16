@@ -116,7 +116,7 @@ stock SendClientMessageEx(playerid, color, string[])
 // Test with SendClientMessageEx
 stock SendClientMessageEx(playerid, color, const msg[], va_args<>)
 {
-        new string[128];
+        new string[256];
         if(InsideMainMenu{playerid} == 1 || InsideTut{playerid} == 1 || ActiveChatbox[playerid] == 0)
                 return 0;
         else {
@@ -125,8 +125,11 @@ stock SendClientMessageEx(playerid, color, const msg[], va_args<>)
         }
         return 1;
 }
-stock SendClientMessageToAllEx(color, const string[])
+
+stock SendClientMessageToAllEx(color, const msg[], va_args<>)
 {
+	new string[256];
+	va_format(string, sizeof(string), msg, va_start<2>);
 	foreach(new i: Player)
 	{
 		if(InsideMainMenu{i} == 1 || InsideTut{i} == 1 || ActiveChatbox[i] == 0) {}
