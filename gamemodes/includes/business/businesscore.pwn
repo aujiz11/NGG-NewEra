@@ -1009,6 +1009,7 @@ CMD:stopswimming(playerid, params[])
 
 CMD:joinboxing(playerid, params[])
 {
+	if(PlayerBoxing[playerid]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Finish your current boxing match before joining the queue.");
 	if (!IsAtGym(playerid))
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "  You are not in a gym!");

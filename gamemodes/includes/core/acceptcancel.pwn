@@ -1054,122 +1054,8 @@ CMD:accept(playerid, params[])
             }
         }
 		else if(strcmp(params, "boxing", true) == 0) {
-			if(!Offer_IsCurrent(playerid, BoxOffer[playerid], "BoxOfferSession")) 
-				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
-            
-			if(BoxOffer[playerid] != INVALID_PLAYER_ID) {
-                if(IsPlayerConnected(BoxOffer[playerid])) {
-                    new points;
-                    new mypoints;
-                    GetPlayerName(BoxOffer[playerid], giveplayer, sizeof(giveplayer));
-                    GetPlayerName(playerid, sendername, sizeof(sendername));
-                    new level = PlayerInfo[BoxOffer[playerid]][pBoxSkill];
-                    if(level >= 0 && level <= 50) { points = 40; }
-                    else if(level >= 51 && level <= 100) { points = 50; }
-                    else if(level >= 101 && level <= 200) { points = 60; }
-                    else if(level >= 201 && level <= 400) { points = 70; }
-                    else if(level >= 401) { points = 80; }
-                    if(PlayerInfo[playerid][pJob] == 12 || PlayerInfo[playerid][pJob2] == 12 || PlayerInfo[playerid][pJob3] == 12) {
-                        new clevel = PlayerInfo[playerid][pBoxSkill];
-                        if(clevel >= 0 && clevel <= 50) { mypoints = 40; }
-                        else if(clevel >= 51 && clevel <= 100) { mypoints = 50; }
-                        else if(clevel >= 101 && clevel <= 200) { mypoints = 60; }
-                        else if(clevel >= 201 && clevel <= 400) { mypoints = 70; }
-                        else if(clevel >= 401) { mypoints = 80; }
-                    }
-                    else {
-                        mypoints = 30;
-                    }
-                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have accepted the Boxing Challenge from %s, and will fight with %d Health.",giveplayer,mypoints);
-                    SendClientMessageEx(BoxOffer[playerid], COLOR_LIGHTBLUE, "* %s has accepted your Boxing Challenge Request, you will fight with %d Health.",sendername,points);
-                    if(IsPlayerInRangeOfPoint(playerid,20.0,758.98, -60.32, 1000.78) || IsPlayerInRangeOfPoint(BoxOffer[playerid],20.0,758.98, -60.32, 1000.78)) {
-                        ResetPlayerWeapons(playerid);
-                        ResetPlayerWeapons(BoxOffer[playerid]);
-                        SetHealth(playerid, mypoints);
-                        SetHealth(BoxOffer[playerid], points);
-                        SetPlayerInterior(playerid, 7); SetPlayerInterior(BoxOffer[playerid], 7);
-                        SetPlayerPos(playerid, 768.94, -70.87, 1001.56); SetPlayerFacingAngle(playerid, 131.8632);
-                        SetPlayerPos(BoxOffer[playerid], 764.35, -66.48, 1001.56); SetPlayerFacingAngle(BoxOffer[playerid], 313.1165);
-                        TogglePlayerControllable(playerid, false); TogglePlayerControllable(BoxOffer[playerid], false);
-                        GameTextForPlayer(playerid, "~r~Waiting", 3000, 1); GameTextForPlayer(BoxOffer[playerid], "~r~Waiting", 3000, 1);
-                        new name[MAX_PLAYER_NAME];
-                        new dszMessage[MAX_PLAYER_NAME];
-                        new wszMessage[MAX_PLAYER_NAME];
-                        GetPlayerName(playerid, name, sizeof(name));
-                        format(dszMessage, sizeof(dszMessage), "%s", name);
-                        strmid(wszMessage, dszMessage, 0, strlen(dszMessage), 255);
-                        if(strcmp(Titel[TitelName] ,wszMessage, true ) == 0 ) {
-                            format(szMessage, sizeof(szMessage), "Boxing News: Boxing Champion %s will fight VS %s, in 60 seconds (Grove Street Gym).",  sendername, giveplayer);
-                            ProxDetector(30.0, playerid, szMessage, COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE);
-                            TBoxer = playerid;
-                            BoxDelay = 60;
-                        }
-                        GetPlayerName(BoxOffer[playerid], name, sizeof(name));
-                        format(dszMessage, sizeof(dszMessage), "%s", name);
-                        strmid(wszMessage, dszMessage, 0, strlen(dszMessage), 255);
-                        if(strcmp(Titel[TitelName] ,wszMessage, true ) == 0 ) {
-                            format(szMessage, sizeof(szMessage), "Boxing News: Boxing Champion %s will fight VS %s, in 60 seconds (Grove Street Gym).",  giveplayer, sendername);
-                            ProxDetector(30.0, playerid, szMessage, COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE);
-                            TBoxer = BoxOffer[playerid];
-                            BoxDelay = 60;
-                        }
-                        BoxWaitTime[playerid] = 1; BoxWaitTime[BoxOffer[playerid]] = 1;
-                        if(BoxDelay < 1) { BoxDelay = 20; }
-                        InRing = 1;
-                        Boxer1 = BoxOffer[playerid];
-                        Boxer2 = playerid;
-                        PlayerBoxing[playerid] = 1;
-                        PlayerBoxing[BoxOffer[playerid]] = 1;
-                        BoxOffer[playerid] = INVALID_PLAYER_ID;
-                        return 1;
-                    }
-                    ResetPlayerWeapons(playerid);
-                    ResetPlayerWeapons(BoxOffer[playerid]);
-                    SetHealth(playerid, mypoints);
-                    SetHealth(BoxOffer[playerid], points);
-                    SetPlayerInterior(playerid, 5); SetPlayerInterior(BoxOffer[playerid], 5);
-                    SetPlayerPos(playerid, 762.9852,2.4439,1001.5942); SetPlayerFacingAngle(playerid, 131.8632);
-                    SetPlayerPos(BoxOffer[playerid], 758.7064,-1.8038,1001.5942); SetPlayerFacingAngle(BoxOffer[playerid], 313.1165);
-                    TogglePlayerControllable(playerid, false); TogglePlayerControllable(BoxOffer[playerid], false);
-                    GameTextForPlayer(playerid, "~r~Waiting", 3000, 1); GameTextForPlayer(BoxOffer[playerid], "~r~Waiting", 3000, 1);
-                    new name[MAX_PLAYER_NAME];
-                    new dszMessage[MAX_PLAYER_NAME];
-                    new wszMessage[MAX_PLAYER_NAME];
-                    GetPlayerName(playerid, name, sizeof(name));
-                    format(dszMessage, sizeof(dszMessage), "%s", name);
-                    strmid(wszMessage, dszMessage, 0, strlen(dszMessage), 255);
-                    if(strcmp(Titel[TitelName] ,wszMessage, true ) == 0 ) {
-                        format(szMessage, sizeof(szMessage), "Boxing News: Boxing Champion %s will fight VS %s, in 60 seconds (Grove Street Gym).",  sendername, giveplayer);
-                        ProxDetector(30.0, playerid, szMessage, COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE);
-                        TBoxer = playerid;
-                        BoxDelay = 60;
-                    }
-                    GetPlayerName(BoxOffer[playerid], name, sizeof(name));
-                    format(dszMessage, sizeof(dszMessage), "%s", name);
-                    strmid(wszMessage, dszMessage, 0, strlen(dszMessage), 255);
-                    if(strcmp(Titel[TitelName] ,wszMessage, true ) == 0 ) {
-                        format(szMessage, sizeof(szMessage), "Boxing News: Boxing Champion %s will fight VS %s, in 60 seconds (Grove Street Gym).",  giveplayer, sendername);
-                        ProxDetector(30.0, playerid, szMessage, COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE);
-                        TBoxer = BoxOffer[playerid];
-                        BoxDelay = 60;
-                    }
-                    BoxWaitTime[playerid] = 1; BoxWaitTime[BoxOffer[playerid]] = 1;
-                    if(BoxDelay < 1) { BoxDelay = 20; }
-                    InRing = 1;
-                    Boxer1 = BoxOffer[playerid];
-                    Boxer2 = playerid;
-                    PlayerBoxing[playerid] = 1;
-                    PlayerBoxing[BoxOffer[playerid]] = 1;
-                    BoxOffer[playerid] = INVALID_PLAYER_ID;
-                    return 1;
-                }
-                return 1;
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GREY, "   No-one offered you a Boxing Challenge!");
-                return 1;
-            }
-        }
+			return Boxing_Accept(playerid);
+		}
                                                   // accept taxi
    /*     else if(strcmp(params,"taxi",true) == 0) {
             if(TransportDuty[playerid] != 1) {
@@ -2391,7 +2277,7 @@ CMD:cancel(playerid, params[])
 	else if(strcmp(choice,"refill",true) == 0) { RefillOffer[playerid] = INVALID_PLAYER_ID; RefillPrice[playerid] = 0; DeletePVar(playerid, "RefillOfferSession"); DeletePVar(playerid, "RefillVehicle"); }
 	else if(strcmp(choice,"car",true) == 0) { VehicleOffer[playerid] = INVALID_PLAYER_ID; VehiclePrice[playerid] = 0; VehicleId[playerid] = -1; DeletePVar(playerid, "VehicleOfferSession"); DeletePVar(playerid, "VehicleOfferSQLId"); }
 	else if(strcmp(choice,"house",true) == 0) { HouseOffer[playerid] = INVALID_PLAYER_ID; HousePrice[playerid] = 0; House[playerid] = INVALID_HOUSE_ID; DeletePVar(playerid, "HouseOfferSession"); }
-	else if(strcmp(choice,"boxing",true) == 0) { BoxOffer[playerid] = INVALID_PLAYER_ID; }
+	else if(strcmp(choice,"boxing",true) == 0) { BoxOffer[playerid] = INVALID_PLAYER_ID; DeletePVar(playerid, "BoxOfferSession"); }
 	else if(strcmp(choice,"witness",true) == 0) { MarryWitnessOffer[playerid] = INVALID_PLAYER_ID; }
 	else if(strcmp(choice,"marriage",true) == 0) {
         if(Offer_IsCurrent(playerid, ProposeOffer[playerid], "ProposeOfferSession")) DeletePVar(ProposeOffer[playerid], "marriagelastname");

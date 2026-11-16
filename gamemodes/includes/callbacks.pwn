@@ -1405,7 +1405,6 @@ public OnPlayerConnect(playerid)
 	GetChased[playerid]= INVALID_PLAYER_ID;
 	CalledCops[playerid]=0;
 	CopsCallTime[playerid]=0;
-	BoxWaitTime[playerid]=0;
 	CalledMedics[playerid]=0;
 	TransportDuty[playerid]=0;
 	PlayerTied[playerid]=0;
@@ -1605,6 +1604,7 @@ public OnPlayerConnect(playerid)
 
 public OnPlayerDisconnect(playerid, reason)
 {
+	if(InRing && (Boxer1 == playerid || Boxer2 == playerid)) Boxing_End(INVALID_PLAYER_ID, playerid);
 	CancelTruckDelivery(playerid, true, false);
 	Mechanic_CancelFix(playerid, false);
 	Craftsman_StopFirstAid(playerid);
@@ -2509,48 +2509,6 @@ public OnPlayerDisconnect(playerid, reason)
 			{
 				vehicle_unlock_doors(gLastCar[playerid]);
 			}
-		}
-		if(PlayerBoxing[playerid] > 0)
-		{
-			if(Boxer1 == playerid)
-			{
-				if(IsPlayerConnected(Boxer2))
-				{
-					if(IsPlayerInRangeOfPoint(PlayerBoxing[Boxer2], 20.0, 768.94, -70.87, 1001.56))
-					{
-						PlayerBoxing[Boxer2] = 0;
-						SetPlayerPos(Boxer2, 768.48, -73.66, 1000.57);
-						SetPlayerInterior(Boxer2, 7);
-						GameTextForPlayer(Boxer2, "~r~Match interupted", 5000, 1);
-					}
-					PlayerBoxing[Boxer2] = 0;
-					SetPlayerPos(Boxer2, 765.8433,3.2924,1000.7186);
-					SetPlayerInterior(Boxer2, 5);
-					GameTextForPlayer(Boxer2, "~r~Match interupted", 5000, 1);
-				}
-			}
-			else if(Boxer2 == playerid)
-			{
-				if(IsPlayerConnected(Boxer1))
-				{
-					if(IsPlayerInRangeOfPoint(PlayerBoxing[Boxer1],20.0,764.35, -66.48, 1001.56))
-					{
-						PlayerBoxing[Boxer1] = 0;
-						SetPlayerPos(Boxer1, 768.48, -73.66, 1000.57);
-						SetPlayerInterior(Boxer1, 7);
-						GameTextForPlayer(Boxer1, "~r~Match interupted", 5000, 1);
-					}
-					PlayerBoxing[Boxer1] = 0;
-					SetPlayerPos(Boxer1, 765.8433,3.2924,1000.7186);
-					SetPlayerInterior(Boxer1, 5);
-					GameTextForPlayer(Boxer1, "~r~Match interupted", 5000, 1);
-				}
-			}
-			InRing = 0;
-			RoundStarted = 0;
-			Boxer1 = INVALID_PLAYER_ID;
-			Boxer2 = INVALID_PLAYER_ID;
-			TBoxer = INVALID_PLAYER_ID;
 		}
 		if(GetPVarInt(playerid, "AdvisorDuty") == 1)
 		{

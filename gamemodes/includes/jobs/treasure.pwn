@@ -200,8 +200,7 @@ CMD:selltreasure(playerid, params[])
 		break;
 	}
 	if(item == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Unknown treasure item. Use /selltreasure to see the available names.");
-	new count = GetPVarInt(playerid, 
-	[item][treasureKey]), price = TreasureItems[item][treasurePrice];
+	new count = GetPVarInt(playerid, TreasureItems[item][treasureKey]), price = TreasureItems[item][treasurePrice];
 	if(amount > count) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
 	if(amount > cellmax / price) return SendClientMessageEx(playerid, COLOR_GREY, "That sale is too large. Sell fewer items at a time.");
 	new payment = amount * price;

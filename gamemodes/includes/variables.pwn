@@ -623,7 +623,9 @@ new Jackpot, TicketsSold, NextDrawing, LottoNumbers[MAX_PLAYERS][5], SpecLotto, 
 new Float:Positions[14][3];
 new InRing = 0;
 new RoundStarted = 0;
-new BoxDelay = 0;
+new BoxStartTime;
+new BoxingInterior, BoxingWorld;
+new BoxerSession[2];
 new Boxer1 = INVALID_PLAYER_ID;
 new Boxer2 = INVALID_PLAYER_ID;
 new TBoxer = INVALID_PLAYER_ID;
@@ -686,7 +688,6 @@ new CalledCops[MAX_PLAYERS];
 new CopsCallTime[MAX_PLAYERS];
 new CalledMedics[MAX_PLAYERS];
 new MedicsCallTime[MAX_PLAYERS];
-new BoxWaitTime[MAX_PLAYERS];
 new BoxOffer[MAX_PLAYERS];
 new GotHit[MAX_PLAYERS];
 new GoChase[MAX_PLAYERS];
