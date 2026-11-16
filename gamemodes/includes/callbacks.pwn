@@ -1648,6 +1648,34 @@ public OnPlayerDisconnect(playerid, reason)
 			SendClientMessageEx(i, COLOR_WHITE, "The player you were damage checking has left the server.");
 		}
 		if(GetPVarType(i, "sellbackpack") && GetPVarInt(i, "sellbackpack") == playerid) DeletePVar(i, "sellbackpack");
+		if(HouseOffer[i] == playerid) HouseOffer[i] = INVALID_PLAYER_ID;
+		if(VehicleOffer[i] == playerid) VehicleOffer[i] = INVALID_PLAYER_ID;
+		if(CraftOffer[i] == playerid) CraftOffer[i] = INVALID_PLAYER_ID;
+		if(RepairOffer[i] == playerid) RepairOffer[i] = INVALID_PLAYER_ID;
+		if(RefillOffer[i] == playerid) RefillOffer[i] = INVALID_PLAYER_ID;
+		if(GuardOffer[i] == playerid) GuardOffer[i] = INVALID_PLAYER_ID;
+		if(DefendOffer[i] == playerid) DefendOffer[i] = INVALID_PLAYER_ID;
+		if(LiveOffer[i] == playerid) LiveOffer[i] = INVALID_PLAYER_ID;
+		if(BoxOffer[i] == playerid) BoxOffer[i] = INVALID_PLAYER_ID;
+		if(MarryWitnessOffer[i] == playerid) MarryWitnessOffer[i] = INVALID_PLAYER_ID;
+		if(ProposeOffer[i] == playerid) ProposeOffer[i] = INVALID_PLAYER_ID;
+		if(TicketOffer[i] == playerid) TicketOffer[i] = INVALID_PLAYER_ID;
+		if(SexOffer[i] == playerid) SexOffer[i] = INVALID_PLAYER_ID;
+		if(AppealOffer[i] == playerid) AppealOffer[i] = INVALID_PLAYER_ID;
+		if(hInviteOffer[i] == playerid) hInviteOffer[i] = INVALID_PLAYER_ID;
+        if(HitOffer[i] == playerid || HitToGet[i] == playerid) {
+            HitOffer[i] = INVALID_PLAYER_ID;
+            HitToGet[i] = INVALID_PLAYER_ID;
+        }
+        if(hInviteOfferTo[i] == playerid) hInviteOfferTo[i] = INVALID_PLAYER_ID;
+        static const pendingOffers[][] = {
+            "pSellGunID", "renderaid", "Group_Inviter", "Group_Invited", "RFLTeam_Inviter", "shrequest",
+            "Business_Inviter", "Business_WeapOfferer", "Business_ItemOfferer", "Business_VehicleOfferer",
+            "RimOffer", "sellerVoucher", "kissvaloffer", "RepairOfferTo", "SexOfferTo", "WepVehSalePlayer"
+        };
+        for(new offer; offer < sizeof(pendingOffers); ++offer) {
+            if(GetPVarType(i, pendingOffers[offer]) && GetPVarInt(i, pendingOffers[offer]) == playerid) DeletePVar(i, pendingOffers[offer]);
+        }
 	}
 	// Why save on people who haven't logged in!
 	if(gPlayerLogged{playerid} == 1)
@@ -4909,6 +4937,7 @@ timer HideServerError[5000](playerid) {
 }
 
 public OnPlayerCommandReceived(playerid, cmd[], params[], flags) {
+	if(GetPVarInt(playerid, "PropertySaleUncertain")) return 0;
 
 	new cmdtext[145];
 	if(isnull(params)) format(cmdtext, sizeof(cmdtext), "/%s", cmd);

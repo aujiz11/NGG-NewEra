@@ -616,6 +616,7 @@ CMD:renderaid(playerid, params[])
 	if(target == playerid) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not aid yourself!");
 	if(!GetPVarType(target, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "Player is not in a injured state.");
 	SetPVarInt(target, "renderaid", playerid);
+	SetPVarInt(target, "RenderAidSession", g_arrQueryHandle[playerid]);
 	format(szMiscArray, sizeof(szMiscArray), "* You have offered %s assistance.", GetPlayerNameEx(target));
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
 	format(szMiscArray, sizeof(szMiscArray), "* %s wants to assist you, (type /accept renderaid) to accept.", GetPlayerNameEx(playerid));

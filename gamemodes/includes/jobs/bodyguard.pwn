@@ -190,6 +190,7 @@ CMD:guard(playerid, params[])
 			format(string, sizeof(string), "* Bodyguard %s wants to protect you for $%d, type /accept bodyguard to accept.", GetPlayerNameEx(playerid), money);
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 			GuardOffer[giveplayerid] = playerid;
+			SetPVarInt(giveplayerid, "GuardOfferSession", g_arrQueryHandle[playerid]);
 			GuardPrice[giveplayerid] = money;
 		}
 		else

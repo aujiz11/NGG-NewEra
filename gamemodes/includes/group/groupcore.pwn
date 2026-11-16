@@ -6101,10 +6101,11 @@ CMD:invite(playerid, params[]) {
 						iGroupID = PlayerInfo[playerid][pLeader];
 
 					mysql_format(MainPipeline, szQuery, sizeof szQuery, "SELECT `TypeBan` FROM `groupbans` WHERE `PlayerID` = %i AND (`TypeBan` = %i OR `GroupBan` = %i)", GetPlayerSQLId(iTargetID), arrGroupData[iGroupID][g_iGroupType], iGroupID);
-					mysql_tquery(MainPipeline, szQuery, "Group_QueryFinish", "ii", GROUP_QUERY_INVITE, playerid);
+					mysql_tquery(MainPipeline, szQuery, "OnGroupInviteChecked", "iiiii", playerid, g_arrQueryHandle[playerid], iTargetID, g_arrQueryHandle[iTargetID], iGroupID);
 
 					SendClientMessage(playerid, COLOR_WHITE, "Checking group ban list, please wait...");
 					SetPVarInt(playerid, "Group_Invited", iTargetID);
+					SetPVarInt(playerid, "GroupTargetSession", g_arrQueryHandle[iTargetID]);
 				}
 				else SendClientMessageEx(playerid, COLOR_GREY, "The person you're trying to invite is already in another group.");
 			}

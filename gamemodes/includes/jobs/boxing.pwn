@@ -167,6 +167,7 @@ CMD:fight(playerid, params[])
 				format(string, sizeof(string), "* Boxer %s wants to Fight with you (type /accept boxing) to accept.", GetPlayerNameEx(playerid));
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 				BoxOffer[giveplayerid] = playerid;
+				SetPVarInt(giveplayerid, "BoxOfferSession", g_arrQueryHandle[playerid]);
 			}
 			else
 			{

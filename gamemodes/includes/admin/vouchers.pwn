@@ -642,6 +642,7 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "amountVoucher", amount);
 		SetPVarInt(buyer, "buyingVoucher", 1);
 		SetPVarInt(buyer, "sellerVoucher", playerid);
+		SetPVarInt(buyer, "VoucherOfferSession", g_arrQueryHandle[playerid]);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
 		format(string, sizeof(string), "%s has offered to sell you %d car voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
 		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);
@@ -657,6 +658,7 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "amountVoucher", amount);
 		SetPVarInt(buyer, "buyingVoucher", 2);
 		SetPVarInt(buyer, "sellerVoucher", playerid);
+		SetPVarInt(buyer, "VoucherOfferSession", g_arrQueryHandle[playerid]);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
 		format(string, sizeof(string), "%s has offered to sell you %d Silver VIP voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
 		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);
@@ -672,6 +674,7 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "amountVoucher", amount);
 		SetPVarInt(buyer, "buyingVoucher", 3);
 		SetPVarInt(buyer, "sellerVoucher", playerid);
+		SetPVarInt(buyer, "VoucherOfferSession", g_arrQueryHandle[playerid]);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
 		format(string, sizeof(string), "%s has offered to sell you %d Gold VIP voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
 		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);
@@ -687,6 +690,7 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "amountVoucher", amount);
 		SetPVarInt(buyer, "buyingVoucher", 4);
 		SetPVarInt(buyer, "sellerVoucher", playerid);
+		SetPVarInt(buyer, "VoucherOfferSession", g_arrQueryHandle[playerid]);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
 		format(string, sizeof(string), "%s has offered to sell you %d 1 month PVIP Voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
 		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);
@@ -702,6 +706,7 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "amountVoucher", amount);
 		SetPVarInt(buyer, "buyingVoucher", 5);
 		SetPVarInt(buyer, "sellerVoucher", playerid);
+		SetPVarInt(buyer, "VoucherOfferSession", g_arrQueryHandle[playerid]);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
 		format(string, sizeof(string), "%s has offered to sell you %d Restricted Car voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
 		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);
@@ -717,6 +722,7 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "amountVoucher", amount);
 		SetPVarInt(buyer, "buyingVoucher", 6);
 		SetPVarInt(buyer, "sellerVoucher", playerid);
+		SetPVarInt(buyer, "VoucherOfferSession", g_arrQueryHandle[playerid]);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
 		format(string, sizeof(string), "%s has offered to sell you %d Priority Advertisement voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
 		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);
@@ -732,6 +738,7 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "amountVoucher", amount);
 		SetPVarInt(buyer, "buyingVoucher", 7);
 		SetPVarInt(buyer, "sellerVoucher", playerid);
+		SetPVarInt(buyer, "VoucherOfferSession", g_arrQueryHandle[playerid]);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
 		format(string, sizeof(string), "%s has offered to sell you %d 7 Days Silver VIP voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
 		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);
@@ -747,6 +754,7 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "amountVoucher", amount);
 		SetPVarInt(buyer, "buyingVoucher", 8);
 		SetPVarInt(buyer, "sellerVoucher", playerid);
+		SetPVarInt(buyer, "VoucherOfferSession", g_arrQueryHandle[playerid]);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
 		format(string, sizeof(string), "%s has offered to sell you %d 7 Days Gold VIP voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
 		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);

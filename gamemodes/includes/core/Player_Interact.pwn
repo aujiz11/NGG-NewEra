@@ -1130,6 +1130,7 @@ Interact_GiveTicket(playerid, giveplayerid, const reason[], amount = -1) {
 		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Type /accept ticket, to accept it.");
 		TicketOffer[giveplayerid] = playerid;
+		SetPVarInt(giveplayerid, "TicketOfferSession", g_arrQueryHandle[playerid]);
 		TicketMoney[giveplayerid] = amount;
 	}
 	return 1;

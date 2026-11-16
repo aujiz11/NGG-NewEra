@@ -90,6 +90,7 @@ CMD:bemine(playerid, params[])
 	}
 	SetPVarInt(playerid, "kissvalstyle", style);
 	SetPVarInt(giveplayerid, "kissvaloffer", playerid);
+	SetPVarInt(giveplayerid, "ValentineOfferSession", g_arrQueryHandle[playerid]);
 	SetPVarInt(giveplayerid, "kissvalsqlid", GetPlayerSQLId(playerid));
 
 	format(szMiscArray, sizeof(szMiscArray), "You have requested %s to be your valentine, please wait for them to respond.", GetPlayerNameEx(giveplayerid));

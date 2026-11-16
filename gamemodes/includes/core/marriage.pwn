@@ -176,6 +176,7 @@ CMD:propose(playerid, params[])
 			format(string, sizeof(string), "* %s just proposed to you (type /accept marriage) to accept.", GetPlayerNameEx(playerid));
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 			ProposeOffer[giveplayerid] = playerid;
+			SetPVarInt(giveplayerid, "ProposeOfferSession", g_arrQueryHandle[playerid]);
 			ShowPlayerDialogEx(playerid, DIALOG_MARRIAGE, DIALOG_STYLE_MSGBOX, "Marriage Last Name", 
 			"As the proposer you have the initial option to keep your last name or use your spouse's.\n\
 			If you decide to keep your last name, your spouse will be given same option.\n\
@@ -204,6 +205,7 @@ CMD:witness(playerid, params[])
 			format(string, sizeof(string), "* %s just requested you to be their Marriage Witness (type /accept witness) to accept.", GetPlayerNameEx(playerid));
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 			MarryWitnessOffer[giveplayerid] = playerid;
+			SetPVarInt(giveplayerid, "MarryWitnessOfferSession", g_arrQueryHandle[playerid]);
 		}
 		else
 		{

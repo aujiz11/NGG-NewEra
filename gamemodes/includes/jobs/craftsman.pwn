@@ -1006,6 +1006,7 @@ CMD:craft(playerid, params[])
 			format(string, sizeof(string), "* Craftsman %s wants to sell you a %s, (type /accept craft) to buy.", GetPlayerNameEx(playerid), choice);
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 			CraftOffer[giveplayerid] = playerid;
+			SetPVarInt(giveplayerid, "CraftOfferSession", g_arrQueryHandle[playerid]);
 			CraftId[giveplayerid] = weapon;
 			CraftMats[giveplayerid] = price;
 			format(CraftName[giveplayerid], 50, "%s", choice);

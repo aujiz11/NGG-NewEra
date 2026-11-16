@@ -168,7 +168,7 @@ stock g_mysql_Init()
 		else print("[MySQL] (ShopPipeline) Connection successful toward MySQL Database Server!");
 	}
 
-	mysql_tquery(MainPipeline, "SELECT `TABLE_NAME` AS `name`, `ENGINE` AS `engine` FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA`=DATABASE() AND `TABLE_NAME` IN ('accounts','shop_orders','staffbans','furniture')", "OnShopDeliverySchema");
+	mysql_tquery(MainPipeline, "SELECT `TABLE_NAME` AS `name`, `ENGINE` AS `engine` FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA`=DATABASE() AND `TABLE_NAME` IN ('accounts','shop_orders','staffbans','furniture','houses','vehicles')", "OnShopDeliverySchema");
 	InitiateGamemode(); // Start the server
 
 	return 1;
@@ -327,6 +327,11 @@ public OnQueryFinish(resultid, extraid, handleid)
 						return 1;
 					}
 					cache_get_value_name_int(row,  "id", PlayerInfo[extraid][pId]);
+                    if(PlayerInfo[extraid][pId] == gPropertySaleUncertain[0] || PlayerInfo[extraid][pId] == gPropertySaleUncertain[1]) {
+                        SendClientMessageEx(extraid, COLOR_RED, "Your property trade requires administrator verification and a server restart.");
+                        Kick(extraid);
+                        return 0;
+                    }
 					cache_get_value_name_int(row,  "Online", PlayerInfo[extraid][pOnline]);
 					cache_get_value_name(row,  "Email", PlayerInfo[extraid][pEmail]);
 					cache_get_value_name(row,  "IP", PlayerInfo[extraid][pIP]);
@@ -2335,7 +2340,7 @@ stock SavePlayerFloat(query[], sqlid, const Value[], Float:Number)
 
 stock g_mysql_SaveAccount(playerid)
 {
-	if(playerid < 0 || playerid >= MAX_PLAYERS || GetPlayerSQLId(playerid) <= 0 || GetPVarInt(playerid, "FurniturePurchaseUncertain")) {
+	if(playerid < 0 || playerid >= MAX_PLAYERS || GetPlayerSQLId(playerid) <= 0 || GetPVarInt(playerid, "FurniturePurchaseUncertain") || GetPVarInt(playerid, "PropertySaleUncertain")) {
 		++gAccountSaveErrors;
 		return 0;
 	}
@@ -5365,6 +5370,33 @@ public OnGetSMSLog(playerid)
 	return 1;
 }
 
+forward OnGroupInviteChecked(iExtraID, session, target, targetSession, group);
+public OnGroupInviteChecked(iExtraID, session, target, targetSession, group) {
+    new iRows, szResult[256];
+    cache_get_row_count(iRows);
+    if(!(0 <= iExtraID < MAX_PLAYERS) || !(0 <= target < MAX_PLAYERS) || !(0 <= group < MAX_GROUPS)) return 0;
+    if(!IsPlayerConnected(iExtraID) || !IsPlayerConnected(target) || !gPlayerLogged{iExtraID} || !gPlayerLogged{target}
+        || g_arrQueryHandle[iExtraID] != session || g_arrQueryHandle[target] != targetSession) return 0;
+    if(!GetPVarType(iExtraID, "Group_Invited") || GetPVarInt(iExtraID, "Group_Invited") != target
+        || GetPVarInt(iExtraID, "GroupTargetSession") != targetSession || PlayerInfo[iExtraID][pLeader] != group) return 0;
+    if(!iRows) {
+        if(0 <= PlayerInfo[target][pMember] < MAX_GROUPS || 0 <= PlayerInfo[target][pLeader] < MAX_GROUPS) return 0;
+        format(szResult, sizeof(szResult), "%s has invited you to %s (type /accept group to join).", GetPlayerNameEx(iExtraID), arrGroupData[group][g_szGroupName]);
+        SendClientMessageEx(target, COLOR_LIGHTBLUE, szResult);
+        format(szResult, sizeof(szResult), "You offered %s a group invitation.", GetPlayerNameEx(target));
+        SendClientMessageEx(iExtraID, COLOR_LIGHTBLUE, szResult);
+        SetPVarInt(target, "Group_Inviter", iExtraID);
+        SetPVarInt(target, "GroupInviteSession", session);
+        SetPVarInt(target, "GroupInviteID", group);
+    }
+    else {
+        SendClientMessage(iExtraID, COLOR_GREY, "That person is banned from joining this group.");
+        DeletePVar(iExtraID, "Group_Invited");
+        DeletePVar(iExtraID, "GroupTargetSession");
+    }
+    return 1;
+}
+
 forward Group_QueryFinish(iType, iExtraID);
 public Group_QueryFinish(iType, iExtraID) {
 
@@ -5599,24 +5631,6 @@ public Group_QueryFinish(iType, iExtraID) {
 			iIndex++;
 		}
 
-		case GROUP_QUERY_INVITE: if(GetPVarType(iExtraID, "Group_Invited")) {
-			if(!iRows) {
-
-				i = GetPVarInt(iExtraID, "Group_Invited");
-				iIndex = PlayerInfo[iExtraID][pMember];
-
-				format(szResult, sizeof szResult, "%s %s has offered you an invite to %s (type /accept group to join).", arrGroupRanks[iIndex][PlayerInfo[iExtraID][pRank]], GetPlayerNameEx(iExtraID), arrGroupData[iIndex][g_szGroupName]);
-				SendClientMessageEx(i, COLOR_LIGHTBLUE, szResult);
-
-				format(szResult, sizeof szResult, "You have offered %s to join %s.", GetPlayerNameEx(i), arrGroupData[iIndex][g_szGroupName]);
-				SendClientMessageEx(iExtraID, COLOR_LIGHTBLUE, szResult);
-				SetPVarInt(i, "Group_Inviter", iExtraID);
-			}
-			else {
-				SendClientMessage(iExtraID, COLOR_GREY, "That person is banned from joining this group.");
-				DeletePVar(iExtraID, "Group_Invited");
-			}
-		}
 		case GROUP_QUERY_ADDBAN: {
 		    new string[128];
 		    new otherplayer = GetPVarInt(iExtraID, "GroupBanningPlayer");
@@ -6208,8 +6222,12 @@ public OnShopDeliverySchema() {
         if(!strcmp(name, "shop_orders", true)) found |= 2;
         if(!strcmp(name, "staffbans", true)) found |= 4;
         if(!strcmp(name, "furniture", true)) found |= 8;
+        if(!strcmp(name, "houses", true)) found |= 16;
+        if(!strcmp(name, "vehicles", true)) found |= 32;
     }
     gAccountsInnoDB = (found & 1) != 0;
+    gHousesInnoDB = (found & 16) != 0;
+    gVehiclesInnoDB = (found & 32) != 0;
     gStaffBansInnoDB = (found & 4) != 0;
     gFurnitureInnoDB = (found & 8) != 0;
     if(!gFurnitureInnoDB) print("[Furniture] Purchases unavailable: import database/furniture.sql with InnoDB.");

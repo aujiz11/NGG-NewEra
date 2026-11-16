@@ -35,8 +35,53 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+Offer_IsCurrent(playerid, senderid, const sessionKey[]) {
+	return 0 <= senderid < MAX_PLAYERS && IsPlayerConnected(senderid) && gPlayerLogged{senderid}
+		&& !GetPVarInt(senderid, "PropertySaleUncertain") && !GetPVarInt(senderid, "FurniturePurchaseUncertain")
+		&& GetPVarInt(playerid, sessionKey) == g_arrQueryHandle[senderid];
+}
+
+PropertySale_Commit(playerid, sellerid, const query[], const verification[], houseid = INVALID_HOUSE_ID) {
+	new Cache:result = mysql_query(MainPipeline, query);
+	new error = mysql_errno(MainPipeline), affected;
+	new bool:cached = cache_is_valid(result);
+	if(cached) {
+		affected = cache_affected_rows();
+		cache_delete(result);
+	}
+	if(!error && cached) return affected > 0;
+	if(error > 0 && error < 2000) return 0;
+
+	result = mysql_query(MainPipeline, verification);
+	new rows, owner, committed;
+	if(cache_is_valid(result)) {
+		cache_get_row_count(rows);
+		if(rows == 1) {
+			cache_get_value_name_int(0, "owner", owner);
+			cache_get_value_name_int(0, "committed", committed);
+		}
+		cache_delete(result);
+	}
+	if(rows == 1) {
+		if(committed) return 1;
+		if(owner == GetPlayerSQLId(sellerid)) return 0;
+	}
+	gPropertySaleUncertain[0] = GetPlayerSQLId(playerid);
+	gPropertySaleUncertain[1] = GetPlayerSQLId(sellerid);
+	if(0 <= houseid < MAX_HOUSES) gHouseSaleUncertain[houseid] = true;
+	SetPVarInt(playerid, "PropertySaleUncertain", 1);
+	SetPVarInt(sellerid, "PropertySaleUncertain", 1);
+	print("[Property sale] Result unresolved. Affected accounts and property saves are blocked until restart.");
+	SendClientMessageEx(playerid, COLOR_RED, "Your trade could not be verified. Contact an administrator before reconnecting.");
+	SendClientMessageEx(sellerid, COLOR_RED, "Your trade could not be verified. Contact an administrator before reconnecting.");
+	Kick(playerid);
+	Kick(sellerid);
+	return -1;
+}
+
 CMD:accept(playerid, params[])
 {
+	if(GetPVarInt(playerid, "PropertySaleUncertain") || GetPVarInt(playerid, "FurniturePurchaseUncertain")) return 1;
 	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
 	new szMessage[256];
 	new string[128];
@@ -103,6 +148,7 @@ CMD:accept(playerid, params[])
 			if(!GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in a injured state.");
 			if(!GetPVarType(playerid, "renderaid")) return SendClientMessageEx(playerid, COLOR_GRAD2, "No one has offered you assistance!");
 			new target = GetPVarInt(playerid, "renderaid");
+			if(!Offer_IsCurrent(playerid, target, "RenderAidSession")) return SendClientMessageEx(playerid, COLOR_GREY, "The aid offer has expired.");
 			if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "The person who offered you assistance is no longer online.");
 			new Float:pos[3];
 			GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
@@ -121,6 +167,13 @@ CMD:accept(playerid, params[])
 			if(!GetPVarType(playerid, "pSellGunID") || GetPVarInt(playerid, "pSellGunID") == INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "No one has offered you a gun!");
 
 			new id = GetPVarInt(playerid, "pSellGunID");
+			if(!Offer_IsCurrent(playerid, id, "pSellGunSession")) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "The weapon offer has expired.");
+			
+			new Float:x, Float:y, Float:z;
+			GetPlayerPos(id, x, y, z);
+			if(GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(id) || GetPlayerInterior(playerid) != GetPlayerInterior(id) || !IsPlayerInRangeOfPoint(playerid, 8.0, x, y, z))
+				return SendClientMessageEx(playerid, COLOR_GREY, "You are not near the arms dealer.");
 
 			if(PlayerInfo[id][pMats] < GetPVarInt(playerid, "pSellGunMats")) 
 			{
@@ -152,6 +205,7 @@ CMD:accept(playerid, params[])
 
 			DeletePVar(playerid, "pSellGun");
 			DeletePVar(playerid, "pSellGunID");
+			DeletePVar(playerid, "pSellGunSession");
 			DeletePVar(playerid, "pSellGunMats");
 			DeletePVar(playerid, "pSellGunXP");
 		}
@@ -159,6 +213,9 @@ CMD:accept(playerid, params[])
 		{
 	        if (!GetPVarType(playerid, "kissvaloffer")) {
        	 		return SendClientMessageEx(playerid, COLOR_GREY, "No one has offered you a valentine!");
+			}
+			if(!Offer_IsCurrent(playerid, GetPVarInt(playerid, "kissvaloffer"), "ValentineOfferSession")) {
+				return SendClientMessageEx(playerid, COLOR_GREY, "This offer has expired.");
 			}
 			if (GetPVarInt(playerid,"kissvalsqlid") != GetPlayerSQLId(GetPVarInt(playerid, "kissvaloffer"))) {
 				return SendClientMessageEx(playerid, COLOR_GREY, "Inviter has disconnected.");
@@ -242,7 +299,10 @@ CMD:accept(playerid, params[])
 	        if (!GetPVarType(playerid, "Business_Inviter")) {
        	 		return SendClientMessageEx(playerid, COLOR_GREY, "No one has invited you to join a business!");
 			}
-			if (PlayerInfo[playerid][pBusiness] != INVALID_BUSINESS_ID) {
+			if(!Offer_IsCurrent(playerid, GetPVarInt(playerid, "Business_Inviter"), "BusinessInviteSession")) {
+				return SendClientMessageEx(playerid, COLOR_GREY, "This offer has expired.");
+			}
+            if (PlayerInfo[playerid][pBusiness] != INVALID_BUSINESS_ID) {
 				return SendClientMessageEx(playerid, COLOR_GREY, "You are already in another business. You must first resign before accepting this offer.");
 			}
 			if (GetPVarInt(playerid,"Business_InviterSQLId") != GetPlayerSQLId(GetPVarInt(playerid, "Business_Inviter"))) {
@@ -264,7 +324,8 @@ CMD:accept(playerid, params[])
 			if (!GetPVarType(playerid, "Business_WeapOfferer"))	{
 		        return SendClientMessageEx(playerid, COLOR_GREY, "No one has offered you a weapon!");
 			}
-		    new offerer = GetPVarInt(playerid, "Business_WeapOfferer"), business = PlayerInfo[offerer][pBusiness];
+		    if(!Offer_IsCurrent(playerid, GetPVarInt(playerid, "Business_WeapOfferer"), "BusinessGunSession")) return SendClientMessageEx(playerid, COLOR_GREY, "This offer has expired.");
+			new offerer = GetPVarInt(playerid, "Business_WeapOfferer"), business = PlayerInfo[offerer][pBusiness];
 			if (GetPlayerSQLId(offerer) != GetPVarInt(playerid, "Business_WeapOffererSQLId")) {
    				return SendClientMessage(playerid, COLOR_GRAD2, "The offerer has disconnected!");
 			}
@@ -322,7 +383,11 @@ CMD:accept(playerid, params[])
 		        return 1;
 			}
 
-		    new offerer = GetPVarInt(playerid, "Business_ItemOfferer");
+		    if(!Offer_IsCurrent(playerid, GetPVarInt(playerid, "Business_ItemOfferer"), "BusinessItemSession")) {
+				return SendClientMessageEx(playerid, COLOR_GREY, "This offer has expired.");
+			}
+
+			new offerer = GetPVarInt(playerid, "Business_ItemOfferer");
 		    new item = GetPVarInt(playerid, "Business_ItemType");
 		    new price = GetPVarInt(playerid, "Business_ItemPrice");
 			new business = InBusiness(playerid);
@@ -437,240 +502,203 @@ CMD:accept(playerid, params[])
             else SendClientMessageEx(playerid, COLOR_GREY, "   You are not injured, you can't do this right now!");
         }
         else if(strcmp(params, "car", true) == 0) {
-            if(VehicleOffer[playerid] != INVALID_PLAYER_ID) {
-                if(IsPlayerConnected(VehicleOffer[playerid])) {
-                    if(GetPlayerCash(playerid) > VehiclePrice[playerid]) {
-                        if(IsPlayerInVehicle(VehicleOffer[playerid], PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId])) {
-                            if(!ProxDetectorS(8.0, VehicleOffer[playerid], playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near the car dealer");
-                            new playervehicleid = GetPlayerFreeVehicleId(playerid);
+			new sellerid = VehicleOffer[playerid], slot = VehicleId[playerid], price = VehiclePrice[playerid];
+			if(!Offer_IsCurrent(playerid, sellerid, "VehicleOfferSession"))
+				return SendClientMessageEx(playerid, COLOR_GREY, "You do not have a current vehicle offer.");
+			
+			if(!(0 <= slot < MAX_PLAYERVEHICLES)) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "The offered vehicle is no longer available.");
+			
+			new sqlid = GetPVarInt(playerid, "VehicleOfferSQLId");
+			if(sqlid <= 0 || PlayerVehicleInfo[sellerid][slot][pvSlotId] != sqlid)
+				return SendClientMessageEx(playerid, COLOR_GREY, "The offered vehicle has changed.");
+			
+			new vehicleid = PlayerVehicleInfo[sellerid][slot][pvId];
+			if(!IsValidVehicle(vehicleid) || !IsPlayerInVehicle(sellerid, vehicleid))
+				return SendClientMessageEx(playerid, COLOR_GREY, "The seller must be in the offered vehicle.");
+			
+			if(GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(sellerid) || GetPlayerInterior(playerid) != GetPlayerInterior(sellerid)) return 1;
+			new Float:x, Float:y, Float:z;
+			GetPlayerPos(sellerid, x, y, z);
+			if(!IsPlayerInRangeOfPoint(playerid, 8.0, x, y, z)) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "You are not near the seller.");
+			
+			if(PlayerInfo[playerid][pLevel] < 2 || PlayerInfo[sellerid][pLevel] < 2) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "Both players must be level 2 to trade vehicles.");
+			
+			new Float:health;
+			GetVehicleHealth(vehicleid, health);
+			if(health < 500.0) return SendClientMessageEx(playerid, COLOR_GREY, "The vehicle is too damaged to sell.");
+			if(PlayerInfo[playerid][pFreezeCar] || PlayerInfo[sellerid][pFreezeCar]) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "Vehicle assets are frozen.");
+			
+			if(PlayerVehicleInfo[sellerid][slot][pvBeingPickLocked] || PlayerVehicleInfo[sellerid][slot][pvTicket] > 0)
+				return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle cannot be sold right now.");
+			
+			if(!vehicleCountCheck(playerid) || !vehicleSpawnCountCheck(playerid)) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "You cannot own or spawn another vehicle.");
+			
+			new targetslot = GetPlayerFreeVehicleId(playerid);
+			if(!(0 <= targetslot < MAX_PLAYERVEHICLES)) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "You have no free vehicle slot.");
+			
+			if(price <= 0 || GetPlayerCash(playerid) < price) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "You cannot afford this vehicle.");
+			
+			new fine;
+			if(IsWeaponizedVehicle(PlayerVehicleInfo[sellerid][slot][pvModelId])) fine = (price / 100) * 15;
+			if(GetPlayerCash(sellerid) > cellmax - (price - fine)) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "The seller cannot receive this payment.");
+			
+			if(!gAccountsInnoDB || !gVehiclesInnoDB || gPropertySaleUncertain[0] || mysql_unprocessed_queries(MainPipeline))
+				return SendClientMessageEx(playerid, COLOR_GREY, "Vehicle storage is unavailable or busy. Please try again.");
+			
+			new buyer = GetPlayerSQLId(playerid), seller = GetPlayerSQLId(sellerid);
+			if(buyer <= 0 || seller <= 0 || buyer == seller) return 1;
+			new cash = GetPlayerCash(playerid) - price, proceeds = GetPlayerCash(sellerid) + (price - fine);
+			new query[2048], verification[512];
+			new backpack[160];
+			if(PlayerInfo[sellerid][pBackpack] > 0 && PlayerInfo[sellerid][pBStoredV] == sqlid) format(backpack, sizeof(backpack), ",s.`Backpack`=0,s.`BEquipped`=0,s.`BStoredH`=%d,s.`BStoredV`=%d", INVALID_HOUSE_ID, INVALID_PLAYER_VEHICLE_ID);
+			mysql_format(MainPipeline, query, sizeof(query), "UPDATE `vehicles` v JOIN `accounts` b ON b.`id`=%d JOIN `accounts` s ON s.`id`=%d SET v.`sqlID`=%d,b.`Money`=%d,s.`Money`=%d%s,v.`pvWeapon0`=0,v.`pvWeapon1`=0,v.`pvWeapon2`=0,v.`pvPlate`='',v.`pvTicket`=0 WHERE v.`id`=%d AND v.`sqlID`=%d", buyer, seller, buyer, cash, proceeds, backpack, sqlid, seller);
+			mysql_format(MainPipeline, verification, sizeof(verification), "SELECT v.`sqlID` AS owner,(v.`sqlID`=%d AND b.`Money`=%d AND s.`Money`=%d) AS committed FROM `vehicles` v JOIN `accounts` b ON b.`id`=%d JOIN `accounts` s ON s.`id`=%d WHERE v.`id`=%d", buyer, cash, proceeds, buyer, seller, sqlid);
+			if(PropertySale_Commit(playerid, sellerid, query, verification) != 1)
+				return SendClientMessageEx(playerid, COLOR_GREY, "The vehicle sale was not confirmed.");
 
-			 				if(!vehicleCountCheck(playerid)) {
-								return SendClientMessage(playerid, COLOR_GRAD2, "You can't own any more vehicles.");
-							}
-   							if(!vehicleSpawnCountCheck(playerid)) {
-								return SendClientMessage(playerid, COLOR_GRAD2, "You have too many vehicles spawned - store one first.");
-							}
-							if(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvBeingPickLocked])
-								return SendClientMessage(playerid, COLOR_GRAD2, "There was an error while trying to sell this vehicle.");
-
-                            new ip[32], ipex[32];
-                            GetPlayerIp(playerid, ip, sizeof(ip));
-                            GetPlayerIp(VehicleOffer[playerid], ipex, sizeof(ipex));
-                            format(szMessage, sizeof(szMessage), "[CAR] %s(%d) (IP: %s) has paid $%s to %s(%d) for the %s (IP: %s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, number_format(VehiclePrice[playerid]), GetPlayerNameEx(VehicleOffer[playerid]), GetPlayerSQLId(VehicleOffer[playerid]), GetVehicleName(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId]), ipex);
-                            Log("logs/pay.log", szMessage);
-
-                            format(szMiscArray, sizeof(szMiscArray), "[CARSALE][$%s] %s(%d) bought a %s from %s(%d)", number_format(VehiclePrice[playerid]), GetPlayerNameEx(playerid), playerid, GetVehicleName(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId]), GetPlayerNameEx(VehicleOffer[playerid]), VehicleOffer[playerid]);
-                            ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-
-                            GetPlayerName(VehicleOffer[playerid], giveplayer, sizeof(giveplayer));
-                            GetPlayerName(playerid, sendername, sizeof(sendername));
-                            format(szMessage, sizeof(szMessage), "* You bought the %s for $%s, from %s. (Check /carhelp for more help)", GetVehicleName(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId]), number_format(VehiclePrice[playerid]), giveplayer);
-                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-                            format(szMessage, sizeof(szMessage), "* You sold your %s to %s for $%s.",GetVehicleName(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId]), sendername, number_format(VehiclePrice[playerid]));
-                            SendClientMessageEx(VehicleOffer[playerid], COLOR_LIGHTBLUE, szMessage);
-							GivePlayerCashEx(playerid, TYPE_ONHAND, -VehiclePrice[playerid]);
-
-							if(IsWeaponizedVehicle(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvModelId]))
-							{
-								new fine = GetPVarInt(VehicleOffer[playerid], "WepVehSaleFine");
-								GivePlayerCashEx(VehicleOffer[playerid], TYPE_ONHAND, VehiclePrice[playerid] - fine);
-
-								format(szMessage, sizeof(szMessage), "* You have been fined %s for this transaction", number_format(fine));
-                            	SendClientMessageEx(VehicleOffer[playerid], COLOR_LIGHTBLUE, szMessage);
-
-								DeletePVar(VehicleOffer[playerid], "WepVehSalePlayer");
-								DeletePVar(VehicleOffer[playerid], "WepVehSaleVehicle");
-								DeletePVar(VehicleOffer[playerid], "WepVehSalePrice");
-								DeletePVar(VehicleOffer[playerid], "WepVehSaleFine");
-							}
-							else GivePlayerCashEx(VehicleOffer[playerid], TYPE_ONHAND, VehiclePrice[playerid]);
-
-                            /*GivePlayerCash( VehicleOffer[playerid], VehiclePrice[playerid] );
-                            GivePlayerCash(playerid, -VehiclePrice[playerid]);*/
-                            RemovePlayerFromVehicle(VehicleOffer[playerid]);
-                            new Float:slx, Float:sly, Float:slz;
-                            GetPlayerPos(VehicleOffer[playerid], slx, sly, slz);
-                            SetPlayerPos(VehicleOffer[playerid], slx, sly, slz+2);
-							if(PlayerInfo[VehicleOffer[playerid]][pBackpack] > 0 && PlayerInfo[VehicleOffer[playerid]][pBStoredV] == PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvSlotId])
-							{
-								PlayerInfo[VehicleOffer[playerid]][pBackpack] = 0;
-								PlayerInfo[VehicleOffer[playerid]][pBEquipped] = 0;
-								PlayerInfo[VehicleOffer[playerid]][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
-								PlayerInfo[VehicleOffer[playerid]][pBStoredH] = INVALID_HOUSE_ID;
-								SendClientMessageEx(VehicleOffer[playerid], COLOR_WHITE, "You have lost your backpack since you did not withdraw it");
-
-							}
-                            PlayerVehicleInfo[playerid][playervehicleid][pvId] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId];
-                            PlayerVehicleInfo[playerid][playervehicleid][pvModelId] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvModelId];
-                            PlayerVehicleInfo[playerid][playervehicleid][pvPosX] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPosX];
-                            PlayerVehicleInfo[playerid][playervehicleid][pvPosY] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPosY];
-                            PlayerVehicleInfo[playerid][playervehicleid][pvPosZ] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPosZ];
-                            PlayerVehicleInfo[playerid][playervehicleid][pvPosAngle] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPosAngle];
-                            PlayerVehicleInfo[playerid][playervehicleid][pvLock] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvLock];
-                            PlayerVehicleInfo[playerid][playervehicleid][pvLocked] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvLocked];
-                            PlayerVehicleInfo[playerid][playervehicleid][pvPaintJob] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPaintJob];
-                            PlayerVehicleInfo[playerid][playervehicleid][pvColor1] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvColor1];
-                            PlayerVehicleInfo[playerid][playervehicleid][pvColor2] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvColor2];
-                            PlayerVehicleInfo[playerid][playervehicleid][pvAllowedPlayerId] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvAllowedPlayerId];
-                            PlayerVehicleInfo[playerid][playervehicleid][pvPark] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPark];
-                            PlayerVehicleInfo[playerid][playervehicleid][pvVW] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvVW];
-                            PlayerVehicleInfo[playerid][playervehicleid][pvInt] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvInt];
-							PlayerVehicleInfo[playerid][playervehicleid][pvAlarm] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvAlarm];
-							PlayerVehicleInfo[playerid][playervehicleid][pvLocksLeft] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvLocksLeft];
-							PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][0] = 0;
-							PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][1] = 0;
-							PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][2] = 0;
-							PlayerVehicleInfo[playerid][playervehicleid][pvPlate] = 0;
-							PlayerVehicleInfo[playerid][playervehicleid][pvTicket] = 0;
-                            PlayerVehicleInfo[playerid][playervehicleid][pvSpawned] = 1;
-							PlayerVehicleInfo[playerid][playervehicleid][pvAlarmTriggered] = 0;
-							PlayerVehicleInfo[playerid][playervehicleid][pvBeingPickLocked] = 0;
-							PlayerVehicleInfo[playerid][playervehicleid][pvLastLockPickedBy] = 0;
-                            VehicleSpawned[playerid]++;
-                            for(new m = 0; m < MAX_MODS; m++) {
-                                PlayerVehicleInfo[playerid][playervehicleid][pvMods][m] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvMods][m];
-                            }
-
-        					mysql_format(MainPipeline, szMessage, sizeof(szMessage), "INSERT INTO `vehicles` (`sqlID`) VALUES ('%d')", GetPlayerSQLId(playerid));
-							mysql_tquery(MainPipeline, szMessage, "OnQueryCreateVehicle", "ii", playerid, playervehicleid);
-
-							mysql_format(MainPipeline, szMessage, sizeof(szMessage), "DELETE FROM `vehicles` WHERE `id` = '%d'", PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvSlotId]);
-							mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "ii", SENDDATA_THREAD, VehicleOffer[playerid]);
-
-							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvSlotId] = 0;
-                            PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId] = 0;
-                            PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvModelId] = 0;
-                            PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPosX] = 0.0;
-                            PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPosY] = 0.0;
-                            PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPosZ] = 0.0;
-                            PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPosAngle] = 0.0;
-                            PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvLock] = 0;
-							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvLocksLeft] = 0;
-                            PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvLocked] = 0;
-                            PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPaintJob] = -1;
-                            PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvColor1] = 0;
-							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvImpounded] = 0;
-                            PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvColor2] = 0;
-                            PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvAllowedPlayerId] = INVALID_PLAYER_ID;
-                            PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPark] = 0;
-                            PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvSpawned] = 0;
-                            PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvVW] = 0;
-                            PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvInt] = 0;
-							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvWeapons][0] = 0;
-							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvWeapons][1] = 0;
-							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvWeapons][2] = 0;
-							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPlate] = 0;
-							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvTicket] = 0;
-							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvAlarm] = 0;
-							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvAlarmTriggered] = 0;
-							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvBeingPickLocked] = 0;
-							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvLastLockPickedBy] = 0;
-                            VehicleSpawned[VehicleOffer[playerid]]--;
-                            for(new m = 0; m < MAX_MODS; m++) {
-                                PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvMods][m] = 0;
-                            }
-
-                            VehicleOffer[playerid] = INVALID_PLAYER_ID;
-                            VehiclePrice[playerid] = 0;
-                            return 1;
-                        }
-                        else {
-                            SendClientMessageEx(playerid, COLOR_GREY, "   The Car Dealer is not in the offered car!");
-                            return 1;
-                        }
-                    }
-                    else {
-                        SendClientMessageEx(playerid, COLOR_GREY, "   You can't afford the car!");
-                        return 1;
-                    }
-                }
-                return 1;
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GREY, "   Nobody offered to buy a car!");
-                return 1;
-            }
+			format(szMessage, sizeof(szMessage), "[CARSALE] %s(%d) bought vehicle %d from %s(%d) for $%d.", GetPlayerNameEx(playerid), buyer, sqlid, GetPlayerNameEx(sellerid), seller, price);
+			Log("logs/pay.log", szMessage);
+			if(PlayerInfo[sellerid][pBackpack] > 0 && PlayerInfo[sellerid][pBStoredV] == sqlid) {
+				PlayerInfo[sellerid][pBackpack] = 0;
+				PlayerInfo[sellerid][pBEquipped] = 0;
+				PlayerInfo[sellerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
+				PlayerInfo[sellerid][pBStoredH] = INVALID_HOUSE_ID;
+				SendClientMessageEx(sellerid, COLOR_WHITE, "You have lost your backpack since you did not withdraw it.");
+			}
+			new keyholder = PlayerVehicleInfo[sellerid][slot][pvAllowedPlayerId];
+			if(0 <= keyholder < MAX_PLAYERS && PlayerInfo[keyholder][pVehicleKeysFrom] == sellerid && PlayerInfo[keyholder][pVehicleKeys] == slot) {
+				PlayerInfo[keyholder][pVehicleKeysFrom] = INVALID_PLAYER_ID;
+				PlayerInfo[keyholder][pVehicleKeys] = INVALID_PLAYER_VEHICLE_ID;
+			}
+			PlayerVehicleInfo[playerid][targetslot] = PlayerVehicleInfo[sellerid][slot];
+			PlayerVehicleInfo[playerid][targetslot][pvAllowedPlayerId] = INVALID_PLAYER_ID;
+			PlayerVehicleInfo[playerid][targetslot][pvWeapons][0] = 0;
+			PlayerVehicleInfo[playerid][targetslot][pvWeapons][1] = 0;
+			PlayerVehicleInfo[playerid][targetslot][pvWeapons][2] = 0;
+			PlayerVehicleInfo[playerid][targetslot][pvPlate][0] = EOS;
+			PlayerVehicleInfo[playerid][targetslot][pvTicket] = 0;
+			PlayerVehicleInfo[playerid][targetslot][pvAlarmTriggered] = 0;
+			PlayerVehicleInfo[playerid][targetslot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+			PlayerVehicleInfo[playerid][targetslot][pvLastLockPickedBy][0] = EOS;
+			new empty[pvInfo];
+			PlayerVehicleInfo[sellerid][slot] = empty;
+			PlayerVehicleInfo[sellerid][slot][pvAllowedPlayerId] = INVALID_PLAYER_ID;
+			PlayerVehicleInfo[sellerid][slot][pvPaintJob] = -1;
+			VehicleSpawned[playerid]++;
+			VehicleSpawned[sellerid]--;
+			PlayerInfo[playerid][pCash] = cash;
+			PlayerInfo[sellerid][pCash] = proceeds;
+			RemovePlayerFromVehicle(sellerid);
+			SetPlayerPos(sellerid, x, y, z + 2.0);
+			foreach(new i: Player) {
+				if(VehicleOffer[i] == sellerid && GetPVarInt(i, "VehicleOfferSQLId") == sqlid) {
+					VehicleOffer[i] = INVALID_PLAYER_ID;
+					VehiclePrice[i] = 0;
+					VehicleId[i] = -1;
+					DeletePVar(i, "VehicleOfferSession");
+					DeletePVar(i, "VehicleOfferSQLId");
+				}
+			}
+			DeletePVar(sellerid, "WepVehSalePlayer");
+			DeletePVar(sellerid, "WepVehSaleVehicle");
+			DeletePVar(sellerid, "WepVehSalePrice");
+			DeletePVar(sellerid, "WepVehSaleFine");
+			format(szMessage, sizeof(szMessage), "You bought the vehicle for $%s.", number_format(price));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+			format(szMessage, sizeof(szMessage), "You sold the vehicle for $%s. Sale fee: $%s.", number_format(price), number_format(fine));
+			SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
+			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+			return 1;
         }
-        else if(strcmp(params, "house", true) == 0)
-		{
-            if(HouseOffer[playerid] != INVALID_PLAYER_ID)
-			{
-                if(IsPlayerConnected(HouseOffer[playerid]))
-				{
-                    if(HouseInfo[House[playerid]][hOwnerID] != GetPlayerSQLId(HouseOffer[playerid])) return SendClientMessageEx(playerid, COLOR_GREY, "They don't own that house.");
-					if(House[playerid] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_RED, "Error: No house specified.");
-                    if(GetPlayerCash(playerid) > HousePrice[playerid])
-					{
-						if(PlayerInfo[HouseOffer[playerid]][pBackpack] > 0 && PlayerInfo[HouseOffer[playerid]][pBStoredH] == HouseInfo[House[playerid]][hSQLId])
-						{
-							PlayerInfo[HouseOffer[playerid]][pBackpack] = 0;
-							PlayerInfo[HouseOffer[playerid]][pBEquipped] = 0;
-							PlayerInfo[HouseOffer[playerid]][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
-							PlayerInfo[HouseOffer[playerid]][pBStoredH] = INVALID_HOUSE_ID;
-							SendClientMessageEx(HouseOffer[playerid], COLOR_WHITE, "You have lost your backpack since you did not withdraw it");
-						}
-                        ClearHouse(House[playerid]);
-                        HouseInfo[House[playerid]][hLock] = 1;
-                        format(HouseInfo[House[playerid]][hOwnerName], 128, "Nobody");
-						HouseInfo[House[playerid]][hOwnerID] = -1;
-                        sendername = GetPlayerNameEx(HouseOffer[playerid]);
-                        PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-                        format(szMessage, sizeof(szMessage), "~w~Congratulations~n~ You have sold your property for ~n~~g~$%d", HousePrice[playerid]);
-                        GameTextForPlayer(HouseOffer[playerid], szMessage, 4000, 3);
-                        if(House[playerid] == PlayerInfo[HouseOffer[playerid]][pPhousekey])
-						{
-							PlayerInfo[HouseOffer[playerid]][pPhousekey] = INVALID_HOUSE_ID;
-							PlayerInfo[playerid][pPhousekey] = House[playerid];
-						}
-                        else if(House[playerid] == PlayerInfo[HouseOffer[playerid]][pPhousekey2])
-						{
-							PlayerInfo[HouseOffer[playerid]][pPhousekey2] = INVALID_HOUSE_ID;
-							PlayerInfo[playerid][pPhousekey2] = House[playerid];
-						}
-						else if(House[playerid] == PlayerInfo[HouseOffer[playerid]][pPhousekey3])
-						{
-							PlayerInfo[HouseOffer[playerid]][pPhousekey3] = INVALID_HOUSE_ID;
-							PlayerInfo[playerid][pPhousekey3] = House[playerid];
-						}
-						Homes[HouseOffer[playerid]]--;
-						Homes[playerid]++;
-                        GivePlayerCash(HouseOffer[playerid],HousePrice[playerid]);
-						OnPlayerStatsUpdate(HouseOffer[playerid]);
-
-						HouseInfo[House[playerid]][hOwnerID] = GetPlayerSQLId(playerid);
-                        HouseInfo[House[playerid]][hOwned] = 1;
-                        GetPlayerName(playerid, sendername, sizeof(sendername));
-                        strmid(HouseInfo[House[playerid]][hOwnerName], sendername, 0, strlen(sendername), 255);
-                        GivePlayerCash(playerid,-HousePrice[playerid]);
-                        SendClientMessageEx(playerid, COLOR_WHITE, "Congratulations on your new purchase!");
-                        SendClientMessageEx(playerid, COLOR_WHITE, "Type /help to review the property help section!");
-                        SaveHouse(House[playerid]);
-                        OnPlayerStatsUpdate(playerid);
-						ReloadHouseText(House[playerid]);
-
-                        new ip[32], ipex[32];
-                        GetPlayerIp(HouseOffer[playerid], ip, sizeof(ip));
-                        GetPlayerIp(playerid, ipex, sizeof(ipex));
-                        format(szMessage,sizeof(szMessage),"%s(%d) (IP: %s) has sold their house (ID %d) to %s(%d) (IP: %s) for $%s.", GetPlayerNameEx(HouseOffer[playerid]), GetPlayerSQLId(HouseOffer[playerid]), ip, House[playerid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipex, number_format(HousePrice[playerid]));
-                        Log("logs/house.log", szMessage);
-
-                        HouseOffer[playerid] = INVALID_PLAYER_ID;
-                        HousePrice[playerid] = 0;
-                        House[playerid] = INVALID_HOUSE_ID;
-						return 1;
-                    }
-                    else
-					{
-                        SendClientMessageEx(playerid, COLOR_GREY, "   You can't afford the house!");
-                        HouseOffer[playerid] = INVALID_PLAYER_ID;
-                        HousePrice[playerid] = 0;
-                        House[playerid] = INVALID_HOUSE_ID;
-                        return 1;
-                    }
-                }
-				else return SendClientMessageEx(playerid, COLOR_GREY, "   The seller has disconnected!");
-            }
-            else return SendClientMessageEx(playerid, COLOR_GREY, "   Nobody offered to buy a house!");
+        else if(strcmp(params, "house", true) == 0) {
+			new sellerid = HouseOffer[playerid], houseid = House[playerid], price = HousePrice[playerid];
+			if(!Offer_IsCurrent(playerid, sellerid, "HouseOfferSession")) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "You do not have a current house offer.");
+			
+			if(!(0 <= houseid < MAX_HOUSES)) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "The offered house is invalid.");
+			
+			new buyer = GetPlayerSQLId(playerid), seller = GetPlayerSQLId(sellerid);
+			if(buyer <= 0 || seller <= 0 || buyer == seller || HouseInfo[houseid][hOwnerID] != seller || !HouseInfo[houseid][hOwned])
+				return SendClientMessageEx(playerid, COLOR_GREY, "The seller no longer owns this house.");
+			
+			if(PlayerInfo[playerid][pFreezeHouse] || PlayerInfo[sellerid][pFreezeHouse]) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "House assets are frozen.");
+			
+			if((Homes[playerid] >= MAX_OWNABLE_HOUSES && PlayerInfo[playerid][pDonateRank] < 4) || Homes[playerid] >= 3)
+				return SendClientMessageEx(playerid, COLOR_GREY, "You cannot own another house.");
+			
+			if(PlayerInfo[playerid][pLevel] < HouseInfo[houseid][hLevel]) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "Your level is too low to buy this house.");
+			
+			new Float:x, Float:y, Float:z;
+			GetPlayerPos(sellerid, x, y, z);
+			if(GetPlayerVirtualWorld(playerid) != HouseInfo[houseid][hExtVW] || GetPlayerInterior(playerid) != HouseInfo[houseid][hExtIW]
+				|| GetPlayerVirtualWorld(sellerid) != HouseInfo[houseid][hExtVW] || GetPlayerInterior(sellerid) != HouseInfo[houseid][hExtIW]
+				|| !IsPlayerInRangeOfPoint(sellerid, 3.0, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ])
+				|| !IsPlayerInRangeOfPoint(playerid, 8.0, x, y, z)) return SendClientMessageEx(playerid, COLOR_GREY, "You and the seller must be near the house entrance.");
+			if(price <= 0 || GetPlayerCash(playerid) < price) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot afford this house.");
+			if(GetPlayerCash(sellerid) > cellmax - price) return SendClientMessageEx(playerid, COLOR_GREY, "The seller cannot receive this payment.");
+			new pInfo:keys[] = {pPhousekey, pPhousekey2, pPhousekey3};
+			new source = -1, destination = -1;
+			static const columns[][] = {"Apartment", "Apartment2", "Apartment3"};
+			for(new i; i < sizeof(keys); ++i) {
+				if(PlayerInfo[sellerid][keys[i]] == houseid) source = i;
+				if(destination == -1 && PlayerInfo[playerid][keys[i]] == INVALID_HOUSE_ID && (i < 2 || PlayerInfo[playerid][pDonateRank] >= 4)) destination = i;
+			}
+			if(source == -1 || destination == -1) return SendClientMessageEx(playerid, COLOR_GREY, "No valid house slot is available for this sale.");
+			if(!gAccountsInnoDB || !gHousesInnoDB || gPropertySaleUncertain[0] || gHouseSaleUncertain[houseid] || mysql_unprocessed_queries(MainPipeline))
+				return SendClientMessageEx(playerid, COLOR_GREY, "House storage is unavailable or busy. Please try again.");
+			new cash = GetPlayerCash(playerid) - price, proceeds = GetPlayerCash(sellerid) + price;
+			new query[2048], verification[768];
+			new backpack[160];
+			if(PlayerInfo[sellerid][pBackpack] > 0 && PlayerInfo[sellerid][pBStoredH] == HouseInfo[houseid][hSQLId]) format(backpack, sizeof(backpack), ",s.`Backpack`=0,s.`BEquipped`=0,s.`BStoredH`=%d,s.`BStoredV`=%d", INVALID_HOUSE_ID, INVALID_PLAYER_VEHICLE_ID);
+			mysql_format(MainPipeline, query, sizeof(query), "UPDATE `houses` h JOIN `accounts` b ON b.`id`=%d JOIN `accounts` s ON s.`id`=%d SET h.`OwnerID`=%d,h.`OwnerName`='%e',h.`Owned`=1,h.`Lock`=1,h.`SafeMoney`=0,h.`Pot`=0,h.`Crack`=0,h.`Materials`=0,h.`Heroin`=0,h.`Weapons0`=0,h.`Weapons1`=0,h.`Weapons2`=0,h.`Weapons3`=0,h.`Weapons4`=0,h.`GLUpgrade`=1,h.`ClosetX`=0,h.`ClosetY`=0,h.`ClosetZ`=0,h.`SignDesc`='None',h.`SignX`=0,h.`SignY`=0,h.`SignZ`=0,h.`SignA`=0,h.`SignExpire`=0,b.`Money`=%d,s.`Money`=%d,b.`%s`=%d,s.`%s`=-1%s WHERE h.`id`=%d AND h.`OwnerID`=%d", buyer, seller, buyer, GetPlayerNameEx(playerid), cash, proceeds, columns[destination], houseid, columns[source], backpack, houseid + 1, seller);
+			mysql_format(MainPipeline, verification, sizeof(verification), "SELECT h.`OwnerID` AS owner,(h.`OwnerID`=%d AND b.`Money`=%d AND s.`Money`=%d AND b.`%s`=%d AND s.`%s`=-1) AS committed FROM `houses` h JOIN `accounts` b ON b.`id`=%d JOIN `accounts` s ON s.`id`=%d WHERE h.`id`=%d", buyer, cash, proceeds, columns[destination], houseid, columns[source], buyer, seller, houseid + 1);
+			if(PropertySale_Commit(playerid, sellerid, query, verification, houseid) != 1)
+				return SendClientMessageEx(playerid, COLOR_GREY, "The house sale was not confirmed.");
+			if(PlayerInfo[sellerid][pBackpack] > 0 && PlayerInfo[sellerid][pBStoredH] == HouseInfo[houseid][hSQLId]) {
+				PlayerInfo[sellerid][pBackpack] = 0;
+				PlayerInfo[sellerid][pBEquipped] = 0;
+				PlayerInfo[sellerid][pBStoredH] = INVALID_HOUSE_ID;
+				PlayerInfo[sellerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
+				SendClientMessageEx(sellerid, COLOR_WHITE, "You have lost your backpack since you did not withdraw it.");
+			}
+			ClearHouse(houseid);
+			HouseInfo[houseid][hLock] = 1;
+			HouseInfo[houseid][hOwnerID] = buyer;
+			HouseInfo[houseid][hOwned] = 1;
+			GetPlayerName(playerid, HouseInfo[houseid][hOwnerName], MAX_PLAYER_NAME);
+			PlayerInfo[sellerid][keys[source]] = INVALID_HOUSE_ID;
+			PlayerInfo[playerid][keys[destination]] = houseid;
+			Homes[sellerid]--;
+			Homes[playerid]++;
+			PlayerInfo[playerid][pCash] = cash;
+			PlayerInfo[sellerid][pCash] = proceeds;
+			ReloadHouseText(houseid);
+			foreach(new i: Player) {
+				if(HouseOffer[i] == sellerid && House[i] == houseid) {
+					HouseOffer[i] = INVALID_PLAYER_ID;
+					HousePrice[i] = 0;
+					House[i] = INVALID_HOUSE_ID;
+					DeletePVar(i, "HouseOfferSession");
+				}
+			}
+			format(szMessage, sizeof(szMessage), "%s(%d) sold house %d to %s(%d) for $%d.", GetPlayerNameEx(sellerid), seller, houseid, GetPlayerNameEx(playerid), buyer, price);
+			Log("logs/house.log", szMessage);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Congratulations on your new house.");
+			format(szMessage, sizeof(szMessage), "You sold your house for $%s.", number_format(price));
+			SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
+			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+			return 1;
         }
         else if(strcmp(params, "handshake", true) == 0) {
             new
@@ -678,7 +706,7 @@ CMD:accept(playerid, params[])
 
             foreach(new i: Player)
 			{
-				if(GetPVarType(i, "shrequest") && GetPVarInt(i, "shrequest") == playerid) {
+				if(GetPVarType(i, "shrequest") && GetPVarInt(i, "shrequest") == playerid && GetPVarInt(i, "HandshakeTargetSession") == g_arrQueryHandle[playerid]) {
 					new
 						Float: ppFloats[3];
 
@@ -789,6 +817,9 @@ CMD:accept(playerid, params[])
 			if(!GetPVarType(playerid, "RFLTeam_Invite")) return SendClientMessageEx(playerid, COLOR_GREY, "Nobody offered you to join a team.");
 			new team = GetPVarInt(playerid, "RFLTeam_Team");
 			giveplayerid = GetPVarInt(playerid, "RFLTeam_Inviter");
+			if(!Offer_IsCurrent(playerid, giveplayerid, "RFLInviteSession") || !(0 <= team < MAX_RFLTEAMS)) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "The team invitation has expired.");
+			
 			DeletePVar(playerid, "RFLTeam_Invite");
 			DeletePVar(playerid, "RFLTeam_Team");
 			DeletePVar(playerid, "RFLTeam_Inviter");
@@ -813,12 +844,23 @@ CMD:accept(playerid, params[])
 		}
         else if(strcmp(params, "invite", true) == 0)
 		{
-            if(hInviteOffer[playerid] != INVALID_PLAYER_ID)
+			if(!Offer_IsCurrent(playerid, hInviteOffer[playerid], "hInviteOfferSession")) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
+            
+			if(hInviteOffer[playerid] != INVALID_PLAYER_ID)
 			{
                 if(IsPlayerConnected(hInviteOffer[playerid]))
 				{
-	                if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
-                    format(szMessage, sizeof(szMessage), "* You have accepted %s's house invite, a checkpoint has been set to their house.", GetPlayerNameEx(hInviteOffer[playerid]));
+	                if(!(0 <= hInviteHouse[playerid] < MAX_HOUSES)) 
+						return SendClientMessageEx(playerid, COLOR_GREY, "The house invitation is invalid.");
+                    
+					if(HouseInfo[hInviteHouse[playerid]][hOwnerID] != GetPlayerSQLId(hInviteOffer[playerid])) 
+						return SendClientMessageEx(playerid, COLOR_GREY, "The inviter no longer owns this house.");
+	                
+					if(CheckPointCheck(playerid)) 
+						return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
+                    
+					format(szMessage, sizeof(szMessage), "* You have accepted %s's house invite, a checkpoint has been set to their house.", GetPlayerNameEx(hInviteOffer[playerid]));
                     SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
                     format(szMessage, sizeof(szMessage), "* %s has accepted your house invite.", GetPlayerNameEx(playerid));
                     SendClientMessageEx(hInviteOffer[playerid], COLOR_LIGHTBLUE, szMessage);
@@ -867,47 +909,45 @@ CMD:accept(playerid, params[])
             }
         }*/
         else if(strcmp(params, "group", true) == 0) {
-            if(GetPVarType(playerid, "Group_Inviter")) {
-
-    			new
-					iInviter = GetPVarInt(playerid, "Group_Inviter"),
-					iGroupID = PlayerInfo[iInviter][pLeader],
-					iRank = PlayerInfo[iInviter][pRank];
-
-				if (PlayerInfo[playerid][pCSFBanned]) {
-					if (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC)	{
-						SendClientMessageEx(playerid, COLOR_WHITE, "You are unable to accept this group invite, as you're banned from civil service groups. Contact a member of DGA.");
-						DeletePVar(playerid, "Group_Invite");
-						DeletePVar(iInviter, "Group_Invited");
-						return 1;
-					}
-				}
-
-                if(IsPlayerConnected(iInviter) && GetPVarInt(iInviter, "Group_Invited") == playerid && 0 <= iGroupID < MAX_GROUPS) {
-					PlayerInfo[playerid][pMember] = iGroupID;
-					PlayerInfo[playerid][pRank] = 0;
-					PlayerInfo[playerid][pDivision] = INVALID_DIVISION;
-					strcpy(PlayerInfo[playerid][pBadge], "None", 9);
-					arrGroupData[iGroupID][g_iMemberCount]++;
-
-					format(szMessage, sizeof szMessage, "You have accepted %s %s's invite, and are now a member of %s.", arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(iInviter), arrGroupData[iGroupID][g_szGroupName]);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-
-					format(szMessage, sizeof szMessage, "%s accepted your group invite.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(iInviter, COLOR_LIGHTBLUE, szMessage);
-
-					format(szMessage, sizeof szMessage, "%s (%d) accepted %s %s's (%d) invite to join %s (%d).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(iInviter), GetPlayerSQLId(iInviter), arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
-					GroupLog(iGroupID, szMessage);
-
-					DeletePVar(playerid, "Group_Invite");
-					DeletePVar(iInviter, "Group_Invited");
-                }
-				else SendClientMessageEx(playerid, COLOR_GREY, "The person offering you an invite has disconnected.");
-            }
-            else SendClientMessageEx(playerid, COLOR_GREY, "Nobody has offered you a group invite.");
+            if(!GetPVarType(playerid, "Group_Inviter")) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "Nobody has offered you a group invite.");
+            
+			new inviter = GetPVarInt(playerid, "Group_Inviter");
+            if(!Offer_IsCurrent(playerid, inviter, "GroupInviteSession") || !GetPVarType(inviter, "Group_Invited") || GetPVarInt(inviter, "Group_Invited") != playerid
+                || GetPVarInt(inviter, "GroupTargetSession") != g_arrQueryHandle[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "The group invite has expired.");
+            
+			new group = PlayerInfo[inviter][pLeader], rank = PlayerInfo[inviter][pRank];
+            if(!(0 <= group < MAX_GROUPS) || !(0 <= rank < MAX_GROUP_RANKS) || group != GetPVarInt(playerid, "GroupInviteID"))
+                return SendClientMessageEx(playerid, COLOR_GREY, "The inviter no longer leads this group.");
+            
+			if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS || 0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS)
+                return SendClientMessageEx(playerid, COLOR_GREY, "You are already in a group.");
+            
+			if(PlayerInfo[playerid][pCSFBanned] && (arrGroupData[group][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[group][g_iGroupType] == GROUP_TYPE_MEDIC))
+                return SendClientMessageEx(playerid, COLOR_GREY, "You are banned from civil service groups.");
+            
+			PlayerInfo[playerid][pMember] = group;
+            PlayerInfo[playerid][pRank] = 0;
+            PlayerInfo[playerid][pDivision] = INVALID_DIVISION;
+            strcpy(PlayerInfo[playerid][pBadge], "None", 9);
+            arrGroupData[group][g_iMemberCount]++;
+            format(szMessage, sizeof(szMessage), "You accepted %s %s's invitation to %s.", arrGroupRanks[group][rank], GetPlayerNameEx(inviter), arrGroupData[group][g_szGroupName]);
+            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+            format(szMessage, sizeof(szMessage), "%s accepted your group invite.", GetPlayerNameEx(playerid));
+            SendClientMessageEx(inviter, COLOR_LIGHTBLUE, szMessage);
+            format(szMessage, sizeof(szMessage), "%s (%d) accepted %s's (%d) invitation to group %d.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(inviter), GetPlayerSQLId(inviter), group + 1);
+            GroupLog(group, szMessage);
+            DeletePVar(playerid, "Group_Inviter");
+            DeletePVar(playerid, "GroupInviteSession");
+            DeletePVar(playerid, "GroupInviteID");
+            DeletePVar(inviter, "Group_Invited");
+            DeletePVar(inviter, "GroupTargetSession");
         }
         else if(strcmp(params, "witness", true) == 0) {
-            if(MarryWitnessOffer[playerid] != INVALID_PLAYER_ID) {
+			if(!Offer_IsCurrent(playerid, MarryWitnessOffer[playerid], "MarryWitnessOfferSession")) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
+            
+			if(MarryWitnessOffer[playerid] != INVALID_PLAYER_ID) {
                 if(IsPlayerConnected(MarryWitnessOffer[playerid])) {
                     if(ProxDetectorS(10.0, playerid, MarryWitnessOffer[playerid])) {
                         GetPlayerName(MarryWitnessOffer[playerid], giveplayer, sizeof(giveplayer));
@@ -917,6 +957,7 @@ CMD:accept(playerid, params[])
                         format(szMessage, sizeof(szMessage), "* %s has accepted your request to be your marriage witness.", sendername);
                         SendClientMessageEx(MarryWitnessOffer[playerid], COLOR_LIGHTBLUE, szMessage);
                         MarryWitness[MarryWitnessOffer[playerid]] = playerid;
+						SetPVarInt(MarryWitnessOffer[playerid], "MarriageWitnessSession", g_arrQueryHandle[playerid]);
                         MarryWitnessOffer[playerid] = INVALID_PLAYER_ID;
                         return 1;
                     }
@@ -932,10 +973,11 @@ CMD:accept(playerid, params[])
             }
         }
         else if(strcmp(params, "marriage", true) == 0) {
+			if(!Offer_IsCurrent(playerid, ProposeOffer[playerid], "ProposeOfferSession")) return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
             if(ProposeOffer[playerid] != INVALID_PLAYER_ID) {
                 if(IsPlayerConnected(ProposeOffer[playerid])) {
                     if(ProxDetectorS(10.0, playerid, ProposeOffer[playerid])) {
-                        if(MarryWitness[ProposeOffer[playerid]] == INVALID_PLAYER_ID) {
+                        if(!Offer_IsCurrent(ProposeOffer[playerid], MarryWitness[ProposeOffer[playerid]], "MarriageWitnessSession")) {
                             SendClientMessageEx(playerid, COLOR_GREY, "   The proposer doesn't have a marriage witness!");
                             return 1;
                         }
@@ -991,7 +1033,10 @@ CMD:accept(playerid, params[])
             }
         }
         else if(strcmp(params, "ticket", true) == 0) {
-            if(TicketOffer[playerid] != INVALID_PLAYER_ID) {
+			if(!Offer_IsCurrent(playerid, TicketOffer[playerid], "TicketOfferSession")) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
+            
+			if(TicketOffer[playerid] != INVALID_PLAYER_ID) {
                 if(IsPlayerConnected(TicketOffer[playerid])) {
                     if (ProxDetectorS(5.0, playerid, TicketOffer[playerid])) {
                         if(GetPlayerCash(playerid) >= TicketMoney[playerid]) {
@@ -1033,7 +1078,10 @@ CMD:accept(playerid, params[])
             }
         }
 		else if(strcmp(params, "boxing", true) == 0) {
-            if(BoxOffer[playerid] != INVALID_PLAYER_ID) {
+			if(!Offer_IsCurrent(playerid, BoxOffer[playerid], "BoxOfferSession")) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
+            
+			if(BoxOffer[playerid] != INVALID_PLAYER_ID) {
                 if(IsPlayerConnected(BoxOffer[playerid])) {
                     new points;
                     new mypoints;
@@ -1306,7 +1354,10 @@ CMD:accept(playerid, params[])
             }
         }
         else if(strcmp(params, "live", true) == 0) {
-            if(LiveOffer[playerid] != INVALID_PLAYER_ID) {
+			if(!Offer_IsCurrent(playerid, LiveOffer[playerid], "LiveOfferSession")) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
+            
+			if(LiveOffer[playerid] != INVALID_PLAYER_ID) {
                 if(IsPlayerConnected(LiveOffer[playerid])) {
                     if (ProxDetectorS(5.0, playerid, LiveOffer[playerid])) {
                         SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are frozen till the Live Conversation ends.");
@@ -1361,7 +1412,10 @@ CMD:accept(playerid, params[])
             }
         }
         else if(strcmp(params, "bodyguard", true) == 0) {
-        	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
+			if(!Offer_IsCurrent(playerid, GuardOffer[playerid], "GuardOfferSession")) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
+        	
+			if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
             if(GuardOffer[playerid] != INVALID_PLAYER_ID) {
                 if(GetPlayerCash(playerid) > GuardPrice[playerid]) {
                     if(IsPlayerConnected(GuardOffer[playerid])) {
@@ -1416,7 +1470,10 @@ CMD:accept(playerid, params[])
             }
         }
         else if(strcmp(params, "defense", true) == 0) {
-            if(DefendOffer[playerid] != INVALID_PLAYER_ID) {
+			if(!Offer_IsCurrent(playerid, DefendOffer[playerid], "DefendOfferSession")) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
+            
+			if(DefendOffer[playerid] != INVALID_PLAYER_ID) {
                 if(GetPlayerCash(playerid) > DefendPrice[playerid]) {
                     if(IsPlayerConnected(DefendOffer[playerid])) {
                         /*new ip[32], ipex[32];
@@ -1452,7 +1509,10 @@ CMD:accept(playerid, params[])
             }
         }
         else if(strcmp(params, "appeal", true) == 0) {
-            if(AppealOffer[playerid] != INVALID_PLAYER_ID) {
+			if(!Offer_IsCurrent(playerid, AppealOffer[playerid], "AppealOfferSession")) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
+            
+			if(AppealOffer[playerid] != INVALID_PLAYER_ID) {
                 if(IsPlayerConnected(AppealOffer[playerid])) {
                     AppealOfferAccepted[playerid] = 1;
                     giveplayer = GetPlayerNameEx(AppealOffer[playerid]);
@@ -1472,7 +1532,10 @@ CMD:accept(playerid, params[])
         }
  	    else if(strcmp(params, "rimkit", true) == 0) {
         	if (GetPVarType(playerid, "RimOffer")) {
-	            if(GetPlayerCash(playerid) > GetPVarInt(playerid, "RimPrice")) {
+	            if(!Offer_IsCurrent(playerid, GetPVarInt(playerid, "RimOffer"), "RimOfferSession")) 
+					return SendClientMessageEx(playerid, COLOR_GREY, "This offer has expired.");
+	            
+				if(GetPlayerCash(playerid) > GetPVarInt(playerid, "RimPrice")) {
 	            	if(IsPlayerConnected(GetPVarInt(playerid, "RimOffer"))) {
 	            		if (GetPVarInt(playerid, "RimSeller_SQLId") != GetPlayerSQLId(GetPVarInt(playerid, "RimOffer")))
 						{
@@ -1520,6 +1583,8 @@ CMD:accept(playerid, params[])
 		else if(strcmp(params, "voucher", true) == 0)
 		{
 			if(!GetPVarType(playerid, "buyingVoucher")) return SendClientMessageEx(playerid, COLOR_GRAD2, "No-one has offered you any vouchers.");
+			if(!Offer_IsCurrent(playerid, GetPVarInt(playerid, "sellerVoucher"), "VoucherOfferSession")) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "This offer has expired.");
 
 			new sellerid = GetPVarInt(playerid, "sellerVoucher"),
 				price = GetPVarInt(playerid, "priceVoucher"),
@@ -1707,7 +1772,10 @@ CMD:accept(playerid, params[])
 			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have enough money.");
 		}
         else if(strcmp(params,"craft",true) == 0) {
-            if(CraftOffer[playerid] != INVALID_PLAYER_ID) {
+			if(!Offer_IsCurrent(playerid, CraftOffer[playerid], "CraftOfferSession")) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
+            
+			if(CraftOffer[playerid] != INVALID_PLAYER_ID) {
                 if(IsPlayerConnected(CraftOffer[playerid])) {
                     if (ProxDetectorS(5.0, playerid, CraftOffer[playerid])) {
                         if(PlayerInfo[playerid][pHospital] > 0) {
@@ -1724,33 +1792,22 @@ CMD:accept(playerid, params[])
                         }
 
                         if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please exit the vehicle, before using this command.");
-						if(CraftId[playerid] == 17)
-						{
-							if(PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID && PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID && PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID)
-							{
-								SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house!");
-								SendClientMessageEx(CraftOffer[playerid], COLOR_GREY, "The buyer doesn't own a house!");
-								return 1;
-							}
-							if((IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey]][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey]][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey]][hIntIW]) &&
-							(IsPlayerInRangeOfPoint(CraftOffer[playerid], 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey]][hInteriorZ]) && GetPlayerVirtualWorld(CraftOffer[playerid]) == HouseInfo[PlayerInfo[playerid][pPhousekey]][hIntVW] && GetPlayerInterior(CraftOffer[playerid]) == HouseInfo[PlayerInfo[playerid][pPhousekey]][hIntIW]))
-							{
-							}
-							else if((IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey2]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey2]][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey2]][hIntIW]) &&
-							(IsPlayerInRangeOfPoint(CraftOffer[playerid], 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey2]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hInteriorZ]) && GetPlayerVirtualWorld(CraftOffer[playerid]) == HouseInfo[PlayerInfo[playerid][pPhousekey2]][hIntVW] && GetPlayerInterior(CraftOffer[playerid]) == HouseInfo[PlayerInfo[playerid][pPhousekey2]][hIntIW]))
-							{
-							}
-							else if((IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey3]][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey3]][hIntIW]) &&
-							(IsPlayerInRangeOfPoint(CraftOffer[playerid], 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorZ]) && GetPlayerVirtualWorld(CraftOffer[playerid]) == HouseInfo[PlayerInfo[playerid][pPhousekey3]][hIntVW] && GetPlayerInterior(CraftOffer[playerid]) == HouseInfo[PlayerInfo[playerid][pPhousekey3]][hIntIW]))
-							{
-							}
-							else
-							{
-								SendClientMessageEx(playerid, COLOR_GREY, "The craftsman is not inside of your house!");
-								SendClientMessageEx(CraftOffer[playerid], COLOR_GREY, "You are not inside of the buyer's house!");
-								return 1;
-							}
-						}
+                        new closet = INVALID_HOUSE_ID;
+                        if(CraftId[playerid] == 17) {
+                            new pInfo:keys[] = {pPhousekey, pPhousekey2, pPhousekey3};
+                            for(new i; i < sizeof(keys); ++i) {
+                                new houseid = PlayerInfo[playerid][keys[i]];
+                                if(!(0 <= houseid < MAX_HOUSES)) continue;
+                                if(HouseInfo[houseid][hOwnerID] != GetPlayerSQLId(playerid) || gHouseSaleUncertain[houseid]) continue;
+                                if(GetPlayerVirtualWorld(playerid) != HouseInfo[houseid][hIntVW] || GetPlayerInterior(playerid) != HouseInfo[houseid][hIntIW]
+                                    || GetPlayerVirtualWorld(CraftOffer[playerid]) != HouseInfo[houseid][hIntVW] || GetPlayerInterior(CraftOffer[playerid]) != HouseInfo[houseid][hIntIW]) continue;
+                                if(!IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ])
+                                    || !IsPlayerInRangeOfPoint(CraftOffer[playerid], 50.0, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ])) continue;
+                                closet = houseid;
+                                break;
+                            }
+                            if(closet == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You and the craftsman must be inside your house.");
+                        }
                         new weaponname[50];
                         format(weaponname, 50, "%s", CraftName[playerid]);
                         switch(CraftId[playerid]) {
@@ -1846,33 +1903,13 @@ CMD:accept(playerid, params[])
 						    		return 1;
 								}
 							}
-							case 17:
-							{
-								if(IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey]][hInteriorZ]) && IsPlayerInRangeOfPoint(CraftOffer[playerid], 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey]][hInteriorZ]))
-								{
-									GetPlayerPos(playerid, HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetZ]);
-									if(IsValidDynamic3DTextLabel(HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetTextID])) DestroyDynamic3DTextLabel(Text3D:HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetTextID]);
-									HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[PlayerInfo[playerid][pPhousekey]][hIntVW], .interiorid = HouseInfo[PlayerInfo[playerid][pPhousekey]][hIntIW], .streamdistance = 10.0);
-									SaveHouse(PlayerInfo[playerid][pPhousekey]);
-									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "/closet(add/remove)");
-								}
-								else if(IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey2]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hInteriorZ]) && IsPlayerInRangeOfPoint(CraftOffer[playerid], 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey2]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hInteriorZ]))
-								{
-									GetPlayerPos(playerid, HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetZ]);
-									if(IsValidDynamic3DTextLabel(HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetTextID])) DestroyDynamic3DTextLabel(Text3D:HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetTextID]);
-									HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[PlayerInfo[playerid][pPhousekey2]][hIntVW], .interiorid = HouseInfo[PlayerInfo[playerid][pPhousekey2]][hIntIW], .streamdistance = 10.0);
-									SaveHouse(PlayerInfo[playerid][pPhousekey2]);
-									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "/closet(add/remove)");
-								}
-								else if(IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorZ]) && IsPlayerInRangeOfPoint(CraftOffer[playerid], 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorZ]))
-								{
-									GetPlayerPos(playerid, HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetZ]);
-									if(IsValidDynamic3DTextLabel(HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetTextID])) DestroyDynamic3DTextLabel(Text3D:HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetTextID]);
-									HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[PlayerInfo[playerid][pPhousekey3]][hIntVW], .interiorid = HouseInfo[PlayerInfo[playerid][pPhousekey3]][hIntIW], .streamdistance = 10.0);
-									SaveHouse(PlayerInfo[playerid][pPhousekey3]);
-									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "/closet(add/remove)");
-								}
-							}
+                            case 17: {
+                                GetPlayerPos(playerid, HouseInfo[closet][hClosetX], HouseInfo[closet][hClosetY], HouseInfo[closet][hClosetZ]);
+                                if(IsValidDynamic3DTextLabel(HouseInfo[closet][hClosetTextID])) DestroyDynamic3DTextLabel(HouseInfo[closet][hClosetTextID]);
+                                HouseInfo[closet][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[closet][hClosetX], HouseInfo[closet][hClosetY], HouseInfo[closet][hClosetZ] + 0.5, 10.0, .testlos = 1, .worldid = HouseInfo[closet][hIntVW], .interiorid = HouseInfo[closet][hIntIW], .streamdistance = 10.0);
+                                SaveHouse(closet);
+                                SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "/closet(add/remove)");
+                            }
 							case 18:
 							{
 								PlayerInfo[playerid][pToolBox] += 15;
@@ -1930,6 +1967,12 @@ CMD:accept(playerid, params[])
             }
         }
 		else if(strcmp(params,"contract",true) == 0) {
+            if(!Offer_IsCurrent(playerid, HitOffer[playerid], "HitOfferSession") || !Offer_IsCurrent(playerid, HitToGet[playerid], "HitTargetSession"))
+                return SendClientMessageEx(playerid, COLOR_GREY, "The contract offer has expired.");
+            
+			if(GoChase[playerid] != INVALID_PLAYER_ID || GotHit[HitToGet[playerid]] || PlayerInfo[HitToGet[playerid]][pHeadValue] <= 0)
+                return SendClientMessageEx(playerid, COLOR_GREY, "This contract is no longer available.");
+			
 			if(HitOffer[playerid] != INVALID_PLAYER_ID) {
 				if(HitToGet[playerid] != INVALID_PLAYER_ID) {
 					if(IsPlayerConnected(HitToGet[playerid])) {
@@ -1961,7 +2004,10 @@ CMD:accept(playerid, params[])
 			}
 		}
         else if(strcmp(params,"sex",true) == 0) {
-            if(SexOffer[playerid] != INVALID_PLAYER_ID) {
+			if(!Offer_IsCurrent(playerid, SexOffer[playerid], "SexOfferSession")) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
+            
+			if(SexOffer[playerid] != INVALID_PLAYER_ID) {
                 if(GetPlayerCash(playerid) > SexPrice[playerid]) {
                     if (IsPlayerConnected(SexOffer[playerid])) {
                         new Car = GetPlayerVehicleID(playerid);
@@ -2136,7 +2182,10 @@ CMD:accept(playerid, params[])
             }
         }
         else if(strcmp(params,"repair",true) == 0) {
-            if(RepairOffer[playerid] != INVALID_PLAYER_ID) {
+			if(!Offer_IsCurrent(playerid, RepairOffer[playerid], "RepairOfferSession")) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
+            
+			if(RepairOffer[playerid] != INVALID_PLAYER_ID) {
                 if(GetPlayerCash(playerid) > RepairPrice[playerid]) {
                     if(IsPlayerInAnyVehicle(playerid)) {
                         if(IsPlayerConnected(RepairOffer[playerid])) {
@@ -2197,6 +2246,7 @@ CMD:accept(playerid, params[])
             }
         }
         else if(strcmp(params,"refill",true) == 0) {
+			if(!Offer_IsCurrent(playerid, RefillOffer[playerid], "RefillOfferSession")) return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
             if(RefillOffer[playerid] != INVALID_PLAYER_ID) {
                 if(GetPlayerCash(playerid) > RefillPrice[playerid]) {
                     if(IsPlayerInAnyVehicle(playerid)) {
@@ -2280,6 +2330,9 @@ CMD:accept(playerid, params[])
             }
         }
 		else if(strcmp(params, "backpack", true) == 0) {
+			if(!Offer_IsCurrent(playerid, GetPVarInt(playerid, "sellbackpack"), "BackpackOfferSession")) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "This offer has expired.");
+			
 			if(GetPVarType(playerid, "sellbackpack") && IsPlayerConnected(GetPVarInt(playerid, "sellbackpack")))
 			{
 				if(GetPlayerCash(playerid) > GetPVarInt(playerid, "sellbackpackprice"))
@@ -2390,36 +2443,52 @@ CMD:cancel(playerid, params[])
 	}
 	else if(strcmp(choice,"renderaid",true) == 0) DeletePVar(playerid, "renderaid");
 	else if(strcmp(choice,"sex",true) == 0) {
-		if(GetPVarType(playerid, "SexOfferTo")) {
-			SexOffer[GetPVarInt(playerid, "SexOfferTo")] = INVALID_PLAYER_ID;
-			SexPrice[GetPVarInt(playerid, "SexOfferTo")] = 0;
-			DeletePVar(playerid, "SexOfferTo");
-		}
-		else {
-			SexOffer[playerid] = INVALID_PLAYER_ID; SexPrice[playerid] = 0;
-		}
-	}
+        new target = GetPVarInt(playerid, "SexOfferTo");
+        if(GetPVarType(playerid, "SexOfferTo") && 0 <= target < MAX_PLAYERS && SexOffer[target] == playerid
+            && Offer_IsCurrent(target, playerid, "SexOfferSession")) {
+            SexOffer[target] = INVALID_PLAYER_ID;
+            SexPrice[target] = 0;
+            DeletePVar(target, "SexOfferSession");
+        }
+        else {
+            SexOffer[playerid] = INVALID_PLAYER_ID;
+            SexPrice[playerid] = 0;
+            DeletePVar(playerid, "SexOfferSession");
+        }
+        DeletePVar(playerid, "SexOfferTo");
+    }
 	else if(strcmp(choice,"craft",true) == 0) { CraftOffer[playerid] = INVALID_PLAYER_ID; CraftId[playerid] = 0; }
 	else if(strcmp(choice,"repair",true) == 0) {
-		if(GetPVarType(playerid, "RepairOfferTo")) {
-			RepairOffer[GetPVarInt(playerid, "RepairOfferTo")] = INVALID_PLAYER_ID;
-			RepairPrice[GetPVarInt(playerid, "RepairOfferTo")] = 0;
-			RepairCar[GetPVarInt(playerid, "RepairOfferTo")] = 0;
-			DeletePVar(playerid, "RepairOfferTo");
-		}
-		else {
-			RepairOffer[playerid] = INVALID_PLAYER_ID; RepairPrice[playerid] = 0; RepairCar[playerid] = 0;
-		}
-	}
+        new target = GetPVarInt(playerid, "RepairOfferTo");
+        if(GetPVarType(playerid, "RepairOfferTo") && 0 <= target < MAX_PLAYERS && RepairOffer[target] == playerid
+            && Offer_IsCurrent(target, playerid, "RepairOfferSession")) {
+            RepairOffer[target] = INVALID_PLAYER_ID;
+            RepairPrice[target] = 0;
+            RepairCar[target] = 0;
+            DeletePVar(target, "RepairOfferSession");
+        }
+        else {
+            RepairOffer[playerid] = INVALID_PLAYER_ID;
+            RepairPrice[playerid] = 0;
+            RepairCar[playerid] = 0;
+            DeletePVar(playerid, "RepairOfferSession");
+        }
+        DeletePVar(playerid, "RepairOfferTo");
+    }
 	else if(strcmp(choice,"lawyer",true) == 0) { WantLawyer[playerid] = 0; CallLawyer[playerid] = 0; }
 	else if(strcmp(choice,"bodyguard",true) == 0) { GuardOffer[playerid] = INVALID_PLAYER_ID; GuardPrice[playerid] = 0; }
 	else if(strcmp(choice,"live",true) == 0) { LiveOffer[playerid] = INVALID_PLAYER_ID; }
 	else if(strcmp(choice,"refill",true) == 0) { RefillOffer[playerid] = INVALID_PLAYER_ID; RefillPrice[playerid] = 0; }
-	else if(strcmp(choice,"car",true) == 0) { VehicleOffer[playerid] = INVALID_PLAYER_ID; VehiclePrice[playerid] = 0; VehicleId[playerid] = -1; }
-	else if(strcmp(choice,"house",true) == 0) { HouseOffer[playerid] = INVALID_PLAYER_ID; HousePrice[playerid] = 0; House[playerid] = 0; }
+	else if(strcmp(choice,"car",true) == 0) { VehicleOffer[playerid] = INVALID_PLAYER_ID; VehiclePrice[playerid] = 0; VehicleId[playerid] = -1; DeletePVar(playerid, "VehicleOfferSession"); DeletePVar(playerid, "VehicleOfferSQLId"); }
+	else if(strcmp(choice,"house",true) == 0) { HouseOffer[playerid] = INVALID_PLAYER_ID; HousePrice[playerid] = 0; House[playerid] = INVALID_HOUSE_ID; DeletePVar(playerid, "HouseOfferSession"); }
 	else if(strcmp(choice,"boxing",true) == 0) { BoxOffer[playerid] = INVALID_PLAYER_ID; }
 	else if(strcmp(choice,"witness",true) == 0) { MarryWitnessOffer[playerid] = INVALID_PLAYER_ID; }
-	else if(strcmp(choice,"marriage",true) == 0) { DeletePVar(ProposeOffer[playerid], "marriagelastname"), ProposeOffer[playerid] = INVALID_PLAYER_ID, DeletePVar(playerid, "marriagelastname"); }
+	else if(strcmp(choice,"marriage",true) == 0) {
+        if(Offer_IsCurrent(playerid, ProposeOffer[playerid], "ProposeOfferSession")) DeletePVar(ProposeOffer[playerid], "marriagelastname");
+        ProposeOffer[playerid] = INVALID_PLAYER_ID;
+        DeletePVar(playerid, "ProposeOfferSession");
+        DeletePVar(playerid, "marriagelastname");
+    }
 	//else if(strcmp(choice,"divorce",true) == 0) { DivorceOffer[playerid] = INVALID_PLAYER_ID; }
 	else if(strcmp(choice,"drink",true) == 0) { DrinkOffer[playerid] = INVALID_PLAYER_ID; }
 	else if(strcmp(choice,"firstaid",true) == 0)
@@ -2490,8 +2559,10 @@ CMD:cancel(playerid, params[])
 			{
 				HitToGet[playerid] = INVALID_PLAYER_ID;
 				HitOffer[playerid] = INVALID_PLAYER_ID;
-				GetChased[GoChase[playerid]] = INVALID_PLAYER_ID;
-				GotHit[GoChase[playerid]] = 0;
+				if(0 <= GoChase[playerid] < MAX_PLAYERS && GetChased[GoChase[playerid]] == playerid) {
+					GetChased[GoChase[playerid]] = INVALID_PLAYER_ID;
+					GotHit[GoChase[playerid]] = 0;
+				}
 				GoChase[playerid] = INVALID_PLAYER_ID;
 				DeletePVar(playerid, "HitCooldown");
 			}
@@ -2647,6 +2718,7 @@ CMD:refill(playerid, params[])
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 			PlayerInfo[playerid][pMechTime] = gettime()+60;
 			RefillOffer[giveplayerid] = playerid;
+			SetPVarInt(giveplayerid, "RefillOfferSession", g_arrQueryHandle[playerid]);
 			RefillPrice[giveplayerid] = money;
 		}
 		else
@@ -2711,6 +2783,7 @@ CMD:repair(playerid, params[])
 						PlayerInfo[playerid][pMechTime] = gettime()+60;
 						SetPVarInt(playerid, "RepairOfferTo", giveplayerid);
 						RepairOffer[giveplayerid] = playerid;
+						SetPVarInt(giveplayerid, "RepairOfferSession", g_arrQueryHandle[playerid]);
 						RepairPrice[giveplayerid] = money;
 					}
 					else

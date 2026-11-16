@@ -2250,6 +2250,7 @@ CMD:ticket(playerid, params[])
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Type /accept ticket, to accept it.");
 					TicketOffer[giveplayerid] = playerid;
+					SetPVarInt(giveplayerid, "TicketOfferSession", g_arrQueryHandle[playerid]);
 					TicketMoney[giveplayerid] = moneys;
 					SetPVarString(playerid, "ticketreason", reason);
 					return 1;

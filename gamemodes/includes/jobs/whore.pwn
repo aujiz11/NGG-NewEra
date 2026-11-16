@@ -67,6 +67,7 @@ CMD:sex(playerid, params[])
 							SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 							SetPVarInt(playerid, "SexOfferTo", giveplayerid);
 							SexOffer[giveplayerid] = playerid;
+							SetPVarInt(giveplayerid, "SexOfferSession", g_arrQueryHandle[playerid]);
 							SexPrice[giveplayerid] = money;
 							PlayerInfo[playerid][pSexTime] = gettime()+60;
 						}

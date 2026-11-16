@@ -141,6 +141,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 14);
 						SetPVarInt(id, "pSellGunMats", 100);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
@@ -159,6 +160,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 1);
 						SetPVarInt(id, "pSellGunMats", 100);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
@@ -177,6 +179,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 5);
 						SetPVarInt(id, "pSellGunMats", 100);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
@@ -195,6 +198,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 15);
 						SetPVarInt(id, "pSellGunMats", 100);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
@@ -213,6 +217,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 6);
 						SetPVarInt(id, "pSellGunMats", 100);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
@@ -231,6 +236,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 2);
 						SetPVarInt(id, "pSellGunMats", 100);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
@@ -249,6 +255,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 7);
 						SetPVarInt(id, "pSellGunMats", 100);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
@@ -267,6 +274,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 8);
 						SetPVarInt(id, "pSellGunMats", 100);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
@@ -285,6 +293,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 10);
 						SetPVarInt(id, "pSellGunMats", 100);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
@@ -305,6 +314,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 22);
 						SetPVarInt(id, "pSellGunMats", 500);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 						SetPVarInt(id, "pSellGunXP", 1);
 					}
 				}
@@ -326,6 +336,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 25);
 						SetPVarInt(id, "pSellGunMats", 4000);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 						SetPVarInt(id, "pSellGunXP", 1);
 					}
 				}
@@ -347,6 +358,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 23);
 						SetPVarInt(id, "pSellGunMats", 1000);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 						SetPVarInt(id, "pSellGunXP", 1);
 					}
 				}
@@ -368,6 +380,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 28);
 						SetPVarInt(id, "pSellGunMats", 2500);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 						SetPVarInt(id, "pSellGunXP", 1);
 					}
 				}
@@ -389,6 +402,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 32);
 						SetPVarInt(id, "pSellGunMats", 3000);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 						SetPVarInt(id, "pSellGunXP", 1);
 					}
 				}
@@ -410,6 +424,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 33);
 						SetPVarInt(id, "pSellGunMats", 3000);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 						SetPVarInt(id, "pSellGunXP", 1);
 					}
 				}
@@ -431,6 +446,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 29);
 						SetPVarInt(id, "pSellGunMats", 2500);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 						SetPVarInt(id, "pSellGunXP", 1);
 					}
 				}
@@ -452,6 +468,7 @@ CMD:sellgun(playerid, params[])
 						SetPVarInt(id, "pSellGun", 24);
 						SetPVarInt(id, "pSellGunMats", 5000);
 						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 						SetPVarInt(id, "pSellGunXP", 1);
 					}
 				}
@@ -474,6 +491,7 @@ CMD:sellgun(playerid, params[])
 							SetPVarInt(id, "pSellGun", 30);
 							SetPVarInt(id, "pSellGunMats", 10000);
 							SetPVarInt(id, "pSellGunID", playerid);
+							SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
 							SetPVarInt(id, "pSellGunXP", 1);
 						}
 					}

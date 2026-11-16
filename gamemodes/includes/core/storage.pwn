@@ -1891,6 +1891,7 @@ CMD:sell(playerid, params[])
 		format(string, sizeof(string), "* %s wants to sell you %d rim kits for $%s, (type /accept rimkit) to buy.", GetPlayerNameEx(playerid), amount, number_format(price));
 		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 	 	SetPVarInt(giveplayerid, "RimOffer", playerid);
+		SetPVarInt(giveplayerid, "RimOfferSession", g_arrQueryHandle[playerid]);
 	 	SetPVarInt(giveplayerid, "RimPrice", price);
 	 	SetPVarInt(giveplayerid, "RimCount", amount);
 	 	SetPVarInt(giveplayerid, "RimSeller_SQLId", GetPlayerSQLId(playerid));

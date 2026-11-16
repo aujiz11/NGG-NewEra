@@ -43,7 +43,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	{
 		if(response)
 		{
-			if(IsPlayerConnected(hInviteOfferTo[playerid]))
+			if(Offer_IsCurrent(playerid, hInviteOfferTo[playerid], "HouseInviteTargetSession"))
 			{
 				new j = 0, zone[MAX_ZONE_NAME];
 				for(new i; i < MAX_HOUSES; i++)
@@ -57,6 +57,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							new istring[128];
 							hInviteHouse[hInviteOfferTo[playerid]] = i;
 							hInviteOffer[hInviteOfferTo[playerid]] = playerid;
+							SetPVarInt(hInviteOfferTo[playerid], "hInviteOfferSession", g_arrQueryHandle[playerid]);
 							format(istring, sizeof(istring), "   %s has invited you to their house in %s (type /accept invite).", GetPlayerNameEx(playerid), zone);
 							SendClientMessageEx(hInviteOfferTo[playerid], COLOR_LIGHTBLUE, istring);
 							format(istring, sizeof(istring), "   You have invited %s to your house in %s.", GetPlayerNameEx(hInviteOfferTo[playerid]), zone);
@@ -78,6 +79,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 }
 
 stock SaveHouse(houseid) {
+	if(!(0 <= houseid < MAX_HOUSES) || gHouseSaleUncertain[houseid]) return 0;
 
 	szMiscArray[0] = 0;
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `houses` SET \
@@ -240,6 +242,7 @@ stock SaveHouse(houseid) {
 		houseid+1
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
 	mysql_tquery(MainPipeline, szMiscArray, "OnSaveHouse", "ii", houseid, 3);
+	return 1;
 }
 
 forward OnSaveHouse(i, thread);
@@ -775,6 +778,7 @@ CMD:sellmyhouse(playerid, params[])
 							return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You have a backpack stored in this house, withdraw it first or you will lose it, please confirm!");
 						}
 						HouseOffer[giveplayerid] = playerid;
+						SetPVarInt(giveplayerid, "HouseOfferSession", g_arrQueryHandle[playerid]);
 						HousePrice[giveplayerid] = price;
 						House[giveplayerid] = i;
 						format(string, sizeof(string), "* You offered %s to buy your house for $%s.", GetPlayerNameEx(giveplayerid), number_format(price));
@@ -1294,6 +1298,7 @@ CMD:houseinvite(playerid, params[])
 		if(giveplayerid != INVALID_PLAYER_ID)
 		{
 			hInviteOfferTo[playerid] = giveplayerid;
+			SetPVarInt(playerid, "HouseInviteTargetSession", g_arrQueryHandle[giveplayerid]);
 			format(title, sizeof(title), "House Invite for %s", GetPlayerNameEx(giveplayerid));
 			for(new i; i < MAX_HOUSES; i++)
 			{

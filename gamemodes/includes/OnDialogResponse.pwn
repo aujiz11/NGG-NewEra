@@ -13232,9 +13232,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new price = GetPVarInt(playerid, "WepVehSalePrice");
 			new d = GetPVarInt(playerid, "WepVehSaleVehicle");
 			new fine = GetPVarInt(playerid, "WepVehSaleFine");
+            if(!GetPVarType(playerid, "WepVehSalePlayer") || !Offer_IsCurrent(playerid, giveplayerid, "WepVehSaleSession")
+                || !(0 <= d < MAX_PLAYERVEHICLES)) return SendClientMessageEx(playerid, COLOR_GREY, "The vehicle sale offer has expired.");
+            if(PlayerVehicleInfo[playerid][d][pvSlotId] != GetPVarInt(playerid, "WepVehSaleSQLId")
+                || !IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][d][pvId])) return SendClientMessageEx(playerid, COLOR_GREY, "The offered vehicle has changed.");
 
 			SetPVarInt(playerid, "LastTransaction", gettime());
             VehicleOffer[giveplayerid] = playerid;
+            SetPVarInt(giveplayerid, "VehicleOfferSession", g_arrQueryHandle[playerid]);
+            SetPVarInt(giveplayerid, "VehicleOfferSQLId", PlayerVehicleInfo[playerid][d][pvSlotId]);
             VehicleId[giveplayerid] = d;
             VehiclePrice[giveplayerid] = price;
 

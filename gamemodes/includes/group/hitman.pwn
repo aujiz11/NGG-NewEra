@@ -430,7 +430,9 @@ CMD:givehit(playerid, params[])
 				format(string, sizeof(string), "* Hitman %s has offered you a contract to kill %s (type /accept contract), to accept it.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid));
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 				HitOffer[giveplayerid] = playerid;
+				SetPVarInt(giveplayerid, "HitOfferSession", g_arrQueryHandle[playerid]);
 				HitToGet[giveplayerid] = targetid;
+				SetPVarInt(giveplayerid, "HitTargetSession", g_arrQueryHandle[targetid]);
 				return 1;
 			}
 			else
@@ -1718,7 +1720,9 @@ CMD:givemehit(playerid, params[])
             format(string, sizeof(string), "* You have offered yourself a contract to kill %s. (type /accept contract)", GetPlayerNameEx(targetid));
             SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
             HitOffer[playerid] = playerid;
+            SetPVarInt(playerid, "HitOfferSession", g_arrQueryHandle[playerid]);
             HitToGet[playerid] = targetid;
+            SetPVarInt(playerid, "HitTargetSession", g_arrQueryHandle[targetid]);
             return 1;
         }
         else

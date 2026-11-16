@@ -155,6 +155,7 @@ CMD:live(playerid, params[])
 					format(string, sizeof(string), "* %s offered you to have a live conversation, type /accept live to accept.", GetPlayerNameEx(playerid));
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 					LiveOffer[giveplayerid] = playerid;
+					SetPVarInt(giveplayerid, "LiveOfferSession", g_arrQueryHandle[playerid]);
 				}
 			}
 			else

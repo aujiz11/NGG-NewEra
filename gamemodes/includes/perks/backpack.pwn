@@ -753,6 +753,7 @@ CMD:sellbackpack(playerid, params[])
 				}
 				if(PlayerInfo[giveplayerid][pBackpack] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "That player already has a backpack!");
 				SetPVarInt(giveplayerid, "sellbackpack", playerid);
+				SetPVarInt(giveplayerid, "BackpackOfferSession", g_arrQueryHandle[playerid]);
 				SetPVarInt(giveplayerid, "sellbackpackprice", price);
 				SetPVarInt(playerid, "sellingbackpack", 1);
 				format(string, sizeof(string), "* %s has offered you a %s Backpack for $%s. /accept backpack to get the backpack.", GetPlayerNameEx(playerid), bptype, number_format(price));

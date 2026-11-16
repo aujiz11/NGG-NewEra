@@ -1796,6 +1796,7 @@ CMD:binvite(playerid, params[]) {
 				if(!(0 <= PlayerInfo[iTargetID][pBusiness] < MAX_BUSINESSES)) {
 
 					SetPVarInt(iTargetID, "Business_Inviter", playerid);
+					SetPVarInt(iTargetID, "BusinessInviteSession", g_arrQueryHandle[playerid]);
 					SetPVarInt(iTargetID, "Business_InviterSQLId", GetPlayerSQLId(playerid));
 					SetPVarInt(iTargetID, "Business_Invited", iBusinessID);
 					format(string, sizeof(string), "You have invited %s to join %s", GetPlayerNameEx(iTargetID), Businesses[iBusinessID][bName]);
@@ -2694,6 +2695,7 @@ CMD:addmaterials(playerid, params[])
 
 	SetPVarInt(buyerid, "Business_WeapType", weapon);
 	SetPVarInt(buyerid, "Business_WeapOfferer", playerid);
+	SetPVarInt(buyerid, "BusinessGunSession", g_arrQueryHandle[playerid]);
 	SetPVarInt(buyerid, "Business_WeapOffererSQLId", GetPlayerSQLId(playerid));
 	SetPVarInt(buyerid, "Business_WeapPrice", price);
 	return 1;
@@ -2913,6 +2915,7 @@ CMD:offeritem(playerid, params[])
 	SetPVarInt(buyerid, "Business_ItemType", item-1);
 	SetPVarInt(buyerid, "Business_ItemPrice", Businesses[PlayerInfo[playerid][pBusiness]][bItemPrices][item-1]);
 	SetPVarInt(buyerid, "Business_ItemOfferer", playerid);
+	SetPVarInt(buyerid, "BusinessItemSession", g_arrQueryHandle[playerid]);
 	SetPVarInt(buyerid, "Business_ItemOffererSQLId", GetPlayerSQLId(playerid));
 
 	return 1;

@@ -291,6 +291,7 @@ CMD:rflinvite(playerid, params[])
 	SetPVarInt(giveplayerid, "RFLTeam_Invite", 1);
 	SetPVarInt(giveplayerid, "RFLTeam_Team", PlayerInfo[playerid][pRFLTeam]);
 	SetPVarInt(giveplayerid, "RFLTeam_Inviter", playerid);
+	SetPVarInt(giveplayerid, "RFLInviteSession", g_arrQueryHandle[playerid]);
 	format(string, sizeof(string), "* You have offered %s to join your team.", GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 	format(string, sizeof(string), "* %s has offered you to join his team. Use /accept rflteam to accept it.", GetPlayerNameEx(playerid));

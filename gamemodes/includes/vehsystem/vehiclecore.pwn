@@ -2576,6 +2576,7 @@ CMD:sellmycar(playerid, params[])
 			if(sscanf(params, "ud", giveplayerid, price)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellmycar [player] [price]");
 
             if(price < 1 || price > 1000000000) return SendClientMessageEx(playerid, COLOR_GREY, "Price must be higher than 0 and less than 1,000,000,000.");
+            if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
             if(PlayerInfo[giveplayerid][pLevel] == 1)
 			{
                 SendClientMessageEx(playerid, COLOR_GREY, "The person has to be Level 2 or higher to be able to sell vehicles to them.");
@@ -2617,6 +2618,8 @@ CMD:sellmycar(playerid, params[])
 					ShowPlayerDialogEx(playerid, DIALOG_WEPVEHSALE, DIALOG_STYLE_MSGBOX, "{FF0000}Notice", dialogstring, "Proceed", "Exit");
 
 					SetPVarInt(playerid, "WepVehSalePlayer", giveplayerid);
+					SetPVarInt(playerid, "WepVehSaleSession", g_arrQueryHandle[giveplayerid]);
+					SetPVarInt(playerid, "WepVehSaleSQLId", PlayerVehicleInfo[playerid][d][pvSlotId]);
 					SetPVarInt(playerid, "WepVehSaleVehicle", d);
 					SetPVarInt(playerid, "WepVehSalePrice", price);
 					SetPVarInt(playerid, "WepVehSaleFine", fine);
@@ -2624,6 +2627,8 @@ CMD:sellmycar(playerid, params[])
 				}
 				SetPVarInt(playerid, "LastTransaction", gettime());
                 VehicleOffer[giveplayerid] = playerid;
+                SetPVarInt(giveplayerid, "VehicleOfferSession", g_arrQueryHandle[playerid]);
+                SetPVarInt(giveplayerid, "VehicleOfferSQLId", PlayerVehicleInfo[playerid][d][pvSlotId]);
                 VehicleId[giveplayerid] = d;
                 VehiclePrice[giveplayerid] = price;
 				switch(PlayerVehicleInfo[playerid][d][pvAlarm]) {

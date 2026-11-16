@@ -2,6 +2,7 @@
 // Description: Saves a account's specified vehicle slot.
 stock g_mysql_SaveVehicle(playerid, slotid)
 {
+	if(!(0 <= playerid < MAX_PLAYERS) || !(0 <= slotid < MAX_PLAYERVEHICLES) || GetPVarInt(playerid, "PropertySaleUncertain")) return 0;
 	szMiscArray[0] = 0;
 	printf("%s (%i) saving their %s (slot %i) (Model %i)...", GetPlayerNameEx(playerid), playerid, VehicleName[PlayerVehicleInfo[playerid][slotid][pvModelId] - 400], slotid, PlayerVehicleInfo[playerid][slotid][pvModelId]);
 
@@ -73,6 +74,7 @@ stock g_mysql_SaveVehicle(playerid, slotid)
 	Log("logs/vehicledebug.log", szLog);
 	
 	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+	return 1;
 }
 
 stock CreatePlayerVehicle(playerid, playervehicleid, modelid, Float: x, Float: y, Float: z, Float: angle, color1, color2, price, VW, Int)

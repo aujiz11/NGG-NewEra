@@ -223,6 +223,7 @@ CMD:shakehand(playerid, params[])
 			}
 
 			SetPVarInt(playerid, "shrequest", giveplayerid);
+			SetPVarInt(playerid, "HandshakeTargetSession", g_arrQueryHandle[giveplayerid]);
 			SetPVarInt(playerid, "shstyle", style);
 
 			format(string, sizeof(string), "You have requested to shake %s's hand, please wait for them to respond.", GetPlayerNameEx(giveplayerid));

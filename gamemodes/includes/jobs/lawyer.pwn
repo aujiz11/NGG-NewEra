@@ -76,6 +76,7 @@ CMD:offerappeal(playerid, params[])
 	    if(PlayerInfo[giveplayerid][pBeingSentenced] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "That person isn't pending a sentence!");
 	    if(AppealOfferAccepted[giveplayerid] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "That person has already accepted a lawyer to appeal for him!");
 		AppealOffer[giveplayerid] = playerid;
+		SetPVarInt(giveplayerid, "AppealOfferSession", g_arrQueryHandle[playerid]);
 	    format(string, sizeof(string), "You have offered your lawyer services to %s.",GetPlayerNameEx(giveplayerid));
 	    SendClientMessageEx(playerid, COLOR_WHITE, string);
 	    format(string, sizeof(string), "%s has offered their lawyer services (use /accept appeal to accept them).", GetPlayerNameEx(playerid));
@@ -193,6 +194,7 @@ CMD:defend(playerid, params[])
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 				PlayerInfo[playerid][pLawyerTime] = gettime()+60;
 				DefendOffer[giveplayerid] = playerid;
+				SetPVarInt(giveplayerid, "DefendOfferSession", g_arrQueryHandle[playerid]);
 				DefendPrice[giveplayerid] = money;
 			}
 			else
