@@ -1720,7 +1720,12 @@ CMD:accept(playerid, params[])
             
 			if(CraftOffer[playerid] != INVALID_PLAYER_ID) {
                 if(IsPlayerConnected(CraftOffer[playerid])) {
-                    if (ProxDetectorS(5.0, playerid, CraftOffer[playerid])) {
+                    new Float:X, Float:Y, Float:Z;
+                    GetPlayerPos(CraftOffer[playerid], X, Y, Z);
+                    if((Spectating[CraftOffer[playerid]] == 0 || PlayerInfo[playerid][pAdmin] >= 2)
+                        && GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(CraftOffer[playerid])
+                        && GetPlayerInterior(playerid) == GetPlayerInterior(CraftOffer[playerid])
+                        && IsPlayerInRangeOfPoint(playerid, 5.0, X, Y, Z)) {
                         if(PlayerInfo[playerid][pHospital] > 0) {
                             SendClientMessageEx(playerid, COLOR_GREY, "You can't spawn a weapon whilst in Hospital.");
                             return 1;
@@ -1878,7 +1883,6 @@ CMD:accept(playerid, params[])
 							}
                         }
                         format(szMessage, sizeof(szMessage), "   You have given %s, a %s.", GetPlayerNameEx(playerid),weaponname);
-                        PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
                         SendClientMessageEx(CraftOffer[playerid], COLOR_GRAD1, szMessage);
                         SendClientMessageEx(playerid, COLOR_GRAD1, "   You have recieved a %s from %s.", weaponname, GetPlayerNameEx(CraftOffer[playerid]));
                         PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
@@ -2422,11 +2426,7 @@ CMD:cancel(playerid, params[])
 	else if(strcmp(choice,"drink",true) == 0) { DrinkOffer[playerid] = INVALID_PLAYER_ID; }
 	else if(strcmp(choice,"firstaid",true) == 0)
 	{
-		if(GetPVarInt(playerid, "usingfirstaid"))
-		{
-			KillTimer(GetPVarInt(playerid, "firstaid5"));
-			SetPVarInt(playerid, "usingfirstaid", 0);
-		}
+		Craftsman_StopFirstAid(playerid);
 	}
 	else if(strcmp(choice,"drugrun",true) == 0)
 	{

@@ -2265,10 +2265,6 @@ task PlayerHeartBeat[1000]() {
 			}
 		}
 
-		if(GetVehicleModel(GetPlayerVehicleID(i)) != 594 && GetPVarType(i, "rccam")) {
-			DestroyVehicle(GetPVarInt(i, "rcveh"));
-			KillTimer(GetPVarInt(i, "rccamtimer"));
-		}
 	}
 	return 1;
 }

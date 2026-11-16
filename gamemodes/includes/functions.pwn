@@ -560,60 +560,6 @@ public SurfingFix(playerid, Float:x, Float:y, Float:z)
 	return 1;
 }
 
-forward firstaid5(playerid);
-public firstaid5(playerid)
-{
-	if(GetPVarInt(playerid, "usingfirstaid") == 1)
-	{
-		new Float:health;
-		GetHealth(playerid, health);
-		if(health < 100.0)
-		{
-			if((health+5.0) <= 100.0)
-			{
- 				SetHealth(playerid, health+5.0);
-			}
-		}
-	}
-}
-forward firstaidexpire(playerid);
-public firstaidexpire(playerid)
-{
-	SendClientMessageEx(playerid, COLOR_GRAD1, "Your first aid kit no longer takes effect.");
-	KillTimer(GetPVarInt(playerid, "firstaid5"));
-	SetPVarInt(playerid, "usingfirstaid", 0);
-	foreach(new i: Player)
-	{
-		if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid)
-		{
-			SendClientMessageEx(i, COLOR_ORANGE, "Note{ffffff}: First Aid effect has expired on the person you are damage checking.");
-		}
-	}	
-}
-forward rccam(playerid);
-public rccam(playerid)
-{
-	DestroyVehicle(GetPVarInt(playerid, "rcveh"));
- 	SetPlayerPos(playerid, GetPVarFloat(playerid, "rcX"), GetPVarFloat(playerid, "rcY"), GetPVarFloat(playerid, "rcZ"));
-  	SendClientMessageEx(playerid, COLOR_GRAD1, "Your RC Cam has ran out of batteries!");
-   	SetPVarInt(playerid, "rccam", 0);
-}
-forward cameraexpire(playerid);
-public cameraexpire(playerid)
-{
-	SetPVarInt(playerid, "cameraactive", 0);
- 	SetCameraBehindPlayer(playerid);
- 	if(GetPVarInt(playerid, "camerasc") == 1)
- 	{
-	 	SetPlayerPos(playerid, GetPVarFloat(playerid, "cameraX2"), GetPVarFloat(playerid, "cameraY2"), GetPVarFloat(playerid, "cameraZ2"));
-	  	SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "cameravw2"));
-	  	SetPlayerInterior(playerid, GetPVarInt(playerid, "cameraint2"));
-	}
-    TogglePlayerControllable(playerid,true);
-  	DestroyDynamic3DTextLabel(Camera3D[playerid]);
-   	SendClientMessageEx(playerid, COLOR_GRAD1, "Your camera ran out of batteries!");
-}
-
 forward split(const strsrc[], strdest[][], delimiter);
 public split(const strsrc[], strdest[][], delimiter)
 {
@@ -1908,6 +1854,20 @@ stock OnPlayerStatsUpdate(playerid) {
 				PlayerInfo[playerid][pPos_x] = 1529.6;
 				PlayerInfo[playerid][pPos_y] = -1691.2;
 				PlayerInfo[playerid][pPos_z] = 13.3;
+			}
+			else if(GetPVarInt(playerid, "camerasc"))
+			{
+				PlayerInfo[playerid][pPos_x] = GetPVarFloat(playerid, "cameraX2");
+				PlayerInfo[playerid][pPos_y] = GetPVarFloat(playerid, "cameraY2");
+				PlayerInfo[playerid][pPos_z] = GetPVarFloat(playerid, "cameraZ2");
+				PlayerInfo[playerid][pInt] = GetPVarInt(playerid, "cameraint2");
+				PlayerInfo[playerid][pVW] = GetPVarInt(playerid, "cameravw2");
+			}
+			else if(GetPVarInt(playerid, "rccam"))
+			{
+				PlayerInfo[playerid][pPos_x] = GetPVarFloat(playerid, "rcX");
+				PlayerInfo[playerid][pPos_y] = GetPVarFloat(playerid, "rcY");
+				PlayerInfo[playerid][pPos_z] = GetPVarFloat(playerid, "rcZ");
 			}
 			else if(GetPVarInt(playerid, "ShopTP") == 1 && GetPVarFloat(playerid, "tmpX") != 0)
 			{

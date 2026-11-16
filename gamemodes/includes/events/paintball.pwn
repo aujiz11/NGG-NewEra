@@ -939,7 +939,7 @@ stock JoinPaintballArena(playerid, arenaid, const password[])
 	SetPVarFloat(playerid, "pbOldHealth", oldHealth);
 	SetPVarFloat(playerid, "pbOldArmor", oldArmor);
 
-	firstaidexpire(playerid);
+	firstaidexpire(playerid, g_arrQueryHandle[playerid]);
 
  	PaintBallArena[arenaid][pbPlayers]++;
 

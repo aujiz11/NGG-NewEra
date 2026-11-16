@@ -142,7 +142,7 @@ public SendEMSQueue(playerid,type)
 			RemoveArmor(playerid);
 			if(GetPVarInt(playerid, "usingfirstaid") == 1)
 			{
-			    firstaidexpire(playerid);
+			    firstaidexpire(playerid, g_arrQueryHandle[playerid]);
 			}
 			SetPVarInt(playerid,"MedicCall",1);
 		}

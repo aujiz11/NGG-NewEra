@@ -1604,6 +1604,7 @@ public OnPlayerConnect(playerid)
 
 public OnPlayerDisconnect(playerid, reason)
 {
+	Craftsman_StopFirstAid(playerid);
 	gPasswordPending[playerid] = false;
 	DeletePVar(playerid, "PassAuth");
 	DeletePVar(playerid, "PinNumber");
@@ -2622,6 +2623,8 @@ public OnPlayerDisconnect(playerid, reason)
 	DeletePVar(playerid, "gLvl");
 	DeletePVar(playerid, "Autoban");
 	DeletePVar(playerid, "ticketreason");
+	Craftsman_StopRCCam(playerid, false);
+	Craftsman_DestroyCamera(playerid, false);
 	gPlayerLogged{playerid} = 0;
 	return 1;
 }
@@ -2674,6 +2677,9 @@ public OnVehicleDeath(vehicleid) {
 	TruckContents{vehicleid} = 0;
 	foreach(new i: Player)
 	{
+		if(GetPVarInt(i, "rccam") && GetPVarInt(i, "rcveh") == vehicleid) {
+			Craftsman_StopRCCam(i, !PlayerIsDead[i]);
+		}	
 		if(TruckUsed[i] == vehicleid)
 		{
 			DeletePVar(i, "LoadTruckTime");
@@ -4203,6 +4209,8 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 public OnPlayerStateChange(playerid, newstate, oldstate)
 {
+	if(GetPVarInt(playerid, "rccam") && (newstate != PLAYER_STATE_DRIVER || GetPlayerVehicleID(playerid) != GetPVarInt(playerid, "rcveh")))
+		Craftsman_StopRCCam(playerid, newstate == PLAYER_STATE_ONFOOT || newstate == PLAYER_STATE_WASTED);
     if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER)
 	{
  		if(!IsPlayerEntering{playerid} && PlayerInfo[playerid][pAdmin] < 2)
@@ -4854,13 +4862,8 @@ public OnPlayerExitVehicle(playerid, vehicleid)
 	    }
 	}
 
-	if(GetPVarInt(playerid, "rccam") == 1)
-	{
-		DestroyVehicle(GetPVarInt(playerid, "rcveh"));
-	    SetPlayerPos(playerid, GetPVarFloat(playerid, "rcX"), GetPVarFloat(playerid, "rcY"), GetPVarFloat(playerid, "rcZ"));
-		DeletePVar(playerid, "rccam");
-	    KillTimer(GetPVarInt(playerid, "rccamtimer"));
-	}
+	if(GetPVarInt(playerid, "rccam") && GetPVarInt(playerid, "rcveh") == vehicleid) Craftsman_StopRCCam(playerid);
+
 	return 1;
 }
 

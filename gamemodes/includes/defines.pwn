@@ -39,10 +39,7 @@
 #define _LINUX
 			/*  ---------------- DISABLE NPCs ----------------- */
 #define	FOREACH_NO_BOTS
-			/*  ---------------- MEMORY ----------------- */
-// DYNAMIC_MEMORY is set before YSI imports in NGRP.pwn.
-			/*  ---------------- NATIVES ----------------- */
-// gpci and IsValidVehicle are declared by open.mp.
+
 #define PRESSED(%0) \
     (((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
 #define RELEASED(%0) \

@@ -35,169 +35,206 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+Craftsman_StopFirstAid(playerid)
+{
+	KillTimer(GetPVarInt(playerid, "firstaid5"));
+	KillTimer(GetPVarInt(playerid, "firstaidexpire"));
+	DeletePVar(playerid, "firstaid5");
+	DeletePVar(playerid, "firstaidexpire");
+	DeletePVar(playerid, "usingfirstaid");
+	return 1;
+}
+
+Craftsman_StopRCCam(playerid, bool:restore = true)
+{
+	if(!GetPVarInt(playerid, "rccam")) return 0;
+	new vehicleid = GetPVarInt(playerid, "rcveh");
+	DeletePVar(playerid, "rccam");
+	DeletePVar(playerid, "rcveh");
+	KillTimer(GetPVarInt(playerid, "rccamtimer"));
+	DeletePVar(playerid, "rccamtimer");
+	if(IsValidVehicle(vehicleid)) DestroyVehicle(vehicleid);
+	if(restore) SetPlayerPos(playerid, GetPVarFloat(playerid, "rcX"), GetPVarFloat(playerid, "rcY"), GetPVarFloat(playerid, "rcZ"));
+	return 1;
+}
+
+Craftsman_StopCameraView(playerid, bool:restore = true)
+{
+	if(!GetPVarInt(playerid, "camerasc")) return 0;
+	DeletePVar(playerid, "camerasc");
+	if(restore)
+	{
+		SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "cameravw2"));
+		SetPlayerInterior(playerid, GetPVarInt(playerid, "cameraint2"));
+		SetPlayerPos(playerid, GetPVarFloat(playerid, "cameraX2"), GetPVarFloat(playerid, "cameraY2"), GetPVarFloat(playerid, "cameraZ2"));
+		SetCameraBehindPlayer(playerid);
+		TogglePlayerControllable(playerid, true);
+	}
+	return 1;
+}
+
+Craftsman_DestroyCamera(playerid, bool:restore = true)
+{
+	if(!GetPVarInt(playerid, "cameraactive")) return 0;
+	Craftsman_StopCameraView(playerid, restore);
+	KillTimer(GetPVarInt(playerid, "cameraexpire"));
+	DeletePVar(playerid, "cameraexpire");
+	DeletePVar(playerid, "cameraactive");
+	DestroyDynamic3DTextLabel(Camera3D[playerid]);
+	Camera3D[playerid] = Text3D:INVALID_STREAMER_ID;
+	return 1;
+}
+
+forward firstaid5(playerid, session);
+public firstaid5(playerid, session)
+{
+	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session || !GetPVarInt(playerid, "usingfirstaid")) return 1;
+	new Float:health;
+	GetHealth(playerid, health);
+	if(0.0 < health < 100.0 && !PlayerIsDead[playerid] && !GetPVarInt(playerid, "Injured")) SetHealth(playerid, health + 5.0 > 100.0 ? 100.0 : health + 5.0);
+	return 1;
+}
+
+forward firstaidexpire(playerid, session);
+public firstaidexpire(playerid, session)
+{
+	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session || !GetPVarInt(playerid, "usingfirstaid")) return 1;
+	Craftsman_StopFirstAid(playerid);
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Your first aid kit no longer takes effect.");
+	foreach(new i: Player)
+	{
+		if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid)
+		{
+			SendClientMessageEx(i, COLOR_ORANGE, "Note{ffffff}: First Aid effect has expired on the person you are damage checking.");
+		}
+	}
+	return 1;
+}
+
+forward rccam(playerid, session);
+public rccam(playerid, session)
+{
+	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session || !GetPVarInt(playerid, "rccam")) return 1;
+	Craftsman_StopRCCam(playerid);
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Your RC Cam has run out of batteries!");
+	return 1;
+}
+
+forward cameraexpire(playerid, session);
+public cameraexpire(playerid, session)
+{
+	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session || !GetPVarInt(playerid, "cameraactive")) return 1;
+	Craftsman_DestroyCamera(playerid);
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Your camera ran out of batteries!");
+	return 1;
+}
+
 CMD:pc(playerid, params[])
 {
-	if(PlayerInfo[playerid][pSurveillance] > 0)
-	{
-		if(GetPVarInt(playerid, "cameraactive") == 1)
-		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Wait for your other camera to expire.");
-			return 1;
-		}
-
-		new string[128];
-		PlayerInfo[playerid][pSurveillance]--;
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You placed your camera, go hide and use /sc. Batteries expire in 2 minutes.");
-		new Float:X, Float:Y, Float:Z;
-		GetPlayerPos(playerid, X, Y, Z);
-		SetPVarInt(playerid, "cameraactive", 1);
-		DestroyDynamic3DTextLabel(Camera3D[playerid]);
-		Camera3D[playerid] = CreateDynamic3DTextLabel("** A small camera. **",0x008080FF,X,Y,Z,4.0,.worldid = GetPlayerVirtualWorld(playerid));
-		SetPVarFloat(playerid, "cameraX", X);
-		SetPVarFloat(playerid, "cameraY", Y);
-		SetPVarFloat(playerid, "cameraZ", Z);
-		SetPVarInt(playerid, "cameravw", GetPlayerVirtualWorld(playerid));
-		SetPVarInt(playerid, "cameraint", GetPlayerInterior(playerid));
-		SetPVarInt(playerid, "cameraexpire", SetTimerEx("cameraexpire", 120000, false, "d", playerid));
-		format(string, sizeof(string), "* %s places something on the ground.", GetPlayerNameEx(playerid));
-		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have a surveillance camera!");
-	}
+	if(PlayerInfo[playerid][pSurveillance] <= 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have a surveillance camera!");
+	if(GetPVarInt(playerid, "cameraactive")) return SendClientMessageEx(playerid, COLOR_GRAD1, "Wait for your other camera to expire.");
+	new Float:X, Float:Y, Float:Z, string[128];
+	GetPlayerPos(playerid, X, Y, Z);
+	Camera3D[playerid] = CreateDynamic3DTextLabel("** A small camera. **", 0x008080FF, X, Y, Z, 4.0, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = GetPlayerInterior(playerid));
+	if(Camera3D[playerid] == Text3D:INVALID_STREAMER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Unable to place your camera right now.");
+	SetPVarInt(playerid, "cameraactive", 1);
+	SetPVarFloat(playerid, "cameraX", X);
+	SetPVarFloat(playerid, "cameraY", Y);
+	SetPVarFloat(playerid, "cameraZ", Z);
+	SetPVarInt(playerid, "cameravw", GetPlayerVirtualWorld(playerid));
+	SetPVarInt(playerid, "cameraint", GetPlayerInterior(playerid));
+	SetPVarInt(playerid, "cameraexpire", SetTimerEx("cameraexpire", 120000, false, "ii", playerid, g_arrQueryHandle[playerid]));
+	PlayerInfo[playerid][pSurveillance]--;
+	SendClientMessageEx(playerid, COLOR_GRAD1, "You placed your camera, go hide and use /sc. Batteries expire in 2 minutes.");
+	format(string, sizeof(string), "* %s places something on the ground.", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	return 1;
 }
 
 CMD:sc(playerid, params[])
 {
-	if(GetPVarInt(playerid, "cameraactive") == 1)
+	if(!GetPVarInt(playerid, "cameraactive")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You have no active camera!");
+	if(GetPVarInt(playerid, "camerasc"))
 	{
-		new string[128];
-		if(GetPVarInt(playerid, "camerasc") == 1)
-		{
-			SetCameraBehindPlayer(playerid); //view cam off
-			SetPlayerPos(playerid, GetPVarFloat(playerid, "cameraX2"), GetPVarFloat(playerid, "cameraY2"), GetPVarFloat(playerid, "cameraZ2"));
-			SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "cameravw2"));
-			SetPlayerInterior(playerid, GetPVarInt(playerid, "cameraint2"));
-			TogglePlayerControllable(playerid,true);
-			DeletePVar(playerid, "camerasc");
-			KillTimer(GetPVarInt(playerid, "cameraexpire"));
-		}
-		else
-		{
-			format(string, sizeof(string), "* %s stares into a small screen.", GetPlayerNameEx(playerid));
-			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-			format(string, sizeof(string), "The camera will expire in a maximum of 2 minutes. (( %s ))", GetPlayerNameEx(playerid));
-			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-			new Float:X, Float:Y, Float:Z;
-			GetPlayerPos(playerid, X, Y, Z);
-			SetPVarFloat(playerid, "cameraX2", X);
-			SetPVarFloat(playerid, "cameraY2", Y);
-			SetPVarFloat(playerid, "cameraZ2", Z);
-			SetPVarInt(playerid, "cameravw2", GetPlayerVirtualWorld(playerid));
-			SetPVarInt(playerid, "cameraint2", GetPlayerInterior(playerid));
-
-			TogglePlayerControllable(playerid,false);
-			SetPlayerPos(playerid, GetPVarFloat(playerid, "cameraX"), GetPVarFloat(playerid, "cameraY"), GetPVarFloat(playerid, "cameraZ") - 30.0);
-			SetPlayerCameraPos(playerid, GetPVarFloat(playerid, "cameraX"), GetPVarFloat(playerid, "cameraY"), GetPVarFloat(playerid, "cameraZ") + 20.0); //viewcam on
-			SetPlayerCameraLookAt(playerid, GetPVarFloat(playerid, "cameraX"), GetPVarFloat(playerid, "cameraY"), GetPVarFloat(playerid, "cameraZ"));
-			SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "cameravw"));
-			SetPlayerInterior(playerid, GetPVarInt(playerid, "cameraint"));
-			SetPVarInt(playerid, "camerasc", 1);
-		}
+		Craftsman_StopCameraView(playerid);
+		return 1;
 	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You have no active camera!");
-	}
+	if(GetPVarInt(playerid, "rccam") || GetPVarType(playerid, "WatchingTV")
+		|| GetPlayerState(playerid) != PLAYER_STATE_ONFOOT || PlayerIsDead[playerid] || GetPVarInt(playerid, "Injured") || PlayerInfo[playerid][pHospital] > 0)
+		return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+	new Float:X, Float:Y, Float:Z, string[128];
+	format(string, sizeof(string), "* %s stares into a small screen.", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	GetPlayerPos(playerid, X, Y, Z);
+	SetPVarFloat(playerid, "cameraX2", X);
+	SetPVarFloat(playerid, "cameraY2", Y);
+	SetPVarFloat(playerid, "cameraZ2", Z);
+	SetPVarInt(playerid, "cameravw2", GetPlayerVirtualWorld(playerid));
+	SetPVarInt(playerid, "cameraint2", GetPlayerInterior(playerid));
+	SetPVarInt(playerid, "camerasc", 1);
+	TogglePlayerControllable(playerid, false);
+	SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "cameravw"));
+	SetPlayerInterior(playerid, GetPVarInt(playerid, "cameraint"));
+	SetPlayerPos(playerid, GetPVarFloat(playerid, "cameraX"), GetPVarFloat(playerid, "cameraY"), GetPVarFloat(playerid, "cameraZ") - 30.0);
+	SetPlayerCameraPos(playerid, GetPVarFloat(playerid, "cameraX"), GetPVarFloat(playerid, "cameraY"), GetPVarFloat(playerid, "cameraZ") + 20.0);
+	SetPlayerCameraLookAt(playerid, GetPVarFloat(playerid, "cameraX"), GetPVarFloat(playerid, "cameraY"), GetPVarFloat(playerid, "cameraZ"));
 	return 1;
 }
 
 CMD:dc(playerid, params[])
 {
-	if(GetPVarInt(playerid, "cameraactive") == 1)
-	{
-		if(!IsPlayerInRangeOfPoint(playerid, 5.0, GetPVarFloat(playerid, "cameraX"), GetPVarFloat(playerid, "cameraY"), GetPVarFloat(playerid, "cameraZ"))) {
-			SendClientMessageEx(playerid, COLOR_WHITE, "You are not near your camera.");
-			return 1;
-		}
-
-		if(GetPVarInt(playerid, "camerasc") == 1)
-		{
-			SetCameraBehindPlayer(playerid);
-			SetPlayerPos(playerid, GetPVarFloat(playerid, "cameraX2"), GetPVarFloat(playerid, "cameraY2"), GetPVarFloat(playerid, "cameraZ2"));
-			SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "cameravw2"));
-			SetPlayerInterior(playerid, GetPVarInt(playerid, "cameraint2"));
-			TogglePlayerControllable(playerid,true);
-		}
-
-		DestroyDynamic3DTextLabel(Camera3D[playerid]);
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Camera Destroyed!");
-		KillTimer(GetPVarInt(playerid, "cameraexpire"));
-		DeletePVar(playerid, "cameraexpire");
-		DeletePVar(playerid, "cameraactive");
-		DeletePVar(playerid, "camerasc");
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "There is nothing to destroy!");
-	}
+	if(!GetPVarInt(playerid, "cameraactive")) return SendClientMessageEx(playerid, COLOR_GRAD1, "There is nothing to destroy!");
+	if(!GetPVarInt(playerid, "camerasc") && (GetPlayerVirtualWorld(playerid) != GetPVarInt(playerid, "cameravw")
+		|| GetPlayerInterior(playerid) != GetPVarInt(playerid, "cameraint")
+		|| !IsPlayerInRangeOfPoint(playerid, 5.0, GetPVarFloat(playerid, "cameraX"), GetPVarFloat(playerid, "cameraY"), GetPVarFloat(playerid, "cameraZ"))))
+		return SendClientMessageEx(playerid, COLOR_WHITE, "You are not near your camera.");
+	Craftsman_DestroyCamera(playerid);
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Camera Destroyed!");
 	return 1;
 }
 
 CMD:rccam(playerid, params[])
 {
-	if(PlayerInfo[playerid][pRccam] > 0)
+	if(GetPVarInt(playerid, "rccam"))
 	{
-		new string[128];
-		if(GetPVarInt(playerid, "rccam") == 0)
-		{
-			if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
-			if(GetPVarInt(playerid, "WatchingTV")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
-			if(GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pHospital] > 0 || IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
-			if(PlayerInfo[playerid][pVW] != 0 || PlayerInfo[playerid][pInt] != 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
-			if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be on foot to place an RCCam!");
-			if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this while in prison.");
-
-			PlayerInfo[playerid][pRccam]--;
-			SetPVarInt(playerid, "rccam", 1);
-			new Float:X, Float:Y, Float:Z;
-			GetPlayerPos(playerid, X, Y, Z);
-			SetPVarFloat(playerid, "rcX", X);
-			SetPVarFloat(playerid, "rcY", Y);
-			SetPVarFloat(playerid, "rcZ", Z);
-			if(GetPVarInt(playerid, "rcveh") != 0)
-			{
-				DestroyVehicle(GetPVarInt(playerid, "rcveh"));
-			}
-			SetPVarInt(playerid, "rcveh", AddStaticVehicle(594, X, Y, Z, 0, 0, 0));
-			IsPlayerEntering{playerid} = true;
-			PutPlayerInVehicle(playerid, GetPVarInt(playerid, "rcveh"), 0);
-			SetPVarInt(playerid, "rccamtimer", SetTimerEx("rccam", 60000, false, "d", playerid));
-			format(string, sizeof(string), "* %s places something on the ground.", GetPlayerNameEx(playerid));
-			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		}
-		else
-		{
-			DestroyVehicle(GetPVarInt(playerid, "rcveh"));
-			SetPlayerPos(playerid, GetPVarFloat(playerid, "rcX"), GetPVarFloat(playerid, "rcY"), GetPVarFloat(playerid, "rcZ"));
-			DeletePVar(playerid, "rccam");
-			KillTimer(GetPVarInt(playerid, "rccamtimer"));
-		}
+		Craftsman_StopRCCam(playerid);
+		return 1;
 	}
-	else
+	if(PlayerInfo[playerid][pRccam] <= 0) 
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have an RC Cam!");
+	
+	if(GetPVarType(playerid, "IsInArena") || GetPVarType(playerid, "WatchingTV") || GetPVarInt(playerid, "camerasc")) 
+		return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+	
+	if(GetPVarInt(playerid, "Injured") || PlayerIsDead[playerid] || PlayerInfo[playerid][pHospital] > 0 || GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) 
+		return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+	
+	if(GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0) 
+		return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+	
+	if(PlayerInfo[playerid][pJailTime] > 0) 
+		return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this while in prison.");
+	
+	new Float:X, Float:Y, Float:Z, string[128];
+	GetPlayerPos(playerid, X, Y, Z);
+	new vehicleid = CreateVehicle(594, X, Y, Z, 0.0, 0, 0, -1);
+	if(vehicleid == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Unable to place your RC Cam right now.");
+	SetPVarFloat(playerid, "rcX", X);
+	SetPVarFloat(playerid, "rcY", Y);
+	SetPVarFloat(playerid, "rcZ", Z);
+	SetPVarInt(playerid, "rcveh", vehicleid);
+	SetPVarInt(playerid, "rccam", 1);
+	IsPlayerEntering{playerid} = true;
+	if(!PutPlayerInVehicle(playerid, vehicleid, 0))
 	{
-		if(GetPVarInt(playerid, "rccam") == 1)
-		{
-			DestroyVehicle(GetPVarInt(playerid, "rcveh"));
-			SetPlayerPos(playerid, GetPVarFloat(playerid, "rcX"), GetPVarFloat(playerid, "rcY"), GetPVarFloat(playerid, "rcZ"));
-			DeletePVar(playerid, "rccam");
-			KillTimer(GetPVarInt(playerid, "rccamtimer"));
-			return 1;
-		}
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have an RC Cam!");
+		IsPlayerEntering{playerid} = false;
+		Craftsman_StopRCCam(playerid, false);
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Unable to use your RC Cam right now.");
 	}
+	SetPVarInt(playerid, "rccamtimer", SetTimerEx("rccam", 60000, false, "ii", playerid, g_arrQueryHandle[playerid]));
+	PlayerInfo[playerid][pRccam]--;
+	format(string, sizeof(string), "* %s places something on the ground.", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	return 1;
 }
 
@@ -220,8 +257,8 @@ CMD:firstaid(playerid, params[])
 		{
 			new string[128];
 			PlayerInfo[playerid][pFirstaid]--;
-			SetPVarInt(playerid, "firstaid5", SetTimerEx("firstaid5", 5000, true, "d", playerid));
-			SetPVarInt(playerid, "firstaidexpire", SetTimerEx("firstaidexpire",10*60000, false, "d", playerid));
+			SetPVarInt(playerid, "firstaid5", SetTimerEx("firstaid5", 5000, true, "ii", playerid, g_arrQueryHandle[playerid]));
+			SetPVarInt(playerid, "firstaidexpire", SetTimerEx("firstaidexpire", 10*60000, false, "ii", playerid, g_arrQueryHandle[playerid]));
 			SetPVarInt(playerid, "usingfirstaid", 1);
 			format(string, sizeof(string), "* %s uses a first aid kit.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -247,7 +284,13 @@ CMD:sweep(playerid, params[])
 			new string[128], giveplayerid;
 			if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sweep [player]");
 
-			if(!ProxDetectorS(4.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be close to the person.");
+			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+			new Float:X, Float:Y, Float:Z;
+			GetPlayerPos(giveplayerid, X, Y, Z);
+			if((Spectating[giveplayerid] != 0 && PlayerInfo[playerid][pAdmin] < 2)
+				|| GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(giveplayerid) || GetPlayerInterior(playerid) != GetPlayerInterior(giveplayerid)
+				|| !IsPlayerInRangeOfPoint(playerid, 4.0, X, Y, Z)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be close to the person.");
+			
 			PlayerInfo[playerid][pSweepLeft]--;
 			format(string, sizeof(string), "* %s sweeps a large wand around %s's body...", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -419,381 +462,53 @@ CMD:craft(playerid, params[])
 	if(IsPlayerConnected(giveplayerid))
 	{
 		if(HungerPlayerInfo[giveplayerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   This person is not able to receive anything at the moment.");
-		if(isnull(choice))
+		enum eCraftRecipe { craftRecipeName[16], craftRecipeMats };
+		static const recipes[][eCraftRecipe] = {
+			{"screwdriver", 1000},
+			{"smslog", 2000},
+			{"wristwatch", 500},
+			{"surveillance", 8000},
+			{"tire", 250},
+			{"lock", 500},
+			{"firstaid", 1000},
+			{"camera", 250},
+			{"rccam", 8000},
+			{"receiver", 5000},
+			{"gps", 1000},
+			{"bugsweep", 10000},
+			{"parachute", 50},
+			{"metaldetector", 12500},
+			{"mailbox", 15000},
+			{"syringe", 500},
+			{"closet", 3000},
+			{"toolbox", 12000},
+			{"crowbar", 7000},
+			{"flowers", 25},
+			{"knuckles", 100},
+			{"baseballbat", 100},
+			{"cane", 100},
+			{"shovel", 100},
+			{"poolcue", 100},
+			{"katana", 300},
+			{"dildo", 300},
+			{"spraycan", 2000},
+			{"rimkit", 400000}
+		};
+		for(new i; i < sizeof(recipes); ++i)
 		{
-			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-			SendClientMessageEx(playerid, COLOR_YELLOW, "<< Available crafts >>");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "screwdriver(1,000)	 smslog(2,000)");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "wristwatch(500)	 surveillance(8,000)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "tire(250)	         lock(500)");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "firstaid(1,000)	 camera(250)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "rccam(8,000)	     receiver(5,000)");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "gps(1,000)          bugsweep(10,000)");
-			//SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)          bag(6000)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)		mailbox(15,000)");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "metaldetector(12,500) syringe(500)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "closet(3,000)		toolbox(12,000)");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "crowbar(7,000)      flowers(25)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "knuckles(100)        baseballbat(100)");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "cane (100)           shovel(100)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "poolcue (100)        katana(300)");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "dildo (300)          spraycan(2000)");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "rimkit (400000)");
-			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /craft [player] [craftname]");
-			return 1;
+			if(strcmp(choice, recipes[i][craftRecipeName], true) != 0) continue;
+			weapon = i + 1;
+			price = recipes[i][craftRecipeMats];
+			break;
 		}
-		/*if(strcmp(choice,"bag",true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 6000)
-			{
-				price = 6000;
-				weapon = 14;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}*/
-		if(strcmp(choice, "screwdriver", true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 1000)
-			{
-				price = 1000;
-				weapon = 1;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-		else if(strcmp(choice, "smslog", true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 2000)
-			{
-				price = 2000;
-				weapon = 2;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-		else if(strcmp(choice, "wristwatch", true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 500)
-			{
-				price = 500;
-				weapon = 3;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-		else if(strcmp(choice, "surveillance", true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 8000)
-			{
-				price = 8000;
-				weapon = 4;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-		else if(strcmp(choice, "tire", true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 250)
-			{
-				price = 250;
-				weapon = 5;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-		else if(strcmp(choice, "lock", true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 500)
-			{
-				price = 500;
-				weapon = 6;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-		else if(strcmp(choice, "firstaid", true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 1000)
-			{
-				price = 1000;
-				weapon = 7;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-		else if(strcmp(choice,"camera",true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 250)
-			{
-				price = 250;
-				weapon = 8;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-		else if(strcmp(choice,"rccam",true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 8000)
-			{
-				price = 8000;
-				weapon = 9;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-		else if(strcmp(choice,"receiver",true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 5000)
-			{
-				price = 5000;
-				weapon = 10;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-		else if(strcmp(choice,"gps",true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 1000)
-			{
-				price = 1000;
-				weapon = 11;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-
-		else if(strcmp(choice,"bugsweep",true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 10000)
-			{
-				price = 10000;
-				weapon = 12;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-
-		else if(strcmp(choice,"parachute",true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 50)
-			{
-				price = 50;
-				weapon = 13;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-
-        else if(strcmp(choice,"metaldetector",true) == 0)
-		{
-			/*if(PlayerInfo[playerid][pMats] >= 12500)
-			{
-				price = 12500;
-				weapon = 14;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}*/
-			return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot craft this right now!");
-		}
-
-		else if(strcmp(choice,"mailbox",true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 15000)
-			{
-				price = 15000;
-				weapon = 15;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-        else if(strcmp(choice,"syringe",true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 500)
-			{
-				price = 500;
-				weapon = 16;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-		else if(strcmp(choice,"closet",true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 3000)
-			{
-				price = 3000;
-				weapon = 17;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-		else if(strcmp(choice,"toolbox",true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 12000)
-			{
-				price = 12000;
-				weapon = 18;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-		else if(strcmp(choice,"crowbar",true) == 0)
-		{
-			if(PlayerInfo[playerid][pMats] >= 7000)
-			{
-				price = 7000;
-				weapon = 19;
-			}
-			else
-			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
-				return 1;
-			}
-		}
-		/*     
-				// added post ammo release
-				flowers (25)
-				knuckles (100)
-				baseballbat (100)
-				cane (100)
-				shovel (100)
-				poolcue (100)
-				katana (300)
-				dildo (300)
-		*/
-
-		else if(strcmp(choice, "flowers", true) == 0) {
-			if(PlayerInfo[playerid][pMats] >= 25) {
-				price = 25;
-				weapon = 20;
-			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough materials for that!");
-		}
-		else if(strcmp(choice, "knuckles", true) == 0) {
-			if(PlayerInfo[playerid][pMats] >= 100) {
-				price = 100;
-				weapon = 21;
-			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough materials for that!");
-		}
-		else if(strcmp(choice, "baseballbat", true) == 0) {
-			if(PlayerInfo[playerid][pMats] >= 100) {
-				price = 100;
-				weapon = 22;
-			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough materials for that!");
-		}
-		else if(strcmp(choice, "cane", true) == 0) {
-			if(PlayerInfo[playerid][pMats] >= 100) {
-				price = 100;
-				weapon = 23;
-			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough materials for that!");
-		}
-		else if(strcmp(choice, "shovel", true) == 0) {
-			if(PlayerInfo[playerid][pMats] >= 100) {
-				price = 100;
-				weapon = 24;
-			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough materials for that!");
-		}
-		else if(strcmp(choice, "poolcue", true) == 0) {
-			if(PlayerInfo[playerid][pMats] >= 100) {
-				price = 100;
-				weapon = 25;
-			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough materials for that!");
-		}
-		else if(strcmp(choice, "katana", true) == 0) {
-			if(PlayerInfo[playerid][pMats] >= 300) {
-				price = 300;
-				weapon = 26;
-			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough materials for that!");
-		}
-		else if(strcmp(choice, "dildo", true) == 0) {
-			if(PlayerInfo[playerid][pMats] >= 300) {
-				price = 300;
-				weapon = 27;
-			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough materials for that!");
-		}
-		else if(strcmp(choice, "spraycan", true) == 0) {
-			if(PlayerInfo[playerid][pMats] >= 2000) {
-				price = 2000;
-				weapon = 28;
-			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough materials for that!");
-		}
-
-		else if(strcmp(choice, "rimkit", true) == 0) {
-			if(PlayerInfo[playerid][pMats] >= 400000) {
-				price = 400000;
-				weapon = 29;
-			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough materials for that!");
-		}
-
-		else { SendClientMessageEx(playerid,COLOR_GREY,"   Invalid Craft name!"); return 1; }
-		if (ProxDetectorS(5.0, playerid, giveplayerid))
+		if(!weapon) return SendClientMessageEx(playerid, COLOR_GREY, "   Invalid Craft name!");
+		if(weapon == 14) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot craft this right now!");
+		if(PlayerInfo[playerid][pMats] < price) return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough Materials for that!");
+		new Float:X, Float:Y, Float:Z;
+		GetPlayerPos(giveplayerid, X, Y, Z);
+		if((Spectating[giveplayerid] == 0 || PlayerInfo[playerid][pAdmin] >= 2)
+			&& GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(giveplayerid) && GetPlayerInterior(playerid) == GetPlayerInterior(giveplayerid)
+			&& IsPlayerInRangeOfPoint(playerid, 5.0, X, Y, Z))
 		{
 			if(weapon == 17)
 			{
@@ -804,6 +519,7 @@ CMD:craft(playerid, params[])
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "They don't own a house!");
 						SendClientMessageEx(giveplayerid, COLOR_GREY, "You don't own a house!");
+						return 1;
 					}
 				}
 			}
@@ -910,58 +626,27 @@ CMD:craft(playerid, params[])
 					}
 				case 17:
 					{
-						if(GetPlayerVirtualWorld(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey]][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey]][hIntIW])
+						new closet = INVALID_HOUSE_ID;
+						new pInfo:keys[] = {pPhousekey, pPhousekey2, pPhousekey3};
+						for(new i; i < sizeof(keys); ++i)
 						{
-							if(IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey]][hInteriorZ]))
-							{
-								GetPlayerPos(playerid, HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetZ]);
-								if(IsValidDynamic3DTextLabel(HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetTextID])) DestroyDynamic3DTextLabel(Text3D:HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetTextID]);
-								HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey]][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[PlayerInfo[playerid][pPhousekey]][hIntVW], .interiorid = HouseInfo[PlayerInfo[playerid][pPhousekey]][hIntIW], .streamdistance = 10.0);
-								SaveHouse(PlayerInfo[playerid][pPhousekey]);
-								PlayerInfo[playerid][pMats] -= price;
-								SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "/closet(add/remove)");
-
-								szMiscArray[0] = 0;
-								format(szMiscArray, sizeof(szMiscArray), "%s(%d) has placed a closet for their house (House ID: %d) at X: %f | Y: %f | Z: %f", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pPhousekey], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetZ]);
-  								Log("logs/house.log", szMiscArray);
-							}
-							else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't inside of your house!");
+							new houseid = PlayerInfo[playerid][keys[i]];
+							if(!(0 <= houseid < MAX_HOUSES)) continue;
+							if(HouseInfo[houseid][hOwnerID] != GetPlayerSQLId(playerid) || gHouseSaleUncertain[houseid]) continue;
+							if(GetPlayerVirtualWorld(playerid) != HouseInfo[houseid][hIntVW] || GetPlayerInterior(playerid) != HouseInfo[houseid][hIntIW]) continue;
+							if(!IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ])) continue;
+							closet = houseid;
+							break;
 						}
-						else if(GetPlayerVirtualWorld(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey2]][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey2]][hIntIW])
-						{
-							if(IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey2]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hInteriorZ]))
-							{
-								GetPlayerPos(playerid, HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetZ]);
-								if(IsValidDynamic3DTextLabel(HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetTextID])) DestroyDynamic3DTextLabel(Text3D:HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetTextID]);
-								HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[PlayerInfo[playerid][pPhousekey2]][hIntVW], .interiorid = HouseInfo[PlayerInfo[playerid][pPhousekey2]][hIntIW], .streamdistance = 10.0);
-								SaveHouse(PlayerInfo[playerid][pPhousekey2]);
-								PlayerInfo[playerid][pMats] -= price;
-								SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "/closet(add/remove)");
-
-								szMiscArray[0] = 0;
-								format(szMiscArray, sizeof(szMiscArray), "%s(%d) has placed a closet for their house (House ID: %d) at X: %f | Y: %f | Z: %f", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pPhousekey2], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetZ]);
-  								Log("logs/house.log", szMiscArray);
-							}
-							else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't inside of your house!");
-						}
-						else if(GetPlayerVirtualWorld(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey3]][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey3]][hIntIW])
-						{
-							if(IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorZ]))
-							{
-								GetPlayerPos(playerid, HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetZ]);
-								if(IsValidDynamic3DTextLabel(HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetTextID])) DestroyDynamic3DTextLabel(Text3D:HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetTextID]);
-								HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[PlayerInfo[playerid][pPhousekey3]][hIntVW], .interiorid = HouseInfo[PlayerInfo[playerid][pPhousekey3]][hIntIW], .streamdistance = 10.0);
-								SaveHouse(PlayerInfo[playerid][pPhousekey3]);
-								PlayerInfo[playerid][pMats] -= price;
-								SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "/closet(add/remove)");
-
-								szMiscArray[0] = 0;
-								format(szMiscArray, sizeof(szMiscArray), "%s(%d) has placed a closet for their house (House ID: %d) at X: %f | Y: %f | Z: %f", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pPhousekey3], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetZ]);
-  								Log("logs/house.log", szMiscArray);
-							}
-							else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't inside of your house!");
-						}
-						else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't inside of your house!");
+						if(closet == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You aren't inside of your house!");
+						GetPlayerPos(playerid, HouseInfo[closet][hClosetX], HouseInfo[closet][hClosetY], HouseInfo[closet][hClosetZ]);
+						if(IsValidDynamic3DTextLabel(HouseInfo[closet][hClosetTextID])) DestroyDynamic3DTextLabel(HouseInfo[closet][hClosetTextID]);
+						HouseInfo[closet][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[closet][hClosetX], HouseInfo[closet][hClosetY], HouseInfo[closet][hClosetZ] + 0.5, 10.0, .testlos = 1, .worldid = HouseInfo[closet][hIntVW], .interiorid = HouseInfo[closet][hIntIW], .streamdistance = 10.0);
+						SaveHouse(closet);
+						PlayerInfo[playerid][pMats] -= price;
+						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "/closet(add/remove)");
+						format(szMiscArray, sizeof(szMiscArray), "%s(%d) has placed a closet for their house (House ID: %d) at X: %f | Y: %f | Z: %f", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), closet, HouseInfo[closet][hClosetX], HouseInfo[closet][hClosetY], HouseInfo[closet][hClosetZ]);
+						Log("logs/house.log", szMiscArray);
 					}
 				case 18:
 					{
@@ -988,9 +673,7 @@ CMD:craft(playerid, params[])
 				}
 				
 				}
-				format(string, sizeof(string), "   You have given yourself a %s.", choice);
-				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-				SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "   You have given yourself a %s.", choice);
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 				switch( PlayerInfo[playerid][pSex] )
 				{

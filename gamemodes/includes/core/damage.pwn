@@ -761,6 +761,9 @@ public OnPlayerDeath(playerid, killerid, reason)
 	// if(GetPVarType(playerid, "pTut")) return 1;
 	if(PlayerIsDead[playerid]) return 1;
 	PlayerIsDead[playerid] = true;
+	Craftsman_StopFirstAid(playerid);
+	Craftsman_StopRCCam(playerid);
+	Craftsman_DestroyCamera(playerid);
 	IsSpawned[playerid] = 0;
 	SpawnKick[playerid] = 0;
 	for(new x; x < MAX_PLAYERTOYS; x++)
@@ -927,8 +930,6 @@ public OnPlayerDeath(playerid, killerid, reason)
 	InsidePlane[playerid] = INVALID_VEHICLE_ID;
 	DeletePVar(playerid, "SpeedRadar");
 	DeletePVar(playerid, "UsingSprunk");
-	KillTimer(GetPVarInt(playerid, "firstaid5"));
-	DeletePVar(playerid, "usingfirstaid");
 	if(GetPVarType(playerid, "MovingStretcher"))
 	{
 		KillTimer(GetPVarInt(playerid, "TickEMSMove"));
