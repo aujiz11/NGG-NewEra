@@ -151,6 +151,10 @@
 
 #include <YSI_Coding\y_hooks>
 
+#define MAX_HELP_RESULTS (200)
+
+new HelpCount;
+
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	new string[128];
@@ -197,7 +201,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_HELPSEARCH2:
 		{
-			if(strlen(inputtext) < 2) return Help_ListCat(playerid, DIALOG_HELPSEARCH_INPUTLIMIT, response, listitem);
+			if(response && strlen(inputtext) < 2) {
+				return Help_ListCat(playerid, DIALOG_HELPSEARCH_INPUTLIMIT, response, listitem);
+			}
+			
 			if(response) Help_ListCat(playerid, DIALOG_HELPSEARCH2, response, listitem, inputtext);
 			else Help_ListCat(playerid, DIALOG_HELPSEARCH0, response, listitem);
 		}
@@ -224,9 +231,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					case 8: Help_ListCat(playerid, DIALOG_HELPCATSHOP, response, listitem);
 					case 9: Help_ListCat(playerid, DIALOG_HELPCATJOB, response, listitem);
 					case 10: Help_ListCat(playerid, DIALOG_HELPCATGROUP, response, listitem);
-					case 12: Help_ListCat(playerid, DIALOG_HELPCATBUSINESS, response, listitem);
-					case 13: Help_ListCat(playerid, DIALOG_HELPCATVIP, response, listitem);
-					case 14: Help_ListCat(playerid, DIALOG_HELPCATOTHER, response, listitem);
+					case 11: Help_ListCat(playerid, DIALOG_HELPCATBUSINESS, response, listitem);
+					case 12: Help_ListCat(playerid, DIALOG_HELPCATVIP, response, listitem);
+					case 13: Help_ListCat(playerid, DIALOG_HELPCATOTHER, response, listitem);
 				}
 				DeletePVar(playerid, "HelpCancelCopy");
 			}
@@ -312,17 +319,6 @@ stock LoadHelp()
 
 stock RehashHelp()
 {
-	printf("[RehashHelp] Clearing in-game help data...");
-	for(new i = 0; i < sizeof(Help); i++)
-	{
-		Help[i][HelpID] = -1;
-		Help[i][HelpName] = EOS;
-		Help[i][HelpParam] = EOS;
-		Help[i][HelpDesc] = EOS;
-		Help[i][HelpType] = -1;
-		Help[i][HelpSubtype] = -1;
-		Help[i][HelpLevel] = -1;
-	}
 	LoadHelp();
 	return 1;
 }
@@ -330,32 +326,44 @@ stock RehashHelp()
 forward OnLoadHelp();
 public OnLoadHelp()
 {
-	new i, rows;
-	szMiscArray[0] = 0;
+	new rows;
 	cache_get_row_count(rows);
+	HelpCount = min(rows, sizeof(Help));
+	if(rows > sizeof(Help)) printf("[LoadHelp] Only the first %d of %d help entries can be loaded.", sizeof(Help), rows);
 
-	while(i < rows)
+	foreach(new playerid: Player)
+	{
+		ClearHelpSearch(playerid);
+		DeletePVar(playerid, "TmpCMD");
+	}
+	for(new i = 0; i < HelpCount; i++)
 	{
 		cache_get_value_name_int(i, "id", Help[i][HelpID]);
 		cache_get_value_name(i, "Name", Help[i][HelpName], 128);
 		cache_get_value_name(i, "Parameters", Help[i][HelpParam], 128);
-		cache_get_value_name(i, "Description", Help[i][HelpDesc], 128);
+		cache_get_value_name(i, "Description", Help[i][HelpDesc], 255);
 		cache_get_value_name_int(i, "Type", Help[i][HelpType]);
 		cache_get_value_name_int(i, "Subtype", Help[i][HelpSubtype]);
 		cache_get_value_name_int(i, "Level", Help[i][HelpLevel]);
-		i++;
 	}
-	if(i > 0) printf("[LoadHelp] %d help entries rehashed/loaded.", i);
+	if(HelpCount > 0) printf("[LoadHelp] %d help entries rehashed/loaded.", HelpCount);
 	else printf("[LoadHelp] Failed to load any help entries.");
 }
 
-stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listitem = 0, inputtext[] = 0)
+stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listitem = 0, const inputtext[] = 0)
 {
 	new string[256];
+	szMiscArray[0] = EOS;
 	switch(dialogid)
 	{
 		case DIALOG_HELPCATMAIN:
 		{
+			ClearHelpSearch(playerid);
+			for(new i = 0; i < 14; i++)
+			{
+				format(string, sizeof(string), "HelpResultMainCat%i", i);
+				DeletePVar(playerid, string);
+			}
 			new iGroupID = PlayerInfo[playerid][pMember], j = 0;
 			format(szMiscArray, sizeof(szMiscArray), "Search\n");
 			format(string, sizeof(string), "HelpResultMainCat%i", j);
@@ -409,7 +417,7 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			format(string, sizeof(string), "HelpResultMainCat%i", j);
 			SetPVarInt(playerid, string, 9);
 			j++;
-			if(iGroupID != INVALID_GROUP_ID)
+			if(0 <= iGroupID < MAX_GROUPS)
 			{
 				format(szMiscArray, sizeof(szMiscArray), "%sGroup\n", szMiscArray);
 				format(string, sizeof(string), "HelpResultMainCat%i", j);
@@ -450,14 +458,14 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 		{
 			Help_GenerateCMDList(playerid, GetPVarInt(playerid, "HelpSearchType"), -1, 0, 0, inputtext);
 			DeletePVar(playerid, "HelpSearchType");
-			format(string, sizeof(string), "Help System - Search Results for '%s'", inputtext);
-			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH3, DIALOG_STYLE_LIST, string, szMiscArray, "Select", "Go Back");
-			else ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH0, DIALOG_STYLE_MSGBOX, string, "No results found! Please try another search term.", "Go Back", "");
+			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH3, DIALOG_STYLE_LIST, "Help System - Search Results", szMiscArray, "Select", "Go Back");
+			else ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH0, DIALOG_STYLE_MSGBOX, "Help System - Search Results", "No results found! Please try another search term.", "Go Back", "");
 		}
 		case DIALOG_HELPSEARCH3:
 		{
 			format(string, sizeof(string), "HelpResult%i", listitem);
 			SetPVarInt(playerid, "HelpCancelCopy", 0);
+			if(!GetPVarType(playerid, string)) return Help_ListCat(playerid);
 			Help_ShowCMD(playerid, GetPVarInt(playerid, string), DIALOG_HELPSEARCH4);
 		}
 		case DIALOG_HELPSEARCH4:
@@ -471,6 +479,7 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 		}
 		case DIALOG_HELPCATADMIN:
 		{
+			ClearHelpSearch(playerid);
 			new j = 0;
 			if(Help_Perm(playerid, 1, 1, 1))
 			{
@@ -620,12 +629,14 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				format(string, sizeof(string), "HelpResult%i", listitem);
 				SetPVarInt(playerid, "HelpCancelCopy", 1);
+				if(!GetPVarType(playerid, string)) return Help_ListCat(playerid);
 				Help_ShowCMD(playerid, GetPVarInt(playerid, string), DIALOG_HELPSEARCH4);
 				ClearHelpSearch(playerid);
 			}
 		}
 		case DIALOG_HELPCATADVISOR:
 		{
+			ClearHelpSearch(playerid);
 			new j = 0;
 			if(Help_Perm(playerid, 2, 1, 1))
 			{
@@ -639,14 +650,14 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 2);
 				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%Community Advisor\n", szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%sCommunity Advisor\n", szMiscArray);
 			}
 			if(Help_Perm(playerid, 2, 3, 3))
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 3);
 				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%Senior Advisor\n", szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%sSenior Advisor\n", szMiscArray);
 			}
 			if(Help_Perm(playerid, 2, 4, 4))
 			{
@@ -673,12 +684,14 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				format(string, sizeof(string), "HelpResult%i", listitem);
 				SetPVarInt(playerid, "HelpCancelCopy", 2);
+				if(!GetPVarType(playerid, string)) return Help_ListCat(playerid);
 				Help_ShowCMD(playerid, GetPVarInt(playerid, string), DIALOG_HELPSEARCH4);
 				ClearHelpSearch(playerid);
 			}
 		}
 		case DIALOG_HELPCATFAMED:
 		{
+			ClearHelpSearch(playerid);
 			new j = 0;
 			if(Help_Perm(playerid, 3, 1, 1))
 			{
@@ -699,7 +712,7 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 3);
 				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%Famed\n", szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%sFamed\n", szMiscArray);
 			}
 			if(Help_Perm(playerid, 3, 4, 4))
 			{
@@ -733,6 +746,7 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				format(string, sizeof(string), "HelpResult%i", listitem);
 				SetPVarInt(playerid, "HelpCancelCopy", 3);
+				if(!GetPVarType(playerid, string)) return Help_ListCat(playerid);
 				Help_ShowCMD(playerid, GetPVarInt(playerid, string), DIALOG_HELPSEARCH4);
 				ClearHelpSearch(playerid);
 			}
@@ -747,6 +761,7 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 		{
 			format(string, sizeof(string), "HelpResult%i", listitem);
 			SetPVarInt(playerid, "HelpCancelCopy", 4);
+			if(!GetPVarType(playerid, string)) return Help_ListCat(playerid);
 			Help_ShowCMD(playerid, GetPVarInt(playerid, string), DIALOG_HELPSEARCH4);
 			ClearHelpSearch(playerid);
 		}
@@ -760,6 +775,7 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 		{
 			format(string, sizeof(string), "HelpResult%i", listitem);
 			SetPVarInt(playerid, "HelpCancelCopy", 5);
+			if(!GetPVarType(playerid, string)) return Help_ListCat(playerid);
 			Help_ShowCMD(playerid, GetPVarInt(playerid, string), DIALOG_HELPSEARCH4);
 			ClearHelpSearch(playerid);
 		}
@@ -773,6 +789,7 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 		{
 			format(string, sizeof(string), "HelpResult%i", listitem);
 			SetPVarInt(playerid, "HelpCancelCopy", 6);
+			if(!GetPVarType(playerid, string)) return Help_ListCat(playerid);
 			Help_ShowCMD(playerid, GetPVarInt(playerid, string), DIALOG_HELPSEARCH4);
 			ClearHelpSearch(playerid);
 		}
@@ -786,6 +803,7 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 		{
 			format(string, sizeof(string), "HelpResult%i", listitem);
 			SetPVarInt(playerid, "HelpCancelCopy", 7);
+			if(!GetPVarType(playerid, string)) return Help_ListCat(playerid);
 			Help_ShowCMD(playerid, GetPVarInt(playerid, string), DIALOG_HELPSEARCH4);
 			ClearHelpSearch(playerid);
 		}
@@ -799,11 +817,13 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 		{
 			format(string, sizeof(string), "HelpResult%i", listitem);
 			SetPVarInt(playerid, "HelpCancelCopy", 8);
+			if(!GetPVarType(playerid, string)) return Help_ListCat(playerid);
 			Help_ShowCMD(playerid, GetPVarInt(playerid, string), DIALOG_HELPSEARCH4);
 			ClearHelpSearch(playerid);
 		}
 		case DIALOG_HELPCATJOB:
 		{
+			ClearHelpSearch(playerid);
 			new j = 0;
 			if(Help_Perm(playerid, 9, 1, 0))
 			{
@@ -953,7 +973,14 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 21);
+				j++;
 				format(szMiscArray, sizeof(szMiscArray), "%sPizza Boy\n", szMiscArray);
+			}
+			if(Help_Perm(playerid, 9, 27, 0))
+			{
+				format(string, sizeof(string), "HelpResultCat%i", j);
+				SetPVarInt(playerid, string, 27);
+				format(szMiscArray, sizeof(szMiscArray), "%sGarbage Collector\n", szMiscArray);
 			}
 			Help_GenerateCMDList(playerid, 3, -1, 9, 0);
 			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATJOB, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
@@ -973,12 +1000,15 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				format(string, sizeof(string), "HelpResult%i", listitem);
 				SetPVarInt(playerid, "HelpCancelCopy", 9);
+				if(!GetPVarType(playerid, string)) return Help_ListCat(playerid);
 				Help_ShowCMD(playerid, GetPVarInt(playerid, string), DIALOG_HELPSEARCH4);
 				ClearHelpSearch(playerid);
 			}
 		}
 		case DIALOG_HELPCATGROUP:
 		{
+			ClearHelpSearch(playerid);
+			if(!(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) return Help_ListCat(playerid);
 			new j = 0;
 			if(Help_Perm(playerid, 11, arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType], 1))
 			{
@@ -993,6 +1023,7 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 		}
 		case DIALOG_HELPCATGROUP1:
 		{
+			if(!(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) return Help_ListCat(playerid);
 			format(string, sizeof(string), "HelpResultCat%i", listitem);
 			if(GetPVarInt(playerid, string))
 			{
@@ -1005,48 +1036,58 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				format(string, sizeof(string), "HelpResult%i", listitem);
 				SetPVarInt(playerid, "HelpCancelCopy", 10);
+				if(!GetPVarType(playerid, string)) return Help_ListCat(playerid);
 				Help_ShowCMD(playerid, GetPVarInt(playerid, string), DIALOG_HELPSEARCH4);
 				ClearHelpSearch(playerid);
 			}
 		}
 		case DIALOG_HELPCATBUSINESS:
 		{
-			Help_GenerateCMDList(playerid, 3, -1, 12, 0);
+			if(!IsValidBusinessID(PlayerInfo[playerid][pBusiness])) return Help_ListCat(playerid);
+			Help_GenerateCMDList(playerid, 3, -1, 12, Businesses[PlayerInfo[playerid][pBusiness]][bType]);
 			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATBUSINESS, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
 			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
 		}
 		case DIALOG_HELPCATBUSINESS1:
 		{
 			format(string, sizeof(string), "HelpResult%i", listitem);
-			SetPVarInt(playerid, "HelpCancelCopy", 12);
+			SetPVarInt(playerid, "HelpCancelCopy", 11);
+			if(!GetPVarType(playerid, string)) return Help_ListCat(playerid);
 			Help_ShowCMD(playerid, GetPVarInt(playerid, string), DIALOG_HELPSEARCH4);
 			ClearHelpSearch(playerid);
 		}
 		case DIALOG_HELPCATVIP:
 		{
+			ClearHelpSearch(playerid);
 			new j = 0;
+			if(Help_Perm(playerid, 13, 1, 1))
+			{
+				format(string, sizeof(string), "HelpResultCat%i", j++);
+				SetPVarInt(playerid, string, 1);
+				format(szMiscArray, sizeof(szMiscArray), "Bronze VIP\n");
+			}
 			if(Help_Perm(playerid, 13, 5, 1))
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 5);
 				j++;
-				format(szMiscArray, sizeof(szMiscArray), "VIP Moderator\n");
+				format(szMiscArray, sizeof(szMiscArray), "%sVIP Moderator\n", szMiscArray);
 			}
-			if(Help_Perm(playerid, 13, 2, 1))
+			if(Help_Perm(playerid, 13, 2, 2))
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 2);
 				j++;
 				format(szMiscArray, sizeof(szMiscArray), "%sSilver VIP\n", szMiscArray);
 			}
-			if(Help_Perm(playerid, 13, 3, 1))
+			if(Help_Perm(playerid, 13, 3, 3))
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 3);
 				j++;
 				format(szMiscArray, sizeof(szMiscArray), "%sGold VIP\n", szMiscArray);
 			}
-			if(Help_Perm(playerid, 13, 4, 1))
+			if(Help_Perm(playerid, 13, 4, 4))
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 4);
@@ -1069,13 +1110,15 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			else
 			{
 				format(string, sizeof(string), "HelpResult%i", listitem);
-				SetPVarInt(playerid, "HelpCancelCopy", 13);
+				SetPVarInt(playerid, "HelpCancelCopy", 12);
+				if(!GetPVarType(playerid, string)) return Help_ListCat(playerid);
 				Help_ShowCMD(playerid, GetPVarInt(playerid, string), DIALOG_HELPSEARCH4);
 				ClearHelpSearch(playerid);
 			}
 		}
 		case DIALOG_HELPCATOTHER:
 		{
+			ClearHelpSearch(playerid);
 			new j = 0;
 			if(Help_Perm(playerid, 14, 1, 1))
 			{
@@ -1164,6 +1207,7 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				format(string, sizeof(string), "HelpResult%i", listitem);
 				SetPVarInt(playerid, "HelpCancelCopy", 13);
+				if(!GetPVarType(playerid, string)) return Help_ListCat(playerid);
 				Help_ShowCMD(playerid, GetPVarInt(playerid, string), DIALOG_HELPSEARCH4);
 				ClearHelpSearch(playerid);
 			}
@@ -1174,91 +1218,40 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 
 stock Help_GenerateCMDList(playerid, listtype, listitem = -1, type = 0, subtype = 0, const param[] = 0)
 {
-	new string[256], j = 0;
-	for(new i = 0; i < sizeof(Help); i++)
+	ClearHelpSearch(playerid, 1, 0);
+	new string[24], j = max(listitem, 0);
+	for(new i = 0; i < HelpCount; i++)
 	{
+		if(!Help[i][HelpName][0] || !Help_Perm(playerid, Help[i][HelpType], Help[i][HelpSubtype], Help[i][HelpLevel])) continue;
 		switch(listtype)
 		{
-			case 0:
-			{
-				if((strfind(Help[i][HelpName], param, true) != -1 || strfind(Help[i][HelpDesc], param, true) != -1) && Help_Perm(playerid, Help[i][HelpType], Help[i][HelpSubtype], Help[i][HelpLevel]))
-				{
-					if(listitem >= 0)
-					{
-						format(string, sizeof(string), "HelpResult%i", listitem);
-						listitem++;
-					}
-					else
-					{
-						format(string, sizeof(string), "HelpResult%i", j);
-						j++;
-					}
-					SetPVarInt(playerid, string, i);
-					format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, Help[i][HelpName]);
-				}
-			}
-			case 1:
-			{
-				if(strfind(Help[i][HelpName], param, true) != -1 && Help_Perm(playerid, Help[i][HelpType], Help[i][HelpSubtype], Help[i][HelpLevel]))
-				{
-					if(listitem >= 0)
-					{
-						format(string, sizeof(string), "HelpResult%i", listitem);
-						listitem++;
-					}
-					else
-					{
-						format(string, sizeof(string), "HelpResult%i", j);
-						j++;
-					}
-					SetPVarInt(playerid, string, i);
-					format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, Help[i][HelpName]);
-				}
-			}
-			case 2:
-			{
-				if(strfind(Help[i][HelpDesc], param, true) != -1 && Help_Perm(playerid, Help[i][HelpType], Help[i][HelpSubtype], Help[i][HelpLevel]))
-				{
-					if(listitem >= 0)
-					{
-						format(string, sizeof(string), "HelpResult%i", listitem);
-						listitem++;
-					}
-					else
-					{
-						format(string, sizeof(string), "HelpResult%i", j);
-						j++;
-					}
-					SetPVarInt(playerid, string, i);
-					format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, Help[i][HelpName]);
-				}
-			}
+			case 0: if(strfind(Help[i][HelpName], param, true) == -1 && strfind(Help[i][HelpDesc], param, true) == -1) continue;
+			case 1: if(strfind(Help[i][HelpName], param, true) == -1) continue;
+			case 2: if(strfind(Help[i][HelpDesc], param, true) == -1) continue;
 			case 3:
 			{
-				if(Help[i][HelpType] == type && Help[i][HelpSubtype] == subtype && Help_Perm(playerid, Help[i][HelpType], Help[i][HelpSubtype], Help[i][HelpLevel]))
-				{
-					if(listitem >= 0)
-					{
-						format(string, sizeof(string), "HelpResult%i", listitem);
-						listitem++;
-					}
-					else
-					{
-						format(string, sizeof(string), "HelpResult%i", j);
-						j++;
-					}
-					SetPVarInt(playerid, string, i);
-					format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, Help[i][HelpName]);
-				}
+				if(Help[i][HelpType] != type) continue;
+				if(Help[i][HelpSubtype] != subtype && !((type == 10 || type == 11 || type == 12) && Help[i][HelpSubtype] == 0)) continue;
 			}
+			default: return 0;
 		}
+		if(j >= MAX_HELP_RESULTS || strlen(szMiscArray) + strlen(Help[i][HelpName]) + 1 >= sizeof(szMiscArray))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "The help list is full. Use Search with a more specific command or description to find other results.");
+			break;
+		}
+		format(string, sizeof(string), "HelpResult%i", j++);
+		SetPVarInt(playerid, string, i);
+		format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, Help[i][HelpName]);
 	}
+	SetPVarInt(playerid, "HelpResultCount", j);
 	return 1;
 }
 
 stock Help_ShowCMD(playerid, cmd, dialog)
 {
-	new string[256];
+	if(!(0 <= cmd < HelpCount) || !Help_Perm(playerid, Help[cmd][HelpType], Help[cmd][HelpSubtype], Help[cmd][HelpLevel])) return Help_ListCat(playerid);
+	new string[64];
 	SetPVarInt(playerid, "TmpCMD", cmd);
 	format(string, sizeof(string), "Command Help for %s", Help[cmd][HelpName]);
 	format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Usage: {AFAFAF}%s %s\n\n{FFFFFF}Description: {AFAFAF}%s\n\t\t\t\t\t", Help[cmd][HelpName], Help[cmd][HelpParam], Help[cmd][HelpDesc]);
@@ -1267,7 +1260,7 @@ stock Help_ShowCMD(playerid, cmd, dialog)
 
 stock Help_SendToChat(playerid, response, cmd)
 {
-	if(response)
+	if(response && GetPVarType(playerid, "TmpCMD") && 0 <= cmd < HelpCount && Help_Perm(playerid, Help[cmd][HelpType], Help[cmd][HelpSubtype], Help[cmd][HelpLevel]))
 	{
 		format(szMiscArray, sizeof(szMiscArray), "USAGE: %s %s", Help[cmd][HelpName], Help[cmd][HelpParam]);
 		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
@@ -1397,7 +1390,7 @@ stock Help_Perm(playerid, type, subtype, level)
 		{
 			if(subtype > 0)
 			{
-				if(PlayerInfo[playerid][pLeader] == subtype) return 1;
+				if(arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == subtype) return 1;
 				else return 0;
 			}
 			return 1;
@@ -1406,6 +1399,7 @@ stock Help_Perm(playerid, type, subtype, level)
 	// Business
 	else if(type == 12)
 	{
+		if(!IsValidBusinessID(PlayerInfo[playerid][pBusiness])) return 0;
 		if(subtype > 0)
 		{
 			if(Businesses[PlayerInfo[playerid][pBusiness]][bType] == subtype) return 1;
@@ -1439,24 +1433,23 @@ stock Help_Perm(playerid, type, subtype, level)
 // Function to clear search list
 stock ClearHelpSearch(playerid, Clear1 = 1, Clear2 = 1)
 {
-	new string[16];
-	for(new i = 0; i < sizeof(Help); i++)
+	new string[24];
+	if(Clear1)
 	{
-		if(Clear1)
+		new count = GetPVarInt(playerid, "HelpResultCount");
+		for(new i = 0; i < count; i++)
 		{
 			format(string, sizeof(string), "HelpResult%i", i);
-			if(GetPVarType(playerid, string))
-			{
-				DeletePVar(playerid, string);
-			}
+			DeletePVar(playerid, string);
 		}
-		if(Clear2)
+		DeletePVar(playerid, "HelpResultCount");
+	}
+	if(Clear2)
+	{
+		for(new i = 0; i < 32; i++)
 		{
 			format(string, sizeof(string), "HelpResultCat%i", i);
-			if(GetPVarType(playerid, string))
-			{
-				DeletePVar(playerid, string);
-			}
+			DeletePVar(playerid, string);
 		}
 	}
 	return 1;
@@ -1567,7 +1560,7 @@ CMD:ohelp(playerid, params[])
 		case 27: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /garbagerun");
 	}
 	new iGroupID = PlayerInfo[playerid][pMember];
-	if(iGroupID != INVALID_GROUP_ID)
+	if(0 <= iGroupID < MAX_GROUPS)
 	{
 	    switch(arrGroupData[iGroupID][g_iGroupType])
 	    {
