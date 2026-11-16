@@ -14,3 +14,15 @@ log.txt
 logs/
 scriptfiles/logs.db
 scriptfiles/logs.db-journal
+
+# open.mp files
+omp-server.exe
+omp-server.pdb
+
+/qawno/
+!qawno/include
+
+/components/
+!components/sscanf.dll
+!components/pawncmd.dll
+!components/discord-connector.dll
