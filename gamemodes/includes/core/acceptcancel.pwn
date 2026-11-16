@@ -2125,144 +2125,121 @@ CMD:accept(playerid, params[])
         else if(strcmp(params,"repair",true) == 0) {
 			if(!Offer_IsCurrent(playerid, RepairOffer[playerid], "RepairOfferSession")) 
 				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
-            
-			if(RepairOffer[playerid] != INVALID_PLAYER_ID) {
-                if(GetPlayerCash(playerid) > RepairPrice[playerid]) {
-                    if(IsPlayerInAnyVehicle(playerid)) {
-                        if(IsPlayerConnected(RepairOffer[playerid])) {
-                            RepairCar[playerid] = GetPlayerVehicleID(playerid);
-                            RepairVehicle(RepairCar[playerid]);
-							Vehicle_Armor(RepairCar[playerid]);
-                            PlayerInfo[RepairOffer[playerid]][pTire]--;
 
-                            GivePlayerCash(RepairOffer[playerid], RepairPrice[playerid]);
-                            GivePlayerCash(playerid, -RepairPrice[playerid]);
-                            new ip[32], ipex[32];
-                            GetPlayerIp(playerid, ip, sizeof(ip));
-                            GetPlayerIp(RepairOffer[playerid], ipex, sizeof(ipex));
-                            format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has repaired the vehicle from %s(%d) (IP:%s) for $%d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(RepairOffer[playerid]), GetPlayerSQLId(RepairOffer[playerid]), ipex, RepairPrice[playerid]);
-                            Log("logs/sell.log", szMessage);
-                            format(szMessage, sizeof(szMessage), "* %s has repaired %s's vehicle.", GetPlayerNameEx(RepairOffer[playerid]), GetPlayerNameEx(playerid));
-                            ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You repaired your car for $%d by Car Mechanic %s.",RepairPrice[playerid],GetPlayerNameEx(RepairOffer[playerid]));
+			new mechanicid = RepairOffer[playerid], vehicleid = RepairCar[playerid];
+			if(GetPlayerCash(mechanicid) > cellmax - RepairPrice[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "The mechanic cannot receive this payment.");
+			if(PlayerInfo[mechanicid][pJob] != 7 && PlayerInfo[mechanicid][pJob2] != 7 && PlayerInfo[mechanicid][pJob3] != 7)
+				return SendClientMessageEx(playerid, COLOR_GREY, "That player is no longer a mechanic.");
+			if(!IsPlayerInVehicle(playerid, vehicleid) || !Mechanic_NearVehicle(playerid, vehicleid, 8.0) || !Mechanic_NearVehicle(mechanicid, vehicleid, 8.0))
+				return SendClientMessageEx(playerid, COLOR_GREY, "You must be in the offered vehicle and near the mechanic.");
+			if(GetPlayerState(mechanicid) != PLAYER_STATE_ONFOOT || PlayerIsDead[mechanicid] || GetPVarType(mechanicid, "Injured") || GetPVarType(mechanicid, "FixVehicleTimer") || GetPVarInt(mechanicid, "EventToken")
+				|| GetPVarType(mechanicid, "IsInArena") || GetPVarType(mechanicid, "PlayerCuffed") || GetPVarInt(mechanicid, "pBagged") || GetPVarType(mechanicid, "IsFrozen") || PlayerInfo[mechanicid][pHospital] > 0)
+				return SendClientMessageEx(playerid, COLOR_GREY, "The mechanic cannot repair your vehicle right now.");
+			if(PlayerInfo[mechanicid][pTire] <= 0) return SendClientMessageEx(playerid, COLOR_GREY, "The mechanic has no tires left.");
+			if(!IsABike(vehicleid) && !IsAPlane(vehicleid))
+			{
+				new engine, lights, alarm, doors, bonnet, boot, objective;
+				GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+				if(bonnet != VEHICLE_PARAMS_ON) return SendClientMessageEx(playerid, COLOR_GRAD1, "The vehicle hood must be opened in order to repair it.");
+			}
+			if(GetPlayerCash(playerid) < RepairPrice[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot afford this repair.");
+			if(!RepairVehicle(vehicleid)) return SendClientMessageEx(playerid, COLOR_GREY, "Unable to repair this vehicle right now.");
+			Vehicle_Armor(RepairCar[playerid]);
+			PlayerInfo[RepairOffer[playerid]][pTire]--;
 
-                            if(RepairPrice[playerid] >= 25000 && (PlayerInfo[RepairOffer[playerid]][pLevel] <= 3 || PlayerInfo[RepairOffer[playerid]][pLevel] <= 3)) {
-                                format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has repaired %s(%d) (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(RepairOffer[playerid]), GetPlayerSQLId(RepairOffer[playerid]), ipex, RepairPrice[playerid]);
-                                Log("logs/sell.log", szMessage);
-								format(szMessage, sizeof(szMessage), "%s (IP:%s) has repaired %s (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(RepairOffer[playerid]), ipex, RepairPrice[playerid]);
-                                ABroadCast(COLOR_YELLOW, szMessage, 2);
-                            }
+			GivePlayerCash(RepairOffer[playerid], RepairPrice[playerid]);
+			GivePlayerCash(playerid, -RepairPrice[playerid]);
+			new ip[32], ipex[32];
+			GetPlayerIp(playerid, ip, sizeof(ip));
+			GetPlayerIp(RepairOffer[playerid], ipex, sizeof(ipex));
+			format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has repaired the vehicle from %s(%d) (IP:%s) for $%d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(RepairOffer[playerid]), GetPlayerSQLId(RepairOffer[playerid]), ipex, RepairPrice[playerid]);
+			Log("logs/sell.log", szMessage);
+			format(szMessage, sizeof(szMessage), "* %s has repaired %s's vehicle.", GetPlayerNameEx(RepairOffer[playerid]), GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You repaired your car for $%d by Car Mechanic %s.",RepairPrice[playerid],GetPlayerNameEx(RepairOffer[playerid]));
 
-                            SendClientMessageEx(RepairOffer[playerid], COLOR_LIGHTBLUE, "* You fixed %s's car, the $%d has been added to your money on hand!",GetPlayerNameEx(playerid),RepairPrice[playerid]);
+			if(RepairPrice[playerid] >= 25000 && (PlayerInfo[playerid][pLevel] <= 3 || PlayerInfo[RepairOffer[playerid]][pLevel] <= 3)) {
+			    format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has repaired %s(%d) (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(RepairOffer[playerid]), GetPlayerSQLId(RepairOffer[playerid]), ipex, RepairPrice[playerid]);
+			    Log("logs/sell.log", szMessage);
+			    format(szMessage, sizeof(szMessage), "%s (IP:%s) has repaired %s (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(RepairOffer[playerid]), ipex, RepairPrice[playerid]);
+			    ABroadCast(COLOR_YELLOW, szMessage, 2);
+			}
 
-   							if(PlayerInfo[RepairOffer[playerid]][pDoubleEXP] > 0)
-							{
-								SendClientMessageEx(RepairOffer[playerid], COLOR_YELLOW, "You have gained 2 mechanic skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[RepairOffer[playerid]][pDoubleEXP]);
-   								PlayerInfo[RepairOffer[playerid]][pMechSkill] += 2;
-							}
-							else
-							{
-								PlayerInfo[RepairOffer[playerid]][pMechSkill] += 1;
-							}
+			SendClientMessageEx(RepairOffer[playerid], COLOR_LIGHTBLUE, "* You fixed %s's car, the $%d has been added to your money on hand!",GetPlayerNameEx(playerid),RepairPrice[playerid]);
 
-                            RepairOffer[playerid] = INVALID_PLAYER_ID;
-                            RepairPrice[playerid] = 0;
-                            return 1;
-                        }
-                        return 1;
-                    }
-                    return 1;
-                }
-                else {
-                    SendClientMessageEx(playerid, COLOR_GREY, "   You can't afford the Repair!");
-                    return 1;
-                }
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GREY, "   No-one offered you to Repair your Car!");
-                return 1;
-            }
+			if(PlayerInfo[RepairOffer[playerid]][pDoubleEXP] > 0)
+			{
+			    SendClientMessageEx(RepairOffer[playerid], COLOR_YELLOW, "You have gained 2 mechanic skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[RepairOffer[playerid]][pDoubleEXP]);
+			    PlayerInfo[RepairOffer[playerid]][pMechSkill] += 2;
+			}
+			else
+			{
+			    PlayerInfo[RepairOffer[playerid]][pMechSkill] += 1;
+			}
+
+			if(GetPVarInt(mechanicid, "RepairOfferTo") == playerid) DeletePVar(mechanicid, "RepairOfferTo");
+			RepairCar[playerid] = 0;
+			DeletePVar(playerid, "RepairOfferSession");
+			RepairOffer[playerid] = INVALID_PLAYER_ID;
+			RepairPrice[playerid] = 0;
+			return 1;
         }
         else if(strcmp(params,"refill",true) == 0) {
 			if(!Offer_IsCurrent(playerid, RefillOffer[playerid], "RefillOfferSession")) return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
-            if(RefillOffer[playerid] != INVALID_PLAYER_ID) {
-                if(GetPlayerCash(playerid) > RefillPrice[playerid]) {
-                    if(IsPlayerInAnyVehicle(playerid)) {
-                        if(IsPlayerConnected(RefillOffer[playerid])) {
+			new mechanicid = RefillOffer[playerid], vehicleid = GetPVarInt(playerid, "RefillVehicle");
+			if(GetPlayerCash(mechanicid) > cellmax - RefillPrice[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "The mechanic cannot receive this payment.");
+			if(PlayerInfo[mechanicid][pJob] != 7 && PlayerInfo[mechanicid][pJob2] != 7 && PlayerInfo[mechanicid][pJob3] != 7)
+				return SendClientMessageEx(playerid, COLOR_GREY, "That player is no longer a mechanic.");
+			if(!IsPlayerInVehicle(playerid, vehicleid) || !Mechanic_NearVehicle(playerid, vehicleid, 8.0) || !Mechanic_NearVehicle(mechanicid, vehicleid, 8.0))
+				return SendClientMessageEx(playerid, COLOR_GREY, "You must be in the offered vehicle and near the mechanic.");
+			if(PlayerIsDead[mechanicid] || GetPVarType(mechanicid, "Injured") || GetPVarType(mechanicid, "FixVehicleTimer") || GetPVarInt(mechanicid, "EventToken")
+				|| GetPVarType(mechanicid, "IsInArena") || GetPVarType(mechanicid, "PlayerCuffed") || GetPVarInt(mechanicid, "pBagged") || GetPVarType(mechanicid, "IsFrozen") || PlayerInfo[mechanicid][pHospital] > 0)
+				return SendClientMessageEx(playerid, COLOR_GREY, "The mechanic cannot refill your vehicle right now.");
+			if(VehicleFuel[vehicleid] >= 100.0) return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle's tank is already full.");
+			if(GetPlayerCash(playerid) < RefillPrice[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot afford this refill.");
+			new Float:fueltogive = Mechanic_RefillAmount(PlayerInfo[mechanicid][pMechSkill]);
+			if(VehicleFuel[vehicleid] + fueltogive > 100.0) fueltogive = 100.0 - VehicleFuel[vehicleid];
+			VehicleFuel[vehicleid] += fueltogive;
+			new vehicleslot = GetPlayerVehicle(playerid, vehicleid);
+			if(vehicleslot != -1) {
+			    mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d'", VehicleFuel[vehicleid], PlayerVehicleInfo[playerid][vehicleslot][pvSlotId]);
+			    mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			}
+			GivePlayerCash(RefillOffer[playerid], RefillPrice[playerid]);
+			GivePlayerCash(playerid, -RefillPrice[playerid]);
+			new ip[32], ipex[32];
+			GetPlayerIp(playerid, ip, sizeof(ip));
+			GetPlayerIp(RefillOffer[playerid], ipex, sizeof(ipex));
+			format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has refilled the vehicle from %s(%d) (IP:%s) for $%d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(RefillOffer[playerid]), GetPlayerSQLId(RefillOffer[playerid]), ipex, RefillPrice[playerid]);
+			Log("logs/sell.log", szMessage);
+			format(szMessage, sizeof(szMessage), "* %s has refilled %s's vehicle.", GetPlayerNameEx(RefillOffer[playerid]), GetPlayerNameEx(playerid));
+			ProxChatBubble(playerid, szMessage);
+			// ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have added %.2f fuel to your car for $%d by Car Mechanic %s.",fueltogive,RefillPrice[playerid],GetPlayerNameEx(RefillOffer[playerid]));
+			SendClientMessageEx(RefillOffer[playerid], COLOR_LIGHTBLUE, "* You added %.2f fuel to %s's car, the $%d has been added to your money on hand!",fueltogive,GetPlayerNameEx(playerid),RefillPrice[playerid]);
 
-	      					if(!ProxDetectorS(8.0, RefillOffer[playerid], playerid))
-		  					{
-								return SendClientMessageEx(playerid, COLOR_GREY, "You are not near the mechanic.");
-							}
-                            new Float:fueltogive;
-                            new level = PlayerInfo[RefillOffer[playerid]][pMechSkill];
-                            if(level >= 0 && level < 50) { fueltogive = 2.0; }
-                            else if(level >= 50 && level < 100) { fueltogive = 4.0; }
-                            else if(level >= 100 && level < 200) { fueltogive = 6.0; }
-                            else if(level >= 200 && level < 400) { fueltogive = 8.0; }
-                            else if(level >= 400) { fueltogive = 10.0; }
-                            GetPlayerName(RefillOffer[playerid], giveplayer, sizeof(giveplayer));
-                            GetPlayerName(playerid, sendername, sizeof(sendername));
-                            new vehicleid = GetPlayerVehicleID(playerid);
-                            VehicleFuel[vehicleid] = floatadd(VehicleFuel[vehicleid], fueltogive);
-                            if(VehicleFuel[vehicleid] > 100.0) VehicleFuel[vehicleid] = 100.0;
-                            for(new vehicleslot = 0; vehicleslot < MAX_PLAYERVEHICLES; vehicleslot++)
-							{
-								if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][vehicleslot][pvId]))
-								{
-									if(vehicleslot != -1) {
-										mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d'", VehicleFuel[vehicleid], PlayerVehicleInfo[playerid][vehicleslot][pvSlotId]);
-										mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-									}
-								}
-							}
-                            GivePlayerCash(RefillOffer[playerid], RefillPrice[playerid]);
-                            GivePlayerCash(playerid, -RefillPrice[playerid]);
-                            new ip[32], ipex[32];
-                            GetPlayerIp(playerid, ip, sizeof(ip));
-                            GetPlayerIp(RefillOffer[playerid], ipex, sizeof(ipex));
-                            format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has refilled the vehicle from %s(%d) (IP:%s) for $%d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(RefillOffer[playerid]), GetPlayerSQLId(RefillOffer[playerid]), ipex, RefillPrice[playerid]);
-							Log("logs/sell.log", szMessage);
-                            format(szMessage, sizeof(szMessage), "* %s has refilled %s's vehicle.", GetPlayerNameEx(RefillOffer[playerid]), GetPlayerNameEx(playerid));
-                           	ProxChatBubble(playerid, szMessage);
-                            // ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have added %.2f fuel to your car for $%d by Car Mechanic %s.",fueltogive,RefillPrice[playerid],GetPlayerNameEx(RefillOffer[playerid]));
-                            SendClientMessageEx(RefillOffer[playerid], COLOR_LIGHTBLUE, "* You added %.2f fuel to %s's car, the $%d has been added to your money on hand!",fueltogive,GetPlayerNameEx(playerid),RefillPrice[playerid]);
+			if(PlayerInfo[RefillOffer[playerid]][pDoubleEXP] > 0)
+			{
+			    SendClientMessageEx(RefillOffer[playerid], COLOR_YELLOW, "You have gained 2 mechanic skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[RefillOffer[playerid]][pDoubleEXP]);
+			    PlayerInfo[RefillOffer[playerid]][pMechSkill] += 2;
+			}
+			else
+			{
+			    PlayerInfo[RefillOffer[playerid]][pMechSkill] += 1;
+			}
 
- 							if(PlayerInfo[RefillOffer[playerid]][pDoubleEXP] > 0)
-							{
-								SendClientMessageEx(RefillOffer[playerid], COLOR_YELLOW, "You have gained 2 mechanic skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[RefillOffer[playerid]][pDoubleEXP]);
-   								PlayerInfo[RefillOffer[playerid]][pMechSkill] += 2;
-							}
-							else
-							{
-								PlayerInfo[RefillOffer[playerid]][pMechSkill] += 1;
-							}
+			if(RefillPrice[playerid] >= 30000 && (PlayerInfo[playerid][pLevel] <= 3 || PlayerInfo[RefillOffer[playerid]][pLevel] <= 3)) {
+			    format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has refueled %s(%d) (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(RefillOffer[playerid]), GetPlayerSQLId(RefillOffer[playerid]), ipex, RefillPrice[playerid]);
+			    Log("logs/sell.log", szMessage);
+			    format(szMessage, sizeof(szMessage), "%s (IP:%s) has refueled %s (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(RefillOffer[playerid]), ipex, RefillPrice[playerid]);
+			    ABroadCast(COLOR_YELLOW, szMessage, 2);
+			}
 
-                            if(RefillPrice[playerid] >= 30000 && (PlayerInfo[playerid][pLevel] <= 3 || PlayerInfo[RefillOffer[playerid]][pLevel] <= 3)) {
-                                format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has refueled %s(%d) (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(RefillOffer[playerid]), GetPlayerSQLId(RefillOffer[playerid]), ipex, RefillPrice[playerid]);
-                                Log("logs/sell.log", szMessage);
-								format(szMessage, sizeof(szMessage), "%s (IP:%s) has refueled %s (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(RefillOffer[playerid]), ipex, RefillPrice[playerid]);
-                                ABroadCast(COLOR_YELLOW, szMessage, 2);
-                            }
-
-                            RefillOffer[playerid] = INVALID_PLAYER_ID;
-                            RefillPrice[playerid] = 0;
-                            return 1;
-                        }
-                        return 1;
-                    }
-                    return 1;
-                }
-                else {
-                    SendClientMessageEx(playerid, COLOR_GREY, "   You can't afford the refill!");
-                    return 1;
-                }
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GREY, "   No-one offered you to refill your Car!");
-                return 1;
-            }
+			DeletePVar(playerid, "RefillVehicle");
+			DeletePVar(playerid, "RefillOfferSession");
+			RefillOffer[playerid] = INVALID_PLAYER_ID;
+			RefillPrice[playerid] = 0;
+			return 1;
         }
 		else if(strcmp(params, "backpack", true) == 0) {
 			if(!Offer_IsCurrent(playerid, GetPVarInt(playerid, "sellbackpack"), "BackpackOfferSession")) 
@@ -2411,7 +2388,7 @@ CMD:cancel(playerid, params[])
 	else if(strcmp(choice,"lawyer",true) == 0) { WantLawyer[playerid] = 0; CallLawyer[playerid] = 0; }
 	else if(strcmp(choice,"bodyguard",true) == 0) { GuardOffer[playerid] = INVALID_PLAYER_ID; GuardPrice[playerid] = 0; }
 	else if(strcmp(choice,"live",true) == 0) { LiveOffer[playerid] = INVALID_PLAYER_ID; }
-	else if(strcmp(choice,"refill",true) == 0) { RefillOffer[playerid] = INVALID_PLAYER_ID; RefillPrice[playerid] = 0; }
+	else if(strcmp(choice,"refill",true) == 0) { RefillOffer[playerid] = INVALID_PLAYER_ID; RefillPrice[playerid] = 0; DeletePVar(playerid, "RefillOfferSession"); DeletePVar(playerid, "RefillVehicle"); }
 	else if(strcmp(choice,"car",true) == 0) { VehicleOffer[playerid] = INVALID_PLAYER_ID; VehiclePrice[playerid] = 0; VehicleId[playerid] = -1; DeletePVar(playerid, "VehicleOfferSession"); DeletePVar(playerid, "VehicleOfferSQLId"); }
 	else if(strcmp(choice,"house",true) == 0) { HouseOffer[playerid] = INVALID_PLAYER_ID; HousePrice[playerid] = 0; House[playerid] = INVALID_HOUSE_ID; DeletePVar(playerid, "HouseOfferSession"); }
 	else if(strcmp(choice,"boxing",true) == 0) { BoxOffer[playerid] = INVALID_PLAYER_ID; }
@@ -2571,10 +2548,6 @@ CMD:cancel(playerid, params[])
 	return 1;
 }
 
-timer Cooldown_Mechanic[10000](playerid) {
-	DeletePVar(playerid, "MCH_CLDWN");
-}
-
 CMD:refill(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJob] != 7 && PlayerInfo[playerid][pJob2] != 7 && PlayerInfo[playerid][pJob3] != 7)
@@ -2582,6 +2555,9 @@ CMD:refill(playerid, params[])
 		return SendClientMessageEx(playerid, COLOR_GREY, "You're not a mechanic.");
 	}
 
+	if(PlayerIsDead[playerid] || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") || GetPVarType(playerid, "IsFrozen") || GetPVarType(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") || PlayerInfo[playerid][pHospital] > 0)
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot work as a mechanic right now.");
+	if(GetPVarType(playerid, "FixVehicleTimer")) return SendClientMessageEx(playerid, COLOR_GREY, "You are fixing a vehicle.");
 	new string[128];
 	if(gettime() < PlayerInfo[playerid][pMechTime])
 	{
@@ -2596,44 +2572,31 @@ CMD:refill(playerid, params[])
 	}
 	if(IsPlayerConnected(giveplayerid))
 	{
-		if(ProxDetectorS(8.0, playerid, giveplayerid) && IsPlayerInAnyVehicle(giveplayerid))
+		new vehicleid = GetPlayerVehicleID(giveplayerid);
+		if(IsPlayerInAnyVehicle(giveplayerid) && Mechanic_NearVehicle(playerid, vehicleid, 8.0) && Mechanic_NearVehicle(giveplayerid, vehicleid, 8.0))
 		{
 
-			new Float: fueltogive;
-			switch(PlayerInfo[playerid][pMechSkill])
-			{
-			case 0 .. 49: fueltogive = 2.0;
-			case 50 .. 99: fueltogive = 4.0;
-			case 100 .. 199: fueltogive = 6.0;
-			case 200 .. 399: fueltogive = 8.0;
-			default: fueltogive = 10.0;
-			}
+			if(VehicleFuel[vehicleid] >= 100.0) return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle's tank is already full.");
+			new Float:fueltogive = Mechanic_RefillAmount(PlayerInfo[playerid][pMechSkill]);
+			if(VehicleFuel[vehicleid] + fueltogive > 100.0) fueltogive = 100.0 - VehicleFuel[vehicleid];
 			if(giveplayerid == playerid)
 			{
 				if(PlayerInfo[playerid][pMechSkill] >= 400)
 				{
-					if(GetPVarType(playerid, "MCH_CLDWN")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't refill so fast!");
+					if(GetPVarInt(playerid, "MCH_CLDWN") > gettime()) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't refill so fast!");
 
-					SetPVarInt(playerid, "MCH_CLDWN", 1);
-					defer Cooldown_Mechanic(playerid);
+					SetPVarInt(playerid, "MCH_CLDWN", gettime()+10);
 
-					new vehicleid = GetPlayerVehicleID(playerid);
-					VehicleFuel[vehicleid] = VehicleFuel[vehicleid] + fueltogive;
-					if(VehicleFuel[vehicleid] > 100.0) VehicleFuel[vehicleid] = 100.0;
+					VehicleFuel[vehicleid] += fueltogive;
 					format(string, sizeof(string), "* %s has refilled their vehicle.", GetPlayerNameEx(playerid));
 					ProxChatBubble(playerid, string);
 					// ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					format(string, sizeof(string), "* You added %.2f fuel to your car.",fueltogive);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					for(new vehicleslot = 0; vehicleslot < MAX_PLAYERVEHICLES; vehicleslot++)
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You added %.2f fuel to your car.", fueltogive);
+					new vehicleslot = GetPlayerVehicle(playerid, vehicleid);
+					if(vehicleslot != -1)
 					{
-						if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][vehicleslot][pvId]))
-						{
-							if(vehicleslot != -1) {
-								mysql_format(MainPipeline, string, sizeof(string), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d'", VehicleFuel[vehicleid], PlayerVehicleInfo[playerid][vehicleslot][pvSlotId]);
-								mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-							}
-						}
+						mysql_format(MainPipeline, string, sizeof(string), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d'", VehicleFuel[vehicleid], PlayerVehicleInfo[playerid][vehicleslot][pvSlotId]);
+						mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 					}
 					return 1;
 				}
@@ -2642,6 +2605,7 @@ CMD:refill(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to add %.2f fuel to their car for $%d.",GetPlayerNameEx(giveplayerid),fueltogive,money);
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Car Mechanic %s wants to add %.2f fuel to your car for $%d, type /accept refill to accept.",GetPlayerNameEx(playerid),fueltogive,money);
 			PlayerInfo[playerid][pMechTime] = gettime()+60;
+			SetPVarInt(giveplayerid, "RefillVehicle", vehicleid);
 			RefillOffer[giveplayerid] = playerid;
 			SetPVarInt(giveplayerid, "RefillOfferSession", g_arrQueryHandle[playerid]);
 			RefillPrice[giveplayerid] = money;
@@ -2658,74 +2622,34 @@ CMD:refill(playerid, params[])
 CMD:repair(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJob] != 7 && PlayerInfo[playerid][pJob2] != 7 && PlayerInfo[playerid][pJob3] != 7)
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Car Mechanic!");
-		return 1;
-	}
+		return SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Car Mechanic!");
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not repair while inside the vehicle.");
-
-	if(gettime() < PlayerInfo[playerid][pMechTime])
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1,"You must wait %d seconds!", PlayerInfo[playerid][pMechTime]-gettime());
-		return 1;
-	}
-	if(GetPVarInt(playerid, "EventToken")) {
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
-	}
+	if(PlayerIsDead[playerid] || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") || GetPVarType(playerid, "IsFrozen") || GetPVarType(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") || PlayerInfo[playerid][pHospital] > 0)
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot work as a mechanic right now.");
+	if(GetPVarType(playerid, "FixVehicleTimer")) return SendClientMessageEx(playerid, COLOR_GREY, "You are fixing a vehicle.");
+	if(gettime() < PlayerInfo[playerid][pMechTime]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must wait %d seconds!", PlayerInfo[playerid][pMechTime]-gettime());
 	new giveplayerid, money;
 	if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /repair [player] [price]");
-
-	if(PlayerInfo[playerid][pTire] > 0)
+	if(PlayerInfo[playerid][pTire] <= 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You do not have any tires, buy one from a craftsman.");
+	if(money < 1 || money > 10000) return SendClientMessageEx(playerid, COLOR_GREY, "   Price not lower then $1 or above $10,000!");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "   That person is offline.");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "   Can't do that!");
+	new vehicleid = GetPlayerVehicleID(giveplayerid);
+	if(!IsPlayerInAnyVehicle(giveplayerid) || !Mechanic_NearVehicle(playerid, vehicleid, 8.0) || !Mechanic_NearVehicle(giveplayerid, vehicleid, 8.0))
+		return SendClientMessageEx(playerid, COLOR_GREY, "   That person is not near you or not in a car.");
+	if(!IsABike(vehicleid) && !IsAPlane(vehicleid))
 	{
-		if(money < 1 || money > 10000) { SendClientMessageEx(playerid, COLOR_GREY, "   Price not lower then $1 or above $10,000!"); return 1; }
-		if(IsPlayerConnected(giveplayerid))
-		{
-			if(giveplayerid != INVALID_PLAYER_ID)
-			{
-			    new closestcar = GetClosestCar(playerid);
-
-	  			if(IsPlayerInRangeOfVehicle(playerid, closestcar, 8.0))
-	  			{
-					if(ProxDetectorS(8.0, playerid, giveplayerid)&& IsPlayerInAnyVehicle(giveplayerid))
-					{
-						if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "   Can't do that!"); return 1; }
-	                    if(!IsABike(closestcar) && !IsAPlane(closestcar))
-						{
-							new engine,lights,alarm,doors,bonnet,boot,objective;
-							GetVehicleParamsEx(closestcar,engine,lights,alarm,doors,bonnet,boot,objective);
-							if(bonnet == VEHICLE_PARAMS_OFF || bonnet == VEHICLE_PARAMS_UNSET)
-							{
-								SendClientMessageEx(playerid, COLOR_GRAD1, "The vehicle hood must be opened in order to repair it.");
-								return 1;
-							}
-						}
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to fix their car for $%d .",GetPlayerNameEx(giveplayerid),money);
-						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Car Mechanic %s wants to repair your car for $%d, (type /accept repair) to accept.",GetPlayerNameEx(playerid),money);
-						PlayerInfo[playerid][pMechTime] = gettime()+60;
-						SetPVarInt(playerid, "RepairOfferTo", giveplayerid);
-						RepairOffer[giveplayerid] = playerid;
-						SetPVarInt(giveplayerid, "RepairOfferSession", g_arrQueryHandle[playerid]);
-						RepairPrice[giveplayerid] = money;
-					}
-					else
-					{
-						SendClientMessageEx(playerid, COLOR_GREY, "   That person is not near you / not in a car.");
-					}
-				}
-				else
-				{
-				    SendClientMessageEx(playerid, COLOR_GREY, "   You are not near any vehicle.");
-				}
-			}
-		}
-		else
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   That person is offline.");
-		}
+		new engine, lights, alarm, doors, bonnet, boot, objective;
+		GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+		if(bonnet != VEHICLE_PARAMS_ON) return SendClientMessageEx(playerid, COLOR_GRAD1, "The vehicle hood must be opened in order to repair it.");
 	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "   You do not have any tires, buy one from a craftsman.");
-	}
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to fix their car for $%d.", GetPlayerNameEx(giveplayerid), money);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Car Mechanic %s wants to repair your car for $%d, (type /accept repair) to accept.", GetPlayerNameEx(playerid), money);
+	PlayerInfo[playerid][pMechTime] = gettime()+60;
+	SetPVarInt(playerid, "RepairOfferTo", giveplayerid);
+	RepairOffer[giveplayerid] = playerid;
+	RepairCar[giveplayerid] = vehicleid;
+	SetPVarInt(giveplayerid, "RepairOfferSession", g_arrQueryHandle[playerid]);
+	RepairPrice[giveplayerid] = money;
 	return 1;
 }

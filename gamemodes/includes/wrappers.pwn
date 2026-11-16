@@ -110,6 +110,7 @@ Internal_DestroyVehicle(vehicleid) {
 	foreach(new playerid : Player)
 	{
 		if(SpikeVehicle[playerid] == vehicleid) SpikeVehicle[playerid] = 0;
+		Mechanic_ClearVehicleWork(playerid, vehicleid);
 	}
 	Iter_Remove(Vehicles, vehicleid);
 	return DestroyVehicle(vehicleid);

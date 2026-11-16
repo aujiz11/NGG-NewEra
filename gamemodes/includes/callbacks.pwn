@@ -49,6 +49,7 @@ public OnVehicleSpawn(vehicleid) {
 
 	foreach(new i: Player)
 	{
+		Mechanic_ClearVehicleWork(i, vehicleid);
 		if((v = GetPlayerVehicle(i, vehicleid)) != -1) {
 			DestroyVehicle(vehicleid);
 
@@ -1604,6 +1605,7 @@ public OnPlayerConnect(playerid)
 
 public OnPlayerDisconnect(playerid, reason)
 {
+	Mechanic_CancelFix(playerid, false);
 	Craftsman_StopFirstAid(playerid);
 	gPasswordPending[playerid] = false;
 	DeletePVar(playerid, "PassAuth");
@@ -2677,6 +2679,7 @@ public OnVehicleDeath(vehicleid) {
 	TruckContents{vehicleid} = 0;
 	foreach(new i: Player)
 	{
+		Mechanic_ClearVehicleWork(i, vehicleid);
 		if(GetPVarInt(i, "rccam") && GetPVarInt(i, "rcveh") == vehicleid) {
 			Craftsman_StopRCCam(i, !PlayerIsDead[i]);
 		}	
@@ -4209,6 +4212,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 public OnPlayerStateChange(playerid, newstate, oldstate)
 {
+	if(newstate != PLAYER_STATE_ONFOOT) Mechanic_CancelFix(playerid, newstate != PLAYER_STATE_WASTED);
 	if(GetPVarInt(playerid, "rccam") && (newstate != PLAYER_STATE_DRIVER || GetPlayerVehicleID(playerid) != GetPVarInt(playerid, "rcveh")))
 		Craftsman_StopRCCam(playerid, newstate == PLAYER_STATE_ONFOOT || newstate == PLAYER_STATE_WASTED);
     if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER)

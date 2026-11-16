@@ -241,7 +241,7 @@ stock TacklePlayer(playerid, tacklee)
 	GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~w~Push ~r~'~k~~CONVERSATION_YES~' ~n~~w~to get up off the suspect.", 15000, 3);
 	format(string, sizeof(string), "%s %s %s has tackled you.  Do you wish to comply or resist?", group, rank, GetPlayerNameEx(playerid));
 	ShowPlayerDialogEx(tacklee, DIALOG_TACKLED, DIALOG_STYLE_MSGBOX, "You've been tackled", string, "Comply", "Resist");
-	if(GetPVarType(tacklee, "FixVehicleTimer")) KillTimer(GetPVarInt(tacklee, "FixVehicleTimer")), DeletePVar(tacklee, "FixVehicleTimer");
+	Mechanic_CancelFix(tacklee, false);
 	return 1;
 }
 

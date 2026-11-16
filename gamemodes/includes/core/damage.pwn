@@ -457,7 +457,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				SetTimerEx("TazerTimer",1000,false,"d",playerid);
 				PlayerTextDrawShow(damagedid, _vhudFlash[damagedid]);
 				SetTimerEx("TurnOffFlash", 800, false, "i", damagedid);
-				if(GetPVarType(damagedid, "FixVehicleTimer")) KillTimer(GetPVarInt(damagedid, "FixVehicleTimer")), DeletePVar(damagedid, "FixVehicleTimer");
+				Mechanic_CancelFix(damagedid, false);
 				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~r~Tazer reloading... ~w~12", 1500,3);
 				return 1;
 			}
@@ -491,7 +491,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	    		GameTextForPlayer(damagedid, "~r~Bagged!", 7000, 3);
 	    		format(szMiscArray, sizeof(szMiscArray), "* %s fires their beanbag shotgun at %s, stunning them.", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid));
 				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	    		if(GetPVarType(damagedid, "FixVehicleTimer")) KillTimer(GetPVarInt(damagedid, "FixVehicleTimer")), DeletePVar(damagedid, "FixVehicleTimer");
+				Mechanic_CancelFix(damagedid, false);
 	    		return 1;
 	    	}
 		}
@@ -761,6 +761,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 	// if(GetPVarType(playerid, "pTut")) return 1;
 	if(PlayerIsDead[playerid]) return 1;
 	PlayerIsDead[playerid] = true;
+	Mechanic_CancelFix(playerid, false);
 	Craftsman_StopFirstAid(playerid);
 	Craftsman_StopRCCam(playerid);
 	Craftsman_DestroyCamera(playerid);
@@ -921,7 +922,6 @@ public OnPlayerDeath(playerid, killerid, reason)
 		mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 		if(GetPVarType(killerid, "IsInArena")) PlayerInfo[killerid][pDMKills]++;
-		if(GetPVarType(playerid, "FixVehicleTimer")) KillTimer(GetPVarInt(playerid, "FixVehicleTimer")), DeletePVar(playerid, "FixVehicleTimer");
 	}
 
 	TextDrawHideForPlayer(playerid, BFText);
