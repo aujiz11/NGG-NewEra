@@ -26,8 +26,7 @@ CMD:editgsprices(playerid, params[]) {
 	if(sscanf(params, "s[32]d", choice, amount)) {
 		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /editgsprices [choice] [amount]"); 
 		SendClientMessageEx(playerid, COLOR_WHITE, "Available choices: colt45, shotgun, deagle");
-		format(szMiscArray, sizeof(szMiscArray), "colt45: $%s | shotgun: $%s | Deagle: $%s", number_format(GunPrices[0]), number_format(GunPrices[1]), number_format(GunPrices[2]));
-		return SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		return SendClientMessageEx(playerid, COLOR_WHITE, "colt45: $%s | shotgun: $%s | Deagle: $%s", number_format(GunPrices[0]), number_format(GunPrices[1]), number_format(GunPrices[2]));
 	}
 	if(strcmp(choice, "colt45", true) == 0) {
 		GunPrices[0] = amount; 

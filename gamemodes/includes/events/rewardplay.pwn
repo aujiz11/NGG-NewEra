@@ -36,14 +36,10 @@
 */
 
 CMD:rewards(playerid, params[]) {
-	new string[128];
 	SendClientMessageEx(playerid, COLOR_GREEN, "Reward Information:");
-	format(string, sizeof(string), "Total Reward Hours: %d", floatround(PlayerInfo[playerid][pRewardHours]));
-	SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	format(string, sizeof(string), "Chances in #FallIntoFun Prize Drawing: %d", PlayerInfo[playerid][pRewardDrawChance]);
-	SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	format(string, sizeof(string), "Gold Giftbox Tokens: %d", PlayerInfo[playerid][pGoldBoxTokens]);
-	SendClientMessageEx(playerid, COLOR_YELLOW, string);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Total Reward Hours: %d", floatround(PlayerInfo[playerid][pRewardHours]));
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Chances in #FallIntoFun Prize Drawing: %d", PlayerInfo[playerid][pRewardDrawChance]);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Gold Giftbox Tokens: %d", PlayerInfo[playerid][pGoldBoxTokens]);
 	if(!iRewardBox)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "Note: The gold gift box is currently disabled.");

@@ -192,8 +192,7 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 				{
 					if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
 					{
-						format(string, sizeof(string), "Vehicle %d| Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle %d| Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
 					}
 				}
 				return ShowPlayerDialogEx(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
@@ -209,8 +208,7 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 				{
 					if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
 					{
-						format(string, sizeof(string), "Vehicle %d | Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle %d | Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
 					}
 				}
 				return ShowPlayerDialogEx(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
@@ -226,8 +224,7 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 				{
 					if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
 					{
-						format(string, sizeof(string), "Vehicle %d | Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle %d | Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
 					}
 				}
 				return ShowPlayerDialogEx(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
@@ -1300,10 +1297,8 @@ CMD:entrancefee(playerid, params[])
 		}
 
 		else {
-			new string[128];
 			Businesses[PlayerInfo[playerid][pBusiness]][bGymEntryFee] = amount;
-			format(string, sizeof(string), "You have set the gym entry fee to $%s.", number_format(amount));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have set the gym entry fee to $%s.", number_format(amount));
 			RefreshBusinessPickup(PlayerInfo[playerid][pBusiness]);
 			SaveBusiness(PlayerInfo[playerid][pBusiness]);
 		}
@@ -1345,8 +1340,7 @@ CMD:editcarprice(playerid, params[])
 			Businesses[PlayerInfo[playerid][pBusiness]][bPrice][iSlot] = amount;
 			format(Message, sizeof(Message), "%s For Sale | Price: $%s", GetVehicleName(Businesses[PlayerInfo[playerid][pBusiness]][bVehID][iSlot]), number_format(Businesses[PlayerInfo[playerid][pBusiness]][bPrice][iSlot]));
             UpdateDynamic3DTextLabelText(Businesses[PlayerInfo[playerid][pBusiness]][bVehicleLabel][iSlot], COLOR_LIGHTBLUE, Message);
-			format(Message, sizeof(Message), "%s price has been set to $%s", GetVehicleName(vehicleid), number_format(amount));
-			SendClientMessageEx(playerid, COLOR_WHITE, Message);
+			SendClientMessageEx(playerid, COLOR_WHITE, "%s price has been set to $%s", GetVehicleName(vehicleid), number_format(amount));
 			SaveDealershipVehicle(PlayerInfo[playerid][pBusiness], iSlot);
 		}
 	}
@@ -1463,11 +1457,10 @@ CMD:switchbiz(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 3 || PlayerInfo[playerid][pBM] >= 1)
 	{
-		new string[128], bizid;
+		new bizid;
 		if(sscanf(params, "d", bizid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /switchbiz [bizid]");
 		if(!IsValidBusinessID(bizid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid business ID.");
-		format(string, sizeof(string), "You have switched to business ID %d (%s).", bizid, Businesses[bizid][bName]);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have switched to business ID %d (%s).", bizid, Businesses[bizid][bName]);
 		PlayerInfo[playerid][pBusinessRank] = 5;
 		PlayerInfo[playerid][pBusiness] = bizid;
 	}
@@ -1494,8 +1487,7 @@ CMD:brenewal(playerid, params[])
 		}
 		else {
 		    Businesses[iBusiness][bMonths] = 259200+gettime()+(2592000*months);
-			format(szMessage, sizeof(szMessage), "You have renewed business %i for %i months.", iBusiness, months);
-			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have renewed business %i for %i months.", iBusiness, months);
 			format(szMessage, sizeof(szMessage), "[BUSINESS RENEWAL] %s(%d) has renewed BusinessID %i, Type %i, Months %i, OrderID %i", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), iBusiness, iType, months, iOrderID);
 			Log("logs/shoplog.log", szMessage);
 			SaveBusiness(iBusiness);
@@ -1615,8 +1607,7 @@ CMD:shopbusiness(playerid, params[])
 	else if(!strcmp(choice, "price", true))
 	{
 		Businesses[businessid][bValue] = amount;
-		format(string, sizeof(string), "You have set the business price to $%d.", amount);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the business price to $%d.", amount);
 		format(string, sizeof(string), "[SHOPBUSINESS] %s has changed BusinessID %d's Price to $%d.", GetPlayerNameEx(playerid), businessid, amount);
 		Log("logs/shoplog.log", string);
 	}
@@ -1628,8 +1619,7 @@ CMD:shopbusiness(playerid, params[])
 			return SendClientMessageEx(playerid, COLOR_GREY, "You can't change the business type when a delivery is on its way.");
 		}
 		Businesses[businessid][bType] = amount;
-		format(string, sizeof(string), "You have set the business type to %s.", GetBusinessTypeName(amount));
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the business type to %s.", GetBusinessTypeName(amount));
 		format(string, sizeof(string), "[SHOPBUSINESS] %s has changed BusinessID %d's Type to %s (%d).", GetPlayerNameEx(playerid), businessid, GetBusinessTypeName(amount), amount);
 		Log("logs/shoplog.log", string);
 	}
@@ -1637,16 +1627,14 @@ CMD:shopbusiness(playerid, params[])
 	else if(!strcmp(choice, "inventory", true))
 	{
 		Businesses[businessid][bInventory] = amount;
-		format(string, sizeof(string), "You have set the business inventory to %d.", amount);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the business inventory to %d.", amount);
 		format(string, sizeof(string), "[SHOPBUSINESS] %s has changed BusinessID %d's Inventory to %d.", GetPlayerNameEx(playerid), businessid, amount);
 		Log("logs/shoplog.log", string);
 	}
 	else if(!strcmp(choice, "InventoryCapacity", true))
 	{
 		Businesses[businessid][bInventoryCapacity] = amount;
-		format(string, sizeof(string), "You have set the business inventory capacity to %d.", amount);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the business inventory capacity to %d.", amount);
 		format(string, sizeof(string), "[SHOPBUSINESS] %s has changed BusinessID %d's Inventory Capacity to %d.", GetPlayerNameEx(playerid), businessid, amount);
 		Log("logs/shoplog.log", string);
 	}
@@ -1654,8 +1642,7 @@ CMD:shopbusiness(playerid, params[])
 	else if(!strcmp(choice, "delete", true))
 	{
 		if(!DeleteBusiness(playerid, businessid)) return 1;
-		format(string, sizeof(string), "You have deleted the business.", amount);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted the business.", amount);
 		format(string, sizeof(string), "[SHOPBUSINESS] %s has deleted BusinessID %d.", GetPlayerNameEx(playerid), businessid);
 		Log("logs/bedit.log", string);
 		Streamer_Update(playerid);
@@ -1799,10 +1786,8 @@ CMD:binvite(playerid, params[]) {
 					SetPVarInt(iTargetID, "BusinessInviteSession", g_arrQueryHandle[playerid]);
 					SetPVarInt(iTargetID, "Business_InviterSQLId", GetPlayerSQLId(playerid));
 					SetPVarInt(iTargetID, "Business_Invited", iBusinessID);
-					format(string, sizeof(string), "You have invited %s to join %s", GetPlayerNameEx(iTargetID), Businesses[iBusinessID][bName]);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "%s %s has offered you a job at %s - type /accept business", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), Businesses[iBusinessID][bName]);
-					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have invited %s to join %s", GetPlayerNameEx(iTargetID), Businesses[iBusinessID][bName]);
+					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "%s %s has offered you a job at %s - type /accept business", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), Businesses[iBusinessID][bName]);
 
 					format(string, sizeof(string), "%s(%d) has invited %s(%d) to join %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), Businesses[iBusinessID][bName]);
 					Log("logs/business.log", string);
@@ -1839,10 +1824,8 @@ CMD:buninvite(playerid, params[]) {
 						szMessage[128],
 						iRank = PlayerInfo[iTargetID][pBusinessRank];
 
-					format(szMessage, sizeof(szMessage), "You have kicked %s from the business.", GetPlayerNameEx(iTargetID));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-					format(szMessage, sizeof(szMessage), "* You have been kicked from the business by %s %s.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have kicked %s from the business.", GetPlayerNameEx(iTargetID));
+					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "* You have been kicked from the business by %s %s.", GetPlayerNameEx(playerid));
 					format(szMessage, sizeof(szMessage), "%s(%d) uninvited %s(%d) from the %s as a rank %i.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), Businesses[PlayerInfo[iTargetID][pBusiness]][bName], iRank);
 					Log("logs/business.log", szMessage);
 
@@ -1914,19 +1897,16 @@ CMD:bgiverank(playerid, params[])
 		return SendClientMessageEx(playerid, COLOR_GREY, "Don't go below number 0 or above number 5!");
 	}
 	if (rank > PlayerInfo[targetid][pBusinessRank])	{
-		format(string, sizeof(string), "* You have been promoted to a higher rank (%s) by %s.", GetBusinessRankName(rank), GetPlayerNameEx(playerid));
-		SendClientMessageEx(targetid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(targetid, COLOR_LIGHTBLUE, "* You have been promoted to a higher rank (%s) by %s.", GetBusinessRankName(rank), GetPlayerNameEx(playerid));
 	}
 	else if (rank < PlayerInfo[targetid][pBusinessRank]) {
-		format(string, sizeof(string), "* You have been demoted to a lower rank (%s) by %s.", GetBusinessRankName(rank), GetPlayerNameEx(playerid));
-		SendClientMessageEx(targetid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(targetid, COLOR_LIGHTBLUE, "* You have been demoted to a lower rank (%s) by %s.", GetBusinessRankName(rank), GetPlayerNameEx(playerid));
 	}
 	else {
 		return SendClientMessageEx(playerid, COLOR_GREY, "That person already has this rank.");
 	}
 	PlayerInfo[targetid][pBusinessRank] = rank;
-	format(string, sizeof(string), "* You have given %s rank %d.", GetPlayerNameEx(targetid), rank);
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have given %s rank %d.", GetPlayerNameEx(targetid), rank);
 	format(string, sizeof(string), "%s(%d) has given %s(%d) rank %i in %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), rank, Businesses[PlayerInfo[targetid][pBusiness]][bName]);
 	Log("logs/business.log", string);
 	return 1;
@@ -1969,8 +1949,7 @@ CMD:bsafe(playerid, params[])
 		}
 		else if(!strcmp(choice, "Balance", true))
 		{
-		    format(string, sizeof(string), "Business(%d) Safe Balance: $%s", PlayerInfo[playerid][pBusiness], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance]));
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Business(%d) Safe Balance: $%s", PlayerInfo[playerid][pBusiness], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance]));
 		}
 		else if(Amount < 1) {
 		    SendClientMessageEx(playerid, COLOR_GREY, "The amount can't be under 1.");
@@ -1979,10 +1958,8 @@ CMD:bsafe(playerid, params[])
 		else if(!strcmp(choice, "Withdraw", true))
 		{
 		    if(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance] >= Amount) {
-		    	format(string, sizeof(string), "You have withdrew $%s from your business safe.", number_format(Amount));
-		    	SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    	format(string, sizeof(string), "Business(%d) Safe Balance: $%s", PlayerInfo[playerid][pBusiness], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance]));
-		    	SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrew $%s from your business safe.", number_format(Amount));
+				SendClientMessageEx(playerid, COLOR_WHITE, "Business(%d) Safe Balance: $%s", PlayerInfo[playerid][pBusiness], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance]));
 		    	format(string,sizeof(string),"%s(%d) (IP: %s) has withdrawn $%s from their business safe (BusinessID - %d)[PT: $%s][NT: $%s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(Amount), PlayerInfo[playerid][pBusiness], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance]), number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance] - Amount));
 		    	Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance] -= Amount;
 				Log("logs/business.log", string);
@@ -1997,10 +1974,8 @@ CMD:bsafe(playerid, params[])
 		else if(!strcmp(choice, "Deposit", true))
 		{
 		    if(GetPlayerCash(playerid) >= Amount) {
-		    	format(string, sizeof(string), "You have deposited $%s into your business safe.", number_format(Amount));
-		    	SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    	format(string, sizeof(string), "Business(%d) Safe Balance: $%s", PlayerInfo[playerid][pBusiness], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance]));
-		    	SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited $%s into your business safe.", number_format(Amount));
+				SendClientMessageEx(playerid, COLOR_WHITE, "Business(%d) Safe Balance: $%s", PlayerInfo[playerid][pBusiness], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance]));
 		    	format(string,sizeof(string),"%s(%d) (IP: %s) has deposited $%s into their business safe (BusinessID - %d)[PT: $%s][NT: $%s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(Amount), PlayerInfo[playerid][pBusiness], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance]), number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance] + Amount));
 		    	Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance] += Amount;
 				Log("logs/business.log", string);
@@ -2135,8 +2110,7 @@ CMD:bedit(playerid, params[])
 	{
 		refresh = true;
 		Businesses[businessid][bValue] = amount;
-		format(string, sizeof(string), "You have set the business price to $%d.", amount);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the business price to $%d.", amount);
 		format(string, sizeof(string), "%s has changed BusinessID %d's Price to $%d.", GetPlayerNameEx(playerid), businessid, amount);
 		Log("logs/bedit.log", string);
 	}
@@ -2149,8 +2123,7 @@ CMD:bedit(playerid, params[])
 			return SendClientMessageEx(playerid, COLOR_GREY, "You can't change the business type when a delivery is on its way.");
 		}
 		Businesses[businessid][bType] = amount;
-		format(string, sizeof(string), "You have set the business type to %s.", GetBusinessTypeName(amount));
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the business type to %s.", GetBusinessTypeName(amount));
 		format(string, sizeof(string), "%s has changed BusinessID %d's Type to %s (%d).", GetPlayerNameEx(playerid), businessid, GetBusinessTypeName(amount), amount);
 		Log("logs/bedit.log", string);
 	}
@@ -2158,16 +2131,14 @@ CMD:bedit(playerid, params[])
 	else if(!strcmp(choice, "inventory", true))
 	{
 		Businesses[businessid][bInventory] = amount;
-		format(string, sizeof(string), "You have set the business inventory to %d.", amount);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the business inventory to %d.", amount);
 		format(string, sizeof(string), "%s has changed BusinessID %d's Inventory to %d.", GetPlayerNameEx(playerid), businessid, amount);
 		Log("logs/bedit.log", string);
 	}
 	else if(!strcmp(choice, "InventoryCapacity", true))
 	{
 		Businesses[businessid][bInventoryCapacity] = amount;
-		format(string, sizeof(string), "You have set the business inventory capacity to %d.", amount);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the business inventory capacity to %d.", amount);
 		format(string, sizeof(string), "%s has changed BusinessID %d's Inventory Capacity to %d.", GetPlayerNameEx(playerid), businessid, amount);
 		Log("logs/bedit.log", string);
 	}
@@ -2175,8 +2146,7 @@ CMD:bedit(playerid, params[])
 	else if(!strcmp(choice, "safebalance", true))
 	{
 		Businesses[businessid][bSafeBalance] = amount;
-		format(string, sizeof(string), "You have set the business safe to %d.", amount);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the business safe to %d.", amount);
 		format(string, sizeof(string), "%s has changed BusinessID %d's safe to %d.", GetPlayerNameEx(playerid), businessid, amount);
 		Log("logs/bedit.log", string);
 	}
@@ -2190,8 +2160,7 @@ CMD:bedit(playerid, params[])
 		}
 
 		Businesses[businessid][bGymEntryFee] = amount;
-		format(string, sizeof(string), "You have set the gym entry fee to %i.", amount);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the gym entry fee to %i.", amount);
 		format(string, sizeof(string), "%s has changed BusinessID %i's gym entry fee to %i.", GetPlayerNameEx(playerid), businessid, amount);
 		Log("logs/bedit.log", string);
 	}
@@ -2216,8 +2185,7 @@ CMD:bedit(playerid, params[])
 			return SendClientMessageEx(playerid, COLOR_GRAD2, "Available types are: Swimming Pool / Boxing Arena(1) or Bike Parkour (2)");
 		}
 
-		format(string, sizeof(string), "You have the set the gym type to %i.", amount);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have the set the gym type to %i.", amount);
 		format(string, sizeof(string), "%s has changed BusinessID %i's gym type to %i.", GetPlayerNameEx(playerid), businessid, amount);
 		Log("logs/bedit.log", string);
 	}
@@ -2225,8 +2193,7 @@ CMD:bedit(playerid, params[])
 	else if(!strcmp(choice, "delete", true))
 	{
 		if(!DeleteBusiness(playerid, businessid)) return 1;
-		format(string, sizeof(string), "You have deleted the business.", amount);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted the business.", amount);
 		format(string, sizeof(string), "%s has deleted BusinessID %d.", GetPlayerNameEx(playerid), businessid);
 		Log("logs/bedit.log", string);
 
@@ -2288,9 +2255,7 @@ CMD:bnext(playerid, params[])
 		{
 		    if(Businesses[i][bExtPos] == 0.0)
 		    {
-		        new string[128];
-		        format(string, sizeof(string), "%d is available to use.", i);
-		        SendClientMessageEx(playerid, COLOR_WHITE, string);
+		        SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", i);
 		        break;
 			}
 		}
@@ -2312,9 +2277,7 @@ CMD:bnear(playerid, params[])
 		{
 			if(IsPlayerInRangeOfPoint(playerid, 30, Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2]))
 			{
-			    new string[128];
-		    	format(string, sizeof(string), "Business ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid,Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2]));
-		    	SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Business ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid,Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2]));
 			}
 		}
 	}
@@ -2610,8 +2573,7 @@ CMD:deletegaspump(playerid, params[])
 	Businesses[businessid][GasPumpSalePrice][id] = 0;
 	SaveBusiness(businessid);
 
-    format(string, sizeof(string), "You have successfully deleted the gas pump %d for business %d.", id, businessid);
-    SendClientMessageEx(playerid, COLOR_WHITE, string);
+    SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully deleted the gas pump %d for business %d.", id, businessid);
 
 	format(string, sizeof(string), "Admin %s deleted a gas pump for business %d", GetPlayerNameEx(playerid), businessid);
 	Log("logs/bedit.log", string);
@@ -2624,7 +2586,7 @@ CMD:deletegaspump(playerid, params[])
 alias:addmaterials("addmats")
 CMD:addmaterials(playerid, params[])
 {
-    new	string[128], amount;
+    new	amount;
 	if (PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID) {
 		return SendClientMessageEx(playerid, COLOR_GREY, "You are not in a business!");
 	}
@@ -2648,8 +2610,7 @@ CMD:addmaterials(playerid, params[])
 	OnPlayerStatsUpdate(playerid);
 	SaveBusiness(PlayerInfo[playerid][pBusiness]);
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have successfully added materials to the business inventory!");
-	format(string, sizeof(string), "INVENTORY: %d/%d materials", Businesses[PlayerInfo[playerid][pBusiness]][bInventory], Businesses[PlayerInfo[playerid][pBusiness]][bInventoryCapacity]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "INVENTORY: %d/%d materials", Businesses[PlayerInfo[playerid][pBusiness]][bInventory], Businesses[PlayerInfo[playerid][pBusiness]][bInventoryCapacity]);
 	return 1;
 }
 
@@ -2853,18 +2814,15 @@ CMD:bizfind(playerid, params[])
 CMD:binventory(playerid, params[])
 {
 	new
-		string[128],
 		iBusiness = PlayerInfo[playerid][pBusiness];
 	if(iBusiness != INVALID_BUSINESS_ID)
 	{
 		SendClientMessageEx(playerid, COLOR_GREEN, "|_________ Business Inventory_________|");
-		format(string, sizeof(string), "Amount: %d / Capacity: %d / Type: %s", Businesses[iBusiness][bInventory], Businesses[iBusiness][bInventoryCapacity], GetInventoryType(iBusiness));
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Amount: %d / Capacity: %d / Type: %s", Businesses[iBusiness][bInventory], Businesses[iBusiness][bInventoryCapacity], GetInventoryType(iBusiness));
 
 		for (new i; i < MAX_BUSINESS_GAS_PUMPS; i++) {
 			if (Businesses[iBusiness][GasPumpPosX][i] != 0.0) {
-				format(string, sizeof(string), "Gas Tank %d:  %.2f gal / %.2f gal", i+1, Businesses[iBusiness][GasPumpGallons][i], Businesses[iBusiness][GasPumpCapacity][i]);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Gas Tank %d:  %.2f gal / %.2f gal", i+1, Businesses[iBusiness][GasPumpGallons][i], Businesses[iBusiness][GasPumpCapacity][i]);
 			}
 		}
 	}
@@ -2906,11 +2864,8 @@ CMD:offeritem(playerid, params[])
 		return SendClientMessageEx(playerid, COLOR_GREY, "The customer is not near you!");
     }
 
-	new string[128];
-    format(string, sizeof(string), "* You offered %s to buy a %s.", GetPlayerNameEx(buyerid), StoreItems[item-1]);
-    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-    format(string, sizeof(string), "* %s wants to sell you a %s for $%s (type /accept item to buy)", GetPlayerNameEx(playerid), StoreItems[item-1], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bItemPrices][item-1]));
-    SendClientMessageEx(buyerid, COLOR_LIGHTBLUE, string);
+    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to buy a %s.", GetPlayerNameEx(buyerid), StoreItems[item-1]);
+    SendClientMessageEx(buyerid, COLOR_LIGHTBLUE, "* %s wants to sell you a %s for $%s (type /accept item to buy)", GetPlayerNameEx(playerid), StoreItems[item-1], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bItemPrices][item-1]));
 
 	SetPVarInt(buyerid, "Business_ItemType", item-1);
 	SetPVarInt(buyerid, "Business_ItemPrice", Businesses[PlayerInfo[playerid][pBusiness]][bItemPrices][item-1]);
@@ -2959,8 +2914,7 @@ CMD:resupply(playerid, params[])
 	new rSupCost = floatround(amount * BUSINESS_ITEMS_COST);
 	if (!Businesses[iBusiness][bSafeBalance] || Businesses[iBusiness][bSafeBalance] < rSupCost || rSupCost < 0) {
 		if(rSupCost < 0) format(string, sizeof(string), "!! %s attempted to exploit resupply with an amount of %d in BizID: %d !!", GetPlayerNameEx(playerid), amount, iBusiness), Log("/logs/business.log", string);
-	    format(string, sizeof(string), "Safe balance is not enough for this. ($%s)", number_format(floatround(amount * BUSINESS_ITEMS_COST)));
-		return SendClientMessageEx(playerid, COLOR_GREY, string);
+		return SendClientMessageEx(playerid, COLOR_GREY, "Safe balance is not enough for this. ($%s)", number_format(floatround(amount * BUSINESS_ITEMS_COST)));
 	}
 
 	format(Businesses[iBusiness][bOrderBy], MAX_PLAYER_NAME, "%s", GetPlayerNameEx(playerid));
@@ -2990,13 +2944,10 @@ CMD:checkresupply(playerid, params[])
 		}
 		else
 		{
-			new string[128];
 			SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Latest Resupply Order ___________|");
-			format(string,sizeof(string), "Date/Time: %s -- Amount: %s -- Status: %s", Businesses[iBusinessID][bOrderDate], number_format(Businesses[iBusinessID][bOrderAmount]), GetSupplyState(iOrderState));
 			//if (iOrderState == 2) format(string,sizeof(string), "%s {DDDDDD}(Truck Distance: %d)");
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string,sizeof(string), "This order was submitted by %s", Businesses[iBusinessID][bOrderBy]);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Date/Time: %s -- Amount: %s -- Status: %s", Businesses[iBusinessID][bOrderDate], number_format(Businesses[iBusinessID][bOrderAmount]), GetSupplyState(iOrderState));
+			SendClientMessageEx(playerid, COLOR_WHITE, "This order was submitted by %s", Businesses[iBusinessID][bOrderBy]);
 			if (iOrderState == 1) SendClientMessageEx(playerid, COLOR_YELLOW, "You can use /cancelresupply to cancel this order.");
 		}
 	}
@@ -3032,8 +2983,7 @@ CMD:cancelresupply(playerid, params[])
 			new string[128];
 			format(string, sizeof(string), "%s(%d) (IP: %s) has cancelled the resupply order for %s (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), Businesses[PlayerInfo[playerid][pBusiness]][bName], PlayerInfo[playerid][pBusiness]);
 			Log("logs/business.log", string);
-			format(string, sizeof(string), "You have cancelled your resupply order! A refund of $%s has been given.", number_format(floatround(Businesses[PlayerInfo[playerid][pBusiness]][bOrderAmount] * (BUSINESS_ITEMS_COST * 0.8))));
-			return SendClientMessageEx(playerid, COLOR_WHITE, string);
+			return SendClientMessageEx(playerid, COLOR_WHITE, "You have cancelled your resupply order! A refund of $%s has been given.", number_format(floatround(Businesses[PlayerInfo[playerid][pBusiness]][bOrderAmount] * (BUSINESS_ITEMS_COST * 0.8))));
 
 		}
 		else if (orderstate == 1) {
@@ -3043,8 +2993,7 @@ CMD:cancelresupply(playerid, params[])
 			new string[128];
 			format(string, sizeof(string), "%s(%d) (IP: %s) has cancelled the resupply order for %s (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), Businesses[PlayerInfo[playerid][pBusiness]][bName], PlayerInfo[playerid][pBusiness]);
 			Log("logs/business.log", string);
-			format(string, sizeof(string), "You have cancelled your resupply order! A refund of $%s has been given.", number_format(floatround(Businesses[PlayerInfo[playerid][pBusiness]][bOrderAmount] * (BUSINESS_ITEMS_COST * 0.8))));
-			return SendClientMessageEx(playerid, COLOR_WHITE, string);
+			return SendClientMessageEx(playerid, COLOR_WHITE, "You have cancelled your resupply order! A refund of $%s has been given.", number_format(floatround(Businesses[PlayerInfo[playerid][pBusiness]][bOrderAmount] * (BUSINESS_ITEMS_COST * 0.8))));
 		}
 	}
 	return 1;
@@ -3070,9 +3019,7 @@ CMD:minrank(playerid, params[])
 	else if (strcmp(command, "supply", true) == 0) Businesses[PlayerInfo[playerid][pBusiness]][bMinSupplyRank] = rank, SaveBusiness(PlayerInfo[playerid][pBusiness]);
 	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid Permission Name");
 
-	new string[128];
-	format(string, sizeof(string), "You have set the minimum rank for %s to %d (%s)", command, rank, GetBusinessRankName(rank));
-	SendClientMessageEx(playerid, COLOR_GREY, string);
+	SendClientMessageEx(playerid, COLOR_GREY, "You have set the minimum rank for %s to %d (%s)", command, rank, GetBusinessRankName(rank));
 
 	return 1;
 }
@@ -3135,8 +3082,7 @@ CMD:employeepayset(playerid, params[])
 	Businesses[PlayerInfo[playerid][pBusiness]][bRankPay][rank] = amount;
 	SaveBusiness(PlayerInfo[playerid][pBusiness]);
     new string[128];
-    format(string, sizeof(string), "You have set paycheck amount for rank %d (%s) to $%s", rank, GetBusinessRankName(rank), number_format(amount));
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have set paycheck amount for rank %d (%s) to $%s", rank, GetBusinessRankName(rank), number_format(amount));
 	format(string,sizeof(string),"%s(%d) has changed paycheck of rank %d to $%s for business %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), rank, number_format(amount), PlayerInfo[playerid][pBusiness]);
 	Log("logs/business.log", string);
 

@@ -197,12 +197,10 @@ GetPlayerTurfWarsZone(playerid)
 
 ShutdownTurfWarsZone(zone)
 {
-	new string[128];
 	foreach(new i: Player)
 	{
 		if(IsPlayerInDynamicArea(i, TurfWars[zone][twAreaId])) {
-			format(string,sizeof(string),"Law Enforcement has attempted to shutdown this turf!");
-			SendClientMessageEx(i,COLOR_YELLOW,string);
+			SendClientMessageEx(i,COLOR_YELLOW,"Law Enforcement has attempted to shutdown this turf!");
 		}
 	}	
 	ResetTurfWarsZone(0, zone);
@@ -225,12 +223,10 @@ ShutdownTurfWarsZone(zone)
 
 TakeoverTurfWarsZone(iGroupID, zone)
 {
-	new string[128];
 	foreach(new i: Player)
 	{
 		if(IsPlayerInDynamicArea(i, TurfWars[zone][twAreaId])) {
-			format(string,sizeof(string),"%s has attempted to takeover this turf for their own!",arrGroupData[iGroupID][g_szGroupName]);
-			SendClientMessageEx(i,COLOR_YELLOW,string);
+			SendClientMessageEx(i,COLOR_YELLOW,"%s has attempted to takeover this turf for their own!",arrGroupData[iGroupID][g_szGroupName]);
 		}
 	}	
 	ResetTurfWarsZone(0, zone);
@@ -251,7 +247,6 @@ TakeoverTurfWarsZone(iGroupID, zone)
 
 CaptureTurfWarsZone(iGroupID, zone)
 {
-	new string[128];
 	foreach(new i: Player)
 	{
 	    if(turfWarsMiniMap[i] == 1)
@@ -261,8 +256,7 @@ CaptureTurfWarsZone(iGroupID, zone)
 		}
 		if(IsPlayerInDynamicArea(i, TurfWars[zone][twAreaId])) {
 		    if((0 <= iGroupID < MAX_GROUPS)) {
-				format(string,sizeof(string),"%s has successfully claimed this turf for their own!",arrGroupData[iGroupID][g_szGroupName]);
-				SendClientMessageEx(i,COLOR_RED,string);
+				SendClientMessageEx(i,COLOR_RED,"%s has successfully claimed this turf for their own!",arrGroupData[iGroupID][g_szGroupName]);
 				//SendAudioToPlayer(i, 62, 100);
 			}
 			else {
@@ -271,12 +265,10 @@ CaptureTurfWarsZone(iGroupID, zone)
 		}
 		if(PlayerInfo[i][pGangModerator] >= 1) {
 		    if((0 <= iGroupID < MAX_GROUPS)) {
-				format(string,sizeof(string),"%s has successfully claimed turf %d",arrGroupData[iGroupID][g_szGroupName], zone);
-				SendClientMessageEx(i,COLOR_RED,string);
+				SendClientMessageEx(i,COLOR_RED,"%s has successfully claimed turf %d",arrGroupData[iGroupID][g_szGroupName], zone);
 			}
 			else {
-				format(string,sizeof(string),"Law Enforcement has successfully shut down turf %d", zone);
-				SendClientMessageEx(i,COLOR_RED,string);
+				SendClientMessageEx(i,COLOR_RED,"Law Enforcement has successfully shut down turf %d", zone);
 			}
 		}	
 	}
@@ -321,8 +313,7 @@ ExtortionTurfsWarsZone(playerid, type, money)
 		arrGroupData[ownerid][g_iBudget] += money/4;
 		GivePlayerCash(playerid, -money/4);
 
-		format(szMiscArray, sizeof(szMiscArray), "* You have been taxed $%d for selling %s on %s's turf.", money/4, szItemName, arrGroupData[ownerid][g_szGroupName]);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have been taxed $%d for selling %s on %s's turf.", money/4, szItemName, arrGroupData[ownerid][g_szGroupName]);
 	}
 	return 1;
 }
@@ -589,8 +580,7 @@ CMD:turfinfo(playerid, params[])
     if(GetPlayerTurfWarsZone(playerid) != -1) {
         new string[128];
         new tw = GetPlayerTurfWarsZone(playerid);
-        format(string,sizeof(string),"|___________ (ID: %d) %s ___________|",tw,TurfWars[tw][twName]);
-        SendClientMessageEx(playerid, COLOR_GREEN, string);
+        SendClientMessageEx(playerid, COLOR_GREEN, "|___________ (ID: %d) %s ___________|",tw,TurfWars[tw][twName]);
         if(TurfWars[tw][twOwnerId] == -1) {
             format(string,sizeof(string),"Owner: Vacant.");
         }
@@ -601,22 +591,16 @@ CMD:turfinfo(playerid, params[])
             format(string,sizeof(string),"Owner: %s.",arrGroupData[TurfWars[tw][twOwnerId]][g_szGroupName]);
         }
         SendClientMessageEx(playerid, COLOR_WHITE, string);
-        format(string,sizeof(string),"Vulnerable: %d Hours.",TurfWars[tw][twVulnerable]);
-        SendClientMessageEx(playerid, COLOR_WHITE, string);
-        format(string,sizeof(string),"Locked: %d.",TurfWars[tw][twLocked]);
-        SendClientMessageEx(playerid, COLOR_WHITE, string);
-        format(string,sizeof(string),"Active: %d.",TurfWars[tw][twActive]);
-        SendClientMessageEx(playerid, COLOR_WHITE, string);
+        SendClientMessageEx(playerid, COLOR_WHITE, "Vulnerable: %d Hours.",TurfWars[tw][twVulnerable]);
+        SendClientMessageEx(playerid, COLOR_WHITE, "Locked: %d.",TurfWars[tw][twLocked]);
+        SendClientMessageEx(playerid, COLOR_WHITE, "Active: %d.",TurfWars[tw][twActive]);
         if(TurfWars[tw][twActive] != 0) {
-            format(string,sizeof(string),"Time Left: %d Secs.",TurfWars[tw][twTimeLeft]);
-            SendClientMessageEx(playerid, COLOR_WHITE, string);
+            SendClientMessageEx(playerid, COLOR_WHITE, "Time Left: %d Secs.",TurfWars[tw][twTimeLeft]);
             if(TurfWars[tw][twAttemptId] == -2) {
-                format(string,sizeof(string),"Takeover Faction: Law Enforcement.");
-                SendClientMessageEx(playerid, COLOR_WHITE, string);
+                SendClientMessageEx(playerid, COLOR_WHITE, "Takeover Faction: Law Enforcement.");
             }
             else {
-                format(string,sizeof(string),"Takeover Family: %s.",arrGroupData[TurfWars[tw][twAttemptId]][g_szGroupName]);
-                SendClientMessageEx(playerid, COLOR_WHITE, string);
+                SendClientMessageEx(playerid, COLOR_WHITE, "Takeover Family: %s.",arrGroupData[TurfWars[tw][twAttemptId]][g_szGroupName]);
             }
         }
         switch(TurfWars[tw][twSpecial]) {
@@ -689,8 +673,7 @@ CMD:savetwpos(playerid, params[])
                     format(string,sizeof(string),"X=%f, Y=%f, Z=%f",x,y,z);
                     SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Turf North Wall.");
                     SendClientMessageEx(playerid, COLOR_GRAD2, string);
-                    format(string,sizeof(string),"You have successfully re-created (TurfID: %d) %s.",tw,TurfWars[tw][twName]);
-                    SendClientMessageEx(playerid, COLOR_WHITE, string);
+                    SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully re-created (TurfID: %d) %s.",tw,TurfWars[tw][twName]);
                     SetPVarInt(playerid, "EditingTurfsStage", -1);
 
                     DestroyTurfWarsZone(tw);
@@ -751,7 +734,6 @@ CMD:turfs(playerid, params[])
 CMD:shutdown(playerid, params[])
 {
     if(IsACop(playerid)) {
-        new string[128];
         new tw = GetPlayerTurfWarsZone(playerid);
         new rank = PlayerInfo[playerid][pRank];
         if(rank < arrGroupData[PlayerInfo[playerid][pMember]][g_iTurfCapRank]) {
@@ -783,8 +765,7 @@ CMD:shutdown(playerid, params[])
 						}
 					}	
                     if(count != 0) {
-                        format(string,sizeof(string),"There is still %d Attacking Members on the Turf, you must get rid of them before shuting down!",count);
-                        SendClientMessageEx(playerid, COLOR_GRAD2, string);
+                        SendClientMessageEx(playerid, COLOR_GRAD2, "There is still %d Attacking Members on the Turf, you must get rid of them before shuting down!",count);
                     }
                     else {
                         ShutdownTurfWarsZone(tw);
@@ -819,7 +800,6 @@ CMD:claimturf(playerid, params[])
 	    SendClientMessage(playerid, COLOR_WHITE, "This command is disabled!");
 	    return 1;
 	}
-    new string[128];
     new tw = GetPlayerTurfWarsZone(playerid);
     new family = PlayerInfo[playerid][pMember];
     new rank = PlayerInfo[playerid][pRank];
@@ -889,20 +869,17 @@ CMD:claimturf(playerid, params[])
                     foreach(new i: Player)
 					{
 						if(PlayerInfo[i][pGangModerator] >= 1) {
-							format(string,sizeof(string),"%s has attempted to takeover turf %d for family %s",GetPlayerNameEx(playerid),tw,arrGroupData[family][g_szGroupName]);
-							SendClientMessageEx(i,COLOR_YELLOW,string);
+							SendClientMessageEx(i,COLOR_YELLOW,"%s has attempted to takeover turf %d for family %s",GetPlayerNameEx(playerid),tw,arrGroupData[family][g_szGroupName]);
 						}	
                     }
                     TakeoverTurfWarsZone(family, tw);
                 }
                 else {
                     if(leocount == 0) {
-                        format(string,sizeof(string),"There is still %d Attacking Members on the Turf, you must get rid of them before reclaiming!",count);
-                        SendClientMessageEx(playerid, COLOR_GRAD2, string);
+                        SendClientMessageEx(playerid, COLOR_GRAD2, "There is still %d Attacking Members on the Turf, you must get rid of them before reclaiming!",count);
                     }
                     else {
-                        format(string,sizeof(string),"There is still %d Officers on the Turf, you must get rid of them before reclaiming!",leocount);
-                        SendClientMessageEx(playerid, COLOR_GRAD2, string);
+                        SendClientMessageEx(playerid, COLOR_GRAD2, "There is still %d Officers on the Turf, you must get rid of them before reclaiming!",leocount);
                     }
                 }
             }

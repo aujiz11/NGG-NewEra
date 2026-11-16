@@ -210,19 +210,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						strcat(szCrime, arrCrimeData[i][c_szName]);
 						AddCrime(playerid, iTargetID, szCrime);
 
-						format(szMiscArray, sizeof(szMiscArray), "You've commited a crime ( %s ). Reporter: %s.", szCrime, GetPlayerNameEx(playerid));
-						SendClientMessageEx(iTargetID, COLOR_LIGHTRED, szMiscArray);
+						SendClientMessageEx(iTargetID, COLOR_LIGHTRED, "You've commited a crime ( %s ). Reporter: %s.", szCrime, GetPlayerNameEx(playerid));
 
-						format(szMiscArray, sizeof(szMiscArray), "Current wanted level: %d", PlayerInfo[iTargetID][pWantedLevel]);
-						SendClientMessageEx(iTargetID, COLOR_YELLOW, szMiscArray);
+						SendClientMessageEx(iTargetID, COLOR_YELLOW, "Current wanted level: %d", PlayerInfo[iTargetID][pWantedLevel]);
 
 						foreach(new p: Player)
 						{
 							if(IsACop(p) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[p][pMember]][g_iAllegiance]) {
-								format(szMiscArray, sizeof(szMiscArray), "HQ: All units APB (reporter: %s)",GetPlayerNameEx(playerid));
-								SendClientMessageEx(p, TEAM_BLUE_COLOR, szMiscArray);
-								format(szMiscArray, sizeof(szMiscArray), "HQ: Crime: %s, suspect: %s", szCrime, GetPlayerNameEx(iTargetID));
-								SendClientMessageEx(p, TEAM_BLUE_COLOR, szMiscArray);
+								SendClientMessageEx(p, TEAM_BLUE_COLOR, "HQ: All units APB (reporter: %s)",GetPlayerNameEx(playerid));
+								SendClientMessageEx(p, TEAM_BLUE_COLOR, "HQ: Crime: %s, suspect: %s", szCrime, GetPlayerNameEx(iTargetID));
 							}
 						}
 						PlayerInfo[iTargetID][pDefendTime] = 60;
@@ -312,8 +308,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new iEditCrime = GetPVarInt(playerid, "iEditCrime")-1;
 			arrCrimeData[iEditCrime][c_iType] = listitem+1;
 			szMiscArray[0] = 0;
-			format(szMiscArray, sizeof(szMiscArray), "You have set %s's type to %s", arrCrimeData[iEditCrime][c_szName], inputtext);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have set %s's type to %s", arrCrimeData[iEditCrime][c_szName], inputtext);
 			SaveCrime(iEditCrime);
 		}
 		case DIALOG_CRIMES_NATION:
@@ -322,8 +317,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new iEditCrime = GetPVarInt(playerid, "iEditCrime")-1;
 			arrCrimeData[iEditCrime][c_iNation] = listitem+1;
 			szMiscArray[0] = 0;
-			format(szMiscArray, sizeof(szMiscArray), "You have set %s's nation to %s", arrCrimeData[iEditCrime][c_szName], inputtext);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have set %s's nation to %s", arrCrimeData[iEditCrime][c_szName], inputtext);
 			SaveCrime(iEditCrime);
 		}
 		case DIALOG_CRIMES_NAME:
@@ -332,8 +326,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(isnull(inputtext) || strlen(inputtext) > 32) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please enter a valid name no longer than 32 characters.");
 			new iEditCrime = GetPVarInt(playerid, "iEditCrime")-1;
 			szMiscArray[0] = 0;
-			format(szMiscArray, sizeof(szMiscArray), "You updated crime %s's name to %s", arrCrimeData[iEditCrime][c_szName], inputtext);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You updated crime %s's name to %s", arrCrimeData[iEditCrime][c_szName], inputtext);
 			format(arrCrimeData[iEditCrime][c_szName], 32, "%s", inputtext);
 			SaveCrime(iEditCrime);
 		}
@@ -344,8 +337,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(strval(inputtext) < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please input a time above 0 minutes.");
 			arrCrimeData[iEditCrime][c_iJTime] = strval(inputtext);
 			szMiscArray[0] = 0;
-			format(szMiscArray, sizeof(szMiscArray), "You updated crime %s's time to %i minute(s)", arrCrimeData[iEditCrime][c_szName], strval(inputtext));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You updated crime %s's time to %i minute(s)", arrCrimeData[iEditCrime][c_szName], strval(inputtext));
 			SaveCrime(iEditCrime);
 		}
 		case DIALOG_CRIMES_FINE:
@@ -355,8 +347,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(strval(inputtext) < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please input a fine above $0.");
 			arrCrimeData[iEditCrime][c_iJFine] = strval(inputtext);
 			szMiscArray[0] = 0;
-			format(szMiscArray, sizeof(szMiscArray), "You updated crime %s's fine to $%s dollars", arrCrimeData[iEditCrime][c_szName], number_format(strval(inputtext)));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You updated crime %s's fine to $%s dollars", arrCrimeData[iEditCrime][c_szName], number_format(strval(inputtext)));
 			SaveCrime(iEditCrime);
 		}
 	}
@@ -459,10 +450,8 @@ public OnCrimeAddOffline(iPlayerID, szAddCrime[], szPName[], iExtra)
 			foreach(new p: Player)
 			{
 				if(IsACop(p) && arrGroupData[PlayerInfo[iPlayerID][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[p][pMember]][g_iAllegiance]) {
-					format(szMiscArray, sizeof(szMiscArray), "(offline) HQ: All units APB (reporter: %s)",GetPlayerNameEx(iPlayerID));
-					SendClientMessageEx(p, TEAM_BLUE_COLOR, szMiscArray);
-					format(szMiscArray, sizeof(szMiscArray), "(offline) HQ: Crime: %s, suspect: %s", szAddCrime, PlayerName);
-					SendClientMessageEx(p, TEAM_BLUE_COLOR, szMiscArray);
+					SendClientMessageEx(p, TEAM_BLUE_COLOR, "(offline) HQ: All units APB (reporter: %s)",GetPlayerNameEx(iPlayerID));
+					SendClientMessageEx(p, TEAM_BLUE_COLOR, "(offline) HQ: Crime: %s, suspect: %s", szAddCrime, PlayerName);
 				}
 			}
 			DeletePVar(iPlayerID, "OfflineSU");

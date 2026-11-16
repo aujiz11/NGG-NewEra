@@ -60,8 +60,7 @@ CMD:fix(playerid, params[])
 
   		if(gettime() < PlayerInfo[playerid][pMechTime])
 		{
-  			format(string, sizeof(string), "You must wait %d seconds!", PlayerInfo[playerid][pMechTime]-gettime());
-     		SendClientMessageEx(playerid, COLOR_GRAD1,string);
+			SendClientMessageEx(playerid, COLOR_GRAD1,"You must wait %d seconds!", PlayerInfo[playerid][pMechTime]-gettime());
      		return 1;
      	}
      	else if(GetPVarType(playerid, "IsInArena"))

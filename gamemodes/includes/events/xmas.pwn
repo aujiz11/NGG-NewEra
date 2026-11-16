@@ -112,9 +112,7 @@ CMD:xmas(playerid, params[])
     	if(XMASGifts == 0)
      	{
      		XMASGifts = 1;
-			new string[128];
-			format( string, sizeof( string ), "%s would like for you to come to Pershing Square for free gifts and great times", GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTGREEN, string);
+			SendClientMessageToAllEx(COLOR_LIGHTGREEN, "%s would like for you to come to Pershing Square for free gifts and great times", GetPlayerNameEx(playerid));
 		}
 		else
 		{
@@ -122,8 +120,7 @@ CMD:xmas(playerid, params[])
 			new string[128];
    			format( string, sizeof( string ), "AdmCmd: %s has disabled the /getgift command", GetPlayerNameEx(playerid));
 			ABroadCast( COLOR_LIGHTRED, string, 1337 );
-			format(string, sizeof(string), "Pershing Square is no longer giving away free gifts. Thanks for coming!", VIPGiftsName, VIPGiftsTimeLeft);
-			SendClientMessageToAllEx(COLOR_LIGHTGREEN, string);
+			SendClientMessageToAllEx(COLOR_LIGHTGREEN, "Pershing Square is no longer giving away free gifts. Thanks for coming!", VIPGiftsName, VIPGiftsTimeLeft);
 		}
 	}
 	return 1;

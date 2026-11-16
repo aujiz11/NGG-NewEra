@@ -949,18 +949,15 @@ CMD:cvstatus(playerid, params[]) {
 		if((veh = IsDynamicCrateVehicle(vehicleid)) != -1) {
 			new string[128], Float:vHealth;
 			GetVehicleHealth(vehicleid, vHealth);
-			format(string,sizeof(string),"|___________ Crate Vehicle Status (ID: %d | Slot ID: %d) ___________|", vehicleid, veh);
-			SendClientMessageEx(playerid, COLOR_GREEN, string);
-			format(string, sizeof(string), "X: %f | Y: %f | Z: %f | VW: %d | Int: %d | Model: %d  Maxhealth: %.1f", CrateVehicle[veh][cvPos][0], CrateVehicle[veh][cvPos][1], CrateVehicle[veh][cvPos][2], CrateVehicle[veh][cvVw], CrateVehicle[veh][cvInt], CrateVehicle[veh][cvModel], CrateVehicle[veh][cvMaxHealth]);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Crate Vehicle Status (ID: %d | Slot ID: %d) ___________|", vehicleid, veh);
+			SendClientMessageEx(playerid, COLOR_WHITE, "X: %f | Y: %f | Z: %f | VW: %d | Int: %d | Model: %d  Maxhealth: %.1f", CrateVehicle[veh][cvPos][0], CrateVehicle[veh][cvPos][1], CrateVehicle[veh][cvPos][2], CrateVehicle[veh][cvVw], CrateVehicle[veh][cvInt], CrateVehicle[veh][cvModel], CrateVehicle[veh][cvMaxHealth]);
 			if(ValidGroup(CrateVehicle[veh][cvGroupID])) {
 				format(string, sizeof(string), "Group: %s (%d) | Rank: %d | Tickets: $%s | LoadMax: %d", arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], CrateVehicle[veh][cvGroupID], CrateVehicle[veh][cvRank], number_format(CrateVehicle[veh][cvTickets]), CrateVehicle[veh][cvCrateMax]);
 			} else {
 				format(string, sizeof(string), "Group: -- | Rank: -- | Tickets: -- | LoadMax: %d", CrateVehicle[veh][cvCrateMax]);
 			}
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "Crates: %d | Health: %.1f | Fuel: %.1f percent", CreateCount(veh), vHealth, VehicleFuel[vehicleid]);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Crates: %d | Health: %.1f | Fuel: %.1f percent", CreateCount(veh), vHealth, VehicleFuel[vehicleid]);
 		}
 		else {
 			SendClientMessageEx(playerid, COLOR_GREY, "The selected vehicle isn't a crate vehicle!");

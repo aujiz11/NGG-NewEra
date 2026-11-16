@@ -76,13 +76,11 @@ hook OnPlayerEnterCheckpoint(playerid)
 		    	
        			GivePlayerCash(playerid, value);
        			
-       			format(szMiscArray, sizeof(szMiscArray), "You have completed your garbage run and earned $%s.", number_format(value));
-				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have completed your garbage run and earned $%s.", number_format(value));
 				
 			    if(PlayerInfo[playerid][pDoubleEXP] > 0)
 				{
-					format(szMiscArray, sizeof(szMiscArray), "You have gained 2 garbage skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-					SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 garbage skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
 					PlayerInfo[playerid][pGarbageSkill] += 2;
 				}
 				else

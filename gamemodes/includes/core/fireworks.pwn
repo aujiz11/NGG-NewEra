@@ -178,15 +178,13 @@ CMD:fireworknear(playerid, params[])
 		{
 			if(RocketExplosions[i] != -1)
 			{
-				new string[128];
 				
 				pos[0] = GetPVarFloat(i, "fxpos");
 				pos[1] = GetPVarFloat(i, "fypos");
 				pos[2] = GetPVarFloat(i, "fzpos");
 				if(IsPlayerInRangeOfPoint(playerid, 50, pos[0], pos[1], pos[2]))
 				{
-					format(string, sizeof(string), "** Firework Owner: %s | %f from you", GetPlayerNameEx(i), GetPlayerDistanceFromPoint(playerid, GetPVarFloat(i, "fxpos"), GetPVarFloat(i, "fypos"), GetPVarFloat(i, "fzpos")));
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "** Firework Owner: %s | %f from you", GetPlayerNameEx(i), GetPlayerDistanceFromPoint(playerid, GetPVarFloat(i, "fxpos"), GetPVarFloat(i, "fypos"), GetPVarFloat(i, "fzpos")));
 				}
 			}
 		}

@@ -55,8 +55,7 @@ IncreaseFishingLevel(playerid) {
     if(PlayerInfo[playerid][pDoubleEXP] > 0)
     {
         PlayerInfo[playerid][pFishingSkill] += 2;
-        format(szMiscArray, sizeof(szMiscArray), "You have gained 2 fishing skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-        SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+        SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 fishing skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
         // PlayerInfo[playerid][pXP] += PlayerInfo[playerid][pLevel] * XP_RATE * 2;
     }
     else
@@ -676,8 +675,7 @@ CMD:fish(playerid, params[]) {
 
 CMD:myfish(playerid, params[]) {
 
-	format(szMiscArray, sizeof(szMiscArray), "Fish: %d lbs.", PlayerInfo[playerid][pFishWeight]);
-	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Fish: %d lbs.", PlayerInfo[playerid][pFishWeight]);
 	return 1;
 }
 
@@ -692,8 +690,7 @@ CMD:sellfish(playerid, params[]) {
         	if(sscanf(params, "d", amount))
 			{
 				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellfish [amount]");
-				format(szMiscArray, sizeof szMiscArray, "Fish: %d lbs.", PlayerInfo[playerid][pFishWeight]);
-				return SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				return SendClientMessageEx(playerid, COLOR_YELLOW, "Fish: %d lbs.", PlayerInfo[playerid][pFishWeight]);
 			}
         
             if(amount < 50) return SendClientMessageEx(playerid, COLOR_GREY, "You can only sell over 50 pounds of fish at a time.");
@@ -705,8 +702,7 @@ CMD:sellfish(playerid, params[]) {
 
                 SetPVarInt(playerid, "pFishSellTime", gettime() + 120);
 				
-				format(szMiscArray, sizeof szMiscArray, "You have sold %d lbs for $%s.", amount, number_format(money));
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have sold %d lbs for $%s.", amount, number_format(money));
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD2, "  You don't have that many pounds!");
 		}

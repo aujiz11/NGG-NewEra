@@ -1075,13 +1075,12 @@ stock GetPosBehindVehicle(vehicleid, &Float:x, &Float:y, &Float:z, Float:offset=
 
 TriggerVehicleAlarm(triggerid, ownerid, vehicleid)
 {
-	new szMessage[128], szCarLocation[MAX_ZONE_NAME], slot = GetPlayerVehicle(ownerid, vehicleid), Float: CarPos[3], engine, lights, alarm, doors, bonnet, boot, objective;
+	new szCarLocation[MAX_ZONE_NAME], slot = GetPlayerVehicle(ownerid, vehicleid), Float: CarPos[3], engine, lights, alarm, doors, bonnet, boot, objective;
 	if(PlayerVehicleInfo[ownerid][slot][pvAlarm] > 0) {
 		ProxDetector(30.0, triggerid, "(( A vehicle alarm has been triggered. ))", COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		GetVehiclePos(vehicleid, CarPos[0], CarPos[1], CarPos[2]);
 		Get3DZone(CarPos[0], CarPos[1], CarPos[2], szCarLocation, sizeof(szCarLocation));
-		format(szMessage, sizeof(szMessage), "SMS: Your %s(%d)'s Alarm at %s has been triggered, call 911, Sender: Vehicle Security Company", VehicleName[PlayerVehicleInfo[ownerid][slot][pvModelId] - 400], vehicleid, szCarLocation);
-		SendClientMessageEx(ownerid, COLOR_YELLOW, szMessage);
+		SendClientMessageEx(ownerid, COLOR_YELLOW, "SMS: Your %s(%d)'s Alarm at %s has been triggered, call 911, Sender: Vehicle Security Company", VehicleName[PlayerVehicleInfo[ownerid][slot][pvModelId] - 400], vehicleid, szCarLocation);
 		PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] = 1;
 		GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
 		SetVehicleParamsEx(vehicleid,engine,lights,VEHICLE_PARAMS_ON,doors,bonnet,boot,objective);
@@ -1706,7 +1705,6 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		{
 		    if((PlayerInfo[playerid][pJob] == 20 || PlayerInfo[playerid][pJob2] == 20 || PlayerInfo[playerid][pJob3] == 20))
 			{
-				new string[128];
 				new iTruckContents = TruckContents{vehicleid};
 				new truckcontentname[50];
 				if(iTruckContents == 1)
@@ -1725,8 +1723,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 				{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Illegal materials"); }
 				if(iTruckContents == 0)
 				{ format(truckcontentname, sizeof(truckcontentname), "%s",  GetInventoryType(TruckDeliveringTo[vehicleid])); }
-				format(string, sizeof(string), "SHIPMENT CONTRACTOR: (Vehicle registration: %s %d) - (Content: %s{FFFF00})", GetVehicleName(vehicleid), vehicleid, truckcontentname);
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR: (Vehicle registration: %s %d) - (Content: %s{FFFF00})", GetVehicleName(vehicleid), vehicleid, truckcontentname);
 
 				if(IsACop(playerid))
 				{
@@ -2481,8 +2478,7 @@ CMD:checkbelt(playerid, params[])
         }
         else
 		{
-            format(string, sizeof(string), "%s's seat belt is currently %s." , GetPlayerNameEx(giveplayerid) , stext);
-            SendClientMessageEx(playerid,COLOR_WHITE,string);
+            SendClientMessageEx(playerid,COLOR_WHITE,"%s's seat belt is currently %s." , GetPlayerNameEx(giveplayerid) , stext);
 
             format(string, sizeof(string), "* %s peers through the window at %s, checking to see if they are wearing a seatbelt.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
             // ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -2565,7 +2561,7 @@ CMD:sellmycar(playerid, params[])
             }
             if(health < 500) return SendClientMessageEx(playerid, COLOR_GREY, " Your vehicle is too damaged to sell it.");
 
-            new string[144], giveplayerid, price, alarmstring[9], lockstring[11], worklockstring[10];
+            new giveplayerid, price, alarmstring[9], lockstring[11], worklockstring[10];
 			if(sscanf(params, "ud", giveplayerid, price)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellmycar [player] [price]");
 
             if(price < 1 || price > 1000000000) return SendClientMessageEx(playerid, COLOR_GREY, "Price must be higher than 0 and less than 1,000,000,000.");
@@ -2635,10 +2631,8 @@ CMD:sellmycar(playerid, params[])
 					default: lockstring = "no";
 				}
 				if(PlayerVehicleInfo[playerid][d][pvLocksLeft] < 1) worklockstring = "(Broken)";
-				format(string, sizeof(string), "* You offered %s to buy this %s with %s Alarm & %s%s Lock for $%s.", GetPlayerNameEx(giveplayerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), alarmstring, worklockstring, lockstring, number_format(price));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* %s has offered you their %s (VID: %d) with %s Alarm & %s%s Lock for $%s, (type /accept car) to buy.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), PlayerVehicleInfo[playerid][d][pvId], alarmstring, worklockstring, lockstring, number_format(price));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to buy this %s with %s Alarm & %s%s Lock for $%s.", GetPlayerNameEx(giveplayerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), alarmstring, worklockstring, lockstring, number_format(price));
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s has offered you their %s (VID: %d) with %s Alarm & %s%s Lock for $%s, (type /accept car) to buy.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), PlayerVehicleInfo[playerid][d][pvId], alarmstring, worklockstring, lockstring, number_format(price));
 				DeletePVar(playerid, "confirmvehsell");
                 return 1;
             }
@@ -2742,10 +2736,8 @@ CMD:vehid(playerid, params[])
 {
     if(IsPlayerInAnyVehicle(playerid))
     {
-		new string[128];
     	new idcar = GetPlayerVehicleID(playerid);
-		format(string, sizeof(string), "* Vehicle Name: %s | Vehicle Model:%d | Vehicle ID: %d.",GetVehicleName(idcar), GetVehicleModel(idcar), idcar);
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_GREY, "* Vehicle Name: %s | Vehicle Model:%d | Vehicle ID: %d.",GetVehicleName(idcar), GetVehicleModel(idcar), idcar);
 	}
 	return 1;
 }
@@ -2788,10 +2780,8 @@ CMD:rc(playerid, params[])
 alias:oldcar("lastcar")
 CMD:oldcar(playerid, params[])
 {
-	new string[128];
 	if(!gLastCar[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You have not driven a vehicle yet.");
-	format(string, sizeof(string), "Your last driven vehicle was a %s (Model: %d -- ID: %d)", GetVehicleName(gLastCar[playerid]), GetVehicleModel(gLastCar[playerid]), gLastCar[playerid]);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
+	SendClientMessageEx(playerid, COLOR_GREY, "Your last driven vehicle was a %s (Model: %d -- ID: %d)", GetVehicleName(gLastCar[playerid]), GetVehicleModel(gLastCar[playerid]), gLastCar[playerid]);
 	return 1;
 }
 
@@ -2857,10 +2847,8 @@ CMD:eject(playerid, params[])
 				if(IsPlayerInVehicle(giveplayerid,test))
 				{
 					if(GetPVarInt(giveplayerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't eject patients!");
-					format(string, sizeof(string), "* You have thrown %s out of the car.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* You have been thrown out the car by %s.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have thrown %s out of the car.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been thrown out the car by %s.", GetPlayerNameEx(playerid));
 					RemovePlayerFromVehicle(giveplayerid);
 					new Float:slx, Float:sly, Float:slz;
 					GetPlayerPos(giveplayerid, slx, sly, slz);

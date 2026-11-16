@@ -74,8 +74,7 @@ public OfflineWarranting(index)
 	GetPVarString(index, "WarrantRes", reason, 64);
 
 	if(cache_affected_rows()) {
-		format(string, sizeof(string), "You have successfully warranted %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "You have successfully warranted %s's account.", name);
 
 		format(string, sizeof(string), "You are hereby commanded to apprehend and present to the court %s to answer the charges of:", name);
 		SendGroupMessage(1, DEPTRADIO, string);
@@ -86,8 +85,7 @@ public OfflineWarranting(index)
 		//Log("logs/warrant.log", string);
 	}
 	else {
-		format(string, sizeof(string), "There was an issue with warranting %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with warranting %s's account.", name);
 	}
 
 	DeletePVar(index, "OfflineWarrant");
@@ -98,19 +96,17 @@ public OfflineWarranting(index)
 forward OfflineWarrantWD(index);
 public OfflineWarrantWD(index)
 {
-	new string[128], name[24];
+	new name[24];
 	GetPVarString(index, "OfflineWarrant", name, 24);
 
 	if(cache_affected_rows()) {
-		format(string, sizeof(string), "You have successfully recalled the warrant on %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "You have successfully recalled the warrant on %s's account.", name);
 
 		//format(string, sizeof(string), "%s recalled the warrant on %s's account", GetPlayerNameEx(index), name);
 		//Log("logs/warrant.log", string);
 	}
 	else {
-		format(string, sizeof(string), "There was an issue with recalling the warrant on %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with recalling the warrant on %s's account.", name);
 	}
 
 	DeletePVar(index, "OfflineWarrant");
@@ -128,7 +124,7 @@ CMD:owarrant(playerid, params[]) {
   		return 1;
 	}
 
-	new string[128], name[MAX_PLAYER_NAME], reason[64];
+	new name[MAX_PLAYER_NAME], reason[64];
 	if(sscanf(params, "s[24]s[64]", name, reason)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /owarrant [player name] [crime]");
 
 	if(!IsPlayerConnected(ReturnUser(name))) {
@@ -137,8 +133,7 @@ CMD:owarrant(playerid, params[]) {
 		SetPVarString(playerid, "OfflineWarrant", name);
 		SetPVarString(playerid, "WarrantRes", reason);
 
-		format(string, sizeof(string), "Attempting to warrant %s's account for %s...", name, reason);
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Attempting to warrant %s's account for %s...", name, reason);
 
 		mysql_format(MainPipeline, query,sizeof(query),"UPDATE `accounts` SET `Warrants` = '%e' WHERE `Warrants` = '' AND `Username` = '%e'", reason, name);
 		mysql_tquery(MainPipeline, query, "OfflineWarranting", "i", playerid);
@@ -160,7 +155,7 @@ CMD:owarrantwd(playerid, params[])
   		return 1;
   	}
 
-  	new string[128], name[MAX_PLAYER_NAME];
+	new name[MAX_PLAYER_NAME];
 	if(sscanf(params, "s[24]s[64]", name)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /owarrantwd [player name]");
 
 	if(!IsPlayerConnected(ReturnUser(name))) {
@@ -168,8 +163,7 @@ CMD:owarrantwd(playerid, params[])
 
 		SetPVarString(playerid, "OfflineWarrant", name);
 
-		format(string, sizeof(string), "Attempting to recall the warrant on %s's account...", name);
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Attempting to recall the warrant on %s's account...", name);
 
 		mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Warrants` = '' WHERE `Warrants` != '' AND `Username` = '%e'", name);
 		mysql_tquery(MainPipeline, query, "OfflineWarrantWD", "i", playerid);
@@ -216,7 +210,6 @@ CMD:checkjudgements(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Pending Judgements List:");
 
 		new
-			string[128],
 			fCounter;
 
 		foreach(new i: Player)
@@ -225,14 +218,12 @@ CMD:checkjudgements(playerid, params[])
 			{
 				if(PlayerInfo[i][pJailTime] > 1)
 				{
-					format(string, sizeof(string), "Sentenced: %s - jail (transport completed) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
-					SendClientMessageEx(playerid, COLOR_GRAD1, string);
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Sentenced: %s - jail (transport completed) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
 					++fCounter;
 				}
 				else
 				{
-					format(string, sizeof(string), "Sentenced: %s - jail (being transported) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
-					SendClientMessageEx(playerid, COLOR_GRAD1, string);
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Sentenced: %s - jail (being transported) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
 					++fCounter;
 				}
 			}
@@ -240,14 +231,12 @@ CMD:checkjudgements(playerid, params[])
 			{
 				if(PlayerInfo[i][pJailTime] > 1)
 				{
-					format(string, sizeof(string), "Sentenced: %s - prison (transport completed) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
-					SendClientMessageEx(playerid, COLOR_GRAD1, string);
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Sentenced: %s - prison (transport completed) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
 					++fCounter;
 				}
 				else
 				{
-					format(string, sizeof(string), "Sentenced: %s - prison (being transported) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
-					SendClientMessageEx(playerid, COLOR_GRAD1, string);
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Sentenced: %s - prison (being transported) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
 					++fCounter;
 				}
 			}
@@ -282,10 +271,8 @@ CMD:freezeassets(playerid, params[])
 	       	GetPlayerGroupInfo(playerid, rank, division, employer);
 		   	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has frozen %s house assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		   	ABroadCast(COLOR_YELLOW,string, 2);
-		   	format(string, sizeof(string), "You have frozen %s's house assets.", GetPlayerNameEx(giveplayerid));
-	   	 	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	   	 	format(string, sizeof(string), "Your house assets have been frozen by %s", GetPlayerNameEx(playerid));
-	   	 	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have frozen %s's house assets.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your house assets have been frozen by %s", GetPlayerNameEx(playerid));
 
 	   	 	format(szMiscArray, sizeof(szMiscArray), "%s %s has frozen %s house assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    }
@@ -294,10 +281,8 @@ CMD:freezeassets(playerid, params[])
 	        PlayerInfo[giveplayerid][pFreezeHouse] = 0;
 			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has unfrozen %s house assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    	ABroadCast(COLOR_YELLOW,string, 2);
-		   	format(string, sizeof(string), "You have unfrozen %s's house assets.", GetPlayerNameEx(giveplayerid));
-	   	 	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	   	 	format(string, sizeof(string), "Your house assets have been unfrozen by %s", GetPlayerNameEx(playerid));
-	   	 	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have unfrozen %s's house assets.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your house assets have been unfrozen by %s", GetPlayerNameEx(playerid));
 
 	   	 	format(szMiscArray, sizeof(szMiscArray), "%s %s has unfrozen %s house assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		}
@@ -310,10 +295,8 @@ CMD:freezeassets(playerid, params[])
 	       	GetPlayerGroupInfo(playerid, rank, division, employer);
 			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has frozen %s vehicle assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    	ABroadCast(COLOR_YELLOW,string, 2);
-	    	format(string, sizeof(string), "You have frozen %s's vehicle assets.", GetPlayerNameEx(giveplayerid));
-	   	 	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	   	 	format(string, sizeof(string), "Your vehicle assets have been frozen by %s", GetPlayerNameEx(playerid));
-		 	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have frozen %s's vehicle assets.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your vehicle assets have been frozen by %s", GetPlayerNameEx(playerid));
 
 		 	format(szMiscArray, sizeof(szMiscArray), "%s %s has frozen %s vehicle assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    }
@@ -322,10 +305,8 @@ CMD:freezeassets(playerid, params[])
 	        PlayerInfo[giveplayerid][pFreezeCar] = 0;
 	        format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has unfrozen %s vehicle assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    	ABroadCast(COLOR_YELLOW,string, 2);
-	    	format(string, sizeof(string), "You have unfrozen %s's vehicle assets.", GetPlayerNameEx(giveplayerid));
-		 	SendClientMessageEx(playerid, COLOR_WHITE, string);
-		 	format(string, sizeof(string), "Your vehicle assets have been unfrozen by %s", GetPlayerNameEx(playerid));
-		 	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have unfrozen %s's vehicle assets.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your vehicle assets have been unfrozen by %s", GetPlayerNameEx(playerid));
 
 		 	format(szMiscArray, sizeof(szMiscArray), "%s %s has unfrozen %s vehicle assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    }
@@ -338,10 +319,8 @@ CMD:freezeassets(playerid, params[])
        		GetPlayerGroupInfo(playerid, rank, division, employer);
 	   		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has froze %s bank account.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
     		ABroadCast(COLOR_YELLOW,string, 2);
-    		format(string, sizeof(string), "You have frozen %s's bank account.", GetPlayerNameEx(giveplayerid));
-   	 		SendClientMessageEx(playerid, COLOR_WHITE, string);
-   	 		format(string, sizeof(string), "Your bank account has been frozen by %s", GetPlayerNameEx(playerid));
-   	 		SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have frozen %s's bank account.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your bank account has been frozen by %s", GetPlayerNameEx(playerid));
 
    	 		format(szMiscArray, sizeof(szMiscArray), "%s %s has frozen %s bank assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
     	}
@@ -350,10 +329,8 @@ CMD:freezeassets(playerid, params[])
 			PlayerInfo[giveplayerid][pFreezeBank] = 0;
 			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has unfrozen %s bank account.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ABroadCast(COLOR_YELLOW,string, 2);
-			format(string, sizeof(string), "You have unfrozen %s's bank account.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-   	 		format(string, sizeof(string), "Your bank account has been unfrozen by %s", GetPlayerNameEx(playerid));
-   	 		SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have unfrozen %s's bank account.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your bank account has been unfrozen by %s", GetPlayerNameEx(playerid));
 
    	 		format(szMiscArray, sizeof(szMiscArray), "%s %s has unfrozen %s bank assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		}
@@ -393,10 +370,8 @@ CMD:reward(playerid, params[])
 		Log("logs/rpspecial.log", string);
 		Tax -= money;
   		GivePlayerCash(giveplayerid, money);
-    	format(string, sizeof(string), "You have given a reward of $%d to %s.", money, GetPlayerNameEx(giveplayerid));
-	    SendClientMessageEx(playerid, COLOR_WHITE, string);
-	    format(string, sizeof(string), "You have recieved a reward of $%d from %s %s.", money, rank, GetPlayerNameEx(playerid));
-	   	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+	    SendClientMessageEx(playerid, COLOR_WHITE, "You have given a reward of $%d to %s.", money, GetPlayerNameEx(giveplayerid));
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have recieved a reward of $%d from %s %s.", money, rank, GetPlayerNameEx(playerid));
 	}
 	return 1;
 }
@@ -486,15 +461,13 @@ CMD:wants(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Outstanding Warrants List:");
 
 		new
-			fCounter,
-			string[128];
+			fCounter;
 
 		foreach(new i: Player)
 		{
 			if(!isnull(PlayerInfo[i][pWarrant]) || PlayerInfo[i][pWarrant] != 0)
 			{
-				format(string, sizeof(string), "%s (%d) - reason: %s.",GetPlayerNameEx(i), i, PlayerInfo[i][pWarrant]);
-				SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "%s (%d) - reason: %s.",GetPlayerNameEx(i), i, PlayerInfo[i][pWarrant]);
 				++fCounter;
 			}
 		}	
@@ -535,14 +508,13 @@ CMD:jarrest(playerid, params[])
   			SendClientMessageEx(playerid, COLOR_GREY, "You aren't at the arrest point.");
 	    	return 1;
 		}
-		new suspect = GetClosestPlayer(playerid), string[256];
+		new suspect = GetClosestPlayer(playerid);
 		if(IsPlayerConnected(suspect))
 		{
 			if(ProxDetectorS(5.0, playerid,suspect))
 			{
 				if(PlayerInfo[suspect][pJudgeJailType] != 1) { return SendClientMessageEx(playerid, COLOR_GREY, "That person doesn't need to complete a sentence in jail."); }
-				format(string, sizeof(string), "* You arrested %s!", GetPlayerNameEx(suspect));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You arrested %s!", GetPlayerNameEx(suspect));
 				ResetPlayerWeaponsEx(suspect);
 				for(new x; x < MAX_PLAYERVEHICLES; x++) if(PlayerVehicleInfo[suspect][x][pvTicket] >= 1) {
 					PlayerVehicleInfo[suspect][x][pvTicket] = 0;
@@ -598,12 +570,9 @@ CMD:deliver(playerid, params[])
 		if(PlayerInfo[giveplayerid][pJudgeJailTime] == 0 && PlayerInfo[giveplayerid][pJudgeJailType] != 2) { SendClientMessageEx(playerid, COLOR_GREY, "That person doesn't need to be in prison!"); return 1; }
 		if(ProxDetectorS(8.0, playerid, giveplayerid))
 		{
-			new string[37 + MAX_PLAYER_NAME];
   			DeletePVar(giveplayerid, "IsFrozen");
-			format(string, sizeof(string), "* You've brought %s to the Department of Corrections.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "* %s brought you to the Department of Corrections.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You've brought %s to the Department of Corrections.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s brought you to the Department of Corrections.", GetPlayerNameEx(playerid));
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~the Department of Corrections", 5000, 3);
 			ClearAnimationsEx(giveplayerid);
 			PlayerCuffed[giveplayerid] = 0;
@@ -693,8 +662,7 @@ CMD:warrantwd(playerid, params[])
 	{
  		if(strlen(PlayerInfo[giveplayerid][pWarrant]) == 0) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person doesn't have any active warrants.");
 		format(PlayerInfo[giveplayerid][pWarrant], 128, "");
-		format(string, sizeof(string), "You have successfully recalled %s's warrant.", GetPlayerNameEx(giveplayerid));
-  		SendClientMessageEx(playerid, COLOR_GRAD2, string);
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully recalled %s's warrant.", GetPlayerNameEx(giveplayerid));
 		format(string, sizeof(string), "%s has withdrawn the warrant on %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, string);
 		GroupLogEx(PlayerInfo[playerid][pMember], string, 0);
@@ -726,8 +694,7 @@ CMD:warrantarrest(playerid, params[])
 	   				SendClientMessageEx(playerid, COLOR_GREY, "The person must have active warrants.");
 				    return 1;
 				}
-				format(string, sizeof(string), "* You warrant arrested %s!", GetPlayerNameEx(suspect));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You warrant arrested %s!", GetPlayerNameEx(suspect));
 				ResetPlayerWeaponsEx(suspect);
 				format(string, sizeof(string), "<< Defendant %s has been delivered to the courtroom pending trial by %s >>", GetPlayerNameEx(suspect), GetPlayerNameEx(playerid));
 				SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, string);
@@ -776,7 +743,7 @@ CMD:warrantarrest(playerid, params[])
 
 CMD:adjourn(playerid, params[])
 {
-	new string[128], giveplayerid;
+	new giveplayerid;
 
     if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
 	if(PlayerInfo[playerid][pRank] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
@@ -791,10 +758,8 @@ CMD:adjourn(playerid, params[])
 	    	DeletePVar(giveplayerid, "IsFrozen");
 			PhoneOnline[giveplayerid] = 0;
 			format(PlayerInfo[giveplayerid][pWarrant], 128, "");
-	    	format(string, sizeof(string), "You have released %s from the courtroom.", GetPlayerNameEx(giveplayerid));
-	    	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	    	format(string, sizeof(string), "%s has released you from the courtroom, you can now leave.", GetPlayerNameEx(playerid));
-	    	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have released %s from the courtroom.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has released you from the courtroom, you can now leave.", GetPlayerNameEx(playerid));
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD2, "The person needs to be on the courtroom being sentenced");
 	}
@@ -829,11 +794,8 @@ CMD:sentence(playerid, params[]) {
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
 			PlayerInfo[giveplayerid][pVW] = 0;
-			new string[58 + MAX_PLAYER_NAME];
-  			format(string, sizeof(string), "You have released %s from the courtroom.", GetPlayerNameEx(giveplayerid));
-    		SendClientMessageEx(playerid, COLOR_WHITE, string);
-	    	format(string, sizeof(string), "%s has released you from the courtroom, you can now leave.", GetPlayerNameEx(playerid));
-	    	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have released %s from the courtroom.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has released you from the courtroom, you can now leave.", GetPlayerNameEx(playerid));
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD2, "The person needs to be in the courtroom being sentenced.");
 	}
@@ -843,7 +805,7 @@ CMD:sentence(playerid, params[]) {
 
 CMD:trial(playerid, params[])
 {
-	new string[128], giveplayerid;
+	new giveplayerid;
 
     if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
 	if(PlayerInfo[playerid][pRank] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
@@ -854,10 +816,8 @@ CMD:trial(playerid, params[])
 	    if(PlayerInfo[giveplayerid][pBeingSentenced])
 	    {
 	    	PlayerInfo[giveplayerid][pBeingSentenced] += 10;
-	    	format(string, sizeof(string), "You have extended %s's courtroom time by 10 minutes, courtroom time: %d", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pBeingSentenced]);
-	    	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	    	format(string, sizeof(string), "%s has extended your courtroom time by 10 minutes, courtroom time: %d", GetPlayerNameEx(playerid), PlayerInfo[giveplayerid][pBeingSentenced]);
-	    	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have extended %s's courtroom time by 10 minutes, courtroom time: %d", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pBeingSentenced]);
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has extended your courtroom time by 10 minutes, courtroom time: %d", GetPlayerNameEx(playerid), PlayerInfo[giveplayerid][pBeingSentenced]);
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD2, "The person needs to be in the courtroom being sentenced");
 	}
@@ -866,7 +826,7 @@ CMD:trial(playerid, params[])
 
 CMD:subpoena(playerid, params[])
 {
-	new string[128], dates[32], message[64], giveplayerid;
+	new dates[32], message[64], giveplayerid;
 
     if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
 	if(PlayerInfo[playerid][pRank] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 1+ can do this.");
@@ -875,11 +835,9 @@ CMD:subpoena(playerid, params[])
 	if(IsPlayerConnected(giveplayerid))
 	{
 	    SendClientMessageEx(giveplayerid, COLOR_WHITE, "|___________ Important Message from the Courts ___________|");
-	    format(string, sizeof(string), "You have been summoned for a Court Appearance on the day of %s for the following reason(s): %s", dates, message);
-		SendClientMessageEx(giveplayerid, COLOR_YELLOW, string);
+		SendClientMessageEx(giveplayerid, COLOR_YELLOW, "You have been summoned for a Court Appearance on the day of %s for the following reason(s): %s", dates, message);
 		SendClientMessageEx(giveplayerid, COLOR_WHITE, "|_________________________________________________________|");
-		format(string, sizeof(string), "You have summoned %s for a Court Appearance", GetPlayerNameEx(giveplayerid));
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have summoned %s for a Court Appearance", GetPlayerNameEx(giveplayerid));
 	}
 	return 1;
 }
@@ -897,7 +855,7 @@ CMD:judgejail(playerid, params[])
   		return 1;
 	}
 
-	new string[128], giveplayerid, jailtime, reason[64];
+	new giveplayerid, jailtime, reason[64];
 	if(sscanf(params, "uds[64]", giveplayerid, jailtime, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /judgejail [player] [time (minutes)] [reason]");
 
 	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
@@ -914,10 +872,8 @@ CMD:judgejail(playerid, params[])
 		}
 		PlayerInfo[giveplayerid][pJudgeJailType] = 1;
 		PlayerInfo[giveplayerid][pJudgeJailTime] = jailtime*60;
-		format(string, sizeof(string), "You have sentenced %s to fulfill %d minutes in jail, reason: %s", GetPlayerNameEx(giveplayerid), jailtime, reason);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "You have been sentenced to fulfill %d minutes in jail by %s, reason: %s", jailtime, GetPlayerNameEx(playerid), reason);
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have sentenced %s to fulfill %d minutes in jail, reason: %s", GetPlayerNameEx(giveplayerid), jailtime, reason);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been sentenced to fulfill %d minutes in jail by %s, reason: %s", jailtime, GetPlayerNameEx(playerid), reason);
 		if(IsACop(giveplayerid))
 		{
 		    SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE,"* You have been auto-removed from your faction by being sentenced to jail, you are now a civilian again.");
@@ -952,7 +908,7 @@ CMD:judgeprison(playerid, params[])
   		return 1;
 	}
 
-	new string[128], giveplayerid, jailtime, reason[64];
+	new giveplayerid, jailtime, reason[64];
 	if(sscanf(params, "uds[64]", giveplayerid, jailtime, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /judgeprison [player] [time (mins)] [reason]");
 
 	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
@@ -969,10 +925,8 @@ CMD:judgeprison(playerid, params[])
 		}
 		PlayerInfo[giveplayerid][pJudgeJailType] = 2;
 		PlayerInfo[giveplayerid][pJudgeJailTime] = jailtime*60;
-		format(string, sizeof(string), "You have sentenced %s to fulfill %d minutes in prison, reason: %s", GetPlayerNameEx(giveplayerid), jailtime, reason);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "You have been sentenced to fulfill %d minutes in prison by %s, reason: %s", jailtime, GetPlayerNameEx(playerid), reason);
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have sentenced %s to fulfill %d minutes in prison, reason: %s", GetPlayerNameEx(giveplayerid), jailtime, reason);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been sentenced to fulfill %d minutes in prison by %s, reason: %s", jailtime, GetPlayerNameEx(playerid), reason);
 		if(IsACop(giveplayerid))
 		{
 		    SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE,"* You have been auto-removed from your faction by being sentenced to jail, you are now a civilian again.");
@@ -1028,7 +982,7 @@ CMD:probation(playerid, params[])
         return 1;
     }
 
-	new string[128], giveplayerid, probtime, reason[64];
+	new giveplayerid, probtime, reason[64];
 	if(sscanf(params, "uds[64]", giveplayerid, probtime, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /probation [player] [time 1-360 Minutes] [reason and terms]");
 
     if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
@@ -1037,10 +991,8 @@ CMD:probation(playerid, params[])
         if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person isn't being sentenced!");
         if(probtime < 1 && probtime > 360) return SendClientMessageEx(playerid, COLOR_GRAD5, "Time cannot be lower 1 minute or higher than 360 minutes!");
         PlayerInfo[giveplayerid][pProbationTime] = probtime;
-        format(string, sizeof(string), "You have set %s in probation for %d minutes, reason and terms: %s", GetPlayerNameEx(giveplayerid), probtime, reason);
-        SendClientMessageEx(playerid, COLOR_WHITE, string);
-        format(string, sizeof(string), "You have been set in probation for %d minutes by %s, reason and terms: %s", probtime, GetPlayerNameEx(playerid), reason);
-        SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+        SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s in probation for %d minutes, reason and terms: %s", GetPlayerNameEx(giveplayerid), probtime, reason);
+        SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been set in probation for %d minutes by %s, reason and terms: %s", probtime, GetPlayerNameEx(playerid), reason);
     }
     return 1;
 }
@@ -1055,10 +1007,8 @@ CMD:viewassets(playerid, params[])
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /viewassets [player]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 	
-	format(szMiscArray, sizeof(szMiscArray), "%s's assets | Vehicle Status: %d - House Status: %d - Bank Account Status: %d", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pFreezeCar], PlayerInfo[giveplayerid][pFreezeHouse], PlayerInfo[giveplayerid][pFreezeBank]);
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "%s's assets | Cash: $%s - Bank: $%s", GetPlayerNameEx(giveplayerid), number_format(PlayerInfo[giveplayerid][pCash]), number_format(PlayerInfo[giveplayerid][pAccount]));
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_WHITE, "%s's assets | Vehicle Status: %d - House Status: %d - Bank Account Status: %d", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pFreezeCar], PlayerInfo[giveplayerid][pFreezeHouse], PlayerInfo[giveplayerid][pFreezeBank]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "%s's assets | Cash: $%s - Bank: $%s", GetPlayerNameEx(giveplayerid), number_format(PlayerInfo[giveplayerid][pCash]), number_format(PlayerInfo[giveplayerid][pAccount]));
 	return true;
 }
 
@@ -1082,23 +1032,19 @@ CMD:alimony(playerid, params[]) {
 		if(amount > 25)
 			return SendClientMessageEx(playerid, COLOR_GRAD2, "Maximum percentage must not exceed 25");
 		if(fine < 300000) {
-			format(szMiscArray, sizeof(szMiscArray), "The charge was $%d however as it falls below the minimum amount, %s was only charged $300,000", fine, GetPlayerNameEx(charged));
-			SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_GRAD2, "The charge was $%d however as it falls below the minimum amount, %s was only charged $300,000", fine, GetPlayerNameEx(charged));
 			fine = 300000;			
 		}
 		if(fine > 2500000) {
-			format(szMiscArray, sizeof(szMiscArray), "The charge was $%d however as it exceeds the maximum amount, %s was only charged $2,500,000", fine, GetPlayerNameEx(charged));
-			SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_GRAD2, "The charge was $%d however as it exceeds the maximum amount, %s was only charged $2,500,000", fine, GetPlayerNameEx(charged));
 			fine = 2500000;
 		}
 
 		GivePlayerCashEx(charged, TYPE_ONHAND, -fine);
-		format(szMiscArray, sizeof(szMiscArray), "You have been charged $%d for alimony to %s by Judge %s.", fine, GetPlayerNameEx(recieved), GetPlayerNameEx(playerid));
-		SendClientMessageEx(charged, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(charged, COLOR_WHITE, "You have been charged $%d for alimony to %s by Judge %s.", fine, GetPlayerNameEx(recieved), GetPlayerNameEx(playerid));
 
 		GivePlayerCashEx(recieved, TYPE_ONHAND, fine);
-		format(szMiscArray, sizeof(szMiscArray), "You have been given $%d from %s as alimony.", fine, GetPlayerNameEx(recieved));
-		SendClientMessageEx(recieved, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(recieved, COLOR_WHITE, "You have been given $%d from %s as alimony.", fine, GetPlayerNameEx(recieved));
 
 		foreach(new i: Player) {
 			if(PlayerInfo[i][pAdmin] >= 3) {

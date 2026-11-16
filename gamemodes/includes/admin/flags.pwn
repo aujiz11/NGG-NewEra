@@ -39,7 +39,6 @@ CMD:viewflags(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
-		new string[128];
 
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Player Flag Count List (/viewflag [player] to view):");
 		new fCounter;
@@ -47,8 +46,7 @@ CMD:viewflags(playerid, params[])
 		{
 			if(PlayerInfo[i][pFlagged] > 0)
 			{
-				format(string, sizeof(string), "%s(%d) Flag Count: %d.",GetPlayerNameEx(i),i,PlayerInfo[i][pFlagged]);
-				SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "%s(%d) Flag Count: %d.",GetPlayerNameEx(i),i,PlayerInfo[i][pFlagged]);
 				fCounter += 1;
 			}
 		}	
@@ -112,8 +110,7 @@ CMD:oflag(playerid, params[])
 			mysql_format(MainPipeline, query, sizeof(query), "SELECT id FROM `accounts` WHERE `Username`='%s'", tmpName);
 			mysql_tquery(MainPipeline, query, "FlagQueryFinish", "iii", playerid, INVALID_PLAYER_ID, Flag_Query_Offline);
 
-			format(string, sizeof(string), "Attempting to append %s's flag...", tmpName);
-			SendClientMessageEx(playerid, COLOR_YELLOW, string);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Attempting to append %s's flag...", tmpName);
 		}
 		return 1;
 	}

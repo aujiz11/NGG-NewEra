@@ -60,10 +60,8 @@ CMD:giveticket(playerid, params[])
 	if(sscanf(params, "ud", target, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /giveticket [player] [amount]");
 	PlayerInfo[target][bTicket] += amount;
 	new string[128];
-	format(string, sizeof(string), "You have given %s %d balloon ride tickets.", GetPlayerNameEx(target), amount);
-	SendClientMessageEx(playerid, -1, string);
-	format(string, sizeof(string), "%s has given you %d balloon ride tickets.", GetPlayerNameEx(playerid), amount);
-	SendClientMessageEx(target, -1, string);
+	SendClientMessageEx(playerid, -1, "You have given %s %d balloon ride tickets.", GetPlayerNameEx(target), amount);
+	SendClientMessageEx(target, -1, "%s has given you %d balloon ride tickets.", GetPlayerNameEx(playerid), amount);
 	format(string, sizeof(string), "[GIVETICKET] %s gave %s(%d) %d balloon ride tickets.", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
 	Log("logs/admin.log", string);
 	return 1;

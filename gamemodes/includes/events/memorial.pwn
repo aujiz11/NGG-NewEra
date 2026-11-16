@@ -42,8 +42,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				break;
 			}
 		}
-		format(szMiscArray, sizeof(szMiscArray), "You have purchased the %s Toy for 150 credits.", name);
-		SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased the %s Toy for 150 credits.", name);
 		
 		g_mysql_SaveAccount(playerid);
 		

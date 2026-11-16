@@ -1009,9 +1009,7 @@ CMD:editevent(playerid, params[])
 				
 				EventKernel[EventCustomInterior] = strval(opstring);
 				
-				new szstring[128];
-				format(szstring, sizeof(szstring), "You have set the Custom Interior Value to %d.", strval(opstring));
-				SendClientMessageEx(playerid, COLOR_WHITE, szstring);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have set the Custom Interior Value to %d.", strval(opstring));
 			}
 		}
 	}

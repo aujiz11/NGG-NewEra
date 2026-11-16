@@ -72,8 +72,7 @@ DeliverShipment(playerid, iShipmentPoint) {
 		arrGangShipmentData[iShipmentPoint][gs_iStock] -= SHIPMENT_MATS_NEEDED;
 		foreach(new i : Player) {
 			if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[i][pMember]][g_iGroupType] == GROUP_TYPE_CRIMINAL) {
-				format(szMiscArray, sizeof(szMiscArray), "{FF0000}Alert: {FFFFFF}An unknown shipment has been delivered to %s", GetStockPointName(iShipmentPoint));
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "{FF0000}Alert: {FFFFFF}An unknown shipment has been delivered to %s", GetStockPointName(iShipmentPoint));
 			}
 		}
 	}
@@ -224,8 +223,7 @@ CMD:editshipment(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] < 99999) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 	new val;
 	if(sscanf(params, "d", val) || val <= 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /editshipment [value]");
-	format(szMiscArray, sizeof(szMiscArray), "You have edited the mats needed for gang shipments to: %d (Previously: %d)", val, SHIPMENT_MATS_NEEDED);
-	SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GRAD2, "You have edited the mats needed for gang shipments to: %d (Previously: %d)", val, SHIPMENT_MATS_NEEDED);
 	format(szMiscArray, sizeof(szMiscArray), "%s has edited the mats needed for gang shipments to: %d (Previously: %d)", val, SHIPMENT_MATS_NEEDED);
 	Log("logs/admin.log", szMiscArray);
 	SHIPMENT_MATS_NEEDED = val;

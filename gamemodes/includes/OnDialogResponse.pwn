@@ -227,8 +227,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new zone[MAX_ZONE_NAME], mainzone[MAX_ZONE_NAME];
 					Get3DZone(carPos[0], carPos[1], carPos[2], zone, sizeof(zone));
 					Get2DMainZone(carPos[0], carPos[1], mainzone, sizeof(mainzone));
-					format(string, sizeof(string), "Your vehicle is located in %s(%s).", zone, mainzone);
-					SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Your vehicle is located in %s(%s).", zone, mainzone);
 					format(string, sizeof(string), "Suspected Vehicle Burglary, %s(%d)", GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]), PlayerVehicleInfo[playerid][listitem][pvId]);
 					SendCallToQueue(playerid, string, zone, mainzone, 4, PlayerVehicleInfo[playerid][listitem][pvId]);
 					SetPVarInt(playerid, "Has911Call", 1);
@@ -252,8 +251,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new zone[MAX_ZONE_NAME], mainzone[MAX_ZONE_NAME];
 				Get3DZone(carPos[0], carPos[1], carPos[2], zone, sizeof(zone));
 				Get2DMainZone(carPos[0], carPos[1], mainzone, sizeof(mainzone));
-				format(string, sizeof(string), "Your vehicle is located in %s(%s).", zone, mainzone);
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Your vehicle is located in %s(%s).", zone, mainzone);
 				format(string, sizeof(string), "Suspected Vehicle Burglary, %s(%d)", GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]), PlayerVehicleInfo[playerid][listitem][pvId]);
 				SendCallToQueue(playerid, string, zone, mainzone, 4, PlayerVehicleInfo[playerid][listitem][pvId]);
 				SetPVarInt(playerid, "Has911Call", 1);
@@ -349,15 +347,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		case BIGEARS5: {
 			if(response) {
-				new giveplayerid, szString[128];
+				new giveplayerid;
 				if(sscanf(inputtext, "u", giveplayerid) || PlayerInfo[giveplayerid][pAdmin] > PlayerInfo[playerid][pAdmin]) {
 					ShowPlayerDialogEx(playerid, BIGEARS5, DIALOG_STYLE_INPUT, "{3399FF}Big Ears | Private Messages", "Error - Please type in the name or the Id of the person you want to use the Big Ears function", "Select", "Back");
 					return 1;
 				}
 				SetPVarInt(playerid, "BigEarPM", 1);
 				SetPVarInt(playerid, "BigEarPlayerPM", giveplayerid);
-				format(szString, sizeof(szString), "You will now receive all private messages from %s", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_WHITE, szString);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You will now receive all private messages from %s", GetPlayerNameEx(giveplayerid));
 			}
 			else ShowPlayerDialogEx(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nFaction Chat\nGroup OOC Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
 		}
@@ -399,8 +396,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					{
 						GivePlayerCash(playerid, -PlayerVehicleInfo[playerid][i][pvTicket]);
 						OnPlayerStatsUpdate(playerid);
-						format(string, sizeof(string), "Your vehicle had active tickets on it. You have been charged the amount of the tickets ($%s).", number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Your vehicle had active tickets on it. You have been charged the amount of the tickets ($%s).", number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
 					}
 
 					format(szMiscArray, sizeof(szMiscArray), "[DELETECAR] %s (IP: %s) (SQLID: %d) has deleted their %s (%d) (SQLID: %d).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerSQLId(playerid), VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], PlayerVehicleInfo[playerid][i][pvModelId], PlayerVehicleInfo[playerid][i][pvSlotId]);
@@ -1557,7 +1553,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			if(!IsPlayerAttachedObjectSlotUsed(playerid, listitem))
 			{
-				new szmessage[128], name[24],
+				new name[24],
 					toyid = PlayerToyInfo[playerid][listitem][ptModelID];
 				format(name, sizeof(name), "None");
 				for(new i;i<sizeof(HoldingObjectsAll);i++)
@@ -1571,8 +1567,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					format(name, sizeof(name), "(ID: %d)", toyid);
 				}
-				format(szmessage, sizeof(szmessage), "You have offered %s to purchase your toy. %s", GetPlayerNameEx(buyerid), name);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szmessage);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have offered %s to purchase your toy. %s", GetPlayerNameEx(buyerid), name);
 				SetPVarInt(playerid, "ttToy", toyid);
 				SetPVarInt(playerid, "ttToySlot", listitem);
 				PrepTradeToysGUI(buyerid, playerid, cost, toyid);
@@ -2460,9 +2455,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					PlayerVehicleInfo[playerid][listitem][pvId] = INVALID_PLAYER_VEHICLE_ID;
 					g_mysql_SaveVehicle(playerid, listitem);
 
-					new vstring[128];
-					format(vstring, sizeof(vstring), "You have stored your %s. The vehicle has been despawned.", VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400]);
-					SendClientMessageEx(playerid, COLOR_WHITE, vstring);
+					SendClientMessageEx(playerid, COLOR_WHITE, "You have stored your %s. The vehicle has been despawned.", VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400]);
 					CheckPlayerVehiclesForDesync(playerid);
 				}
 			}
@@ -2524,9 +2517,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				LoadPlayerVehicleMods(playerid, listitem);
 				g_mysql_SaveVehicle(playerid, listitem);
 
-				new vstring[64];
-				format(vstring, sizeof(vstring), "You have taken your %s out of storage.", VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400]);
-				SendClientMessageEx(playerid, COLOR_WHITE, vstring);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have taken your %s out of storage.", VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400]);
 				CheckPlayerVehiclesForDesync(playerid);
 				Vehicle_ResetData(iVeh);
 				VehicleFuel[iVeh] = PlayerVehicleInfo[playerid][listitem][pvFuel];
@@ -2599,8 +2590,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		format(string, sizeof(string), "AdmCmd: Admin %s has deleted one of %s's vehicles (VehModel:%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), model);
 		ABroadCast(COLOR_YELLOW, string, 4);
 
-		format(string, sizeof(string), "* Admin %s has deleted one of your vehicles.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(giveplayerid, COLOR_YELLOW, string);
+		SendClientMessageEx(giveplayerid, COLOR_YELLOW, "* Admin %s has deleted one of your vehicles.", GetPlayerNameEx(playerid));
 
 		format(string, sizeof(string), "* You have deleted one of %s's vehicles.", GetPlayerNameEx(giveplayerid));
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
@@ -2714,9 +2704,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						DynVehicleObjInfo[carid][i][gv_iAttachedObjectID] = INVALID_OBJECT_ID;
 					}
 				}
-				new szstring[128];
-				format(szstring, sizeof(szstring), "You have stored your dynamic group vehicle (%s)", VehicleName[DynVehicleInfo[carid][gv_iModel] - 400]);
-				SendClientMessageEx(playerid, COLOR_WHITE, szstring);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have stored your dynamic group vehicle (%s)", VehicleName[DynVehicleInfo[carid][gv_iModel] - 400]);
 			}
 			else
 				return SendClientMessageEx(playerid, COLOR_GRAD1, "This vehicle is currently occupied.");
@@ -2725,9 +2713,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		else {
 			DynVehicleInfo[carid][gv_iDisabled] = 0;
 			DynVeh_Spawn(carid);
-			new szstring[128];
-			format(szstring, sizeof(szstring), "You have spawned your dynamic group vehicle (%s)", VehicleName[DynVehicleInfo[carid][gv_iModel] - 400]);
-			SendClientMessageEx(playerid, COLOR_WHITE, szstring);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have spawned your dynamic group vehicle (%s)", VehicleName[DynVehicleInfo[carid][gv_iModel] - 400]);
 		}
 	}
 	if(dialogid == DV_TRACKCAR && response) {
@@ -3102,14 +3088,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
 							return 1;
 						}
-						new String[128];
 						SetPVarInt(playerid, "RequestingNameChange", 1);
 						SetPVarString(playerid, "NewNameRequest", inputtext);
 						SetPVarInt(playerid, "NameChangeCost", 0);
 						new playername[MAX_PLAYER_NAME];
 						GetPlayerName(playerid, playername, sizeof(playername));
-						format( String, sizeof( String ), "You have requested a namechange from %s to %s at no cost, please wait until an admin approves it.", playername, inputtext);
-						SendClientMessageEx( playerid, COLOR_YELLOW, String );
+						SendClientMessageEx( playerid, COLOR_YELLOW, "You have requested a namechange from %s to %s at no cost, please wait until an admin approves it.", playername, inputtext );
 						SendReportToQue(playerid, "Name Change Request", 2, 4);
 						return 1;
 					}
@@ -3119,27 +3103,23 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
 							return 1;
 						}
-						new String[128];
 						SetPVarInt(playerid, "RequestingNameChange", 1);
 						SetPVarString(playerid, "NewNameRequest", inputtext);
 						new playername[MAX_PLAYER_NAME];
 						GetPlayerName(playerid, playername, sizeof(playername));
-						format( String, sizeof( String ), "You have requested a namechange from %s to %s at no cost (Senior Mod), please wait until an admin approves it.", playername, inputtext);
-						SendClientMessageEx( playerid, COLOR_YELLOW, String );
+						SendClientMessageEx( playerid, COLOR_YELLOW, "You have requested a namechange from %s to %s at no cost (Senior Mod), please wait until an admin approves it.", playername, inputtext );
 						SendReportToQue(playerid, "Name Change Request", 2, 4);
 						return 1;
 					}
 					if(gettime() >= PlayerInfo[playerid][pNextNameChange])
 					{
 						if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
-						new String[128];
 						SetPVarInt(playerid, "RequestingNameChange", 1);
 						SetPVarString(playerid, "NewNameRequest", inputtext);
 						SetPVarInt(playerid, "NameChangeCost", 1);
 						new playername[MAX_PLAYER_NAME];
 						GetPlayerName(playerid, playername, sizeof(playername));
-						format( String, sizeof( String ), "You have requested a namechange from %s to %s for free, please wait until an admin approves it.", playername, inputtext);
-						SendClientMessageEx( playerid, COLOR_YELLOW, String );
+						SendClientMessageEx( playerid, COLOR_YELLOW, "You have requested a namechange from %s to %s for free, please wait until an admin approves it.", playername, inputtext );
 						SendReportToQue(playerid, "Name Change Request", 2, 4);
 						return 1;
 					}
@@ -3234,15 +3214,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
 							return 1;
 						}
-						new String[128];
 						DeletePVar(playerid, "marriagelastname");
 						SetPVarInt(playerid, "RequestingNameChange", 1);
 						SetPVarString(playerid, "NewNameRequest", inputtext);
 						SetPVarInt(playerid, "NameChangeCost", 0);
 						new playername[MAX_PLAYER_NAME];
 						GetPlayerName(playerid, playername, sizeof(playername));
-						format( String, sizeof( String ), "You have requested a namechange from %s to %s please wait until an admin approves it.", playername, inputtext);
-						SendClientMessageEx( playerid, COLOR_YELLOW, String );
+						SendClientMessageEx( playerid, COLOR_YELLOW, "You have requested a namechange from %s to %s please wait until an admin approves it.", playername, inputtext );
 						// format( String, sizeof( String ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) requested a name change to %s for free (non-RP name) - /approvename %d (accept), or /denyname %d (deny).", playername, playerid, inputtext, playerid, playerid);
 						// ABroadCast( COLOR_YELLOW, String, 3 );
 						SendReportToQue(playerid, "Name Change Request", 2, 4);
@@ -3345,8 +3323,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold39` = '%d', `AmountMade39` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[39], AmountMade[39]);
 					mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-					format(string, sizeof(string), "You have purchased a Deluxe Car Alarm for %s credits.", number_format(ShopItems[39][sItemPrice]));
-					SendClientMessageEx(playerid, COLOR_CYAN, string);
+					SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a Deluxe Car Alarm for %s credits.", number_format(ShopItems[39][sItemPrice]));
 					SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: Your alarm will now activate and alert you when someone tries to steal your car.");
 
 					format(string, sizeof(string), "[Deluxe Car Alarm] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[39][sItemPrice]));
@@ -3371,8 +3348,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						DeletePVar(playerid, "lockmenu");
 						return 1;
 					}
-					format(string, sizeof(string), "   You have purchased an electronic lock!");
-					SendClientMessageEx(playerid, COLOR_GRAD4, string);
+					SendClientMessageEx(playerid, COLOR_GRAD4, "   You have purchased an electronic lock!");
 					SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: You can now use /pvlock to lock your car.");
 					UnLockPlayerVehicle(playerid, PlayerVehicleInfo[playerid][pvid][pvId], PlayerVehicleInfo[playerid][pvid][pvLock]);
 					PlayerVehicleInfo[playerid][pvid][pvLock] = 2;
@@ -3427,8 +3403,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						DeletePVar(playerid, "lockmenu");
 						return 1;
 					}
-					format(string, sizeof(string), "   You have Purchased an industrial lock!");
-					SendClientMessageEx(playerid, COLOR_GRAD4, string);
+					SendClientMessageEx(playerid, COLOR_GRAD4, "   You have Purchased an industrial lock!");
 					SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: You can now use /pvlock to lock your car.");
 					PlayerVehicleInfo[playerid][pvid][pvLock] = 3;
 					PlayerVehicleInfo[playerid][pvid][pvLocksLeft] = 5;
@@ -3919,8 +3894,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 				if (PlayerInfo[playerid][pDonateRank] >= 1)
 				{
-					format(string,sizeof(string),"VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][listitem]), number_format(cost));
-					SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][listitem]), number_format(cost));
 				}
 				format(string,sizeof(string),"%s(%d) (IP: %s) has bought a %s in %s (%d) for $%d.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid),RestaurantItems[iItem], Businesses[iBusiness][bName], iBusiness, cost);
 				Log("logs/business.log", string);
@@ -3978,9 +3952,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			Businesses[business][bTotalSales]++;
 			Businesses[business][bTotalProfits] += Businesses[business][bItemPrices][listitem];
 
-			new buf[128];
-			format(buf, sizeof(buf), "You have purchased a '%s'.", RestaurantItems[listitem]);
-			SendClientMessageEx(playerid, COLOR_GRAD4, buf);
+			SendClientMessageEx(playerid, COLOR_GRAD4, "You have purchased a '%s'.", RestaurantItems[listitem]);
 		}
 
 		return 1;
@@ -4101,8 +4073,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId] = GiveKeysTo[playerid];
 			PlayerInfo[GiveKeysTo[playerid]][pVehicleKeys] = listitem;
 			PlayerInfo[GiveKeysTo[playerid]][pVehicleKeysFrom] = playerid;
-			format(string, sizeof(string), "%s has given you the keys for their %s.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]));
-			SendClientMessageEx(GiveKeysTo[playerid], COLOR_GRAD2, string);
+			SendClientMessageEx(GiveKeysTo[playerid], COLOR_GRAD2, "%s has given you the keys for their %s.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]));
 			format(string, sizeof(string), "You gave %s the keys for your %s.", GetPlayerNameEx(GiveKeysTo[playerid]), GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]));
 			SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			GiveKeysTo[playerid] = INVALID_PLAYER_ID;
@@ -4129,8 +4100,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if (ProxDetectorS(4.0, playerid, PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId])) {
 				PlayerInfo[PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId]][pVehicleKeys] = INVALID_PLAYER_VEHICLE_ID;
 				PlayerInfo[PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId]][pVehicleKeysFrom] = INVALID_PLAYER_ID;
-				format(string, sizeof(string), "%s has taken the keys of their %s.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]));
-				SendClientMessageEx(PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId], COLOR_GRAD2, string);
+				SendClientMessageEx(PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId], COLOR_GRAD2, "%s has taken the keys of their %s.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]));
 				format(string, sizeof(string), "You took the keys of your %s from %s.", GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]),GetPlayerNameEx(PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId]));
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 				PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId] = INVALID_PLAYER_ID;
@@ -4148,21 +4118,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iTargetID = GetPVarInt(playerid, "vRel");
 
 			if(PlayerVehicleInfo[iTargetID][listitem][pvTicket]) {
-				format(szMessage, sizeof(szMessage), "You have paid the $%s ticket on %s's %s.", number_format(PlayerVehicleInfo[iTargetID][listitem][pvTicket]), GetPlayerNameEx(iTargetID), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
-				SendClientMessageEx(playerid, COLOR_GRAD2, szMessage);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have paid the $%s ticket on %s's %s.", number_format(PlayerVehicleInfo[iTargetID][listitem][pvTicket]), GetPlayerNameEx(iTargetID), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
 
-				format(szMessage, sizeof(szMessage), "%s has paid all tickets on your %s (%i).", GetPlayerNameEx(playerid), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400], PlayerVehicleInfo[iTargetID][listitem][pvTicket]);
-				SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
+				SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "%s has paid all tickets on your %s (%i).", GetPlayerNameEx(playerid), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400], PlayerVehicleInfo[iTargetID][listitem][pvTicket]);
 				PlayerVehicleInfo[iTargetID][listitem][pvTicket] = 0;
 				g_mysql_SaveVehicle(iTargetID, listitem);
 			}
 			else if(PlayerVehicleInfo[iTargetID][listitem][pvImpounded])
 			{
-				format(szMessage, sizeof(szMessage), "You have released %s's %s.", GetPlayerNameEx(iTargetID), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have released %s's %s.", GetPlayerNameEx(iTargetID), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
 
-				format(szMessage, sizeof(szMessage), "%s has released your %s from the impound. (/vstorage to spawn it)", GetPlayerNameEx(playerid), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
-				SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
+				SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "%s has released your %s from the impound. (/vstorage to spawn it)", GetPlayerNameEx(playerid), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
 
 				format(szMessage, sizeof(szMessage), "HQ: %s has released %s's %s from the impound.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
 				SendGroupMessage(GROUP_TYPE_LEA, RADIO, szMessage);
@@ -4216,8 +4182,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 				}
 				Misc_Save();
-				format(szMessage, sizeof(szMessage), "You have paid the $%s ticket on your %s.", number_format(PlayerVehicleInfo[playerid][listitem][pvTicket]), VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400]);
-				SendClientMessageEx(playerid, COLOR_GRAD2, szMessage);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have paid the $%s ticket on your %s.", number_format(PlayerVehicleInfo[playerid][listitem][pvTicket]), VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400]);
 				PlayerVehicleInfo[playerid][listitem][pvTicket] = 0;
 				g_mysql_SaveVehicle(playerid, listitem);
 			}
@@ -4950,10 +4915,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 				}
 			}
-			format(string, sizeof(string), "You have fined %s $%s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(judgefine), reason);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "You have been fined $%s by %s, reason: %s", number_format(judgefine), GetPlayerNameEx(playerid), reason);
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have fined %s $%s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(judgefine), reason);
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been fined $%s by %s, reason: %s", number_format(judgefine), GetPlayerNameEx(playerid), reason);
 			format(string, sizeof(string), "%s has been fined $%s by Judge %s.  Commission has been sent to %s.", GetPlayerNameEx(giveplayerid), number_format(judgefine), GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
 			ABroadCast( COLOR_YELLOW, string, 2);
 			format(string, sizeof(string), "%s(%d) has been fined $%s by Judge %s(%d).  Commission has been sent to %s.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(judgefine), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrGroupData[iGroupID][g_szGroupName]);
@@ -4977,8 +4940,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				case 0, 1: { //arrest
 					if(bail && bailprice > 0)
 					{
-						format(string, sizeof(string), "You have been given the option to post bail. Your bail is set at $%s. (/bail)", number_format(bailprice));
-						SendClientMessageEx(suspect, COLOR_RED, string);
+						SendClientMessageEx(suspect, COLOR_RED, "You have been given the option to post bail. Your bail is set at $%s. (/bail)", number_format(bailprice));
 						PlayerInfo[suspect][pBailPrice] = bailprice;
 					}
 					format(string, sizeof(string), "* You have sent %s to the Local PD Jail.", GetPlayerNameEx(suspect));
@@ -5358,8 +5320,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				format(string, sizeof(string), "MDC Message from %s:\n%s", GetPlayerNameEx(playerid), inputtext);
 				ShowPlayerDialogEx(giveplayerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | New Message!", string, "OK", "Cancel");
-				format(string, sizeof(string), "MDC Message from %s: %s", GetPlayerNameEx(playerid), inputtext);
-				SendClientMessageEx(giveplayerid, COLOR_YELLOW, string);
+				SendClientMessageEx(giveplayerid, COLOR_YELLOW, "MDC Message from %s: %s", GetPlayerNameEx(playerid), inputtext);
 			}
 			else
 			{
@@ -6348,8 +6309,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			format(stringg, sizeof(stringg), "You have deleted %s's object %d in slot %d", GetPlayerNameEx(giveplayerid), object, slot+1);
 			ShowPlayerDialogEx(playerid, SHOPOBJECT_SUCCESS, DIALOG_STYLE_MSGBOX, "Delete Toy - Success", stringg, "OK", "");
-			format(stringg, sizeof(stringg), "Admin %s has deleted your toy (obj model: %d) from slot %d.", GetPlayerNameEx(playerid), object, slot);
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, stringg);
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Admin %s has deleted your toy (obj model: %d) from slot %d.", GetPlayerNameEx(playerid), object, slot);
 			format(string, sizeof(string), "[TOYDELETE] %s deleted %s's(%d) object %d in slot %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), object, slot);
 			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "DELETE FROM `toys` WHERE `id` = %d", PlayerToyInfo[giveplayerid][slot][ptID]);
 			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, giveplayerid);
@@ -6682,8 +6642,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return ShowPlayerCrimeDialog(playerid);
 			}
 			new iTargetID = GetPVarInt(playerid, "suspect_TargetID");
-			new
-				szMessage[128];
 			++PlayerInfo[iTargetID][pCrimes];
 			new crimeid = -1;
 			for(new i; i < sizeof(SuspectCrimes); i++)
@@ -6727,19 +6685,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			strcat(szCrime, inputtext);
 			AddCrime(playerid, iTargetID, szCrime);
 
-			format(szMessage, sizeof(szMessage), "You've commited a crime ( %s ). Reporter: %s.", szCrime, GetPlayerNameEx(playerid));
-			SendClientMessageEx(iTargetID, COLOR_LIGHTRED, szMessage);
+			SendClientMessageEx(iTargetID, COLOR_LIGHTRED, "You've commited a crime ( %s ). Reporter: %s.", szCrime, GetPlayerNameEx(playerid));
 
-			format(szMessage, sizeof(szMessage), "Current wanted level: %d", PlayerInfo[iTargetID][pWantedLevel]);
-			SendClientMessageEx(iTargetID, COLOR_YELLOW, szMessage);
+			SendClientMessageEx(iTargetID, COLOR_YELLOW, "Current wanted level: %d", PlayerInfo[iTargetID][pWantedLevel]);
 
 			foreach(new i: Player)
 			{
 				if(IsACop(i) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance]) {
-					format(szMessage, sizeof(szMessage), "HQ: All units APB (reporter: %s)",GetPlayerNameEx(playerid));
-					SendClientMessageEx(i, TEAM_BLUE_COLOR, szMessage);
-					format(szMessage, sizeof(szMessage), "HQ: Crime: %s, suspect: %s", szCrime, GetPlayerNameEx(iTargetID));
-					SendClientMessageEx(i, TEAM_BLUE_COLOR, szMessage);
+					SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: All units APB (reporter: %s)",GetPlayerNameEx(playerid));
+					SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Crime: %s, suspect: %s", szCrime, GetPlayerNameEx(iTargetID));
 				}
 			}
 			PlayerInfo[iTargetID][pDefendTime] = 60;
@@ -7011,8 +6965,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetPVarInt(playerid, "_rRepID", Player);
 				format(Message, sizeof(Message), "%s(%i) Revenge Killing", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid, Message, 2, GetPlayerPriority(playerid));
-				format(Message, sizeof(Message), "You have submitted a report on %s for Revenge Killing. It has been sent to all available admins.", GetPlayerNameEx(Player));
-				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for Revenge Killing. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SetPVarInt(playerid, "AlertedThisPlayer", Player);
 				SetPVarInt(playerid, "AlertType", 2);
 				AlertTime[playerid] = 300;
@@ -7042,8 +6995,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetPVarInt(playerid, "_rRepID", Player);
 				format(Message, sizeof(Message), "%s(%i) Chicken Running", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
-				format(Message, sizeof(Message), "You have submitted a report on %s for Chicken Running. It has been sent to all available admins.", GetPlayerNameEx(Player));
-				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for Chicken Running. It has been sent to all available admins.", GetPlayerNameEx(Player));
 			}
 		}
 	}
@@ -7070,8 +7022,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetPVarInt(playerid, "_rRepID", Player);
 				format(Message, sizeof(Message), "%s(%i) Car Ramming", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
-				format(Message, sizeof(Message), "You have submitted a report on %s for Car Ramming. It has been sent to all available admins.", GetPlayerNameEx(Player));
-				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for Car Ramming. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SetPVarInt(playerid, "AlertedThisPlayer", Player);
 				SetPVarInt(playerid, "AlertType", 4);
 				AlertTime[playerid] = 300;
@@ -7101,8 +7052,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetPVarInt(playerid, "_rRepID", Player);
 				format(Message, sizeof(Message), "%s(%i) Power Gaming", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
-				format(Message, sizeof(Message), "You have submitted a report on %s for Power Gaming. It has been sent to all available admins.", GetPlayerNameEx(Player));
-				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for Power Gaming. It has been sent to all available admins.", GetPlayerNameEx(Player));
 			}
 		}
 	}
@@ -7129,8 +7079,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetPVarInt(playerid, "_rRepID", Player);
 				format(Message, sizeof(Message), "%s(%i) Meta Gaming", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
-				format(Message, sizeof(Message), "You have submitted a report on %s for Meta Gaming. It has been sent to all available admins.", GetPlayerNameEx(Player));
-				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for Meta Gaming. It has been sent to all available admins.", GetPlayerNameEx(Player));
 			}
 		}
 	}
@@ -7157,8 +7106,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetPVarInt(playerid, "_rRepID", Player);
 				format(Message, sizeof(Message), "%s(%i) Spamming", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
-				format(Message, sizeof(Message), "You have submitted a report on %s for Spamming. It has been sent to all available admins.", GetPlayerNameEx(Player));
-				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for Spamming. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SetPVarInt(playerid, "AlertedThisPlayer", Player);
 				SetPVarInt(playerid, "AlertType", 6);
 				AlertTime[playerid] = 300;
@@ -7188,8 +7136,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetPVarInt(playerid, "_rRepID", Player);
 				format(Message, sizeof(Message), "%s(%i) Gun Discharge Exploits", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
-				format(Message, sizeof(Message), "You have submitted a report on %s for Gun Discharge Exploits. It has been sent to all available admins.", GetPlayerNameEx(Player));
-				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for Gun Discharge Exploits. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SetPVarInt(playerid, "AlertedThisPlayer", Player);
 				SetPVarInt(playerid, "AlertType", 7);
 				AlertTime[playerid] = 300;
@@ -7219,8 +7166,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetPVarInt(playerid, "_rRepID", Player);
 				format(Message, sizeof(Message), "%s(%i) Hacking", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, 2);
-				format(Message, sizeof(Message), "You have submitted a report on %s for Hacking. It has been sent to all available admins.", GetPlayerNameEx(Player));
-				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for Hacking. It has been sent to all available admins.", GetPlayerNameEx(Player));
 			}
 		}
 	}
@@ -7245,8 +7191,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else {
 				format(Message, sizeof(Message), "%s(%i) Money Farming", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
-				format(Message, sizeof(Message), "You have submitted a report on %s for Money Farming. It has been sent to all available admins.", GetPlayerNameEx(Player));
-				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for Money Farming. It has been sent to all available admins.", GetPlayerNameEx(Player));
 			}
 		}
 	}
@@ -7273,8 +7218,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetPVarInt(playerid, "_rRepID", Player);
 				format(Message, sizeof(Message), "%s(%i) Server Advertising", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, 2);
-				format(Message, sizeof(Message), "You have submitted a report on %s for Server Advertising. It has been sent to all available admins.", GetPlayerNameEx(Player));
-				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for Server Advertising. It has been sent to all available admins.", GetPlayerNameEx(Player));
 			}
 		}
 	}
@@ -7301,8 +7245,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetPVarInt(playerid, "_rRepID", Player);
 				format(Message, sizeof(Message), "%s(%i) NonRP Name", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
-				format(Message, sizeof(Message), "You have submitted a report on %s for NonRP Name. It has been sent to all available admins.", GetPlayerNameEx(Player));
-				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for NonRP Name. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SetPVarInt(playerid, "AlertedThisPlayer", Player);
 				SetPVarInt(playerid, "AlertType", 8);
 				AlertTime[playerid] = 300;
@@ -7330,8 +7273,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else {
 				format(Message, sizeof(Message), "%s(%i) Ban Evader", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
-				format(Message, sizeof(Message), "You have submitted a report on %s for Ban Evader. It has been sent to all available admins.", GetPlayerNameEx(Player));
-				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for Ban Evader. It has been sent to all available admins.", GetPlayerNameEx(Player));
 			}
 		}
 	}
@@ -7358,8 +7300,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetPVarInt(playerid, "_rRepID", Player);
 				format(Message, sizeof(Message), "%s(%i) General Exploits", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
-				format(Message, sizeof(Message), "You have submitted a report on %s for General Exploits. It has been sent to all available admins.", GetPlayerNameEx(Player));
-				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for General Exploits. It has been sent to all available admins.", GetPlayerNameEx(Player));
 			}
 		}
 	}
@@ -7384,8 +7325,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else {
 				format(Message, sizeof(Message), "%s(%i) Releasing Hitman Names", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
-				format(Message, sizeof(Message), "You have submitted a report on %s for Releasing Hitman Names. It has been sent to all available admins.", GetPlayerNameEx(Player));
-				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for Releasing Hitman Names. It has been sent to all available admins.", GetPlayerNameEx(Player));
 			}
 		}
 	}
@@ -7412,8 +7352,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetPVarInt(playerid, "_rRepID", Player);
 				format(Message, sizeof(Message), "%s(%i) Running/Swimming Man Exploit", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
-				format(Message, sizeof(Message), "You have submitted a report on %s for Running/Swimming Man Exploit. It has been sent to all available admins.", GetPlayerNameEx(Player));
-				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for Running/Swimming Man Exploit. It has been sent to all available admins.", GetPlayerNameEx(Player));
 			}
 		}
 	}
@@ -7440,8 +7379,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetPVarInt(playerid, "_rRepID", Player);
 				format(Message, sizeof(Message), "%s(%i) Car Surfing", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
-				format(Message, sizeof(Message), "You have submitted a report on %s for Car Surfing. It has been sent to all available admins.", GetPlayerNameEx(Player));
-				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for Car Surfing. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SetPVarInt(playerid, "AlertedThisPlayer", Player);
 				SetPVarInt(playerid, "AlertType", 10);
 				AlertTime[playerid] = 300;
@@ -7486,8 +7424,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			SetPVarInt(playerid, "_rRepID", Player);
 			format(Message, sizeof(Message), "%s(%i), %s (nonrp behavior)", GetPlayerNameEx(Player), Player, inputtext);
 			SendReportToQue(playerid, Message, 2, GetPlayerPriority(playerid));
-			format(Message, sizeof(Message), "You have submitted a report on %s for NonRP Behavior. It has been sent to all available admins.", GetPlayerNameEx(Player));
-			SendClientMessageEx(playerid, COLOR_WHITE, Message);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have submitted a report on %s for NonRP Behavior. It has been sent to all available admins.", GetPlayerNameEx(Player));
 			DeletePVar(playerid, "NRPB");
 			SetPVarInt(playerid, "AlertedThisPlayer", Player);
 			SetPVarInt(playerid, "AlertType", 11);
@@ -7572,8 +7509,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		else
 		{
 			SendClientMessageEx(Player,COLOR_YELLOW," Your name change request has been denied.");
-			format(string, sizeof(string), " You have denied %s's name change request.", GetPlayerNameEx(Player));
-			SendClientMessageEx(playerid,COLOR_YELLOW,string);
+			SendClientMessageEx(playerid,COLOR_YELLOW," You have denied %s's name change request.", GetPlayerNameEx(Player));
 			format(string, sizeof(string), "%s has denied %s's name change request",GetPlayerNameEx(playerid),GetPlayerNameEx(Player));
 			ABroadCast(COLOR_YELLOW, string, 3);
 			SetPVarInt(Player, "LastNameChange", gettime());
@@ -7604,8 +7540,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		else
 		{
 			SendClientMessageEx(Player,COLOR_YELLOW," Your team name change request has been denied.");
-			format(string, sizeof(string), " You have denied %s's team name change request.", GetPlayerNameEx(Player));
-			SendClientMessageEx(playerid,COLOR_YELLOW,string);
+			SendClientMessageEx(playerid,COLOR_YELLOW," You have denied %s's team name change request.", GetPlayerNameEx(Player));
 			format(string, sizeof(string), "%s has denied %s's team name change request",GetPlayerNameEx(playerid),GetPlayerNameEx(Player));
 			ABroadCast(COLOR_YELLOW, string, 3);
 			DeletePVar(Player, "RFLNameRequest");
@@ -7807,8 +7742,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		else
 		{
-			format(string, sizeof(string), "Your letter has been sent. It will be delivered in %d hour(s).", GetPVarInt(playerid, "LetterTime") / 60);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Your letter has been sent. It will be delivered in %d hour(s).", GetPVarInt(playerid, "LetterTime") / 60);
 		}
 
 		PlayerInfo[playerid][pPaper]--;
@@ -8129,8 +8063,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				UpdateDynamic3DTextLabelText(Businesses[PlayerInfo[playerid][pBusiness]][GasPumpSaleTextID][i], COLOR_YELLOW, szSaleText);
 			}
 			SaveBusiness(PlayerInfo[playerid][pBusiness]);
-			format(string, sizeof(string), "Gallon price has been set to %.2f!", price);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Gallon price has been set to %.2f!", price);
 			format(string, sizeof(string), "%s(%d) (IP: %s) has set the gas price to %f in %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), price, Businesses[PlayerInfo[playerid][pBusiness]][bName]);
 			Log("logs/business.log", string);
 		}
@@ -8171,10 +8104,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			PlayerInfo[iTargetID][pMember] = iGroupID;
 			PlayerInfo[iTargetID][pRank] = Group_GetMaxRank(iGroupID);
 			PlayerInfo[iTargetID][pDivision] = -1;
-			format(string, sizeof(string), "You have been made the leader of the %s by Administrator %s.", arrGroupData[iGroupID][g_szGroupName], GetPlayerNameEx(playerid));
-			SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "You have made %s the leader of the %s.", GetPlayerNameEx(iTargetID), arrGroupData[iGroupID][g_szGroupName]);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "You have been made the leader of the %s by Administrator %s.", arrGroupData[iGroupID][g_szGroupName], GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have made %s the leader of the %s.", GetPlayerNameEx(iTargetID), arrGroupData[iGroupID][g_szGroupName]);
 			format(string, sizeof(string), "%s (%d) has made %s (%d) the leader of the %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), arrGroupData[iGroupID][g_szGroupName]);
 			GroupLog(iGroupID, string);
 		}
@@ -8257,8 +8188,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					return 1;
 				}
 
-				format(string, sizeof(string), " Thank you for buying at %s.", Businesses[d][bName]);
-				SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				SendClientMessageEx(playerid, COLOR_GRAD1, " Thank you for buying at %s.", Businesses[d][bName]);
 				PlayerInfo[playerid][pCash] -= cost;
 				cost = Businesses[d][bPrice][v] / 100 * 15;
 				Businesses[d][bSafeBalance] += TaxSale( cost );
@@ -8276,8 +8206,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					return 1;
 				}
 
-				format(string, sizeof(string), " Thank you for buying at %s.",Businesses[d][bName]);
-				SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				SendClientMessageEx(playerid, COLOR_GRAD1, " Thank you for buying at %s.",Businesses[d][bName]);
 				PlayerInfo[playerid][pCash] -= cost;
 				cost = Businesses[d][bPrice][v] / 100 * 15;
 				Businesses[d][bSafeBalance] += TaxSale( cost );
@@ -8637,9 +8566,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return 1;
 			}
 			if(BidPlaced < Auctions[AuctionItem][Bid]+Auctions[AuctionItem][Increment]) {
-				new szMessage[128];
-				format(szMessage, sizeof(szMessage), "You need to bid at least %i over the current bid of %i.", Auctions[AuctionItem][Increment], Auctions[AuctionItem][Bid]);
-				SendClientMessageEx(playerid, COLOR_GREY, szMessage);
+				SendClientMessageEx(playerid, COLOR_GREY, "You need to bid at least %i over the current bid of %i.", Auctions[AuctionItem][Increment], Auctions[AuctionItem][Bid]);
 				return 1;
 			}
 
@@ -8953,8 +8880,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			GivePlayerCredits(playerid, -GetPVarInt(playerid, "FineAmount"), 1);
 
-			format(string, sizeof(string), "You were charged %s credits for %s by %s.", number_format(GetPVarInt(playerid, "FineAmount")), reason, GetPlayerNameEx(GetPVarInt(playerid, "FineBy")));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You were charged %s credits for %s by %s.", number_format(GetPVarInt(playerid, "FineAmount")), reason, GetPlayerNameEx(GetPVarInt(playerid, "FineBy")));
 
 			format(string, sizeof(string), "You charged %s %s credits for %s.", GetPlayerNameEx(playerid), number_format(GetPVarInt(playerid, "FineAmount")), reason);
 			SendClientMessageEx(GetPVarInt(playerid, "FineBy"), COLOR_CYAN, string);
@@ -9292,8 +9218,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			Price[GetPVarInt(playerid, "EditingPrice")] = GetPVarInt(playerid, "EditingPriceValue");
 			ShopItems[GetPVarInt(playerid, "EditingPrice")][sItemPrice] = GetPVarInt(playerid, "EditingPriceValue");
-			format(string, sizeof(string), "You have successfully edited the price of %s to %d.", item, GetPVarInt(playerid, "EditingPriceValue"));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited the price of %s to %d.", item, GetPVarInt(playerid, "EditingPriceValue"));
 			format(string, sizeof(string), "[EDITSHOPPRICES] [User: %s(%i)] [IP: %s] [%s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), item, number_format(ShopItems[GetPVarInt(playerid, "EditingPrice")][sItemPrice]));
 			Log("logs/editshop.log", string), print(string);
 			g_mysql_SavePrices();
@@ -9658,8 +9583,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased Custom License Plate (Credits)");
 			SendReportToQue(playerid, "Custom License Plate (Credits)", 2, 2);
-			format(string, sizeof(string), "You have purchased a custom license plate for %s credits.", number_format(ShopItems[22][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a custom license plate for %s credits.", number_format(ShopItems[22][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the custom license plate issued.");
 
 			format(string, sizeof(string), "[Custom License Plate] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[22][sItemPrice]));
@@ -9681,8 +9605,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold23` = '%d', `AmountMade23` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[23], AmountMade[23]);
 			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-			format(string, sizeof(string), "You have purchased a additional vehicle slot for %s credits.", number_format(ShopItems[23][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a additional vehicle slot for %s credits.", number_format(ShopItems[23][sItemPrice]));
 			PlayerInfo[playerid][pVehicleSlot] += 1;
 			LoadPlayerDisabledVehicles(playerid);
 
@@ -9705,8 +9628,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold28` = '%d', `AmountMade28` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[28], AmountMade[28]);
 			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-			format(string, sizeof(string), "You have purchased a additional toy slot for %s credits.", number_format(ShopItems[28][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a additional toy slot for %s credits.", number_format(ShopItems[28][sItemPrice]));
 			PlayerInfo[playerid][pToySlot] += 1;
 			LoadPlayerDisabledVehicles(playerid);
 
@@ -9729,8 +9651,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold30` = '%d', `AmountMade30` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[30], AmountMade[30]);
 			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-			format(string, sizeof(string), "You have purchased a spawn at the Gold VIP+ room, you will be able to use it after your next death.", number_format(ShopItems[30][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a spawn at the Gold VIP+ room, you will be able to use it after your next death.", number_format(ShopItems[30][sItemPrice]));
 
 			PlayerInfo[playerid][pVIPSpawn] = 1;
 			OnPlayerStatsUpdate(playerid);
@@ -9754,8 +9675,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased Restricted Last Name (NEW) (Credits)");
-			format(string, sizeof(string), "You have purchased a Restricted Last Name (NEW) for %s credits.", number_format(ShopItems[31][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a Restricted Last Name (NEW) for %s credits.", number_format(ShopItems[31][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_GREY, "Contact a member of Customer Relations to have the Restricted Last Name (NEW) issued.");
 
 			format(string, sizeof(string), "[Restricted Last Name (NEW)] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[31][sItemPrice]));
@@ -9777,8 +9697,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased Restricted Last Name (CHANGE) (Credits)");
-			format(string, sizeof(string), "You have purchased a Restricted Last Name (CHANGE) for %s credits.", number_format(ShopItems[32][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a Restricted Last Name (CHANGE) for %s credits.", number_format(ShopItems[32][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_GREY, "Contact a member of Customer Relations to have the Restricted Last Name (CHANGED) issued.");
 
 			format(string, sizeof(string), "[Restricted Last Name (CHANGE)] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[32][sItemPrice]));
@@ -9800,8 +9719,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased Custom User Title (NEW) (Credits)");
-			format(string, sizeof(string), "You have purchased a Custom User Title (NEW) for %s credits.", number_format(ShopItems[33][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a Custom User Title (NEW) for %s credits.", number_format(ShopItems[33][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_GREY, "Contact a member of Customer Relations to have the Custom User Title (NEW) issued.");
 
 			format(string, sizeof(string), "[Custom User Title (NEW)] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[33][sItemPrice]));
@@ -9823,8 +9741,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased Custom User Title (CHANGE) (Credits)");
-			format(string, sizeof(string), "You have purchased a Restricted Custom User Title (CHANGE) for %s credits.", number_format(ShopItems[34][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a Restricted Custom User Title (CHANGE) for %s credits.", number_format(ShopItems[34][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_GREY, "Contact a member of Customer Relations to have the Custom User Title (CHANGE) issued.");
 
 			format(string, sizeof(string), "[Custom User Title (CHANGE)] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[34][sItemPrice]));
@@ -9846,8 +9763,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased Teamspeak User Channel (Credits)");
-			format(string, sizeof(string), "You have purchased a Teamspeak User Channel for %s credits.", number_format(ShopItems[35][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a Teamspeak User Channel for %s credits.", number_format(ShopItems[35][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_GREY, "Contact a member of Customer Relations to have the Teamspeak User Channel issued.");
 
 			format(string, sizeof(string), "[Teamspeak User Channel] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[35][sItemPrice]));
@@ -9877,8 +9793,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
 
 			PlayerInfo[playerid][pBackpack] = 1;
-			format(string, sizeof(string), "You have purchased a Small Backpack for %s credits.", number_format(ShopItems[36][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a Small Backpack for %s credits.", number_format(ShopItems[36][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_GREY, "Use /backpackhelp to see the list of commands.");
 
 			format(string, sizeof(string), "[Small Backpack] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[36][sItemPrice]));
@@ -9908,8 +9823,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
 
 			PlayerInfo[playerid][pBackpack] = 2;
-			format(string, sizeof(string), "You have purchased a Medium Backpack for %s credits.", number_format(ShopItems[37][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a Medium Backpack for %s credits.", number_format(ShopItems[37][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_GREY, "Use /backpackhelp to see the list of commands.");
 
 			format(string, sizeof(string), "[Medium Backpack] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[37][sItemPrice]));
@@ -9939,8 +9853,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
 
 			PlayerInfo[playerid][pBackpack] = 3;
-			format(string, sizeof(string), "You have purchased a Large Backpack for %s credits.", number_format(ShopItems[38][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a Large Backpack for %s credits.", number_format(ShopItems[38][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_GREY, "Use /backpackhelp to see the list of commands.");
 
 			format(string, sizeof(string), "[Large Backpack] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[38][sItemPrice]));
@@ -9958,8 +9871,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
 					{
-						format(string, sizeof(string), "Vehicle %d | Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle %d | Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
 					}
 				}
 				return ShowPlayerDialogEx(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
@@ -9977,8 +9889,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				PlayerInfo[playerid][pFurnitureSlots] = MAX_FURNITURE_SLOTS;
 				SendClientMessageEx(playerid, COLOR_GRAD1, "Your furniture slots have been maximized.");
 			}
-			format(szMiscArray, sizeof(szMiscArray), "You have purchased a Furniture Pack - Bronze for %s credits.", number_format(ShopItems[41][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a Furniture Pack - Bronze for %s credits.", number_format(ShopItems[41][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_GREY, "Use /furniturehelp to see the list of commands.");
 
 			format(szMiscArray, sizeof(szMiscArray), "[Furniture Pack - Bronze] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[41][sItemPrice]));
@@ -10004,8 +9915,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				PlayerInfo[playerid][pFurnitureSlots] = MAX_FURNITURE_SLOTS;
 				SendClientMessageEx(playerid, COLOR_GRAD1, "Your furniture slots have been maximized.");
 			}
-			format(szMiscArray, sizeof(szMiscArray), "You have purchased a Furniture Pack - Silver for %s credits.", number_format(ShopItems[42][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a Furniture Pack - Silver for %s credits.", number_format(ShopItems[42][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_GREY, "Use /furniturehelp to see the list of commands.");
 
 			format(szMiscArray, sizeof(szMiscArray), "[Furniture Pack - Silver] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[42][sItemPrice]));
@@ -10031,8 +9941,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				PlayerInfo[playerid][pFurnitureSlots] = MAX_FURNITURE_SLOTS;
 				SendClientMessageEx(playerid, COLOR_GRAD1, "Your furniture slots have been maximized.");
 			}
-			format(szMiscArray, sizeof(szMiscArray), "You have purchased a Furniture Pack - Gold for %s credits.", number_format(ShopItems[43][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a Furniture Pack - Gold for %s credits.", number_format(ShopItems[43][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_GREY, "Use /furniturehelp to see the list of commands.");
 
 			format(szMiscArray, sizeof(szMiscArray), "[Furniture Pack] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[43][sItemPrice]));
@@ -10224,8 +10133,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			format(szQuery, sizeof(szQuery), "[RentaCar] [User: %s(%i)] [IP: %s] [Model: %d] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "VehicleID"), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[20][sItemPrice]));
 			Log("logs/credits.log", szQuery), print(szQuery);
 
-			format(szQuery, sizeof(szQuery), "[Rent a Car] You have rented a %s for %s credits, the vehicle will last 3 hours.", VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[20][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, szQuery);
+			SendClientMessageEx(playerid, COLOR_CYAN, "[Rent a Car] You have rented a %s for %s credits, the vehicle will last 3 hours.", VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[20][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, "Commands Available: /park, /stoprentacar, /trackcar");
 
 			SetPVarInt(playerid, "RentedHours", 180);
@@ -10845,8 +10753,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			PlayerInfo[playerid][pBusinessRank] = 5;
 			Businesses[GetPVarInt(playerid, "BusinessSaleID")][bMonths] = (2592000*1)+gettime()+259200;
 
-			format(string, sizeof(string), "You have purchased business %s (1 Month) for %s credits.", BusinessSales[GetPVarInt(playerid, "BusinessSale")][bText], number_format(BusinessSales[GetPVarInt(playerid, "BusinessSale")][bPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased business %s (1 Month) for %s credits.", BusinessSales[GetPVarInt(playerid, "BusinessSale")][bText], number_format(BusinessSales[GetPVarInt(playerid, "BusinessSale")][bPrice]));
 			SendClientMessageEx(playerid, COLOR_WHITE, "Type /help to review the business help section!");
 			SaveBusiness(GetPVarInt(playerid, "BusinessSaleID"));
 			OnPlayerStatsUpdate(playerid);
@@ -10931,8 +10838,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased House (Credits)");
 			SendReportToQue(playerid, "House (Credits)", 2, 2);
-			format(string, sizeof(string), "You have purchased a house for %s credits.", number_format(ShopItems[14][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a house for %s credits.", number_format(ShopItems[14][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the house issued.");
 
 			format(string, sizeof(string), "[House] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[14][sItemPrice]));
@@ -10958,8 +10864,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased House Interior Change (Credits)");
 			SendReportToQue(playerid, "House Interior Change (Credits)", 2, 2);
-			format(string, sizeof(string), "You have purchased a house interior change for %s credits.", number_format(ShopItems[15][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a house interior change for %s credits.", number_format(ShopItems[15][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the house interior change issued.");
 
 			format(string, sizeof(string), "[House Interior Change] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[15][sItemPrice]));
@@ -10985,8 +10890,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased House Move (Credits)");
 			SendReportToQue(playerid, "House Move (Credits)", 2, 2);
-			format(string, sizeof(string), "You have purchased a house move for %s credits.", number_format(ShopItems[16][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a house move for %s credits.", number_format(ShopItems[16][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the house move issued.");
 
 			format(string, sizeof(string), "[House Move] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[16][sItemPrice]));
@@ -11015,8 +10919,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AddFlag(playerid, INVALID_PLAYER_ID, szQuery);
 
 			SendReportToQue(playerid, szQuery, 2, 2);
-			format(string, sizeof(string), "You have purchased a small garage for %s credits.", number_format(ShopItems[24][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a small garage for %s credits.", number_format(ShopItems[24][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the small garage issued.");
 
 			format(string, sizeof(string), "[Garage - Small] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[24][sItemPrice]));
@@ -11045,8 +10948,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AddFlag(playerid, INVALID_PLAYER_ID, szQuery);
 
 			SendReportToQue(playerid, szQuery, 2, 2);
-			format(string, sizeof(string), "You have purchased a medium garage for %s credits.", number_format(ShopItems[25][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a medium garage for %s credits.", number_format(ShopItems[25][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the medium garage issued.");
 
 			format(string, sizeof(string), "[Garage - Medium] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[25][sItemPrice]));
@@ -11075,8 +10977,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AddFlag(playerid, INVALID_PLAYER_ID, szQuery);
 
 			SendReportToQue(playerid, szQuery, 2, 2);
-			format(string, sizeof(string), "You have purchased a large garage for %s credits.", number_format(ShopItems[26][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a large garage for %s credits.", number_format(ShopItems[26][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the large garage issued.");
 
 			format(string, sizeof(string), "[Garage - Large] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[26][sItemPrice]));
@@ -11105,8 +11006,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AddFlag(playerid, INVALID_PLAYER_ID, szQuery);
 
 			SendReportToQue(playerid, szQuery, 2, 2);
-			format(string, sizeof(string), "You have purchased a extra large garage for %s credits.", number_format(ShopItems[27][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a extra large garage for %s credits.", number_format(ShopItems[27][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the extra large garage issued.");
 
 			format(string, sizeof(string), "[Garage - Extra Large] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[27][sItemPrice]));
@@ -11370,8 +11270,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-			format(string, sizeof(string), "You have purchased %s VIP (%d Month(s)) for %s credits.", VIPType,GetPVarInt(playerid, "VIPMonths"), number_format(GetPVarInt(playerid, "VIPPrice")));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased %s VIP (%d Month(s)) for %s credits.", VIPType,GetPVarInt(playerid, "VIPMonths"), number_format(GetPVarInt(playerid, "VIPPrice")));
 
 			format(string, sizeof(string), "[VIP %i] [User: %s(%i)] [IP: %s] [Credits: %s] [VIP: %s(%d)] [Price: %s]", PlayerInfo[playerid][pVIPM], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), VIPType,GetPVarInt(playerid, "VIPMonths"), number_format(GetPVarInt(playerid, "VIPPrice")));
 			Log("logs/credits.log", string), Log("logs/setvip.log", string), print(string);
@@ -11391,8 +11290,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			GivePlayerCredits(playerid, -ShopItems[17][sItemPrice], 1);
 			printf("Price18: %d", ShopItems[17][sItemPrice]);
-			format(string, sizeof(string), "You have purchased gift timer reset for %s credits.", number_format(ShopItems[17][sItemPrice]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased gift timer reset for %s credits.", number_format(ShopItems[17][sItemPrice]));
 
 			AmountSold[17]++;
 			AmountMade[17] += ShopItems[17][sItemPrice];
@@ -11416,8 +11314,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			PlayerInfo[playerid][pTrickortreat] = 0;
 
 			GivePlayerCredits(playerid, -20, 1);
-			format(string, sizeof(string), "You have purchased a Holiday timer reset for %s credits.", number_format(20));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a Holiday timer reset for %s credits.", number_format(20));
 
 
 			format(string, sizeof(string), "[GIFTTIMERRESET] [User: %s(%i)] [IP: %s] [Credits: %s] [Special Holiday Timer Reset] [Price: %s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(20));
@@ -11451,8 +11348,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			GivePlayerCredits(playerid, -150, 1);
 			PumpkinStock--;
-			format(string, sizeof(string), "You have purchased the Straw Hat toy for %s credits.", number_format(150));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased the Straw Hat toy for %s credits.", number_format(150));
 
 			g_mysql_SaveAccount(playerid);
 			g_mysql_SaveMOTD();
@@ -11519,8 +11415,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -150, 1);
-			format(string, sizeof(string), "You have purchased the Cluckin Bell Hat toy for %s credits.", number_format(150));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased the Cluckin Bell Hat toy for %s credits.", number_format(150));
 
 			g_mysql_SaveAccount(playerid);
 			g_mysql_SaveMOTD();
@@ -11792,11 +11687,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "i", SENDDATA_THREAD);
 			print(szMessage);
 
-			format(szMessage, sizeof(szMessage), "You have accepted the offer of %s credits for $%s from %s.", number_format(GetPVarInt(playerid, "CreditsAmount")), number_format(GetPVarInt(playerid, "CreditsOffer")), GetPlayerNameEx(GetPVarInt(playerid, "CreditsSeller")));
-			SendClientMessageEx(playerid, COLOR_CYAN, szMessage);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have accepted the offer of %s credits for $%s from %s.", number_format(GetPVarInt(playerid, "CreditsAmount")), number_format(GetPVarInt(playerid, "CreditsOffer")), GetPlayerNameEx(GetPVarInt(playerid, "CreditsSeller")));
 
-			format(szMessage, sizeof(szMessage), "%s has accepted your offer of %s credits for $%s.", GetPlayerNameEx(playerid), number_format(GetPVarInt(playerid, "CreditsAmount")), number_format(GetPVarInt(playerid, "CreditsOffer")));
-			SendClientMessageEx(GetPVarInt(playerid, "CreditsSeller"), COLOR_CYAN, szMessage);
+			SendClientMessageEx(GetPVarInt(playerid, "CreditsSeller"), COLOR_CYAN, "%s has accepted your offer of %s credits for $%s.", GetPlayerNameEx(playerid), number_format(GetPVarInt(playerid, "CreditsAmount")), number_format(GetPVarInt(playerid, "CreditsOffer")));
 
 			format(szMessage, sizeof(szMessage), "[S %s(%d)][IP %s][B %s(%d)][IP %s][C %s][P $%s]", GetPlayerNameEx(GetPVarInt(playerid, "CreditsSeller")),GetPlayerSQLId(GetPVarInt(playerid, "CreditsSeller")), GetPlayerIpEx(GetPVarInt(playerid, "CreditsSeller")),
 			GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(playerid, "CreditsAmount")), number_format(GetPVarInt(playerid, "CreditsOffer")));
@@ -11942,8 +11835,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			PlayerToyInfo[giveplayerid][listitem][ptBone] = 1;
 			PlayerToyInfo[giveplayerid][listitem][ptTradable] = 1;
 			PlayerToyInfo[giveplayerid][listitem][ptSpecial] = 0;
-			format(stringg, sizeof(stringg), "You have given %s object %d", GetPlayerNameEx(giveplayerid), toyid);
-			SendClientMessageEx(playerid, COLOR_YELLOW, stringg);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "You have given %s object %d", GetPlayerNameEx(giveplayerid), toyid);
 			SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have received a new toy from an administrator!");
 			format(stringg, sizeof(stringg), "%s has given %s(%d) object %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), toyid);
 			Log("logs/toys.log", stringg);
@@ -11966,8 +11858,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(GetPVarType(giveplayerid, "IsInArena"))
 					{
 						LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
-						format(string, sizeof(string), "You have forced %s out of paintball. You may now teleport this player.", GetPlayerNameEx(giveplayerid));
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "You have forced %s out of paintball. You may now teleport this player.", GetPlayerNameEx(giveplayerid));
 						format(string, sizeof(string), "You have been forced out of paintball by %s.", GetPlayerNameEx(playerid));
 						SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
 					}
@@ -12082,8 +11973,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(iNumber > 4)
 				{
 					new szMessage[128];
-					format(szMessage, sizeof(szMessage), "You have rolled %d and doubled your chances!", iNumber);
-					SendClientMessageEx(playerid, COLOR_CYAN, szMessage);
+					SendClientMessageEx(playerid, COLOR_CYAN, "You have rolled %d and doubled your chances!", iNumber);
 					format(szMessage, sizeof(szMessage), "* %s has rolled %d and doubled his chances!", GetPlayerNameEx(playerid), iNumber);
 					ProxDetector(30.0, playerid, szMessage, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
 					FIFInfo[playerid][FIFChances] *= 2;
@@ -12095,8 +11985,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new szMessage[128];
 					format(szMessage, sizeof(szMessage), "* %s has rolled %d and lost it all!", GetPlayerNameEx(playerid), iNumber);
 					ProxDetector(30.0, playerid, szMessage, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
-					format(szMessage, sizeof(szMessage), "You have rolled %d and lost it all!", iNumber);
-					SendClientMessageEx(playerid, COLOR_CYAN, szMessage);
+					SendClientMessageEx(playerid, COLOR_CYAN, "You have rolled %d and lost it all!", iNumber);
 					FIFInfo[playerid][FIFChances] = 0;
 					format(szMessage, sizeof(szMessage), "%s (IP:%s) has lost it all. (Chances: %d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), FIFInfo[playerid][FIFChances]);
 					Log("logs/gamblechances.log", szMessage);
@@ -12135,7 +12024,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		if(response)
 		{
 			new advert[256], reportid = GetPVarInt(playerid, "ReporterID");
-			new szString[128], shared;
+			new shared;
 			GetPVarString(reportid, "PriorityAdText", advert, 128);
 			if(isnull(advert) || !IsPlayerConnected(reportid))
 			{
@@ -12156,8 +12045,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else if(PlayerInfo[reportid][pFreeAdsLeft] > 0 && PlayerInfo[reportid][pDonateRank] >= 4)
 			{
 				PlayerInfo[reportid][pFreeAdsLeft]--;
-				format(szString, sizeof(szString), "Platinum VIP: You have used a free advertisement, you have %d left for today.", PlayerInfo[reportid][pFreeAdsLeft]);
-				SendClientMessageEx(reportid, COLOR_YELLOW, szString);
+				SendClientMessageEx(reportid, COLOR_YELLOW, "Platinum VIP: You have used a free advertisement, you have %d left for today.", PlayerInfo[reportid][pFreeAdsLeft]);
 			}
 			else if(PlayerInfo[reportid][pDonateRank] == 2)
 			{
@@ -12621,8 +12509,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(IsDynamicGiftBoxEnabled == false) return SendClientMessageEx(playerid, -1, "Dynamic Giftbox is currently disabled! /togdynamicgift to enable.");
 					if(dgTimerTime <= 0 || dgAmount <= 0) return SendClientMessageEx(playerid, -1, "Invalid Settings!");
 					dgTimer = SetTimer("DG_AutoReset", dgTimerTime*60000, true);
-					format(string, sizeof(string), "You have enabled the auto reset feature. Settings: Timer: %d minute(s) | Amount: %d", dgTimerTime, dgAmount);
-					SendClientMessageEx(playerid, -1, string);
+					SendClientMessageEx(playerid, -1, "You have enabled the auto reset feature. Settings: Timer: %d minute(s) | Amount: %d", dgTimerTime, dgAmount);
 				}
 			}
 			if(GetPVarInt(playerid, "dgInputSel") == 1)
@@ -12630,16 +12517,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new _time;
 				if(sscanf(inputtext, "d", _time) || _time <= 0) return ShowPlayerDialogEx(playerid, DIALOG_DGRAUTORESET, DIALOG_STYLE_INPUT, "Dynamic Giftbox Auto Reset - Timer", "Please enter a interval in minutes of when you want the giftbox to be automatically reset.", "Submit", "Close");
 				dgTimerTime = _time;
-				format(string, sizeof(string), "You have set the auto reset timer to: %d minute(s).", dgTimerTime);
-				SendClientMessageEx(playerid, -1, string);
+				SendClientMessageEx(playerid, -1, "You have set the auto reset timer to: %d minute(s).", dgTimerTime);
 			}
 			if(GetPVarInt(playerid, "dgInputSel") == 2)
 			{
 				new _amount;
 				if(sscanf(inputtext, "d", _amount) || _amount <= 0) return ShowPlayerDialogEx(playerid, DIALOG_DGRAUTORESET, DIALOG_STYLE_INPUT, "Dynamic Giftbox Auto Reset - Amount", "Please enter a amount to be added to empty items when the giftbox is automatically reset.", "Submit", "Close");
 				dgAmount = _amount;
-				format(string, sizeof(string), "You have set the auto reset amount to: %d.", dgAmount);
-				SendClientMessageEx(playerid, -1, string);
+				SendClientMessageEx(playerid, -1, "You have set the auto reset amount to: %d.", dgAmount);
 			}
 			return pc_cmd_dgedit(playerid, "autoreset");
 		}
@@ -12665,8 +12550,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			DeleteFlag(GetPVarInt(playerid, "Flag_Transfer_ID"), playerid);
 			format(string, sizeof(string), "%s [Transfered from: %s]", string, GetPlayerNameEx(GetPVarInt(playerid, "Flag_Transfer_From")));
 			AddFlag(GetPVarInt(playerid, "Flag_Transfer_To"), playerid, string);
-			format(string, sizeof(string), "You have successfully transferred FlagID: %d To: %s From: %s", GetPVarInt(playerid, "Flag_Transfer_ID"), GetPlayerNameEx(GetPVarInt(playerid, "Flag_Transfer_To")), GetPlayerNameEx(GetPVarInt(playerid, "Flag_Transfer_From")));
-			SendClientMessageEx(playerid, -1, string);
+			SendClientMessageEx(playerid, -1, "You have successfully transferred FlagID: %d To: %s From: %s", GetPVarInt(playerid, "Flag_Transfer_ID"), GetPlayerNameEx(GetPVarInt(playerid, "Flag_Transfer_To")), GetPlayerNameEx(GetPVarInt(playerid, "Flag_Transfer_From")));
 			format(string, sizeof(string), "[TRANSFER] %s has transferred FlagID: %d To: %s(%d) From: %s(%d)", GetPlayerNameEx(playerid), GetPVarInt(playerid, "Flag_Transfer_ID"), GetPlayerNameEx(GetPVarInt(playerid, "Flag_Transfer_To")), GetPlayerSQLId(GetPVarInt(playerid, "Flag_Transfer_To")), GetPlayerNameEx(GetPVarInt(playerid, "Flag_Transfer_From")), GetPlayerSQLId(GetPVarInt(playerid, "Flag_Transfer_From")));
 			Log("logs/flags.log", string);
 			DeletePVar(playerid, "Flag_Transfer_ID");
@@ -12903,8 +12787,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(gettime() < PlayerInfo[playerid][mCooldown][item])
 				{
-					format(string, sizeof(string), "You have purchased this item 3 times in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
-					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You have purchased this item 3 times in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
 					return pc_cmd_microshop(playerid, "");
 				}
 				PlayerInfo[playerid][mCooldown][item] = 0;
@@ -12914,8 +12797,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(PlayerInfo[playerid][mPurchaseCount][item])
 				{
-					format(string, sizeof(string), "You currently have a active job boost, please wait for it to expire in %d minute(s) to purchase again.", PlayerInfo[playerid][mCooldown][item]);
-					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You currently have a active job boost, please wait for it to expire in %d minute(s) to purchase again.", PlayerInfo[playerid][mCooldown][item]);
 					return pc_cmd_microshop(playerid, "");
 				}
 				return ShowPlayerDialogEx(playerid, 7484, DIALOG_STYLE_LIST, "Micro Shop: Job Boost", "Detective\nLawyer\nWhore\nDrugs Dealer\nMechanic\nArms Dealer\nBoxer\nShipment Contractor", "Proceed", "Cancel");
@@ -12926,8 +12808,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(PlayerInfo[playerid][pBuddyInvites]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You currently have Buddy Invites available, please use them before purchasing this item.");
 				if(gettime() < PlayerInfo[playerid][mCooldown][item])
 				{
-					format(string, sizeof(string), "You have purchased this item in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
-					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You have purchased this item in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
 					return pc_cmd_microshop(playerid, "");
 				}
 				PlayerInfo[playerid][mCooldown][item] = 0;
@@ -12937,8 +12818,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(!PlayerInfo[playerid][pBuddyInvited]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be on a Buddy Invite to purchase this item.");
 				if(gettime() < PlayerInfo[playerid][mCooldown][item])
 				{
-					format(string, sizeof(string), "You have purchased this item 3 times in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
-					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You have purchased this item 3 times in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
 					return pc_cmd_microshop(playerid, "");
 				}
 				PlayerInfo[playerid][mCooldown][item] = 0;
@@ -12947,8 +12827,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(1 <= PlayerInfo[playerid][mInventory][4] <= 4)
 				{
-					format(string, sizeof(string), "You currently have %d energy bars on hand, they are sold in bulks of 4 which is also the max on hand.", PlayerInfo[playerid][mInventory][4]);
-					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You currently have %d energy bars on hand, they are sold in bulks of 4 which is also the max on hand.", PlayerInfo[playerid][mInventory][4]);
 					if(!PlayerInfo[playerid][pBackpack]) SendClientMessageEx(playerid, COLOR_GRAD2, "If you would like to be able to hold more, purchase a backpack via /miscshop");
 					else SendClientMessageEx(playerid, COLOR_GRAD2, "As you have a backpack you can store your on hand energy bars and try again.");
 					return 1;
@@ -12959,8 +12838,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(gettime() < PlayerInfo[playerid][mCooldown][item])
 				{
-					format(string, sizeof(string), "You have purchased this item 2 times in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
-					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You have purchased this item 2 times in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
 					return pc_cmd_microshop(playerid, "");
 				}
 				PlayerInfo[playerid][mCooldown][item] = 0;
@@ -12969,8 +12847,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(PlayerInfo[playerid][mPurchaseCount][item])
 				{
-					format(string, sizeof(string), "You currently have a active Quick Bank Access, please wait for it to expire in %d minute(s) to purchase again.", PlayerInfo[playerid][mCooldown][item]);
-					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You currently have a active Quick Bank Access, please wait for it to expire in %d minute(s) to purchase again.", PlayerInfo[playerid][mCooldown][item]);
 					return pc_cmd_microshop(playerid, "");
 				}
 			}
@@ -12978,8 +12855,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(gettime() < PlayerInfo[playerid][mCooldown][item])
 				{
-					format(string, sizeof(string), "You have purchased this item 3 times in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
-					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You have purchased this item 3 times in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
 					return pc_cmd_microshop(playerid, "");
 				}
 				PlayerInfo[playerid][mCooldown][item] = 0;
@@ -13042,8 +12918,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			format(string, sizeof(string), "[MICROSHOP] [User: %s(%i)] [IP: %s] [Credits: %s] [%s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), mItemName[item], number_format(MicroItems[item]));
 			Log("logs/micro.log", string), print(string);
-			format(string, sizeof(string), "You have purchased \"%s\" for %s credits.", mItemName[item], number_format(MicroItems[item]));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased \"%s\" for %s credits.", mItemName[item], number_format(MicroItems[item]));
 			if(item == 0)//Change a Job
 			{
 				if(GetPVarInt(playerid, "m_Response") == 0) PlayerInfo[playerid][pJob] = GetPVarInt(playerid, "jobSelection"), SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed your first job!");
@@ -13073,8 +12948,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				PlayerInfo[playerid][mCooldown][item] = 120;//2 Hours
 				format(string, sizeof(string), "[JOBBOOST] %s(%d) Job: %s (%d) Skill: %d (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetJobName(GetPVarInt(playerid, "jobSelection")), GetPVarInt(playerid, "jobSelection"), PlayerInfo[playerid][mBoost][1], GetJobLevel(playerid, GetPVarInt(playerid, "jobSelection")));
 				Log("logs/micro.log", string);
-				format(string, sizeof(string), "Job Boost for the %s job is now active and will expire in 60 minutes.", GetJobName(GetPVarInt(playerid, "jobSelection")));
-				SendClientMessageEx(playerid, -1, string);
+				SendClientMessageEx(playerid, -1, "Job Boost for the %s job is now active and will expire in 60 minutes.", GetJobName(GetPVarInt(playerid, "jobSelection")));
 			}
 			if(item == 2)//Buddy Invites Reset
 			{
@@ -13193,8 +13067,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(GetPVarInt(playerid, "mEditingPriceValue") == 0) SetPVarInt(playerid, "mEditingPriceValue", 999999);
 					MicroItems[GetPVarInt(playerid, "mEditingPrice")] = GetPVarInt(playerid, "mEditingPriceValue");
-					format(string, sizeof(string), "You have successfully edited the price of %s to %s.", mItemName[GetPVarInt(playerid, "mEditingPrice")], number_format(GetPVarInt(playerid, "mEditingPriceValue")));
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited the price of %s to %s.", mItemName[GetPVarInt(playerid, "mEditingPrice")], number_format(GetPVarInt(playerid, "mEditingPriceValue")));
 					format(string, sizeof(string), "[EDITMICROSHOPPRICES] [User: %s(%i)] [IP: %s] [%s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), mItemName[GetPVarInt(playerid, "mEditingPrice")], number_format(MicroItems[GetPVarInt(playerid, "mEditingPrice")]));
 					Log("logs/editshop.log", string), print(string);
 					g_mysql_SavePrices();
@@ -13243,10 +13116,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 
 			if(PlayerVehicleInfo[playerid][d][pvLocksLeft] < 1) worklockstring = "(Broken)";
-			format(string, sizeof(string), "* [WEPVEHICLE] You offered %s to buy this %s with %s Alarm & %s%s Lock for $%s with a %s fine.", GetPlayerNameEx(giveplayerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), alarmstring, worklockstring, lockstring, number_format(price), number_format(fine));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "* [WEPVEHICLE] %s has offered you their %s (VID: %d) with %s Alarm & %s%s Lock for $%s, (type /accept car) to buy.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), PlayerVehicleInfo[playerid][d][pvId], alarmstring, worklockstring, lockstring, number_format(price));
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* [WEPVEHICLE] You offered %s to buy this %s with %s Alarm & %s%s Lock for $%s with a %s fine.", GetPlayerNameEx(giveplayerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), alarmstring, worklockstring, lockstring, number_format(price), number_format(fine));
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* [WEPVEHICLE] %s has offered you their %s (VID: %d) with %s Alarm & %s%s Lock for $%s, (type /accept car) to buy.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), PlayerVehicleInfo[playerid][d][pvId], alarmstring, worklockstring, lockstring, number_format(price));
 			DeletePVar(playerid, "confirmvehsell");
 		}
 		else
@@ -13270,8 +13141,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			format(HouseInfo[GetPVarInt(Player, "hSignRequest")][hSignDesc], 64, "%s", escapeDesc);
 			SaveHouse(GetPVarInt(Player, "hSignRequest"));
 			SendClientMessageEx(Player, COLOR_YELLOW, "Your house sale sign text has been approved.");
-			format(string, sizeof(string), " You have approved %s's house sale sign text change on House ID: %d", GetPlayerNameEx(Player), GetPVarInt(Player, "hSignRequest"));
-			SendClientMessageEx(playerid, COLOR_YELLOW, string);
+			SendClientMessageEx(playerid, COLOR_YELLOW, " You have approved %s's house sale sign text change on House ID: %d", GetPlayerNameEx(Player), GetPVarInt(Player, "hSignRequest"));
 			format(string, sizeof(string), "%s changed House ID: %d sale sign text to \"%s\", owned by: %s(%d)", GetPlayerNameEx(playerid), GetPVarInt(Player, "hSignRequest"), desc, GetPlayerNameEx(Player), GetPlayerSQLId(Player));
 			Log("logs/house.log", string);
 			format(string, sizeof(string), "%s has approved %s's house sale sign text on House ID: %d", GetPlayerNameEx(playerid), GetPlayerNameEx(Player), GetPVarInt(Player, "hSignRequest"));
@@ -13280,8 +13150,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		else
 		{
 			SendClientMessageEx(Player, COLOR_YELLOW, "Your request to modify your house sale sign text has been denied.");
-			format(string, sizeof(string), " You have denied %s's house sale sign text modification request.", GetPlayerNameEx(Player));
-			SendClientMessageEx(playerid,COLOR_YELLOW,string);
+			SendClientMessageEx(playerid,COLOR_YELLOW," You have denied %s's house sale sign text modification request.", GetPlayerNameEx(Player));
 			format(string, sizeof(string), "%s has denied %s's house sale sign text modification request", GetPlayerNameEx(playerid), GetPlayerNameEx(Player));
 			ABroadCast(COLOR_YELLOW, string, 2);
 		}
@@ -13321,8 +13190,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(PlayerInfo[playerid][mInventory][4] >= amount) PlayerInfo[playerid][mInventory][4] -= amount;
 				else return ShowBackpackMenu(playerid, DIALOG_ENERGYBARS*2, "{B20400}Wrong input{A9C4E4}\nYou don't have that many Energy Bars");
 				PlayerInfo[playerid][pBItems][11] += amount;
-				format(string, sizeof(string), "You have deposited %d energy bars in your backpack.", amount);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %d energy bars in your backpack.", amount);
 				format(string, sizeof(string), "[EBARS] %s(%d) (IP:%s) deposited %d energy bars (%d bars Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, PlayerInfo[playerid][pBItems][11], PlayerInfo[playerid][pBackpack]);
 				Log("logs/backpack.log", string);
 			}
@@ -13338,8 +13206,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				PlayerInfo[playerid][pBItems][11] -= amount;
 				PlayerInfo[playerid][mInventory][4] += amount;
-				format(string, sizeof(string), "You have withdrawn %d energy bars from your backpack.", amount);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %d energy bars from your backpack.", amount);
 				format(string, sizeof(string), "[EBARS] %s(%d) (IP:%s) withdrawn %d energy bars (%d bars Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, PlayerInfo[playerid][pBItems][11], PlayerInfo[playerid][pBackpack]);
 				Log("logs/backpack.log", string);
 			}

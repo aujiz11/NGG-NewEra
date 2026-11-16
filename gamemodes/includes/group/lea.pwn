@@ -50,15 +50,12 @@ public SetPlayerFree(playerid,declare,const reason[])
 	if(IsPlayerConnected(playerid))
 	{
 		ClearCrimes(playerid, declare);
-		new string[128];
 		foreach(new i: Player)
 		{
 			if(IsACop(i))
 			{
-				format(string, sizeof(string), "HQ: All units, officer %s has completed their assignment.", GetPlayerNameEx(declare));
-				SendClientMessageEx(i, COLOR_DBLUE, string);
-				format(string, sizeof(string), "HQ: %s has been processed, %s.", GetPlayerNameEx(playerid), reason);
-				SendClientMessageEx(i, COLOR_DBLUE, string);
+				SendClientMessageEx(i, COLOR_DBLUE, "HQ: All units, officer %s has completed their assignment.", GetPlayerNameEx(declare));
+				SendClientMessageEx(i, COLOR_DBLUE, "HQ: %s has been processed, %s.", GetPlayerNameEx(playerid), reason);
 			}
 		}	
 	}
@@ -81,10 +78,8 @@ stock CuffTacklee(playerid, giveplayerid)
 {
 	new string[128], Float: health, Float: armor;
     ClearTackle(giveplayerid);
-	format(string, sizeof(string), "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-	format(string, sizeof(string), "* You handcuffed %s, till uncuff.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You handcuffed %s, till uncuff.", GetPlayerNameEx(giveplayerid));
 	format(string, sizeof(string), "* %s handcuffs %s, tightening the cuffs securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
@@ -610,12 +605,9 @@ CMD:searchcar(playerid, params[])
 	}
     if(isnull(string)) {
         if(VehInfo[closestcar][vCarVestKit] > 0) {
-            new str[84];
             SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains:");
-            format(str, sizeof(str), "* Kevlar Vest (x%d).", VehInfo[closestcar][vCarVestKit]);
-            SendClientMessageEx(playerid, COLOR_WHITE, str);
-            format(str, sizeof(str), "* First Aid Kit(x%d).", VehInfo[closestcar][vCarVestKit]);
-            SendClientMessageEx(playerid, COLOR_WHITE, str);
+            SendClientMessageEx(playerid, COLOR_WHITE, "* Kevlar Vest (x%d).", VehInfo[closestcar][vCarVestKit]);
+            SendClientMessageEx(playerid, COLOR_WHITE, "* First Aid Kit(x%d).", VehInfo[closestcar][vCarVestKit]);
 		}
 		else SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains: nothing.");
     }
@@ -743,8 +735,7 @@ CMD:clearcargo(playerid, params[])
 			}
 		}	
 		new string[128];
-		format(string, sizeof(string), "You removed the %s {FFFFFF}from the Vehicle.", truckcontentname);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You removed the %s {FFFFFF}from the Vehicle.", truckcontentname);
 		format(string, sizeof(string), "* %s has taken the illegal items from the Vehicle.", GetPlayerNameEx(playerid));
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
     }
@@ -939,25 +930,22 @@ CMD:vmdc(playerid, params[])
 {
     if(IsACop(playerid) || IsATowman(playerid) || IsAHitman(playerid) || PlayerInfo[playerid][pAdmin] >= 2)
     {
-        new string[128], giveplayerid;
+        new giveplayerid;
         if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vmdc [player]");
 
    		if(IsPlayerConnected(giveplayerid))
     	{
 	        SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
-			format(string, sizeof(string), "*** %s's Vehicles  ***", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			SendClientMessageEx(playerid, COLOR_GRAD2, "*** %s's Vehicles  ***", GetPlayerNameEx(giveplayerid));
 	        for(new i=0; i<MAX_PLAYERVEHICLES; i++)
          	{
 			    if(PlayerVehicleInfo[giveplayerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
 				{
-    				format(string, sizeof(string), "Vehicle registration: %d | Vehicle Name: %s | Ticket: $%d.",PlayerVehicleInfo[giveplayerid][i][pvId],GetVehicleName(PlayerVehicleInfo[giveplayerid][i][pvId]),PlayerVehicleInfo[giveplayerid][i][pvTicket]);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Vehicle Name: %s | Ticket: $%d.",PlayerVehicleInfo[giveplayerid][i][pvId],GetVehicleName(PlayerVehicleInfo[giveplayerid][i][pvId]),PlayerVehicleInfo[giveplayerid][i][pvTicket]);
 	    		}
 				else if(PlayerVehicleInfo[giveplayerid][i][pvImpounded])
 				{
-    				format(string, sizeof(string), "Vehicle registration: Voided (impounded) | Vehicle Name: %s | Ticket: $%d.",VehicleName[PlayerVehicleInfo[giveplayerid][i][pvModelId]-400],PlayerVehicleInfo[giveplayerid][i][pvTicket]);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: Voided (impounded) | Vehicle Name: %s | Ticket: $%d.",VehicleName[PlayerVehicleInfo[giveplayerid][i][pvModelId]-400],PlayerVehicleInfo[giveplayerid][i][pvTicket]);
 	    		}
 	    	}
 	    	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
@@ -1022,9 +1010,7 @@ CMD:vlookup(playerid, params[]) {
 
 			if(v != -1)
 			{
-				new string[78 + MAX_PLAYER_NAME];
-				format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%s", carid, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), number_format(PlayerVehicleInfo[i][v][pvTicket]));
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%s", carid, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), number_format(PlayerVehicleInfo[i][v][pvTicket]));
 				return 1;
 			}
 		}	
@@ -1032,16 +1018,12 @@ CMD:vlookup(playerid, params[]) {
 		{
 		    if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
 		    {
-				new string[78 + MAX_PLAYER_NAME];
-                format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT", carid, GetVehicleName(carid), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
-                SendClientMessageEx(playerid, COLOR_WHITE, string);
+                SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT", carid, GetVehicleName(carid), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
                 return 1;
 			}
 			else if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 			{
-				new string[78 + MAX_PLAYER_NAME];
-				format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s", carid, GetVehicleName(carid), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s", carid, GetVehicleName(carid), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
 				return 1;
 			}
         }
@@ -1073,9 +1055,7 @@ CMD:vcheck(playerid, params[])
 
 				if(v != -1)
 				{
-					new string[78 + MAX_PLAYER_NAME];
-					format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%s", carbeingtowed, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), number_format(PlayerVehicleInfo[i][v][pvTicket]));
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%s", carbeingtowed, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), number_format(PlayerVehicleInfo[i][v][pvTicket]));
 					return 1;
 				}
 			}	
@@ -1083,16 +1063,12 @@ CMD:vcheck(playerid, params[])
 			{
 			    if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
 			    {
-					new string[78 + MAX_PLAYER_NAME];
-                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT", carbeingtowed, GetVehicleName(carbeingtowed), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
-                    SendClientMessageEx(playerid, COLOR_WHITE, string);
+                    SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT", carbeingtowed, GetVehicleName(carbeingtowed), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
                     return 1;
 				}
 				else if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 				{
-					new string[78 + MAX_PLAYER_NAME];
-					format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
 					return 1;
 				}
             }
@@ -1116,9 +1092,7 @@ CMD:vcheck(playerid, params[])
 				new v = GetPlayerVehicle(i, closestcar);
 				if(v != -1)
 				{
-					new string[99 + MAX_PLAYER_NAME];
-					format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%d | Speed: %.0f MPH %s", closestcar, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), PlayerVehicleInfo[i][v][pvTicket],  vehicle_get_speed(closestcar), szClamp);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%d | Speed: %.0f MPH %s", closestcar, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), PlayerVehicleInfo[i][v][pvTicket],  vehicle_get_speed(closestcar), szClamp);
 					return 1;
 				}
 			}	
@@ -1126,16 +1100,12 @@ CMD:vcheck(playerid, params[])
 			{
 			    if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
 			    {
-					new string[99 + MAX_PLAYER_NAME];
-                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName], szClamp);
-                    SendClientMessageEx(playerid, COLOR_WHITE, string);
+                    SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName], szClamp);
                     return 1;
 				}
 				else if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 			    {
-					new string[99 + MAX_PLAYER_NAME];
-                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName], szClamp);
-                    SendClientMessageEx(playerid, COLOR_WHITE, string);
+                    SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName], szClamp);
                     return 1;
 				}
             }
@@ -1275,10 +1245,8 @@ CMD:take(playerid, params[])
 				{
 					if(PlayerInfo[giveplayerid][pOpiumSeeds] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any opium seeds.");
 
-					format(string, sizeof(string), "* You have taken away %s's opiumseeds.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has taken away your opiumseeds.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have taken away %s's opiumseeds.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has taken away your opiumseeds.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* Officer %s has taken away %s's opiumseeds.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					PlayerInfo[giveplayerid][pOpiumSeeds] = 0;
@@ -1303,10 +1271,8 @@ CMD:take(playerid, params[])
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
 					if(PlayerInfo[giveplayerid][pWSeeds] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any pot seeds.");
-					format(string, sizeof(string), "* You have taken away %s's Cannabisseeds.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has taken away your Cannabisseeds.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have taken away %s's Cannabisseeds.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has taken away your Cannabisseeds.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* Officer %s has taken away %s's Cannabisseeds.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					PlayerInfo[giveplayerid][pWSeeds] = 0;
@@ -1332,10 +1298,8 @@ CMD:take(playerid, params[])
 				{
 					if(PlayerInfo[giveplayerid][pCrates] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any drug crates.");
 
-					format(string, sizeof(string), "* You have taken away %s's Drug Crates.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has taken away your Drug Crates.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have taken away %s's Drug Crates.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has taken away your Drug Crates.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* Officer %s has taken away %s's Drug Crates.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					PlayerInfo[giveplayerid][pCrates] = 0;
@@ -1361,10 +1325,8 @@ CMD:take(playerid, params[])
 				{
 					if(PlayerInfo[giveplayerid][pSyringes] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any syringes.");
 
-					format(string, sizeof(string), "* You have taken away %s's syringes.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has taken away your syringes.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have taken away %s's syringes.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has taken away your syringes.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* Officer %s has taken away %s's syringes.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					PlayerInfo[giveplayerid][pSyringes] = 0;
@@ -1390,10 +1352,8 @@ CMD:take(playerid, params[])
 				{
 					if(PlayerInfo[giveplayerid][pRawOpium] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any raw opium.");
 
-					format(string, sizeof(string), "* You have taken away %s's raw opium.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has taken away your raw opium.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have taken away %s's raw opium.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has taken away your raw opium.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* Officer %s has taken away %s's raw opium.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					PlayerInfo[giveplayerid][pRawOpium] = 0;
@@ -1419,10 +1379,8 @@ CMD:take(playerid, params[])
 				{
 					if(PlayerInfo[giveplayerid][pDrugs][2] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any meth.");
 
-					format(string, sizeof(string), "* You have taken away %s's Meth.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has taken away your Meth.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have taken away %s's Meth.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has taken away your Meth.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* Officer %s has taken away %s's Meth.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					PlayerInfo[giveplayerid][pDrugs][2] = 0;
@@ -1448,10 +1406,8 @@ CMD:take(playerid, params[])
 				{
 					if(PlayerInfo[giveplayerid][pDrugs][3] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any ecstasy.");
 
-					format(string, sizeof(string), "* You have taken away %s's Ecstasy.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has taken away your Ecstasy.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have taken away %s's Ecstasy.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has taken away your Ecstasy.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* Officer %s has taken away %s's Ecstasy.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					PlayerInfo[giveplayerid][pDrugs][3] = 0;
@@ -1477,10 +1433,8 @@ CMD:take(playerid, params[])
 				{
 					if(PlayerInfo[giveplayerid][pDrugs][4] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any heroin.");
 
-					format(string, sizeof(string), "* You have taken away %s's Heroin.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has taken away your Heroin.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have taken away %s's Heroin.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has taken away your Heroin.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* Officer %s has taken away %s's Heroin.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					PlayerInfo[giveplayerid][pDrugs][4] = 0;
@@ -1506,10 +1460,8 @@ CMD:take(playerid, params[])
 				{
 					if(PlayerInfo[giveplayerid][pRadio] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have a radio.");
 
-					format(string, sizeof(string), "* You have taken away %s's radio.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has taken away your radio.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have taken away %s's radio.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has taken away your radio.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* Officer %s has taken away %s's radio.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					PlayerInfo[giveplayerid][pRadio] = 0;
@@ -1534,10 +1486,8 @@ CMD:take(playerid, params[])
 			{
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
-					format(string, sizeof(string), "* You have taken away %s's weapons.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has taken away your weapons.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have taken away %s's weapons.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has taken away your weapons.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* Officer %s has taken away %s's weapons.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					ResetPlayerWeaponsEx(giveplayerid);
@@ -1563,10 +1513,8 @@ CMD:take(playerid, params[])
 				{
 					if(PlayerInfo[giveplayerid][pDrugs][0] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any pot.");
 
-					format(string, sizeof(string), "* You have taken away %s's Cannabis.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has taken away your Cannabis.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have taken away %s's Cannabis.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has taken away your Cannabis.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* Officer %s has taken away %s's Cannabis.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					PlayerInfo[giveplayerid][pDrugs][0] = 0;
@@ -1591,10 +1539,8 @@ CMD:take(playerid, params[])
 				{
 					if(PlayerInfo[giveplayerid][pDrugs][1] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any crack.");
 
-					format(string, sizeof(string), "* You have taken away %s's crack.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has taken away your crack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have taken away %s's crack.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has taken away your crack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* Officer %s has taken away %s's crack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					PlayerInfo[giveplayerid][pDrugs][1] = 0;
@@ -1620,10 +1566,8 @@ CMD:take(playerid, params[])
 				{
 					if(PlayerInfo[giveplayerid][pMats] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any materials.");
 
-					format(string, sizeof(string), "* You have taken away %s's materials.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s as taken away your materials.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have taken away %s's materials.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s as taken away your materials.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* Officer %s has taken away %s's materials.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					PlayerInfo[giveplayerid][pMats] = 0;
@@ -1665,9 +1609,7 @@ CMD:tackle(playerid, params[])
 	{
 		if(GetPVarInt(playerid, "ReTackleCooldown") != 0 && gettime() < GetPVarInt(playerid, "ReTackleCooldown") + 30)
 		{
-			new string[128];
-			format(string, sizeof(string), "You must wait %d seconds before you can enable tackle mode again!", GetPVarInt(playerid, "ReTackleCooldown") + 30 - gettime());
-			return SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait %d seconds before you can enable tackle mode again!", GetPVarInt(playerid, "ReTackleCooldown") + 30 - gettime());
 		}
 		if(GetPVarInt(playerid, "WeaponsHolstered") == 0) //Unholstered
 	    {
@@ -1903,10 +1845,8 @@ CMD:cuff(playerid, params[])
 				if(PlayerCuffed[giveplayerid] == 1 || GetPlayerSpecialAction(giveplayerid) == SPECIAL_ACTION_HANDSUP || GetPVarInt(giveplayerid, "pBagged") >= 1)
 				{
 					if(PlayerInfo[giveplayerid][pConnectHours] < 32) SendClientMessageEx(giveplayerid, COLOR_WHITE, "If you logout now you will automatically be prisoned for 2+ hours!");
-					format(string, sizeof(string), "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* You handcuffed %s, till uncuff.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You handcuffed %s, till uncuff.", GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* %s handcuffs %s, tightening the cuffs securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
@@ -1977,10 +1917,8 @@ CMD:uncuff(playerid, params[])
 				if(PlayerCuffed[giveplayerid] > 1)
 				{
 					DeletePVar(giveplayerid, "IsFrozen");
-					format(string, sizeof(string), "* You have been uncuffed by %s.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* You uncuffed %s.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been uncuffed by %s.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You uncuffed %s.", GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* %s has uncuffed %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					GameTextForPlayer(giveplayerid, "~g~Uncuffed", 2500, 3);
@@ -1998,10 +1936,8 @@ CMD:uncuff(playerid, params[])
 				else if(GetPVarInt(giveplayerid, "jailcuffs") == 1)
 				{
 					DeletePVar(giveplayerid, "IsFrozen");
-					format(string, sizeof(string), "* You have been uncuffed by %s.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* You uncuffed %s.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been uncuffed by %s.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You uncuffed %s.", GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* %s has uncuffed %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					GameTextForPlayer(giveplayerid, "~g~Uncuffed", 2500, 3);
@@ -2079,10 +2015,8 @@ CMD:detain(playerid, params[])
 						if (floatcmp(floatabs(floatsub(pos[0], pos[3])), 10.0) != -1 &&
 								floatcmp(floatabs(floatsub(pos[1], pos[4])), 10.0) != -1 &&
 								floatcmp(floatabs(floatsub(pos[2], pos[5])), 10.0) != -1) return false;
-						format(string, sizeof(string), "* You were detained by %s .", GetPlayerNameEx(playerid));
-						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-						format(string, sizeof(string), "* You detained %s.", GetPlayerNameEx(giveplayerid));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You were detained by %s .", GetPlayerNameEx(playerid));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You detained %s.", GetPlayerNameEx(giveplayerid));
 						format(string, sizeof(string), "* %s throws %s in the vehicle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						GameTextForPlayer(giveplayerid, "~r~Detained", 2500, 3);
@@ -2150,10 +2084,8 @@ CMD:drag(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_GRAD2, " That suspect is not near you.");
 					return 1;
 				}
-				format(string, sizeof(string), "* %s is now dragging you.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "* You are now dragging %s, you may move them now.", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(giveplayerid, COLOR_WHITE, "* %s is now dragging you.", GetPlayerNameEx(playerid));
+				SendClientMessageEx(playerid, COLOR_WHITE, "* You are now dragging %s, you may move them now.", GetPlayerNameEx(giveplayerid));
 				format(string, sizeof(string), "* %s grabs ahold of %s and begins to move them.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				SendClientMessageEx(playerid, COLOR_WHITE, "You are now dragging the suspect, press the '{AA3333}FIRE{FFFFFF}' button to stop.");
@@ -2242,10 +2174,8 @@ CMD:ticket(playerid, params[])
 				{
 					if(giveplayerid == playerid) return 1;
 
-					format(string, sizeof(string), "* You gave %s a ticket costing $%d, reason: %s", GetPlayerNameEx(giveplayerid), moneys, reason);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has given you a ticket costing $%d, reason: %s", GetPlayerNameEx(playerid), moneys, reason);
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You gave %s a ticket costing $%d, reason: %s", GetPlayerNameEx(giveplayerid), moneys, reason);
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has given you a ticket costing $%d, reason: %s", GetPlayerNameEx(playerid), moneys, reason);
 					format(string, sizeof(string), "* Officer %s writes up a ticket and gives it to %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Type /accept ticket, to accept it.");

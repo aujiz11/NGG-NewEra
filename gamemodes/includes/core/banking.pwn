@@ -115,35 +115,29 @@ PayDay(i) {
 			switch(PlayerInfo[i][pDonateRank]) {
 				case 0: {
 					if(interest > 50000) interest = 50000;
-					format(string, sizeof(string), "  Balance: $%s  |  Interest rate: 0.1 percent (50k max)", number_format(PlayerInfo[i][pAccount]));
-					SendClientMessageEx(i, COLOR_GRAD1, string);
+					SendClientMessageEx(i, COLOR_GRAD1, "  Balance: $%s  |  Interest rate: 0.1 percent (50k max)", number_format(PlayerInfo[i][pAccount]));
 				}
 				case 1: {
 					if(interest > 100000) interest = 100000;
-					format(string, sizeof(string), "  Balance: $%s  |  Interest rate: 0.1 percent {FFFF00}(Bronze VIP: 100k max)", number_format(PlayerInfo[i][pAccount]));
-					SendClientMessageEx(i, COLOR_GRAD1, string);
+					SendClientMessageEx(i, COLOR_GRAD1, "  Balance: $%s  |  Interest rate: 0.1 percent {FFFF00}(Bronze VIP: 100k max)", number_format(PlayerInfo[i][pAccount]));
 				}
 				case 2:	{
 					if(interest > 150000) interest = 150000;
-					format(string, sizeof(string), "  Balance: $%s  |  Interest rate: 0.1 percent {FFFF00}(Silver VIP: 150k max)", number_format(PlayerInfo[i][pAccount]));
-					SendClientMessageEx(i, COLOR_GRAD1, string);
+					SendClientMessageEx(i, COLOR_GRAD1, "  Balance: $%s  |  Interest rate: 0.1 percent {FFFF00}(Silver VIP: 150k max)", number_format(PlayerInfo[i][pAccount]));
 				}
 				case 3: {
 					if(interest > 200000) interest = 200000;
-					format(string, sizeof(string), "  Balance: $%s  |  Interest rate: 0.1 percent {FFFF00}(Gold VIP: 200k max)", number_format(PlayerInfo[i][pAccount]));
-					SendClientMessageEx(i, COLOR_GRAD1, string);
+					SendClientMessageEx(i, COLOR_GRAD1, "  Balance: $%s  |  Interest rate: 0.1 percent {FFFF00}(Gold VIP: 200k max)", number_format(PlayerInfo[i][pAccount]));
 				}
 				case 4, 5: {
 					if(interest > 250000) interest = 250000;
-					format(string, sizeof(string), "  Balance: $%s  |  Interest rate: 0.1 percent {FFFF00}(Platinum VIP: 250k max)", number_format(PlayerInfo[i][pAccount]));
-					SendClientMessageEx(i, COLOR_GRAD1, string);
+					SendClientMessageEx(i, COLOR_GRAD1, "  Balance: $%s  |  Interest rate: 0.1 percent {FFFF00}(Platinum VIP: 250k max)", number_format(PlayerInfo[i][pAccount]));
 				}
 			}
 			if(PlayerInfo[i][pTaxiLicense] == 1) {
 				PlayerInfo[i][pAccount] -= (PlayerInfo[i][pPayCheck] / 100) * 5;
 				Tax += (PlayerInfo[i][pPayCheck] / 100) * 5;
-				format(string, sizeof(string), "  Taxi licensing fee (5 percent): $%s", number_format((PlayerInfo[i][pPayCheck] / 100) * 5));
-				SendClientMessageEx(i, COLOR_GRAD2, string);
+				SendClientMessageEx(i, COLOR_GRAD2, "  Taxi licensing fee (5 percent): $%s", number_format((PlayerInfo[i][pPayCheck] / 100) * 5));
 			}
 			for(new iGroupID; iGroupID < MAX_GROUPS; iGroupID++)
 			{
@@ -181,11 +175,9 @@ PayDay(i) {
 				}
 			}
 			PlayerInfo[i][pAccount] += interest;
-			format(string, sizeof(string), "  Interest gained: $%s", number_format(interest));
-			SendClientMessageEx(i, COLOR_GRAD3, string);
+			SendClientMessageEx(i, COLOR_GRAD3, "  Interest gained: $%s", number_format(interest));
 			SendClientMessageEx(i, COLOR_GRAD4, "______________________________________");
-			format(string, sizeof(string), "  New balance: $%s  |  Rent paid: $%s", number_format(PlayerInfo[i][pAccount]), number_format((0 <= PlayerInfo[i][pRenting] < sizeof HouseInfo) ? (HouseInfo[PlayerInfo[i][pRenting]][hRentFee]) : (0)));
-			SendClientMessageEx(i, COLOR_GRAD5, string);
+			SendClientMessageEx(i, COLOR_GRAD5, "  New balance: $%s  |  Rent paid: $%s", number_format(PlayerInfo[i][pAccount]), number_format((0 <= PlayerInfo[i][pRenting] < sizeof HouseInfo) ? (HouseInfo[PlayerInfo[i][pRenting]][hRentFee]) : (0)));
 
 			//GivePlayerCash(i, PlayerInfo[i][pPayCheck]);
 			GivePlayerCashEx(i, TYPE_BANK, PlayerInfo[i][pPayCheck]);
@@ -236,8 +228,7 @@ PayDay(i) {
 						GivePlayerCashEx(i, TYPE_BANK, Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]]);
 						Businesses[PlayerInfo[i][pBusiness]][bSafeBalance] -= Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]];
 						SaveBusiness(PlayerInfo[i][pBusiness]);
-						format(string,sizeof(string),"  Business pay: $%s", number_format(Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]]));
-						SendClientMessageEx(i, COLOR_GRAD2, string);
+						SendClientMessageEx(i, COLOR_GRAD2, "  Business pay: $%s", number_format(Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]]));
 					}
 				}
 			}
@@ -313,14 +304,12 @@ PayDay(i) {
 					PlayerInfo[i][pGoldBoxTokens]++;
 					SendClientMessage(i, COLOR_LIGHTBLUE, "You have received 1 Gold Giftbox token!  #FallIntoFun");
 				}
-				format(string, sizeof(string), "You currently have %d Reward Hours, please check /rewards for more information.", floatround(PlayerInfo[i][pRewardHours]));
-				SendClientMessageEx(i, COLOR_YELLOW, string);
+				SendClientMessageEx(i, COLOR_YELLOW, "You currently have %d Reward Hours, please check /rewards for more information.", floatround(PlayerInfo[i][pRewardHours]));
 			}
 
 			if(PlayerInfo[i][pDoubleEXP] > 0) {
 				PlayerInfo[i][pDoubleEXP]--;
-				format(string, sizeof(string), "You have gained 2 respect points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[i][pDoubleEXP]);
-				SendClientMessageEx(i, COLOR_YELLOW, string);
+				SendClientMessageEx(i, COLOR_YELLOW, "You have gained 2 respect points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[i][pDoubleEXP]);
 				PlayerInfo[i][pExp] += 2;
 			}
 			else PlayerInfo[i][pExp]++;
@@ -379,8 +368,7 @@ PayDay(i) {
 					if(FIFGP3 == 1 && PlayerInfo[i][pDonateRank] >= 3)
 					{
 						FIFInfo[i][FIFChances] += 3;
-						format(string,sizeof(string), "You have earned 3 FIF Chances! You now have %d chances!", FIFInfo[i][FIFChances]);
-						SendClientMessageEx(i, COLOR_WHITE, string);
+						SendClientMessageEx(i, COLOR_WHITE, "You have earned 3 FIF Chances! You now have %d chances!", FIFInfo[i][FIFChances]);
 						format(string, sizeof(string), "%s(%d) won 3 FIF Chances", GetPlayerNameEx(i), GetPlayerSQLId(i));
 						Log("logs/fif.log", string);
 					}
@@ -391,24 +379,21 @@ PayDay(i) {
 							case 1:
 							{
 								FIFInfo[i][FIFChances] += 1;
-								format(string,sizeof(string), "You have earned 1 FIF Chance! You now have %d chances!", FIFInfo[i][FIFChances]);
-								SendClientMessageEx(i, COLOR_WHITE, string);
+								SendClientMessageEx(i, COLOR_WHITE, "You have earned 1 FIF Chance! You now have %d chances!", FIFInfo[i][FIFChances]);
 								format(string, sizeof(string), "%s(%d) won 1 FIF Chance.", GetPlayerNameEx(i), GetPlayerSQLId(i));
 								Log("logs/fif.log", string);
 							}
 							case 2:
 							{
 								FIFInfo[i][FIFChances] += 2;
-								format(string,sizeof(string), "You have earned 2 FIF Chance's! You now have %d chances!", FIFInfo[i][FIFChances]);
-								SendClientMessageEx(i, COLOR_WHITE, string);
+								SendClientMessageEx(i, COLOR_WHITE, "You have earned 2 FIF Chance's! You now have %d chances!", FIFInfo[i][FIFChances]);
 								format(string, sizeof(string), "%s(%d) won 2 FIF Chances.", GetPlayerNameEx(i), GetPlayerSQLId(i));
 								Log("logs/fif.log", string);
 							}
 							case 3:
 							{
 								FIFInfo[i][FIFChances] += 3;
-								format(string,sizeof(string), "You have earned 3 FIF Chance's! You now have %d chances!", FIFInfo[i][FIFChances]);
-								SendClientMessageEx(i, COLOR_WHITE, string);
+								SendClientMessageEx(i, COLOR_WHITE, "You have earned 3 FIF Chance's! You now have %d chances!", FIFInfo[i][FIFChances]);
 								format(string, sizeof(string), "%s(%d) won 3 FIF Chances.", GetPlayerNameEx(i), GetPlayerSQLId(i));
 								Log("logs/fif.log", string);
 							}
@@ -612,22 +597,17 @@ CMD:writecheck(playerid, params[])
 			{
    				new fee = (monies*8)/100;
        			GivePlayerCash(playerid, (0 - fee));
-          		format(string, sizeof(string), "   You have written a check for $%d to %s (for %s) and have been charged an 8 percent fee.",monies,GetPlayerNameEx(giveplayerid),reason);
-            	SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "   You have written a check for $%d to %s (for %s) and have been charged an 8 percent fee.",monies,GetPlayerNameEx(giveplayerid),reason);
              	PlayerInfo[playerid][pChecks]--;
-              	format(string, sizeof(string), "   You now have %d checks left.",PlayerInfo[playerid][pChecks]);
-               	SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "   You now have %d checks left.",PlayerInfo[playerid][pChecks]);
       		}
           	else
 			{
-   				format(string, sizeof(string), "   You have written a check for $%d to %s (for %s) and have not been charged the 8 percent fee.",monies,GetPlayerNameEx(giveplayerid),reason);
-       			SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "   You have written a check for $%d to %s (for %s) and have not been charged the 8 percent fee.",monies,GetPlayerNameEx(giveplayerid),reason);
           		PlayerInfo[playerid][pChecks]--;
-            	format(string, sizeof(string), "   You now have %d checks left.",PlayerInfo[playerid][pChecks]);
-             	SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "   You now have %d checks left.",PlayerInfo[playerid][pChecks]);
 			}
-   			format(string, sizeof(string), "   You have recieved a check for $%d from %s for: %s", monies,GetPlayerNameEx(playerid),reason);
-      		SendClientMessageEx(giveplayerid, COLOR_GRAD1, string);
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have recieved a check for $%d from %s for: %s", monies,GetPlayerNameEx(playerid),reason);
         	format(string, sizeof(string), "* %s takes out a checkbook, fills out a check and hands it to %s.",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
          	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
           	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
@@ -673,9 +653,7 @@ CMD:charity(playerid, params[])
 
 CMD:nextpaycheck(playerid, params[])
 {
-	new string[128];
-	format(string, sizeof(string), "Total Minutes since last Paycheck: %d  Approximate time until next Paycheck: %d", floatround(PlayerInfo[playerid][pConnectSeconds]/60), floatround((3600-PlayerInfo[playerid][pConnectSeconds]) / 60));
-	SendClientMessageEx(playerid, COLOR_YELLOW, string);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Total Minutes since last Paycheck: %d  Approximate time until next Paycheck: %d", floatround(PlayerInfo[playerid][pConnectSeconds]/60), floatround((3600-PlayerInfo[playerid][pConnectSeconds]) / 60));
 	SendClientMessageEx(playerid, COLOR_GRAD2, "Please note that you will not accrue time if your game is paused.");
 	return 1;
 }
@@ -746,14 +724,11 @@ TransferBankAccount(playerid, targetid, amount, bool:atATM) {
 		return atATM ? ShowATMMenu(playerid, 3) : ShowBankMenu(playerid, 3);
 	}
 	if(fee) {
-		format(szMiscArray, sizeof(szMiscArray), "  You have been charged a 3 percent transfer fee: -$%d.", fee);
-		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "  You have been charged a 3 percent transfer fee: -$%d.", fee);
 	}
 
-	format(szMiscArray, sizeof(szMiscArray), "   You have transferred $%s to %s's account.", number_format(amount), GetPlayerNameEx(targetid));
-	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "   $%s has been transferred to your bank account from %s.", number_format(amount), GetPlayerNameEx(playerid));
-	SendClientMessageEx(targetid, COLOR_YELLOW, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "   You have transferred $%s to %s's account.", number_format(amount), GetPlayerNameEx(targetid));
+	SendClientMessageEx(targetid, COLOR_YELLOW, "   $%s has been transferred to your bank account from %s.", number_format(amount), GetPlayerNameEx(playerid));
 	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 	PlayerPlaySound(targetid, 1052, 0.0, 0.0, 0.0);
 

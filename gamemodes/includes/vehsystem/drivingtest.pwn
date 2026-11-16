@@ -137,8 +137,7 @@ DrivingSchoolSpeedMeter(playerid, Float:speed)
 	}
 
 	if(speed > (maxspeed + 5) && GetPVarInt(playerid, "pDTest") != 2) {
-		format(szMiscArray, sizeof(szMiscArray), "You have exceeded the max speed limit of %d MPH.", maxspeed);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREY, "You have exceeded the max speed limit of %d MPH.", maxspeed);
 		SetPlayerCheckpoint(playerid, 814.0655,-600.5410,16.0355, 4.0);
 		SetPVarInt(playerid, "pDTest", 2);
 	}

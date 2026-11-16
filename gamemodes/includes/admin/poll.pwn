@@ -225,8 +225,7 @@ forward Poll_CastVote(playerid, iOptionID);
 public Poll_CastVote(playerid, iOptionID) {
 
 	if(mysql_errno(MainPipeline)) SendClientMessageEx(playerid, COLOR_YELLOW, "There was an error when casting your vote. Please contact tech support.");
-	format(szMiscArray, sizeof(szMiscArray), "POLL: You voted %s in Poll %d.", arrPollOption[iOptionID], arrPolls[pol_iPollID]);
-	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "POLL: You voted %s in Poll %d.", arrPollOption[iOptionID], arrPolls[pol_iPollID]);
 
 	format(szMiscArray, sizeof(szMiscArray), "%s (%s) (IP: %s) cast a vote, Poll ID %d, OptionID %d",
 		GetPlayerNameExt(playerid), PlayerInfo[playerid][pId], GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), arrPolls[pol_iPollID], iOptionID);

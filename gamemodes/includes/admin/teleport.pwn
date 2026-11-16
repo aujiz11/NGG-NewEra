@@ -687,8 +687,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 2155.5400, -1011.4443, 62.9631);
 			}
-			format(string, sizeof(string), " You have sent %s to Los Colinas.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Los Colinas.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -709,8 +708,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1986.69, -1300.49, 25.03);
 			}
-			format(string, sizeof(string), " You have sent %s to Glen Park.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Glen Park.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -731,8 +729,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 2231.578613, -48.729660, 26.484375);
 			}
-			format(string, sizeof(string), " You have sent %s to Palomino Creek.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Palomino Creek.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -753,8 +750,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 2957.967041, -1459.404541, 10.809198);
 			}
-			format(string, sizeof(string), " You have sent %s to the NGG Shop.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to the NGG Shop.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -775,8 +771,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1576.40, 79.49, 3.55);
 			}
-			format(string, sizeof(string), " You have sent %s to the SF Docks.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to the SF Docks.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -797,8 +792,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1529.6,-1691.2,13.3);
 			}
-			format(string, sizeof(string), " You have sent %s to Los Santos.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Los Santos.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -819,8 +813,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1993.01, -1580.44, 86.39);
 			}
-			format(string, sizeof(string), " You have sent %s to crate cave.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to crate cave.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -841,8 +834,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1412.5375,-301.8998,14.1411);
 			}
-			format(string, sizeof(string), " You have sent %s to SF Airport.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to SF Airport.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -863,8 +855,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1435.95, -2695.33, 13.59);
 			}
-			format(string, sizeof(string), " You have sent %s to DoC.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to DoC.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -885,8 +876,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 2348.2871, -1146.8298, 27.3183);
 			}
-			format(string, sizeof(string), " You have sent %s to Crack Lab.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Crack Lab.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -907,8 +897,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1605.0,720.0,12.0);
 			}
-			format(string, sizeof(string), " You have sent %s to San Fierro.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to San Fierro.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -929,8 +918,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 634.9734, -594.6402, 16.3359);
 			}
-			format(string, sizeof(string), " You have sent %s to Dillimore.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Dillimore.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -951,8 +939,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1699.2,1435.1, 10.7);
 			}
-			format(string, sizeof(string), " You have sent %s to Las Venturas.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Las Venturas.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -974,8 +961,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -14.3755,-4472.8506, 4);
 			}
-			format(string, sizeof(string), " You have sent %s to the Crate Island.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to the Crate Island.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -997,8 +983,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1487.91, -1030.60, 23.66);
 			}
-			format(string, sizeof(string), " You have sent %s to the bank.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to the bank.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1020,8 +1005,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1192.78, -1292.68, 13.38);
 			}
-			format(string, sizeof(string), " You have sent %s to All Saints.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to All Saints.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1043,8 +1027,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 2000.05, -1409.36, 16.99);
 			}
-			format(string, sizeof(string), " You have sent %s to County General.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to County General.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1066,8 +1049,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 2227.60, -1674.89, 14.62);
 			}
-			format(string, sizeof(string), " You have sent %s to Ganton Gym.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Ganton Gym.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1087,8 +1069,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 344.77,-1526.08,33.28);
 			}
-			format(string, sizeof(string), " You have sent %s to the FBI HQ.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to the FBI HQ.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1110,8 +1091,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1253.70, 343.73, 19.41);
 			}
-			format(string, sizeof(string), " You have sent %s to Red County.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Red County.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1133,8 +1113,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1810.39, -1601.15, 13.54);
 			}
-			format(string, sizeof(string), " You have sent %s to LS VIP.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to LS VIP.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1155,8 +1134,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -2433.63, 511.45, 30.38);
 			}
-			format(string, sizeof(string), " You have sent %s to SF VIP.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to SF VIP.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1177,8 +1155,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1875.7731, 1366.0796, 16.8998);
 			}
-			format(string, sizeof(string), " You have sent %s to LV VIP.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to LV VIP.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1199,8 +1176,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 112.67, 1917.55, 18.72);
 			}
-			format(string, sizeof(string), " You have sent %s to DeMorgan.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to DeMorgan.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1233,8 +1209,7 @@ CMD:sendto(playerid, params[])
 				SetPlayerVirtualWorld(giveplayerid, 0);
 				PlayerInfo[giveplayerid][pVW] = 0;
 			}
-			format(string, sizeof(string), " You have sent %s to IC prison.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to IC prison.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 
 		}
@@ -1263,8 +1238,7 @@ CMD:sendto(playerid, params[])
 				SetPlayerVirtualWorld(giveplayerid, 0);
 				PlayerInfo[giveplayerid][pVW] = 0;
 			}
-			format(string, sizeof(string), " You have sent %s to OOC prison.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to OOC prison.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 
 		}
@@ -1282,8 +1256,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1424.93, -664.59, 1059.86);
 			}
-			format(string, sizeof(string), " You have sent %s to Stadium 1.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Stadium 1.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(playerid,4);
 			PlayerInfo[giveplayerid][pInt] = 4;
@@ -1305,8 +1278,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1395.96, -208.20, 1051.28);
 			}
-			format(string, sizeof(string), " You have sent %s to Stadium 2.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Stadium 2.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(playerid,7);
 			PlayerInfo[giveplayerid][pInt] = 7;
@@ -1328,8 +1300,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1410.72, 1591.16, 1052.53);
 			}
-			format(string, sizeof(string), " You have sent %s to Stadium 3.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Stadium 3.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(playerid,14);
 			PlayerInfo[giveplayerid][pInt] = 14;
@@ -1351,8 +1322,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1394.20, 987.62, 1023.96);
 			}
-			format(string, sizeof(string), " You have sent %s to Stadium 4.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Stadium 4.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(playerid,15);
 			PlayerInfo[giveplayerid][pInt] = 15;
@@ -1374,8 +1344,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1416.107000,0.268620,1000.926000);
 			}
-			format(string, sizeof(string), " You have sent %s to Int 1.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Int 1.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(playerid,1);
 			PlayerInfo[giveplayerid][pInt] = 1;
@@ -1396,8 +1365,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, GetPVarFloat(playerid, "tpPosX1"), GetPVarFloat(playerid, "tpPosY1"), GetPVarFloat(playerid, "tpPosZ1"));
 			}
-			format(string, sizeof(string), " You have sent %s to your first marked position.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to your first marked position.", GetPlayerNameEx(giveplayerid));
 			SetPlayerInterior(playerid, GetPVarInt(playerid, "tpInt1"));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 		}
@@ -1414,8 +1382,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, GetPVarFloat(playerid, "tpPosX2"), GetPVarFloat(playerid, "tpPosY2"), GetPVarFloat(playerid, "tpPosZ2"));
 			}
-			format(string, sizeof(string), " You have sent %s to your second marked position.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to your second marked position.", GetPlayerNameEx(giveplayerid));
 			SetPlayerInterior(playerid, GetPVarInt(playerid, "tpInt2"));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 		}
@@ -1433,8 +1400,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1133.71,-1464.52,15.77);
 			}
-			format(string, sizeof(string), " You have sent %s to the mall.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to the mall.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1456,8 +1422,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1446.5997,2608.4478,55.8359);
 			}
-			format(string, sizeof(string), " You have sent %s to El Quebrados.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to El Quebrados.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1479,8 +1444,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -2465.1348,2333.6572,4.8359);
 			}
-			format(string, sizeof(string), " You have sent %s to Bayside.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Bayside.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1501,8 +1465,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1020.29, -1129.06, 23.87);
 			}
-			format(string, sizeof(string), " You have sent %s to the Famed HQ.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to the Famed HQ.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1523,8 +1486,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 587.0106,-1238.3374,17.8049);
 			}
-			format(string, sizeof(string), " You have sent %s to Rodeo.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Rodeo.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1545,8 +1507,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -108.1058,-1172.5293,2.8906);
 			}
-			format(string, sizeof(string), " You have sent %s to Flint County Gas Station.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Flint County Gas Station.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1567,8 +1528,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1955.1357,-1796.8896,13.5469);
 			}
-			format(string, sizeof(string), " You have sent %s to Idlewood Gas Station.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Idlewood Gas Station.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1590,8 +1550,7 @@ CMD:sendto(playerid, params[])
 			{
 				Player_StreamPrep(giveplayerid, 1649.7531, 1463.1614, 1151.9687, FREEZE_TIME);
 			}
-			format(string, sizeof(string), " You have sent %s to the Mile High Club.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to the Mile High Club.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1612,8 +1571,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -203.2537, 1105.27, 18.73);
 			}
-			format(string, sizeof(string), " You have sent %s to Fort Carson.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Fort Carson.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
@@ -1634,8 +1592,7 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1811.48, -1891.17, 12.3936);
 			}
-			format(string, sizeof(string), " You have sent %s to Unity Station.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Unity Station.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;

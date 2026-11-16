@@ -104,7 +104,6 @@ STimeConvert(time) {
 forward Maintenance();
 public Maintenance()
 {
-	new string[128];
     ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Freezing Accounts...", 1);
 
     foreach(new i: Player)
@@ -125,8 +124,7 @@ public Maintenance()
 				if(PaintBallArena[arenaid][pbBidMoney] > 0)
 				{
 					GivePlayerCash(p,PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
-					format(string,sizeof(string),"You have been refunded a total of $%d because of premature closure.",PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
-					SendClientMessageEx(p, COLOR_WHITE, string);
+					SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of $%d because of premature closure.",PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
 				}
 				if(arenaid == GetPVarInt(p, "ArenaNumber"))
 				{
@@ -137,8 +135,7 @@ public Maintenance()
 							if(PlayerInfo[p][pDonateRank] < 3)
 							{
 								PlayerInfo[p][pPaintTokens] += 3;
-								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
-								SendClientMessageEx(p, COLOR_WHITE, string);
+								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
 							}
 						}
 						case 2:
@@ -146,8 +143,7 @@ public Maintenance()
 							if(PlayerInfo[p][pDonateRank] < 3)
 							{
 								PlayerInfo[p][pPaintTokens] += 4;
-								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
-								SendClientMessageEx(p, COLOR_WHITE, string);
+								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
 							}
 						}
 						case 3:
@@ -155,8 +151,7 @@ public Maintenance()
 							if(PlayerInfo[p][pDonateRank] < 3)
 							{
 								PlayerInfo[p][pPaintTokens] += 5;
-								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-								SendClientMessageEx(p, COLOR_WHITE, string);
+								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
 							}
 						}
 						case 4:
@@ -164,8 +159,7 @@ public Maintenance()
 							if(PlayerInfo[p][pDonateRank] < 3)
 							{
 								PlayerInfo[p][pPaintTokens] += 5;
-								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-								SendClientMessageEx(p, COLOR_WHITE, string);
+								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
 							}
 						}
 						case 5:
@@ -173,8 +167,7 @@ public Maintenance()
 							if(PlayerInfo[p][pDonateRank] < 3)
 							{
 								PlayerInfo[p][pPaintTokens] += 6;
-								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
-								SendClientMessageEx(p, COLOR_WHITE, string);
+								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
 							}
 						}
 					}

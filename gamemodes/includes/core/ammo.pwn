@@ -466,13 +466,11 @@ ListAmmo(playerid, targetid)
 	szMiscArray[0] = 0;
 	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	
-	format(szMiscArray, sizeof(szMiscArray), "Ammo on %s:", GetPlayerNameEx(targetid));
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Ammo on %s:", GetPlayerNameEx(targetid));
 
 	for(new i = 0; i != MAX_AMMO_TYPES; i++)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "%s: %i / %i rounds", GetAmmoName(i), arrAmmoData[targetid][awp_iAmmo][i], GetMaxAmmoAllowed(targetid, i));
-		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_WHITE, "%s: %i / %i rounds", GetAmmoName(i), arrAmmoData[targetid][awp_iAmmo][i], GetMaxAmmoAllowed(targetid, i));
 	}
 
 	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
@@ -501,8 +499,7 @@ CMD:setammo(playerid, params[]) {
 	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
 	if(iAmount < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The amount cannot be less than 1.");	
 
-	format(szMiscArray, sizeof(szMiscArray), "You have given %s %i ammo (type:%i)", GetPlayerNameEx(iTargetID), iAmount, iAmmoType);
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have given %s %i ammo (type:%i)", GetPlayerNameEx(iTargetID), iAmount, iAmmoType);
 	
 	format(szMiscArray, sizeof(szMiscArray), "%s(%s) has given %s(%d) (%s) %i ammo (type:%i)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), GetPlayerIpEx(iTargetID), iAmount, iAmmoType);
 	Log("logs/admingive.log", szMiscArray);
@@ -549,8 +546,7 @@ CMD:editgsprices(playerid, params[]) {
 	if(sscanf(params, "s[32]d", choice, amount)) {
 		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /editgsprices [choice] [amount]"); 
 		SendClientMessageEx(playerid, COLOR_WHITE, "Available choices: colt45, shotgun, deagle, pistolm, shotgunm, deaglem, riflem");
-		format(szMiscArray, sizeof(szMiscArray), "colt45: $%s | shotgun: $%s | Deagle: $%s | Pistol Ammo: $%s | Shotgun Ammo: $%s | Deagle Ammo: $%s | Rifle Ammo: %s", number_format(GunPrices[0]), number_format(GunPrices[1]), number_format(GunPrices[2]), number_format(GunPrices[3]), number_format(GunPrices[4]), number_format(GunPrices[5]), number_format(GunPrices[6]));
-		return SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		return SendClientMessageEx(playerid, COLOR_WHITE, "colt45: $%s | shotgun: $%s | Deagle: $%s | Pistol Ammo: $%s | Shotgun Ammo: $%s | Deagle Ammo: $%s | Rifle Ammo: %s", number_format(GunPrices[0]), number_format(GunPrices[1]), number_format(GunPrices[2]), number_format(GunPrices[3]), number_format(GunPrices[4]), number_format(GunPrices[5]), number_format(GunPrices[6]));
 	}
 	if(strcmp(choice, "colt45", true) == 0) {
 		GunPrices[0] = amount; 
@@ -648,8 +644,7 @@ CMD:orevokegunlicense(playerid, params[])
 		new PlayerName[MAX_PLAYERS];
 		mysql_escape_string(TargetName, PlayerName);
 		
-		format(szMiscArray, sizeof(szMiscArray), "Attempting to offline revoke %s a gun license.", PlayerName);
-		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Attempting to offline revoke %s a gun license.", PlayerName);
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Please wait...");
 		
 		format(szMiscArray, sizeof(szMiscArray), "SELECT `id`, `IP` FROM `accounts` WHERE `Username` = '%s'", PlayerName);

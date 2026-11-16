@@ -1734,8 +1734,7 @@ CMD:aimcheck(playerid, params[]) {
 	SendClientMessageEx(playerid, COLOR_GRAD1, "Jingles:");
 	SendClientMessageEx(playerid, COLOR_GRAD1, "");
 	SendClientMessageEx(playerid, COLOR_GRAD1, "Player ratios for some weapons (especially Combat Shotguns (SPAS)) can be high even though they're not aimbotting.");
-	format(szMiscArray, sizeof(szMiscArray), "Only make conclusions if the total shots fired is higher than approx. 50. TIMESTAMP: %s", date(gettime(), 3));
-	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Only make conclusions if the total shots fired is higher than approx. 50. TIMESTAMP: %s", date(gettime(), 3));
 	SendClientMessageEx(playerid, COLOR_YELLOW, "------------------------------ ");
 	return 1;
 }
@@ -1773,10 +1772,8 @@ CMD:resetacflags(playerid, params[]) {
 	if(sscanf(params, "u", uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "Usage: /resetacflags [playerid/name]");
 	if(!IsPlayerConnected(uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "You specified an invalid player.");
 	for(new i; i < AC_MAX; ++i) arrAntiCheat[uPlayer][ac_iFlags][i] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "You removed %s's anticheat flags.", GetPlayerNameEx(uPlayer));
-	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "Administrator %s removed your anticheat flags.", GetPlayerNameEx(playerid));
-	SendClientMessageEx(uPlayer, COLOR_YELLOW, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "You removed %s's anticheat flags.", GetPlayerNameEx(uPlayer));
+	SendClientMessageEx(uPlayer, COLOR_YELLOW, "Administrator %s removed your anticheat flags.", GetPlayerNameEx(playerid));
 	return 1;
 }
 
@@ -1847,8 +1844,7 @@ CMD:setproaimvar(playerid, params[]) {
 
 	if(!(0 < strval(params) < 30)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Set it between 0 and 30.");
 	iShotVariance = strval(params);
-	format(szMiscArray, sizeof(szMiscArray), "You set the shot variance to: %d", iShotVariance);
-	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GRAD1, "You set the shot variance to: %d", iShotVariance);
 	return 1;
 }
 

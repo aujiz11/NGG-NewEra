@@ -87,8 +87,7 @@ public Lotto(number)
 				JackpotFallen = 1;
 				format(string, sizeof(string), "Lottery News: %s has won the Jackpot of $%s with their lottery ticket.", GetPlayerNameEx(i), number_format(Jackpot));
 				OOCOff(COLOR_WHITE, string);
-				format(string, sizeof(string), "* You have won $%s with your lottery ticket - congratulations!", number_format(Jackpot));
-				SendClientMessageEx(i, COLOR_YELLOW, string);
+				SendClientMessageEx(i, COLOR_YELLOW, "* You have won $%s with your lottery ticket - congratulations!", number_format(Jackpot));
 				GivePlayerCash(i, Jackpot);
 				DeletePVar(i, "Winner");
 			}
@@ -109,8 +108,7 @@ public Lotto(number)
 				JackpotFallen = 1;
 				format(string, sizeof(string), "Lottery News: %s has won the Jackpot of $%s with their lottery ticket.", GetPlayerNameEx(i), number_format(Jackpot/TotalWinners));
 				OOCOff(COLOR_WHITE, string);
-				format(string, sizeof(string), "* You have won $%s with your lottery ticket - congratulations!", number_format(Jackpot/TotalWinners));
-				SendClientMessageEx(i, COLOR_YELLOW, string);
+				SendClientMessageEx(i, COLOR_YELLOW, "* You have won $%s with your lottery ticket - congratulations!", number_format(Jackpot/TotalWinners));
 				GivePlayerCash(i, Jackpot/TotalWinners);
 				DeletePVar(i, "Winner");
 			}
@@ -205,8 +203,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						SendClientMessageEx(playerid, COLOR_GREY, "You can only buy up to 5 tickets.");
 						return 1;
 					}
-					format(szMiscArray, sizeof(szMiscArray), "* You bought a Lottery Ticket with number: %d.", lotto);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You bought a Lottery Ticket with number: %d.", lotto);
 					AddTicket(playerid, lotto);
 					for(new i = 0; i < 5; i++) {
 						if(LottoNumbers[playerid][i] == 0) {

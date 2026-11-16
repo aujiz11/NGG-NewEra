@@ -63,8 +63,7 @@ MetDet_CreateMetDet(playerid)
 forward MetDet_OnCreateMetDet(playerid, i, Float:X, Float:Y, Float:Z, iVW, iINT);
 public MetDet_OnCreateMetDet(playerid, i, Float:X, Float:Y, Float:Z, iVW, iINT)
 {
-	format(szMiscArray, sizeof(szMiscArray), "Successfully created a Metal Detector with ID %d", i);
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Successfully created a Metal Detector with ID %d", i);
 	MetDet_Process(i, X, Y, Z, 0.0, 0.0, 0.0, iVW, iINT);
 	return 1;
 }

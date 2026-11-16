@@ -119,25 +119,21 @@ CMD:accept(playerid, params[])
 			}
 			if(GetPlayerCash(playerid) < DDSalePrice[target])
 			{
-				format(string, sizeof(string), "You do not have enough money for this transaction ($%s).", number_format(DDSalePrice[target]));
-				SendClientMessageEx(playerid, COLOR_GREY, string);
+				SendClientMessageEx(playerid, COLOR_GREY, "You do not have enough money for this transaction ($%s).", number_format(DDSalePrice[target]));
 				return 1;
 			}
 			fine = CalculatePercentage(DDSalePrice[target], 10, 1000000);
 			if(GetPlayerCash(target) < fine)
 			{
-				format(string, sizeof(string), "%s does not have the sufficient funds for the transfer fine ($%s).", GetPlayerNameEx(target), number_format(fine));
-				SendClientMessageEx(playerid, COLOR_GREY, string);
+				SendClientMessageEx(playerid, COLOR_GREY, "%s does not have the sufficient funds for the transfer fine ($%s).", GetPlayerNameEx(target), number_format(fine));
 				return 1;
 			}
 			stop DDSaleTimer[target];
 			DDSalePendingAdmin[target] = true;
 			DDSalePendingPlayer[target] = false;
-			format(string, sizeof(string), "You have accepted %s's dynamic door sale offer for $%s.", GetPlayerNameEx(target), number_format(DDSalePrice[target]));
-			SendClientMessageEx(playerid, COLOR_GREEN, string);
+			SendClientMessageEx(playerid, COLOR_GREEN, "You have accepted %s's dynamic door sale offer for $%s.", GetPlayerNameEx(target), number_format(DDSalePrice[target]));
 			SendClientMessageEx(playerid, COLOR_GREEN, "Server administration will now review the request before it is processed.");
-			format(string, sizeof(string), "%s accepted your dynamic door sale offer for $%s.", GetPlayerNameEx(playerid), number_format(DDSalePrice[target]));
-			SendClientMessageEx(target, COLOR_GREEN, string);
+			SendClientMessageEx(target, COLOR_GREEN, "%s accepted your dynamic door sale offer for $%s.", GetPlayerNameEx(playerid), number_format(DDSalePrice[target]));
 			SendClientMessageEx(target, COLOR_GREEN, "Server administration will now review the request before it is processed.");
 			format(string, sizeof(string), "[New Dynamic Door Sale Request]: (ID: %d) %s.", target, GetPlayerNameEx(target));
 			ABroadCast(COLOR_LIGHTRED, string, 4);
@@ -310,10 +306,8 @@ CMD:accept(playerid, params[])
 			}
 			PlayerInfo[playerid][pBusiness] = GetPVarInt(playerid, "Business_Invited");
 			PlayerInfo[playerid][pBusinessRank] = 0;
-            format(string, sizeof(string), "* You have accepted the invitation and joined %s, you were invited by %s.", Businesses[GetPVarInt(playerid, "Business_Invited")][bName], GetPlayerNameEx(GetPVarInt(playerid, "Business_Inviter")));
-            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-            format(string, sizeof(string), "* %s has accepted your invitation and joined %s", GetPlayerNameEx(playerid),Businesses[GetPVarInt(playerid, "Business_Invited")][bName]);
-            SendClientMessageEx(GetPVarInt(playerid, "Business_Inviter"), COLOR_LIGHTBLUE, string);
+            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have accepted the invitation and joined %s, you were invited by %s.", Businesses[GetPVarInt(playerid, "Business_Invited")][bName], GetPlayerNameEx(GetPVarInt(playerid, "Business_Inviter")));
+            SendClientMessageEx(GetPVarInt(playerid, "Business_Inviter"), COLOR_LIGHTBLUE, "* %s has accepted your invitation and joined %s", GetPlayerNameEx(playerid),Businesses[GetPVarInt(playerid, "Business_Invited")][bName]);
 			format(string, sizeof(string), "%s(%d) has accepted %s's(%d) invite to join %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(GetPVarInt(playerid, "Business_Inviter")), GetPlayerSQLId(GetPVarInt(playerid, "Business_Inviter")), Businesses[GetPVarInt(playerid, "Business_Invited")][bName]);
 			Log("logs/business.log", string);
    			DeletePVar(playerid, "Business_Inviter");
@@ -357,10 +351,8 @@ CMD:accept(playerid, params[])
 		    Businesses[business][bInventory] -= GetWeaponParam(GetPVarInt(playerid, "Business_WeapType"), WeaponMats);
 		    SaveBusiness(business);
 
-            format(string, sizeof(string), "   You have sold %s a %s.", GetPlayerNameEx(playerid),Weapon_ReturnName(GetPVarInt(playerid, "Business_WeapType")));
-            SendClientMessageEx(offerer, COLOR_GRAD1, string);
-            format(string, sizeof(string), "   You have recieved a %s from %s.", Weapon_ReturnName(GetPVarInt(playerid, "Business_WeapType")), GetPlayerNameEx(offerer));
-            SendClientMessageEx(playerid, COLOR_GRAD1, string);
+            SendClientMessageEx(offerer, COLOR_GRAD1, "   You have sold %s a %s.", GetPlayerNameEx(playerid),Weapon_ReturnName(GetPVarInt(playerid, "Business_WeapType")));
+            SendClientMessageEx(playerid, COLOR_GRAD1, "   You have recieved a %s from %s.", Weapon_ReturnName(GetPVarInt(playerid, "Business_WeapType")), GetPlayerNameEx(offerer));
             PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
             PlayerPlaySound(offerer, 1052, 0.0, 0.0, 0.0);
             format(string, sizeof(string), "* %s creates a gun from materials and sells it to %s.", GetPlayerNameEx(offerer), GetPlayerNameEx(playerid));
@@ -611,10 +603,8 @@ CMD:accept(playerid, params[])
 			DeletePVar(sellerid, "WepVehSaleVehicle");
 			DeletePVar(sellerid, "WepVehSalePrice");
 			DeletePVar(sellerid, "WepVehSaleFine");
-			format(szMessage, sizeof(szMessage), "You bought the vehicle for $%s.", number_format(price));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-			format(szMessage, sizeof(szMessage), "You sold the vehicle for $%s. Sale fee: $%s.", number_format(price), number_format(fine));
-			SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You bought the vehicle for $%s.", number_format(price));
+			SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, "You sold the vehicle for $%s. Sale fee: $%s.", number_format(price), number_format(fine));
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 			return 1;
         }
@@ -695,8 +685,7 @@ CMD:accept(playerid, params[])
 			format(szMessage, sizeof(szMessage), "%s(%d) sold house %d to %s(%d) for $%d.", GetPlayerNameEx(sellerid), seller, houseid, GetPlayerNameEx(playerid), buyer, price);
 			Log("logs/house.log", szMessage);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Congratulations on your new house.");
-			format(szMessage, sizeof(szMessage), "You sold your house for $%s.", number_format(price));
-			SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
+			SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, "You sold your house for $%s.", number_format(price));
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 			return 1;
         }
@@ -825,10 +814,8 @@ CMD:accept(playerid, params[])
 			DeletePVar(playerid, "RFLTeam_Inviter");
 			PlayerInfo[playerid][pRFLTeam] = team;
 			RFLInfo[team][RFLmembers] +=1;
-			format(szMessage, sizeof(szMessage), "* You are now part of %s's team. You may now use /rflhelp.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-			format(szMessage, sizeof(szMessage), "* %s has accepted your invite.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, szMessage);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now part of %s's team. You may now use /rflhelp.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s has accepted your invite.", GetPlayerNameEx(playerid));
 			if( GetPVarInt( playerid, "EventToken" ) == 1 ) {
 				if( EventKernel[ EventStatus ] == 1 || EventKernel[ EventStatus ] == 2 ) {
 					if(EventKernel[EventType] == 3) {
@@ -860,10 +847,8 @@ CMD:accept(playerid, params[])
 					if(CheckPointCheck(playerid)) 
 						return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
                     
-					format(szMessage, sizeof(szMessage), "* You have accepted %s's house invite, a checkpoint has been set to their house.", GetPlayerNameEx(hInviteOffer[playerid]));
-                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-                    format(szMessage, sizeof(szMessage), "* %s has accepted your house invite.", GetPlayerNameEx(playerid));
-                    SendClientMessageEx(hInviteOffer[playerid], COLOR_LIGHTBLUE, szMessage);
+                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have accepted %s's house invite, a checkpoint has been set to their house.", GetPlayerNameEx(hInviteOffer[playerid]));
+                    SendClientMessageEx(hInviteOffer[playerid], COLOR_LIGHTBLUE, "* %s has accepted your house invite.", GetPlayerNameEx(playerid));
 					DisablePlayerCheckpoint(playerid);
                     SetPlayerCheckpoint(playerid, HouseInfo[hInviteHouse[playerid]][hExteriorX], HouseInfo[hInviteHouse[playerid]][hExteriorY], HouseInfo[hInviteHouse[playerid]][hExteriorZ], 4.0);
                     gPlayerCheckpointStatus[playerid] = CHECKPOINT_HOME;
@@ -931,10 +916,8 @@ CMD:accept(playerid, params[])
             PlayerInfo[playerid][pDivision] = INVALID_DIVISION;
             strcpy(PlayerInfo[playerid][pBadge], "None", 9);
             arrGroupData[group][g_iMemberCount]++;
-            format(szMessage, sizeof(szMessage), "You accepted %s %s's invitation to %s.", arrGroupRanks[group][rank], GetPlayerNameEx(inviter), arrGroupData[group][g_szGroupName]);
-            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-            format(szMessage, sizeof(szMessage), "%s accepted your group invite.", GetPlayerNameEx(playerid));
-            SendClientMessageEx(inviter, COLOR_LIGHTBLUE, szMessage);
+            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You accepted %s %s's invitation to %s.", arrGroupRanks[group][rank], GetPlayerNameEx(inviter), arrGroupData[group][g_szGroupName]);
+            SendClientMessageEx(inviter, COLOR_LIGHTBLUE, "%s accepted your group invite.", GetPlayerNameEx(playerid));
             format(szMessage, sizeof(szMessage), "%s (%d) accepted %s's (%d) invitation to group %d.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(inviter), GetPlayerSQLId(inviter), group + 1);
             GroupLog(group, szMessage);
             DeletePVar(playerid, "Group_Inviter");
@@ -952,10 +935,8 @@ CMD:accept(playerid, params[])
                     if(ProxDetectorS(10.0, playerid, MarryWitnessOffer[playerid])) {
                         GetPlayerName(MarryWitnessOffer[playerid], giveplayer, sizeof(giveplayer));
                         GetPlayerName(playerid, sendername, sizeof(sendername));
-                        format(szMessage, sizeof(szMessage), "* You have accepted %s's request to be their marriage witness.", giveplayer);
-                        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-                        format(szMessage, sizeof(szMessage), "* %s has accepted your request to be your marriage witness.", sendername);
-                        SendClientMessageEx(MarryWitnessOffer[playerid], COLOR_LIGHTBLUE, szMessage);
+                        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have accepted %s's request to be their marriage witness.", giveplayer);
+                        SendClientMessageEx(MarryWitnessOffer[playerid], COLOR_LIGHTBLUE, "* %s has accepted your request to be your marriage witness.", sendername);
                         MarryWitness[MarryWitnessOffer[playerid]] = playerid;
 						SetPVarInt(MarryWitnessOffer[playerid], "MarriageWitnessSession", g_arrQueryHandle[playerid]);
                         MarryWitnessOffer[playerid] = INVALID_PLAYER_ID;
@@ -986,12 +967,9 @@ CMD:accept(playerid, params[])
                                 if(IsPlayerInRangeOfPoint(playerid, 10.0, 1963.9612, -369.1851, 1093.7289)) {
                                     GetPlayerName(ProposeOffer[playerid], giveplayer, sizeof(giveplayer));
                                     GetPlayerName(playerid, sendername, sizeof(sendername));
-                                    format(szMessage, sizeof(szMessage), "* You have accepted %s's request to be your husband.", giveplayer);
-                                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-                                    format(szMessage, sizeof(szMessage), "* %s has accepted your request to be your wife.", sendername);
-                                    SendClientMessageEx(ProposeOffer[playerid], COLOR_LIGHTBLUE, szMessage);
-                                    format(szMessage, sizeof(szMessage), "Priest: %s, do you take %s as your lovely husband? (Type 'yes', as anything else will reject the marriage.)", sendername, giveplayer);
-                                    SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+                                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have accepted %s's request to be your husband.", giveplayer);
+                                    SendClientMessageEx(ProposeOffer[playerid], COLOR_LIGHTBLUE, "* %s has accepted your request to be your wife.", sendername);
+                                    SendClientMessageEx(playerid, COLOR_WHITE, "Priest: %s, do you take %s as your lovely husband? (Type 'yes', as anything else will reject the marriage.)", sendername, giveplayer);
                                     MarriageCeremoney[playerid] = 1;
 									if(GetPVarInt(ProposeOffer[playerid], "marriagelastname") == 1)
 									{
@@ -1045,10 +1023,8 @@ CMD:accept(playerid, params[])
                             //GetPlayerIp(TicketOffer[playerid], ipex, sizeof(ipex));
                             //format(szMessage, sizeof(szMessage), "[FACTION TICKET] %s (IP: %s) has paid $%d to %s (IP: %s)", GetPlayerNameEx(playerid), ip, TicketMoney[playerid], GetPlayerNameEx(TicketOffer[playerid]), ipex);
                             // Log("logs/pay.log", szMessage);
-                            format(szMessage, sizeof(szMessage), "* You have paid the ticket of $%d to %s.", TicketMoney[playerid], GetPlayerNameEx(TicketOffer[playerid]));
-                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-                            format(szMessage, sizeof(szMessage), "* %s has paid your ticket of $%d.", GetPlayerNameEx(playerid), TicketMoney[playerid]);
-                            SendClientMessageEx(TicketOffer[playerid], COLOR_LIGHTBLUE, szMessage);
+                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have paid the ticket of $%d to %s.", TicketMoney[playerid], GetPlayerNameEx(TicketOffer[playerid]));
+                            SendClientMessageEx(TicketOffer[playerid], COLOR_LIGHTBLUE, "* %s has paid your ticket of $%d.", GetPlayerNameEx(playerid), TicketMoney[playerid]);
                             format(szMessage, sizeof(szMessage), "* %s has paid the ticket.", GetPlayerNameEx(playerid));
                             ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
                             GivePlayerCash(playerid, - TicketMoney[playerid]);
@@ -1104,10 +1080,8 @@ CMD:accept(playerid, params[])
                     else {
                         mypoints = 30;
                     }
-                    format(szMessage, sizeof(szMessage), "* You have accepted the Boxing Challenge from %s, and will fight with %d Health.",giveplayer,mypoints);
-                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-                    format(szMessage, sizeof(szMessage), "* %s has accepted your Boxing Challenge Request, you will fight with %d Health.",sendername,points);
-                    SendClientMessageEx(BoxOffer[playerid], COLOR_LIGHTBLUE, szMessage);
+                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have accepted the Boxing Challenge from %s, and will fight with %d Health.",giveplayer,mypoints);
+                    SendClientMessageEx(BoxOffer[playerid], COLOR_LIGHTBLUE, "* %s has accepted your Boxing Challenge Request, you will fight with %d Health.",sendername,points);
                     if(IsPlayerInRangeOfPoint(playerid,20.0,758.98, -60.32, 1000.78) || IsPlayerInRangeOfPoint(BoxOffer[playerid],20.0,758.98, -60.32, 1000.78)) {
                         ResetPlayerWeapons(playerid);
                         ResetPlayerWeapons(BoxOffer[playerid]);
@@ -1288,18 +1262,15 @@ CMD:accept(playerid, params[])
                     if(IsPlayerConnected(MedicCall)) {
                         GetPlayerName(playerid, sendername, sizeof(sendername));
                         GetPlayerName(MedicCall, giveplayer, sizeof(giveplayer));
-                        format(szMessage, sizeof(szMessage), "* You have accepted the Medic Call from %s.",giveplayer);
-                        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+                        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have accepted the Medic Call from %s.",giveplayer);
                         // SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* After the 45 Seconds the red marker will dissapear.");
-                        format(szMessage, sizeof(szMessage), "* Medic %s has accepted your Medic Call please wait at your current Position.",sendername);
-                        SendClientMessageEx(MedicCall, COLOR_LIGHTBLUE, szMessage);
+                        SendClientMessageEx(MedicCall, COLOR_LIGHTBLUE, "* Medic %s has accepted your Medic Call please wait at your current Position.",sendername);
                         new Float:X,Float:Y,Float:Z;
                         GetPlayerPos(MedicCall, X, Y, Z);
                         SetPlayerCheckpoint(playerid, X, Y, Z, 5);
                         new zone[MAX_ZONE_NAME];
                         GetPlayer3DZone(MedicCall, zone, sizeof(zone));
-                        format(szMessage, sizeof(szMessage), "HINT: %s is located in %s", GetPlayerNameEx(MedicCall), zone);
-                        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+                        SendClientMessageEx(playerid, COLOR_WHITE, "HINT: %s is located in %s", GetPlayerNameEx(MedicCall), zone);
                         MedicCallTime[playerid] = 1;
                         MedicAccepted[playerid] = MedicCall;
                         MedicCall = INVALID_PLAYER_ID;
@@ -1334,11 +1305,9 @@ CMD:accept(playerid, params[])
                     if(playerid == MechanicCall) return 1;
                     GetPlayerName(playerid, sendername, sizeof(sendername));
                     GetPlayerName(MechanicCall, giveplayer, sizeof(giveplayer));
-                    format(szMessage, sizeof(szMessage), "* You have accepted the Mechanic Call from %s, you have 30 seconds to get there.",giveplayer);
-                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have accepted the Mechanic Call from %s, you have 30 seconds to get there.",giveplayer);
                     SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* After the 30 Seconds the red marker will dissapear.");
-                    format(szMessage, sizeof(szMessage), "* Car Mechanic %s has accepted your Mechanic Call, please wait at your current position.",sendername);
-                    SendClientMessageEx(MechanicCall, COLOR_LIGHTBLUE, szMessage);
+                    SendClientMessageEx(MechanicCall, COLOR_LIGHTBLUE, "* Car Mechanic %s has accepted your Mechanic Call, please wait at your current position.",sendername);
                     new Float:X,Float:Y,Float:Z;
                     GetPlayerPos(MechanicCall, X, Y, Z);
                     SetPlayerCheckpoint(playerid, X, Y, Z, 5);
@@ -1395,10 +1364,8 @@ CMD:accept(playerid, params[])
                         if(PlayerInfo[giveplayerid][pJob] == 2 || PlayerInfo[giveplayerid][pJob2] == 2 || PlayerInfo[giveplayerid][pJob3] == 2) {
                             GetPlayerName(giveplayerid, giveplayer, sizeof(giveplayer));
                             GetPlayerName(playerid, sendername, sizeof(sendername));
-                            format(szMessage, sizeof(szMessage), "* You allowed %s to free a Jailed Person.", giveplayer);
-                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE,szMessage);
-                            format(szMessage, sizeof(szMessage), "* Officer %s approved (allowed) you to free a Jailed Person. (use /free)", sendername);
-                            SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE,szMessage);
+                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You allowed %s to free a Jailed Person.", giveplayer);
+                            SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE,"* Officer %s approved (allowed) you to free a Jailed Person. (use /free)", sendername);
                             ApprovedLawyer[giveplayerid] = 1;
                             return 1;
                         }
@@ -1441,10 +1408,8 @@ CMD:accept(playerid, params[])
                             SetArmour(playerid, 50);
                             GetPlayerName(GuardOffer[playerid], giveplayer, sizeof(giveplayer));
                             GetPlayerName(playerid, sendername, sizeof(sendername));
-                            format(szMessage, sizeof(szMessage), "* You accepted the protection for $%d from %s.",GuardPrice[playerid],GetPlayerNameEx(GuardOffer[playerid]));
-                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-                            format(szMessage, sizeof(szMessage), "* %s accepted your protection, and the $%d was added to your money.",GetPlayerNameEx(playerid),GuardPrice[playerid]);
-                            SendClientMessageEx(GuardOffer[playerid], COLOR_LIGHTBLUE, szMessage);
+                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You accepted the protection for $%d from %s.",GuardPrice[playerid],GetPlayerNameEx(GuardOffer[playerid]));
+                            SendClientMessageEx(GuardOffer[playerid], COLOR_LIGHTBLUE, "* %s accepted your protection, and the $%d was added to your money.",GetPlayerNameEx(playerid),GuardPrice[playerid]);
                             GivePlayerCash(GuardOffer[playerid], GuardPrice[playerid]);
                             GivePlayerCash(playerid, -GuardPrice[playerid]);
                             ExtortionTurfsWarsZone(GuardOffer[playerid], 2, GuardPrice[playerid]);
@@ -1486,10 +1451,8 @@ CMD:accept(playerid, params[])
                         SetPlayerToTeamColor(playerid);
                         giveplayer = GetPlayerNameEx(DefendOffer[playerid]);
                         sendername = GetPlayerNameEx(playerid);
-                        format(szMessage, sizeof(szMessage), "* You accepted the Defense for $%d from Lawyer %s.",DefendPrice[playerid],giveplayer);
-                        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-                        format(szMessage, sizeof(szMessage), "* %s accepted your Defense, and the $%d was added to your money.",sendername,DefendPrice[playerid]);
-                        SendClientMessageEx(DefendOffer[playerid], COLOR_LIGHTBLUE, szMessage);
+                        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You accepted the Defense for $%d from Lawyer %s.",DefendPrice[playerid],giveplayer);
+                        SendClientMessageEx(DefendOffer[playerid], COLOR_LIGHTBLUE, "* %s accepted your Defense, and the $%d was added to your money.",sendername,DefendPrice[playerid]);
                         GivePlayerCash( DefendOffer[playerid],DefendPrice[playerid]);
                         GivePlayerCash(playerid, -DefendPrice[playerid]);
                         DefendOffer[playerid] = INVALID_PLAYER_ID;
@@ -1517,10 +1480,8 @@ CMD:accept(playerid, params[])
                     AppealOfferAccepted[playerid] = 1;
                     giveplayer = GetPlayerNameEx(AppealOffer[playerid]);
                     sendername = GetPlayerNameEx(playerid);
-                    format(szMessage, sizeof(szMessage), "* You accepted the appeal from Lawyer %s.",giveplayer);
-                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-                    format(szMessage, sizeof(szMessage), "* %s accepted your appeal, a message to the Judicial System has been sent, please wait at the courtroom.",sendername);
-                    SendClientMessageEx(AppealOffer[playerid], COLOR_LIGHTBLUE, szMessage);
+                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You accepted the appeal from Lawyer %s.",giveplayer);
+                    SendClientMessageEx(AppealOffer[playerid], COLOR_LIGHTBLUE, "* %s accepted your appeal, a message to the Judicial System has been sent, please wait at the courtroom.",sendername);
                     return 1;
                 }
                 return 1;
@@ -1548,11 +1509,9 @@ CMD:accept(playerid, params[])
 	                    GivePlayerCash(playerid, -GetPVarInt(playerid, "RimPrice"));
 	                    GivePlayerCash(GetPVarInt(playerid, "RimOffer"), GetPVarInt(playerid, "RimPrice"));
 						GetPlayerName(GetPVarInt(playerid, "RimOffer"), giveplayer, sizeof(giveplayer));
-	                    format(szMessage, sizeof(szMessage), "* You bought %d rim kits for $%d from %s.",GetPVarInt(playerid, "RimCount"),GetPVarInt(playerid, "RimPrice"),giveplayer);
-	                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+	                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You bought %d rim kits for $%d from %s.",GetPVarInt(playerid, "RimCount"),GetPVarInt(playerid, "RimPrice"),giveplayer);
 	                    GetPlayerName(playerid, sendername, sizeof(sendername));
-	                    format(szMessage, sizeof(szMessage), "* %s has bought your %d rim kits, $%d was added to your money.",sendername,GetPVarInt(playerid, "RimCount"),GetPVarInt(playerid, "RimPrice"));
-	                    SendClientMessageEx(GetPVarInt(playerid, "RimOffer"), COLOR_LIGHTBLUE, szMessage);
+	                    SendClientMessageEx(GetPVarInt(playerid, "RimOffer"), COLOR_LIGHTBLUE, "* %s has bought your %d rim kits, $%d was added to your money.",sendername,GetPVarInt(playerid, "RimCount"),GetPVarInt(playerid, "RimPrice"));
 	                    PlayerInfo[GetPVarInt(playerid, "RimOffer")][pRimMod] -= GetPVarInt(playerid, "RimCount");
 	                    PlayerInfo[playerid][pRimMod] += GetPVarInt(playerid, "RimCount");
 
@@ -1604,10 +1563,8 @@ CMD:accept(playerid, params[])
 
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
-						format(szMessage, sizeof(szMessage), "* You have bought %d Car Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "* %s has bought %d Car Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
-						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have bought %d Car Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
+						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, "* %s has bought %d Car Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) Car Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pVehVoucher] += amount;
@@ -1625,10 +1582,8 @@ CMD:accept(playerid, params[])
 
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
-						format(szMessage, sizeof(szMessage), "* You have bought %d Silver VIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "* %s has bought %d Silver VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
-						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have bought %d Silver VIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
+						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, "* %s has bought %d Silver VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) Silver VIP Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pSVIPVoucher] += amount;
@@ -1646,10 +1601,8 @@ CMD:accept(playerid, params[])
 
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
-						format(szMessage, sizeof(szMessage), "* You have bought %d Gold VIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "* %s has bought %d Gold VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
-						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have bought %d Gold VIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
+						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, "* %s has bought %d Gold VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) Gold VIP Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pGVIPVoucher] += amount;
@@ -1667,10 +1620,8 @@ CMD:accept(playerid, params[])
 
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
-						format(szMessage, sizeof(szMessage), "* You have bought %d 1 month PVIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "* %s has bought %d 1 month PVIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
-						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have bought %d 1 month PVIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
+						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, "* %s has bought %d 1 month PVIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) 1 month PVIP Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pPVIPVoucher] += amount;
@@ -1688,10 +1639,8 @@ CMD:accept(playerid, params[])
 
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
-						format(szMessage, sizeof(szMessage), "* You have bought %d Restricted Car Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "* %s has bought %d Restricted Car Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
-						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have bought %d Restricted Car Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
+						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, "* %s has bought %d Restricted Car Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) Restricted Car Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pCarVoucher] += amount;
@@ -1709,10 +1658,8 @@ CMD:accept(playerid, params[])
 
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
-						format(szMessage, sizeof(szMessage), "* You have bought %d Priority Advertisement Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "* %s has bought %d Priority Advertisement Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
-						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have bought %d Priority Advertisement Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
+						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, "* %s has bought %d Priority Advertisement Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) Priority Advertisement Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pAdvertVoucher] += amount;
@@ -1730,10 +1677,8 @@ CMD:accept(playerid, params[])
 
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
-						format(szMessage, sizeof(szMessage), "* You have bought %d 7 Days Silver VIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "* %s has bought %d 7 Days Silver VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
-						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have bought %d 7 Days Silver VIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
+						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, "* %s has bought %d 7 Days Silver VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) 7 Day Silver VIP Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pSVIPExVoucher] += amount;
@@ -1751,10 +1696,8 @@ CMD:accept(playerid, params[])
 
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
-						format(szMessage, sizeof(szMessage), "* You have bought %d 7 Days Gold VIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "* %s has bought %d 7 Days Gold VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
-						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have bought %d 7 Days Gold VIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
+						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, "* %s has bought %d 7 Days Gold VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) 7 Days Gold VIP Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pGVIPExVoucher] += amount;
@@ -1937,8 +1880,7 @@ CMD:accept(playerid, params[])
                         format(szMessage, sizeof(szMessage), "   You have given %s, a %s.", GetPlayerNameEx(playerid),weaponname);
                         PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
                         SendClientMessageEx(CraftOffer[playerid], COLOR_GRAD1, szMessage);
-                        format(szMessage, sizeof(szMessage), "   You have recieved a %s from %s.", weaponname, GetPlayerNameEx(CraftOffer[playerid]));
-                        SendClientMessageEx(playerid, COLOR_GRAD1, szMessage);
+                        SendClientMessageEx(playerid, COLOR_GRAD1, "   You have recieved a %s from %s.", weaponname, GetPlayerNameEx(CraftOffer[playerid]));
                         PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
                         format(szMessage, sizeof(szMessage), "* %s created something from Materials, and hands it to %s.", GetPlayerNameEx(CraftOffer[playerid]), GetPlayerNameEx(playerid));
                         ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1976,10 +1918,8 @@ CMD:accept(playerid, params[])
 			if(HitOffer[playerid] != INVALID_PLAYER_ID) {
 				if(HitToGet[playerid] != INVALID_PLAYER_ID) {
 					if(IsPlayerConnected(HitToGet[playerid])) {
-						format(szMessage, sizeof(szMessage), "* %s has accepted the contract to kill %s.", GetPlayerNameEx(playerid),GetPlayerNameEx(HitToGet[playerid]));
-						SendClientMessageEx(HitOffer[playerid], COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "* You have accepted the contract to kill %s, you will recieve $%d when completed.", GetPlayerNameEx(HitToGet[playerid]), PlayerInfo[HitToGet[playerid]][pHeadValue]);
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+						SendClientMessageEx(HitOffer[playerid], COLOR_LIGHTBLUE, "* %s has accepted the contract to kill %s.", GetPlayerNameEx(playerid),GetPlayerNameEx(HitToGet[playerid]));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have accepted the contract to kill %s, you will recieve $%d when completed.", GetPlayerNameEx(HitToGet[playerid]), PlayerInfo[HitToGet[playerid]][pHeadValue]);
 						format(szMessage, sizeof(szMessage), "%s has been assigned to the contract on %s, for $%d.", GetPlayerNameEx(playerid), GetPlayerNameEx(HitToGet[playerid]),  PlayerInfo[HitToGet[playerid]][pHeadValue]);
 						foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_YELLOW, szMessage);
 						//SendClientMessage(playerid, COLOR_LIGHTBLUE, "Hit accepted.  Wait 15 seconds for the final go ahead from the Agency.");
@@ -2014,10 +1954,8 @@ CMD:accept(playerid, params[])
                         if(IsPlayerInAnyVehicle(playerid) && IsPlayerInVehicle(SexOffer[playerid], Car)) {
                             GetPlayerName(SexOffer[playerid], giveplayer, sizeof(giveplayer));
                             GetPlayerName(playerid, sendername, sizeof(sendername));
-                            format(szMessage, sizeof(szMessage), "* You had sex with Whore %s, for $%s.", giveplayer, number_format(SexPrice[playerid]));
-                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-                            format(szMessage, sizeof(szMessage), "* %s had sex with you. You have earned $%d.", sendername, SexPrice[playerid]);
-                            SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, szMessage);
+                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You had sex with Whore %s, for $%s.", giveplayer, number_format(SexPrice[playerid]));
+                            SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* %s had sex with you. You have earned $%d.", sendername, SexPrice[playerid]);
 
                             new ip[32], ipex[32];
                             GetPlayerIp(playerid, ip, sizeof(ip));
@@ -2038,8 +1976,7 @@ CMD:accept(playerid, params[])
 
   							if(PlayerInfo[SexOffer[playerid]][pDoubleEXP] > 0)
 							{
-								format(szMessage, sizeof(szMessage), "You have gained 2 whore skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[SexOffer[playerid]][pDoubleEXP]);
-								SendClientMessageEx(SexOffer[playerid], COLOR_YELLOW, szMessage);
+								SendClientMessageEx(SexOffer[playerid], COLOR_YELLOW, "You have gained 2 whore skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[SexOffer[playerid]][pDoubleEXP]);
    								PlayerInfo[SexOffer[playerid]][pSexSkill] += 2;
 							}
 							else
@@ -2203,8 +2140,7 @@ CMD:accept(playerid, params[])
                             Log("logs/sell.log", szMessage);
                             format(szMessage, sizeof(szMessage), "* %s has repaired %s's vehicle.", GetPlayerNameEx(RepairOffer[playerid]), GetPlayerNameEx(playerid));
                             ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-                            format(szMessage, sizeof(szMessage), "* You repaired your car for $%d by Car Mechanic %s.",RepairPrice[playerid],GetPlayerNameEx(RepairOffer[playerid]));
-                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You repaired your car for $%d by Car Mechanic %s.",RepairPrice[playerid],GetPlayerNameEx(RepairOffer[playerid]));
 
                             if(RepairPrice[playerid] >= 25000 && (PlayerInfo[RepairOffer[playerid]][pLevel] <= 3 || PlayerInfo[RepairOffer[playerid]][pLevel] <= 3)) {
                                 format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has repaired %s(%d) (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(RepairOffer[playerid]), GetPlayerSQLId(RepairOffer[playerid]), ipex, RepairPrice[playerid]);
@@ -2213,13 +2149,11 @@ CMD:accept(playerid, params[])
                                 ABroadCast(COLOR_YELLOW, szMessage, 2);
                             }
 
-                            format(szMessage, sizeof(szMessage), "* You fixed %s's car, the $%d has been added to your money on hand!",GetPlayerNameEx(playerid),RepairPrice[playerid]);
-                            SendClientMessageEx(RepairOffer[playerid], COLOR_LIGHTBLUE, szMessage);
+                            SendClientMessageEx(RepairOffer[playerid], COLOR_LIGHTBLUE, "* You fixed %s's car, the $%d has been added to your money on hand!",GetPlayerNameEx(playerid),RepairPrice[playerid]);
 
    							if(PlayerInfo[RepairOffer[playerid]][pDoubleEXP] > 0)
 							{
-								format(szMessage, sizeof(szMessage), "You have gained 2 mechanic skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[RepairOffer[playerid]][pDoubleEXP]);
-								SendClientMessageEx(RepairOffer[playerid], COLOR_YELLOW, szMessage);
+								SendClientMessageEx(RepairOffer[playerid], COLOR_YELLOW, "You have gained 2 mechanic skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[RepairOffer[playerid]][pDoubleEXP]);
    								PlayerInfo[RepairOffer[playerid]][pMechSkill] += 2;
 							}
 							else
@@ -2288,15 +2222,12 @@ CMD:accept(playerid, params[])
                             format(szMessage, sizeof(szMessage), "* %s has refilled %s's vehicle.", GetPlayerNameEx(RefillOffer[playerid]), GetPlayerNameEx(playerid));
                            	ProxChatBubble(playerid, szMessage);
                             // ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-                            format(szMessage, sizeof(szMessage), "* You have added %.2f fuel to your car for $%d by Car Mechanic %s.",fueltogive,RefillPrice[playerid],GetPlayerNameEx(RefillOffer[playerid]));
-                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-                            format(szMessage, sizeof(szMessage), "* You added %.2f fuel to %s's car, the $%d has been added to your money on hand!",fueltogive,GetPlayerNameEx(playerid),RefillPrice[playerid]);
-                            SendClientMessageEx(RefillOffer[playerid], COLOR_LIGHTBLUE, szMessage);
+                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have added %.2f fuel to your car for $%d by Car Mechanic %s.",fueltogive,RefillPrice[playerid],GetPlayerNameEx(RefillOffer[playerid]));
+                            SendClientMessageEx(RefillOffer[playerid], COLOR_LIGHTBLUE, "* You added %.2f fuel to %s's car, the $%d has been added to your money on hand!",fueltogive,GetPlayerNameEx(playerid),RefillPrice[playerid]);
 
  							if(PlayerInfo[RefillOffer[playerid]][pDoubleEXP] > 0)
 							{
-								format(szMessage, sizeof(szMessage), "You have gained 2 mechanic skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[RefillOffer[playerid]][pDoubleEXP]);
-								SendClientMessageEx(RefillOffer[playerid], COLOR_YELLOW, szMessage);
+								SendClientMessageEx(RefillOffer[playerid], COLOR_YELLOW, "You have gained 2 mechanic skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[RefillOffer[playerid]][pDoubleEXP]);
    								PlayerInfo[RefillOffer[playerid]][pMechSkill] += 2;
 							}
 							else
@@ -2364,10 +2295,8 @@ CMD:accept(playerid, params[])
 					}
 					GivePlayerCash(playerid, -GetPVarInt(playerid, "sellbackpackprice"));
 					GivePlayerCash(GetPVarInt(playerid, "sellbackpack"), GetPVarInt(playerid, "sellbackpackprice"));
-					format(szMessage, sizeof(szMessage), "* You bought a %s Backpack for $%s from %s.",btype,number_format(GetPVarInt(playerid, "sellbackpackprice")),GetPlayerNameEx(GetPVarInt(playerid, "sellbackpack")));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-					format(szMessage, sizeof(szMessage), "* %s has bought your %s Backpack, $%s was added to your money.",GetPlayerNameEx(playerid),btype, number_format(GetPVarInt(playerid, "sellbackpackprice")));
-					SendClientMessageEx(GetPVarInt(playerid, "sellbackpack"), COLOR_LIGHTBLUE, szMessage);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You bought a %s Backpack for $%s from %s.",btype,number_format(GetPVarInt(playerid, "sellbackpackprice")),GetPlayerNameEx(GetPVarInt(playerid, "sellbackpack")));
+					SendClientMessageEx(GetPVarInt(playerid, "sellbackpack"), COLOR_LIGHTBLUE, "* %s has bought your %s Backpack, $%s was added to your money.",GetPlayerNameEx(playerid),btype, number_format(GetPVarInt(playerid, "sellbackpackprice")));
 
 
 					PlayerInfo[playerid][pBackpack] = PlayerInfo[GetPVarInt(playerid, "sellbackpack")][pBackpack];
@@ -2412,7 +2341,7 @@ CMD:accept(playerid, params[])
 
 CMD:cancel(playerid, params[])
 {
-	new string[128], choice[32];
+	new choice[32];
 	if(sscanf(params, "s[32]", choice))
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Cancel __________________|");
@@ -2638,8 +2567,7 @@ CMD:cancel(playerid, params[])
 		DeletePVar(playerid, "OfferedMealTo");
 	}
 	else { return 1; }
-	format(string, sizeof(string), "* You have canceled: %s.", choice);
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have canceled: %s.", choice);
 	return 1;
 }
 
@@ -2657,8 +2585,7 @@ CMD:refill(playerid, params[])
 	new string[128];
 	if(gettime() < PlayerInfo[playerid][pMechTime])
 	{
-		format(string, sizeof(string), "You must wait %d seconds!", PlayerInfo[playerid][pMechTime]-gettime());
-		return SendClientMessageEx(playerid, COLOR_GRAD1,string);
+		return SendClientMessageEx(playerid, COLOR_GRAD1,"You must wait %d seconds!", PlayerInfo[playerid][pMechTime]-gettime());
 	}
 	new giveplayerid, money;
 	if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /refill [player] [price]");
@@ -2712,10 +2639,8 @@ CMD:refill(playerid, params[])
 				}
 				SendClientMessageEx(playerid, COLOR_GREY, "You can't offer a refill to yourself."); return 1;
 			}
-			format(string, sizeof(string), "* You offered %s to add %.2f fuel to their car for $%d.",GetPlayerNameEx(giveplayerid),fueltogive,money);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "* Car Mechanic %s wants to add %.2f fuel to your car for $%d, type /accept refill to accept.",GetPlayerNameEx(playerid),fueltogive,money);
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to add %.2f fuel to their car for $%d.",GetPlayerNameEx(giveplayerid),fueltogive,money);
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Car Mechanic %s wants to add %.2f fuel to your car for $%d, type /accept refill to accept.",GetPlayerNameEx(playerid),fueltogive,money);
 			PlayerInfo[playerid][pMechTime] = gettime()+60;
 			RefillOffer[giveplayerid] = playerid;
 			SetPVarInt(giveplayerid, "RefillOfferSession", g_arrQueryHandle[playerid]);
@@ -2739,11 +2664,9 @@ CMD:repair(playerid, params[])
 	}
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not repair while inside the vehicle.");
 
-	new string[128];
 	if(gettime() < PlayerInfo[playerid][pMechTime])
 	{
-		format(string, sizeof(string), "You must wait %d seconds!", PlayerInfo[playerid][pMechTime]-gettime());
-		SendClientMessageEx(playerid, COLOR_GRAD1,string);
+		SendClientMessageEx(playerid, COLOR_GRAD1,"You must wait %d seconds!", PlayerInfo[playerid][pMechTime]-gettime());
 		return 1;
 	}
 	if(GetPVarInt(playerid, "EventToken")) {
@@ -2776,10 +2699,8 @@ CMD:repair(playerid, params[])
 								return 1;
 							}
 						}
-						format(string, sizeof(string), "* You offered %s to fix their car for $%d .",GetPlayerNameEx(giveplayerid),money);
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-						format(string, sizeof(string), "* Car Mechanic %s wants to repair your car for $%d, (type /accept repair) to accept.",GetPlayerNameEx(playerid),money);
-						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to fix their car for $%d .",GetPlayerNameEx(giveplayerid),money);
+						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Car Mechanic %s wants to repair your car for $%d, (type /accept repair) to accept.",GetPlayerNameEx(playerid),money);
 						PlayerInfo[playerid][pMechTime] = gettime()+60;
 						SetPVarInt(playerid, "RepairOfferTo", giveplayerid);
 						RepairOffer[giveplayerid] = playerid;

@@ -70,11 +70,8 @@ timer DDSaleTimerEx[30000](playerid)
 {
 	if(IsPlayerConnected(playerid) && !IsPlayerNPC(playerid) && playerid != INVALID_PLAYER_ID)
 	{
-		new string[128];
-		format(string, sizeof(string), "Your dynamic door offer (buyer: %s) has expired.", GetPlayerNameEx(DDSaleTarget[playerid]));
-		SendClientMessageEx(playerid, COLOR_GREY, string);
-		format(string, sizeof(string), "Your dynamic door sale offer from %s has expired.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(DDSaleTarget[playerid], COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_GREY, "Your dynamic door offer (buyer: %s) has expired.", GetPlayerNameEx(DDSaleTarget[playerid]));
+		SendClientMessageEx(DDSaleTarget[playerid], COLOR_GREY, "Your dynamic door sale offer from %s has expired.", GetPlayerNameEx(playerid));
 		ClearDoorSaleVariables(playerid);
 		return 1;
 	}
@@ -123,14 +120,13 @@ CMD:selldoors(playerid, params[])
 CMD:doorrequests(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
-	new count, string[64];
+	new count;
 	SendClientMessageEx(playerid, COLOR_WHITE, "** DYNAMIC DOOR SALE REQUESTS PENDING APPROVAL: **");
 	foreach(new i : Player)
 	{
 		if(gPlayerLogged{i} == 1 && DDSalePendingAdmin[i] == true)
 		{
-			format(string, sizeof(string), "(ID: %d) %s", i, GetPlayerNameEx(i));
-			SendClientMessageEx(playerid, COLOR_GREY, string);
+			SendClientMessageEx(playerid, COLOR_GREY, "(ID: %d) %s", i, GetPlayerNameEx(i));
 			count ++;
 		}
 	}
@@ -165,18 +161,12 @@ CMD:approvedoorsale(playerid, params[])
 	fine = CalculatePercentage(DDSalePrice[target], 10, 1000000);
 	if(GetPlayerCash(DDSaleTarget[target]) < DDSalePrice[target])
 	{
-		format(string, sizeof(string), "You have approved %s's dynamic door sale request.", GetPlayerNameEx(target));
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
-		format(string, sizeof(string), "No transactions have been made however, as %s does not have the sufficient funds ($%s).", GetPlayerNameEx(DDSaleTarget[target]), number_format(DDSalePrice[target]));
-		SendClientMessageEx(playerid, COLOR_GREY, string);
-		format(string, sizeof(string), "%s has approved your dynamic door sale request.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(target, COLOR_GREEN, string);
-		format(string, sizeof(string), "No transactions have been made however, as %s does not have the sufficient funds ($%s).", GetPlayerNameEx(DDSaleTarget[target]), number_format(DDSalePrice[target]));
-		SendClientMessageEx(target, COLOR_GREY, string);
-		format(string, sizeof(string), "%s has approved %s's dynamic door sale request.", GetPlayerNameEx(playerid), GetPlayerNameEx(target));
-		SendClientMessageEx(DDSaleTarget[target], COLOR_GREEN, string);
-		format(string, sizeof(string), "No transactions have been made however, as you do not have the sufficient funds ($%s).", number_format(DDSalePrice[target]));
-		SendClientMessageEx(DDSaleTarget[target], COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "You have approved %s's dynamic door sale request.", GetPlayerNameEx(target));
+		SendClientMessageEx(playerid, COLOR_GREY, "No transactions have been made however, as %s does not have the sufficient funds ($%s).", GetPlayerNameEx(DDSaleTarget[target]), number_format(DDSalePrice[target]));
+		SendClientMessageEx(target, COLOR_GREEN, "%s has approved your dynamic door sale request.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(target, COLOR_GREY, "No transactions have been made however, as %s does not have the sufficient funds ($%s).", GetPlayerNameEx(DDSaleTarget[target]), number_format(DDSalePrice[target]));
+		SendClientMessageEx(DDSaleTarget[target], COLOR_GREEN, "%s has approved %s's dynamic door sale request.", GetPlayerNameEx(playerid), GetPlayerNameEx(target));
+		SendClientMessageEx(DDSaleTarget[target], COLOR_GREY, "No transactions have been made however, as you do not have the sufficient funds ($%s).", number_format(DDSalePrice[target]));
 		ClearDoorSaleVariables(target);
 		PlayerInfo[playerid][pAcceptReport] ++;
 		ReportCount[playerid] ++;
@@ -188,18 +178,12 @@ CMD:approvedoorsale(playerid, params[])
 	}
 	else if(GetPlayerCash(target) < fine)
 	{
-		format(string, sizeof(string), "You have approved %s's dynamic door sale request.", GetPlayerNameEx(target));
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
-		format(string, sizeof(string), "No transactions have been made however, as %s does not have the sufficient funds for the fine ($%s).", GetPlayerNameEx(target), number_format(fine));
-		SendClientMessageEx(playerid, COLOR_GREY, string);
-		format(string, sizeof(string), "%s has approved your dynamic door sale request.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(target, COLOR_GREEN, string);
-		format(string, sizeof(string), "No transactions have been made however, as you does not have the sufficient funds for the fine ($%s).", number_format(fine));
-		SendClientMessageEx(target, COLOR_GREY, string);
-		format(string, sizeof(string), "%s has approved %s's dynamic door sale request.", GetPlayerNameEx(playerid), GetPlayerNameEx(target));
-		SendClientMessageEx(DDSaleTarget[target], COLOR_GREEN, string);
-		format(string, sizeof(string), "No transactions have been made however, as %s does not have the sufficient funds for the fine ($%s).", GetPlayerNameEx(target), number_format(fine));
-		SendClientMessageEx(DDSaleTarget[target], COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "You have approved %s's dynamic door sale request.", GetPlayerNameEx(target));
+		SendClientMessageEx(playerid, COLOR_GREY, "No transactions have been made however, as %s does not have the sufficient funds for the fine ($%s).", GetPlayerNameEx(target), number_format(fine));
+		SendClientMessageEx(target, COLOR_GREEN, "%s has approved your dynamic door sale request.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(target, COLOR_GREY, "No transactions have been made however, as you does not have the sufficient funds for the fine ($%s).", number_format(fine));
+		SendClientMessageEx(DDSaleTarget[target], COLOR_GREEN, "%s has approved %s's dynamic door sale request.", GetPlayerNameEx(playerid), GetPlayerNameEx(target));
+		SendClientMessageEx(DDSaleTarget[target], COLOR_GREY, "No transactions have been made however, as %s does not have the sufficient funds for the fine ($%s).", GetPlayerNameEx(target), number_format(fine));
 		PlayerInfo[playerid][pAcceptReport] ++;
 		ReportCount[playerid] ++;
 		ReportHourCount[playerid] ++;
@@ -213,12 +197,9 @@ CMD:approvedoorsale(playerid, params[])
 	{
 		szMiscArray[0] = 0;
 		gettime(timex[0], timex[1], timex[2]);
-		format(string, sizeof(string), "You have approved %s's dynamic door sale request.", GetPlayerNameEx(target));
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
-		format(string, sizeof(string), "%s has approved your dynamic door sale request ($%s).", GetPlayerNameEx(playerid), number_format(DDSalePrice[target]));
-		SendClientMessageEx(target, COLOR_GREEN, string);
-		format(string, sizeof(string), "%s has approved %s's dynamic door sale request ($%s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), number_format(DDSalePrice[target]));
-		SendClientMessageEx(DDSaleTarget[target], COLOR_GREEN, string);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "You have approved %s's dynamic door sale request.", GetPlayerNameEx(target));
+		SendClientMessageEx(target, COLOR_GREEN, "%s has approved your dynamic door sale request ($%s).", GetPlayerNameEx(playerid), number_format(DDSalePrice[target]));
+		SendClientMessageEx(DDSaleTarget[target], COLOR_GREEN, "%s has approved %s's dynamic door sale request ($%s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), number_format(DDSalePrice[target]));
 		GivePlayerCashEx(target, TYPE_ONHAND, DDSalePrice[target]);
 		GivePlayerCashEx(target, TYPE_ONHAND, -fine);
 		GivePlayerCashEx(DDSaleTarget[target], TYPE_ONHAND, -DDSalePrice[target]);
@@ -279,10 +260,8 @@ CMD:denydoorsale(playerid, params[])
 	if(DDSalePendingAdmin[target] == false) return SendClientMessageEx(playerid, COLOR_GREY, "The specified player does not have a pending dynamic door sale request.");
 	if(strlen(reason) < 3 || strlen(reason) > 60) return SendClientMessageEx(playerid, COLOR_GREY, "The specified reason cannot be under 3 characters or over 60 characters.");
 	ClearDoorSaleVariables(target);
-	format(string, sizeof(string), "You have denied %s's dynamic door sale request, reason: %s.", GetPlayerNameEx(target), reason);
-	SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	format(string, sizeof(string), "%s has denied your dynamic door sale request, reason: %s.", GetPlayerNameEx(playerid), reason);
-	SendClientMessageEx(target, COLOR_LIGHTRED, string);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "You have denied %s's dynamic door sale request, reason: %s.", GetPlayerNameEx(target), reason);
+	SendClientMessageEx(target, COLOR_LIGHTRED, "%s has denied your dynamic door sale request, reason: %s.", GetPlayerNameEx(playerid), reason);
 	PlayerInfo[playerid][pTrashReport] ++;
 	format(string, sizeof(string), "AdmCmd: %s denied %s's dynamic door sale request, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(target), reason);
 	ABroadCast(COLOR_LIGHTRED, string, 4);
@@ -293,7 +272,6 @@ CMD:denydoorsale(playerid, params[])
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
-	new string[128];
 	switch(dialogid)
 	{
 		case DIALOG_DDSALEMAIN:
@@ -364,23 +342,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							fine = CalculatePercentage(DDSalePrice[playerid], 10, 1000000);
 							if(GetPlayerCash(playerid) < fine)
 							{
-								format(string, sizeof(string), "You do not have the sufficient funds for the transfer fine ($%s).", number_format(fine));
-								SendClientMessageEx(playerid, COLOR_GREY, string);
+								SendClientMessageEx(playerid, COLOR_GREY, "You do not have the sufficient funds for the transfer fine ($%s).", number_format(fine));
 								return 1;
 							}
-							format(string, sizeof(string), "You have sent your dynamic door sale request offer to %s for $%s.", GetPlayerNameEx(DDSaleTarget[playerid]), number_format(DDSalePrice[playerid]));
-							SendClientMessageEx(playerid, COLOR_CYAN, string);
+							SendClientMessageEx(playerid, COLOR_CYAN, "You have sent your dynamic door sale request offer to %s for $%s.", GetPlayerNameEx(DDSaleTarget[playerid]), number_format(DDSalePrice[playerid]));
 							SendClientMessageEx(playerid, COLOR_GREY, "To cancel your dynamic door sale request offer, use (/cancel door).");
-							format(string, sizeof(string), "** NEW DYNAMIC DOOR SALE OFFER FROM %s: **", GetPlayerNameEx(playerid));
-							SendClientMessageEx(DDSaleTarget[playerid], COLOR_CYAN, string);
-							format(string, sizeof(string), "� (Price): $%s", number_format(DDSalePrice[playerid]));
-							SendClientMessageEx(DDSaleTarget[playerid], COLOR_WHITE, string);
+							SendClientMessageEx(DDSaleTarget[playerid], COLOR_CYAN, "** NEW DYNAMIC DOOR SALE OFFER FROM %s: **", GetPlayerNameEx(playerid));
+							SendClientMessageEx(DDSaleTarget[playerid], COLOR_WHITE, "� (Price): $%s", number_format(DDSalePrice[playerid]));
 							for(new i = 0; i < sizeof(DDSaleDoors[]); i ++)
 							{
 								if(DDSaleDoors[playerid][i] != 0 && GetPlayerSQLId(playerid) == DDoorsInfo[DDSaleDoors[playerid][i]][ddOwner])
 								{
-									format(string, sizeof(string), "� (Door ID %d): %s", DDSaleDoors[playerid][i], DDoorsInfo[DDSaleDoors[playerid][i]][ddDescription]);
-									SendClientMessageEx(DDSaleTarget[playerid], COLOR_WHITE, string);
+									SendClientMessageEx(DDSaleTarget[playerid], COLOR_WHITE, "� (Door ID %d): %s", DDSaleDoors[playerid][i], DDoorsInfo[DDSaleDoors[playerid][i]][ddDescription]);
 								}
 							}
 							SendClientMessageEx(DDSaleTarget[playerid], COLOR_CYAN, "Use (/accept door) to accept the dynamic door sale offer.");
@@ -424,16 +397,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					if(GetPlayerCash(DDSaleTarget[playerid]) < price)
 					{
-						format(string, sizeof(string), "%s does not have enough money for the transaction ($%s).", GetPlayerNameEx(DDSaleTarget[playerid]), number_format(price));
-						SendClientMessageEx(playerid, COLOR_GREY, string);
+						SendClientMessageEx(playerid, COLOR_GREY, "%s does not have enough money for the transaction ($%s).", GetPlayerNameEx(DDSaleTarget[playerid]), number_format(price));
 						ShowPlayerDialogEx(playerid, DIALOG_DDSALEPRICE, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input the total price of the sale below.", "Okay", "Cancel");
 						return 1;
 					}
 					fine = CalculatePercentage(price, 10, 1000000);
 					if(GetPlayerCash(playerid) < fine)
 					{
-						format(string, sizeof(string), "You do not have the sufficient funds for the transfer fine ($%s).", number_format(fine));
-						SendClientMessageEx(playerid, COLOR_GREY, string);
+						SendClientMessageEx(playerid, COLOR_GREY, "You do not have the sufficient funds for the transfer fine ($%s).", number_format(fine));
 						ShowPlayerDialogEx(playerid, DIALOG_DDSALEPRICE, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input the total price of the sale below.", "Okay", "Cancel");
 						return 1;
 					}

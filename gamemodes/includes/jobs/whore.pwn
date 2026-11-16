@@ -46,7 +46,7 @@ CMD:sex(playerid, params[])
 		}
 		new Car = GetPlayerVehicleID(playerid);
 
-		new string[128], giveplayerid, money;
+		new giveplayerid, money;
 		if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sex [player] [price]");
 
 		if(money < 1 || money > 10000) { SendClientMessageEx(playerid, COLOR_GREY, "   Price not lower then $1 or above $10,000!"); return 1; }
@@ -61,10 +61,8 @@ CMD:sex(playerid, params[])
 					{
 						if(gettime() >= PlayerInfo[playerid][pSexTime])
 						{
-							format(string, sizeof(string), "* You offered %s to have sex with you, for $%s.", GetPlayerNameEx(giveplayerid), number_format(money));
-							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-							format(string, sizeof(string), "* Whore %s has offered you to have sex with them, for $%s (type /accept sex) to accept.", GetPlayerNameEx(playerid), number_format(money));
-							SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to have sex with you, for $%s.", GetPlayerNameEx(giveplayerid), number_format(money));
+							SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Whore %s has offered you to have sex with them, for $%s (type /accept sex) to accept.", GetPlayerNameEx(playerid), number_format(money));
 							SetPVarInt(playerid, "SexOfferTo", giveplayerid);
 							SexOffer[giveplayerid] = playerid;
 							SetPVarInt(giveplayerid, "SexOfferSession", g_arrQueryHandle[playerid]);

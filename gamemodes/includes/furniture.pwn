@@ -479,10 +479,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				PlayerInfo[giveplayerid][pHouseBuilder] = iHouseID;
 
 				DeletePVar(playerid, "PRMBLD");
-				format(szMiscArray, sizeof(szMiscArray), "%s granted you the permission to build in their house. Your previous home permissions have been replaced.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_YELLOW, szMiscArray);
-				format(szMiscArray, sizeof(szMiscArray), "You have granted %s the permission to build in your house.", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				SendClientMessageEx(giveplayerid, COLOR_YELLOW, "%s granted you the permission to build in their house. Your previous home permissions have been replaced.", GetPlayerNameEx(playerid));
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have granted %s the permission to build in your house.", GetPlayerNameEx(giveplayerid));
 			}
 		}
 		case DIALOG_FURNITURE_DESCONFIRM: {
@@ -2121,8 +2119,7 @@ CMD:furnituresystem(playerid, params[]) {
 
 CMD:myslots(playerid, params[]) {
 
-	format(szMiscArray, sizeof(szMiscArray), "** You have %d furniture slots you can use.", GetMaxFurnitureSlots(playerid));
-	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GRAD1, "** You have %d furniture slots you can use.", GetMaxFurnitureSlots(playerid));
 	return 1;
 }
 
@@ -2199,11 +2196,9 @@ CMD:setfurnitureslots(playerid, params[]) {
 		
 		PlayerInfo[uPlayer][pFurnitureSlots] = iAmount;
 
-		format(szMiscArray, sizeof(szMiscArray), "Administrator %s set your furniture slots to %d.", GetPlayerNameEx(playerid), iAmount);
-		SendClientMessageEx(uPlayer, COLOR_YELLOW, szMiscArray);
+		SendClientMessageEx(uPlayer, COLOR_YELLOW, "Administrator %s set your furniture slots to %d.", GetPlayerNameEx(playerid), iAmount);
 
-		format(szMiscArray, sizeof(szMiscArray), "You set %s's furniture slots to %d.", GetPlayerNameEx(uPlayer), iAmount);
-		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "You set %s's furniture slots to %d.", GetPlayerNameEx(uPlayer), iAmount);
 
 		format(szMiscArray, sizeof(szMiscArray), "Administrator %s set %s's furniture slots to %d.", GetPlayerNameEx(playerid), GetPlayerNameEx(uPlayer), iAmount);
 		ABroadCast(COLOR_YELLOW, szMiscArray, 2);

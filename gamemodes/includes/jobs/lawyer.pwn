@@ -53,14 +53,12 @@ CMD:lawyerduty(playerid, params[])
 }
 CMD:defendtime(playerid, params[])
 {
-	new string[128];
 	if(PlayerInfo[playerid][pDefendTime] < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_YELLOW, "You're able to receive defense now.");
 	}
 	else {	
-		format(string, sizeof(string), "You will be able to receive a defense in %d minutes.", PlayerInfo[playerid][pDefendTime]);
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "You will be able to receive a defense in %d minutes.", PlayerInfo[playerid][pDefendTime]);
 	}	
 	return 1;
 }
@@ -68,7 +66,7 @@ CMD:defendtime(playerid, params[])
 CMD:offerappeal(playerid, params[])
 {
   	if(!IsALawyer(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Lawyer!");
-    new string[128], giveplayerid;
+    new giveplayerid;
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /offerappeal [player]");
 	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
 	if(IsPlayerConnected(giveplayerid))
@@ -77,10 +75,8 @@ CMD:offerappeal(playerid, params[])
 	    if(AppealOfferAccepted[giveplayerid] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "That person has already accepted a lawyer to appeal for him!");
 		AppealOffer[giveplayerid] = playerid;
 		SetPVarInt(giveplayerid, "AppealOfferSession", g_arrQueryHandle[playerid]);
-	    format(string, sizeof(string), "You have offered your lawyer services to %s.",GetPlayerNameEx(giveplayerid));
-	    SendClientMessageEx(playerid, COLOR_WHITE, string);
-	    format(string, sizeof(string), "%s has offered their lawyer services (use /accept appeal to accept them).", GetPlayerNameEx(playerid));
-	    SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+	    SendClientMessageEx(playerid, COLOR_WHITE, "You have offered your lawyer services to %s.",GetPlayerNameEx(giveplayerid));
+	    SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has offered their lawyer services (use /accept appeal to accept them).", GetPlayerNameEx(playerid));
 	}
 	return 1;
 }
@@ -109,13 +105,9 @@ CMD:free(playerid, params[])
 	}
 	else if(PlayerInfo[giveplayerid][pJailTime] > 0 && ApprovedLawyer[playerid] == 1 && WantLawyer[giveplayerid] >= 1) {
 
-		new
-			string[128];
 
-		format(string, sizeof(string), "* You freed %s from jail.", GetPlayerNameEx(giveplayerid));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "* You were freed from jail, by Lawyer %s.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You freed %s from jail.", GetPlayerNameEx(giveplayerid));
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You were freed from jail, by Lawyer %s.", GetPlayerNameEx(playerid));
 		ApprovedLawyer[playerid] = 0;
 		WantLawyer[giveplayerid] = 0;
 		CallLawyer[giveplayerid] = 0;
@@ -124,8 +116,7 @@ CMD:free(playerid, params[])
 
 		if(PlayerInfo[playerid][pDoubleEXP] > 0)
 		{
-			format(string, sizeof(string), "You have gained 2 lawyer skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-			SendClientMessageEx(playerid, COLOR_YELLOW, string);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 lawyer skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
 			PlayerInfo[playerid][pLawSkill] += 2;
 		}
 		else ++PlayerInfo[playerid][pLawSkill];
@@ -143,16 +134,14 @@ CMD:free(playerid, params[])
 CMD:finishappeal(playerid, params[])
 {
 	if(!IsALawyer(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Lawyer!");
-    new string[128], giveplayerid;
+    new giveplayerid;
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /finishappeal [player]");
 	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
 	if(IsPlayerConnected(giveplayerid))
 	{
 	    if(AppealOffer[giveplayerid] != playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not offering your services to this player!");
-	    format(string, sizeof(string), "You have finished your Lawyer services to %s.",GetPlayerNameEx(giveplayerid));
-	    SendClientMessageEx(playerid, COLOR_WHITE, string);
-	    format(string, sizeof(string), "%s has finished offering their Lawyer services.", GetPlayerNameEx(playerid));
-	    SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+	    SendClientMessageEx(playerid, COLOR_WHITE, "You have finished your Lawyer services to %s.",GetPlayerNameEx(giveplayerid));
+	    SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has finished offering their Lawyer services.", GetPlayerNameEx(playerid));
 	    AppealOffer[giveplayerid] = INVALID_PLAYER_ID;
 		AppealOfferAccepted[giveplayerid] = 0;
 	}
@@ -163,11 +152,9 @@ CMD:defend(playerid, params[])
 {
 	if(!IsALawyer(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Lawyer!");
 
-	new string[128];
 	if(gettime() < PlayerInfo[playerid][pLawyerTime])
 	{
-		format(string, sizeof(string), "You must wait %d seconds!", PlayerInfo[playerid][pLawyerTime]-gettime());
-		SendClientMessageEx(playerid, COLOR_GRAD1,string);
+		SendClientMessageEx(playerid, COLOR_GRAD1,"You must wait %d seconds!", PlayerInfo[playerid][pLawyerTime]-gettime());
 		return 1;
 	}
 
@@ -188,10 +175,8 @@ CMD:defend(playerid, params[])
 			}
 			if(PlayerInfo[giveplayerid][pWantedLevel] > 0)
 			{
-				format(string, sizeof(string), "* You offered to defend %s for $%d.", GetPlayerNameEx(giveplayerid), money);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* Lawyer %s wants to defend you for $%d, (type /accept defense) to accept.", GetPlayerNameEx(playerid), money);
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered to defend %s for $%d.", GetPlayerNameEx(giveplayerid), money);
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Lawyer %s wants to defend you for $%d, (type /accept defense) to accept.", GetPlayerNameEx(playerid), money);
 				PlayerInfo[playerid][pLawyerTime] = gettime()+60;
 				DefendOffer[giveplayerid] = playerid;
 				SetPVarInt(giveplayerid, "DefendOfferSession", g_arrQueryHandle[playerid]);

@@ -391,8 +391,7 @@ CMD:dpwarn(playerid, params[])
 			SendDedicatedMessage(COLOR_LIGHTRED, string);
 			Log("logs/dedicated.log", string);
 
-			format(string, sizeof(string), "You have been warned from the Dedicated chat by %s, reason: %s", GetPlayerNameEx(playerid), reason);
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been warned from the Dedicated chat by %s, reason: %s", GetPlayerNameEx(playerid), reason);
 			SendClientMessageEx(giveplayerid, COLOR_WHITE, "This action lasts for two hours. To appeal, please visit our forums: www.ng-gaming.net/forums");
 
 			PlayerInfo[giveplayerid][pDedicatedWarn] = 120;
@@ -451,7 +450,7 @@ CMD:osetdedicated(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 1337)
     {
-        new string[128], pname[MAX_PLAYER_NAME], level;
+        new pname[MAX_PLAYER_NAME], level;
 	    if(sscanf(params, "s[32]i", pname, level))
 			return SendClientMessageEx(playerid, COLOR_WHITE, "Usage: /osetdedicated [player] [level]");
 
@@ -473,8 +472,7 @@ CMD:osetdedicated(playerid, params[])
             mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT `pDedicatedPlayer` FROM `accounts` WHERE `Username` = '%s'", szPlayerName);
 			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", OFFLINE_DEDICATED_THREAD, playerid, g_arrQueryHandle[playerid]);
  			
- 			format(string, sizeof(string), "Attempting to offline set %s account to level %d Dedicated.", szPlayerName, level);
- 			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Attempting to offline set %s account to level %d Dedicated.", szPlayerName, level);
  		}
  	}
  	else 
@@ -502,8 +500,7 @@ CMD:dpmute(playerid, params[])
 		 				return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command on this person!");
 
 					PlayerInfo[targetid][pDedicatedMuted] = 1;
-					format(string, sizeof(string), "You were muted from the Dedicated chat by %s, reason: %s. You may appeal this mute at www.ng-gaming.net/forums", GetPlayerNameEx(playerid), reason);
-					SendClientMessageEx(targetid, COLOR_GRAD2, string);
+					SendClientMessageEx(targetid, COLOR_GRAD2, "You were muted from the Dedicated chat by %s, reason: %s. You may appeal this mute at www.ng-gaming.net/forums", GetPlayerNameEx(playerid), reason);
 					format(string, sizeof(string), "AdmCmd: %s has muted %s from the Dedicated chat, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), reason);
 					ABroadCast(COLOR_LIGHTRED, string, 4);
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
@@ -545,8 +542,7 @@ CMD:dpunmute(playerid, params[])
 		 			//	return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command on this person!");
 
 					PlayerInfo[targetid][pDedicatedMuted] = 0;
-					format(string, sizeof(string), "You were unmuted from the Dedicated chat by %s, reason: %s.", GetPlayerNameEx(playerid), reason);
-					SendClientMessageEx(targetid, COLOR_GRAD2, string);
+					SendClientMessageEx(targetid, COLOR_GRAD2, "You were unmuted from the Dedicated chat by %s, reason: %s.", GetPlayerNameEx(playerid), reason);
 					format(string, sizeof(string), "AdmCmd: %s has unmuted %s from the Dedicated chat, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), reason);
 					ABroadCast(COLOR_LIGHTRED, string, 4);
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);

@@ -1374,8 +1374,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									if(PaintBallArena[arenaid][pbBidMoney] > 0)
 									{
 										GivePlayerCash(p,PaintBallArena[arenaid][pbBidMoney]);
-										format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of $%d because of premature closure.",PaintBallArena[arenaid][pbBidMoney]);
-										SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+										SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of $%d because of premature closure.",PaintBallArena[arenaid][pbBidMoney]);
 									}
 									if(arenaid == GetPVarInt(p, "ArenaNumber"))
 									{
@@ -1386,8 +1385,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 												if(PlayerInfo[p][pDonateRank] < 3)
 												{
 													PlayerInfo[p][pPaintTokens] += 3;
-													format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
-													SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+													SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
 												}
 											}
 											case 2:
@@ -1395,8 +1393,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 												if(PlayerInfo[p][pDonateRank] < 3)
 												{
 													PlayerInfo[p][pPaintTokens] += 4;
-													format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
-													SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+													SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
 												}
 											}
 											case 3:
@@ -1404,8 +1401,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 												if(PlayerInfo[p][pDonateRank] < 3)
 												{
 													PlayerInfo[p][pPaintTokens] += 5;
-													format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-													SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+													SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
 												}
 											}
 											case 4:
@@ -1413,8 +1409,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 												if(PlayerInfo[p][pDonateRank] < 3)
 												{
 													PlayerInfo[p][pPaintTokens] += 5;
-													format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-													SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+													SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
 												}
 											}
 											case 5:
@@ -1422,8 +1417,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 												if(PlayerInfo[p][pDonateRank] < 3)
 												{
 													PlayerInfo[p][pPaintTokens] += 6;
-													format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
-													SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+													SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
 												}
 											}
 										}
@@ -1436,8 +1430,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						}
 						format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has locked all Arenas.", GetPlayerNameEx(playerid));
 						ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-						format(szMiscArray, sizeof(szMiscArray), "* Admin %s has locked all Paintball Arenas for some short maintenance.", GetPlayerNameEx(playerid));
-						SendClientMessageToAllEx(COLOR_LIGHTBLUE, szMiscArray);
+						SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s has locked all Paintball Arenas for some short maintenance.", GetPlayerNameEx(playerid));
 						ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
 					}
 					case 2: // Unlock all Arenas
@@ -1451,8 +1444,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						}
 						format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has unlocked all Arenas.", GetPlayerNameEx(playerid));
 						ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-						format(szMiscArray, sizeof(szMiscArray), "* Admin %s has unlocked all Paintball Arenas, you may join/create them now.", GetPlayerNameEx(playerid));
-						SendClientMessageToAllEx(COLOR_LIGHTBLUE, szMiscArray);
+						SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s has unlocked all Paintball Arenas, you may join/create them now.", GetPlayerNameEx(playerid));
 						ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
 					}
 					case 3: // Force Save Arenas
@@ -2025,14 +2017,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(GetPlayerCash(playerid) < 5000*strval(inputtext))
 				{
 					PaintballTokenBuyMenu(playerid);
-					format(szMiscArray,sizeof(szMiscArray), "You can not afford %d tokens for $%d.",strval(inputtext),strval(inputtext)*5000);
-					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_WHITE, "You can not afford %d tokens for $%d.",strval(inputtext),strval(inputtext)*5000);
 					return 1;
 				}
 				GivePlayerCash(playerid, -5000*strval(inputtext));
 				PlayerInfo[playerid][pPaintTokens] += strval(inputtext);
-				format(szMiscArray,sizeof(szMiscArray), "You have purchased %d tokens for $%d.",strval(inputtext),strval(inputtext)*5000);
-				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased %d tokens for $%d.",strval(inputtext),strval(inputtext)*5000);
 			}
 			else
 			{
@@ -2115,16 +2105,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								if(PlayerInfo[playerid][pDonateRank] <= 2)
 								{
 									PlayerInfo[playerid][pPaintTokens] -= 3;
-									format(szMiscArray,sizeof(szMiscArray),"You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,3);
-									SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+									SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,3);
 									SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
 									PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 									//SendAudioToPlayer(playerid, 27, 100);
 								}
 								else
 								{
-									format(szMiscArray,sizeof(szMiscArray),"You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
-									SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+									SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
 									SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
 									PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 									//SendAudioToPlayer(playerid, 27, 100);
@@ -2137,8 +2125,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									if(PlayerInfo[playerid][pPaintTokens] >= 4)
 									{
 										PlayerInfo[playerid][pPaintTokens] -= 4;
-										format(szMiscArray,sizeof(szMiscArray),"You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,4);
-										SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+										SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,4);
 										SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
 										PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 										//SendAudioToPlayer(playerid, 27, 100);
@@ -2152,8 +2139,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								}
 								else
 								{
-									format(szMiscArray,sizeof(szMiscArray),"You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
-									SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+									SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
 									SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
 									PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 									//SendAudioToPlayer(playerid, 41, 100);
@@ -2166,16 +2152,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								if(PlayerInfo[playerid][pDonateRank] <= 2)
 								{
 									PlayerInfo[playerid][pPaintTokens] -= 5;
-									format(szMiscArray,sizeof(szMiscArray),"You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,5);
-									SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+									SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,5);
 									SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
 									PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 									//SendAudioToPlayer(playerid, 27, 100);
 								}
 								else
 								{
-									format(szMiscArray,sizeof(szMiscArray),"You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
-									SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+									SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
 									SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
 									PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 									//SendAudioToPlayer(playerid, 27, 100);
@@ -2192,8 +2176,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									if(PlayerInfo[playerid][pPaintTokens] >= 6)
 									{
 										PlayerInfo[playerid][pPaintTokens] -= 6;
-										format(szMiscArray,sizeof(szMiscArray),"You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,6);
-										SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+										SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,6);
 										SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
 										PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 										//SendAudioToPlayer(playerid, 41, 100);
@@ -2207,8 +2190,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								}
 								else
 								{
-									format(szMiscArray,sizeof(szMiscArray),"You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
-									SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+									SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
 									SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
 									PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 									//SendAudioToPlayer(playerid, 41, 100);
@@ -2349,8 +2331,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								if(PlayerInfo[playerid][pPaintTokens] >= 5)
 								{
 									PlayerInfo[playerid][pPaintTokens] -= 5;
-									format(szMiscArray,sizeof(szMiscArray),"You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,5);
-									SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+									SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,5);
 									SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
 									PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 									//SendAudioToPlayer(playerid, 41, 100);
@@ -2364,8 +2345,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							}
 							else
 							{
-								format(szMiscArray,sizeof(szMiscArray),"You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
-								SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+								SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
 								SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
 								PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 								//SendAudioToPlayer(playerid, 41, 100);
@@ -3032,8 +3012,7 @@ CMD:unlockarenas(playerid, params[])
     }
     format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has unlocked all Paintball Arenas.", GetPlayerNameEx(playerid));
     ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-    format(szMiscArray, sizeof(szMiscArray), "* Admin %s has unlocked all Paintball Arenas, you may join/create them now.", GetPlayerNameEx(playerid));
-    SendClientMessageToAllEx(COLOR_LIGHTBLUE, szMiscArray);
+    SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s has unlocked all Paintball Arenas, you may join/create them now.", GetPlayerNameEx(playerid));
     return 1;
 }
 
@@ -3053,8 +3032,7 @@ CMD:lockarenas(playerid, params[])
 			if(arenaid == i) {
 				if(PaintBallArena[arenaid][pbBidMoney] > 0) {
 					GivePlayerCash(p,PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
-					format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of $%d because of premature closure.",PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
-					SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+					SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of $%d because of premature closure.",PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
 				}
 				if(arenaid == GetPVarInt(p, "ArenaNumber")) {
 					switch(PaintBallArena[arenaid][pbGameType]) {
@@ -3062,40 +3040,35 @@ CMD:lockarenas(playerid, params[])
 						{
 							if(PlayerInfo[p][pDonateRank] < 3) {
 								PlayerInfo[p][pPaintTokens] += 3;
-								format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
-								SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
 							}
 						}
 						case 2:
 						{
 							if(PlayerInfo[p][pDonateRank] < 3) {
 								PlayerInfo[p][pPaintTokens] += 4;
-								format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
-								SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
 							}
 						}
 						case 3:
 						{
 							if(PlayerInfo[p][pDonateRank] < 3) {
 								PlayerInfo[p][pPaintTokens] += 5;
-								format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-								SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
 							}
 						}
 						case 4:
 						{
 							if(PlayerInfo[p][pDonateRank] < 3) {
 								PlayerInfo[p][pPaintTokens] += 5;
-								format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-								SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
 							}
 						}
 						case 5:
 						{
 							if(PlayerInfo[p][pDonateRank] < 3) {
 								PlayerInfo[p][pPaintTokens] += 6;
-								format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
-								SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
 							}
 						}
 					}
@@ -3108,8 +3081,7 @@ CMD:lockarenas(playerid, params[])
     }
     format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has locked all Paintball Arenas.", GetPlayerNameEx(playerid));
     ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-    format(szMiscArray, sizeof(szMiscArray), "* Admin %s has locked all Paintball Arenas for some short maintenance.", GetPlayerNameEx(playerid));
-    SendClientMessageToAllEx(COLOR_LIGHTBLUE, szMiscArray);
+    SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s has locked all Paintball Arenas for some short maintenance.", GetPlayerNameEx(playerid));
     return 1;
 }
 
@@ -3520,8 +3492,7 @@ CMD:lockarena(playerid, params[])
 			if(PaintBallArena[cid][pbBidMoney] > 0)
 			{
 				GivePlayerCash(p,PaintBallArena[cid][pbBidMoney]);
-				format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of $%d because of premature closure.",PaintBallArena[cid][pbBidMoney]);
-				SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+				SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of $%d because of premature closure.",PaintBallArena[cid][pbBidMoney]);
 			}
 			if(arenaid == GetPVarInt(p, "ArenaNumber"))
 			{
@@ -3532,8 +3503,7 @@ CMD:lockarena(playerid, params[])
 						if(PlayerInfo[p][pDonateRank] < 3)
 						{
 							PlayerInfo[p][pPaintTokens] += 3;
-							format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
-							SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+							SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
 						}
 					}
 					case 2:
@@ -3541,8 +3511,7 @@ CMD:lockarena(playerid, params[])
 						if(PlayerInfo[p][pDonateRank] < 3)
 						{
 							PlayerInfo[p][pPaintTokens] += 4;
-							format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
-							SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+							SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
 						}
 					}
 					case 3:
@@ -3550,8 +3519,7 @@ CMD:lockarena(playerid, params[])
 						if(PlayerInfo[p][pDonateRank] < 3)
 						{
 							PlayerInfo[p][pPaintTokens] += 5;
-							format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-							SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+							SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
 						}
 					}
 					case 4:
@@ -3559,8 +3527,7 @@ CMD:lockarena(playerid, params[])
 						if(PlayerInfo[p][pDonateRank] < 3)
 						{
 							PlayerInfo[p][pPaintTokens] += 5;
-							format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-							SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+							SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
 						}
 					}
 					case 5:
@@ -3568,8 +3535,7 @@ CMD:lockarena(playerid, params[])
 						if(PlayerInfo[p][pDonateRank] < 3)
 						{
 							PlayerInfo[p][pPaintTokens] += 6;
-							format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
-							SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
+							SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
 						}
 					}
 				}
@@ -3581,8 +3547,7 @@ CMD:lockarena(playerid, params[])
 	PaintBallArena[arenaid][pbLocked] = 2;
 	format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has locked %s.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName]);
 	ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-	format(szMiscArray, sizeof(szMiscArray), "* Admin %s has locked %s (ArenaID: %d) for some short maintenance.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName],arenaid+1);
-	SendClientMessageToAllEx(COLOR_LIGHTBLUE, szMiscArray);
+	SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s has locked %s (ArenaID: %d) for some short maintenance.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName],arenaid+1);
 	return 1;
 }
 
@@ -3609,8 +3574,7 @@ CMD:unlockarena(playerid, params[])
 		ResetPaintballArena(arenaid);
 		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has unlocked %s.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName]);
 		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-		format(szMiscArray, sizeof(szMiscArray), "* Admin %s has unlocked %s (ArenaID: %d), you may join/create it now.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName],arenaid+1);
-		SendClientMessageToAllEx(COLOR_LIGHTBLUE, szMiscArray);
+		SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s has unlocked %s (ArenaID: %d), you may join/create it now.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName],arenaid+1);
 	}
 	return 1;
 }
@@ -3629,10 +3593,8 @@ CMD:givepainttokens(playerid, params[])
 		}
 		PlayerInfo[giveplayerid][pPaintTokens] += amount;
 
-		format(szMiscArray, sizeof(szMiscArray), "You have received %d Paintball Tokens from Admin %s.", amount, GetPlayerNameEx(playerid));
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "You have given %s %d Paintbll Tokens.", GetPlayerNameEx(giveplayerid), amount);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have received %d Paintball Tokens from Admin %s.", amount, GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given %s %d Paintbll Tokens.", GetPlayerNameEx(giveplayerid), amount);
 		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has given %s, %d Paintball Tokens.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid),amount);
 		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 
@@ -3759,8 +3721,7 @@ CMD:savepbvehicle(playerid, params[])
 			}
 		}
 	}
-	format(szMiscArray, sizeof(szMiscArray), "You have adjusted War Vehicle %d for ArenaID %d.",vehslot, arenaid);
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have adjusted War Vehicle %d for ArenaID %d.",vehslot, arenaid);
 	SavePaintballArena(arenaid);
 	PaintballEditArenaMenu(playerid);
 	return 1;

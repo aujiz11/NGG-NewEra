@@ -58,8 +58,7 @@ stock CompleteToyTrade(playerid)
 
 	if(!toyCountCheck(playerid))
 	{
-		format(string, sizeof(string), "%s has declined the toy offer. (no free toy slots)", GetPlayerNameEx(playerid));
-		SendClientMessageEx(sellerid, COLOR_GREY, string);
+		SendClientMessageEx(sellerid, COLOR_GREY, "%s has declined the toy offer. (no free toy slots)", GetPlayerNameEx(playerid));
 		SendClientMessageEx(playerid, COLOR_GREY, "You don't have any free toy slots.");
 		DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttBuyer");
 		DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttCost");
@@ -71,8 +70,7 @@ stock CompleteToyTrade(playerid)
 
 	if(GetPlayerCash(playerid) < GetPVarInt(sellerid, "ttCost"))
 	{
-		format(string, sizeof(string), "%s has declined the toy offer. (Not enough money)", GetPlayerNameEx(playerid));
-		SendClientMessageEx(sellerid, COLOR_GREY, string);
+		SendClientMessageEx(sellerid, COLOR_GREY, "%s has declined the toy offer. (Not enough money)", GetPlayerNameEx(playerid));
 		SendClientMessageEx(playerid, COLOR_GREY, "You do not have enough money on you.");
 		DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttBuyer");
 		DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttCost");
@@ -173,10 +171,8 @@ stock CompleteToyTrade(playerid)
 	OnPlayerStatsUpdate(playerid);
 	OnPlayerStatsUpdate(sellerid);
 
-	format(string, sizeof(string), "%s has accepted your offer and purchased your toy for $%s. %s", GetPlayerNameEx(playerid), number_format(GetPVarInt(sellerid, "ttCost")), name);
-	SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, string);
-	format(string, sizeof(string), "You have accepted %s's offer and purchased the toy for $%s. %s", GetPlayerNameEx(sellerid), number_format(GetPVarInt(sellerid, "ttCost")), name);
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+	SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, "%s has accepted your offer and purchased your toy for $%s. %s", GetPlayerNameEx(playerid), number_format(GetPVarInt(sellerid, "ttCost")), name);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have accepted %s's offer and purchased the toy for $%s. %s", GetPlayerNameEx(sellerid), number_format(GetPVarInt(sellerid, "ttCost")), name);
 	format(string, sizeof(string), "[S %s(%d)][IP %s][B %s(%d)][IP %s][P $%s][T: %s(%d)]", GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid),
 	GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(sellerid, "ttCost")), name, toyid);
 	Log("logs/toys.log", string);
@@ -331,9 +327,7 @@ AttachToy(playerid, toyid, msg = 1)
 	}
 	if(msg)
 	{
-		new string[128];
-		format(string, sizeof(string), "Successfully attached %s (Bone: %s) (Slot: %d)", name, HoldingBones[PlayerToyInfo[playerid][toyid][ptBone]], toyid);
-		SendClientMessageEx(playerid, COLOR_RED, string);
+		SendClientMessageEx(playerid, COLOR_RED, "Successfully attached %s (Bone: %s) (Slot: %d)", name, HoldingBones[PlayerToyInfo[playerid][toyid][ptBone]], toyid);
 	}
 	PlayerHoldingObject[playerid][toycount] = toyid;
 	SetPlayerAttachedObject(playerid, toycount, PlayerToyInfo[playerid][toyid][ptModelID], PlayerToyInfo[playerid][toyid][ptBone], PlayerToyInfo[playerid][toyid][ptPosX], PlayerToyInfo[playerid][toyid][ptPosY], PlayerToyInfo[playerid][toyid][ptPosZ],
@@ -380,10 +374,8 @@ CMD:shopvest(playerid, params[])
 	PlayerToyInfo[giveplayerid][slot][ptBone] = 1;
 	PlayerToyInfo[giveplayerid][slot][ptTradable] = 1;
 	g_mysql_NewToy(giveplayerid, slot);
-	format(string, sizeof(string), "You have been given a police vest in slot %d, use /toys to manage it", slot);
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTGREEN, string);
-	format(string, sizeof(string), "You have given %s a police vest in slot %d", GetPlayerNameEx(giveplayerid), slot);
-	SendClientMessageEx(playerid, COLOR_LIGHTGREEN, string);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTGREEN, "You have been given a police vest in slot %d, use /toys to manage it", slot);
+	SendClientMessageEx(playerid, COLOR_LIGHTGREEN, "You have given %s a police vest in slot %d", GetPlayerNameEx(giveplayerid), slot);
 	format(string, sizeof(string), "[SHOPVEST] %s has given %s(%d) a police vest toy - Invoice %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 	Log("logs/shoplog.log", string);
 
@@ -482,10 +474,8 @@ CMD:shoplaser(playerid, params[])
 		PlayerToyInfo[giveplayerid][slot][ptTradable] = 1;
 		g_mysql_NewToy(giveplayerid, slot);
 	}
-	format(string, sizeof(string), "You have been given a %s laser in slot %d, use /toys to manage it", color, slot);
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTGREEN, string);
-	format(string, sizeof(string), "You have given %s a %s laser in slot %d", GetPlayerNameEx(giveplayerid), color, slot);
-	SendClientMessageEx(playerid, COLOR_LIGHTGREEN, string);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTGREEN, "You have been given a %s laser in slot %d, use /toys to manage it", color, slot);
+	SendClientMessageEx(playerid, COLOR_LIGHTGREEN, "You have given %s a %s laser in slot %d", GetPlayerNameEx(giveplayerid), color, slot);
 	format(string, sizeof(string), "[SHOPLASER] %s has given %s(%d) a laser toy - Invoice %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 	Log("logs/shoplog.log", string);
 

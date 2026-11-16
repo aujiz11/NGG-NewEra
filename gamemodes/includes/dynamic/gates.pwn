@@ -186,7 +186,7 @@ CMD:housegatepw(playerid, params[])
 
 CMD:setgatepass(playerid, params[])
 {
-	new Float:X, Float:Y, Float:Z, string[128];
+	new Float:X, Float:Y, Float:Z;
 	if(Homes[playerid] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't own a home!");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setgatepass [pass]");
 	if(strlen(params) > 24) return SendClientMessageEx(playerid, COLOR_GRAD2, " Must be 24 characters or less! ");
@@ -200,8 +200,7 @@ CMD:setgatepass(playerid, params[])
 			{
 				format(GateInfo[i][gPass], 24, "%s", params);
 				SaveGate(i);
-				format(string, sizeof(string), "House Gate Password for gate %d changed to: %s", i, params);
-				return SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				return SendClientMessageEx(playerid, COLOR_GRAD2, "House Gate Password for gate %d changed to: %s", i, params);
 			}
 		}
 	}
@@ -285,13 +284,12 @@ CMD:gotogate(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
-		new string[48], gatenum;
+		new gatenum;
 		if(sscanf(params, "d", gatenum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotogate [gatenumber]");
 
 		if(gatenum <= 0 || gatenum >= MAX_GATES)
 		{
-			format(string, sizeof(string), "Gate ID must be between 1 and %d.", MAX_GATES - 1);
-			return SendClientMessageEx(playerid, COLOR_GREY, string);
+			return SendClientMessageEx(playerid, COLOR_GREY, "Gate ID must be between 1 and %d.", MAX_GATES - 1);
 		}
 
 		SetPlayerPos(playerid,GateInfo[gatenum][gPosX],GateInfo[gatenum][gPosY],GateInfo[gatenum][gPosZ] + 1);
@@ -314,7 +312,7 @@ CMD:gstatus(playerid, params[])
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
-		new string[128], timertxt, distancetxt;
+		new timertxt, distancetxt;
 
 		switch(GateInfo[gateid][gTimer])
 		{
@@ -332,22 +330,15 @@ CMD:gstatus(playerid, params[])
 			default: distancetxt = 60;
 		}
 
-		format(string,sizeof(string),"|___________ Gate Status (ID: %d) ___________|", gateid);
-		SendClientMessageEx(playerid, COLOR_GREEN, string);
-		format(string, sizeof(string), "X: %f | Y: %f | Z: %f | RotX: %f | RotY: %f | RotZ: %f", GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "XM: %f | YM: %f | ZM: %f | RotXM: %f | RotYM: %f | RotZM: %f", GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM], GateInfo[gateid][gRotXM], GateInfo[gateid][gRotYM], GateInfo[gateid][gRotZM]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "Model: %d | HID: %d | VW: %d | Int: %d | Allegiance: %d | Group Type: %d | Group: %d", GateInfo[gateid][gModel], GateInfo[gateid][gHID], GateInfo[gateid][gVW], GateInfo[gateid][gInt], GateInfo[gateid][gAllegiance], GateInfo[gateid][gGroupType], GateInfo[gateid][gGroupID]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "Range: %.3f | Speed: %.3f | Timer: %d second(s) | Stream: %d | Automated: %d | Locked: %d | Pass: %s", GateInfo[gateid][gRange], GateInfo[gateid][gSpeed], timertxt, distancetxt, GateInfo[gateid][gAutomate], GateInfo[gateid][gLocked], GateInfo[gateid][gPass]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "Assigned Facility: %d", GateInfo[gateid][gFacility]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Gate Status (ID: %d) ___________|", gateid);
+		SendClientMessageEx(playerid, COLOR_WHITE, "X: %f | Y: %f | Z: %f | RotX: %f | RotY: %f | RotZ: %f", GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "XM: %f | YM: %f | ZM: %f | RotXM: %f | RotYM: %f | RotZM: %f", GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM], GateInfo[gateid][gRotXM], GateInfo[gateid][gRotYM], GateInfo[gateid][gRotZM]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Model: %d | HID: %d | VW: %d | Int: %d | Allegiance: %d | Group Type: %d | Group: %d", GateInfo[gateid][gModel], GateInfo[gateid][gHID], GateInfo[gateid][gVW], GateInfo[gateid][gInt], GateInfo[gateid][gAllegiance], GateInfo[gateid][gGroupType], GateInfo[gateid][gGroupID]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Range: %.3f | Speed: %.3f | Timer: %d second(s) | Stream: %d | Automated: %d | Locked: %d | Pass: %s", GateInfo[gateid][gRange], GateInfo[gateid][gSpeed], timertxt, distancetxt, GateInfo[gateid][gAutomate], GateInfo[gateid][gLocked], GateInfo[gateid][gPass]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Assigned Facility: %d", GateInfo[gateid][gFacility]);
 		if(GateInfo[gateid][gTModel] != INVALID_OBJECT_ID)
 		{
-			format(string, sizeof(string), "Texture Replacement - Index: %d | Model: %d | TXD File: %s | Texture: %s | Color: %x", GateInfo[gateid][gTIndex], GateInfo[gateid][gTModel], GateInfo[gateid][gTTXD], GateInfo[gateid][gTTexture], GateInfo[gateid][gTColor]);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Texture Replacement - Index: %d | Model: %d | TXD File: %s | Texture: %s | Color: %x", GateInfo[gateid][gTIndex], GateInfo[gateid][gTModel], GateInfo[gateid][gTTXD], GateInfo[gateid][gTTexture], GateInfo[gateid][gTColor]);
 		}
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
@@ -361,9 +352,7 @@ CMD:gnear(playerid, params[])
 		new option;
 		if(!sscanf(params, "d", option))
 		{
-			new string[64];
-			format(string, sizeof(string), "* Listing all gates within 30 meters of you in VW %d...", option);
-			SendClientMessageEx(playerid, COLOR_RED, string);
+			SendClientMessageEx(playerid, COLOR_RED, "* Listing all gates within 30 meters of you in VW %d...", option);
 			for(new i, Float: fGatePos[3], szMessage[48]; i < MAX_GATES; i++)
 			{
 				GetDynamicObjectPos(GateInfo[i][gGATE], fGatePos[0], fGatePos[1], fGatePos[2]);
@@ -424,9 +413,7 @@ CMD:gnext(playerid, params[])
 		{
 		    if(GateInfo[x][gModel] == 0)
 		    {
-		        new string[128];
-		        format(string, sizeof(string), "%d is available to use.", x);
-		        SendClientMessageEx(playerid, COLOR_WHITE, string);
+		        SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", x);
 		        break;
 			}
 		}
@@ -458,8 +445,7 @@ CMD:gedit(playerid, params[])
 			new value = floatround(ofloat, floatround_round);
 		    if(value > MAX_HOUSES) return SendClientMessageEx(playerid, COLOR_WHITE, "* Invalid House ID!");
 		    GateInfo[gateid][gHID] = value;
-		    format(string, sizeof(string), "HID %d assigned to Gate %d", GateInfo[gateid][gHID], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "HID %d assigned to Gate %d", GateInfo[gateid][gHID], gateid);
 		    SaveGate(gateid);
 
 		    format(string, sizeof(string), "%s has edited GateID %d's House ID to %d.", GetPlayerNameEx(playerid), gateid, value);
@@ -530,8 +516,7 @@ CMD:gedit(playerid, params[])
 			{
 				if(GetPVarInt(i, "EditingGateID") == gateid && i != playerid)
 				{
-					format(string, sizeof(string), "ERROR: %s (ID: %d) is currently editing this gate.", GetPlayerNameEx(i), i);
-					return SendClientMessageEx(playerid, COLOR_WHITE, string);
+					return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: %s (ID: %d) is currently editing this gate.", GetPlayerNameEx(i), i);
 				}
 			}
 			SetPVarInt(playerid, "gEdit", 1);
@@ -549,8 +534,7 @@ CMD:gedit(playerid, params[])
 			{
 				if(GetPVarInt(i, "EditingGateID") == gateid && i != playerid)
 				{
-					format(string, sizeof(string), "ERROR: %s (ID: %d) is currently editing this gate.", GetPlayerNameEx(i), i);
-					return SendClientMessageEx(playerid, COLOR_WHITE, string);
+					return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: %s (ID: %d) is currently editing this gate.", GetPlayerNameEx(i), i);
 				}
 			}
 			SetPVarInt(playerid, "gEdit", 2);
@@ -563,8 +547,7 @@ CMD:gedit(playerid, params[])
 		else if(strcmp(x_job, "range", true) == 0)
 		{
 		    GateInfo[gateid][gRange] = ofloat;
-		    format(string, sizeof(string), "Range of %.3f assigned to Gate %d", GateInfo[gateid][gRange], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Range of %.3f assigned to Gate %d", GateInfo[gateid][gRange], gateid);
 		    SaveGate(gateid);
 
 		    format(string, sizeof(string), "%s has edited GateID %d's Range to %.3f.", GetPlayerNameEx(playerid), gateid, ofloat);
@@ -573,8 +556,7 @@ CMD:gedit(playerid, params[])
 		else if(strcmp(x_job, "speed", true) == 0)
 		{
 		    GateInfo[gateid][gSpeed] = ofloat;
-		    format(string, sizeof(string), "Speed of %.3f assigned to Gate %d", GateInfo[gateid][gSpeed], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Speed of %.3f assigned to Gate %d", GateInfo[gateid][gSpeed], gateid);
 		    SaveGate(gateid);
 
 		    format(string, sizeof(string), "%s has edited GateID %d's Speed to %.3f.", GetPlayerNameEx(playerid), gateid, ofloat);
@@ -607,22 +589,19 @@ CMD:gedit(playerid, params[])
 		else if(strcmp(x_job, "posxm", true) == 0)
 		{
 		    GateInfo[gateid][gPosXM] = ofloat;
-		    format(string, sizeof(string), "PosXM %f assigned to Gate %d", GateInfo[gateid][gPosXM], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "PosXM %f assigned to Gate %d", GateInfo[gateid][gPosXM], gateid);
 		    SaveGate(gateid);
 		}
 		else if(strcmp(x_job, "posym", true) == 0)
 		{
 		    GateInfo[gateid][gPosYM] = ofloat;
-		    format(string, sizeof(string), "PosYM %f assigned to Gate %d", GateInfo[gateid][gPosYM], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "PosYM %f assigned to Gate %d", GateInfo[gateid][gPosYM], gateid);
 		    SaveGate(gateid);
 		}
 		else if(strcmp(x_job, "poszm", true) == 0)
 		{
 		    GateInfo[gateid][gPosZM] = ofloat;
-		    format(string, sizeof(string), "PosZM %f assigned to Gate %d", GateInfo[gateid][gPosZM], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "PosZM %f assigned to Gate %d", GateInfo[gateid][gPosZM], gateid);
 		    SaveGate(gateid);
 		}
 		else if(strcmp(x_job, "rotx", true) == 0)
@@ -652,22 +631,19 @@ CMD:gedit(playerid, params[])
 		else if(strcmp(x_job, "rotxm", true) == 0)
 		{
 		    GateInfo[gateid][gRotXM] = ofloat;
-		    format(string, sizeof(string), "RotXM %f assigned to Gate %d", GateInfo[gateid][gRotXM], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "RotXM %f assigned to Gate %d", GateInfo[gateid][gRotXM], gateid);
 		    SaveGate(gateid);
 		}
 		else if(strcmp(x_job, "rotym", true) == 0)
 		{
 		    GateInfo[gateid][gRotYM] = ofloat;
-		    format(string, sizeof(string), "RotYM %f assigned to Gate %d", GateInfo[gateid][gRotYM], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "RotYM %f assigned to Gate %d", GateInfo[gateid][gRotYM], gateid);
 		    SaveGate(gateid);
 		}
 		else if(strcmp(x_job, "rotzm", true) == 0)
 		{
 		    GateInfo[gateid][gRotZM] = ofloat;
-		    format(string, sizeof(string), "RotZM %f assigned to Gate %d", GateInfo[gateid][gRotZM], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "RotZM %f assigned to Gate %d", GateInfo[gateid][gRotZM], gateid);
 		    SaveGate(gateid);
 		}
         else if(strcmp(x_job, "tome", true) == 0)
@@ -675,8 +651,7 @@ CMD:gedit(playerid, params[])
 		    GetPlayerPos(playerid,GateInfo[gateid][gPosX],GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ]);
 		    GateInfo[gateid][gVW] = GetPlayerVirtualWorld(playerid);
 		    GateInfo[gateid][gInt] = GetPlayerInterior(playerid);
-			format(string, sizeof(string), "Gate %d Pos moved to %f %f %f, VW: %d INT: %d", gateid, GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt]);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Gate %d Pos moved to %f %f %f, VW: %d INT: %d", gateid, GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt]);
 		    if(GateInfo[gateid][gModel] == 0)
 			{
 			    GateInfo[gateid][gModel] = 18631;
@@ -692,8 +667,7 @@ CMD:gedit(playerid, params[])
 		else if(strcmp(x_job, "tomem", true) == 0)
 		{
 		    GetPlayerPos(playerid,GateInfo[gateid][gPosXM],GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM]);
-			format(string, sizeof(string), "Gate %d PosM moved to %f %f %f", gateid, GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM]);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Gate %d PosM moved to %f %f %f", gateid, GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM]);
 			SaveGate(gateid);
 
 			format(string, sizeof(string), "%s has edited GateID %d's Moved Position.", GetPlayerNameEx(playerid), gateid);
@@ -703,8 +677,7 @@ CMD:gedit(playerid, params[])
 		{
 		    new value = floatround(ofloat, floatround_round);
 		    GateInfo[gateid][gAllegiance] = value;
-		    format(string, sizeof(string), "Allegiance %d assigned to Gate %d", GateInfo[gateid][gAllegiance], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Allegiance %d assigned to Gate %d", GateInfo[gateid][gAllegiance], gateid);
 		    SaveGate(gateid);
 
 		    format(string, sizeof(string), "%s has edited GateID %d's Allegiance to %d.", GetPlayerNameEx(playerid), gateid, value);
@@ -714,8 +687,7 @@ CMD:gedit(playerid, params[])
 		{
 		    new value = floatround(ofloat, floatround_round);
 		    GateInfo[gateid][gGroupType] = value;
-		    format(string, sizeof(string), "Group Type %d assigned to Gate %d", GateInfo[gateid][gGroupType], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Group Type %d assigned to Gate %d", GateInfo[gateid][gGroupType], gateid);
 		    SaveGate(gateid);
 
 		    format(string, sizeof(string), "%s has edited GateID %d's Group Type to %d.", GetPlayerNameEx(playerid), gateid, value);
@@ -725,8 +697,7 @@ CMD:gedit(playerid, params[])
 		{
 		    new value = floatround(ofloat, floatround_round);
 		    GateInfo[gateid][gGroupID] = value;
-		    format(string, sizeof(string), "Group ID %d assigned to Gate %d", GateInfo[gateid][gGroupID], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Group ID %d assigned to Gate %d", GateInfo[gateid][gGroupID], gateid);
 		    SaveGate(gateid);
 
 		    format(string, sizeof(string), "%s has edited GateID %d's Group ID to %d.", GetPlayerNameEx(playerid), gateid, value);
@@ -748,8 +719,7 @@ CMD:gedit(playerid, params[])
 		{
 			new value = floatround(ofloat, floatround_round);
 		    GateInfo[gateid][gTimer] = value;
-		    format(string, sizeof(string), "Timer %d assigned to Gate %d", GateInfo[gateid][gTimer], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Timer %d assigned to Gate %d", GateInfo[gateid][gTimer], gateid);
 		    SaveGate(gateid);
 
 		    format(string, sizeof(string), "%s has edited GateID %d's timer to %d.", GetPlayerNameEx(playerid), gateid, value);
@@ -760,8 +730,7 @@ CMD:gedit(playerid, params[])
 			new value = floatround(ofloat, floatround_round);
 			if(!(0 <= value < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid facility ID.");
 		    GateInfo[gateid][gFacility] = value;
-		    format(string, sizeof(string), "Facility %d assigned to Gate %d", value, gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Facility %d assigned to Gate %d", value, gateid);
 		    SaveGate(gateid);
 		    format(string, sizeof(string), "%s has edited GateID %d's assigned facility to %d.", GetPlayerNameEx(playerid), gateid, value);
 		    Log("logs/gedit.log", string);
@@ -792,8 +761,7 @@ CMD:gedittexture(playerid, params[])
 		{
 			new value = strval(var);
 		    GateInfo[gateid][gTIndex] = value;
-		    format(string, sizeof(string), "Texture index %d assigned to Gate %d", GateInfo[gateid][gTIndex], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Texture index %d assigned to Gate %d", GateInfo[gateid][gTIndex], gateid);
 		    SaveGate(gateid);
 
 		    format(string, sizeof(string), "%s has edited GateID %d's texture index to %d.", GetPlayerNameEx(playerid), gateid, value);
@@ -803,8 +771,7 @@ CMD:gedittexture(playerid, params[])
 		{
 		    new value = strval(var);
 		    GateInfo[gateid][gTModel] = value;
-		    format(string, sizeof(string), "Texture model %d assigned to Gate %d", GateInfo[gateid][gTModel], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Texture model %d assigned to Gate %d", GateInfo[gateid][gTModel], gateid);
 		    SaveGate(gateid);
 			CreateGate(gateid);
 
@@ -814,8 +781,7 @@ CMD:gedittexture(playerid, params[])
 		else if(strcmp(option, "txd", true) == 0)
 		{
 		    format(GateInfo[gateid][gTTXD], 64, "%s", var);
-		    format(string, sizeof(string), "TXD file %s assigned to Gate %d", GateInfo[gateid][gTTXD], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "TXD file %s assigned to Gate %d", GateInfo[gateid][gTTXD], gateid);
 		    SaveGate(gateid);
 
 		    format(string, sizeof(string), "%s has edited GateID %d's TXD file to %s.", GetPlayerNameEx(playerid), gateid, var);
@@ -824,8 +790,7 @@ CMD:gedittexture(playerid, params[])
 		else if(strcmp(option, "texture", true) == 0)
 		{
 		    format(GateInfo[gateid][gTTexture], 64, "%s", var);
-		    format(string, sizeof(string), "Texture %s assigned to Gate %d", GateInfo[gateid][gTTexture], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Texture %s assigned to Gate %d", GateInfo[gateid][gTTexture], gateid);
 		    SaveGate(gateid);
 
 		    format(string, sizeof(string), "%s has edited GateID %d's texture to %s.", GetPlayerNameEx(playerid), gateid, var);
@@ -837,8 +802,7 @@ CMD:gedittexture(playerid, params[])
 			new value;
 			sscanf(var, "h", value);
 		    GateInfo[gateid][gTColor] = value;
-		    format(string, sizeof(string), "Material color %d assigned to Gate %d", GateInfo[gateid][gTColor], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Material color %d assigned to Gate %d", GateInfo[gateid][gTColor], gateid);
 		    SaveGate(gateid);
 
 		    format(string, sizeof(string), "%s has edited GateID %d's material color to %d.", GetPlayerNameEx(playerid), gateid, value);
@@ -851,8 +815,7 @@ CMD:gedittexture(playerid, params[])
 			GateInfo[gateid][gTTXD] = EOS;
 			GateInfo[gateid][gTTexture] = EOS;
 			GateInfo[gateid][gTColor] = 0;
-		    format(string, sizeof(string), "Texture removed from Gate %d", gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Texture removed from Gate %d", gateid);
 		    SaveGate(gateid);
 			CreateGate(gateid);
 
@@ -867,21 +830,18 @@ CMD:gedittexture(playerid, params[])
 CMD:listgates(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
-	new hid, string[128];
+	new hid;
 	if(sscanf(params, "d", hid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /listgates [houseid]");
 	if(hid <= 0 || hid >= MAX_HOUSES)
 	{
-		format(string, sizeof(string), "House ID must be between 1 and %d.", MAX_HOUSES - 1);
-		return SendClientMessageEx(playerid, COLOR_GREY, string);
+		return SendClientMessageEx(playerid, COLOR_GREY, "House ID must be between 1 and %d.", MAX_HOUSES - 1);
 	}
-	format(string, sizeof(string), "Listing gates linked to house id: %d", hid);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Listing gates linked to house id: %d", hid);
 	for(new i = 0; i < MAX_GATES; i++)
 	{
 		if(GateInfo[i][gHID] == hid)
 		{
-			format(string, sizeof(string), "- %d", i);
-			SendClientMessageEx(playerid, COLOR_GREY, string);
+			SendClientMessageEx(playerid, COLOR_GREY, "- %d", i);
 		}
 	}
 	return 1;
@@ -917,8 +877,7 @@ CMD:gmove(playerid, params[])
 	GetPlayerPos(playerid,GateInfo[gateid][gPosX],GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ]);
 	GateInfo[gateid][gVW] = GetPlayerVirtualWorld(playerid);
 	GateInfo[gateid][gInt] = GetPlayerInterior(playerid);
-	format(string, sizeof(string), "Gate %d Pos moved to %f %f %f, VW: %d INT: %d", gateid, GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Gate %d Pos moved to %f %f %f, VW: %d INT: %d", gateid, GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt]);
 	if(GateInfo[gateid][gModel] == 0)
 	{
 		GateInfo[gateid][gModel] = 18631;
@@ -934,16 +893,14 @@ CMD:gmove(playerid, params[])
 		GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
 		format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 		Log("logs/admin.log", string);
-		format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+		SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 	}
 	else if(fee > 0)
 	{
 		GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
 		format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 		Log("logs/admin.log", string);
-		format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+		SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 	}
 	return 1;
 }
@@ -951,11 +908,10 @@ CMD:gmove(playerid, params[])
 CMD:reloadgate(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
-	new gateid, string[128];
+	new gateid;
 	if(sscanf(params, "d", gateid)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /reloadgate <gateid>");
 	CreateGate(gateid);
-	format(string, sizeof(string), "Reloading Gate ID %d...", gateid);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Reloading Gate ID %d...", gateid);
 	return 1;
 }
 

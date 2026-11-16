@@ -42,8 +42,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				break;
 			}
 		}
-		format(szMiscArray, sizeof(szMiscArray), "You have purchased the %s Toy for 150 credits.", name);
-		SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased the %s Toy for 150 credits.", name);
 		
 		g_mysql_SaveAccount(playerid);
 		
@@ -247,9 +246,7 @@ CMD:claimtokeninfo(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return 1;
 	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "PointID: %d PickupID: %d 3DTextID: %d X: %f Y: %f Z: %f VW: %d Int: %d", ActiveCharmPoint, ActiveCharmPointPickup, _:ActiveCharmPoint3DText, CharmPoints[ActiveCharmPoint][cpPos][0], CharmPoints[ActiveCharmPoint][cpPos][1], CharmPoints[ActiveCharmPoint][cpPos][2], CharmPoints[ActiveCharmPoint][cpVW], CharmPoints[ActiveCharmPoint][cpInt]);
-	SendClientMessageEx(playerid, -1, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "MainTimer: %d ReloadTimer: %d PlayerLastCharmReceived: %d", CharmMainTimer, CharmReloadTimer, PlayerInfo[playerid][pLastCharmReceived]);
-	SendClientMessageEx(playerid, -1, szMiscArray);
+	SendClientMessageEx(playerid, -1, "PointID: %d PickupID: %d 3DTextID: %d X: %f Y: %f Z: %f VW: %d Int: %d", ActiveCharmPoint, ActiveCharmPointPickup, _:ActiveCharmPoint3DText, CharmPoints[ActiveCharmPoint][cpPos][0], CharmPoints[ActiveCharmPoint][cpPos][1], CharmPoints[ActiveCharmPoint][cpPos][2], CharmPoints[ActiveCharmPoint][cpVW], CharmPoints[ActiveCharmPoint][cpInt]);
+	SendClientMessageEx(playerid, -1, "MainTimer: %d ReloadTimer: %d PlayerLastCharmReceived: %d", CharmMainTimer, CharmReloadTimer, PlayerInfo[playerid][pLastCharmReceived]);
 	return 1;
 }

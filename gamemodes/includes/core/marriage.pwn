@@ -58,12 +58,9 @@ CMD:divorce(playerid, params[])
 	ClearMarriage(targets[0]);
 	ClearMarriage(targets[1]);
 	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "You have divorced %s and %s.", GetPlayerNameEx(targets[0]), GetPlayerNameEx(targets[1]));
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "You have been divorced from %s by %s.", GetPlayerNameEx(targets[1]), GetPlayerNameEx(playerid));
-	SendClientMessageEx(targets[0], COLOR_LIGHTBLUE, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "You have been divorced from %s by %s.", GetPlayerNameEx(targets[0]), GetPlayerNameEx(playerid));
-	SendClientMessageEx(targets[1], COLOR_LIGHTBLUE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have divorced %s and %s.", GetPlayerNameEx(targets[0]), GetPlayerNameEx(targets[1]));
+	SendClientMessageEx(targets[0], COLOR_LIGHTBLUE, "You have been divorced from %s by %s.", GetPlayerNameEx(targets[1]), GetPlayerNameEx(playerid));
+	SendClientMessageEx(targets[1], COLOR_LIGHTBLUE, "You have been divorced from %s by %s.", GetPlayerNameEx(targets[0]), GetPlayerNameEx(playerid));
 	format(szMiscArray, sizeof(szMiscArray), "%s has divorced %s and %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targets[0]), GetPlayerNameEx(targets[1]));
 	GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
 	return 1;
@@ -136,10 +133,8 @@ CMD:adivorce(playerid, params[])
 				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 			ClearMarriage(giveplayerid);
-			format(string, sizeof(string), "* You've admin divorced %s.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "* You have been admin divorced by an admin.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You've admin divorced %s.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been admin divorced by an admin.", GetPlayerNameEx(playerid));
 			return 1;
 		}
 		else
@@ -160,7 +155,7 @@ CMD:propose(playerid, params[])
 	if(GetPlayerCash(playerid) < 100000) return SendClientMessageEx(playerid, COLOR_GREY, "   The marriage and reception costs $100,000!");
 	if(PlayerInfo[playerid][pMarriedID] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "   You're already married!");
 
-	new string[128], giveplayerid;
+	new giveplayerid;
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /propose [player]");
 
 	if(IsPlayerConnected(giveplayerid))
@@ -171,10 +166,8 @@ CMD:propose(playerid, params[])
 		if(ProxDetectorS(8.0, playerid, giveplayerid))
 		{
 			if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot Propose to yourself!"); return 1; }
-			format(string, sizeof(string), "* You proposed to %s.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "* %s just proposed to you (type /accept marriage) to accept.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You proposed to %s.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s just proposed to you (type /accept marriage) to accept.", GetPlayerNameEx(playerid));
 			ProposeOffer[giveplayerid] = playerid;
 			SetPVarInt(giveplayerid, "ProposeOfferSession", g_arrQueryHandle[playerid]);
 			ShowPlayerDialogEx(playerid, DIALOG_MARRIAGE, DIALOG_STYLE_MSGBOX, "Marriage Last Name", 
@@ -191,7 +184,7 @@ CMD:propose(playerid, params[])
 
 CMD:witness(playerid, params[])
 {
-	new string[128], giveplayerid;
+	new giveplayerid;
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /witness [player]");
 
 	if(IsPlayerConnected(giveplayerid))
@@ -200,10 +193,8 @@ CMD:witness(playerid, params[])
 		{
 			if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot Propose to yourself!"); return 1; }
 			if(ProposeOffer[giveplayerid] == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "Your spouse can't be the marriage witness!"); return 1; }
-			format(string, sizeof(string), "* You requested %s to be your Marriage Witness.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "* %s just requested you to be their Marriage Witness (type /accept witness) to accept.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You requested %s to be your Marriage Witness.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s just requested you to be their Marriage Witness (type /accept witness) to accept.", GetPlayerNameEx(playerid));
 			MarryWitnessOffer[giveplayerid] = playerid;
 			SetPVarInt(giveplayerid, "MarryWitnessOfferSession", g_arrQueryHandle[playerid]);
 		}

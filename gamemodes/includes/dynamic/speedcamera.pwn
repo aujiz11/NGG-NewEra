@@ -606,8 +606,7 @@ stock UpdateSpeedCamerasForPlayer(p)
 							mysql_format(MainPipeline, string, sizeof(string), "UPDATE `vehicles` SET `pvTicket` = '%d' WHERE `id` = '%d'", GetPVarInt(p, "VLPTickets"), GetPVarInt(p, "LockPickVehicleSQLId"));
 							mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, p);
 							PlayerInfo[p][pTicketTime] = 60;
-							format(string, sizeof(string), "You were caught speeding and have received a speeding ticket of $%s", number_format(Amount));
-							SendClientMessageEx(p, COLOR_WHITE, string);
+							SendClientMessageEx(p, COLOR_WHITE, "You were caught speeding and have received a speeding ticket of $%s", number_format(Amount));
 							PlayerPlaySound(p, 1132, 0.0, 0.0, 0.0);
 							PlayerTextDrawShow(p, _vhudFlash[p]);
 							SetTimerEx("TurnOffFlash", 500, false, "i", p);
@@ -617,11 +616,10 @@ stock UpdateSpeedCamerasForPlayer(p)
 							new v = GetPlayerVehicle(i, vehicleid);
 							if(v != -1)
 							{
-								new string[128], Amount = floatround(125*(vehicleSpeed-speedLimit), floatround_round)+2000;
+								new Amount = floatround(125*(vehicleSpeed-speedLimit), floatround_round)+2000;
 								PlayerVehicleInfo[i][v][pvTicket] += Amount;
 								PlayerInfo[p][pTicketTime] = 60;
-								format(string, sizeof(string), "You were caught speeding and have received a speeding ticket of $%s", number_format(Amount));
-								SendClientMessageEx(p, COLOR_WHITE, string);
+								SendClientMessageEx(p, COLOR_WHITE, "You were caught speeding and have received a speeding ticket of $%s", number_format(Amount));
 								PlayerPlaySound(p, 1132, 0.0, 0.0, 0.0);
 								PlayerTextDrawShow(p, _vhudFlash[p]);
 								SetTimerEx("TurnOffFlash", 500, false, "i", p);

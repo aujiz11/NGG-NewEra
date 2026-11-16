@@ -196,7 +196,7 @@ CMD:stopani(playerid, params[])
 
 CMD:shakehand(playerid, params[])
 {
-	new string[128], giveplayerid, style;
+	new giveplayerid, style;
 	if(sscanf(params, "ud", giveplayerid, style)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shakehand [player] [style (1-8)]");
 
 	if(IsPlayerConnected(giveplayerid) || (PlayerInfo[giveplayerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports] == 0))
@@ -226,11 +226,9 @@ CMD:shakehand(playerid, params[])
 			SetPVarInt(playerid, "HandshakeTargetSession", g_arrQueryHandle[giveplayerid]);
 			SetPVarInt(playerid, "shstyle", style);
 
-			format(string, sizeof(string), "You have requested to shake %s's hand, please wait for them to respond.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have requested to shake %s's hand, please wait for them to respond.", GetPlayerNameEx(giveplayerid));
 
-			format(string, sizeof(string), "%s has requested to shake your hand, please use '/accept handshake' to approve the hand shake.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has requested to shake your hand, please use '/accept handshake' to approve the hand shake.", GetPlayerNameEx(playerid));
 		}
 		else
 		{

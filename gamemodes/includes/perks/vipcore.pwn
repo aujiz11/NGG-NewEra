@@ -216,10 +216,8 @@ CMD:buddyinvite(playerid, params[])
 	PlayerInfo[giveplayerid][pDonateRank] = 1;
 	PlayerInfo[giveplayerid][pTempVIP] = 180;
 	PlayerInfo[giveplayerid][pBuddyInvited] = 1;
-	format(string, sizeof(string), "You have invited %s to become a Bronze VIP for 3 hours.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "You have been invited by %s to become a Bronze VIP for 3 hours. Enjoy!", GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have invited %s to become a Bronze VIP for 3 hours.", GetPlayerNameEx(giveplayerid));
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have been invited by %s to become a Bronze VIP for 3 hours. Enjoy!", GetPlayerNameEx(playerid));
 	format(string, sizeof(string), "BUDDY INVITE: %s(%d) has invited %s(%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 	Log("logs/setvip.log", string);
 	if(PlayerInfo[playerid][pDonateRank] >= 4)
@@ -576,11 +574,8 @@ CMD:v(playerid, params[]) {
 		}
 		else if(gettime() < GetPVarInt(playerid, "timeVIP")) {
 
-			new
-				szMessage[64];
 
-			format(szMessage, sizeof(szMessage), "You must wait %d seconds before speaking again in this channel.", GetPVarInt(playerid, "timeVIP") - gettime());
-			SendClientMessageEx(playerid, COLOR_GREY, szMessage);
+			SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before speaking again in this channel.", GetPVarInt(playerid, "timeVIP") - gettime());
 		}
 		else if(PlayerInfo[playerid][pToggledChats][9]) {
 		    SendClientMessageEx(playerid, COLOR_GREY, "You have VIP chat toggled - /tog vip to enable it.");
@@ -616,8 +611,7 @@ CMD:searchvipm(playerid, params[])
 	{
 	    new
 	        count,
-	        vipm,
-	        string[128];
+	        vipm;
 
  		if(sscanf(params, "d", vipm)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /searchvipm [vipm]");
 
@@ -625,14 +619,12 @@ CMD:searchvipm(playerid, params[])
 		{
 			if(PlayerInfo[i][pVIPM] == vipm)
 			{
-				format(string, sizeof(string), "%s (%d) | VIPM: %d", GetPlayerNameEx(i), i, vipm);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "%s (%d) | VIPM: %d", GetPlayerNameEx(i), i, vipm);
 				count++;
 			}
 			if(PlayerInfo[i][pVIPMO] == vipm)
 			{
-				format(string, sizeof(string), "%s (%d) | VIPM Old: %d", GetPlayerNameEx(i), i, vipm);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "%s (%d) | VIPM Old: %d", GetPlayerNameEx(i), i, vipm);
 				count++;
 			}
 			else if(count == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "No person online matched that VIPM number.");
@@ -695,8 +687,7 @@ CMD:sellvip(playerid, params[]) {
 			SetPVarString(player, "VIPSeller", GetPlayerNameEx(playerid));
 			format(string, sizeof(string), "Seller: %s\nVIP level: %s \nPrice: %d \nVIP ID: %d\nExpires: %s\n\nDo you wish to purchase %s VIP from %s for $%d?", GetPlayerNameEx(playerid), viptype, price, PlayerInfo[playerid][pVIPM], date(PlayerInfo[playerid][pVIPExpire], 2), viptype, GetPlayerNameEx(playerid), price);
 			ShowPlayerDialogEx(player, SELLVIP, DIALOG_STYLE_MSGBOX, "Purchase VIP", string, "Purchase", "Decline");
-			format(string, sizeof(string), "You offered %s $%d for your %s VIP.", GetPlayerNameEx(player), price, viptype);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You offered %s $%d for your %s VIP.", GetPlayerNameEx(player), price, viptype);
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "That person is not near you.");
 	}
@@ -740,11 +731,9 @@ CMD:newgvip(playerid, params[])
 				PlayerInfo[iTargetID][pVIPExpire] = gettime()+2592000;
 				format(szMessage, sizeof(szMessage), "AdmCmd: %s has set %s's VIP level to Gold (3).", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 				ABroadCast(COLOR_LIGHTRED,szMessage, 1337);
-				format(szMessage, sizeof(szMessage), "Your VIP level has been set to Gold by Admin %s.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(iTargetID, COLOR_WHITE, szMessage);
+				SendClientMessageEx(iTargetID, COLOR_WHITE, "Your VIP level has been set to Gold by Admin %s.", GetPlayerNameEx(playerid));
 				if (PlayerInfo[playerid][pAdmin] < 1337) {
-					format(szMessage, sizeof(szMessage), "AdmCmd: %s has set %s's VIP level to Gold (3).", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
-					SendClientMessageEx(playerid, COLOR_LIGHTRED, szMessage);
+					SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s has set %s's VIP level to Gold (3).", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 				}
         	    PlayerInfo[iTargetID][pDonateRank] = 3;
 				PlayerInfo[iTargetID][pTempVIP] = 0;
@@ -796,11 +785,9 @@ CMD:renewgvip(playerid, params[])
 			PlayerInfo[iTargetID][pVIPExpire] = gettime()+(2592000*months);
 			format(szMessage, sizeof(szMessage), "AdmCmd: %s has set %s's VIP level to Gold (3).", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 			ABroadCast(COLOR_LIGHTRED,szMessage, 1337);
-			format(szMessage, sizeof(szMessage), "Your VIP level has been set to Gold by Admin %s.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(iTargetID, COLOR_WHITE, szMessage);
+			SendClientMessageEx(iTargetID, COLOR_WHITE, "Your VIP level has been set to Gold by Admin %s.", GetPlayerNameEx(playerid));
 			if (PlayerInfo[playerid][pAdmin] < 1337) {
-				format(szMessage, sizeof(szMessage), "AdmCmd: %s has set %s's VIP level to Gold (3).", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
-				SendClientMessageEx(playerid, COLOR_LIGHTRED, szMessage);
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s has set %s's VIP level to Gold (3).", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 			}
    			PlayerInfo[iTargetID][pDonateRank] = 3;
 			PlayerInfo[iTargetID][pTempVIP] = 0;
@@ -841,13 +828,11 @@ CMD:setvip(playerid, params[])
 				{
 					if (PlayerInfo[playerid][pAdmin] < 1337)
 					{
-						format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to None (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
-						SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
+						SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s has set %s's VIP level to None (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 					}
 					format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to None (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 					ABroadCast(COLOR_LIGHTRED,string, 1337);
-					format(string, sizeof(string), "Your VIP level has been set to None by Admin %s.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+					SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your VIP level has been set to None by Admin %s.", GetPlayerNameEx(playerid));
 					PlayerInfo[giveplayerid][pTokens] = 0;
 
 					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to None (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
@@ -857,8 +842,7 @@ CMD:setvip(playerid, params[])
 				{
 					if (PlayerInfo[playerid][pAdmin] < 1337)
 					{
-						format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Bronze (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level, orderid);
-						SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
+						SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s has set %s's VIP level to Bronze (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level, orderid);
 					}
 					if(PlayerInfo[giveplayerid][pVIPM] == 0)
 					{
@@ -867,8 +851,7 @@ CMD:setvip(playerid, params[])
 					}
 					format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Bronze (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 					ABroadCast(COLOR_LIGHTRED,string, 1337);
-					format(string, sizeof(string), "Your VIP level has been set to Bronze by Admin %s.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+					SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your VIP level has been set to Bronze by Admin %s.", GetPlayerNameEx(playerid));
 
 					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Bronze (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 					Log("logs/setvip.log", string);
@@ -877,8 +860,7 @@ CMD:setvip(playerid, params[])
 				{
 					if (PlayerInfo[playerid][pAdmin] < 1337)
 					{
-						format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Silver (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
-						SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
+						SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s has set %s's VIP level to Silver (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 					}
 					if(PlayerInfo[giveplayerid][pVIPM] == 0)
 					{
@@ -887,8 +869,7 @@ CMD:setvip(playerid, params[])
 					}
 					format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Silver (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 					ABroadCast(COLOR_LIGHTRED,string, 1337);
-					format(string, sizeof(string), "Your VIP level has been set to Silver by Admin %s.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+					SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your VIP level has been set to Silver by Admin %s.", GetPlayerNameEx(playerid));
 
 					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Silver (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 					Log("logs/setvip.log", string);
@@ -905,8 +886,7 @@ CMD:setvip(playerid, params[])
 						DeletePVar(playerid, "ConfirmGold");
 						if (PlayerInfo[playerid][pAdmin] < 1337)
 						{
-							format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Gold (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
-							SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
+							SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s has set %s's VIP level to Gold (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 						}
 						if(PlayerInfo[giveplayerid][pVIPM] == 0)
 						{
@@ -916,8 +896,7 @@ CMD:setvip(playerid, params[])
 						
 						format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Gold (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 						ABroadCast(COLOR_LIGHTRED,string, 1337);
-						format(string, sizeof(string), "Your VIP level has been set to Gold by Admin %s.", GetPlayerNameEx(playerid));
-						SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+						SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your VIP level has been set to Gold by Admin %s.", GetPlayerNameEx(playerid));
 						format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Gold (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 						Log("logs/setvip.log", string);
 					}
@@ -926,8 +905,7 @@ CMD:setvip(playerid, params[])
 				{
 					if (PlayerInfo[giveplayerid][pAdmin] < 1337)
 					{
-						format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Platinum (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
-						SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
+						SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s has set %s's VIP level to Platinum (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 					}
 					if(PlayerInfo[giveplayerid][pVIPM] == 0)
 					{
@@ -936,8 +914,7 @@ CMD:setvip(playerid, params[])
 					}
 					format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Platinum (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 					ABroadCast(COLOR_LIGHTRED,string, 1337);
-					format(string, sizeof(string), "Your VIP level has been set to Platinum by Admin %s.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+					SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your VIP level has been set to Platinum by Admin %s.", GetPlayerNameEx(playerid));
 
 					PlayerInfo[giveplayerid][pVIPExpire] = gettime()+2592000*months;
 
@@ -986,8 +963,7 @@ CMD:giftgvip(playerid, params[])
 			PlayerInfo[giveplayerid][pVIPExpire] = gettime()+86400*days;
 			format(string, sizeof(string), "AdmCmd: %s has gifted %s Gold VIP for %d days (%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), days, reason);
 			ABroadCast(COLOR_LIGHTRED,string, 1337);
-			format(string, sizeof(string), "Your VIP level has been set to Gold by Admin %s.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your VIP level has been set to Gold by Admin %s.", GetPlayerNameEx(playerid));
 			format(string, sizeof(string), "AdmCmd: %s has gifted %s(%d) Gold VIP for %d days (%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), days, reason);
 			Log("logs/setvip.log", string);
 			return 1;
@@ -1065,8 +1041,7 @@ CMD:vmute(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
 				}
 				ABroadCast(COLOR_LIGHTRED,string,2);
-				format(string, sizeof(string), "You have been indefinitely muted from VIP Chat for abuse by %s. You may appeal this on the forums (admin complaint)", GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been indefinitely muted from VIP Chat for abuse by %s. You may appeal this on the forums (admin complaint)", GetPlayerNameEx(playerid));
 				format(string, sizeof(string), "AdmCmd: %s(%d) was blocked from /v by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 				Log("logs/mute.log", string);
 			}
@@ -1079,8 +1054,7 @@ CMD:vmute(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
 				}
 				ABroadCast(COLOR_LIGHTRED,string,2);
-				format(string, sizeof(string), "You have been re-allowed to use VIP Chat by %s.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been re-allowed to use VIP Chat by %s.", GetPlayerNameEx(playerid));
 				format(string, sizeof(string), "AdmCmd: %s(%d) was unblocked from /v by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 				Log("logs/mute.log", string);
 			}
@@ -1112,8 +1086,7 @@ CMD:vto(playerid, params[])
 				{
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
 				}
-				format(string, sizeof(string), "You have been temporarily blocked from using VIP Chat by %s, reason: %s.", GetPlayerNameEx(playerid), reason);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been temporarily blocked from using VIP Chat by %s, reason: %s.", GetPlayerNameEx(playerid), reason);
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You will not be able to use VIP Chat for 15 minutes.");
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Note the future abuse of VIP Chat could result in loss of that privilege altogether or being banned from the server.");
 				format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from VIP Chat by %s(%d), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), reason);
@@ -1244,8 +1217,7 @@ CMD:ovmute(playerid, params[])
 	mysql_format(MainPipeline, query,sizeof(query),"UPDATE `accounts` SET `VIPMuted` = 1 WHERE `Username`= '%s' AND `AdminLevel` < 4", tmpName);
 	mysql_tquery(MainPipeline, query, "OnSetVMute", "ii", playerid, 1);
 
-	format(query, sizeof(query), "Attempting to vip mute %s's account.", tmpName);
-	SendClientMessageEx(playerid, COLOR_YELLOW, query);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Attempting to vip mute %s's account.", tmpName);
 	return 1;
 }
 
@@ -1263,8 +1235,7 @@ CMD:ovunmute(playerid, params[])
 	mysql_format(MainPipeline, query,sizeof(query),"UPDATE `accounts` SET `VIPMuted` = 0 WHERE `Username`= '%s' AND `AdminLevel` < 4", tmpName);
 	mysql_tquery(MainPipeline, query, "OnSetVMute", "ii", playerid, 2);
 
-	format(query, sizeof(query), "Attempting to vip unmute %s's account.", tmpName);
-	SendClientMessageEx(playerid, COLOR_YELLOW, query);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Attempting to vip unmute %s's account.", tmpName);
 	return 1;
 }
 
@@ -1348,8 +1319,7 @@ CMD:vipmods(playerid, params[])
 	{
 		if(PlayerInfo[i][pVIPMod])
 		{
-			format(szMiscArray, sizeof(szMiscArray), "%s %s - VIP Chat %s", PlayerInfo[i][pVIPMod] == 1 ? ("VIP Moderator"):("Senior VIP Moderator"), GetPlayerNameEx(i), PlayerInfo[playerid][pToggledChats][9] == 0 ? ("On"):("Off"));
-			SendClientMessageEx(playerid, -1, szMiscArray);
+			SendClientMessageEx(playerid, -1, "%s %s - VIP Chat %s", PlayerInfo[i][pVIPMod] == 1 ? ("VIP Moderator"):("Senior VIP Moderator"), GetPlayerNameEx(i), PlayerInfo[playerid][pToggledChats][9] == 0 ? ("On"):("Off"));
 		}
 	}
 	return 1;

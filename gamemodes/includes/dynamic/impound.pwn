@@ -58,8 +58,7 @@ CMD:impoundedit(playerid, params[])
 			GetPlayerPos(playerid, ImpoundPoints[id][impoundPosX], ImpoundPoints[id][impoundPosY], ImpoundPoints[id][impoundPosZ]);
 			ImpoundPoints[id][impoundInt] = GetPlayerInterior(playerid);
 			ImpoundPoints[id][impoundVW] = GetPlayerVirtualWorld(playerid);
-			format(string, sizeof(string), "You have changed the position on impound Point #%d.", id);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the position on impound Point #%d.", id);
 			DestroyDynamic3DTextLabel(ImpoundPoints[id][impoundTextID]);
 			format(string, sizeof(string), "Impound Yard #%d\nType /impound to impound a vehicle", id);
 			ImpoundPoints[id][impoundTextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, ImpoundPoints[id][impoundPosX], ImpoundPoints[id][impoundPosY], ImpoundPoints[id][impoundPosZ]+0.6, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ImpoundPoints[id][impoundVW], ImpoundPoints[id][impoundInt], -1);
@@ -72,8 +71,7 @@ CMD:impoundedit(playerid, params[])
 		{
 			if(ImpoundPoints[id][impoundPosX] == 0)
 			{
-				format(string, sizeof(string), "Impound Point #%d does not exist.", id);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Impound Point #%d does not exist.", id);
 				return 1;
 			}
 			DestroyDynamic3DTextLabel(ImpoundPoints[id][impoundTextID]);
@@ -83,8 +81,7 @@ CMD:impoundedit(playerid, params[])
 			ImpoundPoints[id][impoundVW] = 0;
 			ImpoundPoints[id][impoundInt] = 0;
 			SaveImpoundPoint(id);
-			format(string, sizeof(string), "You have deleted Impound Point #%d.", id);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted Impound Point #%d.", id);
 			format(string, sizeof(string), "%s has deleted Impound Point ID %d.", GetPlayerNameEx(playerid), id);
 			Log("logs/impoundedit.log", string);
 			return 1;
@@ -104,11 +101,8 @@ CMD:impoundstatus(playerid, params[])
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
-		new string[128];
-		format(string,sizeof(string),"|___________ Impound Point Status (ID: %d) ___________|", id);
-		SendClientMessageEx(playerid, COLOR_GREEN, string);
-		format(string, sizeof(string), "[Position] X: %f | Y: %f | Z: %f | VW: %d | Int: %d", ImpoundPoints[id][impoundPosX], ImpoundPoints[id][impoundPosY], ImpoundPoints[id][impoundPosZ], ImpoundPoints[id][impoundVW], ImpoundPoints[id][impoundInt]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Impound Point Status (ID: %d) ___________|", id);
+		SendClientMessageEx(playerid, COLOR_WHITE, "[Position] X: %f | Y: %f | Z: %f | VW: %d | Int: %d", ImpoundPoints[id][impoundPosX], ImpoundPoints[id][impoundPosY], ImpoundPoints[id][impoundPosZ], ImpoundPoints[id][impoundVW], ImpoundPoints[id][impoundInt]);
 	}
 	else
 	{
@@ -126,9 +120,7 @@ CMD:impoundnext(playerid, params[])
 		{
 			if(ImpoundPoints[x][impoundPosX] == 0)
 		    {
-		        new string[128];
-		        format(string, sizeof(string), "%d is available to use.", x);
-		        SendClientMessageEx(playerid, COLOR_WHITE, string);
+		        SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", x);
 		        break;
 			}
 		}

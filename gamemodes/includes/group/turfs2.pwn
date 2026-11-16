@@ -170,9 +170,8 @@ TurfWars_TurfTax(playerid, szType[], iAmount) {
 		szMiscArray[0] = 0;
 		arrTurfWars[iTurfID][tw_iRevenue] += iTurfTax;
 		arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_iBudget] += iTurfTax;
-		format(szMiscArray, sizeof(szMiscArray), "[Turf]: {CCCCCC}You paid {EEEEEE}$%s {CCCCCC}turf tax {EEEEEE}(%d percent) {CCCCCC}for the {EEEEEE}%s {CCCCCC}you sold.",
+		SendClientMessageEx(playerid, COLOR_GREEN, "[Turf]: {CCCCCC}You paid {EEEEEE}$%s {CCCCCC}turf tax {EEEEEE}(%d percent) {CCCCCC}for the {EEEEEE}%s {CCCCCC}you sold.",
 			number_format(iTurfTax), arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_iTurfTax], szType, number_format(iTurfTax));
-		SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 		format(szMiscArray, sizeof(szMiscArray), "[GANG DEBUG] TURF TAX | GANG - %s, TURF TAX - %s, OLD GBALANCE - %s, NEW GBALANCE - %d.",
 		arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_szGroupName], number_format(iTurfTax), number_format(oldbalance), number_format(arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_iBudget]));
 		Log("logs/gangdebuglog.log", szMiscArray);
@@ -345,8 +344,7 @@ TurfWars_CapCheck(playerid, iTurfID) {
 			if(IsPlayerInDynamicArea(p, arrTurfWars[iTurfID][tw_iAreaID]) && !GetPVarInt(p, "Injured") && PlayerInfo[p][pMember] == iCapID) iCount++;
 		}
 		if(iCount == 0) return 1;
-		format(szMiscArray, sizeof(szMiscArray), "[TURF]: {CCCCCC}There's {FFFF00}%d {CCCCCC}LEOs left on the turf.", iCount);
-		SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREEN, "[TURF]: {CCCCCC}There's {FFFF00}%d {CCCCCC}LEOs left on the turf.", iCount);
 	}
 	else {
 		foreach(new p : Player) {
@@ -354,8 +352,7 @@ TurfWars_CapCheck(playerid, iTurfID) {
 				PlayerInfo[p][pMember] != PlayerInfo[playerid][pMember] && PlayerInfo[p][pMember] != INVALID_PLAYER_ID) iCount++;
 		}
 		if(iCount == 0) return 1;
-		format(szMiscArray, sizeof(szMiscArray), "[TURF]: {CCCCCC}There's {FFFF00}%d {CCCCCC}gang members left on the turf.", iCount);
-		SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREEN, "[TURF]: {CCCCCC}There's {FFFF00}%d {CCCCCC}gang members left on the turf.", iCount);
 	}
 	return 0;
 }
@@ -1131,8 +1128,7 @@ TurfWars_EditTurf(playerid, i, szChoice[], iValue) {
 forward TurfWars_OnQueryFinish(playerid, i);
 public TurfWars_OnQueryFinish(playerid, i) {
 
-	format(szMiscArray, sizeof(szMiscArray), "Successfully edited and saved Turf ID %d", i);
-	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Successfully edited and saved Turf ID %d", i);
 	return 1;
 }
 

@@ -48,7 +48,7 @@ public PickUpC4(playerid)
 
 stock SearchingHit(playerid)
 {
-	new string[128], group = PlayerInfo[playerid][pMember];
+	new group = PlayerInfo[playerid][pMember];
    	SendClientMessageEx(playerid, COLOR_WHITE, "Available Contracts:");
    	new hits;
 	foreach(new i: Player)
@@ -58,13 +58,11 @@ stock SearchingHit(playerid)
 			if(GotHit[i] == 0)
 			{
 				hits++;
-				format(string, sizeof(string), "%s (ID %d) | $%s | Placed By: %s | Reason: %s | Chased By: Nobody", GetPlayerNameEx(i), i, number_format(PlayerInfo[i][pHeadValue]), PlayerInfo[i][pContractBy], PlayerInfo[i][pContractDetail]);
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "%s (ID %d) | $%s | Placed By: %s | Reason: %s | Chased By: Nobody", GetPlayerNameEx(i), i, number_format(PlayerInfo[i][pHeadValue]), PlayerInfo[i][pContractBy], PlayerInfo[i][pContractDetail]);
 			}
 			else
 			{
-				format(string, sizeof(string), "%s (ID %d) | $%s | Placed By: %s | Reason: %s | Chased By: %s", GetPlayerNameEx(i), i, number_format(PlayerInfo[i][pHeadValue]), PlayerInfo[i][pContractBy], PlayerInfo[i][pContractDetail], GetPlayerNameEx(GetChased[i]));
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "%s (ID %d) | $%s | Placed By: %s | Reason: %s | Chased By: %s", GetPlayerNameEx(i), i, number_format(PlayerInfo[i][pHeadValue]), PlayerInfo[i][pContractBy], PlayerInfo[i][pContractDetail], GetPlayerNameEx(GetChased[i]));
 			}
 		}
 	}
@@ -438,20 +436,17 @@ CMD:ranks(playerid, params[])
 	if ((!IsAHitman(playerid)) && PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Member of the Hitman Agency!");
 	SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Agency's Ranks __________________|");
 
-	new string[128];
 	foreach(new i: Player)
 	{
 		if((IsAHitman(i)))
 		{
 			if( GoChase[playerid] == INVALID_PLAYER_ID )
 			{
-				format(string, sizeof(string), "* Name: %s | Rank %d | Completed Hits: %d | Failed Hits: %d", GetPlayerNameEx(i),PlayerInfo[i][pRank], PlayerInfo[i][pCHits], PlayerInfo[i][pFHits]);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
+				SendClientMessageEx(playerid, COLOR_GREY, "* Name: %s | Rank %d | Completed Hits: %d | Failed Hits: %d", GetPlayerNameEx(i),PlayerInfo[i][pRank], PlayerInfo[i][pCHits], PlayerInfo[i][pFHits]);
 			}
 			else
 			{
-				format(string, sizeof(string), "* Name: %s | Rank %d | Completed Hits: %d | Failed Hits: %d | Chasing: %s", GetPlayerNameEx(i),PlayerInfo[i][pRank], PlayerInfo[i][pCHits], PlayerInfo[i][pFHits], GetPlayerNameEx(GoChase[i]));
-				SendClientMessageEx(playerid, COLOR_GREY, string);
+				SendClientMessageEx(playerid, COLOR_GREY, "* Name: %s | Rank %d | Completed Hits: %d | Failed Hits: %d | Chasing: %s", GetPlayerNameEx(i),PlayerInfo[i][pRank], PlayerInfo[i][pCHits], PlayerInfo[i][pFHits], GetPlayerNameEx(GoChase[i]));
 			}
 		}
 	}
@@ -638,7 +633,7 @@ CMD:givehit(playerid, params[])
 			return 1;
 		}
 
-		new string[128], giveplayerid, targetid;
+		new giveplayerid, targetid;
 		if(sscanf(params, "uu", giveplayerid, targetid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givehit [player] [targetid]");
 
 		if(IsPlayerConnected(giveplayerid))
@@ -663,10 +658,8 @@ CMD:givehit(playerid, params[])
 					return 1;
 				}
 
-				format(string, sizeof(string), "* You offered %s a contract to kill %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(targetid));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* Hitman %s has offered you a contract to kill %s (type /accept contract), to accept it.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s a contract to kill %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(targetid));
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Hitman %s has offered you a contract to kill %s (type /accept contract), to accept it.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid));
 				HitOffer[giveplayerid] = playerid;
 				HitToGet[giveplayerid] = targetid;
 				return 1;
@@ -690,7 +683,7 @@ CMD:givemehit(playerid, params[])
 {
 	if (IsAHitman(playerid))
 	{
-		new string[128], targetid;
+		new targetid;
 		if(sscanf(params, "u", targetid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givemehit [targetid]");
 
 		if(IsPlayerConnected(targetid))
@@ -710,8 +703,7 @@ CMD:givemehit(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GREY, "   That target doesn't have a contract on them!");
 				return 1;
 			}
-			format(string, sizeof(string), "* You have offered yourself a contract to kill %s. (type /accept contract)", GetPlayerNameEx(targetid));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have offered yourself a contract to kill %s. (type /accept contract)", GetPlayerNameEx(targetid));
 			HitOffer[playerid] = playerid;
 			HitToGet[playerid] = targetid;
 			return 1;
@@ -743,8 +735,7 @@ CMD:deletehit(playerid, params[])
 			PlayerInfo[giveplayerid][pHeadValue] = 0;
 			format(string, sizeof(string), "<< %s(%d) has removed the contract on %s(%d) >>", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 			Log("logs/contracts.log", string);
-			format(string, sizeof(string), "You have removed the contract which was on %s's head.", GetPlayerNameEx(giveplayerid) );
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have removed the contract which was on %s's head.", GetPlayerNameEx(giveplayerid));
 			GoChase[giveplayerid] = INVALID_PLAYER_ID;
 
 			foreach(new i: Player)
@@ -805,8 +796,7 @@ CMD:contract(playerid, params[])
 			strmid(PlayerInfo[giveplayerid][pContractDetail], detail, 0, strlen(detail), 32);
 			format(string, sizeof(string), "%s has placed a contract on %s for $%s, details: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
 			SendGroupMessage(GROUP_TYPE_CONTRACT, COLOR_YELLOW, string);
-			format(string, sizeof(string), "* You placed a contract on %s for $%s, details: %s", GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You placed a contract on %s for $%s, details: %s", GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
 			format(string, sizeof(string), "<< %s has placed a contract on %s for $%s, details: %s >>", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
 			Log("logs/contracts.log", string);
 			format(string, sizeof(string), "%s has placed a contract on %s for $%s, details: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), number_format(moneys), detail);

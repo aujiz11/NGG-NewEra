@@ -374,10 +374,8 @@ CMD:floorpass(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /floorpass [floor] [pass]");
 		return 1;
 	}
-	new string[128];
 	format(LAElevatorFloorData[1][floor-1],24, "%s", tmp);
-	format(string, sizeof(string), "Floor %d pass set to %s", floor, LAElevatorFloorData[1][floor-1]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Floor %d pass set to %s", floor, LAElevatorFloorData[1][floor-1]);
 	SaveElevatorStuff();
 	return 1;
 }
@@ -399,8 +397,7 @@ CMD:floorpassr(playerid, params[])
 	new string[128];
 	floor = floor  - 1;
 	format(LAElevatorFloorData[1][floor-1],24, "");
-	format(string, sizeof(string), "Floor %d pass removed", floor);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Floor %d pass removed", floor);
 	SaveElevatorStuff();
 
 	new Float:z;
@@ -435,8 +432,7 @@ CMD:floornamer(playerid, params[])
 	}
 	new string[128];
 	format(LAElevatorFloorData[0][floor-1],24, "");
-	format(string, sizeof(string), "Floor %d name removed", floor);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Floor %d name removed", floor);
 	SaveElevatorStuff();
 	new Float:z;
 	for(new i; i < sizeof(Obj_FloorDoors); i ++)
@@ -470,8 +466,7 @@ CMD:floorname(playerid, params[])
 	}
 	new string[128];
 	format(LAElevatorFloorData[0][floor-1],24, "%s", tmp);
-	format(string, sizeof(string), "Renamed Floor %d to %s", floor, LAElevatorFloorData[0][floor-1]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Renamed Floor %d to %s", floor, LAElevatorFloorData[0][floor-1]);
 	SaveElevatorStuff();
 
 	new Float:z;

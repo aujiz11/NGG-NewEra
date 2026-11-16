@@ -283,14 +283,11 @@ task SyncTime[60000]()
 		else
 		{
 		    if(SpecLotto) {
-		        format(szMiscArray, sizeof(szMiscArray), "Special Lottery: Remember to buy a lotto ticket at a 24/7. Next drawing is at %s. The total Jackpot is $%s", ConvertToTwelveHour(tmphour), number_format(Jackpot));
-				SendClientMessageToAllEx(COLOR_WHITE, szMiscArray);
-		        format(szMiscArray, sizeof(szMiscArray), "Special Prize: %s", LottoPrize);
-				SendClientMessageToAllEx(COLOR_WHITE, szMiscArray);
+				SendClientMessageToAllEx(COLOR_WHITE, "Special Lottery: Remember to buy a lotto ticket at a 24/7. Next drawing is at %s. The total Jackpot is $%s", ConvertToTwelveHour(tmphour), number_format(Jackpot));
+				SendClientMessageToAllEx(COLOR_WHITE, "Special Prize: %s", LottoPrize);
 		    }
 		    else {
-		    	format(szMiscArray, sizeof(szMiscArray), "Lottery: Remember to buy a lotto ticket at a 24/7. Next drawing is at %s. The total Jackpot is $%s", ConvertToTwelveHour(tmphour), number_format(Jackpot));
-				SendClientMessageToAllEx(COLOR_WHITE, szMiscArray);
+				SendClientMessageToAllEx(COLOR_WHITE, "Lottery: Remember to buy a lotto ticket at a 24/7. Next drawing is at %s. The total Jackpot is $%s", ConvertToTwelveHour(tmphour), number_format(Jackpot));
 			}
 		}
 		for(new iGroupID; iGroupID < MAX_GROUPS; iGroupID++)
@@ -468,8 +465,7 @@ task SyncTime[60000]()
 					{
 						PlayerInfo[i][pReceivedBGift] = 1;
 						GiftPlayer(MAX_PLAYERS, i);
-						format(szMiscArray, sizeof(szMiscArray), "Happy Birthday %s! You have received a free gift!", GetPlayerNameEx(i));
-						SendClientMessageEx(i, COLOR_YELLOW, szMiscArray);
+						SendClientMessageEx(i, COLOR_YELLOW, "Happy Birthday %s! You have received a free gift!", GetPlayerNameEx(i));
 						format(szMiscArray, sizeof(szMiscArray), "%s(%d) has received a free gift for his birthday (%s) (Payday).", GetPlayerNameEx(i), GetPlayerSQLId(i), PlayerInfo[i][pBirthDate]);
 						Log("logs/birthday.log", szMiscArray);
 						SendClientMessageEx(i, COLOR_YELLOW, "Gold VIP: You will get x2 paycheck as a birthday gift today.");
@@ -488,8 +484,7 @@ task SyncTime[60000]()
 			if(strcmp(DynPoints[x][poName], "NULL", true) != 0) {
 				if(DynPoints[x][poTimer] > 0) DynPoints[x][poTimer]--, SavePoint(x);
 				if(!DynPoints[x][poTimer] && !DynPoints[x][poCapturable] && !DynPoints[x][poLocked]) {
-					format(szMiscArray, sizeof(szMiscArray), "%s has become available for capture.", DynPoints[x][poName]);
-					SendClientMessageToAllEx(COLOR_YELLOW, szMiscArray);
+					SendClientMessageToAllEx(COLOR_YELLOW, "%s has become available for capture.", DynPoints[x][poName]);
 					DynPoints[x][poCapturable] = 1;
 					SavePoint(x);
 				}
@@ -1270,8 +1265,7 @@ task PlayerHeartBeat[1000]() {
 							new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
 							wslot = FindGunInVehicleForPlayer(ownerid, slot, i);
 							if(wslot != -1) {
-								format(szMiscArray, sizeof(szMiscArray), "You found a %s.", GetWeaponNameEx(PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot]));
-								SendClientMessageEx(i, COLOR_YELLOW, szMiscArray);
+								SendClientMessageEx(i, COLOR_YELLOW, "You found a %s.", GetWeaponNameEx(PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot]));
 								GivePlayerValidWeapon(i, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot]);
 								PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot] = 0;
 								g_mysql_SaveVehicle(ownerid, slot);
@@ -1523,11 +1517,9 @@ task PlayerHeartBeat[1000]() {
 											}
 										}
 									}//TBoxer
-									format(szMiscArray, sizeof(szMiscArray), "* You have Lost the Fight against %s.", winner);
-									SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, szMiscArray);
+									SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You have Lost the Fight against %s.", winner);
 									GameTextForPlayer(Boxer1, "~r~You lost", 3500, 1);
-									format(szMiscArray, sizeof(szMiscArray), "* You have Won the Fight against %s.", loser);
-									SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, szMiscArray);
+									SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You have Won the Fight against %s.", loser);
 									GameTextForPlayer(Boxer2, "~r~You won", 3500, 1);
 									if(GetHealth(Boxer1, health) < 20)
 									{
@@ -1596,8 +1588,7 @@ task PlayerHeartBeat[1000]() {
 										}
 									}
 								}//TBoxer
-								format(szMiscArray, sizeof(szMiscArray), "* You have Lost the Fight against %s.", winner);
-								SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, szMiscArray);
+								SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You have Lost the Fight against %s.", winner);
 								GameTextForPlayer(Boxer1, "~r~You lost", 3500, 1);
 								format(szMiscArray, sizeof(szMiscArray), "* You have Won the Fight against %s.", loser);
 								SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, szMiscArray);
@@ -1675,11 +1666,9 @@ task PlayerHeartBeat[1000]() {
 										}
 									}
 									//TBoxer
-									format(szMiscArray, sizeof(szMiscArray), "* You have Lost the Fight against %s.", winner);
-									SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, szMiscArray);
+									SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You have Lost the Fight against %s.", winner);
 									GameTextForPlayer(Boxer2, "~r~You lost", 3500, 1);
-									format(szMiscArray, sizeof(szMiscArray), "* You have Won the Fight against %s.", loser);
-									SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, szMiscArray);
+									SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You have Won the Fight against %s.", loser);
 									GameTextForPlayer(Boxer1, "~g~You won", 3500, 1);
 									if(GetHealth(Boxer1, health) < 20)
 									{
@@ -1748,8 +1737,7 @@ task PlayerHeartBeat[1000]() {
 									}
 								}
 								//TBoxer
-								format(szMiscArray, sizeof(szMiscArray), "* You have Lost the Fight against %s.", winner);
-								SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, szMiscArray);
+								SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You have Lost the Fight against %s.", winner);
 								GameTextForPlayer(Boxer2, "~r~You lost", 3500, 1);
 								format(szMiscArray, sizeof(szMiscArray), "* You have Won the Fight against %s.", loser);
 								SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, szMiscArray);
@@ -2068,8 +2056,7 @@ task PlayerHeartBeat[1000]() {
 								SetPVarInt(ii, "_BoxingFight", i + 1);
 								SetPVarInt(i, "_BoxingFightCountdown", 4);
 
-								format(szMiscArray, sizeof(szMiscArray), "You are now in a boxing match with %s.", GetPlayerNameEx(ii));
-								SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
+								SendClientMessageEx(i, COLOR_WHITE, "You are now in a boxing match with %s.", GetPlayerNameEx(ii));
 								format(szMiscArray, sizeof(szMiscArray), "You are now in a boxing match with %s.", GetPlayerNameEx(i));
 								SendClientMessageEx(ii, COLOR_WHITE, szMiscArray);
 								break;
@@ -2116,8 +2103,7 @@ task PlayerHeartBeat[1000]() {
 								SetPVarInt(ii, "_BoxingFight", i + 1);
 								SetPVarInt(i, "_BoxingFightCountdown", 4);
 
-								format(szMiscArray, sizeof(szMiscArray), "You are now in a boxing match with %s.", GetPlayerNameEx(ii));
-								SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
+								SendClientMessageEx(i, COLOR_WHITE, "You are now in a boxing match with %s.", GetPlayerNameEx(ii));
 								format(szMiscArray, sizeof(szMiscArray), "You are now in a boxing match with %s.", GetPlayerNameEx(i));
 								SendClientMessageEx(ii, COLOR_WHITE, szMiscArray);
 								break;
@@ -2357,8 +2343,7 @@ task SyncUp[60000]()
 		}
 		if(GetPlayerCash(i) < 0) {
 			if(!GetPVarType(i, "debtMsg")) {
-				format(szMiscArray, sizeof(szMiscArray), "You're now in debt; you must repay the debt of $%s. If not, you will be arrested...", number_format(GetPlayerCash(i)));
-				SendClientMessageEx(i, COLOR_LIGHTRED, szMiscArray);
+				SendClientMessageEx(i, COLOR_LIGHTRED, "You're now in debt; you must repay the debt of $%s. If not, you will be arrested...", number_format(GetPlayerCash(i)));
 				SetPVarInt(i, "debtMsg", 1);
 			}
 		}
@@ -2366,8 +2351,7 @@ task SyncUp[60000]()
 
 		if(PlayerInfo[i][mPurchaseCount][1] && --PlayerInfo[i][mCooldown][1] <= 0)
 		{
-			format(szMiscArray, sizeof(szMiscArray), "Your Job Boost has expired! Reset Info: Job: %s | Skill: %d (Level: %d)", GetJobName(PlayerInfo[i][mBoost][0]), PlayerInfo[i][mBoost][1], GetJobLevel(i, PlayerInfo[i][mBoost][0]));
-			SendClientMessageEx(i, COLOR_GREY, szMiscArray);
+			SendClientMessageEx(i, COLOR_GREY, "Your Job Boost has expired! Reset Info: Job: %s | Skill: %d (Level: %d)", GetJobName(PlayerInfo[i][mBoost][0]), PlayerInfo[i][mBoost][1], GetJobLevel(i, PlayerInfo[i][mBoost][0]));
 			format(szMiscArray, sizeof(szMiscArray), "[JOBBOOST - Expired] %s(%d) Job: %s (%d) Skill: %d (%d)", GetPlayerNameEx(i), GetPlayerSQLId(i), GetJobName(PlayerInfo[i][mBoost][0]), PlayerInfo[i][mBoost][0], PlayerInfo[i][mBoost][1], GetJobLevel(i, PlayerInfo[i][mBoost][0]));
 			Log("logs/micro.log", szMiscArray);
 			new skill;

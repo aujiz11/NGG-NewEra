@@ -133,8 +133,7 @@ CMD:ostaffban(playerid, params[])
 				`Undercover` = 0, `BanAppealer` = 0, `Helper` = 0, `pVIPMod` = 0, `SecureIP` = '0.0.0.0', `SeniorModerator` = 0, `BanAppealer` = 0, `ShopTech` = 0, `StaffBanned` = 1 WHERE `Username`= '%s' AND `AdminLevel` < %d AND `StaffBanned` = 0", username, PlayerInfo[playerid][pAdmin]);
 			mysql_tquery(MainPipeline, szMiscArray, false, "OnStaffBan", "ii", playerid, 1);
 
-			format(szMiscArray, sizeof(szMiscArray), "Attempting to staff ban %s's account.", username);
-			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Attempting to staff ban %s's account.", username);
 		}
 	}
 	else return SendClientMessage(playerid, COLOR_WHITE, "You are not authorized to preform this command!");
@@ -160,8 +159,7 @@ CMD:ounstaffban(playerid, params[])
 			format(szMiscArray,sizeof(szMiscArray),"UPDATE `accounts` SET `StaffBanned` = 0 WHERE `Username`= '%s'", username, PlayerInfo[playerid][pAdmin]);
 			mysql_tquery(MainPipeline, szMiscArray, false, "OnStaffBan", "ii", playerid, 0);
 
-			format(szMiscArray, sizeof(szMiscArray), "Attempting to remove the staff ban from %s's account.", username);
-			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Attempting to remove the staff ban from %s's account.", username);
 		}
 	}
 	else return SendClientMessage(playerid, COLOR_WHITE, "You are not authorized to preform this command!");
@@ -176,15 +174,13 @@ public OnStaffBan(index, value)
 	GetPVarString(index, "OnStaffBan", name, 24);
 
 	if(mysql_affected_rows(MainPipeline)) {
-		format(string, sizeof(string), "You have successfully %s %s's account.", ((value) ? ("staff banned") : ("removed the staff ban from")), name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "You have successfully %s %s's account.", ((value) ? ("staff banned") : ("removed the staff ban from")), name);
 
 		format(string, sizeof(string), "AdmCmd: %s has had their %s offline by %s.", name, ((value) ? ("account staff banned") : ("staff ban removed")), GetPlayerNameEx(index));
 		Log("logs/staffban.log", string);
 	}
 	else {
-		format(string, sizeof(string), "There was an issue with %s %s's account.", ((value) ? ("staff banning") : ("removing the staff ban from")), name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with %s %s's account.", ((value) ? ("staff banning") : ("removing the staff ban from")), name);
 	}
 	DeletePVar(index, "OnStaffBan");
 	return 1;

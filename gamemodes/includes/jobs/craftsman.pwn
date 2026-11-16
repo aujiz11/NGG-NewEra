@@ -383,8 +383,7 @@ CMD:craft(playerid, params[])
 	new string[128];
 	if (GetPVarInt(playerid, "ArmsTimer") > 0)
 	{
-		format(string, sizeof(string), "   You must wait %d seconds before crafting again.", GetPVarInt(playerid, "ArmsTimer"));
-		SendClientMessageEx(playerid,COLOR_GREY,string);
+		SendClientMessageEx(playerid,COLOR_GREY,"   You must wait %d seconds before crafting again.", GetPVarInt(playerid, "ArmsTimer"));
 		return 1;
 	}
 	if(PlayerInfo[playerid][pHospital] > 0)
@@ -1001,10 +1000,8 @@ CMD:craft(playerid, params[])
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
 			}
-			format(string, sizeof(string), "* You offered %s to buy a %s.", GetPlayerNameEx(giveplayerid), choice);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "* Craftsman %s wants to sell you a %s, (type /accept craft) to buy.", GetPlayerNameEx(playerid), choice);
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to buy a %s.", GetPlayerNameEx(giveplayerid), choice);
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Craftsman %s wants to sell you a %s, (type /accept craft) to buy.", GetPlayerNameEx(playerid), choice);
 			CraftOffer[giveplayerid] = playerid;
 			SetPVarInt(giveplayerid, "CraftOfferSession", g_arrQueryHandle[playerid]);
 			CraftId[giveplayerid] = weapon;

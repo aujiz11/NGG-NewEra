@@ -395,8 +395,7 @@ CMD:search(playerid, params[])
         SetPlayerCheckpoint(playerid,HiddenTreasure[GetPVarInt(playerid, "HiddenTreasure")][0], HiddenTreasure[GetPVarInt(playerid, "HiddenTreasure")][1], HiddenTreasure[GetPVarInt(playerid, "HiddenTreasure")][2], 3);
         SetTimerEx("DisableCheckPoint", 2000, false, "i", playerid);
 
-   		format(szMessage, 128, "You are %f meters away from the treasure. ", distance);
-     	SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You are %f meters away from the treasure. ", distance);
 
       	format(szMessage, 128, "%s sweeps the ground with a metal detector.", GetPlayerNameEx(playerid));
        	ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -462,11 +461,9 @@ CMD:selltreasure(playerid, params[])
 	else if(amount < 0) {
 		return SendClientMessageEx(playerid, COLOR_GREY, "You can't sell negative of an item.");
 	}
-	new szMessage[128];
 	if(strcmp(choice, "junkmetal", true) == 0) {
 	    if(amount <= GetPVarInt(playerid, "junkmetal") && amount > 0) {
-	        format(szMessage, 128, "You have sold %d junk metals for $%d.", amount, amount*150);
-	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d junk metals for $%d.", amount, amount*150);
 	        GivePlayerCash(playerid, amount*150);
 	        SetPVarInt(playerid, "junkmetal", GetPVarInt(playerid, "junkmetal")-amount);
 	        SaveTreasureInventory(playerid);
@@ -477,8 +474,7 @@ CMD:selltreasure(playerid, params[])
 	}
 	else if(strcmp(choice, "newcoin", true) == 0) {
 	    if(amount <= GetPVarInt(playerid, "newcoin") && amount > 0) {
-	        format(szMessage, 128, "You have sold %d new coins for $%d.", amount, amount*50);
-	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d new coins for $%d.", amount, amount*50);
 	        GivePlayerCash(playerid, amount*50);
 	        SetPVarInt(playerid, "newcoin", GetPVarInt(playerid, "newcoin")-amount);
 	        SaveTreasureInventory(playerid);
@@ -489,8 +485,7 @@ CMD:selltreasure(playerid, params[])
 	}
 	else if(strcmp(choice, "oldcoin", true) == 0) {
 	    if(amount <= GetPVarInt(playerid, "oldcoin") && amount > 0) {
-	        format(szMessage, 128, "You have sold %d old coins for $%d.", amount, amount*100);
-	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d old coins for $%d.", amount, amount*100);
 	        GivePlayerCash(playerid, amount*100);
 	        SetPVarInt(playerid, "oldcoin", GetPVarInt(playerid, "oldcoin")-amount);
 	        SaveTreasureInventory(playerid);
@@ -501,8 +496,7 @@ CMD:selltreasure(playerid, params[])
 	}
 	else if(strcmp(choice, "brokenwatch", true) == 0) {
 	    if(amount <= GetPVarInt(playerid, "brokenwatch") && amount > 0) {
-	        format(szMessage, 128, "You have sold %d broken watchs for $%d.", amount, amount*5);
-	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d broken watchs for $%d.", amount, amount*5);
 	        GivePlayerCash(playerid, amount*5);
 	        SetPVarInt(playerid, "brokenwatch", GetPVarInt(playerid, "brokenwatch")-amount);
 	        SaveTreasureInventory(playerid);
@@ -513,8 +507,7 @@ CMD:selltreasure(playerid, params[])
 	}
 	else if(strcmp(choice, "oldkey", true) == 0) {
 	    if(amount <= GetPVarInt(playerid, "oldkey") && amount > 0) {
-	        format(szMessage, 128, "You have sold %d old keys for $%d.", amount, amount*20);
-	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d old keys for $%d.", amount, amount*20);
 	        GivePlayerCash(playerid, amount*20);
 	        SetPVarInt(playerid, "oldkey", GetPVarInt(playerid, "oldkey")-amount);
 	        SaveTreasureInventory(playerid);
@@ -525,8 +518,7 @@ CMD:selltreasure(playerid, params[])
 	}
 	else if(strcmp(choice, "goldwatch", true) == 0) {
 	    if(amount <= GetPVarInt(playerid, "goldwatch") && amount > 0) {
-	        format(szMessage, 128, "You have sold %d gold watchs for $%d.", amount, amount*50000);
-	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d gold watchs for $%d.", amount, amount*50000);
 	        GivePlayerCash(playerid, amount*50000);
 	        SetPVarInt(playerid, "goldwatch", GetPVarInt(playerid, "goldwatch")-amount);
 	        SaveTreasureInventory(playerid);
@@ -537,8 +529,7 @@ CMD:selltreasure(playerid, params[])
 	}
 	else if(strcmp(choice, "goldnugget", true) == 0) {
 	    if(amount <= GetPVarInt(playerid, "goldnugget") && amount > 0) {
-	        format(szMessage, 128, "You have sold %d gold nuggets for $%d.", amount, amount*100000);
-	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d gold nuggets for $%d.", amount, amount*100000);
 	        GivePlayerCash(playerid, amount*100000);
 	        SetPVarInt(playerid, "goldnugget", GetPVarInt(playerid, "goldnugget")-amount);
 	        SaveTreasureInventory(playerid);
@@ -549,8 +540,7 @@ CMD:selltreasure(playerid, params[])
 	}
 	else if(strcmp(choice, "silvernugget", true) == 0) {
 	    if(amount <= GetPVarInt(playerid, "silvernugget") && amount > 0) {
-	        format(szMessage, 128, "You have sold %d silver nuggets for $%d.", amount, amount*25000);
-	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d silver nuggets for $%d.", amount, amount*25000);
 	        GivePlayerCash(playerid, amount*25000);
 	        SetPVarInt(playerid, "silvernugget", GetPVarInt(playerid, "silvernugget")-amount);
 	        SaveTreasureInventory(playerid);
@@ -561,8 +551,7 @@ CMD:selltreasure(playerid, params[])
 	}
 	else if(strcmp(choice, "treasurechest", true) == 0) {
 	    if(amount <= GetPVarInt(playerid, "treasurechest") && amount > 0) {
-	        format(szMessage, 128, "You have sold %d treasure chests for $%d.", amount, amount*1000000);
-	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %d treasure chests for $%d.", amount, amount*1000000);
 	        GivePlayerCash(playerid, amount*1000000);
 	        SetPVarInt(playerid, "treasure", GetPVarInt(playerid, "treasure")-amount);
 	        SaveTreasureInventory(playerid);

@@ -178,22 +178,19 @@ CMD:denylisting(playerid, params[])
 	if(sscanf(params, "ds[64]", houseid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /denylisting [House ID] [Reason]");
 	if(houseid < 1 || houseid >= MAX_HOUSES)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "The specified house ID must be between 1 and %d.", MAX_HOUSES - 1);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREY, "The specified house ID must be between 1 and %d.", MAX_HOUSES - 1);
 		return 1;
 	}
 	if(strlen(reason) < 3 || strlen(reason) > 60) return SendClientMessageEx(playerid, COLOR_GREY, "The specified reason cannot be under 3 characters or over 60 characters.");
 	if(HouseInfo[houseid][hOwned] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently owned.");
 	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently pending approval to be listed.");
 	ClearHouseSaleVariables(houseid);
-	format(string, sizeof(string), "You have denied house ID %d's house listing request (owner: %s), reason: %s.", houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]), reason);
-	SendClientMessageEx(playerid, COLOR_YELLOW, string);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "You have denied house ID %d's house listing request (owner: %s), reason: %s.", houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]), reason);
 	foreach(new i: Player) 
 	{
 		if(gPlayerLogged{i} == 1 && HouseInfo[houseid][hOwnerID] == GetPlayerSQLId(i))
 		{
-			format(string, sizeof(string), "%s denied your house listing request (house ID %d), reason: %s.", GetPlayerNameEx(playerid), houseid, reason);
-			SendClientMessageEx(i, COLOR_LIGHTRED, string);
+			SendClientMessageEx(i, COLOR_LIGHTRED, "%s denied your house listing request (house ID %d), reason: %s.", GetPlayerNameEx(playerid), houseid, reason);
 			break;
 		}
 	}
@@ -212,8 +209,7 @@ CMD:approvelisting(playerid, params[])
 	if(sscanf(params, "d", houseid)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /approvelisting [House ID]");
 	if(houseid < 1 || houseid >= MAX_HOUSES)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "The specified house ID must be between 1 and %d.", MAX_HOUSES - 1);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREY, "The specified house ID must be between 1 and %d.", MAX_HOUSES - 1);
 		return 1;
 	}
 	if(HouseInfo[houseid][hOwned] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently owned.");
@@ -234,8 +230,7 @@ CMD:approvelisting(playerid, params[])
 			PlayerInfo[playerid][pAcceptReport] ++;
 			ReportCount[playerid] ++;
 			ReportHourCount[playerid] ++;
-			format(string, sizeof(string), "House ID %d's listing is currently bugged, the listing has been removed.", houseid);
-			SendClientMessageEx(playerid, COLOR_YELLOW, string);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "House ID %d's listing is currently bugged, the listing has been removed.", houseid);
 			return 1;
 		}
 		default:
@@ -248,8 +243,7 @@ CMD:approvelisting(playerid, params[])
 				PlayerInfo[playerid][pAcceptReport] ++;
 				ReportCount[playerid] ++;
 				ReportHourCount[playerid] ++;
-				format(string, sizeof(string), "You have approved house ID %d's house listing request (insufficient funds - owner: %s).", houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have approved house ID %d's house listing request (insufficient funds - owner: %s).", houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
 				format(string, sizeof(string), "AdmCmd: %s approved house ID %d's house listing request (insufficient funds - owner: %s).", GetPlayerNameEx(playerid), houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
 				ABroadCast(COLOR_LIGHTRED, string, 4);
 				Log("logs/admin.log", string);
@@ -265,8 +259,7 @@ CMD:approvelisting(playerid, params[])
 				PlayerInfo[playerid][pAcceptReport] ++;
 				ReportCount[playerid] ++;
 				ReportHourCount[playerid] ++;
-				format(string, sizeof(string), "You have approved house ID %d's house listing request (owner: %s).", houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have approved house ID %d's house listing request (owner: %s).", houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
 				format(string, sizeof(string), "AdmCmd: %s approved house ID %d's house listing request (owner: %s).", GetPlayerNameEx(playerid), houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
 				ABroadCast(COLOR_LIGHTRED, string, 4);
 				Log("logs/admin.log", string);
@@ -285,15 +278,13 @@ CMD:adeletelisting(playerid, params[])
 	if(sscanf(params, "d", houseid)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /adeletelisting [House ID]");
 	if(houseid < 1 || houseid >= MAX_HOUSES)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "The specified house ID must be between 1 and %d.", MAX_HOUSES - 1);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREY, "The specified house ID must be between 1 and %d.", MAX_HOUSES - 1);
 		return 1;
 	}
 	if(HouseInfo[houseid][hOwned] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently owned.");
 	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently listed.");
 	ClearHouseSaleVariables(houseid);
-	format(string, sizeof(string), "You have deleted house ID %d's listing (owner: %s).", houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
-	SendClientMessageEx(playerid, COLOR_YELLOW, string);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "You have deleted house ID %d's listing (owner: %s).", houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
 	format(string, sizeof(string), "AdmCmd: %s deleted house ID %d's house listing (owner: %s).", GetPlayerNameEx(playerid), houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
 	ABroadCast(COLOR_LIGHTRED, string, 4);
 	Log("logs/admin.log", string);
@@ -308,8 +299,7 @@ CMD:listingdetails(playerid, params[])
 	szMiscArray[0] = 0;
 	if(houseid < 1 || houseid >= MAX_HOUSES)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "The specified house ID must be between 1 and %d.", MAX_HOUSES - 1);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREY, "The specified house ID must be between 1 and %d.", MAX_HOUSES - 1);
 		return 1;
 	}
 	if(HouseInfo[houseid][hOwned] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently owned.");
@@ -321,14 +311,13 @@ CMD:listingdetails(playerid, params[])
 CMD:pendinglistings(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
-	new count, string[64];
+	new count;
 	SendClientMessageEx(playerid, COLOR_WHITE, "** HOUSE LISTINGS PENDING APPROVAL: **");
 	for(new i = 0; i < sizeof(HouseInfo); i ++)
 	{
 		if(HouseInfo[i][hOwned] == 1 && HouseInfo[i][Listed] == 1 && HouseInfo[i][PendingApproval] == 1)
 		{
-			format(string, sizeof(string), "(House ID: %d) Owner: %s", i, StripUnderscore(HouseInfo[i][hOwnerName]));
-			SendClientMessageEx(playerid, COLOR_GREY, string);
+			SendClientMessageEx(playerid, COLOR_GREY, "(House ID: %d) Owner: %s", i, StripUnderscore(HouseInfo[i][hOwnerName]));
 			count ++;
 		}
 	}
@@ -371,13 +360,12 @@ CMD:listingdate(playerid, params[])
 	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings right now.");
 	if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while in jail.");
 	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 3 to access house listings.");
-	new houseid, string[128];
+	new houseid;
 	if(servernumber == 2) return SendClientMessage(playerid, COLOR_WHITE, "This command is disabled!");
 	houseid = GetNearestOwnedHouse(playerid);
 	if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a house that you own.");
 	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This house is not currently listed on the house market.");
-	format(string, sizeof(string), "Your house listing will expire on %s.", date(HouseInfo[houseid][ListedTimeStamp], 4));
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Your house listing will expire on %s.", date(HouseInfo[houseid][ListedTimeStamp], 4));
     return 1;
 }
 
@@ -389,15 +377,14 @@ CMD:renewlisting(playerid, params[])
 	if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while in jail.");
 	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 3 to access house listings.");
 	if(GetPlayerCash(playerid) < 100000) return SendClientMessageEx(playerid, COLOR_GREY, "You must have at least $100,000 to renew your house listing.");
-	new houseid, string[128];
+	new houseid;
 	if(servernumber == 2) return SendClientMessage(playerid, COLOR_WHITE, "This command is disabled!");
 	houseid = GetNearestOwnedHouse(playerid);
 	if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a house that you own.");
 	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This house is not currently listed on the house market.");
 	HouseInfo[houseid][ListedTimeStamp] += 86400;
 	SaveHouse(houseid);
-	format(string, sizeof(string), "You have renewed your house listing by a day, it will expire on %s.", date(HouseInfo[houseid][ListedTimeStamp], 4));
-	SendClientMessageEx(playerid, COLOR_GREEN, string);
+	SendClientMessageEx(playerid, COLOR_GREEN, "You have renewed your house listing by a day, it will expire on %s.", date(HouseInfo[houseid][ListedTimeStamp], 4));
 	GivePlayerCashEx(playerid, TYPE_ONHAND, -100000);
     return 1;
 }
@@ -552,8 +539,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					if(price == HouseInfo[houseid][ListingPrice])
 					{
-						format(string, sizeof(string), "Your listing price is already set to $%s.", number_format(price));
-						SendClientMessageEx(playerid, COLOR_GREY, string);
+						SendClientMessageEx(playerid, COLOR_GREY, "Your listing price is already set to $%s.", number_format(price));
 						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "House Listings", "Input the price of your listing below.", "Okay", "Cancel");
 						return 1;
 					}
@@ -906,8 +892,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							}
 							if(GetPlayerCash(playerid) < HouseInfo[HouseMarketTracking[playerid]][ListingPrice])
 							{
-								format(string, sizeof(string), "You cannot afford this $%s house.", number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
-								SendClientMessageEx(playerid, COLOR_GREY, string);
+								SendClientMessageEx(playerid, COLOR_GREY, "You cannot afford this $%s house.", number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
 								ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
 								return 1;
 							}
@@ -917,8 +902,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								if(gPlayerLogged{i} == 1 && HouseInfo[HouseMarketTracking[playerid]][hOwnerID] == GetPlayerSQLId(i))
 								{
 									GivePlayerCashEx(i, TYPE_BANK, HouseInfo[HouseMarketTracking[playerid]][ListingPrice]);
-									format(string, sizeof(string), "%s purchased your house (house ID: %d) for $%s.", GetPlayerNameEx(playerid), HouseMarketTracking[playerid], number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
-									SendClientMessageEx(i, COLOR_GREEN, string);
+									SendClientMessageEx(i, COLOR_GREEN, "%s purchased your house (house ID: %d) for $%s.", GetPlayerNameEx(playerid), HouseMarketTracking[playerid], number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
 									online = true;
 									break;
 								}
@@ -934,8 +918,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								
 							}
-							format(string, sizeof(string), "You have purchased house ID %d for $%s.", HouseMarketTracking[playerid], number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
-							SendClientMessageEx(playerid, COLOR_GREEN, string);
+							SendClientMessageEx(playerid, COLOR_GREEN, "You have purchased house ID %d for $%s.", HouseMarketTracking[playerid], number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
 							Homes[playerid] ++;
 							GivePlayerCashEx(playerid, TYPE_ONHAND, -HouseInfo[HouseMarketTracking[playerid]][ListingPrice]);
 							for(new i = 0; i < 5; i ++)

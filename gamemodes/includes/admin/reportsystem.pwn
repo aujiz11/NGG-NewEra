@@ -110,12 +110,10 @@ stock SendReportToQue(reportfrom, const report[], reportlevel, reportpriority)
      	foreach(new i: Player)
 		{
 			if(PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 0 && !GetPVarType(i, "TogReports")) {
-				format(string, sizeof(string), "%s (ID: %i) | RID: %i | %s | Pend: 0 mins | Pr: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
-				SendClientMessageEx(i, COLOR_REPORT, string);
+				SendClientMessageEx(i, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Pend: 0 mins | Pr: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
 			}
 			else if((reportpriority == 1 || reportpriority == 2) && PlayerInfo[i][pTogReports] == 0 && GetPVarType(i, "TogReports")) {
-				format(string, sizeof(string), "%s (ID: %i) | RID: %i | %s | Pend: 0 mins | Pr: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
-				SendClientMessageEx(i, COLOR_REPORT, string);
+				SendClientMessageEx(i, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Pend: 0 mins | Pr: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
 			}
 		}	
      	SetPVarInt(reportfrom, "HasReport", 1);
@@ -280,7 +278,6 @@ CMD:reporttips(playerid, params[])
 
 CMD:reply(playerid, params[])
 {
-	new string[128];
 	new reportid = INVALID_REPORT_ID;
 	for(new i = 0; i < MAX_REPORTS; i++)
 	{
@@ -296,11 +293,9 @@ CMD:reply(playerid, params[])
 	}
 	if (IsPlayerConnected(Reports[reportid][CheckingReport]))
 	{
-		format(string, sizeof(string), "%s(ID: %d) replies: %s", GetPlayerNameEx(playerid), playerid, params);
-		SendClientMessageEx(Reports[reportid][CheckingReport], COLOR_YELLOW, string);
+		SendClientMessageEx(Reports[reportid][CheckingReport], COLOR_YELLOW, "%s(ID: %d) replies: %s", GetPlayerNameEx(playerid), playerid, params);
 
-		format(string, sizeof(string), "Reply sent to %s: %s", GetPlayerNameEx(Reports[reportid][CheckingReport]), params);
-		SendClientMessageEx(playerid,  COLOR_YELLOW, string);
+		SendClientMessageEx(playerid,  COLOR_YELLOW, "Reply sent to %s: %s", GetPlayerNameEx(Reports[reportid][CheckingReport]), params);
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "Player not connected.");
 	return 1;
@@ -320,8 +315,7 @@ CMD:rmute(playerid, params[])
 				PlayerInfo[giveplayerid][pRMuted] = 1;
 				format(string, sizeof(string), "AdmCmd: %s has indefinitely blocked %s from submitting reports.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ABroadCast(COLOR_LIGHTRED,string,2);
-				format(string, sizeof(string), "You have been blocked from submitting /reports by %s.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been blocked from submitting /reports by %s.", GetPlayerNameEx(playerid));
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You will not be able to submit reports until you are unblocked. To appeal this action contact hr@ng-gaming.net.");
 				format(string, sizeof(string), "AdmCmd: %s(%d) was blocked from /report by %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/mute.log", string);
@@ -331,8 +325,7 @@ CMD:rmute(playerid, params[])
 				PlayerInfo[giveplayerid][pRMuted] = 0;
 				format(string, sizeof(string), "AdmCmd: %s has been re-allowed to submit reports by %s",GetPlayerNameEx(giveplayerid),GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_LIGHTRED,string,2);
-				format(string, sizeof(string), "You have been re-allowed to submitting /reports again by %s.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been re-allowed to submitting /reports again by %s.", GetPlayerNameEx(playerid));
 				format(string, sizeof(string), "AdmCmd: %s(%d) was unblocked from /report by %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/mute.log", string);
 			}
@@ -552,7 +545,6 @@ CMD:reports(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
-		new string[128];
 		SendClientMessageEx(playerid, COLOR_GREEN, "____________________ REPORTS _____________________");
 		for(new i = 999; i >= 0; i--)
 		{
@@ -560,8 +552,7 @@ CMD:reports(playerid, params[])
 			{
 			    if(Reports[i][ReportLevel] == 2 || PlayerInfo[playerid][pAdmin] >= 2)
 			    {
-					format(string, sizeof(string), "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
-					SendClientMessageEx(playerid, COLOR_REPORT, string);
+					SendClientMessageEx(playerid, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
 				}
 			}
 		}
@@ -571,8 +562,7 @@ CMD:reports(playerid, params[])
 			{
 			    if(Reports[i][ReportLevel] == 2 || PlayerInfo[playerid][pAdmin] >= 2)
 			    {
-					format(string, sizeof(string), "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
-					SendClientMessageEx(playerid, COLOR_REPORT, string);
+					SendClientMessageEx(playerid, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
 				}
 			}
 		}
@@ -582,8 +572,7 @@ CMD:reports(playerid, params[])
 			{
 			    if(Reports[i][ReportLevel] == 2 || PlayerInfo[playerid][pAdmin] >= 2)
 			    {
-					format(string, sizeof(string), "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
-					SendClientMessageEx(playerid, COLOR_REPORT, string);
+					SendClientMessageEx(playerid, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
 				}
 			}
 		}
@@ -593,8 +582,7 @@ CMD:reports(playerid, params[])
 			{
 			    if(Reports[i][ReportLevel] == 2 || PlayerInfo[playerid][pAdmin] >= 2)
 			    {
-					format(string, sizeof(string), "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
-					SendClientMessageEx(playerid, COLOR_REPORT, string);
+					SendClientMessageEx(playerid, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
 				}
 			}
 		}
@@ -604,8 +592,7 @@ CMD:reports(playerid, params[])
 			{
 			    if(Reports[i][ReportLevel] == 2 || PlayerInfo[playerid][pAdmin] >= 2)
 			    {
-					format(string, sizeof(string), "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
-					SendClientMessageEx(playerid, COLOR_REPORT, string);
+					SendClientMessageEx(playerid, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
 				}
 			}
 		}
@@ -665,8 +652,7 @@ CMD:sta(playerid, params[])
 		}
 		else
 		{
-			format(string, sizeof(string), "%s has reviewed your report and referred it to the Advisors.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, string);
+			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s has reviewed your report and referred it to the Advisors.", GetPlayerNameEx(playerid));
 			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "An Advisor should be with you shortly.");
 			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Newer players are encouraged to use /requesthelp for any questions you may have as opposed to using /report which is to report rule violations and get admin help.");
 			SetPVarInt( Reports[reportid][ReportFrom], "COMMUNITY_ADVISOR_REQUEST", 1 );
@@ -831,20 +817,17 @@ CMD:ar(playerid, params[])
 		ABroadCast(COLOR_ORANGE, string, 2);
 		Log("logs/report.log", string);
 		AddReportToken(playerid); // Report Tokens
-		format(string, sizeof(string), "%s has accepted your report and is reviewing it, you can /reply to send messages to the admin reviewing your report.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, string);
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s has accepted your report and is reviewing it, you can /reply to send messages to the admin reviewing your report.", GetPlayerNameEx(playerid));
 		new giveplayerid;
 		if(GetPVarType(Reports[reportid][ReportFrom], "_rAutoM")) {
 			switch(GetPVarInt(Reports[reportid][ReportFrom], "_rAutoM")) {
 				case 1: { // Ad Unmute
 					ShowAdMuteFine(Reports[reportid][ReportFrom]);
-					format(string, sizeof(string), "You offered %s an unmute from /ads.", GetPlayerNameEx(Reports[reportid][ReportFrom]));
-					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTRED, "You offered %s an unmute from /ads.", GetPlayerNameEx(Reports[reportid][ReportFrom]));
 				}
 				case 2: { // NUnmute
 					ShowNMuteFine(Reports[reportid][ReportFrom]);
-					format(string, sizeof(string), "You offered %s an unmute from /newb.", GetPlayerNameEx(Reports[reportid][ReportFrom]));
-					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTRED, "You offered %s an unmute from /newb.", GetPlayerNameEx(Reports[reportid][ReportFrom]));
 				}
 				case 3: { // NRN
 					giveplayerid = GetPVarInt(Reports[reportid][ReportFrom], "_rRepID");
@@ -870,8 +853,7 @@ CMD:ar(playerid, params[])
 					giveplayerid = GetPVarInt(Reports[reportid][ReportFrom], "_rRepID");
 					if(IsPlayerConnected(giveplayerid)) {
 						SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-						format(string, sizeof(string), "<< Last 10 Kills/Deaths of %s >>", GetPlayerNameEx(giveplayerid));
-						SendClientMessageEx(playerid, COLOR_YELLOW, string);
+						SendClientMessageEx(playerid, COLOR_YELLOW, "<< Last 10 Kills/Deaths of %s >>", GetPlayerNameEx(giveplayerid));
 						GetLatestKills(playerid, giveplayerid);
 						SpectatePlayer(playerid, giveplayerid);
 					}
@@ -888,8 +870,7 @@ CMD:ar(playerid, params[])
 						SetPVarInt(playerid, "BigEar", 6);
 						SetPVarInt(playerid, "BigEarPlayer", giveplayerid);
 						rBigEarT[playerid] = 30;
-						format(string, sizeof(string), "You will hear all messages from %s (ID: %d) for 30 seconds. Use /bigears if you want to disable it.", GetPlayerNameEx(giveplayerid), giveplayerid);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "You will hear all messages from %s (ID: %d) for 30 seconds. Use /bigears if you want to disable it.", GetPlayerNameEx(giveplayerid), giveplayerid);
 					}	
 				}
 			}
@@ -940,8 +921,7 @@ CMD:tr(playerid, params[])
 		format(string, sizeof(string), "AdmCmd: %s has trashed the report from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]));
 		ABroadCast(COLOR_ORANGE, string, 2);
 		Log("logs/report.log", string);
-		format(string, sizeof(string), "%s has marked your report invalid. It will not be reviewed. Please check /reporttips", GetPlayerNameEx(playerid));
-		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, string);
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s has marked your report invalid. It will not be reviewed. Please check /reporttips", GetPlayerNameEx(playerid));
 		PlayerInfo[playerid][pTrashReport]++;
         DeletePVar(Reports[reportid][ReportFrom], "HasReport");
 		DeletePVar(Reports[reportid][ReportFrom], "_rAutoM");
@@ -1035,8 +1015,7 @@ CMD:nao(playerid, params[])
 		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to not having admin of sufficient authority online.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
 		Log("logs/report.log", string);
-		format(string, sizeof(string), "%s has reviewed your report, however there is not an Admin presently online with sufficient authority to handle your request.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, string);
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s has reviewed your report, however there is not an Admin presently online with sufficient authority to handle your request.", GetPlayerNameEx(playerid));
 		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "You can post a request on the forums for additional assistance (www.ng-gaming.net/forums). Our apologies for the inconvenience. ");
         DeletePVar(Reports[reportid][ReportFrom], "HasReport");
 		DeletePVar(Reports[reportid][ReportFrom], "_rAutoM");
@@ -1082,8 +1061,7 @@ CMD:post(playerid, params[])
 		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to it needing to be handled on the forums", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
 		Log("logs/report.log", string);
-		format(string, sizeof(string), "%s has reviewed your report and determined this report should be handled on the forums (i.e. complaint or request.)", GetPlayerNameEx(playerid));
-		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, string);
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s has reviewed your report and determined this report should be handled on the forums (i.e. complaint or request.)", GetPlayerNameEx(playerid));
 		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Please only report for items that are actively occuring in game. (www.ng-gaming.net/forums)");
         DeletePVar(Reports[reportid][ReportFrom], "HasReport");
 		DeletePVar(Reports[reportid][ReportFrom], "_rAutoM");
@@ -1128,8 +1106,7 @@ CMD:st(playerid, params[])
 		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to it needing to be handled via /shoporder", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
 		Log("logs/report.log", string);
-		format(string, sizeof(string), "%s has reviewed your report and determined it needs to be handled by a Shop Tech.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, string);
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s has reviewed your report and determined it needs to be handled by a Shop Tech.", GetPlayerNameEx(playerid));
 		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Please use /shoporder to get your order processed by a Shop Tech.");
         DeletePVar(Reports[reportid][ReportFrom], "HasReport");
 		DeletePVar(Reports[reportid][ReportFrom], "_rAutoM");
@@ -1166,8 +1143,7 @@ CMD:ts(playerid, params[])
 		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to it needing to be handled on TeamSpeak", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
 		Log("logs/report.log", string);
-		format(string, sizeof(string), "%s has reviewed your report and determined this report should be handled on TeamSpeak (Admin Assistance Channels)", GetPlayerNameEx(playerid));
-		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, string);
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s has reviewed your report and determined this report should be handled on TeamSpeak (Admin Assistance Channels)", GetPlayerNameEx(playerid));
         DeletePVar(Reports[reportid][ReportFrom], "HasReport");
 		DeletePVar(Reports[reportid][ReportFrom], "_rAutoM");
 		DeletePVar(Reports[reportid][ReportFrom], "_rRepID");

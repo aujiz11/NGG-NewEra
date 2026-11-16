@@ -52,10 +52,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			GetPVarString(playerid, "actionstring", szMessage, sizeof(szMessage));
 			SetPVarInt(iTargetID, "actionplayer", playerid);
-			format(szMiscArray, sizeof(szMiscArray), " ** Sent: {C2A2DA}%s attempts to %s", GetPlayerNameEx(playerid), szMessage);
-			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-			format(szMiscArray, sizeof(szMiscArray), " * > Action request sent to: %s. Awaiting response...", GetPlayerNameEx(iTargetID));
-			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_YELLOW, " ** Sent: {C2A2DA}%s attempts to %s", GetPlayerNameEx(playerid), szMessage);
+			SendClientMessageEx(playerid, COLOR_YELLOW, " * > Action request sent to: %s. Awaiting response...", GetPlayerNameEx(iTargetID));
 
 			format(szMiscArray, sizeof(szMiscArray), "Sender: %s\n\nAction: %s (( %s ))\n\n\
 				Select 'Accept' to accept the action.\n\
@@ -659,7 +657,7 @@ CMD:pr(playerid, params[])
 
 CMD:setfreq(playerid, params[])
 {
-	new string[128], frequency;
+	new frequency;
 	if(sscanf(params, "d", frequency))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setfreq [frequency]");
@@ -671,8 +669,7 @@ CMD:setfreq(playerid, params[])
 	if (PlayerInfo[playerid][pRadio] == 1)
 	{
 		PlayerInfo[playerid][pRadioFreq] = frequency;
-		format(string, sizeof(string), "You have set the frequency of your portable radio to %d khz.",frequency);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the frequency of your portable radio to %d khz.",frequency);
 	}
 	else
 	{
@@ -774,8 +771,7 @@ CMD:ame(playerid, params[])
 	new string[128];
 	format(string, sizeof(string), "%s %s", GetPlayerNameEx(playerid), params);
 	SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 15.0, 5000);
-	format(string, sizeof(string), "{FF8000}> {C2A2DA}%s", params);
-	SendClientMessageEx(playerid, COLOR_PURPLE, string);
+	SendClientMessageEx(playerid, COLOR_PURPLE, "{FF8000}> {C2A2DA}%s", params);
 	return 1;
 }
 
@@ -840,9 +836,7 @@ CMD:examine(playerid, params[])
 	}
 	else
 	{
-		new string[128];
-		format(string, sizeof(string), "* %s %s", GetPlayerNameEx(target), PlayerInfo[target][pExamineDesc]);
-		SendClientMessageEx(playerid, COLOR_PURPLE, string);
+		SendClientMessageEx(playerid, COLOR_PURPLE, "* %s %s", GetPlayerNameEx(target), PlayerInfo[target][pExamineDesc]);
 	}
 	return 1;
 }

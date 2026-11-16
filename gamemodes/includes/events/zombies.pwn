@@ -184,8 +184,7 @@ CMD:buycure(playerid, params[])
 				format(string, sizeof(string), "[BUYCURE] [User: %s(%i)] [IP: %s] [Credits: %s] [Zombie Cure] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(20));
 				Log("logs/credits.log", string), print(string);
 
-				format(string, sizeof(string), "You have purchased a vial of the cure for %s credits. Use it with /curevirus.", number_format(20));
-				SendClientMessageEx(playerid, COLOR_CYAN, string);	
+				SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a vial of the cure for %s credits. Use it with /curevirus.", number_format(20));
 			}
 			else
 			{
@@ -304,13 +303,10 @@ CMD:setvials(playerid, params[])
 		new giveplayerid, vials;
 		if(sscanf(params, "ui", giveplayerid, vials)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setvials [player] [number]");
 		if(vials < 0) return 1;
-		new string[128];
 
 		PlayerInfo[giveplayerid][pVials] += vials;
-		format(string, sizeof(string), "You gave %s %d vials of the cure!", GetPlayerNameEx(giveplayerid), vials);
-		SendClientMessageEx(playerid, COLOR_WHITE,string);
-		format(string, sizeof(string), "You received %d vials of the cure - use them with /curevirus.", vials);
-		SendClientMessageEx(giveplayerid, COLOR_WHITE,string);
+		SendClientMessageEx(playerid, COLOR_WHITE,"You gave %s %d vials of the cure!", GetPlayerNameEx(giveplayerid), vials);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE,"You received %d vials of the cure - use them with /curevirus.", vials);
 	}
 	return 1;
 }
@@ -352,8 +348,7 @@ CMD:bite(playerid, params[])
 					{
 						if(gettime() < GetPVarInt(i, "LastBiteTime"))
 						{
-			    			format(string, sizeof(string), "You must wait %d seconds before you can bite that player.", (GetPVarInt(i, "LastBiteTime") - gettime()));
-			    			SendClientMessageEx(playerid, COLOR_GREY, string);
+							SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before you can bite that player.", (GetPVarInt(i, "LastBiteTime") - gettime()));
 			    			return 1;
 						}
 					}
@@ -430,8 +425,7 @@ CMD:curevirus(playerid, params[])
 		{
 			if(gettime() < GetPVarInt(playerid, "pZombieHealTime"))
 			{
-			    format(string, sizeof(string), "You must wait %d seconds before you can heal again.", (GetPVarInt(playerid, "pZombieHealTime") - gettime()));
-			    SendClientMessageEx(playerid, COLOR_GREY, string);
+			    SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before you can heal again.", (GetPVarInt(playerid, "pZombieHealTime") - gettime()));
 			    return 1;
 			}
 		}
@@ -657,56 +651,44 @@ CMD:givez(playerid, params[])
 	if(!strcmp(option, "jumpstart", true))
 	{
 		PlayerInfo[playerid][mInventory][8] += amount;
-		format(string, sizeof(string), "You have given %s %d Jump Start(s).", GetPlayerNameEx(target), amount);
-		SendClientMessageEx(playerid, -1, string);
-		format(string, sizeof(string), "%s has given you %d Jump Start(s). /jumpstart to use this item.", GetPlayerNameEx(playerid), amount);
-		SendClientMessageEx(target, -1, string);
+		SendClientMessageEx(playerid, -1, "You have given %s %d Jump Start(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(target, -1, "%s has given you %d Jump Start(s). /jumpstart to use this item.", GetPlayerNameEx(playerid), amount);
 		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d Jump Start(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
 	}
 	if(!strcmp(option, "fuelcan", true))
 	{
 		if(amount != 25 && amount != 50 && amount != 75) return SendClientMessageEx(playerid, -1, "Valid Amounts for fuel cans are 25, 50 and 75.");
 		PlayerInfo[target][zFuelCan] = amount;
-		format(string, sizeof(string), "You have given %s a fuelcan with %d fuel.", GetPlayerNameEx(target), amount);
-		SendClientMessageEx(playerid, -1, string);
-		format(string, sizeof(string), "%s has given you a fuelcan with %d fuel. /zfuelcan to use this item.", GetPlayerNameEx(playerid), amount);
-		SendClientMessageEx(target, -1, string);
+		SendClientMessageEx(playerid, -1, "You have given %s a fuelcan with %d fuel.", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(target, -1, "%s has given you a fuelcan with %d fuel. /zfuelcan to use this item.", GetPlayerNameEx(playerid), amount);
 		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) a fuelcan with %d fuel.", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
 	}
 	if(!strcmp(option, "scrapmetal", true))
 	{
 		PlayerInfo[target][mInventory][16] += amount;
-		format(string, sizeof(string), "You have given %s %d Scrap Metal(s).", GetPlayerNameEx(target), amount);
-		SendClientMessageEx(playerid, -1, string);
-		format(string, sizeof(string), "%s has given you %d Scrap Metal(s). /zscrapmetal to use this item.", GetPlayerNameEx(playerid), amount);
-		SendClientMessageEx(target, -1, string);
+		SendClientMessageEx(playerid, -1, "You have given %s %d Scrap Metal(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(target, -1, "%s has given you %d Scrap Metal(s). /zscrapmetal to use this item.", GetPlayerNameEx(playerid), amount);
 		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d Scrap Metal(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
 	}
 	if(!strcmp(option, "50cal", true))
 	{
 		PlayerInfo[target][mInventory][17] += amount;
-		format(string, sizeof(string), "You have given %s %d .50 Caliber Bullet(s).", GetPlayerNameEx(target), amount);
-		SendClientMessageEx(playerid, -1, string);
-		format(string, sizeof(string), "%s has given you %d .50 Caliber Bullet(s). /z50cal to use this item.", GetPlayerNameEx(playerid), amount);
-		SendClientMessageEx(target, -1, string);
+		SendClientMessageEx(playerid, -1, "You have given %s %d .50 Caliber Bullet(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(target, -1, "%s has given you %d .50 Caliber Bullet(s). /z50cal to use this item.", GetPlayerNameEx(playerid), amount);
 		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d .50 Caliber Bullet(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
 	}
 	if(!strcmp(option, "inject", true))
 	{
 		PlayerInfo[target][mPurchaseCount][18] += amount;
-		format(string, sizeof(string), "You have given %s %d Antibiotic Injection(s).", GetPlayerNameEx(target), amount);
-		SendClientMessageEx(playerid, -1, string);
-		format(string, sizeof(string), "%s has given you %d Antibiotic Injection(s). /zinject to use this item.", GetPlayerNameEx(playerid), amount);
-		SendClientMessageEx(target, -1, string);
+		SendClientMessageEx(playerid, -1, "You have given %s %d Antibiotic Injection(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(target, -1, "%s has given you %d Antibiotic Injection(s). /zinject to use this item.", GetPlayerNameEx(playerid), amount);
 		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d Antibiotic Injection(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
 	}
 	if(!strcmp(option, "kit", true))
 	{
 		PlayerInfo[target][mInventory][19] += amount;
-		format(string, sizeof(string), "You have given %s %d Survivor Kit(s).", GetPlayerNameEx(target), amount);
-		SendClientMessageEx(playerid, -1, string);
-		format(string, sizeof(string), "%s has given you %d Survivor Kit(s). /zopenkit to use this item.", GetPlayerNameEx(playerid), amount);
-		SendClientMessageEx(target, -1, string);
+		SendClientMessageEx(playerid, -1, "You have given %s %d Survivor Kit(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(target, -1, "%s has given you %d Survivor Kit(s). /zopenkit to use this item.", GetPlayerNameEx(playerid), amount);
 		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d Survivor Kit(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
 	}
 	Log("logs/micro.log", string);

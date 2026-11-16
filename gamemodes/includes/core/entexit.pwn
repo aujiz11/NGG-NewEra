@@ -537,9 +537,7 @@ Business_Enter(playerid, i)
 
 		if (Businesses[i][bType] == BUSINESS_TYPE_GYM)
 		{
-			new string[50];
-			format(string, sizeof(string), "You entered a gym and were charged $%i.", Businesses[i][bGymEntryFee]);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You entered a gym and were charged $%i.", Businesses[i][bGymEntryFee]);
 			GivePlayerCash(playerid, -Businesses[i][bGymEntryFee]);
 			Businesses[i][bSafeBalance] += Businesses[i][bGymEntryFee];
 

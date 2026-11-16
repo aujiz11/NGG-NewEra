@@ -73,8 +73,7 @@ CMD:random(playerid, params[]) {
 				szMessage[48 + MAX_PLAYER_NAME];
 
 			if(iBroadcast == 1) {
-				format(szMessage, sizeof(szMessage), "%s was just randomly selected! Congratulations!", GetPlayerNameEx(iWinrar));
-				SendClientMessageToAllEx(COLOR_WHITE, szMessage);
+				SendClientMessageToAllEx(COLOR_WHITE, "%s was just randomly selected! Congratulations!", GetPlayerNameEx(iWinrar));
 			}
 			else {
 				format(szMessage, sizeof(szMessage), "%s (ID %d) was randomly selected.", GetPlayerNameEx(iWinrar), iWinrar);
@@ -112,8 +111,7 @@ CMD:vrandom(playerid, params[]) {
 				szMessage[48 + MAX_PLAYER_NAME];
 
 			if(iBroadcast == 1) {
-				format(szMessage, sizeof(szMessage), "%s was just randomly selected! Congratulations!", GetPlayerNameEx(iWinrar));
-				SendClientMessageToAllEx(COLOR_WHITE, szMessage);
+				SendClientMessageToAllEx(COLOR_WHITE, "%s was just randomly selected! Congratulations!", GetPlayerNameEx(iWinrar));
 			}
 			else {
 				format(szMessage, sizeof(szMessage), "%s (ID %d) was randomly selected.", GetPlayerNameEx(iWinrar), iWinrar);
@@ -156,10 +154,8 @@ CMD:givetokens(playerid, params[])
 					PlayerInfo[playerid][pTokens] -= amount;
 					PlayerInfo[giveplayerid][pTokens] += amount;
 
-					format(string, sizeof(string), "You have received %d Tokens from %s.", amount, GetPlayerNameEx(playerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "You have given %s %d Tokens.", GetPlayerNameEx(giveplayerid), amount);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have received %d Tokens from %s.", amount, GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given %s %d Tokens.", GetPlayerNameEx(giveplayerid), amount);
 					format(string, sizeof(string), "* %s has given %s some Tokens.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
@@ -192,10 +188,8 @@ CMD:settoken(playerid, params[])
 		if(IsPlayerConnected(giveplayerid))
 		{
 			PlayerInfo[giveplayerid][pTokens] = amount;
-			format(string, sizeof(string), "You have set %s's tokens to %d !",GetPlayerNameEx(giveplayerid),amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "VIP: Admin %s has set your tokens to %d.",GetPlayerNameEx(playerid),amount);
-			SendClientMessageEx(giveplayerid, COLOR_YELLOW, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's tokens to %d !",GetPlayerNameEx(giveplayerid),amount);
+			SendClientMessageEx(giveplayerid, COLOR_YELLOW, "VIP: Admin %s has set your tokens to %d.",GetPlayerNameEx(playerid),amount);
 
 			format(string, sizeof(string), "%s has set %s's(%d) tokens to %d.",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 			Log("logs/stats.log", string);
@@ -219,10 +213,8 @@ CMD:givetoken(playerid, params[])
 		if(IsPlayerConnected(giveplayerid))
 		{
 			PlayerInfo[giveplayerid][pTokens] += amount;
-			format(string, sizeof(string), "You have given %s %d tokens !",GetPlayerNameEx(giveplayerid),amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "VIP: Admin %s has given you %d tokens.",GetPlayerNameEx(playerid),amount);
-			SendClientMessageEx(giveplayerid, COLOR_YELLOW, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have given %s %d tokens !",GetPlayerNameEx(giveplayerid),amount);
+			SendClientMessageEx(giveplayerid, COLOR_YELLOW, "VIP: Admin %s has given you %d tokens.",GetPlayerNameEx(playerid),amount);
 
 			format(string, sizeof(string), "%s has given %s(%d) %d tokens.",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 			Log("logs/stats.log", string);

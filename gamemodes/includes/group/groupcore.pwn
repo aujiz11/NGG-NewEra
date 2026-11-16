@@ -1178,10 +1178,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					{
 						GetPlayerName(giveplayerid, giveplayer, sizeof(giveplayer));
 						GetPlayerName(playerid, sendername, sizeof(sendername));
-						format(string, sizeof(string), "* You cleared the records and wanted points of %s.", GetPlayerNameEx(giveplayerid));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-						format(string, sizeof(string), "* %s %s has cleared your records and wanted points.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
-						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You cleared the records and wanted points of %s.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s %s has cleared your records and wanted points.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 						format(string, sizeof(string), "* %s %s has cleared %s's records and wanted points.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						SendGroupMessage(GROUP_TYPE_LEA, RADIO, string);
 
@@ -2231,8 +2229,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					arrGroupLockers[iGroupID][iLocker][g_fLockerPos][2] = 0;
 					arrGroupLockers[iGroupID][iLocker][g_iLockerVW] = 0;
 					DestroyDynamic3DTextLabel(arrGroupLockers[iGroupID][iLocker][g_tLocker3DLabel]);
-					format(string, sizeof(string), "You have deleted locker %d of %s", iLocker, arrGroupData[iGroupID][g_szGroupName]);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted locker %d of %s", iLocker, arrGroupData[iGroupID][g_szGroupName]);
 				}
 			}
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -2786,8 +2783,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									GivePlayerCash( playerid, -amount);
 									format(szMiscArray, sizeof(szMiscArray), "%s has deposited $%i into the safe.", GetPlayerNameEx(playerid), strval(inputtext));
 									GroupLog(iGroupID, szMiscArray);
-									format(szMiscArray, sizeof(szMiscArray), "You have deposited $%i into the safe.", strval(inputtext));
-									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited $%i into the safe.", strval(inputtext));
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
 									OnPlayerStatsUpdate(playerid);
@@ -2826,8 +2822,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									PlayerInfo[playerid][pMats] -= strval(inputtext);
 									format(szMiscArray, sizeof(szMiscArray), "%s has deposited %i materials into the safe.", GetPlayerNameEx(playerid), strval(inputtext));
 									GroupLog(iGroupID, szMiscArray);
-									format(szMiscArray, sizeof(szMiscArray), "You have deposited %i materials into the safe.", strval(inputtext));
-									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %i materials into the safe.", strval(inputtext));
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
 								}
@@ -2841,8 +2836,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									PlayerInfo[playerid][pMats] += strval(inputtext);
 									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %i materials from the safe.", GetPlayerNameEx(playerid), strval(inputtext));
 									GroupLog(iGroupID, szMiscArray);
-									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %i materials from the safe.", strval(inputtext));
-									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %i materials from the safe.", strval(inputtext));
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
 								}
@@ -2864,8 +2858,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									PlayerInfo[playerid][pDrugs][iDrugID] -= strval(inputtext);
 									format(szMiscArray, sizeof(szMiscArray), "%s has deposited %i grams of %s into the safe.", GetPlayerNameEx(playerid), strval(inputtext), Drugs[iDrugID]);
 									GroupLog(iGroupID, szMiscArray);
-									format(szMiscArray, sizeof(szMiscArray), "You have deposited %i grams of %s into the safe.", strval(inputtext), Drugs[iDrugID]);
-									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %i grams of %s into the safe.", strval(inputtext), Drugs[iDrugID]);
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
 									SaveGroup(iGroupID);
@@ -2883,8 +2876,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									PlayerInfo[playerid][pDrugs][iDrugID] += strval(inputtext);
 									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %i grams of %s from the safe.", GetPlayerNameEx(playerid), strval(inputtext), Drugs[iDrugID]);
 									GroupLog(iGroupID, szMiscArray);
-									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %i grams of %s from the safe.", strval(inputtext), Drugs[iDrugID]);
-									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %i grams of %s from the safe.", strval(inputtext), Drugs[iDrugID]);
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
 									SaveGroup(iGroupID);
@@ -3443,8 +3435,7 @@ CMD:gwithdraw(playerid, params[])
 		if(sscanf(params, "ds[64]", amount, reason))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gwithdraw [amount] [reason]");
-			format(string, sizeof(string), "* VAULT BALANCE: $%s.", number_format(arrGroupData[iGroupID][g_iBudget]));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* VAULT BALANCE: $%s.", number_format(arrGroupData[iGroupID][g_iBudget]));
 			return 1;
 		}
 	}
@@ -3466,8 +3457,7 @@ CMD:gwithdraw(playerid, params[])
         Misc_Save();
         SaveGroup(iGroupID);
 		GivePlayerCash( playerid, amount );
-		format( string, sizeof( string ), "You have withdrawn $%d from the group vault.", amount );
-		SendClientMessageEx( playerid, COLOR_WHITE, string );
+		SendClientMessageEx( playerid, COLOR_WHITE, "You have withdrawn $%d from the group vault.", amount );
 		format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has withdrawn $%s of the group money from their vault, reason: %s.", GetPlayerNameEx(playerid), number_format(amount), reason);
 		ABroadCast( COLOR_YELLOW, string, 2);
  		format(string,sizeof(string),"%s(%d) has withdrawn $%s of the group money from %s's vault, reason: %s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(amount),arrGroupData[iGroupID][g_szGroupName],reason);
@@ -3554,7 +3544,7 @@ CMD:dvtrackcar(playerid, params[])
 
 CMD:grepocars(playerid, params[])
 {
-	new iGroupID = PlayerInfo[playerid][pMember], string[128];
+	new iGroupID = PlayerInfo[playerid][pMember];
 	if((0 <= iGroupID <= MAX_GROUPS) && PlayerInfo[playerid][pRank] == Group_GetMaxRank(iGroupID))
 	{
 	    SendClientMessageEx(playerid, COLOR_GREEN, "Repossessed Agency Vehicles:");
@@ -3567,8 +3557,7 @@ CMD:grepocars(playerid, params[])
 			    {
 			        if(DynVehicleInfo[iDvSlotID][gv_iDisabled] == 1)
 			        {
-			            format(string, sizeof(string), "Vehicle ID: %d - %s - Buyback Cost $%d.", iDvSlotID, VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel] - 400], floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2));
-			            SendClientMessageEx(playerid, COLOR_GRAD1, string);
+			            SendClientMessageEx(playerid, COLOR_GRAD1, "Vehicle ID: %d - %s - Buyback Cost $%d.", iDvSlotID, VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel] - 400], floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2));
 					}
 			    }
 			}
@@ -3581,7 +3570,7 @@ CMD:grepocars(playerid, params[])
 CMD:gvbuyback(playerid, params[])
 {
 	new iVehicle[6];
-	new iGroupID = PlayerInfo[playerid][pLeader], string[128];
+	new iGroupID = PlayerInfo[playerid][pLeader];
 	if((0 <= iGroupID <= MAX_GROUPS) && PlayerInfo[playerid][pRank] == Group_GetMaxRank(iGroupID))
 	{
 		if(sscanf(params, "s[6]", iVehicle)) {
@@ -3605,16 +3594,14 @@ CMD:gvbuyback(playerid, params[])
 								DynVehicleInfo[iDvSlotID][gv_iDisabled] = 0;
 								DynVeh_Save(iDvSlotID);
 								DynVeh_Spawn(iDvSlotID);
-								format(string, sizeof(string), "You have bought back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
-								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have bought back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
 								new str[128];
 								format(str, sizeof(str), "Vehicle Slot ID %d buyback fee cost $%d to %s's budget fund.",iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), arrGroupData[iGroupID][g_szGroupName]);
 								GroupPayLog(iGroupID, str);
 							}
 							else
 							{
-								format(string, sizeof(string), "Your agency could not afford to buy back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
-								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your agency could not afford to buy back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
 								return 1;
 							}
 						}
@@ -3635,8 +3622,7 @@ CMD:gvbuyback(playerid, params[])
 					DynVehicleInfo[iDvSlotID][gv_iDisabled] = 0;
 					DynVeh_Save(iDvSlotID);
 					DynVeh_Spawn(iDvSlotID);
-					format(string, sizeof(string), "You have bought back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have bought back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
 					new str[128];
 					format(str, sizeof(str), "Vehicle Slot ID %d buyback fee cost $%d to %s's budget fund.",iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), arrGroupData[iGroupID][g_szGroupName]);
 					GroupPayLog(iGroupID, str);
@@ -3644,8 +3630,7 @@ CMD:gvbuyback(playerid, params[])
 				}
 				else
 				{
-					format(string, sizeof(string), "Your agency could not afford to buy back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your agency could not afford to buy back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
 					return 1;
 				}
 			}
@@ -3678,8 +3663,7 @@ CMD:dvadjust(playerid, params[])
 		if(rank > 9 || rank < 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ranks can't go below 0 or above 9!");
 		DynVehicleInfo[iDvSlotID][gv_irID] = rank;
 		new string[128];
-		format(string, sizeof(string), "You have adjusted the rank of this vehicle to %s (%d).", arrGroupRanks[DynVehicleInfo[iDvSlotID][gv_igID]][DynVehicleInfo[iDvSlotID][gv_irID]], rank);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have adjusted the rank of this vehicle to %s (%d).", arrGroupRanks[DynVehicleInfo[iDvSlotID][gv_igID]][DynVehicleInfo[iDvSlotID][gv_irID]], rank);
 		format(string, sizeof(string), "%s has adjusted the rank to %s (%d) on DV Slot %d.", GetPlayerNameEx(playerid), arrGroupRanks[DynVehicleInfo[iDvSlotID][gv_igID]][DynVehicleInfo[iDvSlotID][gv_irID]], rank, iDvSlotID);
 		Log("logs/dv.log", string);
 	}
@@ -3688,8 +3672,7 @@ CMD:dvadjust(playerid, params[])
 		if(rank > 9 || rank < 0) return SendClientMessageEx(playerid, COLOR_GREY, "Divisions can't go below 0 or above 9!");
 		DynVehicleInfo[iDvSlotID][gv_igDivID] = rank;
 		new string[128];
-		format(string, sizeof(string), "You have adjusted the division of this vehicle to %s (%d).", arrGroupDivisions[DynVehicleInfo[iDvSlotID][gv_igID]][rank - 1], rank);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have adjusted the division of this vehicle to %s (%d).", arrGroupDivisions[DynVehicleInfo[iDvSlotID][gv_igID]][rank - 1], rank);
 		format(string, sizeof(string), "%s has adjusted the division to %s (%d) on DV Slot %d.", GetPlayerNameEx(playerid), arrGroupDivisions[DynVehicleInfo[iDvSlotID][gv_igID]][rank - 1], rank, iDvSlotID);
 		Log("logs/dv.log", string);
 	}
@@ -3768,15 +3751,10 @@ CMD:dvstatus(playerid, params[])
 	{
 	    if(iDvSlotID != -1)
 	    {
-			new string[128];
-			format(string,sizeof(string),"|___________ Dynamic Vehicle Status (ID: %d | Slot ID: %d) ___________|", vehicleid, iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_GREEN, string);
-			format(string, sizeof(string), "X: %f | Y: %f | Z: %f | Model: %d | Upkeep: $%d | Maxhealth: %f", DynVehicleInfo[iDvSlotID][gv_fX], DynVehicleInfo[iDvSlotID][gv_fY], DynVehicleInfo[iDvSlotID][gv_fZ], DynVehicleInfo[iDvSlotID][gv_iModel], DynVehicleInfo[iDvSlotID][gv_iUpkeep], DynVehicleInfo[iDvSlotID][gv_fMaxHealth]);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "Group: %d | Division: %d | Rank: %d | Type: %d | VW: %d | Int: %d | Disabled: %d", DynVehicleInfo[iDvSlotID][gv_igID], DynVehicleInfo[iDvSlotID][gv_igDivID], DynVehicleInfo[iDvSlotID][gv_irID], DynVehicleInfo[iDvSlotID][gv_iType], DynVehicleInfo[iDvSlotID][gv_iVW], DynVehicleInfo[iDvSlotID][gv_iInt], DynVehicleInfo[iDvSlotID][gv_iDisabled]);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "Obj Model 1: %d | Obj Model 2: %d | Obj Model 3: %d | Obj Model 4: %d | LoadMax: %d | Siren: %d", DynVehicleObjInfo[iDvSlotID][0][gv_iAttachedObjectModel], DynVehicleObjInfo[iDvSlotID][1][gv_iAttachedObjectModel], DynVehicleObjInfo[iDvSlotID][2][gv_iAttachedObjectModel], DynVehicleObjInfo[iDvSlotID][3][gv_iAttachedObjectModel], DynVehicleInfo[iDvSlotID][gv_iLoadMax], DynVehicleInfo[iDvSlotID][gv_iSiren]);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Dynamic Vehicle Status (ID: %d | Slot ID: %d) ___________|", vehicleid, iDvSlotID);
+			SendClientMessageEx(playerid, COLOR_WHITE, "X: %f | Y: %f | Z: %f | Model: %d | Upkeep: $%d | Maxhealth: %f", DynVehicleInfo[iDvSlotID][gv_fX], DynVehicleInfo[iDvSlotID][gv_fY], DynVehicleInfo[iDvSlotID][gv_fZ], DynVehicleInfo[iDvSlotID][gv_iModel], DynVehicleInfo[iDvSlotID][gv_iUpkeep], DynVehicleInfo[iDvSlotID][gv_fMaxHealth]);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Group: %d | Division: %d | Rank: %d | Type: %d | VW: %d | Int: %d | Disabled: %d", DynVehicleInfo[iDvSlotID][gv_igID], DynVehicleInfo[iDvSlotID][gv_igDivID], DynVehicleInfo[iDvSlotID][gv_irID], DynVehicleInfo[iDvSlotID][gv_iType], DynVehicleInfo[iDvSlotID][gv_iVW], DynVehicleInfo[iDvSlotID][gv_iInt], DynVehicleInfo[iDvSlotID][gv_iDisabled]);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Obj Model 1: %d | Obj Model 2: %d | Obj Model 3: %d | Obj Model 4: %d | LoadMax: %d | Siren: %d", DynVehicleObjInfo[iDvSlotID][0][gv_iAttachedObjectModel], DynVehicleObjInfo[iDvSlotID][1][gv_iAttachedObjectModel], DynVehicleObjInfo[iDvSlotID][2][gv_iAttachedObjectModel], DynVehicleObjInfo[iDvSlotID][3][gv_iAttachedObjectModel], DynVehicleInfo[iDvSlotID][gv_iLoadMax], DynVehicleInfo[iDvSlotID][gv_iSiren]);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Dynamic Vehicle Slot ID.");
 	}
@@ -4059,7 +4037,7 @@ CMD:deploy(playerid, params[])
 	{
 		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot do this right now.");
 		if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
-		new type, object[12], string[128];
+		new type, object[12];
 		if(sscanf(params, "s[12]D(0)", object, type))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deploy [object] [type (option for barricades/signs)]");
@@ -4107,8 +4085,7 @@ CMD:deploy(playerid, params[])
 						SpikeStrips[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
 						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) SpikeStrips[iGroup][i][sDeployedByStatus] = 1;
 						else SpikeStrips[iGroup][i][sDeployedByStatus] = 0;
-						format(string,sizeof(string),"Spike ID: %d successfully created.", i);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Spike ID: %d successfully created.", i);
 						/*format(string, sizeof(string), "** HQ: A spike has been deployed by %s at %s **", GetPlayerNameEx(playerid), SpikeStrips[iGroup][i][sDeployedAt]);
 						foreach(new x: Player)
 						{
@@ -4147,8 +4124,7 @@ CMD:deploy(playerid, params[])
 						Flares[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
 						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Flares[iGroup][i][sDeployedByStatus] = 1;
 						else Flares[iGroup][i][sDeployedByStatus] = 0;
-						format(string,sizeof(string),"Flare ID: %d successfully created.", i);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Flare ID: %d successfully created.", i);
 						return 1;
 					}
 				}
@@ -4173,8 +4149,7 @@ CMD:deploy(playerid, params[])
 						Cones[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
 						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Cones[iGroup][i][sDeployedByStatus] = 1;
 						else Cones[iGroup][i][sDeployedByStatus] = 0;
-						format(string,sizeof(string),"Cone ID: %d successfully created.", i);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Cone ID: %d successfully created.", i);
 						return 1;
 					}
 				}
@@ -4199,8 +4174,7 @@ CMD:deploy(playerid, params[])
 						Barrels[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
 						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Barrels[iGroup][i][sDeployedByStatus] = 1;
 						else Barrels[iGroup][i][sDeployedByStatus] = 0;
-						format(string,sizeof(string),"Barrel ID: %d successfully created.", i);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Barrel ID: %d successfully created.", i);
 						return 1;
 					}
 				}
@@ -4226,8 +4200,7 @@ CMD:deploy(playerid, params[])
 						Ladders[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
 						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Ladders[iGroup][i][sDeployedByStatus] = 1;
 						else Ladders[iGroup][i][sDeployedByStatus] = 0;
-						format(string,sizeof(string),"Ladder ID: %d successfully created.", i);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Ladder ID: %d successfully created.", i);
 						return 1;
 					}
 				}
@@ -4334,8 +4307,7 @@ CMD:deploy(playerid, params[])
 						Signs[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
 						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Signs[iGroup][i][sDeployedByStatus] = 1;
 						else Signs[iGroup][i][sDeployedByStatus] = 0;
-						format(string,sizeof(string),"Sign ID: %d successfully created.", i);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Sign ID: %d successfully created.", i);
 						return 1;
 					}
 				}
@@ -4358,8 +4330,7 @@ CMD:deploy(playerid, params[])
 							Tapes[i][sDeployedBy] = GetPlayerNameEx(playerid);
 							if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Tapes[i][sDeployedByStatus] = 1;
 							else Tapes[i][sDeployedByStatus] = 0;
-							format(szMiscArray,sizeof(szMiscArray),"Tape ID: %d successfully created. You may edit its location using the controls on-screen.", i);
-							SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+							SendClientMessageEx(playerid, COLOR_WHITE, "Tape ID: %d successfully created. You may edit its location using the controls on-screen.", i);
 							SendClientMessage(playerid, COLOR_WHITE, "Once done, you can save the tape position by clicking the disc. To cancel, press ESC.");
 							SetPlayerPos(playerid, Tapes[i][sX], Tapes[i][sY]-0.4, Tapes[i][sZ]); // Force streamer.
 							SetPVarInt(playerid, "DeployingTapeID", i);
@@ -4409,8 +4380,7 @@ CMD:destroy(playerid, params[])
 					Barricades[iGroup][type][sObjectID] = -1;
 					Barricades[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Barricades[iGroup][type][sDeployedByStatus] = 0;
-					format(string, sizeof(string), "Barricade ID: %d successfully deleted.", type);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Barricade ID: %d successfully deleted.", type);
 					format(string, sizeof(string), "** HQ: A barricade has been destroyed by %s at %s **", GetPlayerNameEx(playerid), Barricades[iGroup][type][sDeployedAt]);
 					foreach(new i: Player)
 					{
@@ -4419,9 +4389,7 @@ CMD:destroy(playerid, params[])
 							if(PlayerInfo[i][pMember] == iGroup) SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
 							if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroup)
 							{
-								new szBigEar[128];
-								format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
-								SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szBigEar);
+								SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, "(BE) %s", string);
 							}
 						}
 					}
@@ -4438,10 +4406,8 @@ CMD:destroy(playerid, params[])
 				else if(PlayerInfo[playerid][pAdmin] < 2 && SpikeStrips[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a spikestrip that an Administrator deployed.");
 				else
 				{
-					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
 					DeleteSpikeStrip(iGroup, type);
-					format(string,sizeof(string),"Spike %d successfully deleted.", type);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Spike %d successfully deleted.", type);
 					/*format(string, sizeof(string), "** HQ: A spike has been destroyed by %s at %s **", GetPlayerNameEx(playerid), SpikeStrips[iGroup][type][sDeployedAt]);
 					foreach(new i: Player)
 					{
@@ -4469,7 +4435,6 @@ CMD:destroy(playerid, params[])
 				else if(PlayerInfo[playerid][pAdmin] < 2 && Flares[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a flare that an Administrator deployed.");
 				else
 				{
-					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
 					if(IsValidDynamicObject(Flares[iGroup][type][sObjectID])) DestroyDynamicObject(Flares[iGroup][type][sObjectID]);
 					Flares[iGroup][type][sX] = 0;
 					Flares[iGroup][type][sY] = 0;
@@ -4477,8 +4442,7 @@ CMD:destroy(playerid, params[])
 					Flares[iGroup][type][sObjectID] = -1;
 					Flares[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Flares[iGroup][type][sDeployedByStatus] = 0;
-					format(string,sizeof(string),"Flare ID: %d successfully deleted.", type);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Flare ID: %d successfully deleted.", type);
 					return 1;
 				}
 			}
@@ -4492,7 +4456,6 @@ CMD:destroy(playerid, params[])
 				else if(PlayerInfo[playerid][pAdmin] < 2 && Cones[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a cone that an Administrator deployed.");
 				else
 				{
-					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
 					if(IsValidDynamicObject(Cones[iGroup][type][sObjectID])) DestroyDynamicObject(Cones[iGroup][type][sObjectID]);
 					Cones[iGroup][type][sX] = 0;
 					Cones[iGroup][type][sY] = 0;
@@ -4500,8 +4463,7 @@ CMD:destroy(playerid, params[])
 					Cones[iGroup][type][sObjectID] = -1;
 					Cones[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Cones[iGroup][type][sDeployedByStatus] = 0;
-					format(string,sizeof(string),"Cone ID: %d successfully deleted.", type);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Cone ID: %d successfully deleted.", type);
 					return 1;
 				}
 			}
@@ -4515,7 +4477,6 @@ CMD:destroy(playerid, params[])
 				else if(PlayerInfo[playerid][pAdmin] < 2 && Barrels[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a barrel that an Administrator deployed.");
 				else
 				{
-					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
 					if(IsValidDynamicObject(Barrels[iGroup][type][sObjectID])) DestroyDynamicObject(Barrels[iGroup][type][sObjectID]);
 					Barrels[iGroup][type][sX] = 0;
 					Barrels[iGroup][type][sY] = 0;
@@ -4523,8 +4484,7 @@ CMD:destroy(playerid, params[])
 					Barrels[iGroup][type][sObjectID] = -1;
 					Barrels[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Barrels[iGroup][type][sDeployedByStatus] = 0;
-					format(string,sizeof(string),"Barrel ID: %d successfully deleted.", type);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Barrel ID: %d successfully deleted.", type);
 					return 1;
 				}
 			}
@@ -4538,7 +4498,6 @@ CMD:destroy(playerid, params[])
 				else if(PlayerInfo[playerid][pAdmin] < 2 && Barrels[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a ladder that an Administrator deployed.");
 				else
 				{
-					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
 					if(IsValidDynamicObject(Ladders[iGroup][type][sObjectID])) DestroyDynamicObject(Ladders[iGroup][type][sObjectID]);
 					Ladders[iGroup][type][sX] = 0;
 					Ladders[iGroup][type][sY] = 0;
@@ -4546,8 +4505,7 @@ CMD:destroy(playerid, params[])
 					Ladders[iGroup][type][sObjectID] = -1;
 					Ladders[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Ladders[iGroup][type][sDeployedByStatus] = 0;
-					format(string,sizeof(string),"Ladder ID: %d successfully deleted.", type);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Ladder ID: %d successfully deleted.", type);
 					return 1;
 				}
 			}
@@ -4561,7 +4519,6 @@ CMD:destroy(playerid, params[])
 				else if(PlayerInfo[playerid][pAdmin] < 2 && Signs[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a sign that an Administrator deployed.");
 				else
 				{
-					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
 					if(IsValidDynamicObject(Signs[iGroup][type][sObjectID])) DestroyDynamicObject(Signs[iGroup][type][sObjectID]);
 					Signs[iGroup][type][sX] = 0;
 					Signs[iGroup][type][sY] = 0;
@@ -4569,8 +4526,7 @@ CMD:destroy(playerid, params[])
 					Signs[iGroup][type][sObjectID] = -1;
 					Signs[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Signs[iGroup][type][sDeployedByStatus] = 0;
-					format(string,sizeof(string),"Sign ID: %d successfully deleted.", type);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Sign ID: %d successfully deleted.", type);
 					return 1;
 				}
 			}
@@ -4586,7 +4542,6 @@ CMD:destroy(playerid, params[])
 				{
 					if(PlayerInfo[playerid][pMember] == Tapes[type][iDeployedByGroup])
 					{
-							new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
 							DestroyDynamicObject(Tapes[type][sObjectID]);
 							Tapes[type][sX] = 0;
 							Tapes[type][sY] = 0;
@@ -4594,8 +4549,7 @@ CMD:destroy(playerid, params[])
 							Tapes[type][sObjectID] = INVALID_OBJECT_ID;
 							Tapes[type][sDeployedBy] = INVALID_PLAYER_ID;
 							Tapes[type][sDeployedByStatus] = 0;
-							format(string,sizeof(string),"Tape ID: %d successfully deleted.", type);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
+							SendClientMessageEx(playerid, COLOR_WHITE, "Tape ID: %d successfully deleted.", type);
 							return 1;
 					}
 					else
@@ -5012,21 +4966,15 @@ CMD:bug(playerid, params[])
 
   		else if(PlayerInfo[iTargetID][pBugged] != INVALID_GROUP_ID) {
 
-			new
-				szMessage[32 + MAX_PLAYER_NAME];
 
     		PlayerInfo[iTargetID][pBugged] = INVALID_GROUP_ID;
-     		format(szMessage,sizeof(szMessage),"The bug on %s has been disabled.", GetPlayerNameEx(iTargetID));
-       		SendClientMessageEx(playerid, COLOR_GRAD1, szMessage);
+			SendClientMessageEx(playerid, COLOR_GRAD1, "The bug on %s has been disabled.", GetPlayerNameEx(iTargetID));
 		}
 		else if(ProxDetectorS(4.0, playerid, iTargetID)) {
 
-			new
-				szMessage[28 + MAX_PLAYER_NAME];
 
 			PlayerInfo[iTargetID][pBugged] = PlayerInfo[playerid][pMember];
-	    	format(szMessage,sizeof(szMessage),"You have placed a bug on %s.",GetPlayerNameEx(iTargetID));
-		    SendClientMessageEx(playerid, COLOR_GRAD1, szMessage);
+		    SendClientMessageEx(playerid, COLOR_GRAD1, "You have placed a bug on %s.",GetPlayerNameEx(iTargetID));
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be close to the person.");
 	} else SendClientMessageEx(playerid, COLOR_GREY, "You do not have access to this radio frequency.");
@@ -5065,7 +5013,7 @@ CMD:groupcsfban(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
-		new string[128], giveplayerid;
+		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /groupcsfban [player]");
 
 		if(IsPlayerConnected(giveplayerid))
@@ -5073,8 +5021,7 @@ CMD:groupcsfban(playerid, params[])
 			if( PlayerInfo[giveplayerid][pMember] >= 0 || PlayerInfo[giveplayerid][pLeader] >= 0 )
 			{
 				PlayerInfo[giveplayerid][pCSFBanned] = 1;
-				format(string, sizeof(string), "You have been group-banned, by %s, from ALL Civil Service Groups.", GetPlayerNameEx( playerid ));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have been group-banned, by %s, from ALL Civil Service Groups.", GetPlayerNameEx( playerid ));
 				PlayerInfo[giveplayerid][pMember] = INVALID_GROUP_ID;
 				PlayerInfo[giveplayerid][pLeader] = INVALID_GROUP_ID;
 				PlayerInfo[giveplayerid][pDivision] = INVALID_DIVISION;
@@ -5084,8 +5031,7 @@ CMD:groupcsfban(playerid, params[])
 				PlayerInfo[giveplayerid][pModel] = NOOB_SKIN;
 				SetPlayerToTeamColor(giveplayerid);
 				SetPlayerSkin(giveplayerid, NOOB_SKIN);
-				format(string, sizeof(string), "You have faction-banned %s from all CSF groups.", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have faction-banned %s from all CSF groups.", GetPlayerNameEx(giveplayerid));
 			}
 			else
 			{
@@ -5114,8 +5060,7 @@ CMD:groupunban(playerid, params[])
 			SetPVarInt(playerid, "GroupUnBanningGroup", group);
 			mysql_format(MainPipeline, string,sizeof(string),"DELETE FROM `groupbans` WHERE  `PlayerID` = %d AND `GroupBan` = %d", GetPlayerSQLId(giveplayerid), group);
 			mysql_tquery(MainPipeline, string, "Group_QueryFinish", "ii", GROUP_QUERY_UNBAN, playerid);
-			format(string, sizeof(string), "Attempting to unban %s from group %d...", GetPlayerNameEx(giveplayerid), group);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Attempting to unban %s from group %d...", GetPlayerNameEx(giveplayerid), group);
 		}
 		else
 		{
@@ -5130,17 +5075,15 @@ CMD:groupcsfunban(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 1337)
 	{
-		new string[128], giveplayerid;
+		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /faccsfunban [player]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if( PlayerInfo[giveplayerid][pCSFBanned] == 0 ) return SendClientMessageEx( playerid, COLOR_WHITE, "That person isn't banned from Civil Service Groups." );
 			PlayerInfo[giveplayerid][pCSFBanned] = 0;
-			format(string, sizeof(string), "You have unbanned person %s from all Civil Service Groups.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "You have been unbanned from Civil Service Groups, by %s.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have unbanned person %s from all Civil Service Groups.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been unbanned from Civil Service Groups, by %s.", GetPlayerNameEx(playerid));
 		}
 		else
 		{
@@ -5170,8 +5113,7 @@ CMD:groupban(playerid, params[])
 				new string[256];
 				mysql_format(MainPipeline, string,sizeof(string),"INSERT INTO `groupbans` (`PlayerID`, `GroupBan`, `BanReason`, `BanDate`) VALUES (%d, %d, '%e', NOW())", GetPlayerSQLId(giveplayerid), group, reason);
 				mysql_tquery(MainPipeline, string, "Group_QueryFinish", "ii", GROUP_QUERY_ADDBAN, playerid);
-				format(string, sizeof(string), "Attempting to ban %s from group %d...", GetPlayerNameEx(giveplayerid), group);
-			    SendClientMessageEx(playerid, COLOR_WHITE, string);
+			    SendClientMessageEx(playerid, COLOR_WHITE, "Attempting to ban %s from group %d...", GetPlayerNameEx(giveplayerid), group);
 			}
 			else
 			{
@@ -5202,10 +5144,8 @@ CMD:showbadge(playerid, params[])
 				if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[playerid][pBadge]);
 
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "----------------------------------------------------------------------------------------------------");
-				format(string, sizeof(string), "%s%s %s is a duly sworn member of the %s.", badge, infoArrays[0], GetPlayerNameEx(playerid), infoArrays[2]);
-				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "Current Assignment: %s.", infoArrays[1]);
-				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+				SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s%s %s is a duly sworn member of the %s.", badge, infoArrays[0], GetPlayerNameEx(playerid), infoArrays[2]);
+				SendClientMessageEx(giveplayerid, COLOR_WHITE, "Current Assignment: %s.", infoArrays[1]);
 				switch(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance]) {
 					case 1: SendClientMessageEx(giveplayerid, COLOR_WHITE, "Under the Authority of the San Andreas Government.");
 					case 2: SendClientMessageEx(giveplayerid, COLOR_WHITE, "Under the Authority of the Nation of New Robada.");
@@ -5236,8 +5176,7 @@ CMD:groupkick(playerid, params[])
 			{
 				format(string, sizeof(string), "Administrator %s has group-kicked %s (%d) from %s (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName], PlayerInfo[giveplayerid][pMember]+1);
 				GroupLog(PlayerInfo[giveplayerid][pMember], string);
-				format(string, sizeof(string), "You have been faction-kicked, by %s.", GetPlayerNameEx( playerid ));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have been faction-kicked, by %s.", GetPlayerNameEx( playerid ));
 				arrGroupData[PlayerInfo[giveplayerid][pMember]][g_iMemberCount]--;
 				PlayerInfo[giveplayerid][pDuty] = 0;
 				PlayerInfo[giveplayerid][pMember] = INVALID_GROUP_ID;
@@ -5255,8 +5194,7 @@ CMD:groupkick(playerid, params[])
 				pTazer{giveplayerid} = 0;
 				DeletePVar(giveplayerid, "HidingKnife");
 				SetPlayerToTeamColor(giveplayerid);
-				format(string, sizeof(string), "You have group-kicked %s.", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have group-kicked %s.", GetPlayerNameEx(giveplayerid));
 				if(GetPVarType(giveplayerid, "RepFam_TL")) Rivalry_Toggle(giveplayerid, false);
 			}
 			else
@@ -5507,14 +5445,13 @@ CMD:leaders(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 3 || PlayerInfo[playerid][pFactionModerator] >= 1) {
 		SendClientMessageEx(playerid, COLOR_WHITE, "Group leaders online:");
 
-		new	string[128], sz_FacInfo[3][64];
+		new	sz_FacInfo[3][64];
 
 		foreach(new i: Player)
 		{
 			if(PlayerInfo[i][pLeader] >= 0) {
 				GetPlayerGroupInfo(i, sz_FacInfo[0], sz_FacInfo[1], sz_FacInfo[2]);
-				format(string, sizeof(string), "(%s) %s %s", sz_FacInfo[2], sz_FacInfo[0], GetPlayerNameEx(i));
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "(%s) %s %s", sz_FacInfo[2], sz_FacInfo[0], GetPlayerNameEx(i));
 			}
 		}
 	} else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
@@ -5606,16 +5543,14 @@ public HitmanTrace(playerid, iTargetID) {
 		GameTextForPlayer(playerid, "Trace established", 1100, 3);
 
 		new
-			szZone[MAX_ZONE_NAME],
-			szMessage[108];
+			szZone[MAX_ZONE_NAME];
 
 		new Float:X, Float:Y, Float:Z;
 	    GetPlayerPos(iTargetID, X, Y, Z);
 	    DisablePlayerCheckpoint(playerid);
 	    SetPlayerCheckpoint(playerid, X, Y, Z, 4.0);
 		GetPlayer3DZone(iTargetID, szZone, sizeof(szZone));
-		format(szMessage, sizeof(szMessage), "Tracking on %s, last seen at %s.", GetPlayerNameEx(iTargetID), szZone);
-		SendClientMessageEx(playerid, COLOR_GRAD2, szMessage);
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Tracking on %s, last seen at %s.", GetPlayerNameEx(iTargetID), szZone);
 		SendClientMessageEx(playerid, COLOR_GRAD2, "Type /hfind again to stop tracking.");
 		SetPVarInt(playerid, "hFind", iTargetID);
 		DeletePVar(playerid, "HfindCount");
@@ -5781,12 +5716,10 @@ CMD:uninvite(playerid, params[]) {
 						szMessage[128],
 						iRank = PlayerInfo[playerid][pRank];
 
-					format(szMessage, sizeof szMessage, "%s %s has kicked you out of %s.", arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
+					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "%s %s has kicked you out of %s.", arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
 					SendClientMessageEx(iTargetID, COLOR_WHITE, "You are now a civilian again.");
 
-					format(szMessage, sizeof szMessage, "You have kicked %s out of the group.", GetPlayerNameEx(iTargetID));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have kicked %s out of the group.", GetPlayerNameEx(iTargetID));
 
 					format(szMessage, sizeof szMessage, "%s %s (%d) (rank %i) has uninvited %s (%d) (rank %i) from %s (%i).", arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), iRank, GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), PlayerInfo[iTargetID][pRank], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 					GroupLog(iGroupID, szMessage);
@@ -5836,8 +5769,7 @@ CMD:ouninvite(playerid, params[]) {
 			while((iPos = strfind(szName, "_", false, iPos)) != -1) szName[iPos] = ' ';
 			SetPVarString(playerid, "Group_Uninv", szName);
 
-			format(szQuery, sizeof szQuery, "Attempting to remove %s from the group, please wait...", szName);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szQuery);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Attempting to remove %s from the group, please wait...", szName);
 		}
 		else SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ouninvite [account name]");
 	}
@@ -5858,8 +5790,7 @@ CMD:giverank(playerid, params[]) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /giverank [player] [rank]");
 		}
 		else if(!(0 <= iRank <= Group_GetMaxRank(iGroupID))) {
-		    format(szMessage, sizeof(szMessage), "Invalid rank specified (must be between 0 and %d)", Group_GetMaxRank(iGroupID));
-			SendClientMessageEx(playerid, COLOR_GREY, szMessage);
+			SendClientMessageEx(playerid, COLOR_GREY, "Invalid rank specified (must be between 0 and %d)", Group_GetMaxRank(iGroupID));
 		}
 		else if(IsPlayerConnected(iTargetID)) {
 			if(iGroupID == PlayerInfo[iTargetID][pMember]) {
@@ -5876,11 +5807,9 @@ CMD:giverank(playerid, params[]) {
 		    	}
 				else if(PlayerInfo[playerid][pRank] > PlayerInfo[iTargetID][pRank] || PlayerInfo[playerid][pRank] >= Group_GetMaxRank(iGroupID) || PlayerInfo[playerid][pAdmin] >= 4) {
 
-					format(szMessage, sizeof szMessage, "%s %s has %s you to the rank of %s.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), ((iRank > PlayerInfo[iTargetID][pRank]) ? ("promoted") : ("demoted")), arrGroupRanks[iGroupID][iRank]);
-					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
+					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "%s %s has %s you to the rank of %s.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), ((iRank > PlayerInfo[iTargetID][pRank]) ? ("promoted") : ("demoted")), arrGroupRanks[iGroupID][iRank]);
 
-					format(szMessage, sizeof szMessage, "You have %s %s to the rank of %s.", ((iRank > PlayerInfo[iTargetID][pRank]) ? ("promoted") : ("demoted")), GetPlayerNameEx(iTargetID), arrGroupRanks[iGroupID][iRank]);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have %s %s to the rank of %s.", ((iRank > PlayerInfo[iTargetID][pRank]) ? ("promoted") : ("demoted")), GetPlayerNameEx(iTargetID), arrGroupRanks[iGroupID][iRank]);
 
 					format(szMessage, sizeof szMessage, "%s %s (%d) (rank %i) has given %s (%d) rank %i (%s) in %s (%i).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pRank], GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), iRank, arrGroupRanks[iGroupID][iRank], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 					GroupLog(iGroupID, szMessage);
@@ -5920,13 +5849,11 @@ CMD:setdivname(playerid, params[])
 		}
 		else if(!(1 <= iDiv <= Group_GetMaxDiv(iGroupID)+1))
 		{
-		    format(szMessage, sizeof(szMessage), "Invalid division specified! Must be between 1 and %d.", Group_GetMaxDiv(iGroupID) + 1);
-			return SendClientMessageEx(playerid, COLOR_GREY, szMessage);
+			return SendClientMessageEx(playerid, COLOR_GREY, "Invalid division specified! Must be between 1 and %d.", Group_GetMaxDiv(iGroupID) + 1);
 		}
 		else if(strlen(iName) > sizeof(iName))
 		{
-			format(szMessage, sizeof(szMessage), "Division name must be less than %d characters!", sizeof(iName));
-			return SendClientMessageEx(playerid, COLOR_GREY, szMessage);
+			return SendClientMessageEx(playerid, COLOR_GREY, "Division name must be less than %d characters!", sizeof(iName));
 		}
 		else
 		{
@@ -5941,9 +5868,7 @@ CMD:setdivname(playerid, params[])
 						if(PlayerInfo[i][pMember] == iGroupID) SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szMessage);
 						if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroupID)
 						{
-							new szBigEar[128];
-							format(szBigEar, sizeof(szBigEar), "(BE) %s", szMessage);
-							SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szBigEar);
+							SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, "(BE) %s", szMessage);
 						}
 					}
 				}
@@ -5960,9 +5885,7 @@ CMD:setdivname(playerid, params[])
 						if(PlayerInfo[i][pMember] == iGroupID) SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szMessage);
 						if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroupID)
 						{
-							new szBigEar[128];
-							format(szBigEar, sizeof(szBigEar), "(BE) %s", szMessage);
-							SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szBigEar);
+							SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, "(BE) %s", szMessage);
 						}
 					}
 				}
@@ -5996,8 +5919,7 @@ CMD:setdiv(playerid, params[]) {
 			}
 		}
 		else if(!(0 <= iDiv <= Group_GetMaxDiv(iGroupID)+1)) {
-		    format(szMessage, sizeof(szMessage), "Invalid division specified (must be between 0 and %d)", Group_GetMaxDiv(iGroupID) + 1);
-			SendClientMessageEx(playerid, COLOR_GREY, szMessage);
+			SendClientMessageEx(playerid, COLOR_GREY, "Invalid division specified (must be between 0 and %d)", Group_GetMaxDiv(iGroupID) + 1);
 		}
 		else if(IsPlayerConnected(iTargetID)) {
 			if(iGroupID == PlayerInfo[iTargetID][pMember]) {
@@ -6009,19 +5931,15 @@ CMD:setdiv(playerid, params[]) {
 
 					if(iDiv == 0)
 					{
-						format(szMessage, sizeof(szMessage), "You have been kicked out of your current division by %s.", GetPlayerNameEx(playerid));
-						SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "You have kicked %s from their division.", GetPlayerNameEx(iTargetID));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+						SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "You have been kicked out of your current division by %s.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have kicked %s from their division.", GetPlayerNameEx(iTargetID));
 						format(szMessage, sizeof szMessage, "%s %s (%d) has kicked %s (%d) out of their division in %s (%d).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 						GroupLog(iGroupID, szMessage);
 					}
 					else
 					{
-						format(szMessage, sizeof szMessage, "%s %s has set you to the %s division.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), arrGroupDivisions[iGroupID][iDiv-1]);
-						SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof szMessage, "You have set %s to the %s division.", GetPlayerNameEx(iTargetID), arrGroupDivisions[iGroupID][iDiv-1]);
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+						SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "%s %s has set you to the %s division.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), arrGroupDivisions[iGroupID][iDiv-1]);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have set %s to the %s division.", GetPlayerNameEx(iTargetID), arrGroupDivisions[iGroupID][iDiv-1]);
 						format(szMessage, sizeof szMessage, "%s %s (%d) has set %s's (%d) division to %s in %s (%d).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), arrGroupDivisions[iGroupID][iDiv-1], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 						GroupLog(iGroupID, szMessage);
 					}
@@ -6056,19 +5974,15 @@ CMD:setbadge(playerid, params[])
 			{
 				if(strcmp(iBadge, "none", true) == 0)
 				{
-					format(szMessage, sizeof(szMessage), "Your badge has been removed by %s.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
-					format(szMessage, sizeof(szMessage), "You have removed %s's badge.", GetPlayerNameEx(iTargetID));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "Your badge has been removed by %s.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have removed %s's badge.", GetPlayerNameEx(iTargetID));
 					format(szMessage, sizeof(szMessage), "%s (%d) has removed %s's (%d) badge.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
 					GroupLog(iGroupID, szMessage);
 				}
 				else
 				{
-					format(szMessage, sizeof(szMessage), "Your badge has been set to %s by %s.", iBadge, GetPlayerNameEx(playerid));
-					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
-					format(szMessage, sizeof(szMessage), "You have set %s's badge to %s.", GetPlayerNameEx(iTargetID), iBadge);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "Your badge has been set to %s by %s.", iBadge, GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have set %s's badge to %s.", GetPlayerNameEx(iTargetID), iBadge);
 					format(szMessage, sizeof(szMessage), "%s (%d) has set %s's (%d) badge to %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), iBadge);
 					GroupLog(iGroupID, szMessage);
 				}
@@ -6191,11 +6105,10 @@ CMD:sanrank(playerid, params[])
 		new iRank,
 			iChoice;
 		if(sscanf(params, "dd", iChoice, iRank)) {
-			format(szMiscArray, sizeof(szMiscArray), "CURRENTLY: Cameraman (Rank: %d) | Show Host (Rank: %d) | Broadcast Editor/Director (Rank: %d) | All Priviledges (Rank: %d)",
+
+			SendClientMessageEx(playerid, COLOR_GREY, "CURRENTLY: Cameraman (Rank: %d) | Show Host (Rank: %d) | Broadcast Editor/Director (Rank: %d) | All Priviledges (Rank: %d)",
 				arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2],
 				arrGroupData[iGroupID][g_iWithdrawRank][3]);
-
-			SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sanrank [choice] [rank]");
 			return SendClientMessageEx(playerid, COLOR_GREY, "CHOICES: Cameraman(0) Show Host(1) Broadcast Editor/Director(2) All(3)");
 		}
@@ -6207,8 +6120,7 @@ CMD:sanrank(playerid, params[])
 			if(0 <= iRank <= MAX_GROUP_RANKS-1 || iRank == INVALID_RANK)
 			{
 				arrGroupData[iGroupID][g_iWithdrawRank][iChoice] = iRank;
-				format(szMiscArray, sizeof(szMiscArray), "You have adjusted the rank permission to %i.", iRank);
-				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_GREY, "You have adjusted the rank permission to %i.", iRank);
 				format(szMiscArray, sizeof(szMiscArray), "%s has adjusted the rank permission for choice %d to %i.", GetPlayerNameEx(playerid), iChoice, iRank);
 				GroupLog(iGroupID, szMiscArray);
 				SaveGroup(iGroupID);
@@ -6241,9 +6153,8 @@ CMD:adjustwithdrawrank(playerid, params[])
 		if(sscanf(params, "dd", iChoice, iRank)) {
 			SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /adjustwithdrawrank [choice] [rank]");
 			SendClientMessageEx(playerid, COLOR_GREY, "Choice: Money - 0 | Materials - 1 | Drugs - 2");
-			format(szMiscArray, sizeof(szMiscArray), "CURRENTLY: Money (Rank: %d) | Materials (Rank: %d) | Drugs (Rank: %d)",
+			return SendClientMessageEx(playerid, COLOR_GREY, "CURRENTLY: Money (Rank: %d) | Materials (Rank: %d) | Drugs (Rank: %d)",
 				arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2]);
-			return SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 		}
 		if(!(0 <= iChoice <= 2)) {
 			return SendClientMessageEx(playerid, COLOR_GREY, "Specify a valid choice!");
@@ -6253,8 +6164,7 @@ CMD:adjustwithdrawrank(playerid, params[])
 			if(0 <= iRank <= MAX_GROUP_RANKS-1 || iRank == INVALID_RANK)
 			{
 				arrGroupData[iGroupID][g_iWithdrawRank][iChoice] = iRank;
-				format(szMiscArray, sizeof(szMiscArray), "You have adjusted the withdraw rank to %i.", iRank);
-				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_GREY, "You have adjusted the withdraw rank to %i.", iRank);
 				format(szMiscArray, sizeof(szMiscArray), "%s has adjusted the withdraw rank for item %d to %i.", GetPlayerNameEx(playerid), iChoice, iRank);
 				GroupLog(iGroupID, szMiscArray);
 			}
@@ -6325,8 +6235,7 @@ CMD:orgs(playerid, params[])
 			{
 				if(PlayerInfo[x][pMember] == i) iMemberCount++;
 			}
-			format(szMiscArray, sizeof(szMiscArray), "** %s | Total Members: %d | Members Online: %i", arrGroupData[i][g_szGroupName], arrGroupData[i][g_iMemberCount], iMemberCount);
-			SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_WHITE, "** %s | Total Members: %d | Members Online: %i", arrGroupData[i][g_szGroupName], arrGroupData[i][g_iMemberCount], iMemberCount);
 		}
 	}
 	return 1;
@@ -6386,9 +6295,8 @@ CMD:lockerbalance(playerid, params[])
 			if(arrGroupData[GroupID][g_iWeapons][s] != 0) weps++;
 		}
 		szMiscArray[0] = 0;
-		format(szMiscArray, sizeof(szMiscArray), "Locker: Weapons: %d/50 | Cash: $%s | Pot: %d | Crack: %d | Meth: %d | Ecstasy: %d | Heroin: %d | Syringes: %d | Materials: %d ", weps, number_format(arrGroupData[GroupID][g_iBudget]), arrGroupData[GroupID][g_iPot], arrGroupData[GroupID][g_iCrack],
+		SendClientMessageEx(playerid, COLOR_WHITE, "Locker: Weapons: %d/50 | Cash: $%s | Pot: %d | Crack: %d | Meth: %d | Ecstasy: %d | Heroin: %d | Syringes: %d | Materials: %d ", weps, number_format(arrGroupData[GroupID][g_iBudget]), arrGroupData[GroupID][g_iPot], arrGroupData[GroupID][g_iCrack],
 			arrGroupData[GroupID][g_iMeth], arrGroupData[GroupID][g_iEcstasy], arrGroupData[GroupID][g_iHeroin], arrGroupData[GroupID][g_iSyringes], arrGroupData[GroupID][g_iMaterials]);
-		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You're not in a criminal group.");
 	return 1;
@@ -6516,8 +6424,7 @@ public OnAddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount) {
 		format(szMiscArray, sizeof(szMiscArray), "%s has deposited a %s into the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(iWeaponID));
 		GroupLog(iGroupID-1, szMiscArray);
 
-		format(szMiscArray, sizeof(szMiscArray), "You have deposited a %s into the locker.", Weapon_ReturnName(iWeaponID));
-		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited a %s into the locker.", Weapon_ReturnName(iWeaponID));
 	}
 	else {
 		format(szMiscArray, sizeof(szMiscArray), "A %s has been deposited into the locker (x%d).", Weapon_ReturnName(iWeaponID), iAmount);

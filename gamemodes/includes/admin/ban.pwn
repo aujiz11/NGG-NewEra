@@ -138,8 +138,7 @@ public OnRemoveBan(iRemover, iBanned, szIPAddress[]) {
 				Log("logs/unbans.log", szMiscArray);
 			}
 
-			format(szMiscArray, sizeof(szMiscArray), "%d ban records removed.", iRows);
-			SendClientMessageEx(iRemover, COLOR_WHITE, szMiscArray);
+			SendClientMessageEx(iRemover, COLOR_WHITE, "%d ban records removed.", iRows);
 		}
 	}
 	else SendClientMessageEx(iRemover, COLOR_YELLOW, "There was an issue removing that ban ...");
@@ -210,8 +209,7 @@ public InitiateIPBan(iBanCreator, szReason[], iLength) {
 			cache_get_value_name(iCount, "Username", szName, MAX_PLAYER_NAME);
 			SetPVarString(iBanCreator, "BanningName", szName);
 			if(cache_get_value_name_int(iCount, "AdminLevel", value) > PlayerInfo[iBanCreator][pAdmin]) {
-				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: Couldn't ban account ID %d (higher admin level than you).", id);
-				SendClientMessageEx(iBanCreator, COLOR_GREY, szMiscArray);
+				SendClientMessageEx(iBanCreator, COLOR_GREY, "[SYSTEM]: Couldn't ban account ID %d (higher admin level than you).", id);
 			}
 			else CreateBan(iBanCreator, id, INVALID_PLAYER_ID, szIPAddress, szReason, iLength);
 			iCount++;
@@ -481,15 +479,14 @@ CMD:oldunban(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pBanAppealer] >= 1)
 	{
-		new string[128], query[256], tmpName[24];
+		new query[256], tmpName[24];
 		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /oldunban [player name]");
 
 		mysql_escape_string(params, tmpName);
 		SetPVarString(playerid, "OnUnbanPlayer", tmpName);
 
 		mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Band`=0, `Warnings`=0, `Disabled`=0 WHERE `Username`='%s' AND `PermBand` < 3", tmpName);
-		format(string, sizeof(string), "Attempting to unban %s...", tmpName);
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Attempting to unban %s...", tmpName);
 		mysql_tquery(MainPipeline, query, "OnUnbanPlayer", "i", playerid);
 
 		mysql_format(MainPipeline, query, sizeof(query), "SELECT `IP` FROM `accounts` WHERE `Username`='%s'", tmpName);

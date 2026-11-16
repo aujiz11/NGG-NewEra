@@ -41,7 +41,7 @@ CMD:selldrink(playerid, params[])
 	{
 		if(IsAtBar(playerid))
 		{
-			new string[128], giveplayerid;
+			new giveplayerid;
 			if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /selldrink [player]");
 
 			if(IsPlayerConnected(giveplayerid))
@@ -53,10 +53,8 @@ CMD:selldrink(playerid, params[])
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
 					DrinkOffer[giveplayerid] = playerid;
-					format(string, sizeof(string), "* Bartender %s has offered has offered to pour you a drink. /accept drink to select a drink.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* You have offered %s a drink.",GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Bartender %s has offered has offered to pour you a drink. /accept drink to select a drink.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have offered %s a drink.",GetPlayerNameEx(giveplayerid));
 				}
 				else
 				{

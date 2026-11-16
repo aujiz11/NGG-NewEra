@@ -166,9 +166,7 @@ CMD:sendmail(playerid, params[])
 		return SendClientMessageEx(playerid, COLOR_GREY, "You don't have any papers left. You can buy some at a 24/7.");
 	}
 	if(GetPVarInt(playerid, "MailTime") > 0) {
-	    new string[64];
-		format(string, sizeof(string), "You must wait %d seconds before sending more mail.", GetPVarInt(playerid, "MailTime"));
-		return SendClientMessageEx(playerid, COLOR_GREY, string);
+		return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before sending more mail.", GetPVarInt(playerid, "MailTime"));
 	}
 	DisplayStampDialog(playerid);
 	return 1;
@@ -207,8 +205,7 @@ CMD:createmailbox(playerid, params[])
 	RenderStreetMailbox(i);
 
 	new string[128], area[MAX_ZONE_NAME];
-	format(string,sizeof(string),"You have successfully created a street mailbox with ID %d.", i);
-	SendClientMessageEx(playerid, COLOR_GRAD2, string);
+	SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully created a street mailbox with ID %d.", i);
 	GetPlayer2DZone(playerid, area, MAX_ZONE_NAME);
 	format(string, sizeof(string), "Admin %s has placed street mailbox %d at %s", GetPlayerNameEx(playerid), i, area);
 	Log("logs/mail.log", string);
@@ -239,8 +236,7 @@ CMD:removemailbox(playerid, params[])
 	RenderStreetMailbox(id);
 
 	new string[128], area[MAX_ZONE_NAME];
-	format(string,sizeof(string),"You have successfully removed the street mailbox with ID %d.", id);
-	SendClientMessageEx(playerid, COLOR_GRAD2, string);
+	SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully removed the street mailbox with ID %d.", id);
 	GetPlayer2DZone(playerid, area, MAX_ZONE_NAME);
 	format(string, sizeof(string), "Administrator %s has removed a street mailbox %d, at %s", GetPlayerNameEx(playerid), id, area);
 	Log("logs/mail.log", string);
@@ -384,13 +380,11 @@ CMD:adestroymailbox(playerid, params[])
 	RenderHouseMailbox(houseid);
 
 	new string[64];
-	format(string, sizeof(string), "You have destroyed the mailbox of house %d.", houseid);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
+	SendClientMessageEx(playerid, COLOR_GREY, "You have destroyed the mailbox of house %d.", houseid);
 	foreach(new i: Player)
 	{
 		if(PlayerInfo[i][pPhousekey] == houseid || PlayerInfo[i][pPhousekey2] == houseid || PlayerInfo[i][pPhousekey3] == houseid)	{
-			format(string, sizeof(string), "Administrator %s has destroyed your mailbox.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(i, COLOR_GREY, string);
+			SendClientMessageEx(i, COLOR_GREY, "Administrator %s has destroyed your mailbox.", GetPlayerNameEx(playerid));
 			break;
 		}
 	}	

@@ -114,8 +114,7 @@ CMD:pnsedit(playerid, params[])
 		GetPlayerPos(playerid, PayNSprays[id][pnsPosX], PayNSprays[id][pnsPosY], PayNSprays[id][pnsPosZ]);
 		PayNSprays[id][pnsInt] = GetPlayerInterior(playerid);
 		PayNSprays[id][pnsVW] = GetPlayerVirtualWorld(playerid);
-		format(string, sizeof(string), "You have changed the position on Pay N' Spray #%d.", id);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the position on Pay N' Spray #%d.", id);
 		DestroyDynamicPickup(PayNSprays[id][pnsPickupID]);
 		DestroyDynamic3DTextLabel(PayNSprays[id][pnsTextID]);
 		DestroyDynamicMapIcon(PayNSprays[id][pnsMapIconID]);
@@ -132,13 +131,11 @@ CMD:pnsedit(playerid, params[])
 	{
 		if(PayNSprays[id][pnsStatus] == 0)
 		{
-			format(string, sizeof(string), "Pay N' Spray #%d does not exist.", id);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Pay N' Spray #%d does not exist.", id);
 			return 1;
 		}
 		PayNSprays[id][pnsGroupCost] = amount;
-		format(string, sizeof(string), "You have changed the group cost for Pay N' Spray #%d to $%s.", id, number_format(amount));
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the group cost for Pay N' Spray #%d to $%s.", id, number_format(amount));
 		DestroyDynamic3DTextLabel(PayNSprays[id][pnsTextID]);
 		format(string, sizeof(string), "/repaircar\nRepair Cost -- Regular: $%s | Faction: $%s\nID: %d", number_format(PayNSprays[id][pnsRegCost]), number_format(PayNSprays[id][pnsGroupCost]), id);
 		PayNSprays[id][pnsTextID] = CreateDynamic3DTextLabel(string, COLOR_RED, PayNSprays[id][pnsPosX], PayNSprays[id][pnsPosY], PayNSprays[id][pnsPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, PayNSprays[id][pnsVW], PayNSprays[id][pnsInt], -1);
@@ -151,13 +148,11 @@ CMD:pnsedit(playerid, params[])
 	{
 		if(PayNSprays[id][pnsStatus] == 0)
 		{
-			format(string, sizeof(string), "Pay N' Spray #%d does not exist.", id);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Pay N' Spray #%d does not exist.", id);
 			return 1;
 		}
 		PayNSprays[id][pnsRegCost] = amount;
-		format(string, sizeof(string), "You have changed the regular cost for Pay N' Spray #%d to $%s.", id, number_format(amount));
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the regular cost for Pay N' Spray #%d to $%s.", id, number_format(amount));
 		DestroyDynamic3DTextLabel(PayNSprays[id][pnsTextID]);
 		format(string, sizeof(string), "/repaircar\nRepair Cost -- Regular: $%s | Faction: $%s\nID: %d", number_format(PayNSprays[id][pnsRegCost]), number_format(PayNSprays[id][pnsGroupCost]), id);
 		PayNSprays[id][pnsTextID] = CreateDynamic3DTextLabel(string, COLOR_RED, PayNSprays[id][pnsPosX], PayNSprays[id][pnsPosY], PayNSprays[id][pnsPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, PayNSprays[id][pnsVW], PayNSprays[id][pnsInt], -1);
@@ -170,8 +165,7 @@ CMD:pnsedit(playerid, params[])
 	{
 		if(PayNSprays[id][pnsStatus] == 0)
 		{
-			format(string, sizeof(string), "Pay N' Spray #%d does not exist.", id);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Pay N' Spray #%d does not exist.", id);
 			return 1;
 		}
    	  	DestroyDynamicPickup(PayNSprays[id][pnsPickupID]);
@@ -186,8 +180,7 @@ CMD:pnsedit(playerid, params[])
 		PayNSprays[id][pnsGroupCost] = 0;
 		PayNSprays[id][pnsRegCost] = 0;
 		SavePayNSpray(id);
-		format(string, sizeof(string), "You have deleted Pay N' Spray #%d.", id);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted Pay N' Spray #%d.", id);
 		format(string, sizeof(string), "%s has deleted Pay N' Spray ID %d.", GetPlayerNameEx(playerid), id);
 		Log("logs/pnsedit.log", string);
 		return 1;
@@ -205,13 +198,9 @@ CMD:pnsstatus(playerid, params[])
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
-		new string[128];
-		format(string,sizeof(string),"|___________ Pay N' Spray Status (ID: %d) ___________|", id);
-		SendClientMessageEx(playerid, COLOR_GREEN, string);
-		format(string, sizeof(string), "[Position] X: %f | Y: %f | Z: %f | VW: %d | Int: %d", PayNSprays[id][pnsPosX], PayNSprays[id][pnsPosY], PayNSprays[id][pnsPosZ], PayNSprays[id][pnsVW], PayNSprays[id][pnsInt]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "Group Cost: $%s | Regular Cost: $%s", number_format(PayNSprays[id][pnsGroupCost]), number_format(PayNSprays[id][pnsRegCost]));
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Pay N' Spray Status (ID: %d) ___________|", id);
+		SendClientMessageEx(playerid, COLOR_WHITE, "[Position] X: %f | Y: %f | Z: %f | VW: %d | Int: %d", PayNSprays[id][pnsPosX], PayNSprays[id][pnsPosY], PayNSprays[id][pnsPosZ], PayNSprays[id][pnsVW], PayNSprays[id][pnsInt]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Group Cost: $%s | Regular Cost: $%s", number_format(PayNSprays[id][pnsGroupCost]), number_format(PayNSprays[id][pnsRegCost]));
 	}
 	else
 	{
@@ -229,9 +218,7 @@ CMD:pnsnext(playerid, params[])
 		{
 			if(PayNSprays[x][pnsStatus] == 0)
 		    {
-		        new string[128];
-		        format(string, sizeof(string), "%d is available to use.", x);
-		        SendClientMessageEx(playerid, COLOR_WHITE, string);
+		        SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", x);
 		        break;
 			}
 		}

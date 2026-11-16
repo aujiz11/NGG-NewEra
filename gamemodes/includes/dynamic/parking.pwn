@@ -184,25 +184,21 @@ CMD:parkingmeterhelp(playerid, params[])
 
 CMD:meterstatus(playerid, params[])
 {
-	new meterid, string[128];
+	new meterid;
 	meterid = GetNearestParkingMeter(playerid);
 	if(meterid == -1 || !IsPlayerInRangeOfPoint(playerid, 2.0, ParkingMeterInformation[meterid][MeterPosition][0], ParkingMeterInformation[meterid][MeterPosition][1], ParkingMeterInformation[meterid][MeterPosition][2])) return SendClientMessageEx(playerid, COLOR_GREY, "You are not in range of a parking meter.");
-	format(string, sizeof(string), "** PARKING METER STATUS - METER ID %d: **", meterid);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "� Rate per five minutes: $%s.", number_format(ParkingMeterInformation[meterid][MeterRate]));
-	SendClientMessageEx(playerid, COLOR_GREY, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "** PARKING METER STATUS - METER ID %d: **", meterid);
+	SendClientMessageEx(playerid, COLOR_GREY, "� Rate per five minutes: $%s.", number_format(ParkingMeterInformation[meterid][MeterRate]));
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
-		format(string, sizeof(string), "� Range: %0.3f meters.", ParkingMeterInformation[meterid][MeterRange]);
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_GREY, "� Range: %0.3f meters.", ParkingMeterInformation[meterid][MeterRange]);
 	}
 	switch(ParkingMeterInformation[meterid][AssignedVehicle])
 	{
 		case INVALID_VEHICLE_ID: return SendClientMessageEx(playerid, COLOR_GREY, "� Current vehicle: Unoccupied and vacant.");
 		default:
 		{
-			format(string, sizeof(string), "� Current vehicle: %s (ID: %d).", VehicleName[GetVehicleModel(ParkingMeterInformation[meterid][AssignedVehicle]) - 400], ParkingMeterInformation[meterid][AssignedVehicle]);
-			SendClientMessageEx(playerid, COLOR_GREY, string);
+			SendClientMessageEx(playerid, COLOR_GREY, "� Current vehicle: %s (ID: %d).", VehicleName[GetVehicleModel(ParkingMeterInformation[meterid][AssignedVehicle]) - 400], ParkingMeterInformation[meterid][AssignedVehicle]);
 			return 1;
 		}
 	}
@@ -226,8 +222,7 @@ CMD:rentmeter(playerid, params[])
 	}
 	if(GetPlayerCash(playerid) < ParkingMeterInformation[meterid][MeterRate])
 	{
-		format(string, sizeof(string), "You cannot afford the initial down payment for this parking meter ($%s).", number_format(ParkingMeterInformation[meterid][MeterRate]));
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_GREY, "You cannot afford the initial down payment for this parking meter ($%s).", number_format(ParkingMeterInformation[meterid][MeterRate]));
 		return 1;
 	}
 	ParkingMeterInformation[meterid][AssignedVehicle] = vehicleid;
@@ -241,10 +236,8 @@ CMD:rentmeter(playerid, params[])
 		format(string, sizeof(string), "{FF8000}** {C2A2DA}%s turns the key in the ignition and the engine stops.", GetPlayerNameEx(playerid));
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
 	}
-	format(string, sizeof(string), "You have rented this parking meter for $%s. You have been given five minutes.", number_format(ParkingMeterInformation[meterid][MeterRate]));
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "To add more time to this parking meter, use (/renewmeter). Meter rate: $%s per five minutes.", number_format(ParkingMeterInformation[meterid][MeterRate]));
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have rented this parking meter for $%s. You have been given five minutes.", number_format(ParkingMeterInformation[meterid][MeterRate]));
+	SendClientMessageEx(playerid, COLOR_WHITE, "To add more time to this parking meter, use (/renewmeter). Meter rate: $%s per five minutes.", number_format(ParkingMeterInformation[meterid][MeterRate]));
 	ParkingMeters();
 	return 1;
 }
@@ -258,16 +251,14 @@ CMD:renewmeter(playerid, params[])
 	if(ParkingMeterInformation[meterid][AssignedVehicle] == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GREY, "This parking meter is not currently occupied by a vehicle.");
 	if(GetPlayerCash(playerid) < ParkingMeterInformation[meterid][MeterRate])
 	{
-		format(string, sizeof(string), "You cannot afford the renewal payment for this parking meter ($%s).", number_format(ParkingMeterInformation[meterid][MeterRate]));
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_GREY, "You cannot afford the renewal payment for this parking meter ($%s).", number_format(ParkingMeterInformation[meterid][MeterRate]));
 		return 1;
 	}
 	if(ParkingMeterInformation[meterid][PaymentExpiry] - gettime() >= 1800) return SendClientMessageEx(playerid, COLOR_GREY, "This parking meter cannot be renewed at this time (time exceed maximum amount).");
 	ParkingMeterInformation[meterid][PaymentExpiry] += 300;
 	GivePlayerCash(playerid, -ParkingMeterInformation[meterid][MeterRate]);
 	Tax += ParkingMeterInformation[meterid][MeterRate];
-	format(string, sizeof(string), "You have renewed this parking meter by five minutes for $%s.", number_format(ParkingMeterInformation[meterid][MeterRate]));
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have renewed this parking meter by five minutes for $%s.", number_format(ParkingMeterInformation[meterid][MeterRate]));
 	format(string, sizeof(string), "{FF8000}** {C2A2DA}%s takes out some money, depositing it into the parking meter.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
 	ParkingMeters();
@@ -282,8 +273,7 @@ CMD:editmeterposition(playerid, params[])
 	if(sscanf(params, "ds[10]", meterid, name)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /editmeterposition [Meter ID] [Type (Meter, Parked, ToMe)]");
 	if(meterid <= 0 || meterid >= MAX_PARKING_METERS)
 	{
-		format(string, sizeof(string), "The specified parking meter ID must be between 1 and %s.", number_format(MAX_PARKING_METERS - 1));
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_GREY, "The specified parking meter ID must be between 1 and %s.", number_format(MAX_PARKING_METERS - 1));
 		return 1;
 	}
 	if(ParkingMeterInformation[meterid][MeterActive] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified parking meter isn't currently active.");
@@ -293,8 +283,7 @@ CMD:editmeterposition(playerid, params[])
 	{
 		EditingMeterID[playerid] = meterid;
 		EditDynamicObject(playerid, ParkingMeterInformation[meterid][ParkingMeterObject]);
-		format(string, sizeof(string), "You are now editing the position of parking meter ID %d.", meterid);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You are now editing the position of parking meter ID %d.", meterid);
 		return 1;
 	}
 	switch(GetPlayerState(playerid))
@@ -316,8 +305,7 @@ CMD:editmeterposition(playerid, params[])
 		for(new i = 0; i < 4; i ++) ParkingMeterInformation[meterid][ParkedPosition][i] = position[i];
 		SaveParkingMeter(meterid);
 		RebuildParkingMeter(meterid);
-		format(string, sizeof(string), "You have updated the parked position of parking meter ID %d.", meterid);
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "You have updated the parked position of parking meter ID %d.", meterid);
 		format(string, sizeof(string), "%s updated the parked position of parking meter ID %d to %0.3f, %0.3f, %0.3f, %0.3f.", GetPlayerNameEx(playerid), meterid, position[0], position[1], position[2], position[3]);
 		Log("logs/admin.log", string);
 		return 1;
@@ -330,8 +318,7 @@ CMD:editmeterposition(playerid, params[])
 		ParkingMeterInformation[meterid][MeterPosition][5] = position[3];
 		SaveParkingMeter(meterid);
 		RebuildParkingMeter(meterid);
-		format(string, sizeof(string), "You have updated the position of parking meter ID %d.", meterid);
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "You have updated the position of parking meter ID %d.", meterid);
 		format(string, sizeof(string), "%s updated the position of parking meter ID %d to %0.3f, %0.3f, %0.3f, %0.3f, %0.3f, %0.3f.", GetPlayerNameEx(playerid), meterid, position[0], position[1], position[2], 0.0, 0.0, position[3]);
 		Log("logs/admin.log", string);
 		return 1;
@@ -358,8 +345,7 @@ CMD:createmeter(playerid, params[])
 	}
 	if(meterid == -1)
 	{
-		format(string, sizeof(string), "The maximum amount of parking meters has been created (%s).", number_format(MAX_PARKING_METERS));
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_GREY, "The maximum amount of parking meters has been created (%s).", number_format(MAX_PARKING_METERS));
 		return 1;
 	}
 	GetPlayerPos(playerid, position[0], position[1], position[2]);
@@ -378,8 +364,7 @@ CMD:createmeter(playerid, params[])
 	ParkingMeterInformation[meterid][ParkedPosition][3] = position[3];
 	SaveParkingMeter(meterid);
 	RebuildParkingMeter(meterid);
-	format(string, sizeof(string), "You have created parking meter ID %d with a rate of $%s and a range of %0.3f meters.", meterid, number_format(rate), range);
-	SendClientMessageEx(playerid, COLOR_CYAN, string);
+	SendClientMessageEx(playerid, COLOR_CYAN, "You have created parking meter ID %d with a rate of $%s and a range of %0.3f meters.", meterid, number_format(rate), range);
 	format(string, sizeof(string), "%s created parking meter ID %d with a rate of $%s and a range of %0.3f meters.", GetPlayerNameEx(playerid), meterid, number_format(rate), range);
 	Log("logs/admin.log", string);
 	return 1;
@@ -392,22 +377,19 @@ CMD:setmeterrange(playerid, params[])
 	if(sscanf(params, "df", meterid, range)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /setmeterrange [Meter ID] [Range]");
 	if(meterid <= 0 || meterid >= MAX_PARKING_METERS)
 	{
-		format(string, sizeof(string), "The specified parking meter ID must be between 1 and %s.", number_format(MAX_PARKING_METERS - 1));
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_GREY, "The specified parking meter ID must be between 1 and %s.", number_format(MAX_PARKING_METERS - 1));
 		return 1;
 	}
 	if(ParkingMeterInformation[meterid][MeterActive] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified parking meter isn't currently active.");
 	if(range < 3.5 || range > 25.0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified range cannot be under 3.5 meters or over 25 meters.");
 	if(ParkingMeterInformation[meterid][MeterRange] == range)
 	{
-		format(string, sizeof(string), "The specified parking meter's range is already %0.3f meters.", range);
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_GREY, "The specified parking meter's range is already %0.3f meters.", range);
 		return 1;
 	}
 	ParkingMeterInformation[meterid][MeterRange] = range;
 	SaveParkingMeter(meterid);
-	format(string, sizeof(string), "You have set parking meter ID %d's range to %0.3f meters.", meterid, range);
-	SendClientMessageEx(playerid, COLOR_YELLOW, string);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "You have set parking meter ID %d's range to %0.3f meters.", meterid, range);
 	format(string, sizeof(string), "%s set parking meter ID %d's range to %0.3f meters.", meterid, range);
 	Log("logs/admin.log", string);
 	return 1;
@@ -420,22 +402,19 @@ CMD:setmeterrate(playerid, params[])
 	if(sscanf(params, "dd", meterid, rate)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /setmeterrate [Meter ID] [Rate]");
 	if(meterid <= 0 || meterid >= MAX_PARKING_METERS)
 	{
-		format(string, sizeof(string), "The specified parking meter ID must be between 1 and %s.", number_format(MAX_PARKING_METERS - 1));
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_GREY, "The specified parking meter ID must be between 1 and %s.", number_format(MAX_PARKING_METERS - 1));
 		return 1;
 	}
 	if(ParkingMeterInformation[meterid][MeterActive] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified parking meter isn't currently active.");
 	if(rate < 1 || rate > 250000) return SendClientMessageEx(playerid, COLOR_GREY, "The specified rate cannot be under $1 or over $250,000.");
 	if(ParkingMeterInformation[meterid][MeterRate] == rate)
 	{
-		format(string, sizeof(string), "The specified parking meter's rate is already $%s.", number_format(rate));
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_GREY, "The specified parking meter's rate is already $%s.", number_format(rate));
 		return 1;
 	}
 	ParkingMeterInformation[meterid][MeterRate] = rate;
 	SaveParkingMeter(meterid);
-	format(string, sizeof(string), "You have set parking meter ID %d's rate to $%s.", meterid, number_format(rate));
-	SendClientMessageEx(playerid, COLOR_YELLOW, string);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "You have set parking meter ID %d's rate to $%s.", meterid, number_format(rate));
 	format(string, sizeof(string), "%s set parking meter ID %d's rate to $%s.", meterid, number_format(rate));
 	Log("logs/admin.log", string);
 	RebuildParkingMeter(meterid);
@@ -449,8 +428,7 @@ CMD:deletemeter(playerid, params[])
 	if(sscanf(params, "d", meterid)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /deletemeter [Meter ID]");
 	if(meterid <= 0 || meterid >= MAX_PARKING_METERS)
 	{
-		format(string, sizeof(string), "The specified parking meter ID must be between 1 and %s.", number_format(MAX_PARKING_METERS - 1));
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_GREY, "The specified parking meter ID must be between 1 and %s.", number_format(MAX_PARKING_METERS - 1));
 		return 1;
 	}
 	if(ParkingMeterInformation[meterid][MeterActive] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified parking meter isn't currently active.");
@@ -465,8 +443,7 @@ CMD:deletemeter(playerid, params[])
 	if(IsValidDynamicObject(ParkingMeterInformation[meterid][ParkingMeterObject])) DestroyDynamicObject(ParkingMeterInformation[meterid][ParkingMeterObject]);
 	if(IsValidDynamic3DTextLabel(ParkingMeterInformation[meterid][ParkingMeterText])) DestroyDynamic3DTextLabel(ParkingMeterInformation[meterid][ParkingMeterText]);
 	SaveParkingMeter(meterid);
-	format(string, sizeof(string), "You have deleted parking meter ID %d.", meterid);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
+	SendClientMessageEx(playerid, COLOR_GREY, "You have deleted parking meter ID %d.", meterid);
 	format(string, sizeof(string), "%s deleted parking meter ID %d.", GetPlayerNameEx(playerid), meterid);
 	Log("logs/admin.log", string);
 	return 1;
@@ -479,8 +456,7 @@ CMD:gotometer(playerid, params[])
 	if(sscanf(params, "d", meterid)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /gotometer [Meter ID]");
 	if(meterid <= 0 || meterid >= MAX_PARKING_METERS)
 	{
-		format(string, sizeof(string), "The specified parking meter ID must be between 1 and %s.", number_format(MAX_PARKING_METERS - 1));
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_GREY, "The specified parking meter ID must be between 1 and %s.", number_format(MAX_PARKING_METERS - 1));
 		return 1;
 	}
 	if(ParkingMeterInformation[meterid][MeterActive] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified parking meter isn't currently active.");
@@ -490,8 +466,7 @@ CMD:gotometer(playerid, params[])
 	PlayerInfo[playerid][pVW] = 0;
 	SetPlayerPos(playerid, ParkingMeterInformation[meterid][MeterPosition][0], ParkingMeterInformation[meterid][MeterPosition][1], ParkingMeterInformation[meterid][MeterPosition][2]);
 	SetPlayerFacingAngle(playerid, ParkingMeterInformation[meterid][MeterPosition][5]);
-	format(string, sizeof(string), "You have teleported to parking meter ID %d.", meterid);
-	SendClientMessageEx(playerid, COLOR_YELLOW, string);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "You have teleported to parking meter ID %d.", meterid);
 	format(string, sizeof(string), "%s teleported to parking meter ID %d.", GetPlayerNameEx(playerid), meterid);
 	Log("logs/admin.log", string);
 	return 1;
@@ -506,8 +481,7 @@ CMD:reloadmeters(playerid, params[])
 		RebuildParkingMeter(i);
 		if(ParkingMeterInformation[i][MeterActive] == 1) count ++;
 	}
-	format(string, sizeof(string), "All parking meters have been reloaded (%s were rebuilt).", number_format(count));
-	SendClientMessageEx(playerid, COLOR_YELLOW, string);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "All parking meters have been reloaded (%s were rebuilt).", number_format(count));
 	format(string, sizeof(string), "%s reloaded all parking meters (%s rebuilt).", GetPlayerNameEx(playerid), number_format(count));
 	Log("logs/admin.log", string);
 	return 1;

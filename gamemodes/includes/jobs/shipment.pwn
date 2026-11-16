@@ -86,8 +86,7 @@ public HijackTruck(playerid)
 			    case 0: {
 			        if(business != INVALID_BUSINESS_ID)
 			        {
-						format(string, sizeof(string), "You hijacked a shipment of %s", GetInventoryType(TruckDeliveringTo[vehicleid]));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You hijacked a shipment of %s", GetInventoryType(TruckDeliveringTo[vehicleid]));
 
 				        SetPlayerCheckpoint(playerid, Businesses[business][bSupplyPos][0], Businesses[business][bSupplyPos][1], Businesses[business][bSupplyPos][2], 10.0);
 					}
@@ -321,8 +320,7 @@ public LoadTruck(playerid)
 
 		gPlayerCheckpointStatus[playerid] = CHECKPOINT_DELIVERY;
 
-		format(string, sizeof(string), "* Your Truck was filled with %s", GetInventoryType(business));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your Truck was filled with %s", GetInventoryType(business));
 
         SetPlayerCheckpoint(playerid, Businesses[business][bSupplyPos][0], Businesses[business][bSupplyPos][1], Businesses[business][bSupplyPos][2], 10.0);
 
@@ -478,7 +476,6 @@ CMD:checkcargo(playerid, params[])
 			return 1;
 		}
 
-		new string[128];
 
      	SendClientMessageEx(playerid, COLOR_GREEN,"_______________ SHIPMENT CONTRACTOR LOAD SHEET _______________");
 		if(IsPlayerInVehicle(playerid, closestcar))
@@ -502,12 +499,10 @@ CMD:checkcargo(playerid, params[])
 		{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Illegal drugs"); }
 		else if(iTruckContents == 7)
 		{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Illegal materials"); }
-		format(string, sizeof(string), "Vehicle registration: %s (%d)", GetVehicleName(closestcar), closestcar);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %s (%d)", GetVehicleName(closestcar), closestcar);
 		if(iTruckContents == 0)
 		{ format(truckcontentname, sizeof(truckcontentname), "%s",  GetInventoryType(TruckDeliveringTo[closestcar])); }
-		format(string, sizeof(string), "Content: %s", truckcontentname);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Content: %s", truckcontentname);
 
 		if(IsACop(playerid))
 		{

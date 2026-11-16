@@ -144,18 +144,14 @@ CMD:setlapcount(playerid, params[])
 	new totallaps;
 	if(sscanf(params, "i", totallaps)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setlapcount [totallaps]");
    	RaceTotalLaps = totallaps;
-	new string[52];
-   	format(string, sizeof(string), "You have changed the Total Laps Completed to: %d", RaceTotalLaps);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Total Laps Completed to: %d", RaceTotalLaps);
 	return 1;
 }
 
 CMD:eventstats(playerid, params[]) 
 {
     if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
-	new string[50];
-	format(string, sizeof(string), "Total Laps Completed: %d | Total Players: %d", RaceTotalLaps, TotalJoinsRace);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Total Laps Completed: %d | Total Players: %d", RaceTotalLaps, TotalJoinsRace);
 	return 1;
 }
 
@@ -287,15 +283,12 @@ CMD:rflinvite(playerid, params[])
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /rflinvite [playerid/PlayerName]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 	if(PlayerInfo[giveplayerid][pRFLTeam] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is already part of a team.");
-	new string[128];
 	SetPVarInt(giveplayerid, "RFLTeam_Invite", 1);
 	SetPVarInt(giveplayerid, "RFLTeam_Team", PlayerInfo[playerid][pRFLTeam]);
 	SetPVarInt(giveplayerid, "RFLTeam_Inviter", playerid);
 	SetPVarInt(giveplayerid, "RFLInviteSession", g_arrQueryHandle[playerid]);
-	format(string, sizeof(string), "* You have offered %s to join your team.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-	format(string, sizeof(string), "* %s has offered you to join his team. Use /accept rflteam to accept it.", GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have offered %s to join your team.", GetPlayerNameEx(giveplayerid));
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s has offered you to join his team. Use /accept rflteam to accept it.", GetPlayerNameEx(playerid));
 	return 1;
 }
 
@@ -308,14 +301,12 @@ CMD:rflkick(playerid, params[])
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /rflkick [playerid/PlayerName]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 	if(PlayerInfo[giveplayerid][pRFLTeam] != PlayerInfo[playerid][pRFLTeam]) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not part of your team.");
-	new string[128], team = PlayerInfo[playerid][pRFLTeam];
+	new team = PlayerInfo[playerid][pRFLTeam];
 	PlayerInfo[giveplayerid][pRFLTeam] = -1;
 	PlayerInfo[giveplayerid][pRFLTeamL] = -1;
 	RFLInfo[team][RFLmembers] -=1;
-	format(string, sizeof(string), "* You have kicked %s out of your team.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-	format(string, sizeof(string), "* %s has kicked you out of his team.", GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have kicked %s out of your team.", GetPlayerNameEx(giveplayerid));
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s has kicked you out of his team.", GetPlayerNameEx(playerid));
 	if(IsValidDynamic3DTextLabel(RFLTeamN3D[giveplayerid])) {
 		DestroyDynamic3DTextLabel(RFLTeamN3D[giveplayerid]);
 	}	
@@ -328,14 +319,12 @@ CMD:rflmembers(playerid, params[])
 {
 	if(rflstatus < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life is currently not enabled.");
 	if(PlayerInfo[playerid][pRFLTeam] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a team.");
-	new string[64];
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Listing all team members online:");
 	foreach(new i: Player)
 	{
 		if(PlayerInfo[i][pRFLTeam] == PlayerInfo[playerid][pRFLTeam]) {
 			if(PlayerInfo[i][pRFLTeamL] != -1) {
-				format(string, sizeof(string), "%s - Leader", GetPlayerNameEx(i));
-				SendClientMessageEx(playerid, COLOR_GREY, string);
+				SendClientMessageEx(playerid, COLOR_GREY, "%s - Leader", GetPlayerNameEx(i));
 			}
 			else {
 				SendClientMessageEx(playerid, COLOR_GREY, GetPlayerNameEx(i));
@@ -360,11 +349,9 @@ CMD:rflchangename(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "Please do not use ' inside of your teamname.");
 		return 1;
 	}	
-	new String[128];
 	SetPVarInt(playerid, "RFLNameRequest", 1);
 	SetPVarString(playerid, "NewRFLName", name);
-   	format( String, sizeof( String ), "You have requested to change your team name to %s, please wait for an admin to approve it.", name);
-   	SendClientMessageEx( playerid, COLOR_YELLOW, String );
+	SendClientMessageEx( playerid, COLOR_YELLOW, "You have requested to change your team name to %s, please wait for an admin to approve it.", name );
 	SendReportToQue(playerid, "Team Name Request", 2, 4);
 	return 1;
 }

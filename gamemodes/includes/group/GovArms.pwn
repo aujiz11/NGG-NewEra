@@ -91,8 +91,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				arrWeaponCosts[wepid] = strval(inputtext);
 				mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `govgunsales` SET `wepprice` = %d WHERE `wepid` = %d", strval(inputtext), wepid);
 				mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-				format(szMiscArray, sizeof(szMiscArray), "You have edited the %s's price to: {FFFFFF}$%s", Weapon_ReturnName(wepid), number_format(arrWeaponCosts[wepid]));
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have edited the %s's price to: {FFFFFF}$%s", Weapon_ReturnName(wepid), number_format(arrWeaponCosts[wepid]));
 				DeletePVar(playerid, "_GovGun");
 				return GovGuns_EditPrices(playerid);
 			}
@@ -115,8 +114,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	            format(szMiscArray, sizeof(szMiscArray), "%s sold their %s at a cost of $%d to %s's budget fund.",GetPlayerNameEx(playerid), Weapon_ReturnName(wepid), arrWeaponCosts[wepid], arrGroupData[iGroupID][g_szGroupName]);
 				GroupPayLog(iGroupID, szMiscArray);
 				szMiscArray[0] = 0; // unsure if this is needed.
-				format(szMiscArray, sizeof(szMiscArray), "You have sold your %s for {FFFFFF}$%s", Weapon_ReturnName(wepid), number_format(arrWeaponCosts[wepid]));
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have sold your %s for {FFFFFF}$%s", Weapon_ReturnName(wepid), number_format(arrWeaponCosts[wepid]));
 				szMiscArray[0] = 0;
 				mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `govgunsales` SET `wepsales` = `wepsales` + 1 WHERE `wepid` = %d", wepid);
 				mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);

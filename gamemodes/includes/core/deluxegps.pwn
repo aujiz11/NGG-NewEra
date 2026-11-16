@@ -263,16 +263,14 @@ hook OnPlayerEnterCheckpoint(playerid)
 		case CHECKPOINT_BUSINESS:
 		{
 			new id = GetPVarInt(playerid,"gpsBiz");
-			format(szMiscArray, sizeof(szMiscArray), "You have arrived at {33CCFF}%s{FFFFFF}.", Businesses[id][bName]);
-			SendClientMessageEx(playerid,COLOR_WHITE, szMiscArray);
+			SendClientMessageEx(playerid,COLOR_WHITE, "You have arrived at {33CCFF}%s{FFFFFF}.", Businesses[id][bName]);
 			DisablePlayerCheckpoint(playerid);
 			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 		}
 		case CHECKPOINT_JOB:
 		{
 			new id = GetPVarInt(playerid,"gpsJob");
-			format(szMiscArray, sizeof(szMiscArray), "You have arrived at {33CCFF}%s{FFFFFF}.", GetJobName(JobData[id][jType]));
-			SendClientMessageEx(playerid,COLOR_WHITE, szMiscArray);
+			SendClientMessageEx(playerid,COLOR_WHITE, "You have arrived at {33CCFF}%s{FFFFFF}.", GetJobName(JobData[id][jType]));
 			DisablePlayerCheckpoint(playerid);
 			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 		}
@@ -280,16 +278,14 @@ hook OnPlayerEnterCheckpoint(playerid)
 		case CHECKPOINT_HOUSE:
 		{
 			new id = GetPVarInt(playerid,"gpsHouse");
-			format(szMiscArray, sizeof(szMiscArray), "You have arrived at house #{33CCFF}%i{FFFFFF}.", id);
-			SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have arrived at house #{33CCFF}%i{FFFFFF}.", id);
 			DisablePlayerCheckpoint(playerid);
 			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 		}
 		case CHECKPOINT_DOOR:
 		{
 			new id = GetPVarInt(playerid,"gpsDoor");
-			format(szMiscArray, sizeof(szMiscArray), "You have arrived at door #%i ({33CCFF}%s{FFFFFF}).", id,DDoorsInfo[id][ddDescription]);
-			SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have arrived at door #%i ({33CCFF}%s{FFFFFF}).", id,DDoorsInfo[id][ddDescription]);
 			DisablePlayerCheckpoint(playerid);
 			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 		}

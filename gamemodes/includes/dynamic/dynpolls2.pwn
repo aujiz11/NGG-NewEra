@@ -847,14 +847,11 @@ CMD:viewpollresults(playerid, params[])
 			{
 				SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
 
-				format(szMiscArray, sizeof szMiscArray, "Poll ID: %d | Title: %s", iPollID, PollInfo[iPollID][poll_szTitle]);
-				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_GREY, "Poll ID: %d | Title: %s", iPollID, PollInfo[iPollID][poll_szTitle]);
 
-				format(szMiscArray, sizeof szMiscArray, "Option #1 (%s): %d votes.", PollInfo[iPollID][poll_szOption1], PollInfo[iPollID][poll_iOptionResults][0]);
-				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_GREY, "Option #1 (%s): %d votes.", PollInfo[iPollID][poll_szOption1], PollInfo[iPollID][poll_iOptionResults][0]);
 
-				format(szMiscArray, sizeof szMiscArray, "Option #2 (%s): %d votes.", PollInfo[iPollID][poll_szOption2], PollInfo[iPollID][poll_iOptionResults][1]);
-				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_GREY, "Option #2 (%s): %d votes.", PollInfo[iPollID][poll_szOption2], PollInfo[iPollID][poll_iOptionResults][1]);
 
 				format(szMiscArray, sizeof szMiscArray, "Option #3 (%s): %d votes.", PollInfo[iPollID][poll_szOption3], PollInfo[iPollID][poll_iOptionResults][2]);
 				if(PollInfo[iPollID][poll_iOptions] >= 3) SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);

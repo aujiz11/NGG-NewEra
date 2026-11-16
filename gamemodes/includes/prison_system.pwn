@@ -1001,8 +1001,7 @@ CMD:bail(playerid, params[])
 			{
 				new string[128];
 
-				format(string, sizeof(string), "You bailed yourself out for $%d.", PlayerInfo[playerid][pBailPrice]);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You bailed yourself out for $%d.", PlayerInfo[playerid][pBailPrice]);
 				GivePlayerCash(playerid, -PlayerInfo[playerid][pBailPrice]);
 				PlayerInfo[playerid][pBailPrice] = 0;
 				WantLawyer[playerid] = 0; CallLawyer[playerid] = 0;
@@ -1269,8 +1268,7 @@ CMD:dropfoodtray(playerid, params[])
 
 CMD:offerinmatefood(playerid, params[])
 {
-	new iGiveTo,
-		string[92];
+	new iGiveTo;
 	if(sscanf(params, "u", iGiveTo)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /offerinmatefood [playerid]");
 	else if(iGiveTo == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot offer yourself food.");
 	else if(!IsPlayerConnected(iGiveTo)) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is not connected");
@@ -1291,10 +1289,8 @@ CMD:offerinmatefood(playerid, params[])
 		SetPVarInt(iGiveTo, "OfferedMealBy", playerid);
 		SetPVarInt(playerid, "OfferingMeal", 1);
 		SetPVarInt(playerid, "OfferedMealTo", iGiveTo);
-		format(string, sizeof(string), "%s has offered you a meal. Type /acceptjailfood to take it.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(iGiveTo, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "You have offered %s some prisoner food", GetPlayerNameEx(iGiveTo));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(iGiveTo, COLOR_LIGHTBLUE, "%s has offered you a meal. Type /acceptjailfood to take it.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have offered %s some prisoner food", GetPlayerNameEx(iGiveTo));
 	}
 	else SendClientMessageEx(playerid, COLOR_WHITE, "You are not in range of that player.");
 	return 1;
@@ -1403,12 +1399,9 @@ CMD:extendsentence(playerid, params[])
 		Manip = 1.0 + (float(iExtended) / 100);
 		EndJail = StartJail * Manip;
 		PlayerInfo[iTargetID][pJailTime] = floatround(EndJail);
-		format(string, sizeof(string), "Your jail time has been extended by %s by %d percent.", GetPlayerNameEx(playerid), iExtended);
-		SendClientMessageEx(iTargetID, COLOR_RED, string);
-		format(string, sizeof(string), "You have extended %s's jail sentence by %d percent.", GetPlayerNameEx(iTargetID), iExtended);
-		SendClientMessageEx(playerid, COLOR_RED, string);
-		format(string, sizeof(string), "Original Time: %s ------ New Time: %s", TimeConvert(StartJail), TimeConvert(PlayerInfo[iTargetID][pJailTime]));
-		SendClientMessageEx(playerid, COLOR_RED, string);
+		SendClientMessageEx(iTargetID, COLOR_RED, "Your jail time has been extended by %s by %d percent.", GetPlayerNameEx(playerid), iExtended);
+		SendClientMessageEx(playerid, COLOR_RED, "You have extended %s's jail sentence by %d percent.", GetPlayerNameEx(iTargetID), iExtended);
+		SendClientMessageEx(playerid, COLOR_RED, "Original Time: %s ------ New Time: %s", TimeConvert(StartJail), TimeConvert(PlayerInfo[iTargetID][pJailTime]));
 		strcat(PlayerInfo[iTargetID][pPrisonReason], "[EXT]", 128);
 
 		format(string, sizeof string, "%s has extended %s's sentence by %d percent. (Original: %s, New: %s)", GetPlayerNameEx(playerid), GetPlayerNameExt(iTargetID), iExtended, TimeConvert(StartJail), TimeConvert(PlayerInfo[iTargetID][pJailTime]));
@@ -1437,12 +1430,9 @@ CMD:reducesentence(playerid, params[])
 		Manip = 1.0 - (float(iReduce) / 100);
 		EndJail = StartJail * Manip;
 		PlayerInfo[iTargetID][pJailTime] = floatround(EndJail);
-		format(string, sizeof(string), "Your jail time has been reduced by %s by %d percent.", GetPlayerNameEx(playerid), iReduce);
-		SendClientMessageEx(iTargetID, COLOR_RED, string);
-		format(string, sizeof(string), "You have reduced %s's jail sentence by %d percent.", GetPlayerNameEx(iTargetID), iReduce);
-		SendClientMessageEx(playerid, COLOR_RED, string);
-		format(string, sizeof(string), "Original Time: %s ------ New Time: %s", TimeConvert(StartJail), TimeConvert(PlayerInfo[iTargetID][pJailTime]));
-		SendClientMessageEx(playerid, COLOR_RED, string);
+		SendClientMessageEx(iTargetID, COLOR_RED, "Your jail time has been reduced by %s by %d percent.", GetPlayerNameEx(playerid), iReduce);
+		SendClientMessageEx(playerid, COLOR_RED, "You have reduced %s's jail sentence by %d percent.", GetPlayerNameEx(iTargetID), iReduce);
+		SendClientMessageEx(playerid, COLOR_RED, "Original Time: %s ------ New Time: %s", TimeConvert(StartJail), TimeConvert(PlayerInfo[iTargetID][pJailTime]));
 		strcat(PlayerInfo[iTargetID][pPrisonReason], "[RED]", 128);
 
 		format(string, sizeof string, "%s has reduced %s's sentence by %d percent. (Original: %s, New: %s)", GetPlayerNameEx(playerid), GetPlayerNameExt(iTargetID), iReduce, TimeConvert(StartJail), TimeConvert(PlayerInfo[iTargetID][pJailTime]));
@@ -1469,10 +1459,8 @@ CMD:isolateinmate(playerid, params[])
 	{
 		DocIsolate(iTargetID, iCellID, 0);
 
-		format(string, sizeof(string), "You have been sent to isolation by %s.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "You have sent %s to isolation.", GetPlayerNameEx(iTargetID));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "You have been sent to isolation by %s.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have sent %s to isolation.", GetPlayerNameEx(iTargetID));
 
 		format(string, sizeof string, "%s has sent %s to isolation.", GetPlayerNameEx(playerid), GetPlayerNameExt(iTargetID));
  		GroupLog(PlayerInfo[playerid][pMember], string);
@@ -1497,10 +1485,8 @@ CMD:unisolateinmate(playerid, params[])
 		PlayerInfo[iTargetID][pIsolated] = 0;
 		PlayerInfo[iTargetID][pVW] = 0;
 
-		format(string, sizeof(string), "You have been released from isolation by %s.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "You have released %s from isolation.", GetPlayerNameEx(iTargetID));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "You have been released from isolation by %s.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have released %s from isolation.", GetPlayerNameEx(iTargetID));
 
 		format(string, sizeof string, "%s has brought %s back from isolation.", GetPlayerNameEx(playerid), GetPlayerNameExt(iTargetID));
  		GroupLog(PlayerInfo[playerid][pMember], string);
@@ -1561,19 +1547,16 @@ CMD:leavejailboxing(playerid, params[])
 CMD:docjudgesubpoena(playerid, params[])
 {
 	new iTargetID,
-		szCaseName[128],
-		szString[128];
+		szCaseName[128];
 
 	if(sscanf(params, "us[128]", iTargetID, szCaseName)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /docjudgesubpoena [playerid] [case reason]");
 	if(!IsPlayerConnected(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "ERROR: That player is not connected");
 	if(!IsPlayerInRangeOfPoint(playerid, 15, 525.86, 1427.05, 11001.28)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at the DOC courthouse to use this");
 	else if(IsAJudge(playerid))
 	{
-		format(szString, sizeof(szString), "You have subpoenaed %s. Case: %s", GetPlayerNameEx(iTargetID), szCaseName);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szString);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have subpoenaed %s. Case: %s", GetPlayerNameEx(iTargetID), szCaseName);
 
-		format(szString, sizeof(szString), "You have been subpoenaed by %s. Case %s", GetPlayerNameEx(playerid), szCaseName);
-		SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szString);
+		SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "You have been subpoenaed by %s. Case %s", GetPlayerNameEx(playerid), szCaseName);
 	}
 	else SendClientMessageEx(playerid, COLOR_GREY, "You must be a judge to use this command");
 	return 1;
@@ -1609,11 +1592,9 @@ CMD:docjudgecharge(playerid, params[])
 		strcat(szCrime, szReason);
 		AddCrime(playerid, iTargetID, szCrime);
 
-		format(szMessage, sizeof(szMessage), "You've commited a crime ( %s ). Reporter: %s.", szCrime, GetPlayerNameEx(playerid));
-		SendClientMessageEx(iTargetID, COLOR_LIGHTRED, szMessage);
+		SendClientMessageEx(iTargetID, COLOR_LIGHTRED, "You've commited a crime ( %s ). Reporter: %s.", szCrime, GetPlayerNameEx(playerid));
 
-		format(szMessage, sizeof(szMessage), "Current wanted level: %d", PlayerInfo[iTargetID][pWantedLevel]);
-		SendClientMessageEx(iTargetID, COLOR_YELLOW, szMessage);
+		SendClientMessageEx(iTargetID, COLOR_YELLOW, "Current wanted level: %d", PlayerInfo[iTargetID][pWantedLevel]);
 
 		format(szMessage, sizeof(szMessage), "You have charged %s with a crime.", GetPlayerNameEx(iTargetID));
 		SendClientMessage(playerid, COLOR_LIGHTRED, szMessage);
@@ -1673,10 +1654,8 @@ CMD:jailcuff(playerid, params[])
 				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot cuff yourself!"); return 1; }
 				if(GetPlayerSpecialAction(giveplayerid) == SPECIAL_ACTION_HANDSUP || PlayerCuffed[giveplayerid] == 1 || GetPVarInt(playerid, "pBagged") >= 1)
 				{
-					format(string, sizeof(string), "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* You handcuffed %s, till uncuff.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You handcuffed %s, till uncuff.", GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* %s handcuffs %s, tightening the cuffs securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
@@ -1842,10 +1821,8 @@ CMD:changeinmatecell(playerid, params[])
 
 	PlayerInfo[id][pPrisonCell] = amount;
 
-	format(szMiscArray, sizeof(szMiscArray), "You have set %s's cell to: %d", GetPlayerNameEx(id), amount);
-	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "Your cell has been set to %d by %s", amount, GetPlayerNameEx(playerid));
-	SendClientMessageEx(id, COLOR_YELLOW, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "You have set %s's cell to: %d", GetPlayerNameEx(id), amount);
+	SendClientMessageEx(id, COLOR_YELLOW, "Your cell has been set to %d by %s", amount, GetPlayerNameEx(playerid));
 
 	format(szMiscArray, sizeof szMiscArray, "%s has set %s's bail price to $%s.", GetPlayerNameEx(playerid), GetPlayerNameEx(id), PlayerInfo[id][pPrisonCell]);
  	GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
@@ -1867,10 +1844,8 @@ CMD:setbail(playerid, params[]) { // Can no longer set negative bail prices & ba
 
 	PlayerInfo[uPlayer][pBailPrice] = iBail;
 
-	format(szMiscArray, sizeof(szMiscArray), "You have set %s's bail to: $%s", GetPlayerNameEx(uPlayer), number_format(iBail));
-	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "Your bail has been set to $%s by %s", number_format(iBail), GetPlayerNameEx(playerid));
-	SendClientMessageEx(uPlayer, COLOR_YELLOW, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "You have set %s's bail to: $%s", GetPlayerNameEx(uPlayer), number_format(iBail));
+	SendClientMessageEx(uPlayer, COLOR_YELLOW, "Your bail has been set to $%s by %s", number_format(iBail), GetPlayerNameEx(playerid));
 
 	format(szMiscArray, sizeof szMiscArray, "%s has set %s's bail price to $%s.", GetPlayerNameEx(playerid), GetPlayerNameEx(uPlayer), number_format(PlayerInfo[uPlayer][pBailPrice]));
  	GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
@@ -1922,10 +1897,8 @@ CMD:oocisolateinmate(playerid, params[])
 	{
 		DocIsolate(id, cell, 1);
 
-		format(string, sizeof(string), "You have been sent to OOC isolation by %s.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(id, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "You have sent %s to OOC isolation.", GetPlayerNameEx(id));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(id, COLOR_LIGHTBLUE, "You have been sent to OOC isolation by %s.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have sent %s to OOC isolation.", GetPlayerNameEx(id));
 
 		format(string, sizeof string, "%s has sent %s to OOC isolation.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
  		GroupLog(PlayerInfo[playerid][pMember], string);
@@ -1971,10 +1944,8 @@ CMD:acceptrelease(playerid, params[])
 
     if(strfind(PlayerInfo[id][pPrisonReason], "[DNRL]", true) != -1 && GetPVarInt(id, "_pBeingReleased") >= 1)
     {
-        new string[128];
         ReleasePlayerFromPrison(id);
-        format(string, sizeof(string), "You have accepted %s's release request.", GetPlayerNameEx(id));
-        SendClientMessageEx(playerid, COLOR_GREY, string);
+        SendClientMessageEx(playerid, COLOR_GREY, "You have accepted %s's release request.", GetPlayerNameEx(id));
 
         DeletePVar(id, "_pBeingReleased");
 
@@ -1994,12 +1965,9 @@ CMD:denyrelease(playerid, params[])
 
     if(strfind(PlayerInfo[id][pPrisonReason], "[DNRL]", true) != -1 && GetPVarInt(id, "_pBeingReleased") >= 1)
     {
-        new string[128];
-        format(string, sizeof(string), "You have denied %s's release request for: %s.", GetPlayerNameEx(id), reason);
-        SendClientMessageEx(playerid, COLOR_GREY, string);
+        SendClientMessageEx(playerid, COLOR_GREY, "You have denied %s's release request for: %s.", GetPlayerNameEx(id), reason);
 
-        format(string, sizeof(string), "%s has denied your release request. Reason: %s", GetPlayerNameEx(playerid), reason);
-        SendClientMessageEx(id, COLOR_GREY, string);
+        SendClientMessageEx(id, COLOR_GREY, "%s has denied your release request. Reason: %s", GetPlayerNameEx(playerid), reason);
 
         DeletePVar(id, "_pBeingReleased");
 
@@ -2369,50 +2337,42 @@ ShowPrisonInventory(playerid)
 	new string[64];
 	SendClientMessageEx(playerid, COLOR_GREY, "------------------------------------------------------");
 
-	format(string, sizeof(string), "Prison Cell: %d.", PlayerInfo[playerid][pPrisonCell]);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
+	SendClientMessageEx(playerid, COLOR_GREY, "Prison Cell: %d.", PlayerInfo[playerid][pPrisonCell]);
 	SendClientMessage(playerid, COLOR_WHITE, "");
 
 	if(PlayerInfo[playerid][pPrisonCredits] >= 1)
 	{
-	    format(string, sizeof string, "Prison Credits: %d.", PlayerInfo[playerid][pPrisonCredits]);
-	    SendClientMessageEx(playerid, COLOR_WHITE, string);
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Prison Credits: %d.", PlayerInfo[playerid][pPrisonCredits]);
 	}
 
 	if(PlayerInfo[playerid][pPrisonMaterials] >= 1)
 	{
-	    format(string, sizeof string, "Prison Materials: %d.", PlayerInfo[playerid][pPrisonMaterials]);
-	    SendClientMessageEx(playerid, COLOR_WHITE, string);
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Prison Materials: %d.", PlayerInfo[playerid][pPrisonMaterials]);
 	}
 
 	if(GetPVarInt(playerid, "pPrisonSoap") >= 1)
 	{
-	    format(string, sizeof string, "Soap: %d.", GetPVarInt(playerid, "pPrisonSoap"));
-	    SendClientMessageEx(playerid, COLOR_WHITE, string);
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Soap: %d.", GetPVarInt(playerid, "pPrisonSoap"));
 	}
 
 	if(GetPVarInt(playerid, "pPrisonSugar") >= 1)
 	{
-	    format(string, sizeof string, "Sugar: %d.", GetPVarInt(playerid, "pPrisonSugar"));
-	    SendClientMessageEx(playerid, COLOR_WHITE, string);
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Sugar: %d.", GetPVarInt(playerid, "pPrisonSugar"));
 	}
 
 	if(GetPVarInt(playerid, "pPrisonBread") >= 1)
 	{
-	    format(string, sizeof string, "Bread: %d.", GetPVarInt(playerid, "pPrisonBread"));
-	    SendClientMessageEx(playerid, COLOR_WHITE, string);
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Bread: %d.", GetPVarInt(playerid, "pPrisonBread"));
 	}
 
 	if(GetPVarInt(playerid, "pPrisonWine") >= 1)
 	{
-	    format(string, sizeof string, "Pruno: %d.", GetPVarInt(playerid, "pPrisonWine"));
-	    SendClientMessageEx(playerid, COLOR_WHITE, string);
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Pruno: %d.", GetPVarInt(playerid, "pPrisonWine"));
 	}
 
 	if(GetPVarInt(playerid, "pPrisonShank") >= 1)
 	{
-	    format(string, sizeof string, "Shank: %d | Uses: %d", GetPVarInt(playerid, "pPrisonShank"), GetPVarInt(playerid, "pShankUsages"));
-	    SendClientMessageEx(playerid, COLOR_WHITE, string);
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Shank: %d | Uses: %d", GetPVarInt(playerid, "pPrisonShank"), GetPVarInt(playerid, "pShankUsages"));
 	}
 
 	if(GetPVarInt(playerid, "pPrisonMWine") >= 1)
@@ -2614,8 +2574,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
             new string[255];
     		if(gettime() < PlayerInfo[playerid][pMechTime])
 			{
-  				format(string, sizeof(string), "You must wait %d seconds!", PlayerInfo[playerid][pMechTime]-gettime());
-     			return SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "You must wait %d seconds!", PlayerInfo[playerid][pMechTime]-gettime());
      		}
      		if(GetPVarInt(playerid, "pDoingPJob") >= 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "  You are already on a job!");
 

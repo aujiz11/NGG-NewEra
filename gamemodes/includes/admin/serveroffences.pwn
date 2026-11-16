@@ -77,8 +77,7 @@ CMD:reverse(playerid, params[])
 			if(PlayerInfo[giveplayerid][pJailedInfo][4] > 0) PlayerInfo[giveplayerid][pWRestricted] = 0;
 			format(string, 128, "AdmCmd: %s(%d) has been released from prison (/reverse) by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
-			format(string, 128, "AdmCmd: %s has been released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s has been released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 
 			PhoneOnline[giveplayerid] = 0;
 			//PlayerInfo[giveplayerid][pWantedLevel] = 0;
@@ -364,8 +363,7 @@ PrisonPlayer(playerid, giveplayerid, const reason[], time=0, silent=0, custom=0)
 	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 
 	if(fine > 0) {
-		format(string, 128, "You have been fined a total of $%s for this action", number_format(fine));
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been fined a total of $%s for this action", number_format(fine));
 	}
 
 	if(twarn) {
@@ -393,8 +391,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(PlayerInfo[releasedID][pJailedInfo][3] == 1) PlayerInfo[releasedID][pWarns]--;
 			format(string, 128, "AdmCmd: %s(%d) has been released from prison (/reverse) by %s, reason: Reversed (%s)", GetPlayerNameEx(releasedID), GetPlayerSQLId(releasedID), GetPlayerNameEx(playerid), GetPlayerNameEx(rPlayerID));
 			Log("logs/admin.log", string);
-			format(string, 128, "AdmCmd: %s has been released from prison by %s, reason: Reversed (%s)", GetPlayerNameEx(releasedID), GetPlayerNameEx(playerid), GetPlayerNameEx(rPlayerID));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s has been released from prison by %s, reason: Reversed (%s)", GetPlayerNameEx(releasedID), GetPlayerNameEx(playerid), GetPlayerNameEx(rPlayerID));
 			//PlayerInfo[releasedID][pWantedLevel] = 0;
 			PlayerInfo[releasedID][pBeingSentenced] = 0;
 			SetPlayerToTeamColor(releasedID);
@@ -414,8 +411,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			SendClientMessageEx(releasedID, COLOR_LIGHTBLUE, "Your punishment has been reversed by the administrator who jailed you.");
 		}
 		else {
-			format(string, 128, "Administrator %s has denied your request to reverse your action.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(rPlayerID, COLOR_RED, string);
+			SendClientMessageEx(rPlayerID, COLOR_RED, "Administrator %s has denied your request to reverse your action.", GetPlayerNameEx(playerid));
 		}
 		DeletePVar(playerid, "ReverseFromID");
 		DeletePVar(rPlayerID, "ReverseReason");

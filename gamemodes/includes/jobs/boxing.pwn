@@ -77,7 +77,7 @@ CMD:boxstats(playerid, params[])
 		return 1;
 	}
 
-	new string[128], ttext[20];//Title
+	new ttext[20];//Title
 	new clevel = PlayerInfo[playerid][pBoxSkill];
 	if(clevel >= 0 && clevel <= 50) { ttext = "Beginner"; }
 	else if(clevel >= 51 && clevel <= 200) { ttext = "Amateur"; }
@@ -100,16 +100,11 @@ CMD:boxstats(playerid, params[])
 		else if(level >= 71) { ntext = "Itallion Stallion"; }
 	}
 	SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Boxing Records __________________|");
-	format(string, sizeof(string), "| Current Champion: %s, with [%d] Winnings and [%d] Losses.", Titel[TitelName],Titel[TitelWins],Titel[TitelLoses]);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
-	format(string, sizeof(string), "| Current Title: %s.", ttext);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
-	format(string, sizeof(string), "| Current NickName: %s.", ntext);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
-	format(string, sizeof(string), "| Total Wins: %d.", PlayerInfo[playerid][pWins]);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
-	format(string, sizeof(string), "| Total Losses: %d.", PlayerInfo[playerid][pLoses]);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
+	SendClientMessageEx(playerid, COLOR_GREY, "| Current Champion: %s, with [%d] Winnings and [%d] Losses.", Titel[TitelName],Titel[TitelWins],Titel[TitelLoses]);
+	SendClientMessageEx(playerid, COLOR_GREY, "| Current Title: %s.", ttext);
+	SendClientMessageEx(playerid, COLOR_GREY, "| Current NickName: %s.", ntext);
+	SendClientMessageEx(playerid, COLOR_GREY, "| Total Wins: %d.", PlayerInfo[playerid][pWins]);
+	SendClientMessageEx(playerid, COLOR_GREY, "| Total Losses: %d.", PlayerInfo[playerid][pLoses]);
 	SendClientMessageEx(playerid, COLOR_WHITE, "|____________________________________________________|");
 	return 1;
 }
@@ -152,7 +147,7 @@ CMD:fight(playerid, params[])
 		return 1;
 	}
 
-	new string[128], giveplayerid;
+	new giveplayerid;
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /fight [player]");
 
 	if(IsPlayerConnected(giveplayerid))
@@ -162,10 +157,8 @@ CMD:fight(playerid, params[])
 			if(IsPlayerInRangeOfPoint(playerid,20.0,765.9343,0.2761,1000.7173) || IsPlayerInRangeOfPoint(playerid,20.0,768.48, -73.66, 1000.57))
 			{
 				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot Box with yourself!"); return 1; }
-				format(string, sizeof(string), "* You offered a Boxing Challenge to %s.", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* Boxer %s wants to Fight with you (type /accept boxing) to accept.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered a Boxing Challenge to %s.", GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Boxer %s wants to Fight with you (type /accept boxing) to accept.", GetPlayerNameEx(playerid));
 				BoxOffer[giveplayerid] = playerid;
 				SetPVarInt(giveplayerid, "BoxOfferSession", g_arrQueryHandle[playerid]);
 			}

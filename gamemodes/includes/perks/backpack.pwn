@@ -218,11 +218,9 @@ CMD:shopbpack(playerid, params[]) {
 			PlayerInfo[playertogive][pBEquipped] = 1;
 			PlayerInfo[playertogive][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
 			PlayerInfo[playertogive][pBStoredH] = INVALID_HOUSE_ID;
-			format(szMessage, sizeof(szMessage), "You have successfully created a %s Backpack for %s (OrderID: %d).", TypeName, GetPlayerNameEx(playertogive), orderid);
-			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully created a %s Backpack for %s (OrderID: %d).", TypeName, GetPlayerNameEx(playertogive), orderid);
 
-			format(szMessage, sizeof(szMessage), "You now have a %s Backpack from %s (OrderID: %d).", TypeName, GetPlayerNameEx(playerid), orderid);
-			SendClientMessageEx(playertogive, COLOR_WHITE, szMessage);
+			SendClientMessageEx(playertogive, COLOR_WHITE, "You now have a %s Backpack from %s (OrderID: %d).", TypeName, GetPlayerNameEx(playerid), orderid);
 
 			SendClientMessageEx(playertogive, COLOR_GREY, "Use /backpackhelp to see the list of commands.");
 
@@ -379,8 +377,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					else return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou don't have that that amount of grams.");
 
 					PlayerInfo[playerid][pBDrugs][pbi] += namount;
-					format(szMiscArray, sizeof(szMiscArray), "You have deposited %d grams of %s in your backpack.", namount, Drugs[pbi]);
-					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %d grams of %s in your backpack.", namount, Drugs[pbi]);
 					new ip[MAX_PLAYER_NAME];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					format(szMiscArray, sizeof(szMiscArray), "[DRUGS] %s(%d) (IP:%s) deposited %d grams of %s (%d grams Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, namount, Drugs[pbi], PlayerInfo[playerid][pDrugs][pbi], PlayerInfo[playerid][pBackpack]);
@@ -399,8 +396,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					PlayerInfo[playerid][pBDrugs][pbi] -= namount;
 					PlayerInfo[playerid][pDrugs][pbi] += namount;
-					format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %d grams of %s in your backpack.", namount, Drugs[pbi]);
-					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %d grams of %s in your backpack.", namount, Drugs[pbi]);
 					new ip[MAX_PLAYER_NAME];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					format(szMiscArray, sizeof(szMiscArray), "[DRUGS] %s(%d) (IP:%s) withdrawn %d grams of %s (%d grams Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, namount, Drugs[pbi], PlayerInfo[playerid][pBDrugs][pbi], PlayerInfo[playerid][pBackpack]);
@@ -543,8 +539,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 						DeletePVar(playerid, szMiscArray);
 
-						format(szMiscArray, sizeof(szMiscArray), "You have withdrawn a %s from your backpack.", weapname);
-						SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+						SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn a %s from your backpack.", weapname);
 
 						format(szMiscArray, sizeof(szMiscArray), "* %s has withdrawn a %s from their backpack.", GetPlayerNameEx(playerid), weapname);
 						ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -587,8 +582,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							RemovePlayerLoadoutWeapon(playerid, wbid);
 							PlayerInfo[playerid][pBItems][slot] = wbid;
 							GetWeaponName(wbid, weapname, sizeof(weapname));
-							format(szMiscArray, sizeof(szMiscArray), "You have deposited a %s inside your backpack.", weapname);
-							SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+							SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited a %s inside your backpack.", weapname);
 
 							format(szMiscArray, sizeof(szMiscArray), "* %s has deposited a %s inside their backpack.", GetPlayerNameEx(playerid), weapname);
 							ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -614,8 +608,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							RemovePlayerLoadoutWeapon(playerid, wbid);
 							PlayerInfo[playerid][pBItems][slot] = wbid;
 							GetWeaponName(wbid, weapname, sizeof(weapname));
-							format(szMiscArray, sizeof(szMiscArray), "You have deposited a %s inside your backpack.", weapname);
-							SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+							SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited a %s inside your backpack.", weapname);
 
 							format(szMiscArray, sizeof(szMiscArray), "* %s has deposited a %s inside their backpack.", GetPlayerNameEx(playerid), weapname);
 							ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -641,8 +634,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							RemovePlayerLoadoutWeapon(playerid, wbid);
 							PlayerInfo[playerid][pBItems][slot] = wbid;
 							GetWeaponName(wbid, weapname, sizeof(weapname));
-							format(szMiscArray, sizeof(szMiscArray), "You have deposited a %s inside your backpack.", weapname);
-							SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+							SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited a %s inside your backpack.", weapname);
 
 							format(szMiscArray, sizeof(szMiscArray), "* %s has deposited a %s inside their backpack.", GetPlayerNameEx(playerid), weapname);
 							ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -690,8 +682,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					case 3: choice = "Large";
 				}
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-				format(szMiscArray, sizeof(szMiscArray), "You have dropped your %s Backpack.", choice);
-				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped your %s Backpack.", choice);
 				RemovePlayerAttachedObject(playerid, 9);
 				PlayerInfo[playerid][pBackpack] = 0;
 				PlayerInfo[playerid][pBEquipped] = 0;
@@ -729,7 +720,7 @@ CMD:sellbackpack(playerid, params[])
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
 		if(GetPVarInt(playerid, "sellingbackpack")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are already selling a backpack!");
 
-		new string[128], giveplayerid, price, bptype[8];
+		new giveplayerid, price, bptype[8];
 		if(sscanf(params, "ui", giveplayerid, price)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellbackpack [player] [price]");
 			SendClientMessageEx(playerid, COLOR_YELLOW, "WARNING: /sellbackpack will automatically remove all your items currently in your backpack.");
@@ -756,10 +747,8 @@ CMD:sellbackpack(playerid, params[])
 				SetPVarInt(giveplayerid, "BackpackOfferSession", g_arrQueryHandle[playerid]);
 				SetPVarInt(giveplayerid, "sellbackpackprice", price);
 				SetPVarInt(playerid, "sellingbackpack", 1);
-				format(string, sizeof(string), "* %s has offered you a %s Backpack for $%s. /accept backpack to get the backpack.", GetPlayerNameEx(playerid), bptype, number_format(price));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* You have offered %s your %s Backpack for $%s.",GetPlayerNameEx(giveplayerid), bptype, number_format(price));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s has offered you a %s Backpack for $%s. /accept backpack to get the backpack.", GetPlayerNameEx(playerid), bptype, number_format(price));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have offered %s your %s Backpack for $%s.",GetPlayerNameEx(giveplayerid), bptype, number_format(price));
 			}
 			else
 			{
@@ -779,7 +768,7 @@ CMD:listbitems(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] > 1 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
-		new string[128], giveplayerid;
+		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /listbitems [player]");
 
 		if(IsPlayerConnected(giveplayerid))
@@ -793,32 +782,27 @@ CMD:listbitems(playerid, params[])
 				case 3: btype = "Large";
 			}
 			SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-			format(string, sizeof(string), "*** %s' %s Backpack items...  ***", GetPlayerNameEx(giveplayerid), btype);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "*** %s' %s Backpack items...  ***", GetPlayerNameEx(giveplayerid), btype);
 			if(PlayerInfo[giveplayerid][pBItems][0] > 0)
 			{
-				format(string, sizeof(string), "(Backpack) %d meals.", PlayerInfo[giveplayerid][pBItems][0]);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
+				SendClientMessageEx(playerid, COLOR_GREY, "(Backpack) %d meals.", PlayerInfo[giveplayerid][pBItems][0]);
 			}
 
 			for(new i; i < sizeof(Drugs); ++i) {
 
 				if(PlayerInfo[giveplayerid][pBDrugs][i] > 0) {
 
-					format(string, sizeof(string), "(Backpack) %d grams of %s.", PlayerInfo[giveplayerid][pBDrugs][i], Drugs[i]);
-					SendClientMessageEx(playerid, COLOR_GREY, string);
+					SendClientMessageEx(playerid, COLOR_GREY, "(Backpack) %d grams of %s.", PlayerInfo[giveplayerid][pBDrugs][i], Drugs[i]);
 				}
 			}
 			if(PlayerInfo[giveplayerid][pBItems][5] > 0)
 			{
-				format(string, sizeof(string), "(Backpack) %d Medical Kits.", PlayerInfo[giveplayerid][pBItems][5]);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
+				SendClientMessageEx(playerid, COLOR_GREY, "(Backpack) %d Medical Kits.", PlayerInfo[giveplayerid][pBItems][5]);
 			}
 
 			if(PlayerInfo[giveplayerid][pBItems][11] > 0)
 			{
-				format(string, sizeof(string), "(Backpack) %d Energy Bars.", PlayerInfo[giveplayerid][pBItems][11]);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
+				SendClientMessageEx(playerid, COLOR_GREY, "(Backpack) %d Energy Bars.", PlayerInfo[giveplayerid][pBItems][11]);
 			}
 			new sent;
 			for (new i = 6; i < 11; i++)
@@ -827,13 +811,11 @@ CMD:listbitems(playerid, params[])
 				{
 					if(!sent)
 					{
-						format(string, sizeof(string), "*** %s' %s Backpack weapons...  ***", GetPlayerNameEx(giveplayerid), btype);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "*** %s' %s Backpack weapons...  ***", GetPlayerNameEx(giveplayerid), btype);
 						sent = 1;
 					}
 					GetWeaponName(PlayerInfo[giveplayerid][pBItems][i], weaponname, sizeof(weaponname));
-					format(string, sizeof(string), "Weapon: %s.", weaponname);
-					SendClientMessageEx(playerid, COLOR_GRAD1, string);
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Weapon: %s.", weaponname);
 				}
 			}
 			SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
@@ -866,33 +848,28 @@ CMD:bsearch(playerid, params[])
 				case 3: btype = "Large";
 			}
 			SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-			format(string, sizeof(string), "*** %s' %s Backpack items...  ***", GetPlayerNameEx(giveplayerid), btype);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "*** %s' %s Backpack items...  ***", GetPlayerNameEx(giveplayerid), btype);
 			if(PlayerInfo[giveplayerid][pBItems][0] > 0)
 			{
-				format(string, sizeof(string), "(Backpack) %d meals.", PlayerInfo[giveplayerid][pBItems][0]);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
+				SendClientMessageEx(playerid, COLOR_GREY, "(Backpack) %d meals.", PlayerInfo[giveplayerid][pBItems][0]);
 			}
 
 			for(new i; i < sizeof(Drugs); ++i) {
 
 				if(PlayerInfo[giveplayerid][pBDrugs][i] > 0) {
 
-					format(string, sizeof(string), "(Backpack) %d grams of %s.", PlayerInfo[giveplayerid][pBDrugs][i], Drugs[i]);
-					SendClientMessageEx(playerid, COLOR_GREY, string);
+					SendClientMessageEx(playerid, COLOR_GREY, "(Backpack) %d grams of %s.", PlayerInfo[giveplayerid][pBDrugs][i], Drugs[i]);
 				}
 			}
 
 			if(PlayerInfo[giveplayerid][pBItems][5] > 0)
 			{
-				format(string, sizeof(string), "(Backpack) %d Medical Kits.", PlayerInfo[giveplayerid][pBItems][5]);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
+				SendClientMessageEx(playerid, COLOR_GREY, "(Backpack) %d Medical Kits.", PlayerInfo[giveplayerid][pBItems][5]);
 			}
 
 			if(PlayerInfo[giveplayerid][pBItems][11] > 0)
 			{
-				format(string, sizeof(string), "(Backpack) %d Energy Bars.", PlayerInfo[giveplayerid][pBItems][11]);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
+				SendClientMessageEx(playerid, COLOR_GREY, "(Backpack) %d Energy Bars.", PlayerInfo[giveplayerid][pBItems][11]);
 			}
 			new sent;
 			for (new i = 6; i < 11; i++)
@@ -901,13 +878,11 @@ CMD:bsearch(playerid, params[])
 				{
 					if(!sent)
 					{
-						format(string, sizeof(string), "*** %s' %s Backpack weapons...  ***", GetPlayerNameEx(giveplayerid), btype);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "*** %s' %s Backpack weapons...  ***", GetPlayerNameEx(giveplayerid), btype);
 						sent = 1;
 					}
 					GetWeaponName(PlayerInfo[giveplayerid][pBItems][i], weaponname, sizeof(weaponname));
-					format(string, sizeof(string), "Weapon: %s.", weaponname);
-					SendClientMessageEx(playerid, COLOR_GRAD1, string);
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Weapon: %s.", weaponname);
 				}
 			}
 			SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
@@ -952,30 +927,24 @@ CMD:bremove(playerid, params[])
 			new iDrugID = GetDrugID(item);
 			if(iDrugID != -1) {
 
-				format(string, sizeof(string), "* You have taken away %s's %s from their backpack.", GetPlayerNameEx(giveplayerid), Drugs[iDrugID]);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* Officer %s has taken away your %s from your backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), Drugs[iDrugID]);
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have taken away %s's %s from their backpack.", GetPlayerNameEx(giveplayerid), Drugs[iDrugID]);
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has taken away your %s from your backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), Drugs[iDrugID]);
 				format(string, sizeof(string), "* Officer %s has taken away %s's %s from their backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), Drugs[iDrugID]);
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				PlayerInfo[giveplayerid][pBDrugs][iDrugID] = 0;
 			}
 			else if(strcmp(item,"meals",true) == 0)
 			{
-				format(string, sizeof(string), "* You have taken away %s's meals from their backpack.", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* Officer %s has taken away your meals from your backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have taken away %s's meals from their backpack.", GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has taken away your meals from your backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				format(string, sizeof(string), "* Officer %s has taken away %s's meals from their backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				PlayerInfo[giveplayerid][pBItems][0] = 0;
 			}
 			else if(strcmp(item,"guns",true) == 0)
 			{
-				format(string, sizeof(string), "* You have taken away %s's weapons from their backpack.", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* Officer %s has taken away your weapons from your backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have taken away %s's weapons from their backpack.", GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has taken away your weapons from your backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				format(string, sizeof(string), "* Officer %s has taken away %s's weapons from their backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				for(new i = 6; i < 11; i++)
@@ -1042,8 +1011,7 @@ CMD:bwear(playerid, params[])
 					SetPlayerAttachedObject(playerid, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
 				}
 			}
-			format(string, sizeof(string), "You took your %s Backpack from your %s, use /bstore to store it.", btype, GetVehicleName(PlayerVehicleInfo[playerid][pvid][pvId]));
-			SendClientMessageEx(playerid, COLOR_GREY, string);
+			SendClientMessageEx(playerid, COLOR_GREY, "You took your %s Backpack from your %s, use /bstore to store it.", btype, GetVehicleName(PlayerVehicleInfo[playerid][pvid][pvId]));
 			PlayerInfo[playerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
 			PlayerInfo[playerid][pBEquipped] = 1;
 
@@ -1082,8 +1050,7 @@ CMD:bwear(playerid, params[])
 						SetPlayerAttachedObject(playerid, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
 					}
 				}
-				format(string, sizeof(string), "You took your %s Backpack from your house, use /bstore to store it.", btype);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
+				SendClientMessageEx(playerid, COLOR_GREY, "You took your %s Backpack from your house, use /bstore to store it.", btype);
 				PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
 				PlayerInfo[playerid][pBEquipped] = 1;
 
@@ -1141,8 +1108,7 @@ CMD:bstore(playerid, params[])
 				case 2: btype = "Medium";
 				case 3: btype = "Large";
 			}
-			format(string, sizeof(string), "You stored your %s Backpack in your %s, use /bwear to wear it.", btype, GetVehicleName(PlayerVehicleInfo[playerid][pvid][pvId]));
-			SendClientMessageEx(playerid, COLOR_GREY, string);
+			SendClientMessageEx(playerid, COLOR_GREY, "You stored your %s Backpack in your %s, use /bwear to wear it.", btype, GetVehicleName(PlayerVehicleInfo[playerid][pvid][pvId]));
 			RemovePlayerAttachedObject(playerid, 9);
 			PlayerInfo[playerid][pBEquipped] = 0;
 			PlayerInfo[playerid][pBStoredV] = PlayerVehicleInfo[playerid][pvid][pvSlotId];
@@ -1172,8 +1138,7 @@ CMD:bstore(playerid, params[])
 					case 2: btype = "Medium";
 					case 3: btype = "Large";
 				}
-				format(string, sizeof(string), "You stored your %s Backpack in your house, use /bwear to wear it.", btype);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
+				SendClientMessageEx(playerid, COLOR_GREY, "You stored your %s Backpack in your house, use /bwear to wear it.", btype);
 				RemovePlayerAttachedObject(playerid, 9);
 				PlayerInfo[playerid][pBEquipped] = 0;
 				PlayerInfo[playerid][pBStoredH] = HouseInfo[hid][hSQLId];
@@ -1203,8 +1168,7 @@ CMD:bopen(playerid, params[])
 		new string[122];
 		if(GetPVarInt(playerid, "BackpackDisabled") > 0)
 		{
-			format(string, sizeof(string), "You have recently taken damage during the backpack menu, your backpack is disabled for %d second(s)", GetPVarInt(playerid, "BackpackDisabled"));
-			SendClientMessageEx(playerid, COLOR_GREY, string);
+			SendClientMessageEx(playerid, COLOR_GREY, "You have recently taken damage during the backpack menu, your backpack is disabled for %d second(s)", GetPVarInt(playerid, "BackpackDisabled"));
 			return 1;
 		}
 		ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, 0, 1);

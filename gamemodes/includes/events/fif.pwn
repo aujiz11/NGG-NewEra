@@ -204,10 +204,8 @@ CMD:chances(playerid, params[])
 {
 	if(chancegambler == 1)
 	{
-		new szMessage[128],
-			iChances = PlayerInfo[playerid][pRewardDrawChance] / 3;
-		format(szMessage, sizeof(szMessage), "Chances: %d", iChances);
-		SendClientMessageEx(playerid, COLOR_CYAN, szMessage);
+		new iChances = PlayerInfo[playerid][pRewardDrawChance] / 3;
+		SendClientMessageEx(playerid, COLOR_CYAN, "Chances: %d", iChances);
 	}
 	else return 0;
 	return 1;

@@ -1138,20 +1138,17 @@ public OnQueryFinish(resultid, extraid, handleid)
 							{
 								if(PlayerInfo[x][pAdmin] < 1337 && (PlayerInfo[x][pAdmin] >= 2 || PlayerInfo[x][pWatchdog] >= 2))
 								{
-									format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has been auto kicked for logging in with a non-whitelisted IP.", GetPlayerNameEx(extraid));
-									SendClientMessageEx(x, COLOR_YELLOW, string);
+									SendClientMessageEx(x, COLOR_YELLOW, "{AA3333}AdmWarning{FFFF00}: %s has been auto kicked for logging in with a non-whitelisted IP.", GetPlayerNameEx(extraid));
 								}
 								else if(PlayerInfo[x][pAdmin] >= 1337)
 								{
 									if(alevel >= 1337) // If the person being checked for the whitelist is a HA+
 									{
-										format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP: %s) has been auto kicked for logging in with a non-whitelisted IP.", GetPlayerNameEx(extraid), GetPlayerIpEx(extraid));
-										SendClientMessageEx(x, COLOR_YELLOW, string);
+										SendClientMessageEx(x, COLOR_YELLOW, "{AA3333}AdmWarning{FFFF00}: %s (IP: %s) has been auto kicked for logging in with a non-whitelisted IP.", GetPlayerNameEx(extraid), GetPlayerIpEx(extraid));
 									}
 									else
 									{
-										format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has been auto kicked for logging in with a non-whitelisted IP.", GetPlayerNameEx(extraid));
-										SendClientMessageEx(x, COLOR_YELLOW, string);
+										SendClientMessageEx(x, COLOR_YELLOW, "{AA3333}AdmWarning{FFFF00}: %s has been auto kicked for logging in with a non-whitelisted IP.", GetPlayerNameEx(extraid));
 									}
 								}
 							}
@@ -3262,8 +3259,7 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 			GetPVarString(playerid, "OnAddFlag", name, 24);
 			GetPVarString(playerid, "OnAddFlagReason", reason, 64);
 			if(rows > 0) {
-				format(string, sizeof(string), "You have appended %s's flag.", name);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have appended %s's flag.", name);
 
 				format(string, sizeof(string), "AdmCmd: %s was offline flagged by %s, reason: %s.", name, GetPlayerNameEx(playerid), reason);
 				ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -3276,8 +3272,7 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 				AddOFlag(strval(psqlid), playerid, reason);
 			}
 			else {
-				format(string, sizeof(string), "There was a problem with appending %s's flag.", name);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "There was a problem with appending %s's flag.", name);
 			}
 			DeletePVar(playerid, "OnAddFlagReason");
 		}
@@ -3735,7 +3730,7 @@ public LoadRentedCar(index)
 		{
 		    //`sqlid`, `modelid`, `posx`, `posy`, `posz`, `posa`, `spawned`, `hours`
 
-            new szResult[32], Info[2], Float: pos[4], string[128];
+            new szResult[32], Info[2], Float: pos[4];
  	    	cache_get_value_name(0, "modelid", szResult); Info[0] = strval(szResult);
   	    	cache_get_value_name(0, "posx", szResult); pos[0] = strval(szResult);
    	    	cache_get_value_name(0, "posy", szResult); pos[1] = strval(szResult);
@@ -3746,8 +3741,7 @@ public LoadRentedCar(index)
 			SetPVarInt(index, "RentedHours", Info[1]);
 			SetPVarInt(index, "RentedVehicle", CreateVehicle(Info[0],pos[0],pos[1], pos[2], pos[3], random(128), random(128), 2000000));
 
-			format(string, sizeof(string), "Your rented vehicle has been spawned and has %d minute(s) left.", Info[1]);
-			SendClientMessageEx(index, COLOR_CYAN, string);
+			SendClientMessageEx(index, COLOR_CYAN, "Your rented vehicle has been spawned and has %d minute(s) left.", Info[1]);
 		}
 	}
 }
@@ -4178,11 +4172,9 @@ public OnChangeUserPassword(index, session, request, account, pin)
 	GetPVarString(index, "OnChangeUserPassword", name, sizeof(name));
 	DeletePVar(index, "OnChangeUserPassword");
 	if(cache_affected_rows() != 1) {
-		format(message, sizeof(message), "There was an issue with changing %s's %s.", name, pin ? ("pin") : ("password"));
-		return SendClientMessageEx(index, COLOR_WHITE, message), 0;
+		return SendClientMessageEx(index, COLOR_WHITE, "There was an issue with changing %s's %s.", name, pin ? ("pin") : ("password")), 0;
 	}
-	format(message, sizeof(message), "You have successfully changed %s's %s.", name, pin ? ("pin") : ("password"));
-	SendClientMessageEx(index, COLOR_WHITE, message);
+	SendClientMessageEx(index, COLOR_WHITE, "You have successfully changed %s's %s.", name, pin ? ("pin") : ("password"));
 	format(message, sizeof(message), "AdmCmd: %s's credential was reset by %s.", name, GetPlayerNameEx(index));
 	Log(pin ? ("logs/pin.log") : ("logs/password.log"), message);
 	return 1;
@@ -4191,7 +4183,7 @@ public OnChangeUserPassword(index, session, request, account, pin)
 forward QueryCheckCountFinish(playerid, giveplayername[], tdate[], type);
 public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 {
-    new string[128], rows, sResult[24], tcount, hhour[9], chour;
+    new rows, sResult[24], tcount, hhour[9], chour;
 	cache_get_row_count(rows);
 
 	switch(type)
@@ -4201,13 +4193,11 @@ public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 			cache_get_value_name(0, "SUM(count)", sResult); tcount = strval(sResult);
 			if(tcount > 0)
 			{
-				format(string, sizeof(string), "%s accepted {%06x}%d {%06x}reports on %s.", giveplayername, COLOR_GREEN >>> 8, tcount, COLOR_WHITE >>> 8, tdate);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "%s accepted {%06x}%d {%06x}reports on %s.", giveplayername, COLOR_GREEN >>> 8, tcount, COLOR_WHITE >>> 8, tdate);
 			}
 			else
 			{
-				format(string, sizeof(string), "%s did not accept any reports on %s.", giveplayername, tdate);
-				return SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "%s did not accept any reports on %s.", giveplayername, tdate);
 			}
 		}
 		case 1:
@@ -4221,8 +4211,7 @@ public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 					cache_get_value_name(i, "hour", hhour, sizeof(hhour));
 					format(hhour, sizeof(hhour), "%s", str_replace(":00:00", "", hhour));
 					chour = strval(hhour);
-					format(string, sizeof(string), "%s: {%06x}%d", ConvertToTwelveHour(chour), COLOR_GREEN >>> 8, hcount);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "%s: {%06x}%d", ConvertToTwelveHour(chour), COLOR_GREEN >>> 8, hcount);
 				}
 			}
 		}
@@ -4231,13 +4220,11 @@ public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 			cache_get_value_name(0, "SUM(count)", sResult); tcount = strval(sResult);
 			if(tcount > 0)
 			{
-				format(string, sizeof(string), "%s accepted {%06x}%d {%06x}help requests on %s.", giveplayername, COLOR_GREEN >>> 8, tcount, COLOR_WHITE >>> 8, tdate);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "%s accepted {%06x}%d {%06x}help requests on %s.", giveplayername, COLOR_GREEN >>> 8, tcount, COLOR_WHITE >>> 8, tdate);
 			}
 			else
 			{
-				format(string, sizeof(string), "%s did not accept any help requests on %s.", giveplayername, tdate);
-				return SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "%s did not accept any help requests on %s.", giveplayername, tdate);
 			}
 		}
 		case 3:
@@ -4251,8 +4238,7 @@ public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 					cache_get_value_name(i, "hour", hhour, sizeof(hhour));
 					format(hhour, sizeof(hhour), "%s", str_replace(":00:00", "", hhour));
 					chour = strval(hhour);
-					format(string, sizeof(string), "%s: {%06x}%d", ConvertToTwelveHour(chour), COLOR_GREEN >>> 8, hcount);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "%s: {%06x}%d", ConvertToTwelveHour(chour), COLOR_GREEN >>> 8, hcount);
 				}
 			}
 		}
@@ -4261,13 +4247,11 @@ public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 			cache_get_value_name(0, "SUM(count)", sResult); tcount = strval(sResult);
 			if(tcount > 0)
 			{
-				format(string, sizeof(string), "%s watched {%06x}%d {%06x}people on %s.", giveplayername, COLOR_GREEN >>> 8, tcount, COLOR_WHITE >>> 8, tdate);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "%s watched {%06x}%d {%06x}people on %s.", giveplayername, COLOR_GREEN >>> 8, tcount, COLOR_WHITE >>> 8, tdate);
 			}
 			else
 			{
-				format(string, sizeof(string), "%s did not watch anyone on %s.", giveplayername, tdate);
-				return SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "%s did not watch anyone on %s.", giveplayername, tdate);
 			}
 		}
 		case 5:
@@ -4281,8 +4265,7 @@ public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 					cache_get_value_name(i, "hour", hhour, sizeof(hhour));
 					format(hhour, sizeof(hhour), "%s", str_replace(":00:00", "", hhour));
 					chour = strval(hhour);
-					format(string, sizeof(string), "%s: {%06x}%d", ConvertToTwelveHour(chour), COLOR_GREEN >>> 8, hcount);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "%s: {%06x}%d", ConvertToTwelveHour(chour), COLOR_GREEN >>> 8, hcount);
 				}
 			}
 		}
@@ -4343,8 +4326,7 @@ public OnBanPlayer(index)
 	if(IsPlayerConnected(index))
 	{
 		if(cache_affected_rows()) {
-			format(string, sizeof(string), "You have successfully banned %s's account.", name);
-			SendClientMessageEx(index, COLOR_WHITE, string);
+			SendClientMessageEx(index, COLOR_WHITE, "You have successfully banned %s's account.", name);
 
 			format(string, sizeof(string), "AdmCmd: %s was offline banned by %s, reason: %s", name, GetPlayerNameEx(index), reason);
 			Log("logs/ban.log", string);
@@ -4353,8 +4335,7 @@ public OnBanPlayer(index)
 			print(string);
 		}
 		else {
-			format(string, sizeof(string), "There was an issue with banning %s's account.", name);
-			SendClientMessageEx(index, COLOR_WHITE, string);
+			SendClientMessageEx(index, COLOR_WHITE, "There was an issue with banning %s's account.", name);
 		}
   		DeletePVar(index, "OnBanPlayer");
 		DeletePVar(index, "OnBanPlayerReason");
@@ -4391,8 +4372,7 @@ public OnUnbanPlayer(index)
 	GetPVarString(index, "OnUnbanPlayer", name, 24);
 
 	if(cache_affected_rows()) {
-		format(string, sizeof(string), "You have successfully unbanned %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "You have successfully unbanned %s's account.", name);
 
 		format(string, 128, "AdmCmd: %s was unbanned by %s.", name, GetPlayerNameEx(index));
 		ABroadCast(COLOR_LIGHTRED,string,2);
@@ -4401,8 +4381,7 @@ public OnUnbanPlayer(index)
 		print(string);
 	}
 	else {
-		format(string, sizeof(string), "There was an issue with unbanning %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with unbanning %s's account.", name);
 	}
 	DeletePVar(index, "OnUnbanPlayer");
 
@@ -4433,17 +4412,14 @@ forward Query_OnExecution(iTargetID);
 public Query_OnExecution(iTargetID) {
 
 	new
-		szName[MAX_PLAYER_NAME],
-		szMessage[64];
+		szName[MAX_PLAYER_NAME];
 
 	GetPVarString(iTargetID, "QueryEx_Name", szName, sizeof szName);
 	if(cache_affected_rows()) {
-		format(szMessage, sizeof szMessage, "The query on %s's account was successful.", szName);
-		SendClientMessageEx(iTargetID, COLOR_WHITE, szMessage);
+		SendClientMessageEx(iTargetID, COLOR_WHITE, "The query on %s's account was successful.", szName);
 	}
 	else {
-		format(szMessage, sizeof szMessage, "The query on %s's account was unsuccessful.", szName);
-		SendClientMessageEx(iTargetID, COLOR_WHITE, szMessage);
+		SendClientMessageEx(iTargetID, COLOR_WHITE, "The query on %s's account was unsuccessful.", szName);
 	}
 	return DeletePVar(iTargetID, "QueryEx_Name");
 }
@@ -4455,15 +4431,13 @@ public OnSetSuspended(index, value)
 	GetPVarString(index, "OnSetSuspended", name, 24);
 
 	if(cache_affected_rows()) {
-		format(string, sizeof(string), "You have successfully %s %s's account.", ((value) ? ("suspended") : ("unsuspended")), name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "You have successfully %s %s's account.", ((value) ? ("suspended") : ("unsuspended")), name);
 
 		format(string, sizeof(string), "AdmCmd: %s was offline %s by %s.", name, ((value) ? ("suspended") : ("unsuspended")), GetPlayerNameEx(index));
 		Log("logs/admin.log", string);
 	}
 	else {
-		format(string, sizeof(string), "There was an issue with %s %s's account.", ((value) ? ("suspending") : ("unsuspending")), name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with %s %s's account.", ((value) ? ("suspending") : ("unsuspending")), name);
 	}
 	DeletePVar(index, "OnSetSuspended");
 
@@ -4473,16 +4447,14 @@ public OnSetSuspended(index, value)
 forward OnSetCrime(index);
 public OnSetCrime(index)
 {
-	new string[128], name[24];
+	new name[24];
 	GetPVarString(index, "OfflineSU", name, 24);
 
 	if(cache_affected_rows()) {
-		format(string, sizeof(string), "You have successfully added a crime to %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "You have successfully added a crime to %s's account.", name);
 	}
 	else {
-		format(string, sizeof(string), "There was an issue with adding a crime to %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with adding a crime to %s's account.", name);
 	}
 	DeletePVar(index, "OfflineSU");
 
@@ -4511,8 +4483,7 @@ public OnSetMyName(index)
 				Log("logs/undercover.log", string);
 				DeletePVar(index, "OnSetMyName");
 
-				format(string, sizeof(string), "You have temporarily set your name to %s.", tmpName);
-				SendClientMessageEx(index, COLOR_YELLOW, string);
+				SendClientMessageEx(index, COLOR_YELLOW, "You have temporarily set your name to %s.", tmpName);
 				SendClientMessageEx(index, COLOR_GRAD2, "NOTE: None of your stats will save until you type this command again.");
 				SetPVarInt(index, "TempName", 1);
 			}
@@ -4599,10 +4570,8 @@ public OnSetName(index, extraid)
 
 				if(strlen(tmpName) > 0)
 				{
-					format(string, sizeof(string), " Your name has been changed from %s to %s.", GetPlayerNameEx(extraid), tmpName);
-					SendClientMessageEx(extraid,COLOR_YELLOW,string);
-					format(string, sizeof(string), " You have changed %s's name to %s.", GetPlayerNameEx(extraid), tmpName);
-					SendClientMessageEx(index,COLOR_YELLOW,string);
+					SendClientMessageEx(extraid,COLOR_YELLOW," Your name has been changed from %s to %s.", GetPlayerNameEx(extraid), tmpName);
+					SendClientMessageEx(index,COLOR_YELLOW," You have changed %s's name to %s.", GetPlayerNameEx(extraid), tmpName);
 					format(string, sizeof(string), "%s changed %s's name to %s",GetPlayerNameEx(index),GetPlayerNameExt(extraid),tmpName);
 					Log("logs/stats.log", string);
 					if(SetPlayerName(extraid, tmpName) == 1)
@@ -4732,10 +4701,8 @@ public OnApproveName(index, extraid)
 			{
 				if(strlen(newname) > 0)
 				{
-					format(string, sizeof(string), " Your name has been changed from %s to %s for free.", GetPlayerNameEx(extraid), newname);
-					SendClientMessageEx(extraid,COLOR_YELLOW,string);
-					format(string, sizeof(string), " You have changed %s's name to %s at no cost.", GetPlayerNameEx(extraid), newname);
-					SendClientMessageEx(index,COLOR_YELLOW,string);
+					SendClientMessageEx(extraid,COLOR_YELLOW," Your name has been changed from %s to %s for free.", GetPlayerNameEx(extraid), newname);
+					SendClientMessageEx(index,COLOR_YELLOW," You have changed %s's name to %s at no cost.", GetPlayerNameEx(extraid), newname);
 					format(string, sizeof(string), "%s changed \"%s\"s name to \"%s\" (id: %i)  for free.",GetPlayerNameEx(index),GetPlayerNameEx(extraid),newname, GetPlayerSQLId(extraid));
 					Log("logs/stats.log", string);
 					format(string, sizeof(string), "%s has approved %s's name change to %s at no cost.",GetPlayerNameEx(index),GetPlayerNameEx(extraid), newname);
@@ -4764,10 +4731,8 @@ public OnApproveName(index, extraid)
 			{
 				if(strlen(newname) > 0)
 				{
-					format(string, sizeof(string), " Your name has been changed from %s to %s for free (Senior Mod).", GetPlayerNameEx(extraid), newname);
-					SendClientMessageEx(extraid,COLOR_YELLOW,string);
-					format(string, sizeof(string), " You have changed %s's name to %s at no cost.", GetPlayerNameEx(extraid), newname);
-					SendClientMessageEx(index,COLOR_YELLOW,string);
+					SendClientMessageEx(extraid,COLOR_YELLOW," Your name has been changed from %s to %s for free (Senior Mod).", GetPlayerNameEx(extraid), newname);
+					SendClientMessageEx(index,COLOR_YELLOW," You have changed %s's name to %s at no cost.", GetPlayerNameEx(extraid), newname);
 					format(string, sizeof(string), "%s changed \"%s\"s name to \"%s\" (id: %i) for free (Senior Mod).",GetPlayerNameEx(index),GetPlayerNameEx(extraid),newname, GetPlayerSQLId(extraid));
 					Log("logs/stats.log", string);
 					format(string, sizeof(string), "%s has approved %s's name change to %s at no cost (Senior Mod).",GetPlayerNameEx(index),GetPlayerNameEx(extraid), newname);
@@ -4797,10 +4762,8 @@ public OnApproveName(index, extraid)
 				{
 					if(strlen(newname) > 0)
 					{
-						format(string, sizeof(string), " Your name has been changed from %s to %s for free (non-RP name).", GetPlayerNameEx(extraid), newname);
-						SendClientMessageEx(extraid,COLOR_YELLOW,string);
-						format(string, sizeof(string), " You have changed %s's name to %s for free (non-RP name).", GetPlayerNameEx(extraid), newname);
-						SendClientMessageEx(index,COLOR_YELLOW,string);
+						SendClientMessageEx(extraid,COLOR_YELLOW," Your name has been changed from %s to %s for free (non-RP name).", GetPlayerNameEx(extraid), newname);
+						SendClientMessageEx(index,COLOR_YELLOW," You have changed %s's name to %s for free (non-RP name).", GetPlayerNameEx(extraid), newname);
 						format(string, sizeof(string), "%s changed \"%s\"s name to \"%s\" (id: %i) for free (non-RP name).",GetPlayerNameEx(index),GetPlayerNameEx(extraid),newname, GetPlayerSQLId(extraid));
 						Log("logs/stats.log", string);
 						format(string, sizeof(string), "%s has approved %s's name change to %s for free (non-RP name).",GetPlayerNameEx(index),GetPlayerNameEx(extraid), newname);
@@ -4832,12 +4795,9 @@ public OnApproveName(index, extraid)
 							mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
 							mysql_tquery(MainPipeline, string, "OnApproveSetName", "ii", index, extraid);
 							PlayerInfo[extraid][pNextNameChange] = gettime()+10368000;
-							format(string, sizeof(string), " Your name has been changed from %s to %s for free.", oldname, newname);
-							SendClientMessageEx(extraid, COLOR_YELLOW, string);
-							format(string, sizeof(string), " Your next free name change will be on %s", date(PlayerInfo[extraid][pNextNameChange], 4));
-							SendClientMessageEx(extraid, COLOR_CYAN, string);
-							format(string, sizeof(string), " You have changed %s's name to %s for %s for free.", oldname, newname);
-							SendClientMessageEx(index,COLOR_YELLOW,string);
+							SendClientMessageEx(extraid, COLOR_YELLOW, " Your name has been changed from %s to %s for free.", oldname, newname);
+							SendClientMessageEx(extraid, COLOR_CYAN, " Your next free name change will be on %s", date(PlayerInfo[extraid][pNextNameChange], 4));
+							SendClientMessageEx(index,COLOR_YELLOW," You have changed %s's name to %s for %s for free.", oldname, newname);
 							format(string, sizeof(string), "%s changed \"%s\"s name to \"%s\" (id: %i) for free. (Next Free N/C: %s)", GetPlayerNameEx(index), oldname, newname, GetPlayerSQLId(extraid), date(PlayerInfo[extraid][pNextNameChange], 4));
 							Log("logs/stats.log", string);
 							format(string, sizeof(string), "%s has approved %s's name change to %s for free.", GetPlayerNameEx(index), oldname, newname);
@@ -4887,10 +4847,8 @@ public OnApproveName(index, extraid)
 							mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
 							mysql_tquery(MainPipeline, string, "OnApproveSetName", "ii", index, extraid);
 
-							format(string, sizeof(string), " Your name has been changed from %s to %s for $%s.", oldname, newname, number_format(GetPVarInt(extraid, "NameChangeCost")));
-							SendClientMessageEx(extraid, COLOR_CYAN, string);
-							format(string, sizeof(string), " You have changed %s's name to %s for $%s.", oldname, newname, number_format(GetPVarInt(extraid, "NameChangeCost")));
-							SendClientMessageEx(index,COLOR_YELLOW,string);
+							SendClientMessageEx(extraid, COLOR_CYAN, " Your name has been changed from %s to %s for $%s.", oldname, newname, number_format(GetPVarInt(extraid, "NameChangeCost")));
+							SendClientMessageEx(index,COLOR_YELLOW," You have changed %s's name to %s for $%s.", oldname, newname, number_format(GetPVarInt(extraid, "NameChangeCost")));
 							format(string, sizeof(string), "%s changed \"%s\"s name to \"%s\" (id: %i) for $%s.", GetPlayerNameEx(index), oldname, newname, GetPlayerSQLId(extraid), number_format(GetPVarInt(extraid, "NameChangeCost")));
 							Log("logs/stats.log", string);
 							format(string, sizeof(string), "%s has approved %s's name change to %s for $%s.", GetPlayerNameEx(index), oldname, newname, number_format(GetPVarInt(extraid, "NameChangeCost")));
@@ -4936,14 +4894,12 @@ public OnIPWhitelist(index)
 	GetPVarString(index, "OnIPWhitelist", name, 24);
 
 	if(cache_affected_rows()) {
-		format(string, sizeof(string), "You have successfully whitelisted %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "You have successfully whitelisted %s's account.", name);
 		format(string, sizeof(string), "%s has IP Whitelisted %s", GetPlayerNameEx(index), name);
 		Log("logs/whitelist.log", string);
 	}
 	else {
-		format(string, sizeof(string), "There was a issue with whitelisting %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "There was a issue with whitelisting %s's account.", name);
 	}
 	DeletePVar(index, "OnIPWhitelist");
 
@@ -4965,8 +4921,7 @@ public OnIPCheck(index)
 			if(AdminLvL <= 1 || (AdminLvL <= PlayerInfo[index][pAdmin] && PlayerInfo[index][pAdmin] >= 1338))
 			{
 				cache_get_value_name(0, "IP", ip, 16);
-				format(string, sizeof(string), "%s's IP: %s", name, ip);
-				SendClientMessageEx(index, COLOR_WHITE, string);
+				SendClientMessageEx(index, COLOR_WHITE, "%s's IP: %s", name, ip);
 				format(string, sizeof(string), "%s has offline IP Checked %s", GetPlayerNameEx(index), name);
 				if(AdminLvL >= 2) Log("logs/adminipcheck.log", string); else Log("logs/ipcheck.log", string);
 				return 1;
@@ -5003,15 +4958,13 @@ public OnFine(index)
 	GetPVarString(index, "OnFineReason", reason, 64);
 
 	if(cache_affected_rows()) {
-		format(string, sizeof(string), "You have successfully fined %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "You have successfully fined %s's account.", name);
 
 		format(string, sizeof(string), "AdmCmd: %s was offline fined $%d by %s, reason: %s", name, amount, GetPlayerNameEx(index), reason);
 		Log("logs/admin.log", string);
 	}
 	else {
-		format(string, sizeof(string), "There was an issue with fining %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with fining %s's account.", name);
 	}
 	DeletePVar(index, "OnFine");
 	DeletePVar(index, "OnFineAmount");
@@ -5028,15 +4981,13 @@ public OnPrisonAccount(index)
 	GetPVarString(index, "OnPrisonAccountReason", reason, 64);
 
 	if(cache_affected_rows()) {
-		format(string, sizeof(string), "You have successfully prisoned %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "You have successfully prisoned %s's account.", name);
 
 		format(string, sizeof(string), "AdmCmd: %s was offline prisoned by %s, reason: %s ", name, GetPlayerNameEx(index), reason);
 		Log("logs/admin.log", string);
 	}
 	else {
-		format(string, sizeof(string), "There was an issue with prisoning %s's account.");
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with prisoning %s's account.");
 	}
 	DeletePVar(index, "OnPrisonAccount");
 	DeletePVar(index, "OnPrisonAccountReason");
@@ -5052,15 +5003,13 @@ public OnJailAccount(index)
 	GetPVarString(index, "OnJailAccountReason", reason, 64);
 
 	if(cache_affected_rows()) {
-		format(string, sizeof(string), "You have successfully jailed %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "You have successfully jailed %s's account.", name);
 
 		format(string, sizeof(string), "AdmCmd: %s was offline jailed by %s, reason: %s", name, GetPlayerNameEx(index), reason);
 		Log("logs/admin.log", string);
 	}
 	else {
-		format(string, sizeof(string), "There was an issue with jailing %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with jailing %s's account.", name);
 	}
 
 	DeletePVar(index, "OnJailAccount");
@@ -5247,15 +5196,13 @@ public OnWarnPlayer(index)
 	GetPVarString(index, "OnWarnPlayerReason", reason, 64);
 
 	if(cache_affected_rows()) {
-		format(string, sizeof(string), "You have successfully warned %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "You have successfully warned %s's account.", name);
 
 		format(string, sizeof(string), "AdmCmd: %s was offline warned by %s, reason: %s", name, GetPlayerNameEx(index), reason);
 		Log("logs/admin.log", string);
 	}
 	else {
-		format(string, sizeof(string), "There was an issue with warning %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with warning %s's account.", name);
 	}
 	DeletePVar(index, "OnWarnPlayer");
 	DeletePVar(index, "OnWarnPlayerReason");
@@ -5372,7 +5319,7 @@ public OnGetSMSLog(playerid)
 
 forward OnGroupInviteChecked(iExtraID, session, target, targetSession, group);
 public OnGroupInviteChecked(iExtraID, session, target, targetSession, group) {
-    new iRows, szResult[256];
+    new iRows;
     cache_get_row_count(iRows);
     if(!(0 <= iExtraID < MAX_PLAYERS) || !(0 <= target < MAX_PLAYERS) || !(0 <= group < MAX_GROUPS)) return 0;
     if(!IsPlayerConnected(iExtraID) || !IsPlayerConnected(target) || !gPlayerLogged{iExtraID} || !gPlayerLogged{target}
@@ -5381,10 +5328,8 @@ public OnGroupInviteChecked(iExtraID, session, target, targetSession, group) {
         || GetPVarInt(iExtraID, "GroupTargetSession") != targetSession || PlayerInfo[iExtraID][pLeader] != group) return 0;
     if(!iRows) {
         if(0 <= PlayerInfo[target][pMember] < MAX_GROUPS || 0 <= PlayerInfo[target][pLeader] < MAX_GROUPS) return 0;
-        format(szResult, sizeof(szResult), "%s has invited you to %s (type /accept group to join).", GetPlayerNameEx(iExtraID), arrGroupData[group][g_szGroupName]);
-        SendClientMessageEx(target, COLOR_LIGHTBLUE, szResult);
-        format(szResult, sizeof(szResult), "You offered %s a group invitation.", GetPlayerNameEx(target));
-        SendClientMessageEx(iExtraID, COLOR_LIGHTBLUE, szResult);
+        SendClientMessageEx(target, COLOR_LIGHTBLUE, "%s has invited you to %s (type /accept group to join).", GetPlayerNameEx(iExtraID), arrGroupData[group][g_szGroupName]);
+        SendClientMessageEx(iExtraID, COLOR_LIGHTBLUE, "You offered %s a group invitation.", GetPlayerNameEx(target));
         SetPVarInt(target, "Group_Inviter", iExtraID);
         SetPVarInt(target, "GroupInviteSession", session);
         SetPVarInt(target, "GroupInviteID", group);
@@ -5635,10 +5580,8 @@ public Group_QueryFinish(iType, iExtraID) {
 		    new string[128];
 		    new otherplayer = GetPVarInt(iExtraID, "GroupBanningPlayer");
 		    new group = GetPVarInt(iExtraID, "GroupBanningGroup");
-			format(string, sizeof(string), "You have group-banned %s from group %d.", GetPlayerNameEx(otherplayer), group);
-			SendClientMessageEx(iExtraID, COLOR_WHITE, string);
-			format(string, sizeof(string), "You have been group-banned, by %s.", GetPlayerNameEx(iExtraID));
-			SendClientMessageEx(otherplayer, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(iExtraID, COLOR_WHITE, "You have group-banned %s from group %d.", GetPlayerNameEx(otherplayer), group);
+			SendClientMessageEx(otherplayer, COLOR_LIGHTBLUE, "You have been group-banned, by %s.", GetPlayerNameEx(iExtraID));
 			format(string, sizeof(string), "Administrator %s has group-banned %s (%d) from %s (%d)", GetPlayerNameEx(iExtraID), GetPlayerNameEx(otherplayer), GetPlayerSQLId(otherplayer), arrGroupData[PlayerInfo[otherplayer][pMember]][g_szGroupName], PlayerInfo[otherplayer][pMember]);
 			GroupLog(PlayerInfo[otherplayer][pMember], string);
 			PlayerInfo[otherplayer][pMember] = INVALID_GROUP_ID;
@@ -5662,17 +5605,14 @@ public Group_QueryFinish(iType, iExtraID) {
 			new group = GetPVarInt(iExtraID, "GroupUnBanningGroup");
 			if(cache_affected_rows())
 			{
-				format(string, sizeof(string), "You have group-unbanned %s from group %s (%d).", GetPlayerNameEx(otherplayer), arrGroupData[group][g_szGroupName], group);
-				SendClientMessageEx(iExtraID, COLOR_WHITE, string);
-				format(string, sizeof(string), "You have been group-unbanned from %s, by %s.", arrGroupData[group][g_szGroupName], GetPlayerNameEx(iExtraID));
-				SendClientMessageEx(otherplayer, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(iExtraID, COLOR_WHITE, "You have group-unbanned %s from group %s (%d).", GetPlayerNameEx(otherplayer), arrGroupData[group][g_szGroupName], group);
+				SendClientMessageEx(otherplayer, COLOR_LIGHTBLUE, "You have been group-unbanned from %s, by %s.", arrGroupData[group][g_szGroupName], GetPlayerNameEx(iExtraID));
 				format(string, sizeof(string), "Administrator %s has group-unbanned %s (%d) from %s (%d)", GetPlayerNameEx(iExtraID), GetPlayerNameEx(otherplayer), GetPlayerSQLId(otherplayer), arrGroupData[group][g_szGroupName], group);
 				GroupLog(group, string);
 			}
 			else
 			{
-				format(string, sizeof(string), "There was an issue group-unbanning %s from %s (%d)", GetPlayerNameEx(otherplayer), arrGroupData[group][g_szGroupName], group);
-				SendClientMessageEx(iExtraID, COLOR_WHITE, string);
+				SendClientMessageEx(iExtraID, COLOR_WHITE, "There was an issue group-unbanning %s from %s (%d)", GetPlayerNameEx(otherplayer), arrGroupData[group][g_szGroupName], group);
 			}
 			DeletePVar(iExtraID, "GroupUnBanningPlayer");
 			DeletePVar(iExtraID, "GroupUnBanningGroup");
@@ -5804,8 +5744,7 @@ public ReturnMoney(index)
 			Auctions[AuctionItem][Bidder] = GetPlayerSQLId(index);
 			strcpy(Auctions[AuctionItem][Wining], GetPlayerNameExt(index), MAX_PLAYER_NAME);
 
-			format(string, sizeof(string), "You have placed a bid of %i on %s.", GetPVarInt(index, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
-			SendClientMessageEx(index, COLOR_WHITE, string);
+			SendClientMessageEx(index, COLOR_WHITE, "You have placed a bid of %i on %s.", GetPVarInt(index, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
 
 			format(string, sizeof(string), "%s(%d) (IP:%s) has placed a bid of %i on %s(%i)", GetPlayerNameEx(index), GetPlayerSQLId(index), GetPlayerIpEx(index), GetPVarInt(index, "BidPlaced"), Auctions[AuctionItem][BiddingFor], AuctionItem);
 			Log("logs/auction.log", string);
@@ -6071,10 +6010,8 @@ public OnCheckRFLName(playerid, Player)
 			new newname[25], string[128];
 			GetPVarString(Player, "NewRFLName", newname, sizeof(newname));
 			format(RFLInfo[PlayerInfo[Player][pRFLTeam]][RFLname], 25, "%s", newname);
-			format(string, sizeof(string), "* Your team name has been changed to %s.", newname);
-			SendClientMessageEx(Player, COLOR_YELLOW, string);
-			format(string, sizeof(string), "* You have changed %s's team name to %s.", GetPlayerNameEx(playerid), newname);
-			SendClientMessageEx(playerid, COLOR_YELLOW, string);
+			SendClientMessageEx(Player, COLOR_YELLOW, "* Your team name has been changed to %s.", newname);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "* You have changed %s's team name to %s.", GetPlayerNameEx(playerid), newname);
 			format(string, sizeof(string), "%s has accepted %s's team name change request",GetPlayerNameEx(playerid),GetPlayerNameEx(Player));
 			ABroadCast(COLOR_YELLOW, string, 3);
 			SaveRelayForLifeTeam(PlayerInfo[Player][pRFLTeam]);
@@ -6135,8 +6072,7 @@ public OnStaffPrize(playerid)
 		amount = GetPVarInt(playerid, "OnSPrizeAmount");
 		format(string, sizeof(string), "AdmCmd: %s has offline-given %s %d free %s.", GetPlayerNameEx(playerid), name, amount, type);
 		ABroadCast(COLOR_LIGHTRED, string, 2);
-		format(string, sizeof(string), "You have given %s %d %s.", name, amount, type);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given %s %d %s.", name, amount, type);
 		format(string, sizeof(string), "[Admin] %s(IP:%s) has offline-given %s %d free %s.", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), name, amount, type);
 		Log("logs/adminrewards.log", string);
 	}
@@ -6544,14 +6480,12 @@ public OnWDWhitelist(index)
 	GetPVarString(index, "OnWDWhitelist", name, 24);
 
 	if(cache_affected_rows()) {
-		format(string, sizeof(string), "You have successfully whitelisted %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "You have successfully whitelisted %s's account.", name);
 		format(string, sizeof(string), "%s has IP Whitelisted %s", GetPlayerNameEx(index), name);
 		Log("logs/wdwhitelist.log", string);
 	}
 	else {
-		format(string, sizeof(string), "There was a issue with whitelisting %s's account.", name);
-		SendClientMessageEx(index, COLOR_WHITE, string);
+		SendClientMessageEx(index, COLOR_WHITE, "There was a issue with whitelisting %s's account.", name);
 	}
 	DeletePVar(index, "OnWDWhitelist");
 
@@ -6623,8 +6557,7 @@ public OnSetVMute(playerid, task)
 	}
 	else
 	{
-		format(string, sizeof(string), "Could not vip %s %s..", (task==1)?("mute"):("unmute"), tmpName);
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Could not vip %s %s..", (task==1)?("mute"):("unmute"), tmpName);
 	}
 	return 1;
 }

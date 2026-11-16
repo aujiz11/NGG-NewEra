@@ -279,8 +279,7 @@ public CaptureTimer(id)
 		format(szMiscArray, sizeof(szMiscArray), "%s has successfully attempted to take over of %s for %s, it will be theirs in %d minutes!", DynPoints[id][poPName], DynPoints[id][poName], arrGroupData[DynPoints[id][poCapperGroup]][g_szGroupName], DynPoints[id][poTimeLeft]);
 		UpdateDynamic3DTextLabelText(DynPoints[id][poTextID], COLOR_YELLOW, szMiscArray);
 	} else {
-		format(szMiscArray, sizeof(szMiscArray), "%s has successfully taken control of the %s for %s.", DynPoints[id][poPName], DynPoints[id][poName], arrGroupData[DynPoints[id][poCapperGroup]][g_szGroupName]);
-		SendClientMessageToAllEx(COLOR_YELLOW, szMiscArray);
+		SendClientMessageToAllEx(COLOR_YELLOW, "%s has successfully taken control of the %s for %s.", DynPoints[id][poPName], DynPoints[id][poName], arrGroupData[DynPoints[id][poCapperGroup]][g_szGroupName]);
 		DynPoints[id][poCaptureGroup] = DynPoints[id][poCapperGroup];
 		DynPoints[id][poCapperGroup] = INVALID_GROUP_ID;
 		strmid(DynPoints[id][poCaptureName], DynPoints[id][poPName], 0, 32, 32);

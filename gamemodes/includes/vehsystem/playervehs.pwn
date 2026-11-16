@@ -281,8 +281,7 @@ stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 				case 1:	rsMessage = "logged off";
 				case 2: rsMessage = "been kicked/banned";
 			}
-			format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has %s.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), rsMessage);
-			SendClientMessageEx(extraid, COLOR_YELLOW, szMessage);
+			SendClientMessageEx(extraid, COLOR_YELLOW, "The player (%s) that owns this vehicle (%s) has %s.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), rsMessage);
 			new ip2[MAX_PLAYER_NAME];
 			GetPlayerIp(extraid, ip2, sizeof(ip2));
 			SendClientMessageEx(extraid, COLOR_YELLOW, "(( The vehicle will de-spawn once you complete or fail the deliver. ))");

@@ -93,44 +93,37 @@ PlayerFriskPlayer(playerid, giveplayerid)
 	new packages = GetPVarInt(giveplayerid, "Packages");
 	new crates = PlayerInfo[giveplayerid][pCrates];
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
-	format(szMiscArray, sizeof(szMiscArray), "Listing pocket for %s.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Listing pocket for %s.", GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_WHITE, "** Items **");
 	format(szMiscArray, sizeof(szMiscArray), "* %s has frisked %s for any illegal items.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
 	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	if(PlayerInfo[giveplayerid][pMats] > 0)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d materials.", PlayerInfo[giveplayerid][pMats]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d materials.", PlayerInfo[giveplayerid][pMats]);
 	}
 	if(PlayerInfo[giveplayerid][pSyringes] > 0)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d syringes.", PlayerInfo[giveplayerid][pSyringes]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d syringes.", PlayerInfo[giveplayerid][pSyringes]);
 	}
     if(packages > 0)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d material packages.", packages);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d material packages.", packages);
 	}
 	if(crates > 0)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d drug crates.", crates);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d drug crates.", crates);
 	}
 
 	SendClientMessageEx(playerid, COLOR_WHITE, "** Drugs **");
 	for(new i = 0; i < sizeof(Drugs); ++i) {
 
 		if(PlayerInfo[giveplayerid][pDrugs][i] > 0) {
-			format(szMiscArray, sizeof(szMiscArray), "%s: %dg", Drugs[i], PlayerInfo[giveplayerid][pDrugs][i]);
-			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_GRAD1, "%s: %dg", Drugs[i], PlayerInfo[giveplayerid][pDrugs][i]);
 			}
 	}
 	if(Fishes[giveplayerid][pWeight1] > 0 || Fishes[giveplayerid][pWeight2] > 0 || Fishes[giveplayerid][pWeight3] > 0 || Fishes[giveplayerid][pWeight4] > 0 || Fishes[giveplayerid][pWeight5] > 0)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d fish.", PlayerInfo[giveplayerid][pFishes]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d fish.", PlayerInfo[giveplayerid][pFishes]);
 	}
 	SendClientMessageEx(playerid, COLOR_WHITE, "** Misc **");
 	if(PlayerInfo[giveplayerid][pPhoneBook] > 0) SendClientMessageEx(playerid, COLOR_GREY, "Phone book.");
@@ -142,8 +135,7 @@ PlayerFriskPlayer(playerid, giveplayerid)
 		if(PlayerInfo[giveplayerid][pGuns][i] > 0)
 		{
 			GetWeaponName(PlayerInfo[giveplayerid][pGuns][i], weaponname, sizeof(weaponname));
-			format(szMiscArray, sizeof(szMiscArray), "Weapon: %s.", weaponname);
-			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Weapon: %s.", weaponname);
 		}
 	}
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
@@ -164,12 +156,11 @@ CMD:guard(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 		return 1;
 	}
-	new string[128], giveplayerid, money;
+	new giveplayerid, money;
 	if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /guard [player] [price]");
 	if (GetPVarInt(playerid, "GuardTimer") > 0)
 	{
-		format(string, sizeof(string), "   You must wait %d seconds before selling another vest.", GetPVarInt(playerid, "GuardTimer"));
-		SendClientMessageEx(playerid,COLOR_GREY,string);
+		SendClientMessageEx(playerid,COLOR_GREY,"   You must wait %d seconds before selling another vest.", GetPVarInt(playerid, "GuardTimer"));
 		return 1;
 	}
 	if(money < 2000 || money > 10000) { SendClientMessageEx(playerid, COLOR_GREY, "Specified price must be between $2,000 and $10,000."); return 1; }
@@ -185,10 +176,8 @@ CMD:guard(playerid, params[])
 			}
 
 			SetPVarInt(playerid, "GuardTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GUARDTIMER);
-			format(string, sizeof(string), "* You offered protection to %s for $%d.", GetPlayerNameEx(giveplayerid), money);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "* Bodyguard %s wants to protect you for $%d, type /accept bodyguard to accept.", GetPlayerNameEx(playerid), money);
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered protection to %s for $%d.", GetPlayerNameEx(giveplayerid), money);
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Bodyguard %s wants to protect you for $%d, type /accept bodyguard to accept.", GetPlayerNameEx(playerid), money);
 			GuardOffer[giveplayerid] = playerid;
 			SetPVarInt(giveplayerid, "GuardOfferSession", g_arrQueryHandle[playerid]);
 			GuardPrice[giveplayerid] = money;

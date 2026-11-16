@@ -58,8 +58,7 @@ CMD:tledit(playerid, params[])
 			GetPlayerPos(playerid, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]);
 			TxtLabels[labelid][tlInt] = GetPlayerInterior(playerid);
 			TxtLabels[labelid][tlVW] = GetPlayerVirtualWorld(playerid);
-			format(string, sizeof(string), "You have changed the position on Text Label #%d.", labelid);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the position on Text Label #%d.", labelid);
 			CreateTxtLabel(labelid);
 			SaveTxtLabel(labelid);
 			format(string, sizeof(string), "%s has edited Text Label ID %d's position.", GetPlayerNameEx(playerid), labelid);
@@ -69,8 +68,7 @@ CMD:tledit(playerid, params[])
 		else if(strcmp(choice, "color", true) == 0)
 		{
 			TxtLabels[labelid][tlColor] = amount;
-			format(string, sizeof(string), "You have changed the color to %d on Text Label #%d.", amount, labelid);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the color to %d on Text Label #%d.", amount, labelid);
 			CreateTxtLabel(labelid);
 			SaveTxtLabel(labelid);
 			format(string, sizeof(string), "%s has edited Text Label ID %d's color.", GetPlayerNameEx(playerid), labelid);
@@ -80,8 +78,7 @@ CMD:tledit(playerid, params[])
 		else if(strcmp(choice, "pickupmodel", true) == 0)
 		{
 			TxtLabels[labelid][tlPickupModel] = amount;
-			format(string, sizeof(string), "You have changed the pickup model to %d on Text Label #%d.", amount, labelid);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the pickup model to %d on Text Label #%d.", amount, labelid);
 			CreateTxtLabel(labelid);
 			SaveTxtLabel(labelid);
 			format(string, sizeof(string), "%s has edited Text Label ID %d's PickupModel.", GetPlayerNameEx(playerid), labelid);
@@ -91,8 +88,7 @@ CMD:tledit(playerid, params[])
 		else if(strcmp(choice, "delete", true) == 0)
 		{
 			if(strcmp(TxtLabels[labelid][tlText], "None", true) == 0) {
-				format(string, sizeof(string), "Text Label %d does not exist.", labelid);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Text Label %d does not exist.", labelid);
 				return 1;
 			}
 			if(IsValidDynamicPickup(TxtLabels[labelid][tlPickupID])) DestroyDynamicPickup(TxtLabels[labelid][tlPickupID]);
@@ -106,8 +102,7 @@ CMD:tledit(playerid, params[])
 			TxtLabels[labelid][tlColor] = 0;
 			TxtLabels[labelid][tlPickupModel] = 0;
 			SaveTxtLabel(labelid);
-			format(string, sizeof(string), "You have deleted Text Label #%d.", labelid);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted Text Label #%d.", labelid);
 			format(string, sizeof(string), "%s has deleted Text Label %d.", GetPlayerNameEx(playerid), labelid);
 			Log("logs/tledit.log", string);
 			return 1;
@@ -152,13 +147,9 @@ CMD:tlstatus(playerid, params[])
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pGangModerator] == 2 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
-		new string[128];
-		format(string,sizeof(string),"|___________ Text Label Status (ID: %d) ___________|", labelid);
-		SendClientMessageEx(playerid, COLOR_GREEN, string);
-		format(string, sizeof(string), "[Position] X: %f | Y: %f | Z: %f | VW: %d | Int: %d", TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "Text: %s | Color: %d | Pickup Model: %d", TxtLabels[labelid][tlText], TxtLabels[labelid][tlColor], TxtLabels[labelid][tlPickupModel]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Text Label Status (ID: %d) ___________|", labelid);
+		SendClientMessageEx(playerid, COLOR_WHITE, "[Position] X: %f | Y: %f | Z: %f | VW: %d | Int: %d", TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Text: %s | Color: %d | Pickup Model: %d", TxtLabels[labelid][tlText], TxtLabels[labelid][tlColor], TxtLabels[labelid][tlPickupModel]);
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	return 1;
@@ -173,9 +164,7 @@ CMD:tlnext(playerid, params[])
 		{
 			if(TxtLabels[x][tlPosX] == 0)
 			{
-				new string[128];
-				format(string, sizeof(string), "%d is available to use.", x);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", x);
 				break;
 			}
 		}

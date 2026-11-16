@@ -217,16 +217,14 @@ CMD:garageedit(playerid, params[])
 			size = "Extra Large";
 		}
 		CreateGarage(garageid);
-		format(string, sizeof(string), "Garage size set to %s", size);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Garage size set to %s", size);
 		format(string, sizeof(string), "%s has edited Garage ID: %d's size to %s", GetPlayerNameEx(playerid), garageid, size);
 		Log("logs/garage.log", string);
 	}
 	else if(strcmp(option, "vw", true) == 0)
 	{
 		GarageInfo[garageid][gar_InteriorVW] = value;
-		format(string, sizeof(string), "Garage Interior VW set to %d", value);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Garage Interior VW set to %d", value);
 		format(string, sizeof(string), "%s has edited Garage ID: %d's VW to %d", GetPlayerNameEx(playerid), garageid, value);
 		Log("logs/garage.log", string);
 		CreateGarage(garageid);
@@ -235,8 +233,7 @@ CMD:garageedit(playerid, params[])
 	{
 		format(string, sizeof(string), "%s has deleted Garage ID: %d was owned by %s(%d)", GetPlayerNameEx(playerid), garageid, GarageInfo[garageid][gar_OwnerName], GarageInfo[garageid][gar_Owner]);
 		Log("logs/garage.log", string);
-		format(string, sizeof(string), "You have successfully deleted Garage ID: %d was owned by %s", garageid, GarageInfo[garageid][gar_OwnerName]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully deleted Garage ID: %d was owned by %s", garageid, GarageInfo[garageid][gar_OwnerName]);
 		GarageInfo[garageid][gar_Owner] = -1;
 		format(GarageInfo[garageid][gar_OwnerName], MAX_PLAYER_NAME, "Nobody");
 		GarageInfo[garageid][gar_ExteriorX] = 0.0;
@@ -354,14 +351,12 @@ CMD:garagenext(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
-		new string[128];
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available garage...");
 		for(new x; x < MAX_GARAGES; x++)
 		{
 			if(GarageInfo[x][gar_ExteriorX] == 0.0)
 			{
-				format(string, sizeof(string), "%d is available to use.", x);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", x);
 				break;
 			}
 		}
@@ -378,12 +373,11 @@ CMD:goingarage(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
-		new string[48], garage;
+		new garage;
 		if(sscanf(params, "d", garage)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /goingarage [garageid]");
 		if(garage < 0 || garage >= MAX_GARAGES)
 		{
-			format(string, sizeof(string), "Garage ID must be between 0 and %d.", MAX_GARAGES - 1);
-			return SendClientMessageEx(playerid, COLOR_GREY, string);
+			return SendClientMessageEx(playerid, COLOR_GREY, "Garage ID must be between 0 and %d.", MAX_GARAGES - 1);
 		}
 		SetPlayerPos(playerid, GarageInfo[garage][gar_InteriorX], GarageInfo[garage][gar_InteriorY], GarageInfo[garage][gar_InteriorZ]);
 		SetPlayerFacingAngle(playerid, GarageInfo[garage][gar_InteriorA]);
@@ -400,12 +394,11 @@ CMD:gotogarage(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
-		new string[48], garage;
+		new garage;
 		if(sscanf(params, "d", garage)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotogarage [garageid]");
 		if(garage < 0 || garage >= MAX_GARAGES)
 		{
-			format(string, sizeof(string), "GarageID must be between 0 and %d.", MAX_GARAGES - 1);
-			return SendClientMessageEx(playerid, COLOR_GREY, string);
+			return SendClientMessageEx(playerid, COLOR_GREY, "GarageID must be between 0 and %d.", MAX_GARAGES - 1);
 		}
 		if(GarageInfo[garage][gar_ExteriorX] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD2, "No exterior is set for this garage");
 		SetPlayerInterior(playerid,GarageInfo[garage][gar_ExteriorInt]);
@@ -424,24 +417,19 @@ CMD:garagestatus(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 	new garageid;
 	if(sscanf(params, "i", garageid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /garagestatus [garageid]");
-	new string[128];
-	format(string,sizeof(string),"|___________ Garage Status (ID: %d) ___________|", garageid);
-	SendClientMessageEx(playerid, COLOR_GREEN, string);
-	format(string, sizeof(string), "(Ext) X: %f | Y: %f | Z: %f | (Int) X: %f | Y: %f | Z: %f", GarageInfo[garageid][gar_ExteriorX], GarageInfo[garageid][gar_ExteriorY], GarageInfo[garageid][gar_ExteriorZ], GarageInfo[garageid][gar_InteriorX], GarageInfo[garageid][gar_InteriorY], GarageInfo[garageid][gar_InteriorZ]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "Custom Ext: %d | Exterior VW: %d | Exterior Int: %d | Interior VW: %d | Locked: %d | Password: %s", GarageInfo[garageid][gar_CustomExterior], GarageInfo[garageid][gar_ExteriorVW], GarageInfo[garageid][gar_ExteriorInt], GarageInfo[garageid][gar_InteriorVW], GarageInfo[garageid][gar_Locked], GarageInfo[garageid][gar_Pass]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Garage Status (ID: %d) ___________|", garageid);
+	SendClientMessageEx(playerid, COLOR_WHITE, "(Ext) X: %f | Y: %f | Z: %f | (Int) X: %f | Y: %f | Z: %f", GarageInfo[garageid][gar_ExteriorX], GarageInfo[garageid][gar_ExteriorY], GarageInfo[garageid][gar_ExteriorZ], GarageInfo[garageid][gar_InteriorX], GarageInfo[garageid][gar_InteriorY], GarageInfo[garageid][gar_InteriorZ]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Custom Ext: %d | Exterior VW: %d | Exterior Int: %d | Interior VW: %d | Locked: %d | Password: %s", GarageInfo[garageid][gar_CustomExterior], GarageInfo[garageid][gar_ExteriorVW], GarageInfo[garageid][gar_ExteriorInt], GarageInfo[garageid][gar_InteriorVW], GarageInfo[garageid][gar_Locked], GarageInfo[garageid][gar_Pass]);
 	return 1;
 }
 
 CMD:garagenear(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
-	new option, string[128];
+	new option;
 	if(!sscanf(params, "d", option))
 	{
-		format(string, sizeof(string), "* Listing all garages within 30 meters of you in VW %d...", option);
-		SendClientMessageEx(playerid, COLOR_RED, string);
+		SendClientMessageEx(playerid, COLOR_RED, "* Listing all garages within 30 meters of you in VW %d...", option);
 		for(new i; i < MAX_GARAGES; i++)
 		{
 			if(GarageInfo[i][gar_InteriorX] != 0.0)
@@ -450,26 +438,22 @@ CMD:garagenear(playerid, params[])
 				{
 					if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]))
 					{
-						format(string, sizeof(string), "(Interior) Garage ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]));
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "(Interior) Garage ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]));
 					}
 					if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]))
 					{
-						format(string, sizeof(string), "(Exterior) Garage ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]), GarageInfo[i][gar_ExteriorInt]);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "(Exterior) Garage ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]), GarageInfo[i][gar_ExteriorInt]);
 					}
 				}
 				else
 				{
 					if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]) && GarageInfo[i][gar_InteriorVW] == option)
 					{
-						format(string, sizeof(string), "(Interior) Garage ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]));
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "(Interior) Garage ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]));
 					}
 					if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]) && GarageInfo[i][gar_ExteriorVW] == option)
 					{
-						format(string, sizeof(string), "(Exterior) Garage ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]), GarageInfo[i][gar_ExteriorInt]);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "(Exterior) Garage ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]), GarageInfo[i][gar_ExteriorInt]);
 					}
 				}
 			}
@@ -484,13 +468,11 @@ CMD:garagenear(playerid, params[])
 			{
 				if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]) && GarageInfo[i][gar_InteriorVW] == GetPlayerVirtualWorld(playerid))
 				{
-					format(string, sizeof(string), "(Interior) Garage ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]));
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "(Interior) Garage ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]));
 				}
 				if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]) && GarageInfo[i][gar_ExteriorVW] == GetPlayerVirtualWorld(playerid))
 				{
-					format(string, sizeof(string), "(Exterior) Garage ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]), GarageInfo[i][gar_ExteriorInt]);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "(Exterior) Garage ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]), GarageInfo[i][gar_ExteriorInt]);
 				}
 			}
 		}
@@ -633,8 +615,7 @@ public OnSetGarageOwner(playerid, garageid)
 		{
 			cache_get_value_name_int(0, "id", GarageInfo[garageid][gar_Owner]);
 			cache_get_value_name(0, "Username", GarageInfo[garageid][gar_OwnerName], MAX_PLAYER_NAME);
-			format(string, sizeof(string), "Successfully set the owner to %s.", GarageInfo[garageid][gar_OwnerName]);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Successfully set the owner to %s.", GarageInfo[garageid][gar_OwnerName]);
 			CreateGarage(garageid);
 			SaveGarage(garageid);
 			format(string, sizeof(string), "%s has edited Garage ID: %d's owner to %s (SQL ID: %d).", GetPlayerNameEx(playerid), garageid, GarageInfo[garageid][gar_OwnerName], GarageInfo[garageid][gar_Owner]);

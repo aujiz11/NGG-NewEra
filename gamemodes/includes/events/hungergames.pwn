@@ -83,9 +83,7 @@ CMD:createbackpack(playerid, params[])
 			
 			AddNewBackpack(id);
 			
-			new string[128];
-			format(string, sizeof(string), "You have successfully created a Hunger Games Backpack {FF0000}(Type: %s){FFFFFF}.", GetHungerBackpackName(id));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully created a Hunger Games Backpack {FF0000}(Type: %s){FFFFFF}.", GetHungerBackpackName(id));
 		}
 		else
 		{
@@ -509,13 +507,12 @@ CMD:hgplayers(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 3)
 	{
-		new string[128]; // 8024 memory is not enough when there is 400+ players in the event
+		 // 8024 memory is not enough when there is 400+ players in the event
 		foreach(new i : Player)
 		{
 			if(HungerPlayerInfo[i][hgInEvent] == 1)
 			{
-				format(string, sizeof(string), "Player %s (ID %i)", GetPlayerNameEx(i), i);
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Player %s (ID %i)", GetPlayerNameEx(i), i);
 			}
 		}
 	}

@@ -304,8 +304,7 @@ CMD:arrestedit(playerid, params[])
 			GetPlayerPos(playerid, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]);
 			ArrestPoints[id][arrestInt] = GetPlayerInterior(playerid);
 			ArrestPoints[id][arrestVW] = GetPlayerVirtualWorld(playerid);
-			format(string, sizeof(string), "You have changed the position on Arrest Point #%d.", id);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the position on Arrest Point #%d.", id);
 			DestroyDynamic3DTextLabel(ArrestPoints[id][arrestTextID]);
 			DestroyDynamicPickup(ArrestPoints[id][arrestPickupID]);
 			switch(ArrestPoints[id][arrestType])
@@ -344,13 +343,11 @@ CMD:arrestedit(playerid, params[])
 		{
 			if(ArrestPoints[id][arrestPosX] == 0)
 			{
-				format(string, sizeof(string), "Arrest Point #%d does not exist.", id);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Arrest Point #%d does not exist.", id);
 				return 1;
 			}
 			ArrestPoints[id][arrestType] = amount;
-			format(string, sizeof(string), "You have changed the type for Arrest Point #%d to %d.", id, amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the type for Arrest Point #%d to %d.", id, amount);
 			DestroyDynamic3DTextLabel(ArrestPoints[id][arrestTextID]);
 			DestroyDynamicPickup(ArrestPoints[id][arrestPickupID]);
 			switch(ArrestPoints[id][arrestType])
@@ -389,15 +386,13 @@ CMD:arrestedit(playerid, params[])
 		{
 			if(ArrestPoints[id][arrestPosX] == 0)
 			{
-				format(string, sizeof(string), "Arrest Point #%d does not exist.", id);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Arrest Point #%d does not exist.", id);
 				return 1;
 			}
 			GetPlayerPos(playerid, ArrestPoints[id][JailPos1][0], ArrestPoints[id][JailPos1][1], ArrestPoints[id][JailPos1][2]);
 			ArrestPoints[id][jailVW] = GetPlayerVirtualWorld(playerid);
 			ArrestPoints[id][jailInt] = GetPlayerInterior(playerid);
-			format(string, sizeof(string), "You have changed the jail cell position 1 on Arrest Point #%d.", id);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the jail cell position 1 on Arrest Point #%d.", id);
 			SaveArrestPoint(id);
 			format(string, sizeof(string), "%s has changed the jail cell position 1 on Arrest Point ID %d.", GetPlayerNameEx(playerid), id);
 			Log("logs/arrestedit.log", string);
@@ -406,15 +401,13 @@ CMD:arrestedit(playerid, params[])
 		{
 			if(ArrestPoints[id][arrestPosX] == 0)
 			{
-				format(string, sizeof(string), "Arrest Point #%d does not exist.", id);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Arrest Point #%d does not exist.", id);
 				return 1;
 			}
 			GetPlayerPos(playerid, ArrestPoints[id][JailPos2][0], ArrestPoints[id][JailPos2][1], ArrestPoints[id][JailPos2][2]);
 			ArrestPoints[id][jailVW] = GetPlayerVirtualWorld(playerid);
 			ArrestPoints[id][jailInt] = GetPlayerInterior(playerid);
-			format(string, sizeof(string), "You have changed the jail cell position 2 on Arrest Point #%d.", id);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the jail cell position 2 on Arrest Point #%d.", id);
 			SaveArrestPoint(id);
 			format(string, sizeof(string), "%s has changed the jail cell position 2 on Arrest Point ID %d.", GetPlayerNameEx(playerid), id);
 			Log("logs/arrestedit.log", string);
@@ -423,8 +416,7 @@ CMD:arrestedit(playerid, params[])
 		{
 			if(ArrestPoints[id][arrestPosX] == 0)
 			{
-				format(string, sizeof(string), "Arrest Point #%d does not exist.", id);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Arrest Point #%d does not exist.", id);
 				return 1;
 			}
 			DestroyDynamic3DTextLabel(ArrestPoints[id][arrestTextID]);
@@ -436,8 +428,7 @@ CMD:arrestedit(playerid, params[])
 			ArrestPoints[id][arrestInt] = 0;
 			ArrestPoints[id][arrestType] = 0;
 			SaveArrestPoint(id);
-			format(string, sizeof(string), "You have deleted Arrest Point #%d.", id);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted Arrest Point #%d.", id);
 			format(string, sizeof(string), "%s has deleted Arrest Point ID %d.", GetPlayerNameEx(playerid), id);
 			Log("logs/arrestedit.log", string);
 			return 1;
@@ -457,15 +448,10 @@ CMD:arreststatus(playerid, params[])
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
-		new string[128];
-		format(string,sizeof(string),"|___________ Arrest Point Status (ID: %d) ___________|", id);
-		SendClientMessageEx(playerid, COLOR_GREEN, string);
-		format(string, sizeof(string), "[Position] X: %f | Y: %f | Z: %f | VW: %d | Int: %d | Type: %d", ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], ArrestPoints[id][arrestType]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "[JailPos 1] X: %f | Y: %f | Z: %f | VW: %d | Int: %d", ArrestPoints[id][JailPos1][0], ArrestPoints[id][JailPos1][1], ArrestPoints[id][JailPos1][2], ArrestPoints[id][jailVW], ArrestPoints[id][jailInt]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "[JailPos 2] X: %f | Y: %f | Z: %f", ArrestPoints[id][JailPos2][0], ArrestPoints[id][JailPos2][1], ArrestPoints[id][JailPos2][2]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Arrest Point Status (ID: %d) ___________|", id);
+		SendClientMessageEx(playerid, COLOR_WHITE, "[Position] X: %f | Y: %f | Z: %f | VW: %d | Int: %d | Type: %d", ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], ArrestPoints[id][arrestType]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "[JailPos 1] X: %f | Y: %f | Z: %f | VW: %d | Int: %d", ArrestPoints[id][JailPos1][0], ArrestPoints[id][JailPos1][1], ArrestPoints[id][JailPos1][2], ArrestPoints[id][jailVW], ArrestPoints[id][jailInt]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "[JailPos 2] X: %f | Y: %f | Z: %f", ArrestPoints[id][JailPos2][0], ArrestPoints[id][JailPos2][1], ArrestPoints[id][JailPos2][2]);
 	}
 	else
 	{
@@ -483,9 +469,7 @@ CMD:arrestnext(playerid, params[])
 		{
 			if(ArrestPoints[x][arrestPosX] == 0)
 		    {
-		        new string[128];
-		        format(string, sizeof(string), "%d is available to use.", x);
-		        SendClientMessageEx(playerid, COLOR_WHITE, string);
+		        SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", x);
 		        break;
 			}
 		}

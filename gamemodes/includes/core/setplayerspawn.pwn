@@ -229,8 +229,7 @@ SetPlayerSpawn(playerid)
 
 					for(new i = 0; i < 3; i++) {
 						
-						format(szMiscArray, sizeof(szMiscArray), "MOTD: %s", prisonerMOTD[i]);
-						SendClientMessageEx(playerid, COLOR_ORANGE, szMiscArray);
+						SendClientMessageEx(playerid, COLOR_ORANGE, "MOTD: %s", prisonerMOTD[i]);
 					}
 
 					PhoneOnline[playerid] = 1;
@@ -268,9 +267,7 @@ SetPlayerSpawn(playerid)
 				SetPlayerPos(playerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
 				SetPlayerSkin(playerid, 50);
 				SetPlayerColor(playerid, TEAM_APRISON_COLOR);
-				new string[128];
-				format(string, sizeof(string), "You are in prison, reason: %s", PlayerInfo[playerid][pPrisonReason]);
-				SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "You are in prison, reason: %s", PlayerInfo[playerid][pPrisonReason]);
 				ResetPlayerWeaponsEx(playerid);
 				KillEMSQueue(playerid);
 				Player_StreamPrep(playerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2], FREEZE_TIME);

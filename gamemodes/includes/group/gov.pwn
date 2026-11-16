@@ -42,7 +42,7 @@ CMD:settax(playerid, params[])
 		return 1;
 	}
 
-	new string[128], tax;
+	new tax;
 	if(sscanf(params, "d", tax)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /settax [percentage]");
 
 	if (tax < 1 || tax > 29)
@@ -54,15 +54,13 @@ CMD:settax(playerid, params[])
 	{
 		TaxValue = tax;
 		Misc_Save();
-		format(string, sizeof(string), "The SA income tax has been set to %d percent (of each paycheck).", TaxValue);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "The SA income tax has been set to %d percent (of each paycheck).", TaxValue);
 	}
 	if(arrGroupData[PlayerInfo[playerid][pLeader]][g_iAllegiance] == 2)
 	{
 		TRTaxValue = tax;
 		Misc_Save();
-		format(string, sizeof(string), "The NE income tax has been set to %d percent (of each paycheck).", TRTaxValue);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "The NE income tax has been set to %d percent (of each paycheck).", TRTaxValue);
 	}
 	return 1;
 }
@@ -81,8 +79,7 @@ CMD:taxwithdraw(playerid, params[])
 		if(sscanf(params, "ds[64]", amount, reason))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /taxwithdraw [amount] [reason]");
-			format(string, sizeof(string), "* VAULT BALANCE: $%s.", number_format(Tax));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* VAULT BALANCE: $%s.", number_format(Tax));
 			return 1;
 		}
 
@@ -96,8 +93,7 @@ CMD:taxwithdraw(playerid, params[])
 			Tax -= amount;
 			Misc_Save();
 			GivePlayerCash( playerid, amount );
-			format( string, sizeof( string ), "You have withdrawn $%s from the vault.", number_format(amount) );
-			SendClientMessageEx( playerid, COLOR_WHITE, string );
+			SendClientMessageEx( playerid, COLOR_WHITE, "You have withdrawn $%s from the vault.", number_format(amount) );
 			format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has withdrawn $%s of the SA tax money from the vault, reason: %s.",GetPlayerNameEx(playerid),number_format(amount),reason);
 			ABroadCast( COLOR_YELLOW, string, 2);
 			format(string,sizeof(string),"AdmWarning: %s(%d) has withdrawn $%s of the SA tax money from the vault, reason: %s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(amount),reason);
@@ -115,8 +111,7 @@ CMD:taxwithdraw(playerid, params[])
 		if(sscanf(params, "ds[64]", amount, reason))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /taxwithdraw [amount] [reason]");
-			format(string, sizeof(string), "* VAULT BALANCE: $%s.", number_format(TRTax));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* VAULT BALANCE: $%s.", number_format(TRTax));
 			return 1;
 		}
 
@@ -130,8 +125,7 @@ CMD:taxwithdraw(playerid, params[])
 			TRTax -= amount;
 			Misc_Save();
 			GivePlayerCash( playerid, amount );
-			format( string, sizeof( string ), "You have withdrawn $%s from the vault.", number_format(amount) );
-			SendClientMessageEx( playerid, COLOR_WHITE, string );
+			SendClientMessageEx( playerid, COLOR_WHITE, "You have withdrawn $%s from the vault.", number_format(amount) );
 			format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has withdrawn $%s of the NE tax money from the vault, reason: %s.",GetPlayerNameEx(playerid),number_format(amount),reason);
 			ABroadCast( COLOR_YELLOW, string, 2);
 			format(string,sizeof(string),"AdmWarning: %s(%d) has withdrawn $%s of the NE tax money from the vault, reason: %s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(amount),reason);
@@ -160,8 +154,7 @@ CMD:taxdeposit(playerid, params[])
 		if(sscanf(params, "d", amount))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /taxdeposit [amount]");
-			format(string, sizeof(string), "* VAULT BALANCE: $%s.", number_format(Tax));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* VAULT BALANCE: $%s.", number_format(Tax));
 			return 1;
 		}
 
@@ -179,8 +172,7 @@ CMD:taxdeposit(playerid, params[])
 		Tax += amount;
 		Misc_Save();
 		GivePlayerCash(playerid, -amount);
-		format( string, sizeof( string ), "You have deposited $%s into the SA vault.", number_format(amount) );
-		SendClientMessageEx( playerid, COLOR_WHITE, string );
+		SendClientMessageEx( playerid, COLOR_WHITE, "You have deposited $%s into the SA vault.", number_format(amount) );
 		format(string,sizeof(string),"%s has deposited $%s into the SA tax vault.",GetPlayerNameEx(playerid), number_format(amount));
 		GroupPayLog(PlayerInfo[playerid][pLeader], string);
 	}
@@ -189,8 +181,7 @@ CMD:taxdeposit(playerid, params[])
 		if(sscanf(params, "d", amount))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /taxdeposit [amount]");
-			format(string, sizeof(string), "* VAULT BALANCE: $%s.", number_format(TRTax));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* VAULT BALANCE: $%s.", number_format(TRTax));
 			return 1;
 		}
 
@@ -208,8 +199,7 @@ CMD:taxdeposit(playerid, params[])
 		TRTax += amount;
 		Misc_Save();
 		GivePlayerCash(playerid, -amount);
-		format( string, sizeof( string ), "You have deposited $%s into the NE vault.", number_format(amount) );
-		SendClientMessageEx( playerid, COLOR_WHITE, string );
+		SendClientMessageEx( playerid, COLOR_WHITE, "You have deposited $%s into the NE vault.", number_format(amount) );
 		format(string,sizeof(string),"%s has deposited $%s into the NE tax vault.",GetPlayerNameEx(playerid), number_format(amount));
 		GroupPayLog(PlayerInfo[playerid][pLeader], string);
 	}
@@ -224,14 +214,12 @@ CMD:settaxmoney(playerid, params[])
 		return 1;
 	}
 
-	new string[128], country, amount;
+	new country, amount;
 	if(sscanf(params, "dd", country, amount))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /settaxmoney [SA(1)/NE(2)] [amount]");
-		format(string, sizeof(string), "* CURRENT SA VAULT BALANCE: $%s.", number_format(Tax));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "* CURRENT NE VAULT BALANCE: $%s.", number_format(TRTax));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* CURRENT SA VAULT BALANCE: $%s.", number_format(Tax));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* CURRENT NE VAULT BALANCE: $%s.", number_format(TRTax));
 		return 1;
 	}
 	switch(country)
@@ -239,14 +227,12 @@ CMD:settaxmoney(playerid, params[])
 	    case 1:
 	    {
 			Tax = amount;
-			format( string, sizeof( string ), "You have set the tax money amount to $%s.", number_format(amount));
-			SendClientMessageEx( playerid, COLOR_WHITE, string );
+			SendClientMessageEx( playerid, COLOR_WHITE, "You have set the tax money amount to $%s.", number_format(amount) );
 	    }
 	    case 2:
 	    {
 			TRTax = amount;
-			format( string, sizeof( string ), "You have set the tax money amount to $%s.", number_format(amount));
-			SendClientMessageEx( playerid, COLOR_WHITE, string );
+			SendClientMessageEx( playerid, COLOR_WHITE, "You have set the tax money amount to $%s.", number_format(amount) );
 	    }
 	}
 	return 1;
@@ -254,7 +240,6 @@ CMD:settaxmoney(playerid, params[])
 
 CMD:checktax(playerid, params[])
 {
-	new string[128];
 	if(!(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not a government official.");
@@ -262,13 +247,11 @@ CMD:checktax(playerid, params[])
 	}
 	if(arrGroupData[PlayerInfo[playerid][pLeader]][g_iAllegiance] == 1)
 	{
-		format(string, sizeof(string), "* CURRENT SA VAULT BALANCE: $%s.", number_format(Tax));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* CURRENT SA VAULT BALANCE: $%s.", number_format(Tax));
 	}
 	else if(arrGroupData[PlayerInfo[playerid][pLeader]][g_iAllegiance] == 2)
 	{
-		format(string, sizeof(string), "* CURRENT NE VAULT BALANCE: $%s.", number_format(TRTax));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* CURRENT NE VAULT BALANCE: $%s.", number_format(TRTax));
 	}
 	return 1;
 }

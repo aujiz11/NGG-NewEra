@@ -311,13 +311,11 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 				// using house spawn system from previous insurance system
 				ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
 
-				format(string, sizeof(string), "Medical: You have been charged $%d for your hospital bill and transported to your home.", HospitalSpawnInfo[iHospital][0]);
-				SendClientMessageEx(playerid, COLOR_RED, string);
+				SendClientMessageEx(playerid, COLOR_RED, "Medical: You have been charged $%d for your hospital bill and transported to your home.", HospitalSpawnInfo[iHospital][0]);
 			}
 			else
 			{
-				format(string, sizeof(string), "Medical: You have been charged $%d for your hospital bill at %s", HospitalSpawnInfo[iHospital][0], GetHospitalName(iHospital));
-				SendClientMessageEx(playerid, COLOR_RED, string);
+				SendClientMessageEx(playerid, COLOR_RED, "Medical: You have been charged $%d for your hospital bill at %s", HospitalSpawnInfo[iHospital][0], GetHospitalName(iHospital));
 			}
 			
 			PlayerInfo[playerid][pHospital] = 0;
@@ -338,13 +336,11 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		} else {
 			if(PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE && PlayerInfo[playerid][pWantedLevel] < 1) // if they have homecare, set them at home for free
 			{
-				format(string, sizeof(string), "Medical: You have been charged $%d for your hospital bill and transported to your home.", HospitalSpawnInfo[iHospital][0]);
-				SendClientMessageEx(playerid, COLOR_RED, string);
+				SendClientMessageEx(playerid, COLOR_RED, "Medical: You have been charged $%d for your hospital bill and transported to your home.", HospitalSpawnInfo[iHospital][0]);
 			}
 			else
 			{
-				format(string, sizeof(string), "Medical: You have been charged $%d for your hospital bill at %s", HospitalSpawnInfo[iHospital][0], GetHospitalName(iHospital));
-				SendClientMessageEx(playerid, COLOR_RED, string);
+				SendClientMessageEx(playerid, COLOR_RED, "Medical: You have been charged $%d for your hospital bill at %s", HospitalSpawnInfo[iHospital][0], GetHospitalName(iHospital));
 			}
 			PlayerInfo[playerid][pHospital] = 0;
 			GivePlayerCash(playerid, -HospitalSpawnInfo[iHospital][0]);
@@ -467,21 +463,18 @@ CMD:setinsurance(playerid, params[])
 {
 	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
-		new string[128], giveplayerid, insurance;
+		new giveplayerid, insurance;
 		if(sscanf(params, "ud", giveplayerid, insurance))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setinsurance [player] [insurance]");
-			format(string, sizeof(string), "Available Insurances: 0 - %d", MAX_HOSPITALS-1);
-			SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Available Insurances: 0 - %d", MAX_HOSPITALS-1);
 			return 1;
 		}
 
 		if(insurance >= 0 && insurance <= MAX_HOSPITALS-1)
 		{
-			format(string, sizeof(string), " Your insurance has been changed to %s.", GetHospitalName(insurance));
-			SendClientMessageEx(giveplayerid,COLOR_YELLOW,string);
-			format(string, sizeof(string), " You have changed %s's insurance to %s.", GetPlayerNameEx(giveplayerid), GetHospitalName(insurance));
-			SendClientMessageEx(playerid,COLOR_YELLOW,string);
+			SendClientMessageEx(giveplayerid,COLOR_YELLOW," Your insurance has been changed to %s.", GetHospitalName(insurance));
+			SendClientMessageEx(playerid,COLOR_YELLOW," You have changed %s's insurance to %s.", GetPlayerNameEx(giveplayerid), GetHospitalName(insurance));
 			PlayerInfo[giveplayerid][pInsurance] = insurance;
 			return 1;
 		}
@@ -526,8 +519,7 @@ CMD:buyinsurance(playerid, params[])
 		if(PlayerInfo[playerid][pInsurance] == iHospitalVW) return SendClientMessageEx(playerid, -1, "You already have insurance at this hospital!");
 		if(GetPlayerCash(playerid) < HospitalSpawnInfo[iHospitalVW][1]) return SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
 		PlayerInfo[playerid][pInsurance] = iHospitalVW;
-		format(string, sizeof(string), "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(iHospitalVW), HospitalSpawnInfo[iHospitalVW][1]);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(iHospitalVW), HospitalSpawnInfo[iHospitalVW][1]);
 		GivePlayerCash(playerid, - HospitalSpawnInfo[iHospitalVW][1]);
 		switch(iHospitalVW) {
 
@@ -541,8 +533,7 @@ CMD:buyinsurance(playerid, params[])
 	{
 		if(GetPlayerCash(playerid) < HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]) return SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
 		PlayerInfo[playerid][pInsurance] = HOSPITAL_DOCJAIL;
-		format(string, sizeof(string), "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(HOSPITAL_DOCJAIL), HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(HOSPITAL_DOCJAIL), HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
 		GivePlayerCash(playerid, - HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
 		Tax += HospitalSpawnInfo[HOSPITAL_DOCJAIL][1];
 		format(string, sizeof(string), "%s has purchased their medical insurance for $%d", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospitalVW][0]);
@@ -664,8 +655,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						if(PlayerInfo[playerid][pInsurance] == iHospitalVW) return SendClientMessageEx(playerid, -1, "You already have insurance at this hospital!");
 						if(GetPlayerCash(playerid) < HospitalSpawnInfo[iHospitalVW][1]) return SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
 						PlayerInfo[playerid][pInsurance] = iHospitalVW;
-						format(szMiscArray, sizeof(szMiscArray), "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(iHospitalVW), HospitalSpawnInfo[iHospitalVW][1]);
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(iHospitalVW), HospitalSpawnInfo[iHospitalVW][1]);
 						GivePlayerCash(playerid, - HospitalSpawnInfo[iHospitalVW][1]);
 						switch(iHospitalVW) {
 
@@ -679,8 +669,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					{
 						if(GetPlayerCash(playerid) < HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]) return SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
 						PlayerInfo[playerid][pInsurance] = HOSPITAL_DOCJAIL;
-						format(szMiscArray, sizeof(szMiscArray), "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(HOSPITAL_DOCJAIL), HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(HOSPITAL_DOCJAIL), HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
 						GivePlayerCash(playerid, - HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
 						Tax += HospitalSpawnInfo[HOSPITAL_DOCJAIL][1];
 						format(szMiscArray, sizeof(szMiscArray), "%s has purchased their medical insurance for $%d", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospitalVW][0]);

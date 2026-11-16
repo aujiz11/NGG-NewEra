@@ -88,11 +88,9 @@ hook OnPlayerPickUpDynamicPickup(playerid, pickupid)
 {
 	if(pickupid == GetGVarInt("RobberyDeliverPickupID") && GetPVarInt(playerid, "_HasBag"))
 	{
-		new str[128],
-			collected = GetPVarInt(playerid, "_CollectedMoney");
+		new collected = GetPVarInt(playerid, "_CollectedMoney");
 		DisablePlayerCheckpoint(playerid);
-		format(str, sizeof(str), "Heist successful! $%s has been succesfully transferred to your safe!", number_format(collected));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, str);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Heist successful! $%s has been succesfully transferred to your safe!", number_format(collected));
 		arrGroupData[PlayerInfo[playerid][pMember]][g_iBudget] += collected;
 		RemovePlayerAttachedObject(playerid, 8);
 		RemovePlayerAttachedObject(playerid, 9);
@@ -265,12 +263,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!response || !IsNumericString(inputtext)) return safeMenu(playerid);
 			{
 				if(isnull(inputtext) && strlen(inputtext) != 4) return safeMenu(playerid);
-				new iSafeID = GetPVarInt(playerid, "_EditingSafeID"),
-					str[32];
+				new iSafeID = GetPVarInt(playerid, "_EditingSafeID");
 				if(!checkSafePerms(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be a group leader to edit the safe's PIN.");
 				format(SafeData[iSafeID][g_iPin], 5, "%s", inputtext);
-				format(str, sizeof(str), "Pin changed to: %s", SafeData[iSafeID][g_iPin]);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, str);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Pin changed to: %s", SafeData[iSafeID][g_iPin]);
 				saveSafe(iSafeID);
 				return safeMenu(playerid);
 			}
@@ -385,11 +381,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!response || !IsNumericString(inputtext)) return safeMenu(playerid);
 			{
 				if(isnull(inputtext) && strlen(inputtext) != 4) return safeMenu(playerid);
-				new iSafeID = GetPVarInt(playerid, "_EditingSafeID"),
-					str[32];
+				new iSafeID = GetPVarInt(playerid, "_EditingSafeID");
 				format(SafeData[iSafeID][g_iPin], 5, "%s", inputtext);
-				format(str, sizeof(str), "[ADM] Pin changed to: %s", SafeData[iSafeID][g_iPin]);
-				SendClientMessageEx(playerid, COLOR_YELLOW, str);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[ADM] Pin changed to: %s", SafeData[iSafeID][g_iPin]);
 				saveSafe(iSafeID);
 				return safeEditMenu(playerid);
 			}
@@ -492,12 +486,10 @@ GetMoneyBagID(playerid)
 safePosition(playerid, iSafeID)
 {
 	if(iSafeID == -1) return 1;
-	new str[64];
 	SetPVarInt(playerid, "_EditingSafeID", iSafeID);
 	SetPVarInt(playerid, "_EditingSafeObjectID", SafeData[iSafeID][g_iObjectID]);
 	EditDynamicObject(playerid, SafeData[iSafeID][g_iObjectID]);
-	format(str, sizeof str, "You're editing safe ID %i's position.", iSafeID);
-	SendClientMessageEx(playerid, COLOR_GRAD1, str);
+	SendClientMessageEx(playerid, COLOR_GRAD1, "You're editing safe ID %i's position.", iSafeID);
 	return 1;
 }
 
@@ -541,19 +533,16 @@ safeDelete(playerid, params[])
 		SafeData[iSafeID][g_iRobbed] = 0;
 		SafeData[iSafeID][g_tRobbedTime] = 0;
 		
-		format(str, sizeof str, "You have deleted safe ID %i.", iSafeID);
-		SendClientMessageEx(playerid, 0xFFFFFFFF, str);
+		SendClientMessageEx(playerid, 0xFFFFFFFF, "You have deleted safe ID %i.", iSafeID);
 	}
 	return 1;	
 }
 
 startCollectMoney(playerid, iSafeID)
 {
-	new str[128],
-		iRobberID = GetPVarInt(playerid, "_RobberID");
+	new iRobberID = GetPVarInt(playerid, "_RobberID");
 	
-	format(str, sizeof(str), "Robbing Safe ID: %i", iSafeID);
-	SendClientMessageEx(playerid, COLOR_WHITE, str);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Robbing Safe ID: %i", iSafeID);
 	SetPVarInt(playerid, "_RobbingSafe", 1);
 	SetTimerEx("collectMoney", 10000, false, "ii", playerid, iSafeID);
 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, true, false, false, false, 0);
@@ -605,8 +594,7 @@ public collectMoney(playerid, iSafeID)
 	SetPVarInt(playerid, "_CollectedMoney", collected);
 	SafeData[iSafeID][g_iMoney] -= collected;
 	GivePlayerCash(playerid, collected);
-	format(str, sizeof(str), "You collected $%s from the safe. You now have $%s stored in your bag.", number_format(ROB_COLLECT_RATE), number_format(collected));
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, str);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You collected $%s from the safe. You now have $%s stored in your bag.", number_format(ROB_COLLECT_RATE), number_format(collected));
 	SetTimerEx("collectMoney", 10000, false, "ii", playerid, iSafeID);
 	return 1;
 }
@@ -715,9 +703,7 @@ public onCreateSafe(iExtraID, iSafeID)
 	
 	processSafe(iSafeID);
 	
-    new str[64];
-	format(str, sizeof str, "You have created an Safe using ID %i (DBID: %i).", iSafeID, iDBID);
-	SendClientMessageEx(iExtraID, 0xFFFFFFFF, str);	
+	SendClientMessageEx(iExtraID, 0xFFFFFFFF, "You have created an Safe using ID %i (DBID: %i).", iSafeID, iDBID);
 	return 1;
 }
 
@@ -852,20 +838,17 @@ safeCreate(playerid)
 
 ProxGangMemberCheck(playerid)
 {
-	new str[64],
-		count;
+	new count;
 	foreach(new i : Player)
 	{
 		if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember] && GetPlayerVirtualWorld(i) == GetPlayerVirtualWorld(playerid) && GetPlayerInterior(i) == GetPlayerInterior(playerid))
 		{
 			if(count > MAX_ROBBERS)
 			{
-				format(str, sizeof(str), "You cannot have more than %i robbers. You now have %i available.", MAX_ROBBERS, count);
-				SendClientMessageEx(playerid, COLOR_LIGHTRED, str);
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "You cannot have more than %i robbers. You now have %i available.", MAX_ROBBERS, count);
 			}
 			SetPVarInt(i, "_RobberID", count);
-			format(str, sizeof(str), "You are now part of the heist. (Robber ID: %i)", count);			
-			SendClientMessageEx(i, COLOR_LIGHTRED, str);
+			SendClientMessageEx(i, COLOR_LIGHTRED, "You are now part of the heist. (Robber ID: %i)", count);
 			count++;
 		}
 	}
@@ -965,9 +948,7 @@ public OnRobbery(playerid, groupid)
 		{
 			SetTimerEx("OnRobbery", 60000 * 1, false, "ii", playerid, PlayerInfo[playerid][pMember]);
 			SetGVarInt("RobberyStage", 2);
-			new str[128];
-			format(str, sizeof(str), "Robbing Safe ID: %i", iSafeID);
-			SendClientMessageEx(playerid, COLOR_WHITE, str);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Robbing Safe ID: %i", iSafeID);
 			SafeData[iSafeID][g_iRobberyPickup] = CreateDynamicPickup(1212, 23, SafeData[iSafeID][g_fPos][0], SafeData[iSafeID][g_fPos][1], SafeData[iSafeID][g_fPos][2] + 1.0);
 			foreach(new giveplayerid : Player) if(GetPVarInt(giveplayerid, "_RobberID"))
 				SetPlayerCheckpoint(giveplayerid, SafeData[iSafeID][g_fPos][0], SafeData[iSafeID][g_fPos][1], SafeData[iSafeID][g_fPos][2], 2.0);	

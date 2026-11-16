@@ -54,14 +54,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						{
 							Get3DZone(HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ], zone, MAX_ZONE_NAME);
 							SetPVarInt(playerid, "LastHouseInvite", gettime());
-							new istring[128];
 							hInviteHouse[hInviteOfferTo[playerid]] = i;
 							hInviteOffer[hInviteOfferTo[playerid]] = playerid;
 							SetPVarInt(hInviteOfferTo[playerid], "hInviteOfferSession", g_arrQueryHandle[playerid]);
-							format(istring, sizeof(istring), "   %s has invited you to their house in %s (type /accept invite).", GetPlayerNameEx(playerid), zone);
-							SendClientMessageEx(hInviteOfferTo[playerid], COLOR_LIGHTBLUE, istring);
-							format(istring, sizeof(istring), "   You have invited %s to your house in %s.", GetPlayerNameEx(hInviteOfferTo[playerid]), zone);
-							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, istring);
+							SendClientMessageEx(hInviteOfferTo[playerid], COLOR_LIGHTBLUE, "   %s has invited you to their house in %s (type /accept invite).", GetPlayerNameEx(playerid), zone);
+							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "   You have invited %s to your house in %s.", GetPlayerNameEx(hInviteOfferTo[playerid]), zone);
 							return 1;
 						}
 						j++;
@@ -570,8 +567,7 @@ CMD:buyhouse(playerid, params[])
 			{
                 if(PlayerInfo[playerid][pLevel] < HouseInfo[h][hLevel])
 				{
-                    format(string, sizeof(string), "   You must be Level %d to purchase this!", HouseInfo[h][hLevel]);
-                    SendClientMessageEx(playerid, COLOR_GRAD5, string);
+                    SendClientMessageEx(playerid, COLOR_GRAD5, "   You must be Level %d to purchase this!", HouseInfo[h][hLevel]);
                     return 1;
                 }
 				if(Homes[playerid] >= 2 && PlayerInfo[playerid][pDonateRank] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot own another home.");
@@ -701,8 +697,7 @@ CMD:ringbell(playerid, params[])
 		foreach(new i: Player)
 		{
 			if((IsPlayerInRangeOfPoint(i, 15.0, HouseInfo[h][hInteriorX], HouseInfo[h][hInteriorY], HouseInfo[h][hInteriorZ])) && GetPlayerVirtualWorld(i) == HouseInfo[h][hIntVW] && GetPlayerInterior(i) == HouseInfo[h][hIntIW]) {
-				format(string,sizeof(string),"%s's doorbell rings.", StripUnderscore(HouseInfo[h][hOwnerName]));
-				SendClientMessageEx(i,COLOR_PURPLE,string);
+				SendClientMessageEx(i,COLOR_PURPLE,"%s's doorbell rings.", StripUnderscore(HouseInfo[h][hOwnerName]));
 				GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~w~The doorbell rings...", 4000,3);
 				break;
 			}
@@ -751,7 +746,7 @@ CMD:sellmyhouse(playerid, params[])
 	if(Homes[playerid] > 0)
 	{
 		if(PlayerInfo[playerid][pFreezeHouse] == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: Your house assets are frozen, you cannot sell your house!");
-		new string[128], giveplayerid, price;
+		new giveplayerid, price;
 		if(sscanf(params, "ud", giveplayerid, price)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellmyhouse [player] [price]");
 		if(price < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Price must be higher than 0.");
 		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Player is currently not connected to the server.");
@@ -781,10 +776,8 @@ CMD:sellmyhouse(playerid, params[])
 						SetPVarInt(giveplayerid, "HouseOfferSession", g_arrQueryHandle[playerid]);
 						HousePrice[giveplayerid] = price;
 						House[giveplayerid] = i;
-						format(string, sizeof(string), "* You offered %s to buy your house for $%s.", GetPlayerNameEx(giveplayerid), number_format(price));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-						format(string, sizeof(string), "* %s has offered you their house for $%s, (type /accept house) to buy.", GetPlayerNameEx(playerid), number_format(price));
-						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to buy your house for $%s.", GetPlayerNameEx(giveplayerid), number_format(price));
+						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s has offered you their house for $%s, (type /accept house) to buy.", GetPlayerNameEx(playerid), number_format(price));
 						DeletePVar(playerid, "confirmhousell");
 						return 1;
 					}
@@ -847,8 +840,7 @@ CMD:goinhouse(playerid, params[])
 
 		if(housenum <= 0 || housenum >= MAX_HOUSES)
 		{
-			format(szMiscArray, sizeof(szMiscArray), "House ID must be between 1 and %d.", MAX_HOUSES - 1);
-			return SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+			return SendClientMessageEx(playerid, COLOR_GREY, "House ID must be between 1 and %d.", MAX_HOUSES - 1);
 		}
 
 		House_VistorCheck(housenum);
@@ -872,8 +864,7 @@ CMD:gotohouse(playerid, params[])
 
 		if(housenum <= 0 || housenum >= MAX_HOUSES)
 		{
-			format(szMiscArray, sizeof(szMiscArray), "House ID must be between 1 and %d.", MAX_HOUSES - 1);
-			return SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+			return SendClientMessageEx(playerid, COLOR_GREY, "House ID must be between 1 and %d.", MAX_HOUSES - 1);
 		}
 
 		SetPlayerPos(playerid, HouseInfo[housenum][hExteriorX], HouseInfo[housenum][hExteriorY], HouseInfo[housenum][hExteriorZ]);
@@ -897,9 +888,7 @@ CMD:hnext(playerid, params[])
 		{
 		    if(HouseInfo[x][hExteriorX] == 0.0) // If the house is at blueberry!
 		    {
-		        new string[128];
-		        format(string, sizeof(string), "%d is available to use.", x);
-		        SendClientMessageEx(playerid, COLOR_WHITE, string);
+		        SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", x);
 		        break;
 			}
 		}
@@ -1019,8 +1008,7 @@ CMD:hedit(playerid, params[])
 		if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hClosetTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hClosetTextID]);
 		ReloadHousePickup(houseid);
 		SaveHouse(houseid);
-		format(string, sizeof(string), "You have deleted house id %d.", houseid);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted house id %d.", houseid);
 		format(string, sizeof(string), "%s has deleted house id %d", GetPlayerNameEx(playerid), houseid);
 		Log("logs/hedit.log", string);
 		return true;
@@ -1096,8 +1084,7 @@ CMD:hedit(playerid, params[])
 	{
 		HouseInfo[houseid][hIntVW] = amount;
 
-		format(string, sizeof(string), "You have changed the home's interior VW to %d.", amount);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the home's interior VW to %d.", amount);
 
 		SaveHouse(houseid);
 		ReloadHousePickup(houseid);
@@ -1108,8 +1095,7 @@ CMD:hedit(playerid, params[])
 	else if(strcmp(choice, "level", true) == 0)
 	{
 		HouseInfo[houseid][hLevel] = amount;
-		format(string, sizeof(string), "You have set the house level to %d.", amount);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the house level to %d.", amount);
 		ReloadHouseText(houseid);
 		format(string, sizeof(string), "%s has edited HouseID %d's Level to %d.", GetPlayerNameEx(playerid), houseid, amount);
 		Log("logs/hedit.log", string);
@@ -1117,8 +1103,7 @@ CMD:hedit(playerid, params[])
 	else if(strcmp(choice, "price", true) == 0)
 	{
 		HouseInfo[houseid][hValue] = amount;
-		format(string, sizeof(string), "You have set the houses price to $%d.", amount );
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the houses price to $%d.", amount);
 		ReloadHouseText(houseid);
 
 		format(string, sizeof(string), "%s has edited HouseID %d's Price to $%d.", GetPlayerNameEx(playerid), amount);
@@ -1220,15 +1205,13 @@ CMD:shophouse(playerid, params[])
 	else if(strcmp(choice, "level", true) == 0)
 	{
 		HouseInfo[houseid][hLevel] = amount;
-		format(string, sizeof(string), "You have set the house level to %d.", amount);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the house level to %d.", amount);
 		ReloadHouseText(houseid);
 	}
 	else if(strcmp(choice, "price", true) == 0)
 	{
 		HouseInfo[houseid][hValue] = amount;
-		format(string, sizeof(string), "You have set the houses price to $%d.", amount );
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the houses price to $%d.", amount);
 		ReloadHouseText(houseid);
 	}
 	else if(strcmp(choice, "class", true) == 0)
@@ -1349,7 +1332,7 @@ CMD:setrentable(playerid, params[])
 
 CMD:setrent(playerid, params[])
 {
-	new string[128], fee;
+	new fee;
 	if(Homes[playerid] > 0)
 	{
 		for(new i; i < MAX_HOUSES; i++)
@@ -1362,8 +1345,7 @@ CMD:setrent(playerid, params[])
 				else
 				{
 					HouseInfo[i][hRentFee] = fee;
-					format(string, sizeof(string), "You have set your house's rent fee to $%s.", number_format(HouseInfo[i][hRentFee]));
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "You have set your house's rent fee to $%s.", number_format(HouseInfo[i][hRentFee]));
 
 					ReloadHouseText(i);
 					return 1;
@@ -1378,7 +1360,7 @@ CMD:setrent(playerid, params[])
 
 CMD:evict(playerid, params[])
 {
-	new string[128], giveplayerid;
+	new giveplayerid;
 	if(Homes[playerid] > 0)
 	{
 		for(new i; i < MAX_HOUSES; i++)
@@ -1392,11 +1374,9 @@ CMD:evict(playerid, params[])
 					if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't evict yourself.");
 					else if(PlayerInfo[giveplayerid][pRenting] == i)
 					{
-						format(string, sizeof(string), "%s has evicted you from their house.", GetPlayerNameEx(playerid));
-						SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+						SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has evicted you from their house.", GetPlayerNameEx(playerid));
 
-						format(string, sizeof(string), "You have evicted %s from your house.", GetPlayerNameEx(giveplayerid));
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "You have evicted %s from your house.", GetPlayerNameEx(giveplayerid));
 
 						PlayerInfo[giveplayerid][pRenting] = INVALID_HOUSE_ID;
 						return 1;
@@ -1421,19 +1401,17 @@ CMD:evictall(playerid, params[])
 			if(GetPlayerSQLId(playerid) == HouseInfo[i][hOwnerID] && ((IsPlayerInRangeOfPoint(playerid, 5.0, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hExtVW] && GetPlayerInterior(playerid) == HouseInfo[i][hExtIW]) ||
 			(IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[i][hIntIW])))
 			{
-				new giveplayerid, string[56];
+				new giveplayerid;
 				foreach(new p: Player)
 				{
 					if(PlayerInfo[p][pRenting] == i)
 					{
-						format(string, sizeof(string), "%s has evicted you from their house.", GetPlayerNameEx(playerid));
-						SendClientMessageEx(p, COLOR_WHITE, string);
+						SendClientMessageEx(p, COLOR_WHITE, "%s has evicted you from their house.", GetPlayerNameEx(playerid));
 						PlayerInfo[p][pRenting] = INVALID_HOUSE_ID;
 						++giveplayerid;
 					}
 				}	
-				format(string, sizeof(string), "%d online players have been evicted from your house.", giveplayerid);
-				return SendClientMessageEx(playerid, COLOR_WHITE, string);
+				return SendClientMessageEx(playerid, COLOR_WHITE, "%d online players have been evicted from your house.", giveplayerid);
 			}
 		}
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not at a house that you own.");
@@ -1479,27 +1457,16 @@ CMD:hstatus(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	new hid;
 	if(sscanf(params, "i", hid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hstatus [hid]");
-	new string[128];
-	format(string,sizeof(string),"|___________ House Status (ID: %d) (OwnerID: %d)___________|", hid, HouseInfo[hid][hOwnerID]);
-	SendClientMessageEx(playerid, COLOR_GREEN, string);
-	format(string, sizeof(string), "(Ext) X: %f | Y: %f | Z: %f | (Int) X: %f | Y: %f | Z: %f", HouseInfo[hid][hExteriorX], HouseInfo[hid][hExteriorY], HouseInfo[hid][hExteriorZ], HouseInfo[hid][hInteriorX], HouseInfo[hid][hInteriorY], HouseInfo[hid][hInteriorZ]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "Custom Int: %d | Custom Ext: %d | Exterior VW: %d | Exterior Int: %d | Interior VW: %d | Interior Int: %d", HouseInfo[hid][hCustomInterior], HouseInfo[hid][hCustomExterior], HouseInfo[hid][hExtVW], HouseInfo[hid][hExtIW], HouseInfo[hid][hIntVW], HouseInfo[hid][hIntIW]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "Money: %d | Pot: %d | Crack: %d | Meth: %d | Ecstasy: %d | Heroin: %d | Materials: %d", HouseInfo[hid][hSafeMoney], HouseInfo[hid][hPot], HouseInfo[hid][hCrack], HouseInfo[hid][hMeth], HouseInfo[hid][hEcstasy], HouseInfo[hid][hHeroin], HouseInfo[hid][hMaterials]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "Weapons - %d | %d | %d | %d | %d | GLUpgrade: %d", HouseInfo[hid][hWeapons][0], HouseInfo[hid][hWeapons][1], HouseInfo[hid][hWeapons][2], HouseInfo[hid][hWeapons][3], HouseInfo[hid][hWeapons][4], HouseInfo[hid][hGLUpgrade]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "Mailbox - Type: %d | X: %f | Y: %f | Z: %f", HouseInfo[hid][hMailType], HouseInfo[hid][hMailX], HouseInfo[hid][hMailY], HouseInfo[hid][hMailZ]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "Closet - X: %f | Y: %f | Z: %f", HouseInfo[hid][hClosetX], HouseInfo[hid][hClosetY], HouseInfo[hid][hClosetZ]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "Sale Sign - X: %f | Y: %f | Z: %f", HouseInfo[hid][hSign][0], HouseInfo[hid][hSign][1], HouseInfo[hid][hSign][2]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "Sale Sign - Description: %s | Expires in: %s", HouseInfo[hid][hSignDesc], (HouseInfo[hid][hSignExpire]) ? ConvertTimeS(HouseInfo[hid][hSignExpire]-gettime()):("None"));
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "Inactivity - Status: %s | Expires: %s | Ignore: %d (1 = admin | 2 = shop) | Counter: %d", HouseInfo[hid][hInactive] ? ("Inactive"):("Active"), !HouseInfo[hid][hExpire] ? ("N/A"):date(HouseInfo[hid][hExpire], 4), HouseInfo[hid][hIgnore], HouseInfo[hid][hCounter]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_GREEN, "|___________ House Status (ID: %d) (OwnerID: %d)___________|", hid, HouseInfo[hid][hOwnerID]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "(Ext) X: %f | Y: %f | Z: %f | (Int) X: %f | Y: %f | Z: %f", HouseInfo[hid][hExteriorX], HouseInfo[hid][hExteriorY], HouseInfo[hid][hExteriorZ], HouseInfo[hid][hInteriorX], HouseInfo[hid][hInteriorY], HouseInfo[hid][hInteriorZ]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Custom Int: %d | Custom Ext: %d | Exterior VW: %d | Exterior Int: %d | Interior VW: %d | Interior Int: %d", HouseInfo[hid][hCustomInterior], HouseInfo[hid][hCustomExterior], HouseInfo[hid][hExtVW], HouseInfo[hid][hExtIW], HouseInfo[hid][hIntVW], HouseInfo[hid][hIntIW]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Money: %d | Pot: %d | Crack: %d | Meth: %d | Ecstasy: %d | Heroin: %d | Materials: %d", HouseInfo[hid][hSafeMoney], HouseInfo[hid][hPot], HouseInfo[hid][hCrack], HouseInfo[hid][hMeth], HouseInfo[hid][hEcstasy], HouseInfo[hid][hHeroin], HouseInfo[hid][hMaterials]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Weapons - %d | %d | %d | %d | %d | GLUpgrade: %d", HouseInfo[hid][hWeapons][0], HouseInfo[hid][hWeapons][1], HouseInfo[hid][hWeapons][2], HouseInfo[hid][hWeapons][3], HouseInfo[hid][hWeapons][4], HouseInfo[hid][hGLUpgrade]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Mailbox - Type: %d | X: %f | Y: %f | Z: %f", HouseInfo[hid][hMailType], HouseInfo[hid][hMailX], HouseInfo[hid][hMailY], HouseInfo[hid][hMailZ]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Closet - X: %f | Y: %f | Z: %f", HouseInfo[hid][hClosetX], HouseInfo[hid][hClosetY], HouseInfo[hid][hClosetZ]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Sale Sign - X: %f | Y: %f | Z: %f", HouseInfo[hid][hSign][0], HouseInfo[hid][hSign][1], HouseInfo[hid][hSign][2]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Sale Sign - Description: %s | Expires in: %s", HouseInfo[hid][hSignDesc], (HouseInfo[hid][hSignExpire]) ? ConvertTimeS(HouseInfo[hid][hSignExpire]-gettime()):("None"));
+	SendClientMessageEx(playerid, COLOR_WHITE, "Inactivity - Status: %s | Expires: %s | Ignore: %d (1 = admin | 2 = shop) | Counter: %d", HouseInfo[hid][hInactive] ? ("Inactive"):("Active"), !HouseInfo[hid][hExpire] ? ("N/A"):date(HouseInfo[hid][hExpire], 4), HouseInfo[hid][hIgnore], HouseInfo[hid][hCounter]);
 	return 1;
 }
 
@@ -1510,9 +1477,7 @@ CMD:hnear(playerid, params[])
 		new option;
 		if(!sscanf(params, "d", option)) 
 		{
-			new string[64];
-			format(string, sizeof(string), "* Listing all houses within 30 meters of you in VW %d...", option);
-			SendClientMessageEx(playerid, COLOR_RED, string);
+			SendClientMessageEx(playerid, COLOR_RED, "* Listing all houses within 30 meters of you in VW %d...", option);
 			for(new i, szMessage[128]; i < MAX_HOUSES; i++)
 			{
 				if(option == -1)
@@ -1613,16 +1578,14 @@ CMD:hmove(playerid, params[])
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
 			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 		}
 		else if(fee > 0)
 		{
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
 			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 		}
 	}	
 	else if(strcmp(choice, "exterior", true) == 0)
@@ -1642,16 +1605,14 @@ CMD:hmove(playerid, params[])
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
 			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 		}
 		else if(fee > 0)
 		{
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
 			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 		}
 	}
 	return 1;

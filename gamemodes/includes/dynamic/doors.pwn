@@ -430,8 +430,7 @@ public OnSetDDOwner(playerid, doorid)
 			cache_get_value_name(0, "Username", playername, MAX_PLAYER_NAME);
 			strcat((DDoorsInfo[doorid][ddOwnerName][0] = 0, DDoorsInfo[doorid][ddOwnerName]), playername, MAX_PLAYER_NAME);
 
-			format(string, sizeof(string), "Successfully set the owner to %s.", playername);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Successfully set the owner to %s.", playername);
 
 			DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
 			if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
@@ -527,13 +526,12 @@ CMD:goindoor(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
-		new string[48], doornum;
+		new doornum;
 		if(sscanf(params, "d", doornum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /goindoor [doornumber]");
 
 		if(doornum <= 0 || doornum >= MAX_DDOORS)
 		{
-			format(string, sizeof(string), "Door ID must be between 1 and %d.", MAX_DDOORS - 1);
-			return SendClientMessageEx(playerid, COLOR_GREY, string);
+			return SendClientMessageEx(playerid, COLOR_GREY, "Door ID must be between 1 and %d.", MAX_DDOORS - 1);
 		}
 
 		SetPlayerInterior(playerid,DDoorsInfo[doornum][ddInteriorInt]);
@@ -551,13 +549,12 @@ CMD:gotodoor(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
-		new string[48], doornum;
+		new doornum;
 		if(sscanf(params, "d", doornum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotodoor [doornumber]");
 
 		if(doornum <= 0 || doornum >= MAX_DDOORS)
 		{
-			format(string, sizeof(string), "Door ID must be between 1 and %d.", MAX_DDOORS - 1);
-			return SendClientMessageEx(playerid, COLOR_GREY, string);
+			return SendClientMessageEx(playerid, COLOR_GREY, "Door ID must be between 1 and %d.", MAX_DDOORS - 1);
 		}
 
 		SetPlayerInterior(playerid,DDoorsInfo[doornum][ddExteriorInt]);
@@ -581,17 +578,11 @@ CMD:ddstatus(playerid, params[])
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
-		new string[128];
-		format(string,sizeof(string),"|___________ Door Status (ID: %d · Name: %s) ___________|", doorid, DDoorsInfo[doorid][ddDescription]);
-		SendClientMessageEx(playerid, COLOR_GREEN, string);
-		format(string, sizeof(string), "(Ext) X: %f | Y: %f | Z: %f | (Int) X: %f | Y: %f | Z: %f", DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "Pickup ID: %d | Custom Int: %d | Custom Ext: %d | Exterior VW: %d | Exterior Int: %d | Interior VW: %d | Interior Int: %d", DDoorsInfo[doorid][ddPickupID], DDoorsInfo[doorid][ddCustomInterior], DDoorsInfo[doorid][ddCustomExterior], DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], DDoorsInfo[doorid][ddInteriorVW], DDoorsInfo[doorid][ddInteriorInt]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "Type: %d | Rank: %d | VIP: %d | Allegiance: %d | Group Type: %d | Faction: %d | Admin: %d | Wanted: %d", DDoorsInfo[doorid][ddType], DDoorsInfo[doorid][ddRank], DDoorsInfo[doorid][ddVIP], DDoorsInfo[doorid][ddAllegiance], DDoorsInfo[doorid][ddGroupType], DDoorsInfo[doorid][ddFaction], DDoorsInfo[doorid][ddAdmin], DDoorsInfo[doorid][ddWanted]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "Vehiclable: %d | Locked: %d | Password: %s", DDoorsInfo[doorid][ddVehicleAble], DDoorsInfo[doorid][ddLocked], DDoorsInfo[doorid][ddPass]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Door Status (ID: %d · Name: %s) ___________|", doorid, DDoorsInfo[doorid][ddDescription]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "(Ext) X: %f | Y: %f | Z: %f | (Int) X: %f | Y: %f | Z: %f", DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Pickup ID: %d | Custom Int: %d | Custom Ext: %d | Exterior VW: %d | Exterior Int: %d | Interior VW: %d | Interior Int: %d", DDoorsInfo[doorid][ddPickupID], DDoorsInfo[doorid][ddCustomInterior], DDoorsInfo[doorid][ddCustomExterior], DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], DDoorsInfo[doorid][ddInteriorVW], DDoorsInfo[doorid][ddInteriorInt]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Type: %d | Rank: %d | VIP: %d | Allegiance: %d | Group Type: %d | Faction: %d | Admin: %d | Wanted: %d", DDoorsInfo[doorid][ddType], DDoorsInfo[doorid][ddRank], DDoorsInfo[doorid][ddVIP], DDoorsInfo[doorid][ddAllegiance], DDoorsInfo[doorid][ddGroupType], DDoorsInfo[doorid][ddFaction], DDoorsInfo[doorid][ddAdmin], DDoorsInfo[doorid][ddWanted]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Vehiclable: %d | Locked: %d | Password: %s", DDoorsInfo[doorid][ddVehicleAble], DDoorsInfo[doorid][ddLocked], DDoorsInfo[doorid][ddPass]);
 	}
 	else
 	{
@@ -607,9 +598,7 @@ CMD:ddnear(playerid, params[])
 		new option;
 		if(!sscanf(params, "d", option)) 
 		{
-			new string[64];
-			format(string, sizeof(string), "* Listing all dynamic doors within 30 meters of you in VW %d...", option);
-			SendClientMessageEx(playerid, COLOR_RED, string);
+			SendClientMessageEx(playerid, COLOR_RED, "* Listing all dynamic doors within 30 meters of you in VW %d...", option);
 			for(new i, szMessage[128]; i < MAX_DDOORS; i++)
 			{
 				if(strcmp(DDoorsInfo[i][ddDescription], "None", true) != 0)
@@ -680,9 +669,7 @@ CMD:ddnext(playerid, params[])
 		{
 		    if(DDoorsInfo[x][ddExteriorX] == 0.0) // If the door is at blueberry!
 		    {
-		        new string[128];
-		        format(string, sizeof(string), "%d is available to use.", x);
-		        SendClientMessageEx(playerid, COLOR_WHITE, string);
+		        SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", x);
 		        break;
 			}
 		}
@@ -870,8 +857,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddType] = amount;
 
-			format(string, sizeof(string), "You have changed the type to %d.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the type to %d.", amount);
 			switch(DDoorsInfo[doorid][ddType])
 			{
 				case 1:
@@ -912,8 +898,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddRank] = amount;
 
-			format(string, sizeof(string), "You have changed the rank to %d.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the rank to %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's rank.", GetPlayerNameEx(playerid), doorid);
@@ -924,8 +909,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddVIP] = amount;
 
-			format(string, sizeof(string), "You have changed the VIP Level to %d.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the VIP Level to %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's VIP Level.", GetPlayerNameEx(playerid), doorid);
@@ -936,8 +920,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddFamed] = amount;
 
-			format(string, sizeof(string), "You have changed the Famed Level to %d.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Famed Level to %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's Famed Level.", GetPlayerNameEx(playerid), doorid);
@@ -965,8 +948,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddAllegiance] = amount;
 
-			format(string, sizeof(string), "You have changed the Allegiance to %d.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Allegiance to %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's Allegiance to %d.", GetPlayerNameEx(playerid), doorid, amount);
@@ -977,8 +959,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddGroupType] = amount;
 
-			format(string, sizeof(string), "You have changed the Group Type to %d.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Group Type to %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's Group Type to %d.", GetPlayerNameEx(playerid), doorid, amount);
@@ -989,8 +970,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddFaction] = amount-1;
 
-			format(string, sizeof(string), "You have changed the Faction to %d.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Faction to %d.", amount);
 
 			if(DDoorsInfo[doorid][ddType] == 2)
 			{
@@ -1001,8 +981,7 @@ CMD:ddedit(playerid, params[])
 			}
 			else
 			{
-				format(string, sizeof(string), "Use '/ddedit type %d 2' to update the owner of this door.", doorid);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
+				SendClientMessageEx(playerid, COLOR_GREY, "Use '/ddedit type %d 2' to update the owner of this door.", doorid);
 			}
 
 			SaveDynamicDoor(doorid);
@@ -1014,8 +993,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddAdmin] = amount;
 
-			format(string, sizeof(string), "You have changed the Admin Level to %d.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Admin Level to %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's Admin Level.", GetPlayerNameEx(playerid), doorid);
@@ -1026,8 +1004,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddWanted] = amount;
 
-			format(string, sizeof(string), "You have changed the Wanted to %d.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Wanted to %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's Wanted.", GetPlayerNameEx(playerid), doorid);
@@ -1038,8 +1015,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddVehicleAble] = amount;
 
-			format(string, sizeof(string), "You have changed the VehicleAble to %d.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the VehicleAble to %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's VehicleAble.", GetPlayerNameEx(playerid), doorid);
@@ -1050,8 +1026,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddColor] = amount;
 
-			format(string, sizeof(string), "You have changed the Color to %d.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Color to %d.", amount);
 
 			DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
 			if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
@@ -1066,8 +1041,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddPickupModel] = amount;
 
-			format(string, sizeof(string), "You have changed the PickupModel to %d.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the PickupModel to %d.", amount);
 
 			DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
 			if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
@@ -1081,8 +1055,7 @@ CMD:ddedit(playerid, params[])
 		else if(strcmp(choice, "delete", true) == 0)
 		{
 			if(strcmp(DDoorsInfo[doorid][ddDescription], "None", true) == 0) {
-				format(string, sizeof(string), "DoorID %d does not exist.", doorid);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "DoorID %d does not exist.", doorid);
 				return 1;
 			}
 			DDoorsInfo[doorid][ddDescription] = 0;
@@ -1116,8 +1089,7 @@ CMD:ddedit(playerid, params[])
 			DDoorsInfo[doorid][ddLocked] = 0;
 			CreateDynamicDoor(doorid);
 			SaveDynamicDoor(doorid);
-			format(string, sizeof(string), "You have deleted DoorID %d.", doorid);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted DoorID %d.", doorid);
 			format(string, sizeof(string), "%s has deleted DoorID %d.", GetPlayerNameEx(playerid), doorid);
 			Log("logs/ddedit.log", string);
 			return 1;
@@ -1171,8 +1143,7 @@ CMD:ddmove(playerid, params[])
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
 			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 			
 		}
 		else if(fee > 0)
@@ -1180,8 +1151,7 @@ CMD:ddmove(playerid, params[])
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
 			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 		}
 	}
 	else if(strcmp(choice, "exterior", true) == 0)
@@ -1201,16 +1171,14 @@ CMD:ddmove(playerid, params[])
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
 			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 		}
 		else if(fee > 0)
 		{
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
 			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 		}
 	}
 	CreateDynamicDoor(doorid);

@@ -338,8 +338,7 @@ CMD:shopcar(playerid, params[]) {
 			GetPlayerFacingAngle(iTargetID, arr_fPlayerPos[3]);
 			CreatePlayerVehicle(iTargetID, GetPlayerFreeVehicleId(iTargetID), iModelID, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2], arr_fPlayerPos[3], iColors[0], iColors[1], 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 
-			format(szMessage, sizeof(szMessage), "You have successfully created a %s for %s (invoice %s).", VehicleName[iModelID - 400], GetPlayerNameEx(iTargetID), szInvoice);
-			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully created a %s for %s (invoice %s).", VehicleName[iModelID - 400], GetPlayerNameEx(iTargetID), szInvoice);
 
 			format(szMessage, sizeof(szMessage), "%s created a %s (%i) for %s(%d) (invoice %s).", GetPlayerNameEx(playerid), VehicleName[iModelID - 400], iModelID, GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), szInvoice);
 			Log("logs/shoplog.log", szMessage);
@@ -359,10 +358,8 @@ CMD:shopcardel(playerid, params[])
 		new playervehicleid = GetPlayerVehicle(giveplayerid, vehicleid);
 		if(playervehicleid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "ERROR: That person doesn't own that vehicle.");
 
-		format(string, sizeof(string), "You have deleted %s's %s (vehicle ID %d).", GetPlayerNameEx(giveplayerid), GetVehicleName(vehicleid), vehicleid);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "An Administrator has deleted your %s.", GetVehicleName(vehicleid));
-		SendClientMessageEx(giveplayerid, COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted %s's %s (vehicle ID %d).", GetPlayerNameEx(giveplayerid), GetVehicleName(vehicleid), vehicleid);
+		SendClientMessageEx(giveplayerid, COLOR_GREY, "An Administrator has deleted your %s.", GetVehicleName(vehicleid));
 		format(string, sizeof(string), "[SHOPCARDEL] %s deleted vehicle ID %d - Invoice %s for %s(%d)", GetPlayerNameEx(playerid), playervehicleid, invoicenum, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 		Log("logs/shoplog.log", string);
 		DestroyPlayerVehicle(giveplayerid, playervehicleid);
@@ -379,15 +376,13 @@ CMD:setstpay(playerid, params[])
 		if(sscanf(params, "f", ShopTechPay))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "Usage: /setstpay [value]");
-			format(string, sizeof(string), "Current Pay: $%.2f", ShopTechPay);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Current Pay: $%.2f", ShopTechPay);
 			return 1;
 		}
 		mysql_format(MainPipeline, string, sizeof(string), "UPDATE `misc` SET `ShopTechPay` = '%.2f'", ShopTechPay);
 		mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-		format(string, sizeof(string), "Shop Tech Pay set to $%.2f", ShopTechPay);
-        SendClientMessageEx(playerid, COLOR_WHITE, string);
+        SendClientMessageEx(playerid, COLOR_WHITE, "Shop Tech Pay set to $%.2f", ShopTechPay);
 	}
 	return 1;
 }
@@ -523,8 +518,7 @@ CMD:givemeorder(playerid, params[])
 				format(string, sizeof(string), "AdmCmd: %s assigned himself to shop order ID %d from %s (ID: %d).", GetPlayerNameEx(playerid), orderid, GetPlayerNameEx(giveplayerid), giveplayerid);
 				ShopTechBroadCast(COLOR_ORANGE, string);
 
-				format(string, sizeof(string), "%s is now reviewing your shop order ID %d.", GetPlayerNameEx(playerid), orderid);
-				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+				SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s is now reviewing your shop order ID %d.", GetPlayerNameEx(playerid), orderid);
 
 				OrderAssignedTo[giveplayerid] = playerid;
 			}
@@ -635,8 +629,7 @@ CMD:denyorder(playerid, params[])
 				format(string, sizeof(string), "AdmCmd: %s has denied shop order ID %d from %s (ID: %d), reason: %s", GetPlayerNameEx(playerid), orderid, GetPlayerNameEx(giveplayerid), giveplayerid, reason);
 				ShopTechBroadCast(COLOR_ORANGE, string);
 
-				format(string, sizeof(string), "%s has denied your shop order ID %d, reason: %s", GetPlayerNameEx(playerid), orderid, reason);
-				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+				SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has denied your shop order ID %d, reason: %s", GetPlayerNameEx(playerid), orderid, reason);
 
 				new playerip[32], giveplayerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
@@ -660,17 +653,13 @@ CMD:shoporder(playerid, params[])
 {
 	if(PlayerInfo[playerid][pOrder] != 0)
 	{
-	    new string[128];
 	    new orderid = PlayerInfo[playerid][pOrder];
-		format(string, sizeof(string), "You already have shop order ID %d pending, if you wish to cancel that type /cancelorder", orderid);
- 		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You already have shop order ID %d pending, if you wish to cancel that type /cancelorder", orderid);
 	    return 1;
 	}
 	if (GetPVarInt(playerid, "ShopOrderTimer") > 0)
 	{
-		new string[128];
-		format(string, sizeof(string), "You must wait %d seconds before submitting another shop order.", GetPVarInt(playerid, "ShopOrderTimer"));
-		SendClientMessageEx(playerid,COLOR_GREY, string);
+		SendClientMessageEx(playerid,COLOR_GREY, "You must wait %d seconds before submitting another shop order.", GetPVarInt(playerid, "ShopOrderTimer"));
 		return 1;
 	}
 	ShowPlayerDialogEx(playerid, DIALOG_SHOPORDER, DIALOG_STYLE_INPUT, "Shop Order", "This is for shop orders from http://shop.ng-gaming.net\n\nIf you do not have a shop order then please cancel this dialog box now.\n\nWarning: Abuse of this feature may result to an indefinite block from this command.\n\nPlease enter your shop order ID (if you do not know it put 1):", "Submit", "Cancel" );
@@ -688,8 +677,7 @@ CMD:cancelorder(playerid, params[])
 		format(string, sizeof(string), "%s(%d) (IP: %s) canceled their shop order (ID %i).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, orderid);
 		Log("logs/shoporders.log", string);
 
-		format(string, sizeof(string), "You have canceled your shop order (ID %i). If you wish to submit another order, type /shoporder.", orderid);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have canceled your shop order (ID %i). If you wish to submit another order, type /shoporder.", orderid);
 		PlayerInfo[playerid][pOrder] = 0;
 		OrderAssignedTo[playerid] = INVALID_PLAYER_ID;
 	}
@@ -702,7 +690,6 @@ CMD:cancelorder(playerid, params[])
 
 CMD:useexp(playerid, params[])
 {
-	new string[128];
     if (PlayerInfo[playerid][pEXPToken] < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, " You do not have any Double EXP tokens!");
@@ -710,8 +697,7 @@ CMD:useexp(playerid, params[])
 	}
     PlayerInfo[playerid][pDoubleEXP] += 8;
     PlayerInfo[playerid][pEXPToken]--;
-    format(string, sizeof(string), "You have used a Double EXP Token! You now have a total of %d of Double EXP hours!", PlayerInfo[playerid][pDoubleEXP]);
-	SendClientMessageEx(playerid, COLOR_YELLOW, string);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "You have used a Double EXP Token! You now have a total of %d of Double EXP hours!", PlayerInfo[playerid][pDoubleEXP]);
     return 1;
 }
 
@@ -728,8 +714,7 @@ CMD:shopexp(playerid, params[])
 
 	PlayerInfo[giveplayerid][pEXPToken] += amount;
 
-	format(string, sizeof(string), "You have received %d Double EXP Token(s) from Shop Tech %s.", amount, GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have received %d Double EXP Token(s) from Shop Tech %s.", amount, GetPlayerNameEx(playerid));
 	format(string, sizeof(string), "[SHOPEXP] %s given %s(%d), %d Double EXP Token(s) - Invoice %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount, invoice);
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	Log("logs/shoplog.log", string);
@@ -749,8 +734,7 @@ CMD:shoptokens(playerid, params[])
 
 	PlayerInfo[giveplayerid][pPaintTokens] += amount;
 
-	format(string, sizeof(string), "You have received %d Paintball Tokens from Shop Tech %s.", amount, GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have received %d Paintball Tokens from Shop Tech %s.", amount, GetPlayerNameEx(playerid));
 	format(string, sizeof(string), "[SHOPTOKENS] %s given %s(%d), %d Paintball Tokens - Invoice %s for %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount, invoice, GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	Log("logs/shoplog.log", string);
@@ -770,8 +754,7 @@ CMD:shopviptokens(playerid, params[])
 
 	PlayerInfo[giveplayerid][pTokens] += amount;
 
-	format(string, sizeof(string), "You have received %d VIP Tokens from Shop Tech %s.", amount, GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have received %d VIP Tokens from Shop Tech %s.", amount, GetPlayerNameEx(playerid));
 	format(string, sizeof(string), "[SHOPTOKENS] %s given %s(%d), %d VIP Tokens - Invoice %s for %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount, invoice, GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	Log("logs/shoplog.log", string);
@@ -791,8 +774,7 @@ CMD:shopfirework(playerid, params[])
 
 	PlayerInfo[giveplayerid][pFirework] += amount;
 
-	format(string, sizeof(string), "You have received %d Fireworks from Shop Tech %s. ", amount, GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have received %d Fireworks from Shop Tech %s. ", amount, GetPlayerNameEx(playerid));
 	format(string, sizeof(string), "[SHOPFIREWORK] %s given %s(%d) %d Firework(s) - Invoice %s for %s. ", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount, invoice, GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	Log("logs/shoplog.log", string);
@@ -833,9 +815,7 @@ CMD:credits(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 2)
 	{
-		new szString[128];
-		format(szString, sizeof(szString), "Credits: {FFD700}%s", number_format(PlayerInfo[playerid][pCredits]));
-		SendClientMessageEx(playerid, COLOR_CYAN, szString);
+		SendClientMessageEx(playerid, COLOR_CYAN, "Credits: {FFD700}%s", number_format(PlayerInfo[playerid][pCredits]));
 	}
 	else
 	{
@@ -844,9 +824,7 @@ CMD:credits(playerid, params[])
 			return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /credits [Player]");
 
 
-        new szString[128];
-		format(szString, sizeof(szString), "%s - Credits: {FFD700}%s",GetPlayerNameEx(Player), number_format(PlayerInfo[Player][pCredits]));
-		SendClientMessageEx(playerid, COLOR_CYAN, szString);
+		SendClientMessageEx(playerid, COLOR_CYAN, "%s - Credits: {FFD700}%s",GetPlayerNameEx(Player), number_format(PlayerInfo[Player][pCredits]));
 	}
 	return 1;
 }
@@ -1170,8 +1148,7 @@ CMD:sellcredits(playerid, params[])
 		SetPVarInt(Player, "CreditsSeller", playerid);
 		SetPVarInt(playerid, "CreditsSeller", Player);
 
-		format(szMessage, 200, "You have offered %s {FFD700}%s{FFFFFF} credits for $%s. (Transaction Fee: %s)", GetPlayerNameEx(Player), number_format(Credits+TransactionFee), number_format(Amount), number_format(TransactionFee));
-		SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have offered %s {FFD700}%s{FFFFFF} credits for $%s. (Transaction Fee: %s)", GetPlayerNameEx(Player), number_format(Credits+TransactionFee), number_format(Amount), number_format(TransactionFee));
 
 		format(szMessage, 200, "Seller: %s(%d)\nPrice: $%s\nCredits: {FFD700}%s{A9C4E4}\nTransaction Fee: {FFD700}%s{A9C4E4}\nCredits you will recieve: {FFD700}%s{A9C4E4}", GetPlayerNameEx(playerid), playerid, number_format(Amount), number_format(Credits+TransactionFee), number_format(TransactionFee), number_format(Credits));
 		ShowPlayerDialogEx(Player, DIALOG_SELLCREDITS, DIALOG_STYLE_MSGBOX, "Purchase Credits", szMessage, "Purchase", "Decline");
@@ -1379,8 +1356,7 @@ CMD:chargeplayer(playerid, params[])
 			if(PlayerInfo[giveplayerid][pCredits] < amount)
 			    return SendClientMessageEx(playerid, COLOR_GREY, "That player doesn't have that many credits.");
 
-			format(string, sizeof(string), "You have offered %s a charge of %s credits for %s.",  GetPlayerNameEx(giveplayerid), number_format(amount), reason);
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have offered %s a charge of %s credits for %s.",  GetPlayerNameEx(giveplayerid), number_format(amount), reason);
 
 			SetPVarInt(giveplayerid, "FineAmount", amount), SetPVarInt(giveplayerid, "FineBy", playerid), SetPVarString(giveplayerid, "FineReason", reason);
 			format(string, sizeof(string), "Admin: %s\nReason: %s\nCredits Available: %s\nFine Amount: %s", GetPlayerNameEx(playerid), reason, number_format(PlayerInfo[giveplayerid][pCredits]), number_format(amount));
@@ -1418,8 +1394,7 @@ CMD:givecredits(playerid, params[])
 	format(szMessage, sizeof(szMessage), "[SETCREDITS] [Amount: %d] [User: %s(%i)] [IP: %s] [Credits: %s] [Admin: %s] [IP: %s]",Amount,GetPlayerNameEx(Player), GetPlayerSQLId(Player), GetPlayerIpEx(Player), number_format(PlayerInfo[Player][pCredits]), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
 	Log("logs/credits.log", szMessage), print(szMessage);
 
-	format(szMessage, sizeof(szMessage), "You have given %s %s credits.", GetPlayerNameEx(Player), number_format(Amount));
-	SendClientMessageEx(playerid, COLOR_CYAN, szMessage);
+	SendClientMessageEx(playerid, COLOR_CYAN, "You have given %s %s credits.", GetPlayerNameEx(Player), number_format(Amount));
 	return 1;
 }
 
@@ -1445,8 +1420,7 @@ CMD:setcredits(playerid, params[])
 	format(szMessage, sizeof(szMessage), "[SETCREDITS] [Amount: %d] [User: %s(%i)] [IP: %s] [Credits: %s] [Admin: %s] [IP: %s]",Amount,GetPlayerNameEx(Player), GetPlayerSQLId(Player), GetPlayerIpEx(Player), number_format(PlayerInfo[Player][pCredits]), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
 	Log("logs/credits.log", szMessage), print(szMessage);
 
-	format(szMessage, sizeof(szMessage), "You have set %s's credits to %s.", GetPlayerNameEx(Player), number_format(PlayerInfo[Player][pCredits]));
-	SendClientMessageEx(playerid, COLOR_CYAN, szMessage);
+	SendClientMessageEx(playerid, COLOR_CYAN, "You have set %s's credits to %s.", GetPlayerNameEx(Player), number_format(PlayerInfo[Player][pCredits]));
 	return 1;
 }
 
@@ -1471,8 +1445,7 @@ CMD:settotalcredits(playerid, params[])
 	format(szMessage, sizeof(szMessage), "[SETTOTALCREDITS][Amount: %d] [User: %s(%i)] [IP: %s] [Admin: %s] [IP: %s]",Amount, GetPlayerNameEx(Player), GetPlayerSQLId(Player), GetPlayerIpEx(Player), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
 	Log("logs/credits.log", szMessage), print(szMessage);
 
-	format(szMessage, sizeof(szMessage), "You have set %s's total credits to %s.", GetPlayerNameEx(Player), number_format(PlayerInfo[Player][pTotalCredits]));
-	SendClientMessageEx(playerid, COLOR_CYAN, szMessage);
+	SendClientMessageEx(playerid, COLOR_CYAN, "You have set %s's total credits to %s.", GetPlayerNameEx(Player), number_format(PlayerInfo[Player][pTotalCredits]));
 	return 1;
 }
 
@@ -1506,8 +1479,7 @@ CMD:setpumpkinstock(playerid, params[])
 	{
 		new string[128], pumpkins;
 		if(sscanf(params, "d", pumpkins)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setpumpkinstock [stock]");
-		format(string, sizeof(string), "You have set the pumpkin stock to %d.", pumpkins);
-		SendClientMessageEx(playerid, COLOR_GRAD1, string);
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You have set the pumpkin stock to %d.", pumpkins);
 		format(string, sizeof(string), "Admin %s(%i) has set the pumpkin stock to %d from %d.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), pumpkins, PumpkinStock );
 		Log("logs/zombiecure.log", string);
 		PumpkinStock = pumpkins;
@@ -1563,9 +1535,7 @@ stock Microshop_ChangePhoneNumber(playerid, number, price, oldnumber)
 	PlayerInfo[playerid][pPnumber] = number;
 	PlayerInfo[playerid][pCredits] = credits;
 	PlayerInfo[playerid][pTotalCredits] = spent;
-	new message[96];
-	format(message, sizeof(message), "Your phone number has changed from %d to %d.", oldnumber, number);
-	SendClientMessageEx(playerid, COLOR_CYAN, message);
+	SendClientMessageEx(playerid, COLOR_CYAN, "Your phone number has changed from %d to %d.", oldnumber, number);
 	return 1;
 }
 
@@ -1647,8 +1617,7 @@ CMD:editsign(playerid, params[])
 		new string[128];
 		SetPVarInt(playerid, "hSignRequest", h);
 		SetPVarString(playerid, "hSignRequestText", desc);
-		format(string, sizeof(string), "You have requested a House Sale Sign Text Change for house ID: %d, please wait until a General Admin approves it.", h);
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "You have requested a House Sale Sign Text Change for house ID: %d, please wait until a General Admin approves it.", h);
 		format(string, sizeof(string), "House Sale Sign Text Change (HID: %d)", h);
 		SendReportToQue(playerid, string, 2, 4);
 	}
@@ -1743,8 +1712,7 @@ CMD:rcarcolor(playerid, params[])
 			g_mysql_SaveVehicle(playerid, i);
 			format(szMessage, sizeof(szMessage), "[RCARCOLOR] %s(%d) used a restricted car color. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][9]);
 			Log("logs/micro.log", szMessage);
-			format(szMessage, sizeof(szMessage), "You have changed the colors of your vehicle to ID %d, %d.", iColors[0], iColors[1]);
-			return SendClientMessageEx(playerid, COLOR_GRAD2, szMessage);
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have changed the colors of your vehicle to ID %d, %d.", iColors[0], iColors[1]);
 		}
 	}
 	SendClientMessageEx(playerid, COLOR_GREY, "You need to be inside a vehicle that you own.");
@@ -1758,8 +1726,7 @@ CMD:eatbar(playerid, params[])
 	new string[128];
 	if(PlayerInfo[playerid][mCooldown][4]) 
 	{
-		format(string, sizeof(string), "You currently have a active Energy Bar, please wait for it to expire in %d minute(s) to consume again.", PlayerInfo[playerid][mCooldown][4]);
-		return SendClientMessageEx(playerid, COLOR_GRAD2, string);
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "You currently have a active Energy Bar, please wait for it to expire in %d minute(s) to consume again.", PlayerInfo[playerid][mCooldown][4]);
 	}
 	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 3.0, true, false, false, false, 0, 1);
 	format(string, sizeof(string), "%s chews on a energy bar", GetPlayerNameEx(playerid));
@@ -1781,13 +1748,11 @@ CMD:activeitems(playerid, params[])
 
 CMD:cooldowns(playerid, params[])
 {
-	new string[128];
 	for(new item; item < MAX_MICROITEMS; item++)
 	{
 		if(gettime() < PlayerInfo[playerid][mCooldown][item])
 		{
-			format(string, sizeof(string), "You can purchase another \"%s\" in %s.", mItemName[item], ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
-			SendClientMessageEx(playerid, -1, string);
+			SendClientMessageEx(playerid, -1, "You can purchase another \"%s\" in %s.", mItemName[item], ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
 		}
 	}
 	return 1;

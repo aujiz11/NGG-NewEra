@@ -463,23 +463,20 @@ CMD:admute(playerid, params[])
 					{
 						format(string, sizeof(string), "AdmCmd: %s was muted from placing /ad's by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 						SendDutyAdvisorMessage(TEAM_AZTECAS_COLOR, string);
-						format(string, sizeof(string), "You were just muted from the Advertisements (/ads) by %s.", GetPlayerNameEx(playerid));
-						SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);
+						SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "You were just muted from the Advertisements (/ads) by %s.", GetPlayerNameEx(playerid));
 					}
 
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "Remember, advertisements may only be used for IC purposes and may not be used for any other purpose, unless stated otherwise by an admin.");
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "If you wish to be unmuted, you will be fined or jailed. Future abuse could result in increased punishment. If you feel this was in error, contact a senior administrator.");
 
-					format(string, sizeof(string), "AdmCmd: %s was just muted from using Advertisements [/ads] due to misuse.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+					SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was just muted from using Advertisements [/ads] due to misuse.", GetPlayerNameEx(giveplayerid));
 				}
 				else
 				{
 					if(PlayerInfo[playerid][pAdmin] >= 2)
 					{
 						ShowAdMuteFine(giveplayerid);
-						format(string, sizeof(string), "You offered %s an unmute from /ads.", GetPlayerNameEx(giveplayerid));
-						SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
+						SendClientMessageEx(playerid, COLOR_LIGHTRED, "You offered %s an unmute from /ads.", GetPlayerNameEx(giveplayerid));
 					}
 					else
 					{
@@ -499,7 +496,7 @@ CMD:admute(playerid, params[])
 CMD:freeads(playerid, params[])
 {
 	if(PlayerInfo[playerid][pDonateRank] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Platinum VIP+");
-	new string[128], days;
+	new days;
 	ConvertTime(gettime() - PlayerInfo[playerid][pFreeAdsDay], .ctd=days);
 	if(days >= 1)
 	{
@@ -509,15 +506,13 @@ CMD:freeads(playerid, params[])
 	}	
 	else if(PlayerInfo[playerid][pFreeAdsLeft] > 0)
 	{
-		format(string, sizeof(string), "* You still have %d free ads left for today.", PlayerInfo[playerid][pFreeAdsLeft]);
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "* You still have %d free ads left for today.", PlayerInfo[playerid][pFreeAdsLeft]);
 	}
 	else
 	{
 		new datestring[32];
 		datestring = date(PlayerInfo[playerid][pFreeAdsDay]+86400, 3);
-		format(string, sizeof(string), "* You have used all your free ads, you will need to wait until %s.", datestring);
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "* You have used all your free ads, you will need to wait until %s.", datestring);
 	}
 	return 1;
 }

@@ -165,8 +165,7 @@ CMD:createpoint(playerid, params[])
 	EventPoints[pointid][epObjectID] = CreateDynamicPickup(objectid, 1, EventPoints[pointid][epPosX], EventPoints[pointid][epPosY], EventPoints[pointid][epPosZ], EventPoints[pointid][epVW]);
 	EventPoints[pointid][epText3dID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, EventPoints[pointid][epPosX], EventPoints[pointid][epPosY], EventPoints[pointid][epPosZ]+0.5, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, EventPoints[pointid][epVW], EventPoints[pointid][epInt]);
 
-	format(string,sizeof(string),"You have placed PointID %d at your current position.", pointid);
-	SendClientMessageEx(playerid, COLOR_GRAD2, string);
+	SendClientMessageEx(playerid, COLOR_GRAD2, "You have placed PointID %d at your current position.", pointid);
 	return 1;
 }
 
@@ -178,7 +177,7 @@ CMD:deletepoint(playerid, params[])
 		return 1;
 	}
 
-	new string[128], pointid;
+	new pointid;
 	if(sscanf(params, "d", pointid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deletepoint [pointid]");
 
 	if(pointid >= MAX_EVENTPOINTS || pointid < 0)
@@ -202,8 +201,7 @@ CMD:deletepoint(playerid, params[])
 		EventPoints[pointid][epFlagable] = 0;
 		format(EventPoints[pointid][epPrize], 64, "");
 
-		format(string,sizeof(string),"You have deleted PointID %d from the server.", pointid);
-		SendClientMessageEx(playerid, COLOR_GRAD2, string);
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You have deleted PointID %d from the server.", pointid);
 	}
 	return 1;
 }
@@ -218,8 +216,7 @@ CMD:claimpoint(playerid, params[])
 			{
 				new string[128];
 
-				format(string, sizeof(string), " Congratulations you have won a Special Prize (%s)!", EventPoints[p][epPrize]);
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				SendClientMessageEx(playerid, COLOR_GRAD2, " Congratulations you have won a Special Prize (%s)!", EventPoints[p][epPrize]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, " Note: This prize may take up to 48 hours to be rewarded..");
 				if(EventPoints[p][epFlagable] == 1)
 				{
@@ -260,8 +257,6 @@ CMD:claimpoints(playerid, params[])
 	{
 		if(EventPoints[i][epPosX] != 0.0) amount++;
 	}
-	new string[48];
-	format(string, sizeof(string), "There are %d available claim points on the map!", amount);
-	SendClientMessageEx(playerid, -1, string);
+	SendClientMessageEx(playerid, -1, "There are %d available claim points on the map!", amount);
 	return 1;
 }

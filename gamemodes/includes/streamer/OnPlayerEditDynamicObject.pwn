@@ -125,8 +125,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 				DeletePVar(playerid, "furnfirst");
 
 
-				format(szMiscArray, sizeof(szMiscArray), "[Furniture]: You have cancelled placing the %s.", GetFurnitureName(iModelID));
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture]: You have cancelled placing the %s.", GetFurnitureName(iModelID));
 				DeletePVar(playerid, PVAR_FURNITURE_EDITING);
 				DeletePVar(playerid, PVAR_FURNITURE_SLOT);
 				PlayerTextDrawSetPreviewModel(playerid, Furniture_PTD[playerid][0], PlayerInfo[playerid][pModel]);
@@ -188,8 +187,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 				PlayerTextDrawHide(playerid, Furniture_PTD[playerid][0]);
 				PlayerTextDrawShow(playerid, Furniture_PTD[playerid][0]);
 				
-				format(szMiscArray, sizeof(szMiscArray), "[Furniture]: You have successfully placed the %s.", GetFurnitureName(iModelID));
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture]: You have successfully placed the %s.", GetFurnitureName(iModelID));
 
 				DeletePVar(playerid, "furnfirst");
 				DeletePVar(playerid, "PX");
@@ -303,8 +301,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 				ParkingMeterInformation[EditingMeterID[playerid]][MeterPosition][5] = rz;
 				SaveParkingMeter(EditingMeterID[playerid]);
 				RebuildParkingMeter(EditingMeterID[playerid]);
-				format(string, sizeof(string), "You have updated the position of parking meter ID %d.", EditingMeterID[playerid]);
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have updated the position of parking meter ID %d.", EditingMeterID[playerid]);
 				format(string, sizeof(string), "%s updated the position of parking meter ID %d to %0.3f, %0.3f, %0.3f, %0.3f, %0.3f, %0.3f.", GetPlayerNameEx(playerid), EditingMeterID[playerid], x, y, z, rx, ry, rz);
 				Log("logs/admin.log", string);
 				EditingMeterID[playerid] = 0;
@@ -312,8 +309,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			}
 			case EDIT_RESPONSE_CANCEL:
 			{
-				format(string, sizeof(string), "You have cancelled editing the position of parking meter ID %d.", EditingMeterID[playerid]);
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have cancelled editing the position of parking meter ID %d.", EditingMeterID[playerid]);
 				RebuildParkingMeter(EditingMeterID[playerid]);
 				EditingMeterID[playerid] = 0;
 				return 1;

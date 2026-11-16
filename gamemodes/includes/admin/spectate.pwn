@@ -64,9 +64,7 @@ stock SpectatePlayer(playerid, giveplayerid)
 			Spectate[playerid] = giveplayerid;
 			Spectating[playerid] = 1;
 		}
-		new string[64];
-		format(string, sizeof(string), "You are spectating %s (ID: %d).", GetPlayerNameEx(giveplayerid), giveplayerid);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You are spectating %s (ID: %d).", GetPlayerNameEx(giveplayerid), giveplayerid);
 	}	
 	return 1;
 }

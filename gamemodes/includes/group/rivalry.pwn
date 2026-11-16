@@ -174,8 +174,7 @@ CMD:editgrouptoy(playerid, params[]) {
 	if(!(1 <= iGroupID < MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid Group ID.");
 	arrGroupData[iGroupID-1][g_iGroupToyID] = iObjectID;
 	SaveGroup(iGroupID-1);
-	format(szMiscArray, sizeof(szMiscArray), "[Group Toy]: You set %s's toy to object ID %d", arrGroupData[iGroupID-1][g_szGroupName], iObjectID);
-	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GRAD1, "[Group Toy]: You set %s's toy to object ID %d", arrGroupData[iGroupID-1][g_szGroupName], iObjectID);
 	return 1;
 }
 
@@ -245,11 +244,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 				}
 
-				format(szMiscArray, sizeof(szMiscArray), "Successfully added %s to %s's rivals.", arrGroupData[iAddGroupID][g_szGroupName], arrGroupData[iGroupID][g_szGroupName]);
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Successfully added %s to %s's rivals.", arrGroupData[iAddGroupID][g_szGroupName], arrGroupData[iGroupID][g_szGroupName]);
 
-				format(szMiscArray, sizeof(szMiscArray), "Successfully added %s to %s's rivals.", arrGroupData[iGroupID][g_szGroupName], arrGroupData[iAddGroupID][g_szGroupName]);
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Successfully added %s to %s's rivals.", arrGroupData[iGroupID][g_szGroupName], arrGroupData[iAddGroupID][g_szGroupName]);
 
 				format(szMiscArray, sizeof(szMiscArray), "%s (%d) added %s to %s's rivals.",
 					GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), arrGroupData[iAddGroupID][g_szGroupName], arrGroupData[iGroupID][g_szGroupName]);
@@ -282,8 +279,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 				}
 
-				format(szMiscArray, sizeof(szMiscArray), "Successfully removed %s from %s's rivals.", arrGroupData[iRemGroupID][g_szGroupName], arrGroupData[iGroupID][g_szGroupName]);
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Successfully removed %s from %s's rivals.", arrGroupData[iRemGroupID][g_szGroupName], arrGroupData[iGroupID][g_szGroupName]);
 
 				format(szMiscArray, sizeof(szMiscArray), "%s (%d) removed %s from %s's rivals.",
 					GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), arrGroupData[iRemGroupID][g_szGroupName], arrGroupData[iGroupID][g_szGroupName]);
@@ -353,8 +349,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `GroupToyBone` = %d WHERE `id` = %d", listitem, GetPlayerSQLId(playerid));
 			mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-			format(szMiscArray, sizeof(szMiscArray), "[Group Toy]: Attached to %s", HoldingBones[listitem]);
-			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_GRAD1, "[Group Toy]: Attached to %s", HoldingBones[listitem]);
 			RemovePlayerAttachedObject(playerid, 8);
 			SetPlayerAttachedObject(playerid, 8, arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupToyID], PlayerInfo[playerid][pGroupToyBone],
 				PlayerInfo[playerid][pGroupToy][0], PlayerInfo[playerid][pGroupToy][1], PlayerInfo[playerid][pGroupToy][2],

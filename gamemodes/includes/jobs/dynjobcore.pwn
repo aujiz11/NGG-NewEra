@@ -195,8 +195,7 @@ Job_GetJob(playerid, i)
 {
 	if(PlayerInfo[playerid][pLevel] < JobData[i][jLevel]) 
     {
-        format(szMiscArray, sizeof(szMiscArray), "You need to be level %i to get this job.", JobData[i][jLevel]);
-        return SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+        return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be level %i to get this job.", JobData[i][jLevel]);
     }
     if(PlayerInfo[playerid][pJob] == JobData[i][jType] || PlayerInfo[playerid][pJob2] == JobData[i][jType] || PlayerInfo[playerid][pJob3] == JobData[i][jType]) {
     	return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have this job.");
@@ -271,8 +270,7 @@ CMD:gotojob(playerid, params[]) {
 		SetPlayerVirtualWorld(playerid, JobData[jobid][jVw]);
 		PlayerInfo[playerid][pVW] = JobData[jobid][jVw];
 
-		format(szMiscArray, sizeof szMiscArray, "You have teleported to job point ID %i.", jobid);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have teleported to job point ID %i.", jobid);
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorised to use this command.");
 	return 1;

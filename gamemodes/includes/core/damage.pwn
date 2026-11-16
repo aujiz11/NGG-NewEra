@@ -274,8 +274,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				if(IsPlayerConnected(i))
 				{
 					if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
-						format(szMiscArray, sizeof(szMiscArray), "[Dmgcheck] %s: Dmgd: %s (%d) | Wp: %s | CSDmg: %.2f | SSDmg: Denied | %s (GIVE)", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid), damagedid, GetWeaponNameEx(weaponid), amount, ReturnBoneName(bodypart));
-						SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
+						SendClientMessageEx(i, COLOR_WHITE, "[Dmgcheck] %s: Dmgd: %s (%d) | Wp: %s | CSDmg: %.2f | SSDmg: Denied | %s (GIVE)", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid), damagedid, GetWeaponNameEx(weaponid), amount, ReturnBoneName(bodypart));
 					}
 				}
 			}
@@ -537,8 +536,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 			if(IsPlayerConnected(i))
 			{
 				if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
-					format(szMiscArray, sizeof(szMiscArray), "[Dmgcheck] %s: Dmgd: %s (%d) | Wp: %s | CSDmg: %.2f | SSDmg: %.2f | %s (GIVE)", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid), damagedid, GetWeaponNameEx(weaponid), realdam, amount, ReturnBoneName(bodypart));
-					SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
+					SendClientMessageEx(i, COLOR_WHITE, "[Dmgcheck] %s: Dmgd: %s (%d) | Wp: %s | CSDmg: %.2f | SSDmg: %.2f | %s (GIVE)", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid), damagedid, GetWeaponNameEx(weaponid), realdam, amount, ReturnBoneName(bodypart));
 				}
 			}
 		}
@@ -743,8 +741,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			if(IsPlayerConnected(i))
 			{
 				if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
-					format(szMiscArray, sizeof(szMiscArray), "[Dmgcheck] %s: Issuer: %s (%d) | Wp: %s (%d) | CSDmg: %.2f | SSDmg: %.2f | %s (TAKE)", GetPlayerNameEx(playerid), GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid), weaponid, realdam, amount, ReturnBoneName(bodypart));
-					SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
+					SendClientMessageEx(i, COLOR_WHITE, "[Dmgcheck] %s: Issuer: %s (%d) | Wp: %s (%d) | CSDmg: %.2f | SSDmg: %.2f | %s (TAKE)", GetPlayerNameEx(playerid), GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid), weaponid, realdam, amount, ReturnBoneName(bodypart));
 				}
 			}
 		}

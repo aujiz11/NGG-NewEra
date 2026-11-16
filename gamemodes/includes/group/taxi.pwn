@@ -65,8 +65,7 @@ CMD:fare(playerid, params[])
 			}
 
 			TransportDuty[playerid] = 0;
-			format(string, sizeof(string), "* You are now off duty and earned $%d.", TransportMoney[playerid]);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now off duty and earned $%d.", TransportMoney[playerid]);
 			GivePlayerCash(playerid, (TransportMoney[playerid] / 100 * 50));
 			if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI))
 			{
@@ -180,8 +179,7 @@ CMD:ataxi(playerid, params[])
 
 		format(szMessage, sizeof(szMessage), "** Taxi Driver %s has accepted the Taxi Call from %s(%d)" , GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget), iTarget);
 		SendTaxiMessage(TEAM_AZTECAS_COLOR, szMessage);
-		format(szMessage, sizeof(szMessage), "* Taxi Driver %s has accepted your Taxi Call, please wait at your current position.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(iTarget, COLOR_LIGHTBLUE, szMessage);
+		SendClientMessageEx(iTarget, COLOR_LIGHTBLUE, "* Taxi Driver %s has accepted your Taxi Call, please wait at your current position.", GetPlayerNameEx(playerid));
 		GameTextForPlayer(playerid, "~w~Taxi Caller~n~~r~Go to the red marker.", 5000, 1);
 		TaxiCallTime[playerid] = 1;
 		TaxiAccepted[playerid] = iTarget;
@@ -197,8 +195,7 @@ CMD:ataxi(playerid, params[])
 		
 		format(szMessage, sizeof(szMessage), "** Bus Driver %s has accepted the Bus Call from %s(%d)" , GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget), iTarget);
 		SendTaxiMessage(TEAM_AZTECAS_COLOR, szMessage);
-		format(szMessage, sizeof(szMessage), "* Bus Driver %s has accepted your Bus Call, please wait at your current position.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(iTarget, COLOR_LIGHTBLUE, szMessage);
+		SendClientMessageEx(iTarget, COLOR_LIGHTBLUE, "* Bus Driver %s has accepted your Bus Call, please wait at your current position.", GetPlayerNameEx(playerid));
 		GameTextForPlayer(playerid, "~w~Bus Caller~n~~r~Goto redmarker", 5000, 1);
 		BusCallTime[playerid] = 1;
 		BusAccepted[playerid] = iTarget;

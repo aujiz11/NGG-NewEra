@@ -250,8 +250,7 @@ CMD:sellfish(playerid, params[])
 			price = FishCost(playerid, Fishes[playerid][pFid1]);
 			price = price * Fishes[playerid][pWeight1];
 			GameTextForPlayer(playerid, "~g~Fish~n~~r~Sold", 3000, 1);
-			format(szMiscArray, sizeof(szMiscArray), "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish1],Fishes[playerid][pWeight1],price);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish1],Fishes[playerid][pWeight1],price);
 			GivePlayerCash(playerid, price);
 			ClearFishID(playerid, 1);
 		}
@@ -265,8 +264,7 @@ CMD:sellfish(playerid, params[])
 			price = FishCost(playerid, Fishes[playerid][pFid2]);
 			price = price * Fishes[playerid][pWeight2];
 			GameTextForPlayer(playerid, "~g~Fish~n~~r~Sold", 3000, 1);
-			format(szMiscArray, sizeof(szMiscArray), "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish2],Fishes[playerid][pWeight2],price);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish2],Fishes[playerid][pWeight2],price);
 			GivePlayerCash(playerid, price);
 			ClearFishID(playerid, 2);
 		}
@@ -280,8 +278,7 @@ CMD:sellfish(playerid, params[])
 			price = FishCost(playerid, Fishes[playerid][pFid3]);
 			price = price * Fishes[playerid][pWeight3];
 			GameTextForPlayer(playerid, "~g~Fish~n~~r~Sold", 3000, 1);
-			format(szMiscArray, sizeof(szMiscArray), "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish3],Fishes[playerid][pWeight3],price);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish3],Fishes[playerid][pWeight3],price);
 			GivePlayerCash(playerid, price);
 			ClearFishID(playerid, 3);
 		}
@@ -295,8 +292,7 @@ CMD:sellfish(playerid, params[])
 			price = FishCost(playerid, Fishes[playerid][pFid4]);
 			price = price * Fishes[playerid][pWeight4];
 			GameTextForPlayer(playerid, "~g~Fish~n~~r~Sold", 3000, 1);
-			format(szMiscArray, sizeof(szMiscArray), "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish4],Fishes[playerid][pWeight4],price);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish4],Fishes[playerid][pWeight4],price);
 			GivePlayerCash(playerid, price);
 			ClearFishID(playerid, 4);
 		}
@@ -310,8 +306,7 @@ CMD:sellfish(playerid, params[])
 			price = FishCost(playerid, Fishes[playerid][pFid5]);
 			price = price * Fishes[playerid][pWeight5];
 			GameTextForPlayer(playerid, "~g~Fish~n~~r~Sold", 3000, 1);
-			format(szMiscArray, sizeof(szMiscArray), "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish5],Fishes[playerid][pWeight5],price);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish5],Fishes[playerid][pWeight5],price);
 			GivePlayerCash(playerid, price);
 			ClearFishID(playerid, 5);
 		}
@@ -337,7 +332,6 @@ CMD:fish(playerid, params[])
 		return 1;
 	}
 
-	new string[128];
 	new Veh = GetPlayerVehicleID(playerid);
 	if((IsAtFishPlace(playerid)) || IsABoat(Veh))
 	{
@@ -384,8 +378,7 @@ CMD:fish(playerid, params[])
 		else if(rand == 20)
 		{
 			new mrand = random(500);
-			format(string, sizeof(string), "* You caught a bag filled with money ($%d).", mrand);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You caught a bag filled with money ($%d).", mrand);
 			GivePlayerCash(playerid, mrand);
 			return 1;
 		}
@@ -395,8 +388,7 @@ CMD:fish(playerid, params[])
 
   			if(PlayerInfo[playerid][pDoubleEXP] > 0)
 			{
-				format(string, sizeof(string), "You have gained 2 fisher skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 fisher skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
    				PlayerInfo[playerid][pFishSkill] += 2;
 			}
 			else
@@ -407,16 +399,14 @@ CMD:fish(playerid, params[])
 			format(fstring, sizeof(fstring), "%s", FishNames[rand]);
 			strmid(Fishes[playerid][pFish1], fstring, 0, strlen(fstring), 255);
 			Fishes[playerid][pWeight1] = Caught;
-			format(string, sizeof(string), "* You have caught a %s, weighing %d pounds.", Fishes[playerid][pFish1], Caught);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have caught a %s, weighing %d pounds.", Fishes[playerid][pFish1], Caught);
 			Fishes[playerid][pLastWeight] = Caught;
 			Fishes[playerid][pLastFish] = 1;
 			Fishes[playerid][pFid1] = rand;
 			Fishes[playerid][pFishID] = rand;
 			if(Caught > PlayerInfo[playerid][pBiggestFish])
 			{
-				format(string, sizeof(string), "* Your old record of %d pounds has been passed, your new record is %d pounds.", PlayerInfo[playerid][pBiggestFish], Caught);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your old record of %d pounds has been passed, your new record is %d pounds.", PlayerInfo[playerid][pBiggestFish], Caught);
 				PlayerInfo[playerid][pBiggestFish] = Caught;
 			}
 		}
@@ -426,8 +416,7 @@ CMD:fish(playerid, params[])
 
   			if(PlayerInfo[playerid][pDoubleEXP] > 0)
 			{
-				format(string, sizeof(string), "You have gained 2 fisher skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 fisher skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
    				PlayerInfo[playerid][pFishSkill] += 2;
 			}
 			else
@@ -438,16 +427,14 @@ CMD:fish(playerid, params[])
 			format(fstring, sizeof(fstring), "%s", FishNames[rand]);
 			strmid(Fishes[playerid][pFish2], fstring, 0, strlen(fstring), 255);
 			Fishes[playerid][pWeight2] = Caught;
-			format(string, sizeof(string), "* You have caught a %s, weighing %d pounds.", Fishes[playerid][pFish2], Caught);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have caught a %s, weighing %d pounds.", Fishes[playerid][pFish2], Caught);
 			Fishes[playerid][pLastWeight] = Caught;
 			Fishes[playerid][pLastFish] = 2;
 			Fishes[playerid][pFid2] = rand;
 			Fishes[playerid][pFishID] = rand;
 			if(Caught > PlayerInfo[playerid][pBiggestFish])
 			{
-				format(string, sizeof(string), "* Your old record of %d pounds has been passed, your new record is %d pounds.", PlayerInfo[playerid][pBiggestFish], Caught);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your old record of %d pounds has been passed, your new record is %d pounds.", PlayerInfo[playerid][pBiggestFish], Caught);
 				PlayerInfo[playerid][pBiggestFish] = Caught;
 			}
 		}
@@ -457,8 +444,7 @@ CMD:fish(playerid, params[])
 
   			if(PlayerInfo[playerid][pDoubleEXP] > 0)
 			{
-				format(string, sizeof(string), "You have gained 2 fisher skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 fisher skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
    				PlayerInfo[playerid][pFishSkill] += 2;
 			}
 			else
@@ -469,16 +455,14 @@ CMD:fish(playerid, params[])
 			format(fstring, sizeof(fstring), "%s", FishNames[rand]);
 			strmid(Fishes[playerid][pFish3], fstring, 0, strlen(fstring), 255);
 			Fishes[playerid][pWeight3] = Caught;
-			format(string, sizeof(string), "* You have caught a %s, weighing %d pounds.", Fishes[playerid][pFish3], Caught);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have caught a %s, weighing %d pounds.", Fishes[playerid][pFish3], Caught);
 			Fishes[playerid][pLastWeight] = Caught;
 			Fishes[playerid][pLastFish] = 3;
 			Fishes[playerid][pFid3] = rand;
 			Fishes[playerid][pFishID] = rand;
 			if(Caught > PlayerInfo[playerid][pBiggestFish])
 			{
-				format(string, sizeof(string), "* Your old record of %d pounds has been passed, your new record is %d pounds.", PlayerInfo[playerid][pBiggestFish], Caught);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your old record of %d pounds has been passed, your new record is %d pounds.", PlayerInfo[playerid][pBiggestFish], Caught);
 				PlayerInfo[playerid][pBiggestFish] = Caught;
 			}
 		}
@@ -488,8 +472,7 @@ CMD:fish(playerid, params[])
 
   			if(PlayerInfo[playerid][pDoubleEXP] > 0)
 			{
-				format(string, sizeof(string), "You have gained 2 fisher skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 fisher skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
    				PlayerInfo[playerid][pFishSkill] += 2;
 			}
 			else
@@ -500,16 +483,14 @@ CMD:fish(playerid, params[])
 			format(fstring, sizeof(fstring), "%s", FishNames[rand]);
 			strmid(Fishes[playerid][pFish4], fstring, 0, strlen(fstring), 255);
 			Fishes[playerid][pWeight4] = Caught;
-			format(string, sizeof(string), "* You have caught a %s, weighing %d pounds.", Fishes[playerid][pFish4], Caught);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have caught a %s, weighing %d pounds.", Fishes[playerid][pFish4], Caught);
 			Fishes[playerid][pLastWeight] = Caught;
 			Fishes[playerid][pLastFish] = 4;
 			Fishes[playerid][pFid4] = rand;
 			Fishes[playerid][pFishID] = rand;
 			if(Caught > PlayerInfo[playerid][pBiggestFish])
 			{
-				format(string, sizeof(string), "* Your old record of %d pounds has been passed, your new record is %d pounds.", PlayerInfo[playerid][pBiggestFish], Caught);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your old record of %d pounds has been passed, your new record is %d pounds.", PlayerInfo[playerid][pBiggestFish], Caught);
 				PlayerInfo[playerid][pBiggestFish] = Caught;
 			}
 		}
@@ -519,8 +500,7 @@ CMD:fish(playerid, params[])
 
   			if(PlayerInfo[playerid][pDoubleEXP] > 0)
 			{
-				format(string, sizeof(string), "You have gained 2 fisher skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 fisher skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
    				PlayerInfo[playerid][pFishSkill] += 2;
 			}
 			else
@@ -531,16 +511,14 @@ CMD:fish(playerid, params[])
 			format(fstring, sizeof(fstring), "%s", FishNames[rand]);
 			strmid(Fishes[playerid][pFish5], fstring, 0, strlen(fstring), 255);
 			Fishes[playerid][pWeight5] = Caught;
-			format(string, sizeof(string), "* You have caught a %s, weighing %d pounds.", Fishes[playerid][pFish5], Caught);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have caught a %s, weighing %d pounds.", Fishes[playerid][pFish5], Caught);
 			Fishes[playerid][pLastWeight] = Caught;
 			Fishes[playerid][pLastFish] = 5;
 			Fishes[playerid][pFid5] = rand;
 			Fishes[playerid][pFishID] = rand;
 			if(Caught > PlayerInfo[playerid][pBiggestFish])
 			{
-				format(string, sizeof(string), "* Your old record of %d pounds has been passed, your new record is %d pounds.", PlayerInfo[playerid][pBiggestFish], Caught);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your old record of %d pounds has been passed, your new record is %d pounds.", PlayerInfo[playerid][pBiggestFish], Caught);
 				PlayerInfo[playerid][pBiggestFish] = Caught;
 			}
 		}
@@ -567,19 +545,13 @@ CMD:fish(playerid, params[])
 
 CMD:fishes(playerid, params[])
 {
-	new string[128];
 
 	SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Fishes __________________|");
-	format(string, sizeof(string), "** (1) Fish: %s.   Weight: %d.", Fishes[playerid][pFish1], Fishes[playerid][pWeight1]);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
-	format(string, sizeof(string), "** (2) Fish: %s.   Weight: %d.", Fishes[playerid][pFish2], Fishes[playerid][pWeight2]);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
-	format(string, sizeof(string), "** (3) Fish: %s.   Weight: %d.", Fishes[playerid][pFish3], Fishes[playerid][pWeight3]);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
-	format(string, sizeof(string), "** (4) Fish: %s.   Weight: %d.", Fishes[playerid][pFish4], Fishes[playerid][pWeight4]);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
-	format(string, sizeof(string), "** (5) Fish: %s.   Weight: %d.", Fishes[playerid][pFish5], Fishes[playerid][pWeight5]);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
+	SendClientMessageEx(playerid, COLOR_GREY, "** (1) Fish: %s.   Weight: %d.", Fishes[playerid][pFish1], Fishes[playerid][pWeight1]);
+	SendClientMessageEx(playerid, COLOR_GREY, "** (2) Fish: %s.   Weight: %d.", Fishes[playerid][pFish2], Fishes[playerid][pWeight2]);
+	SendClientMessageEx(playerid, COLOR_GREY, "** (3) Fish: %s.   Weight: %d.", Fishes[playerid][pFish3], Fishes[playerid][pWeight3]);
+	SendClientMessageEx(playerid, COLOR_GREY, "** (4) Fish: %s.   Weight: %d.", Fishes[playerid][pFish4], Fishes[playerid][pWeight4]);
+	SendClientMessageEx(playerid, COLOR_GREY, "** (5) Fish: %s.   Weight: %d.", Fishes[playerid][pFish5], Fishes[playerid][pWeight5]);
 	SendClientMessageEx(playerid, COLOR_WHITE, "|____________________________________________|");
 	return 1;
 }

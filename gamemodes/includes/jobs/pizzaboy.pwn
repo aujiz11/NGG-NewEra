@@ -105,9 +105,7 @@ CMD:getpizza(playerid, params[]) {
 		SendClientMessageEx(playerid,COLOR_GREY,"You are not at a Pizza Stack pickup!");
 	}
 	else if(gettime() < GetPVarInt(playerid, "PizzaCoolDown")) {
-		new str[53];
-		format(str, sizeof(str), "Please wait %d seconds before getting another pizza!", GetPVarInt(playerid, "PizzaCoolDown")-gettime());
-		SendClientMessageEx(playerid,COLOR_GREY, str);
+		SendClientMessageEx(playerid,COLOR_GREY, "Please wait %d seconds before getting another pizza!", GetPVarInt(playerid, "PizzaCoolDown")-gettime());
 	}
 	else if(IsPlayerInRangeOfPoint(playerid, 3.0, -1713.961425, 1348.545166, 7.180452)) { // Pier 69
 		
@@ -120,8 +118,7 @@ CMD:getpizza(playerid, params[]) {
 		}
 
 		new
-			iDist = floatround(GetPlayerDistanceFromPoint(playerid, HouseInfo[rand][hExteriorX], HouseInfo[rand][hExteriorY], HouseInfo[rand][hExteriorZ])),
-			szMessage[86];
+			iDist = floatround(GetPlayerDistanceFromPoint(playerid, HouseInfo[rand][hExteriorX], HouseInfo[rand][hExteriorY], HouseInfo[rand][hExteriorZ]));
 
 		SetPVarInt(playerid, "tpPizzaTimer", iDist / 80);
 		SetPVarInt(playerid, "pizzaTotal", iDist / 10);
@@ -132,8 +129,7 @@ CMD:getpizza(playerid, params[]) {
 		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPPIZZARUNTIMER);
 		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_PIZZATIMER);
 
-		format(szMessage, sizeof(szMessage), "You have picked up a pizza for %s. You have %d seconds to deliver it!", StripUnderscore(HouseInfo[rand][hOwnerName]), iDist / 10);
-		SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have picked up a pizza for %s. You have %d seconds to deliver it!", StripUnderscore(HouseInfo[rand][hOwnerName]), iDist / 10);
 
 		SetPlayerCheckpoint(playerid, HouseInfo[rand][hExteriorX], HouseInfo[rand][hExteriorY], HouseInfo[rand][hExteriorZ], 5);
 	}
@@ -148,8 +144,7 @@ CMD:getpizza(playerid, params[]) {
 		}
 
 		new
-			iDist = floatround(GetPlayerDistanceFromPoint(playerid, HouseInfo[rand][hExteriorX], HouseInfo[rand][hExteriorY], HouseInfo[rand][hExteriorZ])),
-			szMessage[86];
+			iDist = floatround(GetPlayerDistanceFromPoint(playerid, HouseInfo[rand][hExteriorX], HouseInfo[rand][hExteriorY], HouseInfo[rand][hExteriorZ]));
 
 		SetPVarInt(playerid, "tpPizzaTimer", iDist / 80);
 		SetPVarInt(playerid, "pizzaTotal", iDist / 10);
@@ -160,8 +155,7 @@ CMD:getpizza(playerid, params[]) {
 		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPPIZZARUNTIMER);
 		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_PIZZATIMER);
 
-		format(szMessage, sizeof(szMessage), "You have picked up a pizza for %s. You have %d seconds to deliver it!", StripUnderscore(HouseInfo[rand][hOwnerName]), iDist / 10);
-		SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have picked up a pizza for %s. You have %d seconds to deliver it!", StripUnderscore(HouseInfo[rand][hOwnerName]), iDist / 10);
 
 		SetPlayerCheckpoint(playerid, HouseInfo[rand][hExteriorX], HouseInfo[rand][hExteriorY], HouseInfo[rand][hExteriorZ], 5);
 	}

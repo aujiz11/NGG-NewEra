@@ -46,9 +46,7 @@ CMD:nextwatch(playerid, params[])
 		else if(PlayerInfo[playerid][pWatchdog] >= 2) return mysql_tquery(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", "WatchWatchlist", "i", playerid);
 		else
 		{
-			new string[60];
-			format(string, sizeof(string), "You can't skip a player yet, you have to wait %d seconds!", GetPVarInt(playerid, "NextWatch")-gettime());
-			return SendClientMessageEx(playerid, COLOR_GRAD1, string);
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't skip a player yet, you have to wait %d seconds!", GetPVarInt(playerid, "NextWatch")-gettime());
 		}
 	}
 	else
@@ -91,9 +89,7 @@ CMD:startwatch(playerid, params[])
 		else if(PlayerInfo[playerid][pWatchdog] >= 2) return mysql_tquery(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", "WatchWatchlist", "i", playerid);
 		else
 		{
-			new string[60];
-			format(string, sizeof(string), "You can't skip a player yet, you have to wait %d seconds!", GetPVarInt(playerid, "NextWatch")-gettime());
-			return SendClientMessageEx(playerid, COLOR_GRAD1, string);
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't skip a player yet, you have to wait %d seconds!", GetPVarInt(playerid, "NextWatch")-gettime());
 		}
 	}
 	else
@@ -147,8 +143,7 @@ CMD:dmrmute(playerid, params[])
 			    PlayerInfo[giveplayerid][pDMRMuted] = 1;
 				format(string, sizeof(string), "AdmCmd: %s has indefinitely blocked %s from submitting DM reports.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ABroadCast(COLOR_LIGHTRED,string,2);
-				format(string, sizeof(string), "You have been blocked from submitting /dmreports by %s.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been blocked from submitting /dmreports by %s.", GetPlayerNameEx(playerid));
 				format(string, sizeof(string), "AdmCmd: %s(%d) was blocked from /dmreport by %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/mute.log", string);
 			}
@@ -158,8 +153,7 @@ CMD:dmrmute(playerid, params[])
 				PlayerInfo[giveplayerid][pDMRMuted] = 0;
 				format(string, sizeof(string), "AdmCmd: %s has been re-allowed to submit DM reports by %s",GetPlayerNameEx(giveplayerid),GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_LIGHTRED,string,2);
-				format(string, sizeof(string), "You have been re-allowed to submitting /dmreports again by %s.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been re-allowed to submitting /dmreports again by %s.", GetPlayerNameEx(playerid));
 				format(string, sizeof(string), "AdmCmd: %s(%d) was unblocked from /dmreport by %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/mute.log", string);
 			}
@@ -238,8 +232,7 @@ CMD:watchlistadd(playerid, params[])
 			PlayerInfo[giveplayerid][pNonRPMeter] += points;
 			PlayerInfo[giveplayerid][pWatchlistTime] = gettime() + 86400 / days;
 			
-			format(string, sizeof(string), "You have manually added %s to the watchlist for %d days", GetPlayerNameEx(giveplayerid), days);
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have manually added %s to the watchlist for %d days", GetPlayerNameEx(giveplayerid), days);
 			
 			format(string, sizeof(string), "%s has added %s(%d) to the watchlist", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 			Log("logs/watchlist.log", string);
@@ -266,8 +259,7 @@ CMD:watchlistremove(playerid, params[])
 			PlayerInfo[giveplayerid][pWatchlist] = 0;
 			PlayerInfo[giveplayerid][pWatchlistTime] = 0;
 			
-			format(string, sizeof(string), "You have removed %s from the watchlist.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have removed %s from the watchlist.", GetPlayerNameEx(giveplayerid));
 			
 			format(string, sizeof(string), "%s has removed %s(%d) from the watchlist", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 			Log("logs/watchlist.log", string);
@@ -293,10 +285,8 @@ CMD:restrictaccount(playerid, params[])
 			
 			PlayerInfo[giveplayerid][pAccountRestricted] = 1;
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "You have restricted %s account.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
-			format(string, sizeof(string), "Your account has been restricted by %s. You will not be able to drive a vehicle, give/take any damage or own any weapons", GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have restricted %s account.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_CYAN, "Your account has been restricted by %s. You will not be able to drive a vehicle, give/take any damage or own any weapons", GetPlayerNameEx(playerid));
 			SendClientMessageEx(giveplayerid, COLOR_RED, "Note: To lift this restriction, please contact a member of the RP Improvement Team.");
 			
 			PlayerTextDrawShow(giveplayerid, AccountRestriction[giveplayerid]);
@@ -330,10 +320,8 @@ CMD:unrestrictaccount(playerid, params[])
 			PlayerInfo[giveplayerid][pAccountRestricted] = 0;
 			PlayerInfo[giveplayerid][pNonRPMeter] = 0; //fix for bug where non-rp points would remain after being unrestricted.
 			
-			format(string, sizeof(string), "You have unrestricted %s account.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
-			format(string, sizeof(string), "Your account has been unrestricted by %s.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have unrestricted %s account.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_CYAN, "Your account has been unrestricted by %s.", GetPlayerNameEx(playerid));
 			
 			format(string, sizeof(string), "AdmCmd: %s has unrestricted %s account.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -452,7 +440,7 @@ CMD:wdwhitelist(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pWatchdog] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
-		new string[128], query[256], giveplayer[MAX_PLAYER_NAME], ip[16];
+		new query[256], giveplayer[MAX_PLAYER_NAME], ip[16];
 		if(sscanf(params, "s[24]s[16]", giveplayer, ip))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wdwhitelist [watchdog name] [IP]");
@@ -467,8 +455,7 @@ CMD:wdwhitelist(playerid, params[])
 		mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `SecureIP`='%s' WHERE `Username`='%s' AND `Watchdog` <= %d", tmpIP, tmpName, PlayerInfo[playerid][pWatchdog]);
 		mysql_tquery(MainPipeline, query, "OnWDWhitelist", "i", playerid);
 
-		format(string, sizeof(string), "Attempting to whitelist %s on %s's account...", tmpIP, tmpName);
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Attempting to whitelist %s on %s's account...", tmpIP, tmpName);
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	return true;

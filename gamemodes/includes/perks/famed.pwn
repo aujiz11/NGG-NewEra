@@ -135,11 +135,8 @@ CMD:fc(playerid, params[]) {
 		}
 		else if(gettime() < GetPVarInt(playerid, "timeFamed")) {
 
-			new
-				szMessage[64];
 
-			format(szMessage, sizeof(szMessage), "You must wait %d seconds before speaking again in this channel.", GetPVarInt(playerid, "timeFamed") - gettime());
-			SendClientMessageEx(playerid, COLOR_GREY, szMessage);
+			SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before speaking again in this channel.", GetPVarInt(playerid, "timeFamed") - gettime());
 		}
 		else if(PlayerInfo[playerid][pToggledChats][8] == 1) {
 		    SendClientMessageEx(playerid, COLOR_GREY, "You have the famed chat toggled - /togfamed to enable it.");
@@ -185,8 +182,7 @@ CMD:fmute(playerid, params[])
 		 				return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command on this person!");
 
 					PlayerInfo[targetid][pFMuted] = 1;
-					format(string, sizeof(string), "You were muted from the famed channel by %s, reason: %s. You may appeal this mute at www.ng-gaming.net/forums", GetPlayerNameEx(playerid), reason);
-					SendClientMessageEx(targetid, COLOR_GRAD2, string);
+					SendClientMessageEx(targetid, COLOR_GRAD2, "You were muted from the famed channel by %s, reason: %s. You may appeal this mute at www.ng-gaming.net/forums", GetPlayerNameEx(playerid), reason);
 					format(string, sizeof(string), "AdmCmd: %s has muted %s from the Famed Channel, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), reason);
 					ABroadCast(COLOR_LIGHTRED, string, 2);
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
@@ -220,8 +216,7 @@ CMD:funmute(playerid, params[])
 		 				return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command on this person!");
 
 					PlayerInfo[targetid][pFMuted] = 0;
-					format(string, sizeof(string), "You were unmuted from the famed channel by %s, reason: %s.", GetPlayerNameEx(playerid), reason);
-					SendClientMessageEx(targetid, COLOR_GRAD2, string);
+					SendClientMessageEx(targetid, COLOR_GRAD2, "You were unmuted from the famed channel by %s, reason: %s.", GetPlayerNameEx(playerid), reason);
 					format(string, sizeof(string), "AdmCmd: %s has unmuted %s from the Famed Channel, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), reason);
 					ABroadCast(COLOR_LIGHTRED, string, 2);
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
@@ -278,7 +273,7 @@ CMD:osetfamed(playerid, params[])
 {
     if(PlayerInfo[playerid][pFamed] >= 6 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
     {
-        new string[128], pname[MAX_PLAYER_NAME], level;
+        new pname[MAX_PLAYER_NAME], level;
 	    if(sscanf(params, "s[32]i", pname, level))
 			return SendClientMessageEx(playerid, COLOR_WHITE, "Usage: /osetfamed [player] [level]");
 
@@ -300,8 +295,7 @@ CMD:osetfamed(playerid, params[])
             mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT `Famed` FROM `accounts` WHERE `Username` = '%s'", szPlayerName);
 			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", OFFLINE_FAMED_THREAD, playerid, g_arrQueryHandle[playerid]);
  			
- 			format(string, sizeof(string), "Attempting to offline set %s account to level %d famed.", szPlayerName, level);
- 			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Attempting to offline set %s account to level %d famed.", szPlayerName, level);
  			SendClientMessageEx(playerid, COLOR_YELLOW, "Please wait...");
  		}
  	}

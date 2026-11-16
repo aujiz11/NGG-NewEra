@@ -135,7 +135,7 @@ CMD:live(playerid, params[])
 			return 1;
 		}
 
-		new string[128], giveplayerid;
+		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /live [player]");
 
 		if (IsPlayerConnected(giveplayerid))
@@ -150,10 +150,8 @@ CMD:live(playerid, params[])
 				else
 				{
 					if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot talk live with yourself!"); return 1; }
-					format(string, sizeof(string), "* You offered %s to have a live conversation.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* %s offered you to have a live conversation, type /accept live to accept.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to have a live conversation.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s offered you to have a live conversation, type /accept live to accept.", GetPlayerNameEx(playerid));
 					LiveOffer[giveplayerid] = playerid;
 					SetPVarInt(giveplayerid, "LiveOfferSession", g_arrQueryHandle[playerid]);
 				}

@@ -154,7 +154,6 @@ CMD:colorcar(playerid, params[]) {
 	if(sscanf(params, "ii", iColors[0], iColors[1])) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /colorcar [ID 1] [ID 2]. Colors must be an ID.");
 	else if((PlayerInfo[playerid][pDonateRank] == 0) && (iColors[0] > 127 || iColors[1] > 127)) return SendClientMessageEx(playerid, COLOR_GREY, "Only VIPs can use special color IDs above 127.");
 	else if(!(0 <= iColors[0] <= 255 && 0 <= iColors[1] <= 255)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
-	new szMessage[60];
 	for(new i = 0; i < MAX_PLAYERVEHICLES; i++)
 	{
 		if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][i][pvId]))
@@ -163,8 +162,7 @@ CMD:colorcar(playerid, params[]) {
 			ChangeVehicleColor(PlayerVehicleInfo[playerid][i][pvId], PlayerVehicleInfo[playerid][i][pvColor1], PlayerVehicleInfo[playerid][i][pvColor2]);
 			PlayerInfo[playerid][pSpraycan]--;
 			g_mysql_SaveVehicle(playerid, i);
-			format(szMessage, sizeof(szMessage), "You have changed the colors of your vehicle to ID %d, %d.", iColors[0], iColors[1]);
-			return SendClientMessageEx(playerid, COLOR_GRAD2, szMessage);
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have changed the colors of your vehicle to ID %d, %d.", iColors[0], iColors[1]);
 		}
 	}
 	for(new i = 0; i < sizeof(VIPVehicles); i++)
@@ -173,8 +171,7 @@ CMD:colorcar(playerid, params[]) {
 		{
 			ChangeVehicleColor(VIPVehicles[i], iColors[0], iColors[1]);
 			PlayerInfo[playerid][pSpraycan]--;
-			format(szMessage, sizeof(szMessage), "You have changed the colors of this vehicle to ID %d, %d.", iColors[0], iColors[1]);
-			return SendClientMessageEx(playerid, COLOR_GRAD2, szMessage);
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have changed the colors of this vehicle to ID %d, %d.", iColors[0], iColors[1]);
 		}
 	}
 	for(new i = 0; i < sizeof(FamedVehicles); i++)
@@ -183,8 +180,7 @@ CMD:colorcar(playerid, params[]) {
 		{
 			ChangeVehicleColor(FamedVehicles[i], iColors[0], iColors[1]);
 			PlayerInfo[playerid][pSpraycan]--;
-			format(szMessage, sizeof(szMessage), "You have changed the colors of this vehicle to ID %d, %d.", iColors[0], iColors[1]);
-			return SendClientMessageEx(playerid, COLOR_GRAD2, szMessage);
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have changed the colors of this vehicle to ID %d, %d.", iColors[0], iColors[1]);
 		}
 	}
 	SendClientMessageEx(playerid, COLOR_GREY, "You can't spray other people's vehicles.");
@@ -201,11 +197,8 @@ CMD:number(playerid, params[]) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /number [player]");
 		}
 		else if(IsPlayerConnected(iTarget)) {
-			new
-				szNumber[16 + MAX_PLAYER_NAME];
 
-			format(szNumber, sizeof(szNumber), "* %s (%i)", GetPlayerNameEx(iTarget), PlayerInfo[iTarget][pPnumber]);
-			SendClientMessageEx(playerid, COLOR_GRAD1, szNumber);
+			SendClientMessageEx(playerid, COLOR_GRAD1, "* %s (%i)", GetPlayerNameEx(iTarget), PlayerInfo[iTarget][pPnumber]);
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	}
@@ -284,12 +277,10 @@ CMD:setautoreply(playerid, params[])
 		return 1;
 	}
 
-	new string[128];
 	if(strlen(params) >= 1 && strlen(params) < 63)
 	{
 		format(PlayerInfo[playerid][pAutoTextReply], 64, "%s", params);
-		format(string, sizeof(string), "You have changed your autotext response to: %s", params);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have changed your autotext response to: %s", params);
 	}
 	else
 	{
@@ -498,8 +489,7 @@ CMD:call(playerid, const params[])
 							SendClientMessageEx(i, COLOR_YELLOW, string);
 						}
 						else {
-							format(string, sizeof(string), "Your mobile is ringing - type /p to answer it. [Caller ID: %d]", PlayerInfo[playerid][pPnumber]);
-							SendClientMessageEx(i, COLOR_YELLOW, string);
+							SendClientMessageEx(i, COLOR_YELLOW, "Your mobile is ringing - type /p to answer it. [Caller ID: %d]", PlayerInfo[playerid][pPnumber]);
 							FetchContact(i, PlayerInfo[playerid][pPnumber]);
 						}
 						RingTone[i] = 10;

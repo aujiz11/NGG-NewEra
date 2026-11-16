@@ -193,9 +193,7 @@ CMD:dmpnear(playerid, params[])
 			{
 				if(DMPInfo[i][dmpMarkerType] != 0)
 				{
-				    new string[128];
-			    	format(string, sizeof(string), "MapIcon ID %d | %f from you", i, GetDistanceBetweenPoints(DMPInfo[i][dmpPosX], DMPInfo[i][dmpPosY], DMPInfo[i][dmpPosZ], X, Y, Z));
-			    	SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "MapIcon ID %d | %f from you", i, GetDistanceBetweenPoints(DMPInfo[i][dmpPosX], DMPInfo[i][dmpPosY], DMPInfo[i][dmpPosZ], X, Y, Z));
 				}
 			}
 		}
@@ -216,9 +214,7 @@ CMD:dmpnext(playerid, params[])
 		{
 		    if(DMPInfo[x][dmpMarkerType] == 0)
 		    {
-		        new string[128];
-		        format(string, sizeof(string), "%d is available to use.", x);
-		        SendClientMessageEx(playerid, COLOR_WHITE, string);
+		        SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", x);
 		        break;
 			}
 		}
@@ -285,8 +281,7 @@ CMD:dmpedit(playerid, params[])
 	else if(strcmp(choice, "type", true) == 0)
 	{
 		DMPInfo[mapiconid][dmpMarkerType] = amount;
-		format(string, sizeof(string), "You have set the marker type to %d.", amount);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the marker type to %d.", amount);
 		if(IsValidDynamicMapIcon(DMPInfo[mapiconid][dmpMapIconID])) DestroyDynamicMapIcon(DMPInfo[mapiconid][dmpMapIconID]);
 		DMPInfo[mapiconid][dmpMapIconID] = CreateDynamicMapIcon(DMPInfo[mapiconid][dmpPosX], DMPInfo[mapiconid][dmpPosY], DMPInfo[mapiconid][dmpPosZ], DMPInfo[mapiconid][dmpMarkerType], DMPInfo[mapiconid][dmpColor], DMPInfo[mapiconid][dmpVW], DMPInfo[mapiconid][dmpInt], -1, 500.0);
 		format(string, sizeof(string), "%s has edited MapIconID %d's Marker Type to %d.", GetPlayerNameEx(playerid), mapiconid, amount);
@@ -295,8 +290,7 @@ CMD:dmpedit(playerid, params[])
 	else if(strcmp(choice, "color", true) == 0)
 	{
 		DMPInfo[mapiconid][dmpColor] = amount;
-		format(string, sizeof(string), "You have set the color to %d.", amount);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the color to %d.", amount);
 		if(IsValidDynamicMapIcon(DMPInfo[mapiconid][dmpMapIconID])) DestroyDynamicMapIcon(DMPInfo[mapiconid][dmpMapIconID]);
 		DMPInfo[mapiconid][dmpMapIconID] = CreateDynamicMapIcon(DMPInfo[mapiconid][dmpPosX], DMPInfo[mapiconid][dmpPosY], DMPInfo[mapiconid][dmpPosZ], DMPInfo[mapiconid][dmpMarkerType], DMPInfo[mapiconid][dmpColor], DMPInfo[mapiconid][dmpVW], DMPInfo[mapiconid][dmpInt], -1, 500.0);
 		format(string, sizeof(string), "%s has edited MapIconID %d's Color to %d.", GetPlayerNameEx(playerid), mapiconid, amount);

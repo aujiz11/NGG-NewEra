@@ -148,8 +148,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				
 				GivePlayerCash(playerid, iAmount);
 				PlayerInfo[playerid][pAccount] -= iAmount;
-				format(szMiscArray, sizeof(szMiscArray), "  You have withdrawn $%s from your account. ", number_format(iAmount));
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "  You have withdrawn $%s from your account. ", number_format(iAmount));
 
 				if(PlayerInfo[playerid][pTut] == 16)
 				{
@@ -183,8 +182,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				
 				GivePlayerCash(playerid, -iAmount);
 				PlayerInfo[playerid][pAccount] += iAmount; 
-				format(szMiscArray, sizeof(szMiscArray), "  You have deposited $%s to your account. ", number_format(iAmount));
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "  You have deposited $%s to your account. ", number_format(iAmount));
 
 				OnPlayerStatsUpdate(playerid);
 

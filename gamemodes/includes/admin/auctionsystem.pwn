@@ -57,8 +57,7 @@ stock HigherBid(playerid)
 				Auctions[AuctionItem][Bidder] = GetPlayerSQLId(playerid);
 				strcpy(Auctions[AuctionItem][Wining], GetPlayerNameExt(playerid), MAX_PLAYER_NAME);
 
-				format(szMessage, sizeof(szMessage), "You have placed a bid of $%i on %s.", GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
-				SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have placed a bid of $%i on %s.", GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
 
 				format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has placed a bid of $%i on %s(%i)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor], AuctionItem);
 				Log("logs/auction.log", szMessage);
@@ -85,8 +84,7 @@ stock HigherBid(playerid)
 			Auctions[AuctionItem][Bidder] = GetPlayerSQLId(playerid);
 			strcpy(Auctions[AuctionItem][Wining], GetPlayerNameExt(playerid), MAX_PLAYER_NAME);
 
-			format(szMessage, sizeof(szMessage), "You have placed a bid of $%i on %s.", GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
-			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have placed a bid of $%i on %s.", GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
 
 			format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has placed a bid of $%i on %s(%i)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor], AuctionItem);
 			Log("logs/auction.log", szMessage);
@@ -119,8 +117,7 @@ public EndAuction(auction)
 	 			format(string, sizeof(string), "(Auction Winner) %s %s", Auctions[auction][Wining], Auctions[auction][BiddingFor]);
 			   	AddFlag(Player, INVALID_PLAYER_ID, string);
 
-				format(string, sizeof(string), "You have won the auction for the %s!", Auctions[auction][BiddingFor]);
-		  		SendClientMessageEx(Player, COLOR_GREEN, string);
+				SendClientMessageEx(Player, COLOR_GREEN, "You have won the auction for the %s!", Auctions[auction][BiddingFor]);
 			}
 			else
 			{

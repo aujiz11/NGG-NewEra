@@ -489,12 +489,11 @@ IsNotAGun(weaponid)
 
 CMD:myguns(playerid, params[])
 {
-	new string[128], myweapons[13][2], weaponname[50], encryption[256], name[MAX_PLAYER_NAME];
+	new myweapons[13][2], weaponname[50], encryption[256], name[MAX_PLAYER_NAME];
 
 	GetPlayerName(playerid, name, sizeof(name));
 	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-	format(string, sizeof(string), "Weapons on %s:", name);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Weapons on %s:", name);
 	for (new i = 0; i < 13; i++)
 	{
 		GetPlayerWeaponData(playerid, i, myweapons[i][0], myweapons[i][1]);
@@ -503,8 +502,7 @@ CMD:myguns(playerid, params[])
 			if(PlayerInfo[playerid][pGuns][i] == myweapons[i][0])
 			{
 				GetWeaponName(myweapons[i][0], weaponname, sizeof(weaponname));
-				format(string, sizeof(string), "%s (%d)", weaponname, myweapons[i][0]);
-				SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "%s (%d)", weaponname, myweapons[i][0]);
 				format(encryption, sizeof(encryption), "%s%d", encryption, myweapons[i][0]);
 			}
 		}
@@ -513,8 +511,7 @@ CMD:myguns(playerid, params[])
 	getdate(year, month, day);
 	format(encryption, sizeof(encryption), "%s%s%d%d%d%d%d6524", encryption, name, month, day, year, gServerHour, minuite);
 	new encrypt = crc32(encryption);
-	format(string, sizeof(string), "[%d/%d/%d %d:%d:%d] - [%d]", month, day, year, gServerHour, minuite,gServerSecond, encrypt);
-	SendClientMessageEx(playerid, COLOR_GREEN, string);
+	SendClientMessageEx(playerid, COLOR_GREEN, "[%d/%d/%d %d:%d:%d] - [%d]", month, day, year, gServerHour, minuite,gServerSecond, encrypt);
 	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	return 1;
 }
@@ -596,9 +593,7 @@ CMD:giveweapon(playerid, params[])
 
 	if (GetPVarInt(playerid, "GiveWeaponTimer") > 0)
 	{
-		new string[58];
-		format(string, sizeof(string), "You must wait %d seconds before giving another weapon.", GetPVarInt(playerid, "GiveWeaponTimer"));
-		SendClientMessageEx(playerid,COLOR_GREY,string);
+		SendClientMessageEx(playerid,COLOR_GREY,"You must wait %d seconds before giving another weapon.", GetPVarInt(playerid, "GiveWeaponTimer"));
 		return 1;
 	}
 

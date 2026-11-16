@@ -92,9 +92,7 @@ public OnVehicleSpawn(vehicleid) {
 			new zyear, zmonth, zday;
 			getdate(zyear, zmonth, zday);
 			if(zombieevent || (zmonth == 10 && zday == 31) || (zmonth == 11 && zday == 1)) SetVehicleHealth(iVehicleID, PlayerVehicleInfo[i][v][pvHealth]);
-			new string[128];
-			format(string, sizeof(string), "Your %s has been sent to the location at which you last parked it.", GetVehicleName(iVehicleID));
-			SendClientMessageEx(i, COLOR_GRAD1, string);
+			SendClientMessageEx(i, COLOR_GRAD1, "Your %s has been sent to the location at which you last parked it.", GetVehicleName(iVehicleID));
 		}
 	}
 	// Make sure no one is in the vehicle window if plane.
@@ -1012,15 +1010,14 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 				if(!vehicleCountCheck(playerid)) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot own anymore vehicles - You may purchase additional vehicle slots through /vstorage.");
 				if(!vehicleSpawnCountCheck(playerid)) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "You have too many spawned vehicles, please despawn one.");
 				if(PlayerInfo[playerid][pVehVoucher] <= 0) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "You don't have a car voucher.");
-				new Float: arr_fPlayerPos[4], szLog[128], szString[128];
+				new Float: arr_fPlayerPos[4], szLog[128];
 				GetPlayerPos(playerid, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2]);
 				GetPlayerFacingAngle(playerid, arr_fPlayerPos[3]);
 				CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), modelid, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2], arr_fPlayerPos[3], 0, 0, 2000000, 0, 0);
 				SetPlayerVirtualWorld(playerid, 0);
 
 				PlayerInfo[playerid][pVehVoucher]--;
-				format(szString, sizeof(szString), "You have successfully used one of your car voucher(s), you have %d car voucher(s) left.", PlayerInfo[playerid][pVehVoucher]);
-				SendClientMessageEx(playerid, COLOR_CYAN, szString);
+				SendClientMessageEx(playerid, COLOR_CYAN, "You have successfully used one of your car voucher(s), you have %d car voucher(s) left.", PlayerInfo[playerid][pVehVoucher]);
 				format(szLog, sizeof(szLog), "%s(%d) has used one of his car voucher(s) and has %d left.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pVehVoucher]);
 				Log("logs/vouchers.log", szLog);
 				DeletePVar(playerid, "voucherdialog");
@@ -1145,12 +1142,10 @@ public OnPlayerStreamIn(playerid, forplayerid)
 		case 1: {
 	        if(PlayerInfo[playerid][pMember] == PlayerInfo[forplayerid][pMember])
 	        {
-	            new string[128];
 	            if(GetPVarInt(playerid, "InRangeBackup") < 1)
 	            {
 		            SetPVarInt(playerid, "InRangeBackup", 30);
-		            format(string, sizeof(string), "You are in range of %s's backup call (Code 3) (Blue marker on minimap)", GetPlayerNameEx(playerid));
-		            SendClientMessageEx(forplayerid, DEPTRADIO, string);
+		            SendClientMessageEx(forplayerid, DEPTRADIO, "You are in range of %s's backup call (Code 3) (Blue marker on minimap)", GetPlayerNameEx(playerid));
 				}
 	  			SetPlayerMarkerForPlayer(forplayerid, playerid, 0x2641FEAA);
 			}
@@ -1158,12 +1153,10 @@ public OnPlayerStreamIn(playerid, forplayerid)
 		case 2: {
   			if(PlayerInfo[playerid][pMember] == PlayerInfo[forplayerid][pMember])
 	        {
-	            new string[128];
 	            if(GetPVarInt(playerid, "InRangeBackup") < 1)
 	            {
 		            SetPVarInt(playerid, "InRangeBackup", 30);
-		            format(string, sizeof(string), "You are in range of %s's backup call (Code 2) (Green marker on minimap)", GetPlayerNameEx(playerid));
-		            SendClientMessageEx(forplayerid, DEPTRADIO, string);
+		            SendClientMessageEx(forplayerid, DEPTRADIO, "You are in range of %s's backup call (Code 2) (Green marker on minimap)", GetPlayerNameEx(playerid));
 				}
 	  			SetPlayerMarkerForPlayer(forplayerid, playerid, 0x00FF33AA);
 			}
@@ -1171,12 +1164,10 @@ public OnPlayerStreamIn(playerid, forplayerid)
 		case 3: {
   			if(IsACop(forplayerid))
 	        {
-	            new string[128];
 	            if(GetPVarInt(playerid, "InRangeBackup") < 1)
 	            {
 		            SetPVarInt(playerid, "InRangeBackup", 30);
-		            format(string, sizeof(string), "You are in range of %s's backup call (Code 3) (Blue marker on minimap)", GetPlayerNameEx(playerid));
-		            SendClientMessageEx(forplayerid, DEPTRADIO, string);
+		            SendClientMessageEx(forplayerid, DEPTRADIO, "You are in range of %s's backup call (Code 3) (Blue marker on minimap)", GetPlayerNameEx(playerid));
 				}
 	  			SetPlayerMarkerForPlayer(forplayerid, playerid, 0x2641FEAA);
 			}
@@ -3047,21 +3038,17 @@ public OnPlayerEnterCheckpoint(playerid)
 	    	RCPIdCurrent[playerid]++;
             PlayerInfo[playerid][pHydration] -= 4;
 		}
-		new string[128];
         if(PlayerInfo[playerid][pHydration] > 60)
         {
-			format(string, sizeof(string), "Hydration level normal(%d)", PlayerInfo[playerid][pHydration]);
-			SendClientMessageEx(playerid, COLOR_GREEN, string);
+			SendClientMessageEx(playerid, COLOR_GREEN, "Hydration level normal(%d)", PlayerInfo[playerid][pHydration]);
 		}
 		else if(PlayerInfo[playerid][pHydration] < 61 && PlayerInfo[playerid][pHydration] > 30)
 		{
-		    format(string, sizeof(string), "Hydration level low(%d)", PlayerInfo[playerid][pHydration]);
-			SendClientMessageEx(playerid, COLOR_YELLOW, string);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Hydration level low(%d)", PlayerInfo[playerid][pHydration]);
 		}
 		else if(PlayerInfo[playerid][pHydration] < 31 && PlayerInfo[playerid][pHydration] > 0)
 		{
-		    format(string, sizeof(string), "Hydration level very low(%d)", PlayerInfo[playerid][pHydration]);
-			SendClientMessageEx(playerid, COLOR_RED, string);
+			SendClientMessageEx(playerid, COLOR_RED, "Hydration level very low(%d)", PlayerInfo[playerid][pHydration]);
 		}
 		else if(PlayerInfo[playerid][pHydration] < 0)
 		{
@@ -3340,9 +3327,7 @@ public OnPlayerEnterCheckpoint(playerid)
 	    	// Log("logs/hack.log", string);
 		}
 
-		new string[128];
-		format(string, sizeof(string), "* You have delivered %s to %s. Return the truck to the San Fierro Docks to collect your pay.", GetInventoryType(business), Businesses[business][bName]);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have delivered %s to %s. Return the truck to the San Fierro Docks to collect your pay.", GetInventoryType(business), Businesses[business][bName]);
 
 		Businesses[business][bOrderState] = 3;
 		Businesses[business][bInventory] += Businesses[business][bOrderAmount];
@@ -3549,9 +3534,8 @@ public OnPlayerEnterCheckpoint(playerid)
 					if (payment > 25000) payment = 25000;
 
 					GivePlayerCash(playerid, payment);
-					format(string, sizeof(string), "* You were paid $%d for delivering the goods and returning the vehicle.", payment);
 
-				    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were paid $%d for delivering the goods and returning the vehicle.", payment);
 				    SetVehicleToRespawn(vehicleid);
 				}
 				else {
@@ -3658,8 +3642,7 @@ public OnPlayerEnterCheckpoint(playerid)
 
 				if(PlayerInfo[playerid][pDoubleEXP] > 0)
 				{
-					format(string, sizeof(string), "You have gained 2 truck skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-					SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 truck skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
 					PlayerInfo[playerid][pTruckSkill] += 2;
 				}
 				else
@@ -3759,8 +3742,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	        {
 		        if(GetPVarInt(playerid, "CopTackleCooldown") != 0)
 		        {
-		            format(string, sizeof(string), "You are exhausted! It will be %d seconds before you can tackle again.", GetPVarInt(playerid, "CopTackleCooldown"));
-		            return SendClientMessageEx(playerid, COLOR_GRAD2, string);
+		            return SendClientMessageEx(playerid, COLOR_GRAD2, "You are exhausted! It will be %d seconds before you can tackle again.", GetPVarInt(playerid, "CopTackleCooldown"));
 		        }
 	            if(PlayerInfo[GetPlayerTargetPlayer(playerid)][pAdmin] >= 2 && PlayerInfo[GetPlayerTargetPlayer(playerid)][pTogReports] != 1)
 				{
@@ -3781,8 +3763,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				}
 				if(GetPVarInt(GetPlayerTargetPlayer(playerid), "CantBeTackledCount") > 0)
 				{
-					format(string, sizeof(string), "That player cannot be tackled for another %d seconds.", GetPVarInt(GetPlayerTargetPlayer(playerid), "CantBeTackledCount"));
-		            return SendClientMessageEx(playerid, COLOR_GRAD2, string);
+		            return SendClientMessageEx(playerid, COLOR_GRAD2, "That player cannot be tackled for another %d seconds.", GetPVarInt(GetPlayerTargetPlayer(playerid), "CantBeTackledCount"));
 				}
 				#if defined zombiemode
 				if(GetPVarInt(GetPlayerTargetPlayer(playerid), "pIsZombie"))
@@ -3816,9 +3797,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(IsPlayerConnected(GetPVarInt(playerid, "ttSeller")))
 			{
-				new string[128];
-				format(string, sizeof(string), "%s has declined the toy offer.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(GetPVarInt(playerid, "ttSeller"), COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(GetPVarInt(playerid, "ttSeller"), COLOR_LIGHTBLUE, "%s has declined the toy offer.", GetPlayerNameEx(playerid));
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, "You have declined the toy offer.");
 
 				DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttBuyer");
@@ -3885,8 +3864,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						new string[68];
 						format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~b~License Plate: ~w~%d~n~~b~Speed: ~w~%.0f MPH", GetPlayerVehicleID(i), fVehSpeed[i]);
 						GameTextForPlayer(playerid, string,3500, 3);
-						format(string, sizeof(string), "License Plate: %d. Speed: %.0f MPH", GetPlayerVehicleID(i), fVehSpeed[i]);
-						SendClientMessageEx(playerid, COLOR_GRAD4, string);
+						SendClientMessageEx(playerid, COLOR_GRAD4, "License Plate: %d. Speed: %.0f MPH", GetPlayerVehicleID(i), fVehSpeed[i]);
 						SetPVarInt(playerid, "RadarTimeout", 1);
 						SetTimerEx("RadarCooldown", 3000, false, "i", playerid);
 						return 1;
@@ -4069,8 +4047,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		    TogglePlayerControllable(playerid, true);
 		    new string[298];
 			GetPlayerPos(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]]);
-		    format(string, sizeof(string), "You have successfuly created a race checkpoint. Position: X = %f.3 Y = %f.3 Z = %f.3 - ID:%d", EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], ConfigEventCPId[playerid]);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "You have successfuly created a race checkpoint. Position: X = %f.3 Y = %f.3 Z = %f.3 - ID:%d", EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], ConfigEventCPId[playerid]);
 			if(ConfigEventCPs[playerid][2] == 1)
 			{
 			    EventRCPU[ConfigEventCPId[playerid]] = 1;
@@ -4407,8 +4384,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			}
 			TransportDuty[playerid] = 0;
 			new string[70]; // increased buf size as full message wasn't getting shown
-			format(string, sizeof(string), "* You are now off duty and earned $%d.", TransportMoney[playerid]);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now off duty and earned $%d.", TransportMoney[playerid]);
 
 			foreach(new i: Player)
 			{
@@ -4501,9 +4477,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			{
 				if(GetPlayerCash(playerid) < TransportValue[i])
 				{
-					new string[28];
-					format(string, sizeof(string), "* You need $%d to enter.", TransportValue[i]);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You need $%d to enter.", TransportValue[i]);
 					RemovePlayerFromVehicle(playerid);
 					new Float:X, Float:Y, Float:Z;
 					GetPlayerPos(playerid, X, Y, Z);
@@ -4512,13 +4486,10 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				}
 				else
 				{
-					new string[35+MAX_PLAYER_NAME];
 					if(TransportDuty[i] == 1)
 					{
-						format(string, sizeof(string), "* You paid $%d to the taxi driver.", TransportValue[i]);
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-						format(string, sizeof(string), "* Passenger %s has entered your taxi.", GetPlayerNameEx(playerid));
-						SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You paid $%d to the taxi driver.", TransportValue[i]);
+						SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Passenger %s has entered your taxi.", GetPlayerNameEx(playerid));
 						TransportTime[i] = 1;
 						TransportTime[playerid] = 1;
 						TransportCost[playerid] = TransportValue[i];
@@ -4527,10 +4498,8 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					}
 					else if(TransportDuty[i] == 2)
 					{
-						format(string, sizeof(string), "* You paid $%d to the Taxi Driver.", TransportValue[i]);
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-						format(string, sizeof(string), "* Passenger %s has entered your Taxi.", GetPlayerNameEx(playerid));
-						SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You paid $%d to the Taxi Driver.", TransportValue[i]);
+						SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Passenger %s has entered your Taxi.", GetPlayerNameEx(playerid));
 					}
 					GivePlayerCash(playerid, - TransportValue[i]);
 					TransportMoney[i] += TransportValue[i];
@@ -4602,25 +4571,18 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			if(v != -1) {
 				if(i == playerid) {
 
-					new
-						string[128];
 
-					format(string, sizeof(string),"You are the owner of this %s.", GetVehicleName(newcar));
-					SendClientMessageEx(playerid, COLOR_GREY, string);
+					SendClientMessageEx(playerid, COLOR_GREY, "You are the owner of this %s.", GetVehicleName(newcar));
 					if(PlayerVehicleInfo[i][v][pvTicket] != 0)
 					{
-						format(string, sizeof(string),"This vehicle has $%d unpaid tickets. You must pay the ticket at the DMV in Dilimore.", PlayerVehicleInfo[i][v][pvTicket]);
-						SendClientMessageEx(playerid, COLOR_GREY, string);
+						SendClientMessageEx(playerid, COLOR_GREY, "This vehicle has $%d unpaid tickets. You must pay the ticket at the DMV in Dilimore.", PlayerVehicleInfo[i][v][pvTicket]);
 						SendClientMessageEx(playerid, COLOR_GREY, "Failure to pay these tickets as soon as possible will result in further fines, vehicle impounding, or even an arrest.");
 					}
 				}
 				else if(i == PlayerInfo[playerid][pVehicleKeysFrom] && v == PlayerInfo[playerid][pVehicleKeys]) {
 
-					new
-						string[64 + MAX_PLAYER_NAME];
 
-					format(string, sizeof(string),"You have the keys for this %s from owner %s.", GetVehicleName(newcar), GetPlayerNameEx(i));
-					SendClientMessageEx(playerid, COLOR_GREY, string);
+					SendClientMessageEx(playerid, COLOR_GREY, "You have the keys for this %s from owner %s.", GetVehicleName(newcar), GetPlayerNameEx(i));
 				}
 				else if(PlayerVehicleInfo[i][v][pvLocked] == 1 && PlayerVehicleInfo[i][v][pvLock] == 1) {
 					GetVehicleParamsEx(newcar,engine,lights,alarm,doors,bonnet,boot,objective);
@@ -4629,8 +4591,6 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				}
 				else if(PlayerVehicleInfo[i][v][pvLocked] == 1 && PlayerVehicleInfo[i][v][pvLock] == 2 && PlayerVehicleInfo[i][v][pvLocksLeft] > 0) { // Electronic Lock System
 
-					new
-						string[49 + MAX_PLAYER_NAME];
 
 					if(PlayerInfo[playerid][pAdmin] < 2)
 					{
@@ -4642,8 +4602,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					}
 					else
 					{
-						format(string, sizeof(string), "Warning: This %s is owned by %s.", GetVehicleName(newcar), GetPlayerNameEx(i));
-						SendClientMessageEx(playerid, COLOR_GREY, string);
+						SendClientMessageEx(playerid, COLOR_GREY, "Warning: This %s is owned by %s.", GetVehicleName(newcar), GetPlayerNameEx(i));
 					}
 				}
 				return 1;
@@ -4694,7 +4653,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		}
 		else if(DynVeh[vehicleid] != -1)
 		{
-			new string[128], Float:slx, Float:sly, Float:slz;
+			new Float:slx, Float:sly, Float:slz;
 			GetPlayerPos(playerid, slx, sly, slz);
 			if(DynVehicleInfo[DynVeh[vehicleid]][gv_igID] != INVALID_GROUP_ID && (PlayerInfo[playerid][pMember] != DynVehicleInfo[DynVeh[vehicleid]][gv_igID]))
 			{
@@ -4703,8 +4662,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				defer NOPCheck(playerid);
 				if(arrGroupData[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][g_iGroupType] != 2)
 				{
-					format(string, sizeof(string), "You need to be in %s to drive this vehicle.", arrGroupData[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][g_szGroupName]);
-					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be in %s to drive this vehicle.", arrGroupData[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][g_szGroupName]);
 				}
 			}
 			else if(DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID] != 0 && PlayerInfo[playerid][pDivision] != DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID] && PlayerInfo[playerid][pMember] != PlayerInfo[playerid][pLeader])
@@ -4713,20 +4671,18 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				RemovePlayerFromVehicle(playerid);
 				SetPlayerPos(playerid, slx, sly, slz+1.3);
 				defer NOPCheck(playerid);
-				format(string, sizeof(string), "You need to be in %s's %s division to drive this vehicle.",
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be in %s's %s division to drive this vehicle.",
 				arrGroupData[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][g_szGroupName],
 				arrGroupDivisions[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID]]);
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 			else if(DynVehicleInfo[DynVeh[vehicleid]][gv_irID] != 0 && (PlayerInfo[playerid][pRank] < DynVehicleInfo[DynVeh[vehicleid]][gv_irID]))
 			{
 				RemovePlayerFromVehicle(playerid);
 				SetPlayerPos(playerid, slx, sly, slz+1.3);
 				defer NOPCheck(playerid);
-				format(string, sizeof(string), "You need to be rank %s(%d) or above to drive this vehicle.",
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be rank %s(%d) or above to drive this vehicle.",
 				arrGroupRanks[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][DynVehicleInfo[DynVeh[vehicleid]][gv_irID]],
 				DynVehicleInfo[DynVeh[vehicleid]][gv_irID]);
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
 	   	else if(IsAPlane(vehicleid))
@@ -5122,8 +5078,7 @@ public OnPlayerText(playerid, text[])
 				{
 					GetPlayerName(playerid, sendername, sizeof(sendername));
 					GetPlayerName(GotProposedBy[playerid], giveplayer, sizeof(giveplayer));
-					format(string, sizeof(string), "Priest: %s do you take %s as your lovely wife? (Type 'yes' - anything else will reject the marriage).", giveplayer,sendername);
-					SendClientMessageEx(GotProposedBy[playerid], COLOR_WHITE, string);
+					SendClientMessageEx(GotProposedBy[playerid], COLOR_WHITE, "Priest: %s do you take %s as your lovely wife? (Type 'yes' - anything else will reject the marriage).", giveplayer,sendername);
 					MarriageCeremoney[GotProposedBy[playerid]] = 1;
 					MarriageCeremoney[playerid] = 0;
 					GotProposedBy[playerid] = INVALID_PLAYER_ID;
@@ -5144,28 +5099,22 @@ public OnPlayerText(playerid, text[])
 					GetPlayerName(ProposedTo[playerid], giveplayer, sizeof(giveplayer));
 					if(PlayerInfo[playerid][pSex] == 1 && PlayerInfo[ProposedTo[playerid]][pSex] == 2)
 					{
-						format(string, sizeof(string), "Priest: %s and %s i pronounce you now... Husband & Wife, you may kiss the bride.", sendername, giveplayer);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
-				   		format(string, sizeof(string), "Priest: %s and %s i pronounce you now... Husband & Wife, you may kiss the groom.", giveplayer, sendername);
-						SendClientMessageEx(ProposedTo[playerid], COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Priest: %s and %s i pronounce you now... Husband & Wife, you may kiss the bride.", sendername, giveplayer);
+						SendClientMessageEx(ProposedTo[playerid], COLOR_WHITE, "Priest: %s and %s i pronounce you now... Husband & Wife, you may kiss the groom.", giveplayer, sendername);
 						format(string, sizeof(string), "Marriage News: We have a new lovely couple! %s & %s have been married.", sendername, giveplayer);
 						OOCNews(COLOR_WHITE, string);
 					}
 					else if(PlayerInfo[playerid][pSex] == 1 && PlayerInfo[ProposedTo[playerid]][pSex] == 1)
 					{
-						format(string, sizeof(string), "Priest: %s and %s i pronounce you now... Husband & Husband, you may kiss the bride.", sendername, giveplayer);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
-				   		format(string, sizeof(string), "Priest: %s and %s i pronounce you now... Husband & Husband, you may kiss the groom.", giveplayer, sendername);
-						SendClientMessageEx(ProposedTo[playerid], COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Priest: %s and %s i pronounce you now... Husband & Husband, you may kiss the bride.", sendername, giveplayer);
+						SendClientMessageEx(ProposedTo[playerid], COLOR_WHITE, "Priest: %s and %s i pronounce you now... Husband & Husband, you may kiss the groom.", giveplayer, sendername);
 						format(string, sizeof(string), "Marriage News: We have a new gay couple! %s & %s have been married.", sendername, giveplayer);
 						OOCNews(COLOR_WHITE, string);
 					}
 					else if(PlayerInfo[playerid][pSex] == 2 && PlayerInfo[ProposedTo[playerid]][pSex] == 2)
 					{
-						format(string, sizeof(string), "Priest: %s and %s i pronounce you now... Wife & Wife, you may kiss the Bride.", sendername, giveplayer);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
-				   		format(string, sizeof(string), "Priest: %s and %s i pronounce you now... Wife & Wife, you may kiss the Groom.", giveplayer, sendername);
-						SendClientMessageEx(ProposedTo[playerid], COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Priest: %s and %s i pronounce you now... Wife & Wife, you may kiss the Bride.", sendername, giveplayer);
+						SendClientMessageEx(ProposedTo[playerid], COLOR_WHITE, "Priest: %s and %s i pronounce you now... Wife & Wife, you may kiss the Groom.", giveplayer, sendername);
 						format(string, sizeof(string), "Marriage News: We have a new lesbian couple! %s & %s have been married.", sendername, giveplayer);
 						OOCNews(COLOR_WHITE, string);
 					}
@@ -5213,10 +5162,8 @@ public OnPlayerText(playerid, text[])
 			{
 				if(IsPlayerConnected(GotProposedBy[playerid]))
 				{
-					format(string, sizeof(string), "* You didn't want to marry %s, no 'yes' was said.", GetPlayerNameEx(GotProposedBy[playerid]));
-					SendClientMessageEx(playerid, COLOR_YELLOW, string);
-					format(string, sizeof(string), "* %s didn't want to marry you, no 'yes' was said.",GetPlayerNameEx(playerid));
-					SendClientMessageEx(GotProposedBy[playerid], COLOR_YELLOW, string);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "* You didn't want to marry %s, no 'yes' was said.", GetPlayerNameEx(GotProposedBy[playerid]));
+					SendClientMessageEx(GotProposedBy[playerid], COLOR_YELLOW, "* %s didn't want to marry you, no 'yes' was said.",GetPlayerNameEx(playerid));
 					return 0;
 				}
 				else
@@ -5230,10 +5177,8 @@ public OnPlayerText(playerid, text[])
 			{
 				if(IsPlayerConnected(ProposedTo[playerid]))
 				{
-					format(string, sizeof(string), "* You didn't want to marry %s, no 'yes' was said.",GetPlayerNameEx(ProposedTo[playerid]));
-					SendClientMessageEx(playerid, COLOR_YELLOW, string);
-					format(string, sizeof(string), "* %s didn't want to marry you, no 'yes' was said.",GetPlayerNameEx(playerid));
-					SendClientMessageEx(ProposedTo[playerid], COLOR_YELLOW, string);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "* You didn't want to marry %s, no 'yes' was said.",GetPlayerNameEx(ProposedTo[playerid]));
+					SendClientMessageEx(ProposedTo[playerid], COLOR_YELLOW, "* %s didn't want to marry you, no 'yes' was said.",GetPlayerNameEx(playerid));
 					return 0;
 				}
 				else
@@ -5418,8 +5363,7 @@ public OnPlayerText(playerid, text[])
 		{
 			if((InsidePlane[playerid] == GetPlayerVehicleID(i) && GetPlayerState(i) == 2) || (InsidePlane[i] == GetPlayerVehicleID(playerid) && GetPlayerState(playerid) == 2) || (InsidePlane[playerid] != INVALID_VEHICLE_ID && InsidePlane[playerid] == InsidePlane[i])) {
 				//if(PlayerInfo[playerid][pDuty] || IsAHitman(playerid)) format(string, sizeof(string), "%s{%06x}%s{E6E6E6} says: %s", accent, GetPlayerColor(playerid), sendername, text);
-				format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
-				SendClientMessageEx(i, COLOR_FADE1, string);
+				SendClientMessageEx(i, COLOR_FADE1, "%s%s says: %s", accent, sendername, text);
 			}
 			else if(GetPlayerVirtualWorld(i) == GetPlayerVirtualWorld(playerid)) {
 				if(IsPlayerInRangeOfPoint(i, 20.0 * 0.6, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && PlayerInfo[i][pBugged] >= 0)
@@ -5437,28 +5381,22 @@ public OnPlayerText(playerid, text[])
 				}
 				if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && PlayerInfo[playerid][pAccountRestricted] == 1)
 				{
-					format(string, sizeof(string), "[Restricted] %s: %s", GetPlayerNameEx(playerid), text);
-					SendClientMessageEx(i, COLOR_FADE5, string);
+					SendClientMessageEx(i, COLOR_FADE5, "[Restricted] %s: %s", GetPlayerNameEx(playerid), text);
 				}
 				else if(IsPlayerInRangeOfPoint(i, 20.0 / 16, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
-					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
-					SendClientMessageEx(i, COLOR_FADE1, string);
+					SendClientMessageEx(i, COLOR_FADE1, "%s%s says: %s", accent, sendername, text);
 				}
 				else if(IsPlayerInRangeOfPoint(i, 20.0 / 8, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
-					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
-					SendClientMessageEx(i, COLOR_FADE2, string);
+					SendClientMessageEx(i, COLOR_FADE2, "%s%s says: %s", accent, sendername, text);
 				}
 				else if(IsPlayerInRangeOfPoint(i, 20.0 / 4, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
-					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
-					SendClientMessageEx(i, COLOR_FADE3, string);
+					SendClientMessageEx(i, COLOR_FADE3, "%s%s says: %s", accent, sendername, text);
 				}
 				else if(IsPlayerInRangeOfPoint(i, 20.0 / 2, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
-					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
-					SendClientMessageEx(i, COLOR_FADE4, string);
+					SendClientMessageEx(i, COLOR_FADE4, "%s%s says: %s", accent, sendername, text);
 				}
 				else if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
-					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
-					SendClientMessageEx(i, COLOR_FADE5, string);
+					SendClientMessageEx(i, COLOR_FADE5, "%s%s says: %s", accent, sendername, text);
 				}
 			}
 			if(GetPVarInt(i, "BigEar") == 1 || GetPVarInt(i, "BigEar") == 6 && GetPVarInt(i, "BigEarPlayer") == playerid) {
@@ -5565,8 +5503,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 				Barricades[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
 				if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Barricades[iGroup][i][sDeployedByStatus] = 1;
 				else Barricades[iGroup][i][sDeployedByStatus] = 0;
-				format(szMiscArray, sizeof(szMiscArray), "Barricade ID: %d successfully created.", i);
-				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Barricade ID: %d successfully created.", i);
 				/*format(string, sizeof(string), "** HQ: A barricade has been deployed by %s at %s **", GetPlayerNameEx(playerid), Barricades[iGroup][i][sDeployedAt]);
 				foreach(new x: Player)
 				{
@@ -5671,13 +5608,11 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 					PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 					if (PlayerInfo[playerid][pDonateRank] >= 1)
 					{
-						format(string,sizeof(string),"VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][iItem]), number_format(cost));
-						SendClientMessageEx(playerid, COLOR_YELLOW, string);
+						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][iItem]), number_format(cost));
 					}
 					format(string,sizeof(string),"%s(%d) (IP: %s) has bought a Helmet in %s (%d) for $%s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), Businesses[iBusiness][bName], iBusiness, number_format(cost));
 					Log("logs/business.log", string);
-					format(string,sizeof(string),"* You have purchased a Helmet from %s for $%s, you can now put on your helmet with /helmet(/hm).", Businesses[iBusiness][bName], number_format(cost));
-					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "* You have purchased a Helmet from %s for $%s, you can now put on your helmet with /helmet(/hm).", Businesses[iBusiness][bName], number_format(cost));
 					new playersold = GetPVarInt(playerid, "playersold");
 					if(playersold)
 					{
@@ -5718,8 +5653,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 					format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
 				}
 			}
-			format(string, sizeof(string), "Successfully attached %s(%d) (Bone: %s) (Slot: %d)", name, PlayerToyInfo[playerid][extralist_id][ptModelID], HoldingBones[PlayerToyInfo[playerid][extralist_id][ptBone]], extralist_id);
-			SendClientMessageEx(playerid, COLOR_RED, string);
+			SendClientMessageEx(playerid, COLOR_RED, "Successfully attached %s(%d) (Bone: %s) (Slot: %d)", name, PlayerToyInfo[playerid][extralist_id][ptModelID], HoldingBones[PlayerToyInfo[playerid][extralist_id][ptBone]], extralist_id);
 			SetPVarInt(playerid, "HelmetOn", extralist_id);
 			PlayerHoldingObject[playerid][toycount] = extralist_id;
 			SetPlayerAttachedObject(playerid, toycount, PlayerToyInfo[playerid][extralist_id][ptModelID], PlayerToyInfo[playerid][extralist_id][ptBone], PlayerToyInfo[playerid][extralist_id][ptPosX], PlayerToyInfo[playerid][extralist_id][ptPosY], PlayerToyInfo[playerid][extralist_id][ptPosZ],

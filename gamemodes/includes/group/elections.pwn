@@ -129,8 +129,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			SetGVarString("CandidateName", inputtext, iOptionID);
 			iOptionID++;
 			SetGVarInt("CandidateCount", iOptionID);
-			format(szMiscArray, sizeof(szMiscArray), "You added %s as candidate no. %d", inputtext, iOptionID);
-			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "You added %s as candidate no. %d", inputtext, iOptionID);
 			format(szMiscArray, sizeof(szMiscArray), "%s added %s as election candidate no. %d", GetPlayerNameExt(playerid), inputtext, iOptionID);
 			Log("logs/elections.log", szMiscArray);
 		}
@@ -144,8 +143,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			GetGVarString("CandidateName", szName, sizeof(szName), listitem);
 			DeleteGVar("CandidateName", listitem);
 			SetGVarInt("CandidateCount", iCount - 1);
-			format(szMiscArray, sizeof(szMiscArray), "You removed %s as candidate no. %d", szName, listitem);
-			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "You removed %s as candidate no. %d", szName, listitem);
 			format(szMiscArray, sizeof(szMiscArray), "%s removed %s as election candidate no. %d", GetPlayerNameExt(playerid), szName, listitem);
 			Log("logs/elections.log", szMiscArray);
 

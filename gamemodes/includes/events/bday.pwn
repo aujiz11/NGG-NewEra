@@ -90,19 +90,16 @@ _t_ableTo(playerid)
 		SendClientMessage(playerid, COLOR_GRAD2, "You cannot use this whilst in a vehicle.");
 		return 0;
 	}
-	new string[128];
 	if(gettime() < PlayerInfo[playerid][pDigCooldown])
 	{
 		new seconds = PlayerInfo[playerid][pDigCooldown]-gettime();
 		new minutes = seconds/60;
-		format(string, sizeof(string), "[Treasure Island] %d minute(s) before you can use /dig again.", minutes);
-		SendClientMessageEx(playerid, COLOR_GRAD2, string);
+		SendClientMessageEx(playerid, COLOR_GRAD2, "[Treasure Island] %d minute(s) before you can use /dig again.", minutes);
 		return 0;
 	}
 	if(gettime() < GetPVarInt(playerid, "AntiDigSpam")) 
 	{
-		format(string, sizeof(string), "Please wait %d seconds before using the command again.", GetPVarInt(playerid, "AntiDigSpam")-gettime());
-		SendClientMessageEx(playerid, COLOR_GRAD2, string);
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Please wait %d seconds before using the command again.", GetPVarInt(playerid, "AntiDigSpam")-gettime());
 		return 0;
 	}
 	return 1;

@@ -334,8 +334,7 @@ CMD:trunkput(playerid, params[])
 	if(Health < 80.0) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot store weapons or drugs in a car when your health lower than 80.");
 	if (GetPVarInt(playerid, "GiveWeaponTimer") > 0)
 	{
-		format(string, sizeof(string), "   You must wait %d seconds before depositing another weapon.", GetPVarInt(playerid, "GiveWeaponTimer"));
-		SendClientMessageEx(playerid,COLOR_GREY,string);
+		SendClientMessageEx(playerid,COLOR_GREY,"   You must wait %d seconds before depositing another weapon.", GetPVarInt(playerid, "GiveWeaponTimer"));
 		return 1;
 	}
 	
@@ -594,9 +593,7 @@ CMD:trunktake(playerid, params[]) {
 	else if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
 	else if(GetPVarInt(playerid, "GiveWeaponTimer") >= 1)
 	{
-		new szMessage[59];
-		format(szMessage, sizeof(szMessage), "   You must wait %d seconds before getting another weapon.", GetPVarInt(playerid, "GiveWeaponTimer"));
-		return SendClientMessageEx(playerid, COLOR_GREY, szMessage);
+		return SendClientMessageEx(playerid, COLOR_GREY, "   You must wait %d seconds before getting another weapon.", GetPVarInt(playerid, "GiveWeaponTimer"));
 	}
 
 	new
@@ -609,19 +606,15 @@ CMD:trunktake(playerid, params[]) {
 			if(IsPlayerInRangeOfPoint(playerid, 4.0, fVehPos[0], fVehPos[1], fVehPos[2])) {
 				if(isnull(params)) {
 
-					new
-						szMessage[64];
 
-					format(szMessage, sizeof(szMessage), "*** %s's %s Safe ***", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]));
-					SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					SendClientMessageEx(playerid, COLOR_WHITE, "*** %s's %s Safe ***", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]));
 					for(new s = 0; s < 3; s++) if(PlayerVehicleInfo[playerid][d][pvWeapons][s] != 0) {
 
 						new
 							szWeapon[16];
 
 						GetWeaponName(PlayerVehicleInfo[playerid][d][pvWeapons][s], szWeapon, sizeof(szWeapon));
-						format(szMessage, sizeof(szMessage), "Slot %d: %s", s+1, szWeapon);
-						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Slot %d: %s", s+1, szWeapon);
 					}
 					return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /trunktake [slot]");
 				}
@@ -661,8 +654,7 @@ CMD:trunktake(playerid, params[]) {
 					PlayerVehicleInfo[playerid][d][pvWeapons][iWeaponSlot - 1] = 0;
 					g_mysql_SaveVehicle(playerid, d);
 
-					format(szMessage, sizeof(szMessage), "You have withdrawn a %s from your car gun locker.", szWeapon);
-					SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn a %s from your car gun locker.", szWeapon);
 
 					format(szMessage, sizeof(szMessage), "* %s has withdrawn a %s from their car safe.", GetPlayerNameEx(playerid), szWeapon);
 					return ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -690,8 +682,7 @@ CMD:storegun(playerid, params[])
 			{
 				if (GetPVarInt(playerid, "GiveWeaponTimer") > 0)
 				{
-					format(string, sizeof(string), "   You must wait %d seconds before depositing another weapon.", GetPVarInt(playerid, "GiveWeaponTimer"));
-					SendClientMessageEx(playerid,COLOR_GREY,string);
+					SendClientMessageEx(playerid,COLOR_GREY,"   You must wait %d seconds before depositing another weapon.", GetPVarInt(playerid, "GiveWeaponTimer"));
 					return 1;
 				}
 
@@ -863,15 +854,13 @@ CMD:getgun(playerid, params[])
 				{
 					new weaponname[50];
 					SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-					format(string, sizeof(string), "*** %s's Safe ***", GetPlayerNameEx(playerid));
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "*** %s's Safe ***", GetPlayerNameEx(playerid));
 					for(new s = 0; s < 5; s++)
 					{
 						if( HouseInfo[i][hWeapons][s] != 0 )
 						{
 							GetWeaponName(HouseInfo[i][hWeapons][s], weaponname, sizeof(weaponname));
-							format(string, sizeof(string), "Slot %d: %s", s+1, weaponname);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
+							SendClientMessageEx(playerid, COLOR_WHITE, "Slot %d: %s", s+1, weaponname);
 						}
 					}
 					SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
@@ -881,8 +870,7 @@ CMD:getgun(playerid, params[])
 
 				if (GetPVarInt(playerid, "GiveWeaponTimer") > 0)
 				{
-					format(string, sizeof(string), "   You must wait %d seconds before getting another weapon.", GetPVarInt(playerid, "GiveWeaponTimer"));
-					SendClientMessageEx(playerid,COLOR_GREY,string);
+					SendClientMessageEx(playerid,COLOR_GREY,"   You must wait %d seconds before getting another weapon.", GetPVarInt(playerid, "GiveWeaponTimer"));
 					return 1;
 				}
 				new maxslots = HouseInfo[i][hGLUpgrade];
@@ -1026,8 +1014,7 @@ CMD:hwithdraw(playerid, params[])
 							GivePlayerCash(playerid, amount);
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
-							format(string, sizeof(string), "You have withdrawn $%d from your house safe.", amount);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
+							SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn $%d from your house safe.", amount);
 							format(string, sizeof(string), "%s (SQL: %d) has withdrawn $%d from their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
 							Log("logs/hsafe.log", string);
 							return 1;
@@ -1042,8 +1029,7 @@ CMD:hwithdraw(playerid, params[])
 							PlayerInfo[playerid][pDrugs][0] += amount;
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
-							format(string, sizeof(string), "You have withdrawn %d Pot from your house safe.", amount);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
+							SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %d Pot from your house safe.", amount);
 							format(string, sizeof(string), "%s (SQL: %d) has withdrawn %d Pot from their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
 							Log("logs/hsafe.log", string);
 							return 1;
@@ -1058,8 +1044,7 @@ CMD:hwithdraw(playerid, params[])
 							PlayerInfo[playerid][pDrugs][1] += amount;
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
-							format(string, sizeof(string), "You have withdrawn %d crack from your house safe.", amount);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
+							SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %d crack from your house safe.", amount);
 							format(string, sizeof(string), "%s (SQL: %d) has withdrawn %d crack from their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
 							Log("logs/hsafe.log", string);
 							return 1;
@@ -1074,8 +1059,7 @@ CMD:hwithdraw(playerid, params[])
 							PlayerInfo[playerid][pMats] += amount;
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
-							format(string, sizeof(string), "You have withdrawn %d materials from your house safe.", amount);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
+							SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %d materials from your house safe.", amount);
 							format(string, sizeof(string), "%s (SQL: %d) has withdrawn %d materials from their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
 							Log("logs/hsafe.log", string);
 							return 1;
@@ -1090,8 +1074,7 @@ CMD:hwithdraw(playerid, params[])
 							PlayerInfo[playerid][pDrugs][2] += amount;
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
-							format(string, sizeof(string), "You have withdrawn %d meth from your house safe.", amount);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
+							SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %d meth from your house safe.", amount);
 							format(string, sizeof(string), "%s (SQL: %d) has withdrawn %d meth from their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
 							Log("logs/hsafe.log", string);
 							return 1;
@@ -1106,8 +1089,7 @@ CMD:hwithdraw(playerid, params[])
 							PlayerInfo[playerid][pDrugs][3] += amount;
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
-							format(string, sizeof(string), "You have withdrawn %d ecstasy from your house safe.", amount);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
+							SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %d ecstasy from your house safe.", amount);
 							format(string, sizeof(string), "%s (SQL: %d) has withdrawn %d ecstasy from their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
 							Log("logs/hsafe.log", string);
 							return 1;
@@ -1122,8 +1104,7 @@ CMD:hwithdraw(playerid, params[])
 							PlayerInfo[playerid][pDrugs][4] += amount;
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
-							format(string, sizeof(string), "You have withdrawn %d heroin from your house safe.", amount);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
+							SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %d heroin from your house safe.", amount);
 							format(string, sizeof(string), "%s (SQL: %d) has withdrawn %d heroin from their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
 							Log("logs/hsafe.log", string);
 							return 1;
@@ -1170,8 +1151,7 @@ CMD:hdeposit(playerid, params[])
 						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
 
 						HouseInfo[i][hSafeMoney] += amount;
-						format(string, sizeof(string), "You have deposited $%d to your house's safe.", amount);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited $%d to your house's safe.", amount);
 						OnPlayerStatsUpdate(playerid);
 						SaveHouse(i);
 						format(string, sizeof(string), "%s (SQL: %d) has deposited $%d into their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
@@ -1184,8 +1164,7 @@ CMD:hdeposit(playerid, params[])
 						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
 
 						HouseInfo[i][hPot] += amount;
-						format(string, sizeof(string), "You have deposited %d Pot to your house's safe.", amount);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %d Pot to your house's safe.", amount);
 						OnPlayerStatsUpdate(playerid);
 						SaveHouse(i);
 						format(string, sizeof(string), "%s (SQL: %d) has deposited %d Pot into their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
@@ -1198,8 +1177,7 @@ CMD:hdeposit(playerid, params[])
 						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
 
 						HouseInfo[i][hCrack] += amount;
-						format(string, sizeof(string), "You have deposited %d Crack to your house's safe.", amount);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %d Crack to your house's safe.", amount);
 						OnPlayerStatsUpdate(playerid);
 						SaveHouse(i);
 						format(string, sizeof(string), "%s (SQL: %d) has deposited %d crack into their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
@@ -1212,8 +1190,7 @@ CMD:hdeposit(playerid, params[])
 						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
 
 						HouseInfo[i][hMaterials] += amount;
-						format(string, sizeof(string), "You have deposited %d Materials to your house's safe.", amount);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %d Materials to your house's safe.", amount);
 						OnPlayerStatsUpdate(playerid);
 						SaveHouse(i);
 						format(string, sizeof(string), "%s (SQL: %d) has deposited %d materials into their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
@@ -1226,8 +1203,7 @@ CMD:hdeposit(playerid, params[])
 						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
 
 						HouseInfo[i][hMeth] += amount;
-						format(string, sizeof(string), "You have deposited %d Meth to your house's safe.", amount);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %d Meth to your house's safe.", amount);
 						OnPlayerStatsUpdate(playerid);
 						SaveHouse(i);
 						format(string, sizeof(string), "%s (SQL: %d) has deposited %d meth into their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
@@ -1240,8 +1216,7 @@ CMD:hdeposit(playerid, params[])
 						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
 
 						HouseInfo[i][hEcstasy] += amount;
-						format(string, sizeof(string), "You have deposited %d Ecstasy to your house's safe.", amount);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %d Ecstasy to your house's safe.", amount);
 						OnPlayerStatsUpdate(playerid);
 						SaveHouse(i);
 						format(string, sizeof(string), "%s (SQL: %d) has deposited %d Ecstasy into their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
@@ -1254,8 +1229,7 @@ CMD:hdeposit(playerid, params[])
 						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
 
 						HouseInfo[i][hHeroin] += amount;
-						format(string, sizeof(string), "You have deposited %d Heroin to your house's safe.", amount);
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %d Heroin to your house's safe.", amount);
 						OnPlayerStatsUpdate(playerid);
 						SaveHouse(i);
 						format(string, sizeof(string), "%s (SQL: %d) has deposited %d heroin into their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
@@ -1366,10 +1340,8 @@ CMD:hbalance(playerid, params[])
 		{
 			if(GetPlayerSQLId(playerid) == HouseInfo[i][hOwnerID] && IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[i][hIntIW])
 			{
-				new string[128];
 				SendClientMessageEx(playerid, COLOR_GREEN, "|___________________________________ House Safe ___________________________________|");
-				format(string, sizeof(string), "Cash: $%s | Pot: %s | Crack: %s | Materials: %s | Meth: %s | Ecstasy: %s | Heroin: %s", number_format(HouseInfo[i][hSafeMoney]), number_format(HouseInfo[i][hPot]), number_format(HouseInfo[i][hCrack]), number_format(HouseInfo[i][hMaterials]), number_format(HouseInfo[i][hMeth]), number_format(HouseInfo[i][hEcstasy]), number_format(HouseInfo[i][hHeroin]));
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Cash: $%s | Pot: %s | Crack: %s | Materials: %s | Meth: %s | Ecstasy: %s | Heroin: %s", number_format(HouseInfo[i][hSafeMoney]), number_format(HouseInfo[i][hPot]), number_format(HouseInfo[i][hCrack]), number_format(HouseInfo[i][hMaterials]), number_format(HouseInfo[i][hMeth]), number_format(HouseInfo[i][hEcstasy]), number_format(HouseInfo[i][hHeroin]));
 				
 				SendClientMessageEx(playerid, COLOR_GREEN, "|__________________________________________________________________________________|");
 				return 1;
@@ -1421,11 +1393,9 @@ CMD:closetadd(playerid, params[])
 						CountSkins(playerid);
 						if((PlayerInfo[playerid][pDonateRank] <= 0 && PlayerInfo[playerid][pSkins] <= 10) || (PlayerInfo[playerid][pDonateRank] > 0 && PlayerInfo[playerid][pSkins] <= 25))
 						{
-							new string[128];
 							new skinid = GetPlayerSkin(playerid);
 							AddSkin(playerid, skinid);
-							format(string, sizeof(string), "You have added skin ID %d to your closet.", skinid);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
+							SendClientMessageEx(playerid, COLOR_WHITE, "You have added skin ID %d to your closet.", skinid);
 							return 1;
 						}
 						else return SendClientMessageEx(playerid, COLOR_GREY, "Your closet doesn't have anymore space for clothes!");
@@ -1497,8 +1467,7 @@ CMD:drop(playerid, params[])
 			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Please specify an amount.");
 			if(amount > PlayerInfo[playerid][pSyringes]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many syringes!");
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			format(string, sizeof(string), "You have dropped %d syringes.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped %d syringes.", amount);
 			PlayerInfo[playerid][pSyringes] -= amount;
 			format(string, sizeof(string), "* %s has thrown away some syringes.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1515,8 +1484,7 @@ CMD:drop(playerid, params[])
 			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Please specify an amount.");
 			if(amount > PlayerInfo[playerid][pDrugs][0]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many grams of pot!");
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			format(string, sizeof(string), "You have dropped %d pot.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped %d pot.", amount);
 			PlayerInfo[playerid][pDrugs][0] -= amount;
 			format(string, sizeof(string), "* %s has thrown away some pot.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1533,8 +1501,7 @@ CMD:drop(playerid, params[])
 			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Please specify an amount.");
 			if(amount > PlayerInfo[playerid][pDrugs][1]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many grams of crack!");
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			format(string, sizeof(string), "You have dropped %d crack.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped %d crack.", amount);
 			PlayerInfo[playerid][pDrugs][1] -= amount;
 			format(string, sizeof(string), "* %s has thrown away some crack.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1551,8 +1518,7 @@ CMD:drop(playerid, params[])
 			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Please specify an amount.");
 			if(amount > PlayerInfo[playerid][pDrugs][2]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many grams of meth!");
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			format(string, sizeof(string), "You have dropped %d meth.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped %d meth.", amount);
 			PlayerInfo[playerid][pDrugs][2] -= amount;
 			format(string, sizeof(string), "* %s has thrown away some meth.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1569,8 +1535,7 @@ CMD:drop(playerid, params[])
 			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Please specify an amount.");
 			if(amount > PlayerInfo[playerid][pDrugs][3]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many grams of ecstasy!");
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			format(string, sizeof(string), "You have dropped %d ecstasy.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped %d ecstasy.", amount);
 			PlayerInfo[playerid][pDrugs][3] -= amount;
 			format(string, sizeof(string), "* %s has thrown away some ecstasy.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1587,8 +1552,7 @@ CMD:drop(playerid, params[])
 			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Please specify an amount.");
 			if(amount > PlayerInfo[playerid][pDrugs][4]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many grams of heroin!");
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			format(string, sizeof(string), "You have dropped %d heroin.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped %d heroin.", amount);
 			PlayerInfo[playerid][pDrugs][4] -= amount;
 			format(string, sizeof(string), "* %s has thrown away some heroin.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1606,8 +1570,7 @@ CMD:drop(playerid, params[])
 			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Please specify an amount.");
 			if(amount > PlayerInfo[playerid][pMats]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many materials!");
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			format(string, sizeof(string), "You have dropped %d materials.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped %d materials.", amount);
 			format(string, sizeof(string), "* %s has thrown away some materials.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			PlayerInfo[playerid][pMats] -= amount;
@@ -1735,11 +1698,9 @@ CMD:show(playerid, params[])
 			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any materials!");
 					return 1;
 			    }
-				format(string, sizeof(string), "%s has shown you their %d materials.",  GetPlayerNameEx(playerid), amount);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s has shown you their %d materials.",  GetPlayerNameEx(playerid), amount);
 
-				format(string, sizeof(string), "You have shown %s your %d materials.", GetPlayerNameEx(giveplayerid), amount);
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have shown %s your %d materials.", GetPlayerNameEx(giveplayerid), amount);
 
 				format(string, sizeof(string), "* %s has shown %s some materials.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1753,11 +1714,9 @@ CMD:show(playerid, params[])
 			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any pot!");
 					return 1;
 			    }
-				format(string, sizeof(string), "%s has shown you their %d grams of pot.",  GetPlayerNameEx(playerid), amount);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s has shown you their %d grams of pot.",  GetPlayerNameEx(playerid), amount);
 
-				format(string, sizeof(string), "You have shown %s your %d grams of pot.", GetPlayerNameEx(giveplayerid), amount);
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have shown %s your %d grams of pot.", GetPlayerNameEx(giveplayerid), amount);
 
 				format(string, sizeof(string), "* %s has shown %s some pot.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1771,11 +1730,9 @@ CMD:show(playerid, params[])
 			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any crack!");
 					return 1;
 			    }
-				format(string, sizeof(string), "%s has shown you their %d grams of crack.",  GetPlayerNameEx(playerid), amount);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s has shown you their %d grams of crack.",  GetPlayerNameEx(playerid), amount);
 
-				format(string, sizeof(string), "You have shown %s your %d grams of crack.", GetPlayerNameEx(giveplayerid), amount);
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have shown %s your %d grams of crack.", GetPlayerNameEx(giveplayerid), amount);
 
 				format(string, sizeof(string), "* %s has shown %s some crack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1789,11 +1746,9 @@ CMD:show(playerid, params[])
 			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any meth!");
 					return 1;
 			    }
-				format(string, sizeof(string), "%s has shown you their %d grams of meth.",  GetPlayerNameEx(playerid), amount);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s has shown you their %d grams of meth.",  GetPlayerNameEx(playerid), amount);
 
-				format(string, sizeof(string), "You have shown %s your %d grams of meth.", GetPlayerNameEx(giveplayerid), amount);
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have shown %s your %d grams of meth.", GetPlayerNameEx(giveplayerid), amount);
 
 				format(string, sizeof(string), "* %s has shown %s some meth.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1807,11 +1762,9 @@ CMD:show(playerid, params[])
 			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any ecstasy!");
 					return 1;
 			    }
-				format(string, sizeof(string), "%s has shown you their %d grams of ecstasy.",  GetPlayerNameEx(playerid), amount);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s has shown you their %d grams of ecstasy.",  GetPlayerNameEx(playerid), amount);
 
-				format(string, sizeof(string), "You have shown %s your %d grams of ecstasy.", GetPlayerNameEx(giveplayerid), amount);
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have shown %s your %d grams of ecstasy.", GetPlayerNameEx(giveplayerid), amount);
 
 				format(string, sizeof(string), "* %s has shown %s some ecstasy.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1825,11 +1778,9 @@ CMD:show(playerid, params[])
 			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any heroin!");
 					return 1;
 			    }
-				format(string, sizeof(string), "%s has shown you their %d milligrams of heroin.",  GetPlayerNameEx(playerid), amount);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s has shown you their %d milligrams of heroin.",  GetPlayerNameEx(playerid), amount);
 
-				format(string, sizeof(string), "You have shown %s your %d milligrams of heroin.", GetPlayerNameEx(giveplayerid), amount);
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have shown %s your %d milligrams of heroin.", GetPlayerNameEx(giveplayerid), amount);
 
 				format(string, sizeof(string), "* %s has shown %s some heroin.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1843,11 +1794,9 @@ CMD:show(playerid, params[])
 			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any credits!");
 					return 1;
 			    }
-				format(string, sizeof(string), "%s has shown you their %d credits.",  GetPlayerNameEx(playerid), amount);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s has shown you their %d credits.",  GetPlayerNameEx(playerid), amount);
 
-				format(string, sizeof(string), "You have shown %s your %d credits.", GetPlayerNameEx(giveplayerid), amount);
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have shown %s your %d credits.", GetPlayerNameEx(giveplayerid), amount);
 
 				format(string, sizeof(string), "* %s has shown %s some credits.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1886,10 +1835,8 @@ CMD:sell(playerid, params[])
 		if(amount > PlayerInfo[playerid][pRimMod])
 			return SendClientMessageEx(playerid, COLOR_GREY, " You don't have that many rim kits.");
 
-		format(string, sizeof(string), "* You offered %s to buy %d rim kits for $%s.", GetPlayerNameEx(giveplayerid), amount, number_format(price));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "* %s wants to sell you %d rim kits for $%s, (type /accept rimkit) to buy.", GetPlayerNameEx(playerid), amount, number_format(price));
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to buy %d rim kits for $%s.", GetPlayerNameEx(giveplayerid), amount, number_format(price));
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s wants to sell you %d rim kits for $%s, (type /accept rimkit) to buy.", GetPlayerNameEx(playerid), amount, number_format(price));
 	 	SetPVarInt(giveplayerid, "RimOffer", playerid);
 		SetPVarInt(giveplayerid, "RimOfferSession", g_arrQueryHandle[playerid]);
 	 	SetPVarInt(giveplayerid, "RimPrice", price);
@@ -1901,10 +1848,8 @@ CMD:sell(playerid, params[])
 		if(amount > PlayerInfo[playerid][pPVIPVoucher])
 			return SendClientMessageEx(playerid, COLOR_GREY, " You don't have that many 1 month PVIP Vouchers.");
 
-		format(string, sizeof(string), "* You offered %s to buy %d 1 month PVIP Voucher(s) for $%s.", GetPlayerNameEx(giveplayerid), amount, number_format(price));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "* %s wants to sell you %d 1 month PVIP Voucher(s) for $%s, (type /accept pvipvoucher) to buy.", GetPlayerNameEx(playerid), amount, number_format(price));
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to buy %d 1 month PVIP Voucher(s) for $%s.", GetPlayerNameEx(giveplayerid), amount, number_format(price));
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s wants to sell you %d 1 month PVIP Voucher(s) for $%s, (type /accept pvipvoucher) to buy.", GetPlayerNameEx(playerid), amount, number_format(price));
 	 	SetPVarInt(giveplayerid, "PVIPVoucherOffer", playerid);
 	 	SetPVarInt(giveplayerid, "PVIPVoucherPrice", price);
 	 	SetPVarInt(giveplayerid, "PVIPVoucherCount", amount);

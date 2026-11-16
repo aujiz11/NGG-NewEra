@@ -365,8 +365,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					{
 						ClearGangTag(GetPVarInt(playerid, "gt_ID"));
 						SaveGangTag(GetPVarInt(playerid, "gt_ID"));
-						format(szMessage, sizeof(szMessage), "You successfully deleted gang tag %d!", GetPVarInt(playerid, "gt_ID"));
-						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+						SendClientMessageEx(playerid, COLOR_WHITE, "You successfully deleted gang tag %d!", GetPVarInt(playerid, "gt_ID"));
 						format(szMessage, sizeof(szMessage), "%s has deleted gang tag %d.", GetPlayerNameEx(playerid), GetPVarInt(playerid, "gt_ID"));
 						Log("Logs/GangTags.log", szMessage);
 					}
@@ -465,8 +464,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						case 1: // Text
 						{
 							format(FamilyInfo[fam][gt_Text], 32, "%s", inputtext);
-							format(szMessage, sizeof(szMessage), "You have set the text to %s.", inputtext);
-							SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+							SendClientMessageEx(playerid, COLOR_WHITE, "You have set the text to %s.", inputtext);
 							format(szMessage, sizeof(szMessage), "%s has set the gang tag text of family %s to %s.", GetPlayerNameEx(playerid), FamilyInfo[fam][FamilyName], inputtext);
 							Log("Logs/GangTags.log", szMessage);
 							ReCreateGangTags(fam);
@@ -489,8 +487,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						case 3: // Font
 						{
 							format(FamilyInfo[fam][gt_FontFace], 32, "%s", inputtext);
-							format(szMessage, sizeof(szMessage), "You have set the font to %s.", inputtext);
-							SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+							SendClientMessageEx(playerid, COLOR_WHITE, "You have set the font to %s.", inputtext);
 							format(szMessage, sizeof(szMessage), "%s has set the gang tag font of family %s to %s.", GetPlayerNameEx(playerid), FamilyInfo[fam][FamilyName], inputtext);
 							Log("Logs/GangTags.log", szMessage);	
 							ReCreateGangTags(fam);
@@ -500,8 +497,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						{
 							new size = strval(inputtext);
 							FamilyInfo[fam][gt_FontSize] = size;
-							format(szMessage, sizeof(szMessage), "You have set the font-size to %d.", size);
-							SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+							SendClientMessageEx(playerid, COLOR_WHITE, "You have set the font-size to %d.", size);
 							format(szMessage, sizeof(szMessage), "%s has set the gang tag font-size of family %s to %d.", GetPlayerNameEx(playerid), FamilyInfo[fam][FamilyName], size);
 							Log("Logs/GangTags.log", szMessage);	
 							ReCreateGangTags(fam);
@@ -585,8 +581,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								FamilyInfo[fam][gtObject] = 1490;
 								FamilyInfo[fam][gt_SPUsed] = 0;
 							}
-							format(szMessage, sizeof(szMessage), "You have set the single-player tag to %s.", inputtext);
-							SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+							SendClientMessageEx(playerid, COLOR_WHITE, "You have set the single-player tag to %s.", inputtext);
 							format(szMessage, sizeof(szMessage), "%s has set the single-player tag of family %s to %s.", GetPlayerNameEx(playerid), FamilyInfo[fam][FamilyName], inputtext);
 							Log("Logs/GangTags.log", szMessage);		
 							ReCreateGangTags(fam);

@@ -712,8 +712,7 @@ public OnPlayerLoad(playerid)
 	// Create the player necessary textdraws
 	CreatePlayerTextDraws(playerid);
 	printf("%s has logged in.", GetPlayerNameEx(playerid));
-	format(string, sizeof(string), "SERVER: Welcome, %s.", GetPlayerNameEx(playerid));
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SendClientMessageEx(playerid, COLOR_WHITE, "SERVER: Welcome, %s.", GetPlayerNameEx(playerid));
 	SetSpawnInfo(playerid, 0, PlayerInfo[playerid][pModel], PlayerInfo[playerid][pPos_x], PlayerInfo[playerid][pPos_y], PlayerInfo[playerid][pPos_z], 1.0, -1, -1, -1, -1, -1, -1);
 	defer SkinDelay(playerid);
 
@@ -821,8 +820,7 @@ public OnPlayerLoad(playerid)
 
 	if(IsAHitman(playerid))
 	{
-		format(szMiscArray, sizeof szMiscArray, "Agency MOTD: %s", HMAMOTD);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Agency MOTD: %s", HMAMOTD);
 	}
 	CountFlags(playerid);
 	if(PlayerInfo[playerid][pFlagged] > 5)
@@ -876,8 +874,7 @@ public OnPlayerLoad(playerid)
 		{
 			PlayerInfo[playerid][pReceivedBGift] = 1;
 			GiftPlayer(MAX_PLAYERS, playerid);
-			format(string, sizeof(string), "Happy Birthday %s! You have received a free gift!", GetPlayerNameEx(playerid));
-			SendClientMessageEx(playerid, COLOR_YELLOW, string);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Happy Birthday %s! You have received a free gift!", GetPlayerNameEx(playerid));
 			format(string, sizeof(string), "%s(%d) has received a free gift for his birthday (%s) (OnPlayerLoad).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pBirthDate]);
 			Log("logs/birthday.log", string);
 			OnPlayerStatsUpdate(playerid);

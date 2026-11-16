@@ -63,8 +63,7 @@ CMD:shopboombox(playerid, params[])
 	if(PlayerInfo[giveplayerid][pBoombox] == 1)
 	{
 	    PlayerInfo[giveplayerid][pBoombox] = 0;
-    	format(string, sizeof(string), "Your boombox has been taken by Shop Tech %s. ", GetPlayerNameEx(playerid));
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Your boombox has been taken by Shop Tech %s. ", GetPlayerNameEx(playerid));
 		format(string, sizeof(string), "[SHOPBOOMBOX] %s has taken %s(%d) boombox - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 		SendClientMessageEx(playerid, COLOR_GRAD1, string);
 		Log("logs/shoplog.log", string);
@@ -72,8 +71,7 @@ CMD:shopboombox(playerid, params[])
 	else
 	{
 		PlayerInfo[giveplayerid][pBoombox] = 1;
-    	format(string, sizeof(string), "You have been given a boombox from Shop Tech %s. ", GetPlayerNameEx(playerid));
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have been given a boombox from Shop Tech %s. ", GetPlayerNameEx(playerid));
 		format(string, sizeof(string), "[SHOPBOOMBOX] %s has given %s(%d) a boombox - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 		SendClientMessageEx(playerid, COLOR_GRAD1, string);
 		Log("logs/shoplog.log", string);

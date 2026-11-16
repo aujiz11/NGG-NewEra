@@ -102,8 +102,7 @@ CMD:checkhelmet(playerid, params[])
         else { stext = "on"; }
         if(IsABike(GetPlayerVehicleID(playerid)))
 		{
-            format(string, sizeof(string), "%s's helmet is currently %s." , GetPlayerNameEx(giveplayerid) , stext);
-            SendClientMessageEx(playerid,COLOR_WHITE,string);
+            SendClientMessageEx(playerid,COLOR_WHITE,"%s's helmet is currently %s." , GetPlayerNameEx(giveplayerid) , stext);
 
             format(string, sizeof(string), "* %s looks at %s, checking to see if they are wearing a helmet.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
             ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

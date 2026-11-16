@@ -57,11 +57,9 @@ CMD:impound(playerid, params[]) {
 					PlayerVehicleInfo[i][veh][pvId] = INVALID_PLAYER_VEHICLE_ID;
 					g_mysql_SaveVehicle(playerid, veh);
 
-					format(szMessage, sizeof(szMessage),"* You have impounded %s's %s.",GetPlayerNameEx(i), VehicleName[PlayerVehicleInfo[i][veh][pvModelId] - 400]);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have impounded %s's %s.",GetPlayerNameEx(i), VehicleName[PlayerVehicleInfo[i][veh][pvModelId] - 400]);
 
-					format(szMessage, sizeof(szMessage), "Your %s has been impounded. You may release it at the DMV in Dillimore.", VehicleName[PlayerVehicleInfo[i][veh][pvModelId] - 400]);
-					SendClientMessageEx(i, COLOR_LIGHTBLUE, szMessage);
+					SendClientMessageEx(i, COLOR_LIGHTBLUE, "Your %s has been impounded. You may release it at the DMV in Dillimore.", VehicleName[PlayerVehicleInfo[i][veh][pvModelId] - 400]);
 
 					format(szMessage, sizeof(szMessage), "HQ: %s has impounded %s's %s ($%s unpaid tickets).", GetPlayerNameEx(playerid), GetPlayerNameEx(i), VehicleName[PlayerVehicleInfo[i][veh][pvModelId] - 400], number_format(PlayerVehicleInfo[i][veh][pvTicket]));
 					SendGroupMessage(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType], RADIO, szMessage);
@@ -96,8 +94,7 @@ CMD:impound(playerid, params[]) {
 						}
 					}
 
-					format(szMessage, sizeof(szMessage),"* You have impounded %s's %s.", arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], VehicleName[CrateVehicle[veh][cvModel] - 400]);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have impounded %s's %s.", arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], VehicleName[CrateVehicle[veh][cvModel] - 400]);
 
 					format(szMessage, sizeof(szMessage), "HQ: %s has impounded %s's %s ($%s unpaid tickets).", GetPlayerNameEx(playerid), arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], VehicleName[CrateVehicle[veh][cvModel] - 400], number_format(CrateVehicle[veh][cvTickets]));
 					SendGroupMessage(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType], RADIO, szMessage);

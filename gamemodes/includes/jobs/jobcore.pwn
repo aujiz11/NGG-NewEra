@@ -710,29 +710,29 @@ CMD:skill(playerid, params[])
 	else switch(strval(params)) {
 		case 1: //Detective
 		{
-			new level = PlayerInfo[playerid][pDetSkill], string[48];
-			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Detective Skill Level = 1."); format(string, sizeof(string), "You need to find %d more people to level up.", 50 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Detective Skill Level = 2."); format(string, sizeof(string), "You need to find %d more people to level up.", 100 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Detective Skill Level = 3."); format(string, sizeof(string), "You need to find %d more people to level up.", 200 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Detective Skill Level = 4."); format(string, sizeof(string), "You need to find %d more people to level up.", 400 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
+			new level = PlayerInfo[playerid][pDetSkill];
+			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Detective Skill Level = 1.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to find %d more people to level up.", 50 - level); }
+			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Detective Skill Level = 2.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to find %d more people to level up.", 100 - level); }
+			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Detective Skill Level = 3.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to find %d more people to level up.", 200 - level); }
+			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Detective Skill Level = 4.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to find %d more people to level up.", 400 - level); }
 			else if(level >= 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Detective Skill Level = 5."); }
 		}
 		case 2://Lawyer
 		{
-			new level = PlayerInfo[playerid][pLawSkill], string[48];
-			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Lawyer Skill Level = 1."); format(string, sizeof(string), "You need to free %d more people to level up.", 50 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Lawyer Skill Level = 2."); format(string, sizeof(string), "You need to free %d more people to level up.", 100 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Lawyer Skill Level = 3."); format(string, sizeof(string), "You need to free %d more people to level up.", 200 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Lawyer Skill Level = 4."); format(string, sizeof(string), "You need to free %d more people to level up.", 400 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
+			new level = PlayerInfo[playerid][pLawSkill];
+			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Lawyer Skill Level = 1.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to free %d more people to level up.", 50 - level); }
+			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Lawyer Skill Level = 2.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to free %d more people to level up.", 100 - level); }
+			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Lawyer Skill Level = 3.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to free %d more people to level up.", 200 - level); }
+			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Lawyer Skill Level = 4.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to free %d more people to level up.", 400 - level); }
 			else if(level >= 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Lawyer Skill Level = 5."); }
 		}
 		case 3://Whore
 		{
-			new level = PlayerInfo[playerid][pSexSkill], string[48];
-			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Whore Skill Level = 1."); format(string, sizeof(string), "You need to have sex %d times more to level up.", 50 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Whore Skill Level = 2."); format(string, sizeof(string), "You need to have sex %d times more to level up.", 100 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Whore Skill Level = 3."); format(string, sizeof(string), "You need to have sex %d times more to level up.", 200 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Whore Skill Level = 4."); format(string, sizeof(string), "You need to have sex %d times more to level up.", 400 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
+			new level = PlayerInfo[playerid][pSexSkill];
+			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Whore Skill Level = 1.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to have sex %d times more to level up.", 50 - level); }
+			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Whore Skill Level = 2.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to have sex %d times more to level up.", 100 - level); }
+			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Whore Skill Level = 3.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to have sex %d times more to level up.", 200 - level); }
+			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Whore Skill Level = 4.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to have sex %d times more to level up.", 400 - level); }
 			else if(level >= 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Whore Skill Level = 5."); }
 		}
 		case 4://Drug Smuggling
@@ -746,29 +746,29 @@ CMD:skill(playerid, params[])
 		}
 		case 5://Arms Dealer
 		{
-			new level = PlayerInfo[playerid][pArmsSkill], string[48];
-			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 1."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 50 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 50 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 2."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 200 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 200 && level < 700) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 3."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 700 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 700 && level < 1200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 4."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 1200 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
+			new level = PlayerInfo[playerid][pArmsSkill];
+			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 1.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to sell %d more guns to level up.", 50 - level); }
+			else if(level >= 50 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 2.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to sell %d more guns to level up.", 200 - level); }
+			else if(level >= 200 && level < 700) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 3.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to sell %d more guns to level up.", 700 - level); }
+			else if(level >= 700 && level < 1200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 4.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to sell %d more guns to level up.", 1200 - level); }
 			else if(level >= 1200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 5."); }
 		}
 		case 6://Car Mechanic
 		{
-			new level = PlayerInfo[playerid][pMechSkill], string[64];
-			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 1."); format(string, sizeof(string), "You need to repair/refill a car for %d times more to level up.", 50 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 2."); format(string, sizeof(string), "You need to repair/refill a car for %d times more to level up.", 100 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 3."); format(string, sizeof(string), "You need to repair/refill a car for %d times more to level up.", 200 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 4."); format(string, sizeof(string), "You need to repair/refill a car for %d times more to level up.", 400 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
+			new level = PlayerInfo[playerid][pMechSkill];
+			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 1.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to repair/refill a car for %d times more to level up.", 50 - level); }
+			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 2.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to repair/refill a car for %d times more to level up.", 100 - level); }
+			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 3.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to repair/refill a car for %d times more to level up.", 200 - level); }
+			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 4.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to repair/refill a car for %d times more to level up.", 400 - level); }
 			else if(level >= 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 5."); }
 		}
 		case 7://Boxer
 		{
-			new level = PlayerInfo[playerid][pBoxSkill], string[48];
-			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Boxing Skill Level = 1."); format(string, sizeof(string), "You need to Win %d more Matches to level up.", 50 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Boxing Skill Level = 2."); format(string, sizeof(string), "You need to Win %d more Matches to level up.", 100 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Boxing Skill Level = 3."); format(string, sizeof(string), "You need to Win %d more Matches to level up.", 200 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Boxing Skill Level = 4."); format(string, sizeof(string), "You need to Win %d more Matches to level up.", 400 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
+			new level = PlayerInfo[playerid][pBoxSkill];
+			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Boxing Skill Level = 1.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to Win %d more Matches to level up.", 50 - level); }
+			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Boxing Skill Level = 2.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to Win %d more Matches to level up.", 100 - level); }
+			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Boxing Skill Level = 3.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to Win %d more Matches to level up.", 200 - level); }
+			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Boxing Skill Level = 4.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to Win %d more Matches to level up.", 400 - level); }
 			else if(level >= 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Boxing Skill Level = 5."); }
 		}
 		case 8: //Fishing
@@ -782,11 +782,11 @@ CMD:skill(playerid, params[])
 		}
 		case 9://Trucker
 		{
-			new level = PlayerInfo[playerid][pTruckSkill], string[50];
-			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 1."); format(string, sizeof(string), "You need to transport goods %d times to level up.", 51 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 2."); format(string, sizeof(string), "You need to transport goods %d times to level up.", 101 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 3."); format(string, sizeof(string), "You need to transport goods %d times to level up.", 201 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 4."); format(string, sizeof(string), "You need to transport goods %d times to level up.", 401 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
+			new level = PlayerInfo[playerid][pTruckSkill];
+			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 1.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to transport goods %d times to level up.", 51 - level); }
+			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 2.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to transport goods %d times to level up.", 101 - level); }
+			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 3.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to transport goods %d times to level up.", 201 - level); }
+			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 4.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to transport goods %d times to level up.", 401 - level); }
 			else if(level >= 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 5."); }
 		}
 		case 10://Treasure Hunter

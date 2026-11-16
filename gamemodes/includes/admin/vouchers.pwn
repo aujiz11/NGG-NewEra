@@ -313,10 +313,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								szString[128];
 								
 							PlayerInfo[targetid][pVehVoucher] += amount;
-							format(szString, sizeof(szString), "You have given %s %d car voucher(s).", GetPlayerNameEx(targetid), amount);
-							SendClientMessageEx(playerid, COLOR_CYAN, szString);
-							format(szString, sizeof(szString), "You have been given %d car voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
-							SendClientMessageEx(targetid, COLOR_CYAN, szString);
+							SendClientMessageEx(playerid, COLOR_CYAN, "You have given %s %d car voucher(s).", GetPlayerNameEx(targetid), amount);
+							SendClientMessageEx(targetid, COLOR_CYAN, "You have been given %d car voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
 							format(szString, sizeof(szString), "%s has given %s(%d) %d car voucher(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), amount);
 							Log("logs/vouchers.log", szString);
 						}
@@ -327,10 +325,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								szString[128];
 								
 							PlayerInfo[targetid][pSVIPVoucher] += amount;
-							format(szString, sizeof(szString), "You have given %s %d Silver VIP voucher(s).", GetPlayerNameEx(targetid), amount);
-							SendClientMessageEx(playerid, COLOR_CYAN, szString);
-							format(szString, sizeof(szString), "You have been given %d Silver VIP voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
-							SendClientMessageEx(targetid, COLOR_CYAN, szString);
+							SendClientMessageEx(playerid, COLOR_CYAN, "You have given %s %d Silver VIP voucher(s).", GetPlayerNameEx(targetid), amount);
+							SendClientMessageEx(targetid, COLOR_CYAN, "You have been given %d Silver VIP voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
 							format(szString, sizeof(szString), "%s has given %s(%d) %d Silver VIP voucher(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), amount);
 							Log("logs/vouchers.log", szString);
 						}
@@ -341,10 +337,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								szString[128];
 								
 							PlayerInfo[targetid][pGVIPVoucher] += amount;
-							format(szString, sizeof(szString), "You have given %s %d Gold VIP voucher(s).", GetPlayerNameEx(targetid), amount);
-							SendClientMessageEx(playerid, COLOR_CYAN, szString);
-							format(szString, sizeof(szString), "You have been given %d Gold VIP voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
-							SendClientMessageEx(targetid, COLOR_CYAN, szString);
+							SendClientMessageEx(playerid, COLOR_CYAN, "You have given %s %d Gold VIP voucher(s).", GetPlayerNameEx(targetid), amount);
+							SendClientMessageEx(targetid, COLOR_CYAN, "You have been given %d Gold VIP voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
 							format(szString, sizeof(szString), "%s has given %s(%d) %d Gold VIP voucher(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), amount);
 							Log("logs/vouchers.log", szString);
 						}
@@ -354,10 +348,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								amount = strval(inputtext),
 								szString[128];
 							PlayerInfo[targetid][pGiftVoucher] += amount;
-							format(szString, sizeof(szString), "You have given %s %d Gift Reset voucher(s).", GetPlayerNameEx(targetid), amount);
-							SendClientMessageEx(playerid, COLOR_CYAN, szString);
-							format(szString, sizeof(szString), "You have been given %d Gift Reset voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
-							SendClientMessageEx(targetid, COLOR_CYAN, szString);
+							SendClientMessageEx(playerid, COLOR_CYAN, "You have given %s %d Gift Reset voucher(s).", GetPlayerNameEx(targetid), amount);
+							SendClientMessageEx(targetid, COLOR_CYAN, "You have been given %d Gift Reset voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
 							format(szString, sizeof(szString), "[Admin] %s(IP:%s) has given %s(%d)(IP:%s) %d free gift reset voucher(s).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), GetPlayerIpEx(targetid), amount);
 							Log("logs/adminrewards.log", szString);	
 						}
@@ -367,10 +359,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								amount = strval(inputtext),
 								szString[128];
 							PlayerInfo[targetid][pAdvertVoucher] += amount;
-							format(szString, sizeof(szString), "You have given %s %d Priority Advertisement voucher(s).", GetPlayerNameEx(targetid), amount);
-							SendClientMessageEx(playerid, COLOR_CYAN, szString);
-							format(szString, sizeof(szString), "You have been given %d Priority Advertisement voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
-							SendClientMessageEx(targetid, COLOR_CYAN, szString);
+							SendClientMessageEx(playerid, COLOR_CYAN, "You have given %s %d Priority Advertisement voucher(s).", GetPlayerNameEx(targetid), amount);
+							SendClientMessageEx(targetid, COLOR_CYAN, "You have been given %d Priority Advertisement voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
 							format(szString, sizeof(szString), "[Admin] %s(IP:%s) has given %s(%d)(IP:%s) %d free Priority Advertisement voucher(s).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), GetPlayerIpEx(targetid), amount);
 							Log("logs/vouchers.log", szString);	
 						}
@@ -380,10 +370,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								amount = strval(inputtext),
 								szString[128];
 							PlayerInfo[targetid][pSVIPExVoucher] += amount;
-							format(szString, sizeof(szString), "You have given %s %d 7 Days Silver VIP voucher(s).", GetPlayerNameEx(targetid), amount);
-							SendClientMessageEx(playerid, COLOR_CYAN, szString);
-							format(szString, sizeof(szString), "You have been given %d 7 Days Silver VIP voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
-							SendClientMessageEx(targetid, COLOR_CYAN, szString);
+							SendClientMessageEx(playerid, COLOR_CYAN, "You have given %s %d 7 Days Silver VIP voucher(s).", GetPlayerNameEx(targetid), amount);
+							SendClientMessageEx(targetid, COLOR_CYAN, "You have been given %d 7 Days Silver VIP voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
 							format(szString, sizeof(szString), "[Admin] %s(IP:%s) has given %s(%d)(IP:%s) %d free 7 Days Silver VIP voucher(s).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), GetPlayerIpEx(targetid), amount);
 							Log("logs/vouchers.log", szString);	
 						}
@@ -393,10 +381,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								amount = strval(inputtext),
 								szString[128];
 							PlayerInfo[targetid][pGVIPExVoucher] += amount;
-							format(szString, sizeof(szString), "You have given %s %d 7 Days Gold VIP voucher(s).", GetPlayerNameEx(targetid), amount);
-							SendClientMessageEx(playerid, COLOR_CYAN, szString);
-							format(szString, sizeof(szString), "You have been given %d 7 Days Gold VIP voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
-							SendClientMessageEx(targetid, COLOR_CYAN, szString);
+							SendClientMessageEx(playerid, COLOR_CYAN, "You have given %s %d 7 Days Gold VIP voucher(s).", GetPlayerNameEx(targetid), amount);
+							SendClientMessageEx(targetid, COLOR_CYAN, "You have been given %d 7 Days Gold VIP voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
 							format(szString, sizeof(szString), "[Admin] %s(IP:%s) has given %s(%d)(IP:%s) %d free 7 Days Gold VIP voucher(s).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), GetPlayerIpEx(targetid), amount);
 							Log("logs/vouchers.log", szString);	
 						}
@@ -457,8 +443,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					GetPlayerIp(playerid, playerip, sizeof(playerip));
 					format(szMiscArray, sizeof(szMiscArray), "AdmCmd: Server (Voucher System) has set %s's VIP level to Silver (2).", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_LIGHTRED, szMiscArray, 4);
-					format(szMiscArray, sizeof(szMiscArray), "You have successfully used one of your Silver VIP voucher(s), you have %d Silver VIP voucher(s) left.", PlayerInfo[playerid][pSVIPVoucher]);
-					SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_CYAN, "You have successfully used one of your Silver VIP voucher(s), you have %d Silver VIP voucher(s) left.", PlayerInfo[playerid][pSVIPVoucher]);
 					SendClientMessageEx(playerid, COLOR_GRAD2, "** Note: Your Silver VIP will expire in 30 days.");
 
 					format(szMiscArray, sizeof(szMiscArray), "AdmCmd: Server (Voucher System) has set %s's(%d) (IP:%s) VIP level to Silver (2) (Voucher Left: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, PlayerInfo[playerid][pSVIPVoucher]);
@@ -490,8 +475,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					GetPlayerIp(playerid, playerip, sizeof(playerip));
 					format(szMiscArray, sizeof(szMiscArray), "AdmCmd: Server (Voucher System) has set %s's VIP level to Gold (3).", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_LIGHTRED, szMiscArray, 4);
-					format(szMiscArray, sizeof(szMiscArray), "You have successfully used one of your Gold VIP voucher(s), you have %d Gold VIP voucher(s) left.", PlayerInfo[playerid][pGVIPVoucher]);
-					SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_CYAN, "You have successfully used one of your Gold VIP voucher(s), you have %d Gold VIP voucher(s) left.", PlayerInfo[playerid][pGVIPVoucher]);
 					SendClientMessageEx(playerid, COLOR_GRAD2, "** Note: Your Gold VIP will expire in 30 days.");
 
 					format(szMiscArray, sizeof(szMiscArray), "AdmCmd: Server (Voucher System) has set %s's(%d) (IP:%s) VIP level to Gold (3) (Voucher Left: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, PlayerInfo[playerid][pGVIPVoucher]);
@@ -511,8 +495,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					PlayerInfo[playerid][pGiftTime] = 0;
 					new playerip[32];
 					GetPlayerIp(playerid, playerip, sizeof(playerip));
-					format(szMiscArray, sizeof(szMiscArray), "You have successfully used one of your Gift Reset voucher(s), you have %d Gift Reset voucher(s) left.", PlayerInfo[playerid][pGiftVoucher]);
-					SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_CYAN, "You have successfully used one of your Gift Reset voucher(s), you have %d Gift Reset voucher(s) left.", PlayerInfo[playerid][pGiftVoucher]);
 					SendClientMessageEx(playerid, COLOR_GRAD2, "** Note: You may now get another gift.");
 					format(szMiscArray, sizeof(szMiscArray), "%s(%d)(IP:%s) has used a Gift Reset Voucher. (Vouchers Left: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, PlayerInfo[playerid][pGiftVoucher]);
 					Log("logs/vouchers.log", szMiscArray);	
@@ -543,8 +526,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					GetPlayerIp(playerid, playerip, sizeof(playerip));
 					format(szMiscArray, sizeof(szMiscArray), "AdmCmd: Server (Voucher System) has set %s's VIP level to Silver (7 Days)(3).", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_LIGHTRED, szMiscArray, 4);
-					format(szMiscArray, sizeof(szMiscArray), "You have successfully used one of your 7 Days Silver VIP voucher(s), you have %d 7 Days Silver VIP voucher(s) left.", PlayerInfo[playerid][pSVIPExVoucher]);
-					SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_CYAN, "You have successfully used one of your 7 Days Silver VIP voucher(s), you have %d 7 Days Silver VIP voucher(s) left.", PlayerInfo[playerid][pSVIPExVoucher]);
 					SendClientMessageEx(playerid, COLOR_GRAD2, "** Note: Your Silver VIP will expire in 7 days.");
 
 					format(szMiscArray, sizeof(szMiscArray), "AdmCmd: Server (Voucher System) has set %s's(%d) (IP:%s) VIP level to Silver (7 Days)(3) (Voucher Left: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, PlayerInfo[playerid][pSVIPExVoucher]);
@@ -576,8 +558,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					GetPlayerIp(playerid, playerip, sizeof(playerip));
 					format(szMiscArray, sizeof(szMiscArray), "AdmCmd: Server (Voucher System) has set %s's VIP level to Gold (7 Days)(3).", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_LIGHTRED, szMiscArray, 4);
-					format(szMiscArray, sizeof(szMiscArray), "You have successfully used one of your 7 Days Gold VIP voucher(s), you have %d 7 Days Gold VIP voucher(s) left.", PlayerInfo[playerid][pGVIPExVoucher]);
-					SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_CYAN, "You have successfully used one of your 7 Days Gold VIP voucher(s), you have %d 7 Days Gold VIP voucher(s) left.", PlayerInfo[playerid][pGVIPExVoucher]);
 					SendClientMessageEx(playerid, COLOR_GRAD2, "** Note: Your Gold VIP will expire in 7 days.");
 
 					format(szMiscArray, sizeof(szMiscArray), "AdmCmd: Server (Voucher System) has set %s's(%d) (IP:%s) VIP level to Gold (7 Days)(3) (Voucher Left: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, PlayerInfo[playerid][pGVIPExVoucher]);
@@ -633,7 +614,6 @@ CMD:sellvoucher(playerid, params[])
 	if(GetPVarInt(buyer, "Injured") != 0 || PlayerCuffed[buyer] != 0 || PlayerInfo[buyer][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't offer a Prisoner or a Injured player a voucher.");
 	if(GetPVarType(buyer, "buyingVoucher")) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player is already buying another voucher, please try again later.");
 	
-	new string[128];
 	if(strcmp(choice, "carvoucher", true) == 0) 
 	{
 		if(amount > PlayerInfo[playerid][pVehVoucher]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have that much vouchers.");
@@ -644,10 +624,8 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "sellerVoucher", playerid);
 		SetPVarInt(buyer, "VoucherOfferSession", g_arrQueryHandle[playerid]);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
-		format(string, sizeof(string), "%s has offered to sell you %d car voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
-		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "You have offered %s %d car voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, "%s has offered to sell you %d car voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have offered %s %d car voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
 		SetPVarInt(buyer, "SQLID_Voucher", GetPlayerSQLId(playerid));
 	}
 	else if(strcmp(choice, "silvervip", true) == 0) 
@@ -660,10 +638,8 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "sellerVoucher", playerid);
 		SetPVarInt(buyer, "VoucherOfferSession", g_arrQueryHandle[playerid]);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
-		format(string, sizeof(string), "%s has offered to sell you %d Silver VIP voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
-		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "You have offered %s %d Silver VIP voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, "%s has offered to sell you %d Silver VIP voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have offered %s %d Silver VIP voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
 		SetPVarInt(buyer, "SQLID_Voucher", GetPlayerSQLId(playerid));
 	}
 	else if(strcmp(choice, "goldvip", true) == 0) 
@@ -676,10 +652,8 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "sellerVoucher", playerid);
 		SetPVarInt(buyer, "VoucherOfferSession", g_arrQueryHandle[playerid]);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
-		format(string, sizeof(string), "%s has offered to sell you %d Gold VIP voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
-		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "You have offered %s %d Gold VIP voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, "%s has offered to sell you %d Gold VIP voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have offered %s %d Gold VIP voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
 		SetPVarInt(buyer, "SQLID_Voucher", GetPlayerSQLId(playerid));
 	}
 	else if(strcmp(choice, "pvip", true) == 0)
@@ -692,10 +666,8 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "sellerVoucher", playerid);
 		SetPVarInt(buyer, "VoucherOfferSession", g_arrQueryHandle[playerid]);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
-		format(string, sizeof(string), "%s has offered to sell you %d 1 month PVIP Voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
-		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "You have offered %s %d 1 month PVIP Voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, "%s has offered to sell you %d 1 month PVIP Voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have offered %s %d 1 month PVIP Voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
 	 	SetPVarInt(buyer, "SQLID_Voucher", GetPlayerSQLId(playerid));
 	}
 	else if(strcmp(choice, "restrictedcar", true) == 0)
@@ -708,10 +680,8 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "sellerVoucher", playerid);
 		SetPVarInt(buyer, "VoucherOfferSession", g_arrQueryHandle[playerid]);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
-		format(string, sizeof(string), "%s has offered to sell you %d Restricted Car voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
-		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "You have offered %s %d Restricted Car voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, "%s has offered to sell you %d Restricted Car voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have offered %s %d Restricted Car voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
 	 	SetPVarInt(buyer, "SQLID_Voucher", GetPlayerSQLId(playerid));
 	}
 	else if(strcmp(choice, "advert", true) == 0)
@@ -724,10 +694,8 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "sellerVoucher", playerid);
 		SetPVarInt(buyer, "VoucherOfferSession", g_arrQueryHandle[playerid]);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
-		format(string, sizeof(string), "%s has offered to sell you %d Priority Advertisement voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
-		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "You have offered %s %d Priority Advertisement voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, "%s has offered to sell you %d Priority Advertisement voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have offered %s %d Priority Advertisement voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
 	 	SetPVarInt(buyer, "SQLID_Voucher", GetPlayerSQLId(playerid));
 	}
 	else if(strcmp(choice, "7daysvip", true) == 0)
@@ -740,10 +708,8 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "sellerVoucher", playerid);
 		SetPVarInt(buyer, "VoucherOfferSession", g_arrQueryHandle[playerid]);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
-		format(string, sizeof(string), "%s has offered to sell you %d 7 Days Silver VIP voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
-		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "You have offered %s %d 7 Days Silver VIP voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, "%s has offered to sell you %d 7 Days Silver VIP voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have offered %s %d 7 Days Silver VIP voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
 	 	SetPVarInt(buyer, "SQLID_Voucher", GetPlayerSQLId(playerid));
 	}
 	else if(strcmp(choice, "7daygvip", true) == 0)
@@ -756,10 +722,8 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "sellerVoucher", playerid);
 		SetPVarInt(buyer, "VoucherOfferSession", g_arrQueryHandle[playerid]);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
-		format(string, sizeof(string), "%s has offered to sell you %d 7 Days Gold VIP voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
-		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "You have offered %s %d 7 Days Gold VIP voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, "%s has offered to sell you %d 7 Days Gold VIP voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have offered %s %d 7 Days Gold VIP voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
 	 	SetPVarInt(buyer, "SQLID_Voucher", GetPlayerSQLId(playerid));
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid choice.");
@@ -770,11 +734,8 @@ CMD:denyvoucher(playerid, params[])
 {
 	if(GetPVarType(playerid, "buyingVoucher"))
 	{
-		new string[128];
-		format(string, sizeof(string), "* %s has declined your voucher offer.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(GetPVarInt(playerid, "sellerVoucher"), COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "* You have declined %s voucher offer.", GetPlayerNameEx(GetPVarInt(playerid, "sellerVoucher")));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		SendClientMessageEx(GetPVarInt(playerid, "sellerVoucher"), COLOR_LIGHTBLUE, "* %s has declined your voucher offer.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have declined %s voucher offer.", GetPlayerNameEx(GetPVarInt(playerid, "sellerVoucher")));
 		DeletePVar(playerid, "priceVoucher");
 		DeletePVar(playerid, "amountVoucher");
 		DeletePVar(playerid, "buyingVoucher");

@@ -68,12 +68,10 @@ CMD:revokelicense(playerid, params[])
 					if(PlayerInfo[giveplayerid][pCarLic] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "This person has no driver's license to revoke.");
 
 					GetPlayerGroupInfo(playerid, sz_FacInfo[0], sz_FacInfo[1], sz_FacInfo[2]);
-					format(string,sizeof(string),"The %s has revoked your driver's license, reason: %s.", sz_FacInfo[2], reason);
-					SendClientMessageEx(giveplayerid,COLOR_LIGHTBLUE,string);
+					SendClientMessageEx(giveplayerid,COLOR_LIGHTBLUE,"The %s has revoked your driver's license, reason: %s.", sz_FacInfo[2], reason);
 					format(string,sizeof(string),"HQ: %s %s %s has revoked %s' driver's license, reason: %s.", sz_FacInfo[2], sz_FacInfo[0], GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
 					SendGroupMessage(GROUP_TYPE_LEA,TEAM_BLUE_COLOR,string);
-					format(string,sizeof(string),"You have revoked %s' driver's license.",GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid,COLOR_WHITE,string);
+					SendClientMessageEx(playerid,COLOR_WHITE,"You have revoked %s' driver's license.",GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "%s(%d) has taken %s'(%d) driver's license. reason: %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);
 					Log("logs/licenses.log", string);
 					PlayerInfo[giveplayerid][pCarLic] = 0;
@@ -84,12 +82,10 @@ CMD:revokelicense(playerid, params[])
 					if(PlayerInfo[giveplayerid][pBoatLic] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "This person has no boating license to revoke.");
 
 					GetPlayerGroupInfo(playerid, sz_FacInfo[0], sz_FacInfo[1], sz_FacInfo[2]);
-					format(string,sizeof(string),"The %s has revoked your boater's license, reason: %s.", sz_FacInfo[2], reason);
-					SendClientMessageEx(giveplayerid,COLOR_LIGHTBLUE,string);
+					SendClientMessageEx(giveplayerid,COLOR_LIGHTBLUE,"The %s has revoked your boater's license, reason: %s.", sz_FacInfo[2], reason);
 					format(string,sizeof(string),"HQ: %s %s %s has revoked %s' boater's license, reason: %s.", sz_FacInfo[2], sz_FacInfo[0], GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
 					SendGroupMessage(GROUP_TYPE_LEA,TEAM_BLUE_COLOR,string);
-					format(string,sizeof(string),"You have revoked %s' boater's license.",GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid,COLOR_WHITE,string);
+					SendClientMessageEx(playerid,COLOR_WHITE,"You have revoked %s' boater's license.",GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "%s(%d) has taken %s'(%d) boater's license. reason: %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);
 					Log("logs/licenses.log", string);
 					PlayerInfo[giveplayerid][pBoatLic] = 0;
@@ -100,12 +96,10 @@ CMD:revokelicense(playerid, params[])
 					if(PlayerInfo[giveplayerid][pFlyLic] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "This person has no pilot license to revoke.");
 
 					GetPlayerGroupInfo(playerid, sz_FacInfo[0], sz_FacInfo[1], sz_FacInfo[2]);
-					format(string,sizeof(string),"The %s has revoked your pilot's license, reason: %s.", sz_FacInfo[2], reason);
-					SendClientMessageEx(giveplayerid,COLOR_LIGHTBLUE,string);
+					SendClientMessageEx(giveplayerid,COLOR_LIGHTBLUE,"The %s has revoked your pilot's license, reason: %s.", sz_FacInfo[2], reason);
 					format(string,sizeof(string),"HQ: %s %s %s has revoked %s' pilot's license, reason: %s.", sz_FacInfo[2], sz_FacInfo[0], GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
 					SendGroupMessage(GROUP_TYPE_LEA,TEAM_BLUE_COLOR,string);
-					format(string,sizeof(string),"You have revoked %s' pilot's license.",GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid,COLOR_WHITE,string);
+					SendClientMessageEx(playerid,COLOR_WHITE,"You have revoked %s' pilot's license.",GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "%s(%d) has taken %s'(%s) pilot's license. reason: %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);
 					Log("logs/licenses.log", string);
 					PlayerInfo[giveplayerid][pFlyLic] = 0;
@@ -117,12 +111,10 @@ CMD:revokelicense(playerid, params[])
 					if(PlayerInfo[giveplayerid][pGunLic] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "This person has no firearms license to revoke.");
 
 					GetPlayerGroupInfo(playerid, sz_FacInfo[0], sz_FacInfo[1], sz_FacInfo[2]);
-					format(string,sizeof(string),"The %s has revoked your firearm's license, reason: %s.", sz_FacInfo[2], reason);
-					SendClientMessageEx(giveplayerid,COLOR_LIGHTBLUE,string);
+					SendClientMessageEx(giveplayerid,COLOR_LIGHTBLUE,"The %s has revoked your firearm's license, reason: %s.", sz_FacInfo[2], reason);
 					format(string,sizeof(string),"HQ: %s %s %s has revoked %s' firearm's license, reason: %s.", sz_FacInfo[2], sz_FacInfo[0], GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
 					SendGroupMessage(GROUP_TYPE_LEA,TEAM_BLUE_COLOR,string);
-					format(string,sizeof(string),"You have revoked %s' firearm's license.",GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(playerid,COLOR_WHITE,string);
+					SendClientMessageEx(playerid,COLOR_WHITE,"You have revoked %s' firearm's license.",GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "%s(%d) has taken %s'(%s) firearm's license. reason: %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);
 					Log("logs/licenses.log", string);
 					PlayerInfo[giveplayerid][pGunLic] = 0;
@@ -164,10 +156,8 @@ CMD:givelicense(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_GRAD2, "This person already has a driver's license.");
 					return 1;
 				}
-				format(string, sizeof(string), "You have given a driver's license to %s.",GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "Administrator %s has given you a driver's license.",GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have given a driver's license to %s.",GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(giveplayerid, COLOR_WHITE, "Administrator %s has given you a driver's license.",GetPlayerNameEx(playerid));
 				format(string, sizeof(string), "Administrator %s has given a driver's license to %s(%d)",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 				Log("logs/licenses.log", string);
 				PlayerInfo[giveplayerid][pCarLic] = 1;
@@ -180,10 +170,8 @@ CMD:givelicense(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_GRAD2, "This person already has a boating license.");
 					return 1;
 				}
-				format(string, sizeof(string), "You have given a boating license to %s.",GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "Administrator %s has given you a boating license.",GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have given a boating license to %s.",GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(giveplayerid, COLOR_WHITE, "Administrator %s has given you a boating license.",GetPlayerNameEx(playerid));
 				format(string, sizeof(string), "Administrator %s has given a boating license to %s(%d)",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 				Log("logs/licenses.log", string);
 				PlayerInfo[giveplayerid][pBoatLic] = 1;
@@ -196,10 +184,8 @@ CMD:givelicense(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_GRAD2, "This person already has a pilot license.");
 					return 1;
 				}
-				format(string, sizeof(string), "You have given a pilot license to %s.",GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "Administrator %s has given you a pilot license.",GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have given a pilot license to %s.",GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(giveplayerid, COLOR_WHITE, "Administrator %s has given you a pilot license.",GetPlayerNameEx(playerid));
 				format(string, sizeof(string), "Administrator %s has given a pilot license to %s(%d)",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 				Log("logs/licenses.log", string);
 				PlayerInfo[giveplayerid][pFlyLic] = 1;
@@ -212,10 +198,8 @@ CMD:givelicense(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_GRAD2, "This person already has a taxi license.");
 					return 1;
 				}
-				format(string, sizeof(string), "You have given a taxi license to %s.",GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "Administrator %s has given you a taxi license.",GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have given a taxi license to %s.",GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(giveplayerid, COLOR_WHITE, "Administrator %s has given you a taxi license.",GetPlayerNameEx(playerid));
 				format(string, sizeof(string), "Administrator %s has given a taxi license to %s(%d)",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 				Log("logs/licenses.log", string);
 				PlayerInfo[giveplayerid][pTaxiLicense] = 1;
@@ -234,7 +218,7 @@ CMD:givelicense(playerid, params[])
 
 CMD:droplicense(playerid, params[])
 {
-	new string[128], type;
+	new type;
 	if(sscanf(params, "d", type))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /droplicense [type]");
@@ -251,8 +235,7 @@ CMD:droplicense(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a driver's license to drop.");
 				return 1;
 			}
-			format(string, sizeof(string), "You have dropped your driver's license.");
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped your driver's license.");
 			PlayerInfo[playerid][pCarLic] = 0;
 			return 1;
 		}
@@ -263,8 +246,7 @@ CMD:droplicense(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a boating license to drop.");
 				return 1;
 			}
-			format(string, sizeof(string), "You have dropped your boating license.");
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped your boating license.");
 			PlayerInfo[playerid][pBoatLic] = 0;
 			return 1;
 		}
@@ -275,8 +257,7 @@ CMD:droplicense(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a pilot license to drop.");
 				return 1;
 			}
-			format(string, sizeof(string), "You have dropped your pilot license.");
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped your pilot license.");
 			PlayerInfo[playerid][pFlyLic] = 0;
 			return 1;
 		}
@@ -287,8 +268,7 @@ CMD:droplicense(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a taxi license to drop.");
 				return 1;
 			}
-			format(string, sizeof(string), "You have dropped your taxi license.");
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped your taxi license.");
 			PlayerInfo[playerid][pTaxiLicense] = 0;
 			return 1;
 		}
@@ -303,7 +283,7 @@ CMD:droplicense(playerid, params[])
 
 CMD:licenses(playerid, params[])
 {
-	new string[128], text1[20], text2[20], text3[20], text4[20], text5[40];
+	new text1[20], text2[20], text3[20], text4[20], text5[40];
 	if(PlayerInfo[playerid][pCarLic]) { text1 = "Acquired"; } else { text1 = "Not acquired"; }
 	if(PlayerInfo[playerid][pFlyLic]) { text4 = "Acquired"; } else { text4 = "Not acquired"; }
 	if(PlayerInfo[playerid][pBoatLic]) { text2 = "Acquired"; } else { text2 = "Not acquired"; }
@@ -311,16 +291,11 @@ CMD:licenses(playerid, params[])
 	if(PlayerInfo[playerid][pGunLic] == 0) {text5 = "Not acquired"; }
 	else {text5 = date(PlayerInfo[playerid][pGunLic], 1);}
 	SendClientMessageEx(playerid, COLOR_WHITE, "Your licenses...");
-	format(string, sizeof(string), "** Driver's license: %s.", text1);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
-	format(string, sizeof(string), "** Pilot license: %s.", text4);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
-	format(string, sizeof(string), "** Boating license: %s.", text2);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
-	format(string, sizeof(string), "** Taxi license: %s.", text3);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
-	format(string, sizeof(string), "** SA Firearm license: %s.", text5);
-	SendClientMessageEx(playerid, COLOR_GREY, string);
+	SendClientMessageEx(playerid, COLOR_GREY, "** Driver's license: %s.", text1);
+	SendClientMessageEx(playerid, COLOR_GREY, "** Pilot license: %s.", text4);
+	SendClientMessageEx(playerid, COLOR_GREY, "** Boating license: %s.", text2);
+	SendClientMessageEx(playerid, COLOR_GREY, "** Taxi license: %s.", text3);
+	SendClientMessageEx(playerid, COLOR_GREY, "** SA Firearm license: %s.", text5);
 	return 1;
 }
 
@@ -356,7 +331,7 @@ CMD:showlicenses(playerid, params[])
 
 PlayerShowLicenses(playerid, giveplayerid);
 {
-	new text1[20], text2[20], text3[20], text4[20], text5[40], string[256];
+	new text1[20], text2[20], text3[20], text4[20], text5[40];
 	if(PlayerInfo[playerid][pCarLic]) { text1 = "Acquired"; } else { text1 = "Not acquired"; }
 	if(PlayerInfo[playerid][pFlyLic]) { text4 = "Acquired"; } else { text4 = "Not acquired"; }
 	if(PlayerInfo[playerid][pBoatLic]) { text2 = "Acquired"; } else { text2 = "Not acquired"; }
@@ -370,22 +345,13 @@ PlayerShowLicenses(playerid, giveplayerid);
 		case 1: SendClientMessageEx(giveplayerid, COLOR_TR, "** Citizen of New Robada **");
 		default: SendClientMessageEx(giveplayerid, COLOR_TR, "** No citizenship **");
 	}
-	format(string, sizeof(string), "Listing %s's licenses...", GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "Date of Birth: %s", PlayerInfo[playerid][pBirthDate]);
-	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "** Driver's license: %s.", text1);
-	SendClientMessageEx(giveplayerid, COLOR_GREY, string);
-	format(string, sizeof(string), "** Pilot license: %s.", text4);
-	SendClientMessageEx(giveplayerid, COLOR_GREY, string);
-	format(string, sizeof(string), "** Boating license: %s.", text2);
-	SendClientMessageEx(giveplayerid, COLOR_GREY, string);
-	format(string, sizeof(string), "** Taxi license: %s.", text3);
-	SendClientMessageEx(giveplayerid, COLOR_GREY, string);
-	format(string, sizeof(string), "** SA Firearm license: %s.", text5);
-	SendClientMessageEx(giveplayerid, COLOR_GREY, string);
-	format(string, sizeof(string), "* %s has shown their licenses to you.", GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-	format(string, sizeof(string), "* You have shown your licenses to %s.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+	SendClientMessageEx(giveplayerid, COLOR_WHITE, "Listing %s's licenses...", GetPlayerNameEx(playerid));
+	SendClientMessageEx(giveplayerid, COLOR_WHITE, "Date of Birth: %s", PlayerInfo[playerid][pBirthDate]);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Driver's license: %s.", text1);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Pilot license: %s.", text4);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Boating license: %s.", text2);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Taxi license: %s.", text3);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, "** SA Firearm license: %s.", text5);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s has shown their licenses to you.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have shown your licenses to %s.", GetPlayerNameEx(giveplayerid));
 }

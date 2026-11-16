@@ -765,15 +765,13 @@ public Phone_Trace(playerid, i)
 
 		SetPlayerMarkerForPlayer(playerid, i, FIND_COLOR);
 		GetPlayer3DZone(i, szZone, sizeof(szZone));
-		format(szMiscArray, sizeof(szMiscArray), "%s has been last seen at %s.", GetPlayerNameEx(i), szZone);
-		SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GRAD2, "%s has been last seen at %s.", GetPlayerNameEx(i), szZone);
 		FindingPlayer[playerid] = i;
 		FindTime[playerid] = 1;
 
 		if(PlayerInfo[playerid][pDoubleEXP] > 0) {
 
-			format(szMiscArray, sizeof(szMiscArray), "You have gained 2 detective skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 detective skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
 			PlayerInfo[playerid][pDetSkill] += 2;
 		}
 		else ++PlayerInfo[playerid][pDetSkill];

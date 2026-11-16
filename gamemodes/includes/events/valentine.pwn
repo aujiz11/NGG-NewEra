@@ -93,10 +93,8 @@ CMD:bemine(playerid, params[])
 	SetPVarInt(giveplayerid, "ValentineOfferSession", g_arrQueryHandle[playerid]);
 	SetPVarInt(giveplayerid, "kissvalsqlid", GetPlayerSQLId(playerid));
 
-	format(szMiscArray, sizeof(szMiscArray), "You have requested %s to be your valentine, please wait for them to respond.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have requested %s to be your valentine, please wait for them to respond.", GetPlayerNameEx(giveplayerid));
 
-	format(szMiscArray, sizeof(szMiscArray), "%s has requested to be your valentine, please use '/accept valentine' to approve it.", GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, szMiscArray);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "%s has requested to be your valentine, please use '/accept valentine' to approve it.", GetPlayerNameEx(playerid));
 	return 1;
 }

@@ -132,15 +132,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				
 				GivePlayerCash(playerid, iAmount);
 				PlayerInfo[playerid][pAccount] -= iAmount; 
-				format(szMiscArray, sizeof(szMiscArray), "  You have withdrawn $%s from your account. ", number_format(iAmount));
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "  You have withdrawn $%s from your account. ", number_format(iAmount));
 
 				if(PlayerInfo[playerid][pDonateRank] == 0) {
 					new fee;
 					fee = 3*iAmount/100;
 					PlayerInfo[playerid][pAccount] -= fee;
-					format(szMiscArray, sizeof(szMiscArray), "  You have been charged a 3 percent withdraw fee: -$%d.", fee);
-					SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "  You have been charged a 3 percent withdraw fee: -$%d.", fee);
 				}
 
 				OnPlayerStatsUpdate(playerid);
@@ -169,15 +167,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				
 				GivePlayerCash(playerid, -iAmount);
 				PlayerInfo[playerid][pAccount] += iAmount; 
-				format(szMiscArray, sizeof(szMiscArray), "  You have deposited $%s to your account. ", number_format(iAmount));
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "  You have deposited $%s to your account. ", number_format(iAmount));
 
 				if(PlayerInfo[playerid][pDonateRank] == 0) {
 					new fee;
 					fee = 3*iAmount/100;
 					PlayerInfo[playerid][pAccount] -= fee;
-					format(szMiscArray, sizeof(szMiscArray), "  You have been charged a 3 percent deposit fee: -$%d.", fee);
-					SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "  You have been charged a 3 percent deposit fee: -$%d.", fee);
 				}
 
 				OnPlayerStatsUpdate(playerid);

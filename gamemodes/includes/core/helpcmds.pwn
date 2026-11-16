@@ -1262,8 +1262,7 @@ stock Help_SendToChat(playerid, response, cmd)
 {
 	if(response && GetPVarType(playerid, "TmpCMD") && 0 <= cmd < HelpCount && Help_Perm(playerid, Help[cmd][HelpType], Help[cmd][HelpSubtype], Help[cmd][HelpLevel]))
 	{
-		format(szMiscArray, sizeof(szMiscArray), "USAGE: %s %s", Help[cmd][HelpName], Help[cmd][HelpParam]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: %s %s", Help[cmd][HelpName], Help[cmd][HelpParam]);
 	}
 }
 
@@ -1566,37 +1565,28 @@ CMD:ohelp(playerid, params[])
 	    {
 			case 1:
 			{
-			    format(string, sizeof(string), "*** %s *** (/r)adio /dept (/m)egaphone (/su)spect /locker /mdc /detain /arrest /warrantarrest /wanted /cuff /tazer", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "*** %s ***  /frisk /take /ticket (/gov)ernment /clothes /ram /invite /giverank /deploy /destroy", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
-                SendClientMessageEx(playerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "*** %s ***  /spikes /revokelicense /vcheck /vmdc /vticket /tow /untow /impound /gdonate /togradio /togdept", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "*** %s *** (/r)adio /dept (/m)egaphone (/su)spect /locker /mdc /detain /arrest /warrantarrest /wanted /cuff /tazer", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
+                SendClientMessageEx(playerid, COLOR_WHITE, "*** %s ***  /frisk /take /ticket (/gov)ernment /clothes /ram /invite /giverank /deploy /destroy", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
+				SendClientMessageEx(playerid, COLOR_WHITE, "*** %s ***  /spikes /revokelicense /vcheck /vmdc /vticket /tow /untow /impound /gdonate /togradio /togdept", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 				format(string, sizeof(string), "*** %s ***  /flares /cones /wants /docarrest /siren /destroyplant /radargun /searchcar /vradar /copdestroy (furniture)", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 				if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBugAccess]) format(string, sizeof(string), "%s /bug /listbugs /clearbugs",string);
 				if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iFindAccess]) format(string, sizeof(string), "%s /hfind",string);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iCrateIsland] != INVALID_RANK) {
-                    format(string, sizeof(string), "*** %s ***  /cratelimit /viewcrateorders", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "*** %s ***  /cratelimit /viewcrateorders", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 				}
-				format(string, sizeof(string), "*** %s ***  /placekit /usekit /backup (code2) /backupall /backupint /calls /a(ccept)c(all) /i(gnore)c(all) /wheelclamp", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "*** %s ***  /placekit /usekit /backup (code2) /backupall /backupint /calls /a(ccept)c(all) /i(gnore)c(all) /wheelclamp", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 
 			}
 			case 2:
 			{
-				format(string, sizeof(string), "*** %s *** (/f)amily /r /contracts /givemehit /order /ranks /profile /h(show)badge /hfind /togbr /execute", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
-                SendClientMessageEx(playerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "*** %s *** /plantbomb /plantcarbomb /pickupbomb /myc4 /invite /giverank /showmehq /showmehq2 /showmehq3", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+                SendClientMessageEx(playerid, COLOR_WHITE, "*** %s *** (/f)amily /r /contracts /givemehit /order /ranks /profile /h(show)badge /hfind /togbr /execute", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
+				SendClientMessageEx(playerid, COLOR_WHITE, "*** %s *** /plantbomb /plantcarbomb /pickupbomb /myc4 /invite /giverank /showmehq /showmehq2 /showmehq3", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 			}
 			case 3:
 			{
-				format(string, sizeof(string), "*** %s ***  (/r)adio /dept (/m)egaphone /heal /clothes /invite /giverank /locker /gdonate", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
-                SendClientMessageEx(playerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "*** %s ***  /getpt /movept /loadpt /deliverpt /destroyplant /calls /a(ccept)c(all) /i(gnore)c(all)", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
-                SendClientMessageEx(playerid, COLOR_WHITE, string);
+                SendClientMessageEx(playerid, COLOR_WHITE, "*** %s ***  (/r)adio /dept (/m)egaphone /heal /clothes /invite /giverank /locker /gdonate", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
+                SendClientMessageEx(playerid, COLOR_WHITE, "*** %s ***  /getpt /movept /loadpt /deliverpt /destroyplant /calls /a(ccept)c(all) /i(gnore)c(all)", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 			}
 			case 4:
 			{
@@ -1662,8 +1652,7 @@ CMD:ohelp(playerid, params[])
 	}
 	if(PlayerInfo[playerid][pDonateRank] >= 2)
 	{
-		format(string, sizeof(string), "*** VIP *** /spawnatvip (%s credits) /vipgunsleft", number_format(ShopItems[30][sItemPrice]));
-		SendClientMessageEx(playerid, COLOR_PURPLE, string);
+		SendClientMessageEx(playerid, COLOR_PURPLE, "*** VIP *** /spawnatvip (%s credits) /vipgunsleft", number_format(ShopItems[30][sItemPrice]));
 	}
 	if(PlayerInfo[playerid][pDonateRank] >= 4)
 	{

@@ -431,10 +431,8 @@ Smuggle_VehicleLoad(playerid, iTargetID, iVehID)
 	}
 	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Vehicle | Drug Packages", szMiscArray, "Select", "");
 
-	format(szMiscArray, sizeof(szMiscArray), "_________ %s | Drugs Stored _________", GetVehicleName(iVehID));
-	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "Total amount: %d pieces.", iTotalAmount);
-	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GREEN, "_________ %s | Drugs Stored _________", GetVehicleName(iVehID));
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Total amount: %d pieces.", iTotalAmount);
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________________");
 	return 1;
 }
@@ -666,8 +664,6 @@ CMD:adestroyplant(playerid, params[])
 			{
 			    if(Plants[i][pOwner] == GetPlayerSQLId(iTargetID))
 			    {
-			        new
-						szMessage[47 + MAX_PLAYER_NAME];
 
                     foreach(new z : Player)
 					{
@@ -676,11 +672,9 @@ CMD:adestroyplant(playerid, params[])
 							PlayerInfo[z][pWeedObject] = 0;
 						}
 					}
-					format(szMessage, sizeof(szMessage), "You have destroyed %s's plant.", GetPlayerNameEx(iTargetID), Plants[i][pGrowth]);
-					SendClientMessageEx(playerid, COLOR_GREY, szMessage);
+					SendClientMessageEx(playerid, COLOR_GREY, "You have destroyed %s's plant.", GetPlayerNameEx(iTargetID), Plants[i][pGrowth]);
 
-					format(szMessage, sizeof(szMessage), "Administrator %s has destroyed your plant.", GetPlayerNameEx(playerid), Plants[i][pGrowth]);
-					SendClientMessageEx(iTargetID, COLOR_GREY, szMessage);
+					SendClientMessageEx(iTargetID, COLOR_GREY, "Administrator %s has destroyed your plant.", GetPlayerNameEx(playerid), Plants[i][pGrowth]);
                     new string[128];
 					format(string, sizeof(string), "%s (IP:%s) has destroyed %s(%d) (IP:%s) plant (%d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), GetPlayerIpEx(iTargetID), i);
 					Log("logs/plant.log", string);
@@ -715,8 +709,7 @@ CMD:destroyplant(playerid, params[])
 					switch(Plants[i][pPlantType]) {
 	    				case 1:
 					    {
-							format(szMessage, sizeof(szMessage), "* You seized a marijuana plant weighing %d grams.", Plants[i][pGrowth]);
-							SendClientMessageEx(playerid, COLOR_GREY, szMessage);
+							SendClientMessageEx(playerid, COLOR_GREY, "* You seized a marijuana plant weighing %d grams.", Plants[i][pGrowth]);
 							format(szMessage, sizeof(szMessage), "* %s seizes the weed plant.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
 							ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 							foreach(new z : Player)
@@ -735,8 +728,7 @@ CMD:destroyplant(playerid, params[])
 						case 2:
 						{
 						    new Grams = Random(10, 30);
-						    format(szMessage, sizeof(szMessage), "* You seized a opium plant weighing %d milligrams.", Grams);
-							SendClientMessageEx(playerid, COLOR_GREY, szMessage);
+							SendClientMessageEx(playerid, COLOR_GREY, "* You seized a opium plant weighing %d milligrams.", Grams);
 							format(szMessage, sizeof(szMessage), "* %s seizes the opium plant.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
 							ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 							foreach(new z : Player)
@@ -779,11 +771,8 @@ CMD:checkplant(playerid, params[])
 		            {
 		                if(Plants[i][pGrowth] > 10)
 		                {
-		        			new
-								szMessage[66 + MAX_PLAYER_NAME];
 
-							format(szMessage, sizeof(szMessage), "Your plant currently carries %i grams - use /pickplant to claim it.", Plants[i][pGrowth]);
-							SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+							SendClientMessageEx(playerid, COLOR_WHITE, "Your plant currently carries %i grams - use /pickplant to claim it.", Plants[i][pGrowth]);
 							return 1;
 						}
 						else SendClientMessageEx(playerid, COLOR_YELLOW, "This plant isn't ready to be picked yet.");
@@ -824,8 +813,7 @@ CMD:pickplant(playerid, params[])
 
 							ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_Out", 4.0, false, false, false, false, 0, 1);
 
-							format(szMessage, sizeof(szMessage), "You picked the plant and gathered %d grams of pot.", Plants[i][pGrowth]);
-							SendClientMessageEx(playerid, COLOR_GREY, szMessage);
+							SendClientMessageEx(playerid, COLOR_GREY, "You picked the plant and gathered %d grams of pot.", Plants[i][pGrowth]);
 							format(szMessage, sizeof(szMessage), "* %s picks the weed plant.", GetPlayerNameEx(playerid));
 							ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
                             foreach(new z : Player)
@@ -854,8 +842,7 @@ CMD:pickplant(playerid, params[])
 
 							ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_Out", 4.0, false, false, false, false, 0, 1);
 
-							format(szMessage, sizeof(szMessage), "You picked the plant and gathered %d milligrams of opium.", Grams);
-							SendClientMessageEx(playerid, COLOR_GREY, szMessage);
+							SendClientMessageEx(playerid, COLOR_GREY, "You picked the plant and gathered %d milligrams of opium.", Grams);
 							format(szMessage, sizeof(szMessage), "* %s picks the opium plant.", GetPlayerNameEx(playerid));
 							ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 							foreach(new z : Player)
@@ -901,8 +888,7 @@ public AttemptPurify(playerid)
 	        new szMessage[128];
 	        if(PlayerInfo[playerid][pRawOpium] > 30)
 	        {
-	        	format(szMessage, sizeof(szMessage), "You have successfully purified %d milligrams of heroin!", 30);
-	        	SendClientMessageEx(playerid, COLOR_GREEN, szMessage);
+				SendClientMessageEx(playerid, COLOR_GREEN, "You have successfully purified %d milligrams of heroin!", 30);
 
 	        	format(szMessage, sizeof(szMessage), "* %s has successfully purified %d milligrams of heroin.", GetPlayerNameEx(playerid), 30);
 				ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -916,8 +902,7 @@ public AttemptPurify(playerid)
 			}
 			else
 			{
-	        	format(szMessage, sizeof(szMessage), "You have successfully purified %d milligrams of heroin!", PlayerInfo[playerid][pRawOpium]);
-	        	SendClientMessageEx(playerid, COLOR_GREEN, szMessage);
+				SendClientMessageEx(playerid, COLOR_GREEN, "You have successfully purified %d milligrams of heroin!", PlayerInfo[playerid][pRawOpium]);
 
 	        	format(szMessage, sizeof(szMessage), "* %s has successfully purified %d milligrams of heroin.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pRawOpium]);
 				ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

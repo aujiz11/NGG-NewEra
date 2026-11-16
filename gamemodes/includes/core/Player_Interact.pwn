@@ -188,8 +188,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 			if(PlayerInfo[playerid][pDrugs][drugid] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much.");
 
 			if(amount + PlayerInfo[giveplayerid][pDrugs][drugid] > Player_MaxCapacity(giveplayerid, itemid)) {
-				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
-				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
 				return Player_InteractMenu(playerid, giveplayerid);
 			}
 
@@ -202,8 +201,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 			if(PlayerInfo[playerid][pMats] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many materials.");
 
 			if(amount + PlayerInfo[giveplayerid][pMats] > Player_MaxCapacity(giveplayerid, itemid)) {
-				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
-				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
 				return Player_InteractMenu(playerid, giveplayerid);
 			}
 
@@ -215,8 +213,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 			if(PlayerInfo[playerid][pFirework] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many fireworks.");
 
 			if(amount + PlayerInfo[giveplayerid][pFirework] > Player_MaxCapacity(giveplayerid, itemid)) {
-				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
-				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
 				return Player_InteractMenu(playerid, giveplayerid);
 			}
 
@@ -228,8 +225,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 			if(PlayerInfo[playerid][pSyringes] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much syringes.");
 
 			if(amount + PlayerInfo[giveplayerid][pSyringes] > Player_MaxCapacity(giveplayerid, itemid)) {
-				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
-				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
 				return Player_InteractMenu(playerid, giveplayerid);
 			}
 
@@ -241,8 +237,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 			if(PlayerInfo[playerid][pSprunk] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much sprunk soda.");
 
 			if(amount + PlayerInfo[giveplayerid][pSprunk] > Player_MaxCapacity(giveplayerid, itemid)) {
-				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
-				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
 				return Player_InteractMenu(playerid, giveplayerid);
 			}
 
@@ -255,8 +250,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 			if(PlayerInfo[playerid][pPaintTokens] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many PB tokens.");
 
 			if(amount + PlayerInfo[giveplayerid][pPaintTokens] > Player_MaxCapacity(giveplayerid, itemid)) {
-				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
-				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
 				return Player_InteractMenu(playerid, giveplayerid);
 			}
 
@@ -267,11 +261,9 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 
 	if(saleprice == 0) {
 
-		format(szMiscArray, sizeof(szMiscArray), "You have given %s %d %s", GetPlayerNameEx(giveplayerid), amount, Item_Getname(itemid));
-		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have given %s %d %s", GetPlayerNameEx(giveplayerid), amount, Item_Getname(itemid));
 
-		format(szMiscArray, sizeof(szMiscArray), "%s has given you %d %s", GetPlayerNameEx(playerid), amount, Item_Getname(itemid));
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has given you %d %s", GetPlayerNameEx(playerid), amount, Item_Getname(itemid));
 
 		format(szMiscArray, sizeof(szMiscArray), "%s hands %s some %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), Item_Getname(itemid));
 		SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 5, 5000);
@@ -290,11 +282,9 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 		//TurfWars_TurfTax(giveplayerid, Item_Getname(itemid), saleprice); // Tax the buyer, not the seller.
 		ExtortionTurfsWarsZone(playerid, 7, saleprice); // Back to taxing the seller. 
 
-		format(szMiscArray, sizeof(szMiscArray), "You have sold %s %d %s for $%s", GetPlayerNameEx(giveplayerid), amount, Item_Getname(itemid), number_format(saleprice));
-		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %s %d %s for $%s", GetPlayerNameEx(giveplayerid), amount, Item_Getname(itemid), number_format(saleprice));
 
-		format(szMiscArray, sizeof(szMiscArray), "%s has sold you %d %s for $%s", GetPlayerNameEx(playerid), amount, Item_Getname(itemid), number_format(saleprice));
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has sold you %d %s for $%s", GetPlayerNameEx(playerid), amount, Item_Getname(itemid), number_format(saleprice));
 
 		format(szMiscArray, sizeof(szMiscArray), "%s hands %s some %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), Item_Getname(itemid));
 		SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 5, 5000);
@@ -682,11 +672,9 @@ Interact_GivePlayerValidWeapon(playerid, giveplayerid, weaponid, saleprice = 0) 
 		//TurfWars_TurfTax(giveplayerid, ReturnWeaponName(weaponid), saleprice);
 		ExtortionTurfsWarsZone(playerid, 3, saleprice);
 
-		format(szMiscArray, sizeof(szMiscArray), "You have sold %s a %s for $%s", GetPlayerNameEx(giveplayerid), ReturnWeaponName(weaponid), number_format(saleprice));
-		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %s a %s for $%s", GetPlayerNameEx(giveplayerid), ReturnWeaponName(weaponid), number_format(saleprice));
 
-		format(szMiscArray, sizeof(szMiscArray), "%s has sold you a %s $%s", GetPlayerNameEx(playerid), ReturnWeaponName(weaponid), number_format(saleprice));
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has sold you a %s $%s", GetPlayerNameEx(playerid), ReturnWeaponName(weaponid), number_format(saleprice));
 
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has sold a %s for $%s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], ReturnWeaponName(weaponid), number_format(saleprice), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
@@ -695,11 +683,9 @@ Interact_GivePlayerValidWeapon(playerid, giveplayerid, weaponid, saleprice = 0) 
 		DBLog(playerid, giveplayerid, "ItemTransfer", szMiscArray);
 	}
 	else {
-		format(szMiscArray, sizeof(szMiscArray), "You have given %s a %s", GetPlayerNameEx(giveplayerid), ReturnWeaponName(weaponid));
-		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have given %s a %s", GetPlayerNameEx(giveplayerid), ReturnWeaponName(weaponid));
 
-		format(szMiscArray, sizeof(szMiscArray), "%s has given you a %s", GetPlayerNameEx(playerid), ReturnWeaponName(weaponid));
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has given you a %s", GetPlayerNameEx(playerid), ReturnWeaponName(weaponid));
 
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has given a %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], ReturnWeaponName(weaponid), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
@@ -729,8 +715,7 @@ Interact_GivePlayerDrug(playerid, giveplayerid, drugid, saleprice = 0) {
 	if(PlayerInfo[playerid][pDrugs][drugid] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much.");
 
 	if(amount + PlayerInfo[giveplayerid][pDrugs][drugid] > Player_MaxCapacity(giveplayerid, ITEM_DRUG)) {
-		format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, ITEM_DRUG));
-		SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GRAD2, "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, ITEM_DRUG));
 		return Player_InteractMenu(playerid, giveplayerid);
 	}
 
@@ -746,11 +731,9 @@ Interact_GivePlayerDrug(playerid, giveplayerid, drugid, saleprice = 0) {
 		//TurfWars_TurfTax(giveplayerid, Drugs[drugid], saleprice);
 		ExtortionTurfsWarsZone(playerid, 1, saleprice);
 
-		format(szMiscArray, sizeof(szMiscArray), "You have sold %s %dg of %s for $%s", GetPlayerNameEx(giveplayerid), amount, Drugs[drugid], number_format(saleprice));
-		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %s %dg of %s for $%s", GetPlayerNameEx(giveplayerid), amount, Drugs[drugid], number_format(saleprice));
 
-		format(szMiscArray, sizeof(szMiscArray), "%s has sold you %dg of %s for $%s", GetPlayerNameEx(playerid), amount, Drugs[drugid], number_format(saleprice));
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has sold you %dg of %s for $%s", GetPlayerNameEx(playerid), amount, Drugs[drugid], number_format(saleprice));
 
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has sold %dg of %s for $%s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], amount, Drugs[drugid], number_format(saleprice), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
@@ -759,11 +742,9 @@ Interact_GivePlayerDrug(playerid, giveplayerid, drugid, saleprice = 0) {
 		DBLog(playerid, giveplayerid, "ItemTransfer", szMiscArray);
 	}
 	else {
-		format(szMiscArray, sizeof(szMiscArray), "You have given %s %dg of %s", GetPlayerNameEx(giveplayerid), amount, Drugs[drugid]);
-		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have given %s %dg of %s", GetPlayerNameEx(giveplayerid), amount, Drugs[drugid]);
 
-		format(szMiscArray, sizeof(szMiscArray), "%s has given you %dg of %s", GetPlayerNameEx(playerid), amount, Drugs[drugid]);
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has given you %dg of %s", GetPlayerNameEx(playerid), amount, Drugs[drugid]);
 
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has given %dg of %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], amount, Drugs[drugid], GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
@@ -829,10 +810,8 @@ Interact_CuffPlayer(playerid, giveplayerid) {
 
 	if(PlayerInfo[giveplayerid][pConnectHours] < 32) SendClientMessageEx(giveplayerid, COLOR_WHITE, "If you logout now you will automatically be prisoned for 2+ hours!");
 
-	format(szMiscArray, sizeof(szMiscArray), "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "* You handcuffed %s, till uncuff.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You handcuffed %s, till uncuff.", GetPlayerNameEx(giveplayerid));
 	format(szMiscArray, sizeof(szMiscArray), "* %s handcuffs %s, tightening the cuffs securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
@@ -864,10 +843,8 @@ Interact_UncuffPlayer(playerid, giveplayerid) {
 	if(PlayerCuffed[giveplayerid]>1) {
 
 		DeletePVar(giveplayerid, "IsFrozen");
-		format(szMiscArray, sizeof(szMiscArray), "* You have been uncuffed by %s.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "* You uncuffed %s.", GetPlayerNameEx(giveplayerid));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been uncuffed by %s.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You uncuffed %s.", GetPlayerNameEx(giveplayerid));
 		format(szMiscArray, sizeof(szMiscArray), "* %s has uncuffed %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		GameTextForPlayer(giveplayerid, "~g~Uncuffed", 2500, 3);
@@ -884,10 +861,8 @@ Interact_UncuffPlayer(playerid, giveplayerid) {
 	}
 	else if(GetPVarInt(giveplayerid, "jailcuffs") == 1) {
 		DeletePVar(giveplayerid, "IsFrozen");
-		format(szMiscArray, sizeof(szMiscArray), "* You have been uncuffed by %s.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "* You uncuffed %s.", GetPlayerNameEx(giveplayerid));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been uncuffed by %s.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You uncuffed %s.", GetPlayerNameEx(giveplayerid));
 		format(szMiscArray, sizeof(szMiscArray), "* %s has uncuffed %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		GameTextForPlayer(giveplayerid, "~g~Uncuffed", 2500, 3);
@@ -951,24 +926,15 @@ Interact_ShowLicenses(playerid, giveplayerid) {
 		case 1: SendClientMessageEx(giveplayerid, COLOR_TR, "** Citizen of New Robada **");
 		case 2: SendClientMessageEx(giveplayerid, COLOR_TR, "** No citizenship **");
 	}
-	format(szMiscArray, sizeof(szMiscArray), "Listing %s's licenses...", GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "Date of Birth: %s", PlayerInfo[playerid][pBirthDate]);
-	SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "** Driver's license: %s.", text1);
-	SendClientMessageEx(giveplayerid, COLOR_GREY, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "** Pilot license: %s.", text4);
-	SendClientMessageEx(giveplayerid, COLOR_GREY, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "** Boating license: %s.", text2);
-	SendClientMessageEx(giveplayerid, COLOR_GREY, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "** Taxi license: %s.", text3);
-	SendClientMessageEx(giveplayerid, COLOR_GREY, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "** SA Firearm license: %s.", text5);
-	SendClientMessageEx(giveplayerid, COLOR_GREY, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "* %s has shown their licenses to you.", GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "* You have shown your licenses to %s.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+	SendClientMessageEx(giveplayerid, COLOR_WHITE, "Listing %s's licenses...", GetPlayerNameEx(playerid));
+	SendClientMessageEx(giveplayerid, COLOR_WHITE, "Date of Birth: %s", PlayerInfo[playerid][pBirthDate]);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Driver's license: %s.", text1);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Pilot license: %s.", text4);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Boating license: %s.", text2);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Taxi license: %s.", text3);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, "** SA Firearm license: %s.", text5);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s has shown their licenses to you.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have shown your licenses to %s.", GetPlayerNameEx(giveplayerid));
 	return 1;
 }
 
@@ -980,43 +946,36 @@ Interact_FriskPlayer(playerid, giveplayerid) {
 	new packages = GetPVarInt(giveplayerid, "Packages");
 	new crates = PlayerInfo[giveplayerid][pCrates];
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
-	format(szMiscArray, sizeof(szMiscArray), "Listing pocket for %s.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Listing pocket for %s.", GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_WHITE, "** Items **");
 	if(PlayerInfo[giveplayerid][pMats] > 0)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d materials.", PlayerInfo[giveplayerid][pMats]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d materials.", PlayerInfo[giveplayerid][pMats]);
 	}
 	if(PlayerInfo[giveplayerid][pSyringes] > 0)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d syringes.", PlayerInfo[giveplayerid][pSyringes]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d syringes.", PlayerInfo[giveplayerid][pSyringes]);
 	}
     if(packages > 0)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d material packages.", packages);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d material packages.", packages);
 	}
 	if(crates > 0)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d drug crates.", crates);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d drug crates.", crates);
 	}
 
 	SendClientMessageEx(playerid, COLOR_WHITE, "** Drugs **");
 	for(new i = 0; i < sizeof(Drugs); i++) {
 
 		if(PlayerInfo[giveplayerid][pDrugs][i] > 0) {
-			format(szMiscArray, sizeof(szMiscArray), "%s: %dg", Drugs[i], PlayerInfo[giveplayerid][pDrugs][i]);
-			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_GRAD1, "%s: %dg", Drugs[i], PlayerInfo[giveplayerid][pDrugs][i]);
 		}
 	}
 
 	if(Fishes[giveplayerid][pWeight1] > 0 || Fishes[giveplayerid][pWeight2] > 0 || Fishes[giveplayerid][pWeight3] > 0 || Fishes[giveplayerid][pWeight4] > 0 || Fishes[giveplayerid][pWeight5] > 0)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d fish.", PlayerInfo[giveplayerid][pFishes]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d fish.", PlayerInfo[giveplayerid][pFishes]);
 	}
 	SendClientMessageEx(playerid, COLOR_WHITE, "** Misc **");
 	if(PlayerInfo[giveplayerid][pPhoneBook] > 0) SendClientMessageEx(playerid, COLOR_GREY, "Phone book.");
@@ -1028,8 +987,7 @@ Interact_FriskPlayer(playerid, giveplayerid) {
 		if(PlayerInfo[giveplayerid][pGuns][i] > 0)
 		{
 			GetWeaponName(PlayerInfo[giveplayerid][pGuns][i], weaponname, sizeof(weaponname));
-			format(szMiscArray, sizeof(szMiscArray), "Weapon: %s.", weaponname);
-			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Weapon: %s.", weaponname);
 		}
 	}
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
@@ -1053,11 +1011,9 @@ Interact_DragPlayer(playerid, giveplayerid) {
 	GetPlayerPos(giveplayerid, TempPos[0], TempPos[1], TempPos[2]);
 	if(!IsPlayerInRangeOfPoint(playerid, 5.0, TempPos[0], TempPos[1], TempPos[2])) return SendClientMessageEx(playerid, COLOR_GRAD2, " That suspect is not near you.");
 
-	format(szMiscArray, sizeof(szMiscArray), "* %s is now dragging you.", GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
+	SendClientMessageEx(giveplayerid, COLOR_WHITE, "* %s is now dragging you.", GetPlayerNameEx(playerid));
 
-	format(szMiscArray, sizeof(szMiscArray), "* You are now dragging %s, you may move them now.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_WHITE, "* You are now dragging %s, you may move them now.", GetPlayerNameEx(giveplayerid));
 
 	format(szMiscArray, sizeof(szMiscArray), "* %s grabs ahold of %s and begins to move them.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1095,10 +1051,8 @@ Interact_DetainPlayer(playerid, giveplayerid, seatid = -1) {
 		if (floatcmp(floatabs(floatsub(pos[0], pos[3])), 10.0) != -1 &&
 				floatcmp(floatabs(floatsub(pos[1], pos[4])), 10.0) != -1 &&
 				floatcmp(floatabs(floatsub(pos[2], pos[5])), 10.0) != -1) return false;
-		format(szMiscArray, sizeof(szMiscArray), "* You were detained by %s .", GetPlayerNameEx(playerid));
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "* You detained %s.", GetPlayerNameEx(giveplayerid));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You were detained by %s .", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You detained %s.", GetPlayerNameEx(giveplayerid));
 		format(szMiscArray, sizeof(szMiscArray), "* %s throws %s in the vehicle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		GameTextForPlayer(giveplayerid, "~r~Detained", 2500, 3);
@@ -1122,10 +1076,8 @@ Interact_GiveTicket(playerid, giveplayerid, const reason[], amount = -1) {
 	else {
 		if(!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in range of that player");
 
-		format(szMiscArray, sizeof(szMiscArray), "* You gave %s a ticket costing $%d, reason: %s", GetPlayerNameEx(giveplayerid), amount, reason);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "* Officer %s has given you a ticket costing $%d, reason: %s", GetPlayerNameEx(playerid), amount, reason);
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You gave %s a ticket costing $%d, reason: %s", GetPlayerNameEx(giveplayerid), amount, reason);
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has given you a ticket costing $%d, reason: %s", GetPlayerNameEx(playerid), amount, reason);
 		format(szMiscArray, sizeof(szMiscArray), "* Officer %s writes up a ticket and gives it to %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Type /accept ticket, to accept it.");
@@ -1152,10 +1104,8 @@ Interact_LoadPatient(playerid, giveplayerid, seatid = -1) {
         if(IsVehicleSeatOccupied(carid, seatid)) return SendClientMessageEx(playerid, COLOR_GREY, "That seat is occupied.");
 		if(!IsPlayerInRangeOfVehicle(giveplayerid, carid, 10.0) || !IsPlayerInRangeOfVehicle(playerid, carid, 10.0)) return SendClientMessageEx(playerid, COLOR_GREY, "Both you and your patient must be near the ambulance.");
 
-		format(szMiscArray, sizeof(szMiscArray), "* You were loaded by paramedic %s.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "* You loaded patient %s.", GetPlayerNameEx(giveplayerid));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You were loaded by paramedic %s.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You loaded patient %s.", GetPlayerNameEx(giveplayerid));
 		format(szMiscArray, sizeof(szMiscArray), "* %s loads %s in the %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetVehicleName(carid));
 		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		SetPVarInt(giveplayerid, "EMSAttempt", 3);
@@ -1198,8 +1148,7 @@ Interact_Heal(playerid, giveplayerid, healprice = -1) {
 		GetHealth(giveplayerid,tempheal);
 		if(tempheal >= 100.0) return SendClientMessageEx(playerid, TEAM_GREEN_COLOR,"That person is fully healed.");
 
-		format(szMiscArray, sizeof(szMiscArray), "You healed %s for $%d.", GetPlayerNameEx(giveplayerid),healprice);
-		SendClientMessageEx(playerid, COLOR_PINK, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_PINK, "You healed %s for $%d.", GetPlayerNameEx(giveplayerid),healprice);
 		GivePlayerCash(playerid, healprice / 2);
 
 		//Tax += healprice / 2;
@@ -1210,8 +1159,7 @@ Interact_Heal(playerid, giveplayerid, healprice = -1) {
 		PlayerPlaySound(playerid, 1150, 0.0, 0.0, 0.0);
 		PlayerPlaySound(giveplayerid, 1150, 0.0, 0.0, 0.0);
 
-		format(szMiscArray, sizeof(szMiscArray), "You have been healed to 100 health for $%d by %s.",healprice, GetPlayerNameEx(playerid));
-		SendClientMessageEx(giveplayerid, TEAM_GREEN_COLOR,szMiscArray);
+		SendClientMessageEx(giveplayerid, TEAM_GREEN_COLOR,"You have been healed to 100 health for $%d by %s.",healprice, GetPlayerNameEx(playerid));
 
 		if(GetPVarType(giveplayerid, "STD")){
 			DeletePVar(giveplayerid, "STD");
@@ -1234,12 +1182,10 @@ Interact_MovePatient(playerid, giveplayerid) {
 	if(!IsPlayerInRangeOfPoint(playerid, 5.0, mX, mY, mZ)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have to be close to the patient to be able to move them!");
 
 	SendClientMessageEx(playerid, COLOR_GRAD2, "You have 30 seconds to move to another location or you can either press the '{AA3333}FIRE{BFC0C2}' button.");
-	format(szMiscArray, sizeof(szMiscArray), "* You have been put on a stretcher by %s.", GetPlayerNameEx(playerid));
 
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "* You have put %s on a stretcher, you may move them now.", GetPlayerNameEx(giveplayerid));
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been put on a stretcher by %s.", GetPlayerNameEx(playerid));
 
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have put %s on a stretcher, you may move them now.", GetPlayerNameEx(giveplayerid));
 	format(szMiscArray, sizeof(szMiscArray), "* %s puts %s on a stretcher, tightening the belts securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 
 	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1279,8 +1225,7 @@ Interact_ProcessPrescription(playerid) {
 	new iDrugID = GetDrugID(szMiscArray);
 
 	if(iAmount + PlayerInfo[giveplayerid][pDrugs][iDrugID] > Player_MaxCapacity(giveplayerid, ITEM_DRUG)) {
-		format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, ITEM_DRUG));
-		SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GRAD2, "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, ITEM_DRUG));
 		return Player_InteractMenu(playerid, giveplayerid);
 	}
 

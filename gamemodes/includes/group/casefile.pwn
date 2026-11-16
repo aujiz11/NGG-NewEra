@@ -201,8 +201,7 @@ public OnCasefileList(playerid)
 					GetPlayerName(d, PlayerName, sizeof(PlayerName));
 					if(strfind(PlayerName, suspect, true) != -1)
 					{ 
-						format(szMiscArray, sizeof szMiscArray, "%s (ID: %d) | Issuer: %s | Information: %s", GetPlayerNameEx(d), d, issuer, information);
-						SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
+						SendClientMessageEx(playerid, COLOR_GREEN, "%s (ID: %d) | Issuer: %s | Information: %s", GetPlayerNameEx(d), d, issuer, information);
 					}
 				}
 			}
@@ -212,8 +211,7 @@ public OnCasefileList(playerid)
 				cache_get_value_name(i, "issuer", issuer);
 				cache_get_value_name(i, "information", information);
 
-				format(szMiscArray, sizeof szMiscArray, "%s | Issuer: %s | Information: %s",suspect, issuer, information);
-				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_GREY, "%s | Issuer: %s | Information: %s",suspect, issuer, information);
 			}
 		}
 		else return SendClientMessageEx(playerid, COLOR_WHITE, "Your group does not have any casefiles.");

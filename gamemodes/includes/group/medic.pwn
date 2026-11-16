@@ -191,10 +191,8 @@ Medic_GetPatient(playerid, const params[]) {
 				format(string, sizeof(string), "EMS Driver %s (%s, R%d) has accepted the Emergency Dispatch call for (%d) %s.", GetPlayerNameEx(playerid),
 					arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], PlayerInfo[playerid][pRank], giveplayerid, GetPlayerNameEx(giveplayerid));
 				SendMedicMessage(TEAM_MED_COLOR, string);
-				format(string, sizeof(string), "* You have accepted EMS Call from %s, you will see the marker until you have reached it.",GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* EMS Driver %s has accepted your EMS Call; please wait at your current position.",GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have accepted EMS Call from %s, you will see the marker until you have reached it.",GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* EMS Driver %s has accepted your EMS Call; please wait at your current position.",GetPlayerNameEx(playerid));
 				GameTextForPlayer(playerid, "~w~EMS Caller~n~~r~Go to the red marker.", 5000, 1);
 				EMSCallTime[playerid] = 1;
 				EMSAccepted[playerid] = giveplayerid;
@@ -323,10 +321,8 @@ CMD:loadpt(playerid, params[])
 							return 1;
 						}
 						if(IsPlayerInRangeOfVehicle(giveplayerid, carid, 10.0) && IsPlayerInRangeOfVehicle(playerid, carid, 10.0)) {
-							format(string, sizeof(string), "* You were loaded by paramedic %s.", GetPlayerNameEx(playerid));
-							SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-							format(string, sizeof(string), "* You loaded patient %s.", GetPlayerNameEx(giveplayerid));
-							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+							SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You were loaded by paramedic %s.", GetPlayerNameEx(playerid));
+							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You loaded patient %s.", GetPlayerNameEx(giveplayerid));
 							format(string, sizeof(string), "* %s loads %s in the %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetVehicleName(carid));
 							ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 							SetPVarInt(giveplayerid, "EMSAttempt", 3);
@@ -428,17 +424,14 @@ CMD:heal(playerid, params[])
 				SendClientMessageEx(playerid, TEAM_GREEN_COLOR,"That person is fully healed.");
 				return 1;
 			}
-			new string[64];
-			format(string, sizeof(string), "You healed %s for $%d.", GetPlayerNameEx(giveplayerid), price);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You healed %s for $%d.", GetPlayerNameEx(giveplayerid), price);
 			GivePlayerCash(playerid, price / 2);
 			Tax += price / 2;
 			GivePlayerCash(giveplayerid, -price);
 			SetHealth(giveplayerid, 100);
 			PlayerPlaySound(playerid, 1150, 0.0, 0.0, 0.0);
 			PlayerPlaySound(giveplayerid, 1150, 0.0, 0.0, 0.0);
-			format(string, sizeof(string), "You have been healed to 100 health for $%d by %s.",price, GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have been healed to 100 health for $%d by %s.",price, GetPlayerNameEx(playerid));
 
 			SetPVarInt(playerid, "pHealTimer", gettime() + 60); // Adding a minute check.
 
@@ -494,10 +487,8 @@ CMD:movept(playerid, params[])
 					return 1;
 				}
 				SendClientMessageEx(playerid, COLOR_GRAD2, "You have 30 seconds to move to another location or you can either press the '{AA3333}FIRE{BFC0C2}' button.");
-				format(string, sizeof(string), "* You have been put on a stretcher by %s.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* You have put %s on a stretcher, you may move them now.", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been put on a stretcher by %s.", GetPlayerNameEx(playerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have put %s on a stretcher, you may move them now.", GetPlayerNameEx(giveplayerid));
 				format(string, sizeof(string), "* %s puts %s on a stretcher, tightening the belts securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
@@ -555,8 +546,7 @@ CMD:deliverpt(playerid, params[])
 						GivePlayerCash(playerid, 20000);
 
 						//SendClientMessageEx(giveplayerid, TEAM_CYAN_COLOR, "Doc: Your medical bill comes in at $1000. Have a nice day!");
-                        format(string,sizeof(string),"You received $20,000 for successfully delivering the patient!");
-                        SendClientMessageEx(playerid, TEAM_CYAN_COLOR, string);
+                        SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "You received $20,000 for successfully delivering the patient!");
 						
                         KillEMSQueue(giveplayerid);
                         SetPVarInt(giveplayerid, "_HospitalBeingDelivered", 1);
@@ -617,9 +607,7 @@ CMD:renderaid(playerid, params[])
 	if(!GetPVarType(target, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "Player is not in a injured state.");
 	SetPVarInt(target, "renderaid", playerid);
 	SetPVarInt(target, "RenderAidSession", g_arrQueryHandle[playerid]);
-	format(szMiscArray, sizeof(szMiscArray), "* You have offered %s assistance.", GetPlayerNameEx(target));
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "* %s wants to assist you, (type /accept renderaid) to accept.", GetPlayerNameEx(playerid));
-	SendClientMessageEx(target, COLOR_LIGHTBLUE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have offered %s assistance.", GetPlayerNameEx(target));
+	SendClientMessageEx(target, COLOR_LIGHTBLUE, "* %s wants to assist you, (type /accept renderaid) to accept.", GetPlayerNameEx(playerid));
 	return 1;
 }

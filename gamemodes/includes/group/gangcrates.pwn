@@ -890,8 +890,7 @@ CMD:gloadcrate(playerid, params[]) {
 	DestroyDynamic3DTextLabel(arrGCrateData[iCrateID][gcr_iLabel]);
 	format(szMiscArray, sizeof(szMiscArray), "Gang Crate ID: %d\n%s", iCrateID, arrGroupData[DynVehicleInfo[DynVeh[iLoadVehID]][gv_igID]][g_szGroupName]);
 	arrGCrateData[iCrateID][gcr_iLabel] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, 0.0, 0.0, 0.0, 5.0, INVALID_PLAYER_ID, iLoadVehID);
-	format(szMiscArray, sizeof(szMiscArray), "You have successfully stored the crate into %s's %s", arrGroupData[DynVehicleInfo[DynVeh[iLoadVehID]][gv_igID]][g_szGroupName], VehicleName[GetVehicleModel(iLoadVehID)-400]);
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully stored the crate into %s's %s", arrGroupData[DynVehicleInfo[DynVeh[iLoadVehID]][gv_igID]][g_szGroupName], VehicleName[GetVehicleModel(iLoadVehID)-400]);
 	CrateVehicleLoad[iVehID][vForkLoaded] = 0;
 	CrateVehicleLoad[iLoadVehID][vForkLoaded] = 1;
 	CrateVehicleLoad[iLoadVehID][vCrateID][0] = iCrateID;
@@ -923,8 +922,7 @@ CMD:gunloadcrate(playerid, params[])
 		DestroyDynamic3DTextLabel(arrGCrateData[iCrateID][gcr_iLabel]);
 		format(szMiscArray, sizeof(szMiscArray), "Gang Crate ID: %d\n%s", iCrateID, arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 		arrGCrateData[iCrateID][gcr_iLabel] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, 0.0, 0.0, 0.0, 5.0, INVALID_PLAYER_ID, iVehID);
-		format(szMiscArray, sizeof(szMiscArray), "You have successfully taken a crate from %s' %s.", arrGroupData[DynVehicleInfo[DynVeh[iGVehID]][gv_igID]][g_szGroupName], VehicleName[iGVehID-400]);
-		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully taken a crate from %s' %s.", arrGroupData[DynVehicleInfo[DynVeh[iGVehID]][gv_igID]][g_szGroupName], VehicleName[iGVehID-400]);
 	}
 	else SendClientMessageEx(playerid, COLOR_WHITE, "This vehicle does not have any crates stored.");
 	return 1;
