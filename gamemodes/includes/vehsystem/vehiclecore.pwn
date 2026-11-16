@@ -1548,13 +1548,6 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 	szMiscArray[0] = 0;
 	IsPlayerEntering{playerid} = true;
 	Seatbelt[playerid] = 0;
-	if(InsideTut{playerid} > 0)
-	{
-		if(GetPVarType(playerid, "Autoban")) return 1;
-		SetPVarInt(playerid, "Autoban", 1); 
-		CreateBan(INVALID_PLAYER_ID, PlayerInfo[playerid][pId], playerid, PlayerInfo[playerid][pIP], "Warp Hacking (Tutorial)", 180);
-		TotalAutoBan++;
-	}
 	if(GetPVarType(playerid, "HelmetOn"))
 	{
 		for(new i; i < 10; i++) {

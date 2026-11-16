@@ -342,7 +342,6 @@ new DeckTextdrw[53][] = {
 // Textdraw Global Variables
 new Text:MainMenuTxtdraw[12];
 new Text:NoticeTxtdraw[8];
-new Text:TutTxtdraw[118];
 new Text:WristWatch;
 new PlayerText:GPS[MAX_PLAYERS];
 new Text:BFText;
@@ -430,7 +429,6 @@ new gServerHour, minuite, gServerSecond;
 
 new InsidePlane[MAX_PLAYERS];
 new InsideMainMenu[MAX_PLAYERS char];
-new InsideTut[MAX_PLAYERS char];
 new pDrunkLevelLast[MAX_PLAYERS];
 new pFPS[MAX_PLAYERS];
 
@@ -679,7 +677,6 @@ new TicketMoney[MAX_PLAYERS];
 new PlayerStoned[MAX_PLAYERS];
 //new FishCount[MAX_PLAYERS];
 new ActiveChatbox[MAX_PLAYERS];
-new TutStep[MAX_PLAYERS];
 new PlayerDrunk[MAX_PLAYERS];
 new PlayerDrunkTime[MAX_PLAYERS];
 new FindTimePoints[MAX_PLAYERS];

@@ -1,9 +1,6 @@
 stock SpectatePlayer(playerid, giveplayerid)
 {
 	if(IsPlayerConnected(giveplayerid)) {
-		if( InsideTut{giveplayerid} >= 1 ) {
-			SendClientMessageEx(playerid, COLOR_WHITE, "NOTE: This person is in the tutorial. Please consider this before assuming that they're air-breaking.");
-		}
 		if(PlayerInfo[giveplayerid][pAccountRestricted]) SendClientMessageEx(playerid, COLOR_WHITE, "NOTE: This person has their account restricted. Please consider this before assuming that they're health hacking.");
 		if(Spectating[playerid] == 0) {
 			new Float: pPositions[3];

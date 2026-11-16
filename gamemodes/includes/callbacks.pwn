@@ -1378,7 +1378,6 @@ public OnPlayerConnect(playerid)
 	RefillPrice[playerid]=0;
 	InsidePlane[playerid]=INVALID_VEHICLE_ID;
 	InsideMainMenu{playerid}=0;
-	InsideTut{playerid}=0;
 	CrackOffer[playerid]= INVALID_PLAYER_ID;
 	CrackStorageID[playerid]=-1;
 	PlayerCuffed[playerid]=0;
@@ -1454,7 +1453,6 @@ public OnPlayerConnect(playerid)
 	TicketMoney[playerid] = 0;
 	PlayerInfo[playerid][pVehicleKeysFrom] = INVALID_PLAYER_ID;
 	ActiveChatbox[playerid] = 1;
-	TutStep[playerid] = 0;
 	PlayerInfo[playerid][pVehicleKeys] = INVALID_PLAYER_VEHICLE_ID;
 	TaxiAccepted[playerid] = INVALID_PLAYER_ID;
 	EMSAccepted[playerid] = INVALID_PLAYER_ID;
@@ -1574,7 +1572,6 @@ public OnPlayerConnect(playerid)
 
 	// Main Menu Features
 	InsideMainMenu{playerid} = 0;
-	InsideTut{playerid} = 0;
 
 	ShowMainMenuGUI(playerid);
 	//SetPlayerJoinCamera(playerid);
@@ -5768,17 +5765,6 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		SetPVarInt(playerid, "MemorialToy", modelid);
 		ShowPlayerDialogEx(playerid, 0525, DIALOG_STYLE_MSGBOX, "Memorial's Day Shop", szMiscArray, "Purchase", "Exit");
 	}
-	/*
-	if(extraid == REGISTER_SKINMODEL)
-	{
-		if(response)
-		{
-			PlayerInfo[playerid][pModel] = modelid;
-			Register_CreatePlayer(playerid, modelid);
-		}
-		Register_MainMenu(playerid);
-	}
-	*/
 	if(extraid == PRISON_SKINSELECT)
 	{
 		if(response)

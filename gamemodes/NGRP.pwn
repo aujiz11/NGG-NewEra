@@ -210,7 +210,6 @@
 #include "./includes/core/streamprep.pwn"
 #include "./includes/core/emailcheck.pwn"
 #include "./includes/core/AccountSettings.pwn"
-//#include "./includes/core/tutorial_new.pwn"
 #include "./includes/core/deluxegps.pwn"
 //#include "./includes/core/nametags.pwn"
 #include "./includes/core/vending.pwn"

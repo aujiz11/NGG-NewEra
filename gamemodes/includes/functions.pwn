@@ -133,7 +133,7 @@ MainMenuUpdateForPlayer(playerid)
 {
 	new string[156];
 
-	if(InsideMainMenu{playerid} == 1 || InsideTut{playerid} == 1)
+	if(InsideMainMenu{playerid} == 1)
 	{
 		format(string, sizeof(string), "~y~MOTD~w~: %s", GlobalMOTD);
 		TextDrawSetString(MainMenuTxtdraw[9], string);

@@ -206,22 +206,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				format(string, sizeof(string), "Nobody");
 				strmid(PlayerInfo[playerid][pReferredBy], string, 0, strlen(string), MAX_PLAYER_NAME);
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, "Thanks for filling in all the information, now you can proceed to the tutorial!");
-				//Tutorial_Start(playerid);
 				RegistrationStep[playerid] = 3;
 				SetPlayerVirtualWorld(playerid, 0);
 				ClearChatbox(playerid);
-				TutStep[playerid] = 1;
-				//ShowTutGUIBox(playerid);
-				if(fexist("NoTutorial.h"))
-				{
-					//ShowTutGUIFrame(playerid, 23);
-					//TutStep[playerid] = 23;
-				}
-				/*else
-				{
-					ShowTutGUIFrame(playerid, 1);
-					TutStep[playerid] = 1;
-				}*/
 				Streamer_UpdateEx(playerid, 1607.0160,-1510.8218,207.4438);
 				SetPlayerPos(playerid, 1607.0160,-1510.8218,-10.0);
 				SetPlayerCameraPos(playerid, 1850.1813,-1765.7552,81.9271);
@@ -12210,7 +12197,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			foreach(new i: Player)
 			{
-				if(!gNews[i] && InsideMainMenu{i} != 1 && InsideTut{i} != 1 && ActiveChatbox[i] != 0) SendClientMessage(i, TEAM_GROVE_COLOR, advert);
+				if(!gNews[i] && InsideMainMenu{i} != 1 && ActiveChatbox[i] != 0) SendClientMessage(i, TEAM_GROVE_COLOR, advert);
 			}
 			format(advert, sizeof(advert), "%s -- (SQLID: %d) | Accepted by: %s -- (SQLID: %d)", advert, GetPlayerSQLId(reportid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 			Log("logs/pads.log", advert);
