@@ -973,9 +973,9 @@ Interact_FriskPlayer(playerid, giveplayerid) {
 		}
 	}
 
-	if(Fishes[giveplayerid][pWeight1] > 0 || Fishes[giveplayerid][pWeight2] > 0 || Fishes[giveplayerid][pWeight3] > 0 || Fishes[giveplayerid][pWeight4] > 0 || Fishes[giveplayerid][pWeight5] > 0)
+	if(PlayerInfo[giveplayerid][pFishWeight] > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d fish.", PlayerInfo[giveplayerid][pFishes]);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d lbs of fish.", PlayerInfo[giveplayerid][pFishWeight]);
 	}
 	SendClientMessageEx(playerid, COLOR_WHITE, "** Misc **");
 	if(PlayerInfo[giveplayerid][pPhoneBook] > 0) SendClientMessageEx(playerid, COLOR_GREY, "Phone book.");

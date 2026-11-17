@@ -12404,12 +12404,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				case 8:
 				{
-					if(PlayerInfo[playerid][pFishSkill] >= 400)
+					if(PlayerInfo[playerid][pFishingSkill] >= 400)
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "Your skill level of this job is already the highest one.");
 						return 1;
 					}
-					PlayerInfo[playerid][pFishSkill] = 400;
+					PlayerInfo[playerid][pFishingSkill] = 400;
 					SendClientMessageEx(playerid, COLOR_YELLOW, "Your Fishing skill level has been set to 5.");
 				}
 				case 9:

@@ -570,10 +570,6 @@ task ProductionUpdate[300000]()
 			SendClientMessageEx(i, COLOR_LIGHTRED, "Weapons for new players are restricted for the first two hours of game play.");
 		}
 
-		/*if(PlayerInfo[i][pFishes] >= 5) {
-			if(FishCount[i] >= 3) PlayerInfo[i][pFishes] = 0;
-			else ++FishCount[i];
-		}*/
 		if(PlayerDrunk[i] > 0) { PlayerDrunk[i] = 0; PlayerDrunkTime[i] = 0; GameTextForPlayer(i, "~p~Drunk effect~n~~w~Gone", 3500, 1); }
 	}
 	if(AdvisorMessage == 3) {

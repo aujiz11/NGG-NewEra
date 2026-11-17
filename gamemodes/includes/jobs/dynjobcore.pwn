@@ -180,7 +180,7 @@ stock Job_CheckApplication(playerid, point)
 	return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot take another job. Use /quitjob to leave an existing job first."), 0;
 }
 
-stoc kJob_GetJob(playerid, i)
+stock Job_GetJob(playerid, i)
 {
 	if(!Job_CheckApplication(playerid, i)) return 1;
 	SetPVarInt(playerid, PVAR_JOB_OBTAINING, JobData[i][jType]);

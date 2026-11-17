@@ -9,12 +9,12 @@
 	| $$ \  $$|  $$$$$$/        | $$  | $$| $$
 	|__/  \__/ \______/         |__/  |__/|__/
 
-						Fishing System
+						Fishing Job System
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
-	* Copyright (c) 2016, Next Generation Gaming, LLC
+
+	* Copyright (c) 2014, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
 	*
@@ -35,169 +35,93 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-stock IsAtFishPlace(playerid)
+#include <YSI_Coding\y_hooks>
+
+enum eFishingCatch
 {
-	if(IsPlayerConnected(playerid))
+	fishName[16],
+	fishWeight
+}
+new const FishingCatches[][eFishingCatch] = {
+	{"nothing", 0},
+	{"bluegill", 5},
+	{"bass", 7},
+	{"cod", 14},
+	{"catfish", 17},
+	{"pike", 24},
+	{"zander", 30},
+	{"mackerel", 35},
+	{"molly", 40},
+	{"swordfish", 70},
+	{"tench", 71},
+	{"seabass", 80},
+	{"kraken", 200}
+};
+
+stock Fishing_CanAct(playerid)
+{
+	new PLAYER_STATE:playerState = GetPlayerState(playerid);
+	return !PlayerIsDead[playerid] && !GetPVarInt(playerid, "Injured") && !PlayerInfo[playerid][pHospital]
+		&& (playerState == PLAYER_STATE_ONFOOT || playerState == PLAYER_STATE_DRIVER || playerState == PLAYER_STATE_PASSENGER)
+		&& GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0
+		&& !GetPVarType(playerid, "WatchingTV") && !GetPVarType(playerid, "PreviewingTV")
+		&& !GetPVarType(playerid, "IsInArena") && !GetPVarType(playerid, "EventToken")
+		&& HungerPlayerInfo[playerid][hgInEvent] == 0;
+}
+
+stock Fishing_HasSaleCheckpoint(playerid)
+{
+	new Float:x, Float:y, Float:z, Float:radius;
+	return GetPlayerCheckpoint(playerid, x, y, z, radius) && x == 2161.0513 && y == -98.5897 && z == 2.7893 && radius == 10.0;
+}
+
+stock Fishing_ClearSaleCheckpoint(playerid)
+{
+	if(!GetPVarType(playerid, "pSellingFish")) return 1;
+	if(Fishing_HasSaleCheckpoint(playerid)) {
+		DisablePlayerCheckpoint(playerid);
+	}
+	DeletePVar(playerid, "pSellingFish");
+	return 1;
+}
+
+stock IncreaseFishingLevel(playerid)
+{
+	new gained = PlayerInfo[playerid][pDoubleEXP] > 0 ? 2 : 1;
+	if(PlayerInfo[playerid][pFishingSkill] > cellmax - gained) 
 	{
-		if(IsPlayerInRangeOfPoint(playerid,1.0,403.8266,-2088.7598,7.8359) || IsPlayerInRangeOfPoint(playerid,1.0,398.7553,-2088.7490,7.8359))
-		{//Fishplace at the bigwheel
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,1.0,396.2197,-2088.6692,7.8359) || IsPlayerInRangeOfPoint(playerid,1.0,391.1094,-2088.7976,7.8359))
-		{//Fishplace at the bigwheel
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,1.0,383.4157,-2088.7849,7.8359) || IsPlayerInRangeOfPoint(playerid,1.0,374.9598,-2088.7979,7.8359))
-		{//Fishplace at the bigwheel
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,1.0,369.8107,-2088.7927,7.8359) || IsPlayerInRangeOfPoint(playerid,1.0,367.3637,-2088.7925,7.8359))
-		{//Fishplace at the bigwheel
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid,1.0,362.2244,-2088.7981,7.8359) || IsPlayerInRangeOfPoint(playerid,1.0,354.5382,-2088.7979,7.8359))
-		{//Fishplace at the bigwheel
-			return 1;
-		}
+		gained = cellmax - PlayerInfo[playerid][pFishingSkill];
 	}
-	return 0;
-}
 
-stock FishCost(playerid, fish)
-{
-	if(IsPlayerConnected(playerid)) {
-		new cost = 0;
-		switch (fish)
-		{
-			case 1:
-			{
-				cost = 1;
-			}
-			case 2:
-			{
-				cost = 3;
-			}
-			case 3:
-			{
-				cost = 3;
-			}
-			case 5:
-			{
-				cost = 5;
-			}
-			case 6:
-			{
-				cost = 2;
-			}
-			case 8:
-			{
-				cost = 8;
-			}
-			case 9:
-			{
-				cost = 12;
-			}
-			case 11:
-			{
-				cost = 9;
-			}
-			case 12:
-			{
-				cost = 7;
-			}
-			case 14:
-			{
-				cost = 12;
-			}
-			case 15:
-			{
-				cost = 9;
-			}
-			case 16:
-			{
-				cost = 7;
-			}
-			case 17:
-			{
-				cost = 7;
-			}
-			case 18:
-			{
-				cost = 10;
-			}
-			case 19:
-			{
-				cost = 4;
-			}
-			case 21:
-			{
-				cost = 3;
-			}
-		}
-		return cost;
-	}
-	return 0;
-}
-
-stock ClearFishes(playerid)
-{
-	if(IsPlayerConnected(playerid)) {
-		Fishes[playerid][pFid1] = 0; Fishes[playerid][pFid2] = 0; Fishes[playerid][pFid3] = 0;
-		Fishes[playerid][pFid4] = 0; Fishes[playerid][pFid5] = 0;
-		Fishes[playerid][pWeight1] = 0; Fishes[playerid][pWeight2] = 0; Fishes[playerid][pWeight3] = 0;
-		Fishes[playerid][pWeight4] = 0; Fishes[playerid][pWeight5] = 0;
-
-		new string[MAX_PLAYER_NAME];
-		format(string, sizeof(string), "None");
-		strmid(Fishes[playerid][pFish1], string, 0, strlen(string), 255);
-		strmid(Fishes[playerid][pFish2], string, 0, strlen(string), 255);
-		strmid(Fishes[playerid][pFish3], string, 0, strlen(string), 255);
-		strmid(Fishes[playerid][pFish4], string, 0, strlen(string), 255);
-		strmid(Fishes[playerid][pFish5], string, 0, strlen(string), 255);
+	PlayerInfo[playerid][pFishingSkill] += gained;
+	if(PlayerInfo[playerid][pDoubleEXP] > 0 && gained > 0) 
+	{
+		SendClientMessageEx(playerid, COLOR_YELLOW, "You gained %d fishing skill points with Double EXP. You have %d hours left on the token.", gained, PlayerInfo[playerid][pDoubleEXP]);
 	}
 	return 1;
 }
 
-stock ClearFishID(playerid, fish)
+hook OnPlayerEnterCheckpoint(playerid)
 {
-	if(IsPlayerConnected(playerid))
+	if(!GetPVarType(playerid, "pSellingFish")) return 1;
+	if(!Fishing_HasSaleCheckpoint(playerid))
 	{
-		new string[MAX_PLAYER_NAME];
-		format(string, sizeof(string), "None");
-		switch (fish)
-		{
-			case 1:
-			{
-				strmid(Fishes[playerid][pFish1], string, 0, strlen(string), 255);
-				Fishes[playerid][pWeight1] = 0;
-				Fishes[playerid][pFid1] = 0;
-			}
-			case 2:
-			{
-				strmid(Fishes[playerid][pFish2], string, 0, strlen(string), 255);
-				Fishes[playerid][pWeight2] = 0;
-				Fishes[playerid][pFid2] = 0;
-			}
-			case 3:
-			{
-				strmid(Fishes[playerid][pFish3], string, 0, strlen(string), 255);
-				Fishes[playerid][pWeight3] = 0;
-				Fishes[playerid][pFid3] = 0;
-			}
-			case 4:
-			{
-				strmid(Fishes[playerid][pFish4], string, 0, strlen(string), 255);
-				Fishes[playerid][pWeight4] = 0;
-				Fishes[playerid][pFid4] = 0;
-			}
-			case 5:
-			{
-				strmid(Fishes[playerid][pFish5], string, 0, strlen(string), 255);
-				Fishes[playerid][pWeight5] = 0;
-				Fishes[playerid][pFid5] = 0;
-			}
-		}
+		DeletePVar(playerid, "pSellingFish");
+		return 1;
 	}
+	if(GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0 || !IsPlayerInRangeOfPoint(playerid, 10.0, 2161.0513, -98.5897, 2.7893)) 
+	{
+		return 1;
+	}
+
+	Fishing_ClearSaleCheckpoint(playerid);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have reached your destination. Type /sellfish [amount] to sell your fish.");
+	return ~1;
+}
+
+hook OnPlayerDeath(playerid, killerid, reason)
+{
+	Fishing_ClearSaleCheckpoint(playerid);
 	return 1;
 }
 
@@ -210,401 +134,95 @@ CMD:fishhelp(playerid, params[])
 
 CMD:ofishhelp(playerid, params[])
 {
-    SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-    SendClientMessageEx(playerid, COLOR_WHITE,"*** FISH HELP *** - type a command for more infomation.");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"*** FISHING *** /fish (Try to catch a fish)   /fishes (Show the fishes you have caught)");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"*** FISHING *** /throwback (Throw the last fish you caught back)   /throwbackall");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"*** FISHING *** /releasefish (Release one of your fishes)");
-    return 1;
-}
-
-
-CMD:sellfish(playerid, params[])
-{
-	if (!IsAt247(playerid))
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not in a 24-7!");
-		return 1;
-	}
-
-	new fishid;
-	if(sscanf(params, "d", fishid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellfish [fish]");
-
-	new price;
-	if(fishid < 1 || fishid > 5) return SendClientMessageEx(playerid, COLOR_GREY, "   Fish number cant be below 1 or above 5!");
-	if(fishid == 1 && Fishes[playerid][pWeight1] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "   You didnt even catch a Fish at that number(1)!"); return 1; }
-	if(fishid == 2 && Fishes[playerid][pWeight2] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "   You didnt even catch a Fish at that number(2)!"); return 1; }
-	if(fishid == 3 && Fishes[playerid][pWeight3] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "   You didnt even catch a Fish at that number(3)!"); return 1; }
-	if(fishid == 4 && Fishes[playerid][pWeight4] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "   You didnt even catch a Fish at that number(4)!"); return 1; }
-	if(fishid == 5 && Fishes[playerid][pWeight5] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "   You didnt even catch a Fish at that number(5)!"); return 1; }
-
-	switch (fishid)
-	{
-		case 1:
-		{
-			if(Fishes[playerid][pWeight1] < 20)
-			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "We are only interested in Fishes weighting 20 LBS or more.");
-				return 1;
-			}
-			price = FishCost(playerid, Fishes[playerid][pFid1]);
-			price = price * Fishes[playerid][pWeight1];
-			GameTextForPlayer(playerid, "~g~Fish~n~~r~Sold", 3000, 1);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish1],Fishes[playerid][pWeight1],price);
-			GivePlayerCash(playerid, price);
-			ClearFishID(playerid, 1);
-		}
-		case 2:
-		{
-			if(Fishes[playerid][pWeight2] < 20)
-			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "We are only interested in Fishes weighting 20 LBS or more.");
-				return 1;
-			}
-			price = FishCost(playerid, Fishes[playerid][pFid2]);
-			price = price * Fishes[playerid][pWeight2];
-			GameTextForPlayer(playerid, "~g~Fish~n~~r~Sold", 3000, 1);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish2],Fishes[playerid][pWeight2],price);
-			GivePlayerCash(playerid, price);
-			ClearFishID(playerid, 2);
-		}
-		case 3:
-		{
-			if(Fishes[playerid][pWeight3] < 20)
-			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "We are only interested in Fishes weighting 20 LBS or more.");
-				return 1;
-			}
-			price = FishCost(playerid, Fishes[playerid][pFid3]);
-			price = price * Fishes[playerid][pWeight3];
-			GameTextForPlayer(playerid, "~g~Fish~n~~r~Sold", 3000, 1);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish3],Fishes[playerid][pWeight3],price);
-			GivePlayerCash(playerid, price);
-			ClearFishID(playerid, 3);
-		}
-		case 4:
-		{
-			if(Fishes[playerid][pWeight4] < 20)
-			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "We are only interested in Fishes weighting 20 LBS or more.");
-				return 1;
-			}
-			price = FishCost(playerid, Fishes[playerid][pFid4]);
-			price = price * Fishes[playerid][pWeight4];
-			GameTextForPlayer(playerid, "~g~Fish~n~~r~Sold", 3000, 1);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish4],Fishes[playerid][pWeight4],price);
-			GivePlayerCash(playerid, price);
-			ClearFishID(playerid, 4);
-		}
-		case 5:
-		{
-			if(Fishes[playerid][pWeight5] < 20)
-			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "We are only interested in Fishes weighting 20 LBS or more.");
-				return 1;
-			}
-			price = FishCost(playerid, Fishes[playerid][pFid5]);
-			price = price * Fishes[playerid][pWeight5];
-			GameTextForPlayer(playerid, "~g~Fish~n~~r~Sold", 3000, 1);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish5],Fishes[playerid][pWeight5],price);
-			GivePlayerCash(playerid, price);
-			ClearFishID(playerid, 5);
-		}
-	}
-	Fishes[playerid][pLastFish] = 0;
-	Fishes[playerid][pFishID] = 0;
+	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
+	SendClientMessageEx(playerid, COLOR_WHITE, "FISH HELP: Fish from a boat in the normal world. Carry up to 1,000 lbs.");
+	SendClientMessageEx(playerid, COLOR_GRAD3, "/fish, /myfish, /sellfish");
 	return 1;
 }
-
-
-
 
 CMD:fish(playerid, params[])
 {
-	if(PlayerInfo[playerid][pFishes] > 5)
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You've caught enough fish for now - take a break.");
-		return 1;
-	}
-	if(Fishes[playerid][pWeight1] > 0 && Fishes[playerid][pWeight2] > 0 && Fishes[playerid][pWeight3] > 0 && Fishes[playerid][pWeight4] > 0 && Fishes[playerid][pWeight5] > 0)
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You can't carry more than five fish at a time - sell or release them first.");
-		return 1;
-	}
-
-	new Veh = GetPlayerVehicleID(playerid);
-	if((IsAtFishPlace(playerid)) || IsABoat(Veh))
-	{
-		new Caught;
-		new rand;
-		new fstring[MAX_PLAYER_NAME];
-		new Level = PlayerInfo[playerid][pFishSkill];
-		if(Level >= 0 && Level <= 50) { Caught = random(20)-7; }
-		else if(Level >= 51 && Level <= 100) { Caught = random(50)-20; }
-		else if(Level >= 101 && Level <= 200) { Caught = random(100)-50; }
-		else if(Level >= 201 && Level <= 400) { Caught = random(160)-60; }
-		else if(Level >= 401) { Caught = random(180)-70; }
-		rand = random(sizeof(FishNames));
-		if(Caught <= 0)
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "The line snapped.");
-			return 1;
-		}
-		else if(rand == 0)
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You caught a jacket and threw it away.");
-			return 1;
-		}
-		else if(rand == 4)
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You caught a pair of trousers and threw it away.");
-			return 1;
-		}
-		else if(rand == 7)
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You caught a can and threw it away.");
-			return 1;
-		}
-		else if(rand == 10)
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You caught a pair of shoes and threw it away.");
-			return 1;
-		}
-		else if(rand == 13)
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You caught some garbage and threw it away.");
-			return 1;
-		}
-		else if(rand == 20)
-		{
-			new mrand = random(500);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You caught a bag filled with money ($%d).", mrand);
-			GivePlayerCash(playerid, mrand);
-			return 1;
-		}
-		if(Fishes[playerid][pWeight1] == 0)
-		{
-			PlayerInfo[playerid][pFishes] += 1;
-
-  			if(PlayerInfo[playerid][pDoubleEXP] > 0)
-			{
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 fisher skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-   				PlayerInfo[playerid][pFishSkill] += 2;
-			}
-			else
-			{
-  				PlayerInfo[playerid][pFishSkill] += 1;
-			}
-
-			format(fstring, sizeof(fstring), "%s", FishNames[rand]);
-			strmid(Fishes[playerid][pFish1], fstring, 0, strlen(fstring), 255);
-			Fishes[playerid][pWeight1] = Caught;
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have caught a %s, weighing %d pounds.", Fishes[playerid][pFish1], Caught);
-			Fishes[playerid][pLastWeight] = Caught;
-			Fishes[playerid][pLastFish] = 1;
-			Fishes[playerid][pFid1] = rand;
-			Fishes[playerid][pFishID] = rand;
-			if(Caught > PlayerInfo[playerid][pBiggestFish])
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your old record of %d pounds has been passed, your new record is %d pounds.", PlayerInfo[playerid][pBiggestFish], Caught);
-				PlayerInfo[playerid][pBiggestFish] = Caught;
-			}
-		}
-		else if(Fishes[playerid][pWeight2] == 0)
-		{
-			PlayerInfo[playerid][pFishes] += 1;
-
-  			if(PlayerInfo[playerid][pDoubleEXP] > 0)
-			{
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 fisher skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-   				PlayerInfo[playerid][pFishSkill] += 2;
-			}
-			else
-			{
-  				PlayerInfo[playerid][pFishSkill] += 1;
-			}
-
-			format(fstring, sizeof(fstring), "%s", FishNames[rand]);
-			strmid(Fishes[playerid][pFish2], fstring, 0, strlen(fstring), 255);
-			Fishes[playerid][pWeight2] = Caught;
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have caught a %s, weighing %d pounds.", Fishes[playerid][pFish2], Caught);
-			Fishes[playerid][pLastWeight] = Caught;
-			Fishes[playerid][pLastFish] = 2;
-			Fishes[playerid][pFid2] = rand;
-			Fishes[playerid][pFishID] = rand;
-			if(Caught > PlayerInfo[playerid][pBiggestFish])
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your old record of %d pounds has been passed, your new record is %d pounds.", PlayerInfo[playerid][pBiggestFish], Caught);
-				PlayerInfo[playerid][pBiggestFish] = Caught;
-			}
-		}
-		else if(Fishes[playerid][pWeight3] == 0)
-		{
-			PlayerInfo[playerid][pFishes] += 1;
-
-  			if(PlayerInfo[playerid][pDoubleEXP] > 0)
-			{
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 fisher skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-   				PlayerInfo[playerid][pFishSkill] += 2;
-			}
-			else
-			{
-  				PlayerInfo[playerid][pFishSkill] += 1;
-			}
-
-			format(fstring, sizeof(fstring), "%s", FishNames[rand]);
-			strmid(Fishes[playerid][pFish3], fstring, 0, strlen(fstring), 255);
-			Fishes[playerid][pWeight3] = Caught;
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have caught a %s, weighing %d pounds.", Fishes[playerid][pFish3], Caught);
-			Fishes[playerid][pLastWeight] = Caught;
-			Fishes[playerid][pLastFish] = 3;
-			Fishes[playerid][pFid3] = rand;
-			Fishes[playerid][pFishID] = rand;
-			if(Caught > PlayerInfo[playerid][pBiggestFish])
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your old record of %d pounds has been passed, your new record is %d pounds.", PlayerInfo[playerid][pBiggestFish], Caught);
-				PlayerInfo[playerid][pBiggestFish] = Caught;
-			}
-		}
-		else if(Fishes[playerid][pWeight4] == 0)
-		{
-			PlayerInfo[playerid][pFishes] += 1;
-
-  			if(PlayerInfo[playerid][pDoubleEXP] > 0)
-			{
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 fisher skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-   				PlayerInfo[playerid][pFishSkill] += 2;
-			}
-			else
-			{
-  				PlayerInfo[playerid][pFishSkill] += 1;
-			}
-
-			format(fstring, sizeof(fstring), "%s", FishNames[rand]);
-			strmid(Fishes[playerid][pFish4], fstring, 0, strlen(fstring), 255);
-			Fishes[playerid][pWeight4] = Caught;
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have caught a %s, weighing %d pounds.", Fishes[playerid][pFish4], Caught);
-			Fishes[playerid][pLastWeight] = Caught;
-			Fishes[playerid][pLastFish] = 4;
-			Fishes[playerid][pFid4] = rand;
-			Fishes[playerid][pFishID] = rand;
-			if(Caught > PlayerInfo[playerid][pBiggestFish])
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your old record of %d pounds has been passed, your new record is %d pounds.", PlayerInfo[playerid][pBiggestFish], Caught);
-				PlayerInfo[playerid][pBiggestFish] = Caught;
-			}
-		}
-		else if(Fishes[playerid][pWeight5] == 0)
-		{
-			PlayerInfo[playerid][pFishes] += 1;
-
-  			if(PlayerInfo[playerid][pDoubleEXP] > 0)
-			{
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 fisher skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-   				PlayerInfo[playerid][pFishSkill] += 2;
-			}
-			else
-			{
-  				PlayerInfo[playerid][pFishSkill] += 1;
-			}
-
-			format(fstring, sizeof(fstring), "%s", FishNames[rand]);
-			strmid(Fishes[playerid][pFish5], fstring, 0, strlen(fstring), 255);
-			Fishes[playerid][pWeight5] = Caught;
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have caught a %s, weighing %d pounds.", Fishes[playerid][pFish5], Caught);
-			Fishes[playerid][pLastWeight] = Caught;
-			Fishes[playerid][pLastFish] = 5;
-			Fishes[playerid][pFid5] = rand;
-			Fishes[playerid][pFishID] = rand;
-			if(Caught > PlayerInfo[playerid][pBiggestFish])
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your old record of %d pounds has been passed, your new record is %d pounds.", PlayerInfo[playerid][pBiggestFish], Caught);
-				PlayerInfo[playerid][pBiggestFish] = Caught;
-			}
-		}
-		else
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You don't have any space for your fish.");
-			return 1;
-		}
-		if(PlayerInfo[playerid][pFishSkill] == 50) SendClientMessageEx(playerid, COLOR_YELLOW, "* Your Fishing Skill is now Level 2, you can now catch larger fish.");
-		else if(PlayerInfo[playerid][pFishSkill] == 100) SendClientMessageEx(playerid, COLOR_YELLOW, "* Your Fishing Skill is now Level 3, you can now catch larger fish.");
-		else if(PlayerInfo[playerid][pFishSkill] == 200) SendClientMessageEx(playerid, COLOR_YELLOW, "* Your Fishing Skill is now Level 4, you can now catch larger fish.");
-		else if(PlayerInfo[playerid][pFishSkill] == 400) SendClientMessageEx(playerid, COLOR_YELLOW, "* Your Fishing Skill is now Level 5, you can now catch larger fish.");
-		if(PlayerInfo[playerid][pFishSkill] == 400) PlayerInfo[playerid][pFishSkill] = 400;
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not at the Santa Maria Pier, or on a fishing boat.");
-		return 1;
-	}
+	if(!Fishing_CanAct(playerid)) 
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot fish right now. You must be outside in the normal world.");
+	
+	if(!IsABoat(GetPlayerVehicleID(playerid))) 
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in a boat!");
+	
+	new weight = PlayerInfo[playerid][pFishWeight], skill = PlayerInfo[playerid][pFishingSkill];
+	if(weight < 0 || skill < 0) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "Your fishing data is invalid. Please contact an administrator.");
+	
+	if(weight >= 1000) 
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "You have reached your maximum weight. Type /sellfish to profit.");
+	
+	new now = gettime(), remaining = GetPVarInt(playerid, "pFishTime") - now;
+	if(remaining > 0) 
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Wait %d seconds before casting again.", remaining);
+	
+	new outcomes = skill < 50 ? 3 : (skill < 100 ? 5 : (skill < 200 ? 9 : (skill < 400 ? 12 : sizeof(FishingCatches))));
+	new caught = random(outcomes), message[128];
+	
+	SetPVarInt(playerid, "pFishTime", now + 10);
+	IncreaseFishingLevel(playerid);
+	format(message, sizeof(message), "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+	SetPlayerChatBubble(playerid, message, COLOR_PURPLE, 30.0, 4000);
+	SendClientMessageEx(playerid, COLOR_PURPLE, "%s", message);
+	if(caught == 0) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught nothing!");
+	if(FishingCatches[caught][fishWeight] > 1000 - weight)
+		return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "The %s was too heavy for your remaining capacity and was released.", FishingCatches[caught][fishName]);
+	PlayerInfo[playerid][pFishWeight] += FishingCatches[caught][fishWeight];
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a %s!", FishingCatches[caught][fishName]);
 	return 1;
 }
 
-
-
-CMD:fishes(playerid, params[])
+CMD:myfish(playerid, params[])
 {
-
-	SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Fishes __________________|");
-	SendClientMessageEx(playerid, COLOR_GREY, "** (1) Fish: %s.   Weight: %d.", Fishes[playerid][pFish1], Fishes[playerid][pWeight1]);
-	SendClientMessageEx(playerid, COLOR_GREY, "** (2) Fish: %s.   Weight: %d.", Fishes[playerid][pFish2], Fishes[playerid][pWeight2]);
-	SendClientMessageEx(playerid, COLOR_GREY, "** (3) Fish: %s.   Weight: %d.", Fishes[playerid][pFish3], Fishes[playerid][pWeight3]);
-	SendClientMessageEx(playerid, COLOR_GREY, "** (4) Fish: %s.   Weight: %d.", Fishes[playerid][pFish4], Fishes[playerid][pWeight4]);
-	SendClientMessageEx(playerid, COLOR_GREY, "** (5) Fish: %s.   Weight: %d.", Fishes[playerid][pFish5], Fishes[playerid][pWeight5]);
-	SendClientMessageEx(playerid, COLOR_WHITE, "|____________________________________________|");
-	return 1;
+	return SendClientMessageEx(playerid, COLOR_YELLOW, "Fish: %d lbs.", PlayerInfo[playerid][pFishWeight]);
 }
 
-
-CMD:releasefish(playerid, params[])
+CMD:sellfish(playerid, params[])
 {
-	new fishid;
-	if(sscanf(params, "d", fishid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /releasefish [fish 1-5]");
-
-	if(fishid < 1 || fishid > 5) { SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /releasefish [fish 1-5]"); return 1; }
-	else if(fishid == 1 && Fishes[playerid][pWeight1] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "That slot is empty."); return 1; }
-	else if(fishid == 2 && Fishes[playerid][pWeight2] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "That slot is empty."); return 1; }
-	else if(fishid == 3 && Fishes[playerid][pWeight3] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "That slot is empty."); return 1; }
-	else if(fishid == 4 && Fishes[playerid][pWeight4] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "That slot is empty."); return 1; }
-	else if(fishid == 5 && Fishes[playerid][pWeight5] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "That slot is empty."); return 1; }
-	ClearFishID(playerid, fishid);
-	Fishes[playerid][pLastFish] = 0;
-	Fishes[playerid][pFishID] = 0;
-	SendClientMessageEx(playerid, COLOR_GREY, "You released a fish");
-	return 1;
-}
-
-CMD:throwback(playerid, params[])
-{
-	if(Fishes[playerid][pLastFish] > 0)
+	if(!Fishing_CanAct(playerid)) 
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot sell fish right now. You must be outside in the normal world.");
+	
+	new now = gettime(), remaining = GetPVarInt(playerid, "pFishSellTime") - now;
+	if(remaining > 0) 
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Wait %d seconds before selling your fish again.", remaining);
+	
+	if(PlayerInfo[playerid][pFishWeight] < 50) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You must have at least 50 lbs of fish to sell.");
+	
+	if(!IsPlayerInRangeOfPoint(playerid, 30.0, 2161.0513, -98.5897, 2.7893))
 	{
-		ClearFishID(playerid, Fishes[playerid][pLastFish]);
-		Fishes[playerid][pLastFish] = 0;
-		Fishes[playerid][pFishID] = 0;
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have thrown back your last fish.");
+		if(GetPVarType(playerid, "pSellingFish") && Fishing_HasSaleCheckpoint(playerid))
+			return SendClientMessageEx(playerid, COLOR_YELLOW, "Follow your existing checkpoint to sell your fish.");
+		
+		Fishing_ClearSaleCheckpoint(playerid);
+		if(CheckPointCheck(playerid) || IsPlayerCheckpointActive(playerid))
+			return SendClientMessageEx(playerid, COLOR_GREY, "Finish or cancel your current checkpoint before locating the fish market.");
+		
+		SetPVarInt(playerid, "pSellingFish", 1);
+		SetPlayerCheckpoint(playerid, 2161.0513, -98.5897, 2.7893, 10.0);
+		GameTextForPlayer(playerid, "~g~CHECKPOINT ~r~SET", 5000, 4);
+		return SendClientMessageEx(playerid, COLOR_YELLOW, "Make your way to the checkpoint to sell your fish.");
 	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You haven't even caught a fish yet.");
-		return 1;
-	}
-	return 1;
-}
-
-CMD:throwbackall(playerid, params[])
-{
-	if(Fishes[playerid][pWeight1] > 0 || Fishes[playerid][pWeight2] > 0 || Fishes[playerid][pWeight3] > 0 || Fishes[playerid][pWeight4] > 0 || Fishes[playerid][pWeight5] > 0)
-	{
-		ClearFishes(playerid);
-		Fishes[playerid][pLastFish] = 0;
-		Fishes[playerid][pFishID] = 0;
-		SendClientMessageEx(playerid, COLOR_GREY, "You have thrown back all your fish");
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You haven't even caught a fish yet.");
-		return 1;
-	}
+	
+	new amount;
+	if(sscanf(params, "d", amount)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellfish [amount]");
+	
+	if(amount < 50) return SendClientMessageEx(playerid, COLOR_GREY, "Sell at least 50 lbs of fish at a time.");
+	if(amount > PlayerInfo[playerid][pFishWeight]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have that many pounds!");
+	
+	new bonus = Random(100, 200);
+	if(amount > (cellmax - bonus) / 40) return SendClientMessageEx(playerid, COLOR_GREY, "That sale is too large. Sell fewer fish at a time.");
+	
+	new payment = amount * 40 + bonus;
+	if(GetPlayerCash(playerid) > cellmax - payment) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot carry this fish sale payment.");
+	PlayerInfo[playerid][pFishWeight] -= amount;
+	GivePlayerCash(playerid, payment);
+	SetPVarInt(playerid, "pFishSellTime", now + 120);
+	Fishing_ClearSaleCheckpoint(playerid);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "You have sold %d lbs for $%s.", amount, number_format(payment));
 	return 1;
 }

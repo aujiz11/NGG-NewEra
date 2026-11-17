@@ -1122,7 +1122,6 @@ new EventRCPT[20]; // RCP Type
 new PaintBallArena[MAX_ARENAS][PaintBallArenaEnum];
 new TurfWars[MAX_TURFS][TurfWarsEnum];
 new Points[MAX_POINTS][fPoint];
-new Fishes[MAX_PLAYERS][pFishing];
 new News[hNews];
 new PlayerInfo[MAX_PLAYERS][pInfo];
 new PlayerVehicleInfo[MAX_PLAYERS][MAX_PLAYERVEHICLES][pvInfo];
