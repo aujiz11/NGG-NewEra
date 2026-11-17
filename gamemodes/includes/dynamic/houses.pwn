@@ -934,7 +934,7 @@ CMD:hedit(playerid, params[])
 	}
 
 	new string[128], choice[32], houseid, amount;
-	if(sscanf(params, "s[32]dD", choice, houseid, amount))
+	if(sscanf(params, "s[32]dD(0)", choice, houseid, amount))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hedit [name] [houseid] [(Optional)amount]");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Exterior, Interior, VW, CustomInterior, CustomExterior, Class (1-3), Level, Price, Delete, Ignore");
@@ -1106,7 +1106,7 @@ CMD:hedit(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the houses price to $%d.", amount);
 		ReloadHouseText(houseid);
 
-		format(string, sizeof(string), "%s has edited HouseID %d's Price to $%d.", GetPlayerNameEx(playerid), amount);
+		format(string, sizeof(string), "%s has edited HouseID %d's Price to $%d.", GetPlayerNameEx(playerid), houseid, amount);
 		Log("logs/hedit.log", string);
 	}
 	else if(strcmp(choice, "class", true) == 0)
@@ -1147,7 +1147,7 @@ CMD:shophouse(playerid, params[])
 	if(PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 
 	new string[128], choice[32], houseid, amount, invoice[64];
-	if(sscanf(params, "s[32]dDs[64]", choice, houseid, amount, invoice))
+	if(sscanf(params, "s[32]dD(0)s[64]", choice, houseid, amount, invoice))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shophouse [name] [houseid] [amount] [invoice #]");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Exterior, Interior, CustomInterior, Class (1-3), Level, Price");
