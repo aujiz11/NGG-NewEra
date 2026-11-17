@@ -2174,12 +2174,7 @@ CMD:cancel(playerid, params[])
 	}
 	else if(strcmp(choice,"garbage",true) == 0)
 	{
-		new vehicleid = GetPlayerVehicleID(playerid);
-		if(vehicleid == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You need to be in a valid vehicle.");
- 		DeletePVar(playerid, "pGarbageRun");
-		DeletePVar(playerid, "pGarbageStage");
-
- 		DisablePlayerCheckpoint(playerid);
+		Garbage_CancelRun(playerid);
 	}
 	else if(strcmp(choice,"help", true) == 0)
 	{

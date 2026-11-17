@@ -84,7 +84,7 @@
 #include <open.mp>
 
 /*  ---------------- SCRIPT REVISION ----------------- */
-#define SERVER_GM_TEXT "NG:RP v4.0.42"
+#define SERVER_GM_TEXT "NG:RP v4.0.43"
 
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
@@ -301,7 +301,7 @@
 #include "./includes/jobs/craftsman.pwn"
 #include "./includes/jobs/detective.pwn"
 #include "./includes/jobs/drugs.pwn"
-#include "./includes/garbagesystem.pwn"
+#include "./includes/jobs/garbagesystem.pwn"
 #include "./includes/jobs/fishing.pwn"
 #include "./includes/jobs/jobcore.pwn"
 #include "./includes/jobs/dynjobcore.pwn"

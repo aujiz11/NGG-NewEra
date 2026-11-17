@@ -528,6 +528,7 @@ CMD:quitjob(playerid, params[])
 			}
 			case 20: CancelTruckDelivery(playerid);
 			case 21: Pizza_StopDelivery(playerid);
+			case 27: Garbage_CancelRun(playerid);
 		}
 	}
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have left %s in job slot %d.", GetJobName(job), slot);

@@ -50,6 +50,7 @@ public OnVehicleSpawn(vehicleid) {
 	foreach(new i: Player)
 	{
 		Mechanic_ClearVehicleWork(i, vehicleid);
+		Garbage_ClearVehicleWork(i, vehicleid);
 		if((v = GetPlayerVehicle(i, vehicleid)) != -1) {
 			DestroyVehicle(vehicleid);
 
@@ -2622,6 +2623,7 @@ public OnVehicleDeath(vehicleid) {
 	foreach(new i: Player)
 	{
 		Mechanic_ClearVehicleWork(i, vehicleid);
+		Garbage_ClearVehicleWork(i, vehicleid);
 		if(GetPVarInt(i, "rccam") && GetPVarInt(i, "rcveh") == vehicleid) {
 			Craftsman_StopRCCam(i, !PlayerIsDead[i]);
 		}	
