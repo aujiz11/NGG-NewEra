@@ -1496,7 +1496,7 @@ public OnPlayerConnect(playerid)
 	PlayerSniperShots[playerid] = 0;
 	PlayerKills[playerid] = 0;
 	Bodyguard_ClearOffer(playerid);
-	
+
 	// These need to be reset to prevent some bugs (DO NOT REMOVE)
 	PlayerInfo[playerid][pModel] = 0;
 	PlayerInfo[playerid][pLeader] = INVALID_GROUP_ID;
@@ -1607,6 +1607,7 @@ public OnPlayerDisconnect(playerid, reason)
 		Boxing_End(INVALID_PLAYER_ID, playerid);
 	}
 	
+	Pizza_StopDelivery(playerid);
 	Lawyer_StopDuty(playerid);
 	CancelTruckDelivery(playerid, true, false);
 	Mechanic_CancelFix(playerid, false);
@@ -3330,25 +3331,9 @@ public OnPlayerEnterCheckpoint(playerid)
 
 		return 1;
 	}
-	// Pizza Delivery
-	if(GetPVarType(playerid, "Pizza") > 0 && GetPVarInt(playerid, "pizzaTimer") > 0 && IsPlayerInRangeOfPoint(playerid, 5.0, HouseInfo[GetPVarInt(playerid, "Pizza")][hExteriorX], HouseInfo[GetPVarInt(playerid, "Pizza")][hExteriorY], HouseInfo[GetPVarInt(playerid, "Pizza")][hExteriorZ]) && GetPlayerInterior(playerid) == HouseInfo[GetPVarInt(playerid, "Pizza")][hExtIW] && GetPlayerVirtualWorld(playerid) == HouseInfo[GetPVarInt(playerid, "Pizza")][hExtVW])
+	if(GetPVarType(playerid, "Pizza")) 
 	{
-	    new string[128];
-		if (GetPVarInt(playerid, "tpPizzaTimer") != 0)
-		{
-			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport pizzarunning.", GetPlayerNameEx(playerid), playerid);
-  			ABroadCast( COLOR_YELLOW, string, 2 );
-    		// format(string, sizeof(string), "%s (ID %d) is possibly teleport pizzarunning.", GetPlayerNameEx(playerid), playerid);
-	    	// Log("logs/hack.log", string);
-		}
-		format(string, sizeof(string), "You have delivered the pizza to the destination! You have made $%d.", (GetPVarInt(playerid, "pizzaTimer") * 70));
-		Misc_Save();
-		GivePlayerCash(playerid, floatround((GetPVarInt(playerid, "pizzaTimer") * 70), floatround_round));
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		DeletePVar(playerid, "Pizza");
-		DeletePVar(playerid, "pizzaTimer");
-		DisablePlayerCheckpoint(playerid);
-
+		return Pizza_Update(playerid, true);
 	}
 	if(GetPVarInt(playerid, "Finding")>=1)
 	{

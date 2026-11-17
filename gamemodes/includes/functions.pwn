@@ -689,40 +689,6 @@ public OtherTimerEx(playerid, type)
 				SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_HEALTIMER);
 			}
 		}
-		case TYPE_TPPIZZARUNTIMER:
-		{
-			if(GetPVarInt(playerid, "tpPizzaTimer") > 0 && GetPVarInt(playerid, "Pizza"))
-			{
-				SetPVarInt(playerid, "tpPizzaTimer", GetPVarInt(playerid, "tpPizzaTimer")-1);
-				SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPPIZZARUNTIMER);
-			}
-		}
-		case TYPE_PIZZATIMER:
-		{
-			if(GetPVarType(playerid, "pizzaTimer") && GetPVarInt(playerid, "pizzaTimer") == 0)
-			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "You failed to deliver the pizza to the house before it got cold!");
-				DeletePVar(playerid, "Pizza");
-				DeletePVar(playerid, "pizzaTimer");
-				DisablePlayerCheckpoint(playerid);
-			}
-			else if (GetPVarInt(playerid, "Pizza") == 0)
-			{
-				DeletePVar(playerid, "Pizza");
-				DeletePVar(playerid, "pizzaTimer");
-				DisablePlayerCheckpoint(playerid);
-			}
-			else if(GetPVarInt(playerid, "pizzaTimer") > 0 && GetPVarInt(playerid, "Pizza") > 0) {
-
-				new houseid = GetPVarInt(playerid, "Pizza");
-				SetPlayerCheckpoint(playerid, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], 5); // Temporary fix.
-				SetPVarInt(playerid, "pizzaTimer", GetPVarInt(playerid, "pizzaTimer")-1);
-				new string[128];
-				format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", GetPVarInt(playerid, "pizzaTimer"));
-				GameTextForPlayer(playerid, string, 1100, 3);
-				SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_PIZZATIMER);
-			}
-		}
 		case TYPE_CRATETIMER:
 		{
 			if(GetPVarInt(playerid, "tpForkliftTimer") > 0)

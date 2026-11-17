@@ -2078,6 +2078,7 @@ ptask PlayerUpdate[1000](i) {
 
 	if(gPlayerLogged{i})
 	{
+		Pizza_Update(i);
 		if(IsSpawned[i] == 0 && PlayerInfo[i][pAdmin] < 1337)
 		{
 			SpawnKick[i]++;

@@ -34,130 +34,155 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-CMD:getpizza(playerid, params[]) {
-	if(PlayerInfo[playerid][pJob] != 21 && PlayerInfo[playerid][pJob2] != 21 && PlayerInfo[playerid][pJob3] != 21) {
-		SendClientMessageEx(playerid,COLOR_GREY,"   You are not a Pizza Boy!");
-	}
-    else if(!IsAPizzaCar(GetPlayerVehicleID(playerid))) {
-	    SendClientMessageEx(playerid,COLOR_GREY,"   You need to be driving a pizzaboy found at the side of the Pizza Stack!");
-	}
-	else if(GetPlayerSkin(playerid) != 155) {
-	    SendClientMessageEx(playerid,COLOR_GREY,"   You need to be in the Pizza Stack uniform!");
-	}
-	else if(GetPVarType(playerid, "Pizza")) {
-		SendClientMessageEx(playerid, COLOR_GREY, "   You are already delivering pizzas!");
-	}
-	else if(!IsPlayerInRangeOfPoint(playerid, 5.0, 2103.6714,-1785.5222,12.9849)) {
-		SendClientMessageEx(playerid,COLOR_GREY,"   You are not at the Pizza Stack pickup!");
-	}
-	else if(gettime() < GetPVarInt(playerid, "PizzaCoolDown")) {
-		new str[53];
-		format(str, sizeof(str), "Please wait %d seconds before getting another pizza!", GetPVarInt(playerid, "PizzaCoolDown")-gettime());
-		SendClientMessageEx(playerid,COLOR_GREY, str);
-	}
-	else {
 
-		new rand = random(MAX_HOUSES - 1), i;
-		while(!(HouseInfo[rand][hOwned] && HouseInfo[rand][hExteriorZ] <= 100 && HouseInfo[rand][hExteriorX] > 516.5287 && HouseInfo[rand][hExteriorX] < 2881.0891 && HouseInfo[rand][hExteriorY] < -909.6716 && HouseInfo[rand][hExteriorY] > -1785.5222 && HouseInfo[rand][hExtIW] == PlayerInfo[playerid][pVW] && HouseInfo[rand][hExtVW] == PlayerInfo[playerid][pInt])) {
-			if(++rand >= MAX_HOUSES) {
-				rand = 0;
-			}
-			if (i++ > MAX_HOUSES) return 1;
-		}
+enum ePizzaDelivery
+{
+	Float:pizzaX,
+	Float:pizzaY,
+	Float:pizzaZ,
+	pizzaDeadline,
+	pizzaEarliest
+}
+new PizzaDelivery[MAX_PLAYERS][ePizzaDelivery];
 
-		new
-			iDist = floatround(GetPlayerDistanceFromPoint(playerid, HouseInfo[rand][hExteriorX], HouseInfo[rand][hExteriorY], HouseInfo[rand][hExteriorZ])),
-			szMessage[86];
+Pizza_HasCheckpoint(playerid)
+{
+	new Float:x, Float:y, Float:z, Float:radius;
+	return gPlayerCheckpointStatus[playerid] == CHECKPOINT_PIZZA && GetPlayerCheckpoint(playerid, x, y, z, radius)
+		&& x == PizzaDelivery[playerid][pizzaX] && y == PizzaDelivery[playerid][pizzaY]
+		&& z == PizzaDelivery[playerid][pizzaZ] && radius == 5.0;
+}
 
-		SetPVarInt(playerid, "tpPizzaTimer", iDist / 80);
-		SetPVarInt(playerid, "pizzaTotal", iDist / 10);
-		SetPVarInt(playerid, "pizzaTimer", iDist / 10);
-		SetPVarInt(playerid, "Pizza", rand);
-		SetPVarInt(playerid, "PizzaCoolDown", gettime()+60);
-
-		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPPIZZARUNTIMER);
-		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_PIZZATIMER);
-
-		format(szMessage, sizeof(szMessage), "You have picked up a pizza for %s. You have %d seconds to deliver it!", StripUnderscore(HouseInfo[rand][hOwnerName]), iDist / 10);
-		SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-
-		SetPlayerCheckpoint(playerid, HouseInfo[rand][hExteriorX], HouseInfo[rand][hExteriorY], HouseInfo[rand][hExteriorZ], 5);
-	}
+Pizza_StopDelivery(playerid)
+{
+	if(!GetPVarType(playerid, "Pizza")) return 1;
+	if(Pizza_HasCheckpoint(playerid)) DisablePlayerCheckpoint(playerid);
+	if(gPlayerCheckpointStatus[playerid] == CHECKPOINT_PIZZA) gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+	DeletePVar(playerid, "Pizza");
+	PizzaDelivery[playerid][pizzaDeadline] = 0;
+	PizzaDelivery[playerid][pizzaEarliest] = 0;
 	return 1;
 }
-*/
 
-CMD:getpizza(playerid, params[]) {
-	if(PlayerInfo[playerid][pJob] != 21 && PlayerInfo[playerid][pJob2] != 21 && PlayerInfo[playerid][pJob3] != 21) {
-		SendClientMessageEx(playerid,COLOR_GREY,"You are not a Pizza Boy!");
+Pizza_CanWork(playerid)
+{
+	return gPlayerLogged{playerid} && !PlayerIsDead[playerid] && !GetPVarInt(playerid, "Injured") && !PlayerInfo[playerid][pHospital]
+		&& (PlayerInfo[playerid][pJob] == 21 || PlayerInfo[playerid][pJob2] == 21 || PlayerInfo[playerid][pJob3] == 21)
+		&& GetPlayerSkin(playerid) == 155 && GetPlayerState(playerid) != PLAYER_STATE_SPECTATING
+		&& GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0
+		&& !GetPVarType(playerid, "WatchingTV") && !GetPVarType(playerid, "PreviewingTV")
+		&& !GetPVarType(playerid, "IsInArena") && !GetPVarType(playerid, "EventToken")
+		&& HungerPlayerInfo[playerid][hgInEvent] == 0 && !PlayerBoxing[playerid] && !GetPVarInt(playerid, "_BoxingFight");
+}
+
+Pizza_Update(playerid, bool:deliver = false)
+{
+	if(!GetPVarType(playerid, "Pizza")) return 1;
+	new houseid = GetPVarInt(playerid, "Pizza");
+	if(!(0 <= houseid < MAX_HOUSES) || !Pizza_CanWork(playerid) || !Pizza_HasCheckpoint(playerid))
+	{
+		Pizza_StopDelivery(playerid);
+		return SendClientMessageEx(playerid, COLOR_GREY, "Your pizza delivery has been cancelled.");
 	}
-    else if(!IsAPizzaCar(GetPlayerVehicleID(playerid))) {
-	    SendClientMessageEx(playerid,COLOR_GREY,"You need to be driving a pizzaboy found at the side of the Pizza Stack!");
+	if(!HouseInfo[houseid][hOwned] || HouseInfo[houseid][hExtIW] != 0 || HouseInfo[houseid][hExtVW] != 0
+		|| HouseInfo[houseid][hExteriorX] != PizzaDelivery[playerid][pizzaX]
+		|| HouseInfo[houseid][hExteriorY] != PizzaDelivery[playerid][pizzaY]
+		|| HouseInfo[houseid][hExteriorZ] != PizzaDelivery[playerid][pizzaZ])
+	{
+		Pizza_StopDelivery(playerid);
+		return SendClientMessageEx(playerid, COLOR_GREY, "The pizza delivery destination is no longer available.");
 	}
-	else if(GetPlayerSkin(playerid) != 155) {
-	    SendClientMessageEx(playerid,COLOR_GREY,"You need to be in the Pizza Stack uniform!");
+	new now = gettime(), remaining = PizzaDelivery[playerid][pizzaDeadline] - now;
+	if(remaining <= 0)
+	{
+		Pizza_StopDelivery(playerid);
+		return SendClientMessageEx(playerid, COLOR_WHITE, "You failed to deliver the pizza to the house before it got cold!");
 	}
-	else if(GetPVarType(playerid, "Pizza")) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You are already delivering pizzas!");
+	if(!deliver)
+	{
+		new message[96];
+		format(message, sizeof(message), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", remaining);
+		GameTextForPlayer(playerid, message, 1100, 3);
+		return 1;
 	}
-	else if (!IsPlayerInRangeOfPoint(playerid, 5.0, -1713.961425, 1348.545166, 7.180452) && !IsPlayerInRangeOfPoint(playerid, 5.0, 2103.6714,-1785.5222,12.9849)) { // Sort this out
-		SendClientMessageEx(playerid,COLOR_GREY,"You are not at a Pizza Stack pickup!");
+	if(!IsPlayerInRangeOfPoint(playerid, 5.0, PizzaDelivery[playerid][pizzaX], PizzaDelivery[playerid][pizzaY], PizzaDelivery[playerid][pizzaZ])) return 1;
+	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT
+		&& (GetPlayerState(playerid) != PLAYER_STATE_DRIVER || !IsAPizzaCar(GetPlayerVehicleID(playerid))))
+		return SendClientMessageEx(playerid, COLOR_GREY, "Deliver the pizza on foot or while driving a Pizzaboy.");
+	if(remaining > cellmax / 70 || GetPlayerCash(playerid) > cellmax - remaining * 70)
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot carry the pizza delivery payment.");
+
+	if(now < PizzaDelivery[playerid][pizzaEarliest])
+	{
+		new message[128];
+		format(message, sizeof(message), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport pizzarunning.", GetPlayerNameEx(playerid), playerid);
+		ABroadCast(COLOR_YELLOW, message, 2);
 	}
-	else if(gettime() < GetPVarInt(playerid, "PizzaCoolDown")) {
-		SendClientMessageEx(playerid,COLOR_GREY, "Please wait %d seconds before getting another pizza!", GetPVarInt(playerid, "PizzaCoolDown")-gettime());
-	}
-	else if(IsPlayerInRangeOfPoint(playerid, 3.0, -1713.961425, 1348.545166, 7.180452)) { // Pier 69
-		
-		new rand = random(MAX_HOUSES - 1), i;
-		while(!(HouseInfo[rand][hOwned] && HouseInfo[rand][hExteriorZ] <= 100 && HouseInfo[rand][hExteriorX] > -2802.389648 && HouseInfo[rand][hExteriorX] < -1400.710327 && HouseInfo[rand][hExteriorY] < 2800 && HouseInfo[rand][hExteriorY] > -216.298019 && HouseInfo[rand][hExtIW] == PlayerInfo[playerid][pVW] && HouseInfo[rand][hExtVW] == PlayerInfo[playerid][pInt])) {
-			if(++rand >= MAX_HOUSES) {
-				rand = 0;
+	new payment = remaining * 70;
+	Pizza_StopDelivery(playerid);
+	GivePlayerCash(playerid, payment);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have delivered the pizza to the destination! You have made $%d.", payment);
+	return 1;
+}
+
+CMD:getpizza(playerid, params[])
+{
+	if(PlayerInfo[playerid][pJob] != 21 && PlayerInfo[playerid][pJob2] != 21 && PlayerInfo[playerid][pJob3] != 21)
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Pizza Boy!");
+	
+	if(GetPVarType(playerid, "Pizza")) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are already delivering pizzas!");
+	
+	if(GetPlayerSkin(playerid) != 155) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You need to be in the Pizza Stack uniform!");
+	
+	if(!Pizza_CanWork(playerid)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot collect a pizza right now.");
+	
+	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || !IsAPizzaCar(GetPlayerVehicleID(playerid)))
+		return SendClientMessageEx(playerid, COLOR_GREY, "You need to be driving a Pizzaboy found at the side of the Pizza Stack!");
+	
+	if(CheckPointCheck(playerid) || IsPlayerCheckpointActive(playerid))
+		return SendClientMessageEx(playerid, COLOR_GREY, "Finish or cancel your current checkpoint before collecting a pizza.");
+
+	new bool:sanFierro = IsPlayerInRangeOfPoint(playerid, 5.0, -1713.961425, 1348.545166, 7.180452);
+	if(!sanFierro && !IsPlayerInRangeOfPoint(playerid, 5.0, 2103.6714, -1785.5222, 12.9849))
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not at a Pizza Stack pickup!");
+	new now = gettime(), remaining = GetPVarInt(playerid, "PizzaCoolDown") - now;
+	if(remaining > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Please wait %d seconds before getting another pizza!", remaining);
+
+	new houseid = random(MAX_HOUSES), distance, bool:found;
+	for(new checked; checked < MAX_HOUSES; ++checked)
+	{
+		if(HouseInfo[houseid][hOwned] && HouseInfo[houseid][hExteriorZ] <= 100.0
+			&& HouseInfo[houseid][hExtIW] == 0 && HouseInfo[houseid][hExtVW] == 0)
+		{
+			new bool:inCity = sanFierro
+				? (-2802.389648 < HouseInfo[houseid][hExteriorX] < -1400.710327 && -216.298019 < HouseInfo[houseid][hExteriorY] < 2800.0)
+				: (516.5287 < HouseInfo[houseid][hExteriorX] < 2881.0891 && -1785.5222 < HouseInfo[houseid][hExteriorY] < -909.6716);
+			if(inCity)
+			{
+				distance = floatround(GetPlayerDistanceFromPoint(playerid, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ]));
+				if(distance >= 10)
+				{
+					found = true;
+					break;
+				}
 			}
-			if (i++ > MAX_HOUSES) return 1;
 		}
-
-		new
-			iDist = floatround(GetPlayerDistanceFromPoint(playerid, HouseInfo[rand][hExteriorX], HouseInfo[rand][hExteriorY], HouseInfo[rand][hExteriorZ]));
-
-		SetPVarInt(playerid, "tpPizzaTimer", iDist / 80);
-		SetPVarInt(playerid, "pizzaTotal", iDist / 10);
-		SetPVarInt(playerid, "pizzaTimer", iDist / 10);
-		SetPVarInt(playerid, "Pizza", rand);
-		SetPVarInt(playerid, "PizzaCoolDown", gettime()+60);
-
-		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPPIZZARUNTIMER);
-		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_PIZZATIMER);
-
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have picked up a pizza for %s. You have %d seconds to deliver it!", StripUnderscore(HouseInfo[rand][hOwnerName]), iDist / 10);
-
-		SetPlayerCheckpoint(playerid, HouseInfo[rand][hExteriorX], HouseInfo[rand][hExteriorY], HouseInfo[rand][hExteriorZ], 5);
+		if(++houseid == MAX_HOUSES) houseid = 0;
 	}
-	else if(IsPlayerInRangeOfPoint(playerid, 5.0, 2103.6714,-1785.5222,12.9849)) { // Idlewood
+	if(!found) return SendClientMessageEx(playerid, COLOR_GREY, "No suitable houses are available for pizza deliveries in this city.");
 
-		new rand = random(MAX_HOUSES - 1), i;
-		while(!(HouseInfo[rand][hOwned] && HouseInfo[rand][hExteriorZ] <= 100 && HouseInfo[rand][hExteriorX] > 516.5287 && HouseInfo[rand][hExteriorX] < 2881.0891 && HouseInfo[rand][hExteriorY] < -909.6716 && HouseInfo[rand][hExteriorY] > -1785.5222 && HouseInfo[rand][hExtIW] == PlayerInfo[playerid][pVW] && HouseInfo[rand][hExtVW] == PlayerInfo[playerid][pInt])) {
-			if(++rand >= MAX_HOUSES) {
-				rand = 0;
-			}
-			if (i++ > MAX_HOUSES) return 1;
-		}
-
-		new
-			iDist = floatround(GetPlayerDistanceFromPoint(playerid, HouseInfo[rand][hExteriorX], HouseInfo[rand][hExteriorY], HouseInfo[rand][hExteriorZ]));
-
-		SetPVarInt(playerid, "tpPizzaTimer", iDist / 80);
-		SetPVarInt(playerid, "pizzaTotal", iDist / 10);
-		SetPVarInt(playerid, "pizzaTimer", iDist / 10);
-		SetPVarInt(playerid, "Pizza", rand);
-		SetPVarInt(playerid, "PizzaCoolDown", gettime()+60);
-
-		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPPIZZARUNTIMER);
-		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_PIZZATIMER);
-
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have picked up a pizza for %s. You have %d seconds to deliver it!", StripUnderscore(HouseInfo[rand][hOwnerName]), iDist / 10);
-
-		SetPlayerCheckpoint(playerid, HouseInfo[rand][hExteriorX], HouseInfo[rand][hExteriorY], HouseInfo[rand][hExteriorZ], 5);
-	}
+	PizzaDelivery[playerid][pizzaX] = HouseInfo[houseid][hExteriorX];
+	PizzaDelivery[playerid][pizzaY] = HouseInfo[houseid][hExteriorY];
+	PizzaDelivery[playerid][pizzaZ] = HouseInfo[houseid][hExteriorZ];
+	PizzaDelivery[playerid][pizzaDeadline] = now + distance / 10;
+	PizzaDelivery[playerid][pizzaEarliest] = now + distance / 80;
+	SetPVarInt(playerid, "Pizza", houseid);
+	SetPVarInt(playerid, "PizzaCoolDown", now + 60);
+	gPlayerCheckpointStatus[playerid] = CHECKPOINT_PIZZA;
+	SetPlayerCheckpoint(playerid, PizzaDelivery[playerid][pizzaX], PizzaDelivery[playerid][pizzaY], PizzaDelivery[playerid][pizzaZ], 5.0);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have picked up a pizza for %s. You have %d seconds to deliver it!", StripUnderscore(HouseInfo[houseid][hOwnerName]), distance / 10);
 	return 1;
 }

@@ -35,7 +35,7 @@ ClearCheckpoint(playerid) {
 		DeletePVar(playerid, "LockPickPlayer");
 	}
     DeletePVar(playerid, "TrackCar");
-	DeletePVar(playerid, "Pizza");
+	Pizza_StopDelivery(playerid);
 	DeletePVar(playerid, "Packages");
 	DeletePVar(playerid, "hFind");
 	DeletePVar(playerid, "pDTest");

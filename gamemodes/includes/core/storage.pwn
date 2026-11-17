@@ -1633,8 +1633,7 @@ CMD:drop(playerid, params[])
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 			format(string, sizeof(string), "* %s has thrown away their pizza delivery.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-            DeletePVar(playerid, "Pizza");
-			DeletePVar(playerid, "pizzaTimer");
+			Pizza_StopDelivery(playerid);
 		}
 		else
 		{

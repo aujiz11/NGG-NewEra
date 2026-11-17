@@ -764,6 +764,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 	if(PlayerIsDead[playerid]) return 1;
 	PlayerIsDead[playerid] = true;
 	if(InRing && (Boxer1 == playerid || Boxer2 == playerid)) Boxing_End(INVALID_PLAYER_ID, playerid);
+	Pizza_StopDelivery(playerid);
 	CancelTruckDelivery(playerid, false, false);
 	Mechanic_CancelFix(playerid, false);
 	Craftsman_StopFirstAid(playerid);
