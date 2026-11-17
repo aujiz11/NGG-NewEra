@@ -629,14 +629,6 @@ public OtherTimerEx(playerid, type)
 				SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_ARMSTIMER);
 			}
 		}
-		case TYPE_GUARDTIMER:
-		{
-			if(GetPVarInt(playerid, "GuardTimer") > 0)
-			{
-				SetPVarInt(playerid, "GuardTimer", GetPVarInt(playerid, "GuardTimer")-1);
-				SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GUARDTIMER);
-			}
-		}
 		case TYPE_GIVEWEAPONTIMER:
 		{
 			if(GetPVarInt(playerid, "GiveWeaponTimer") > 0)

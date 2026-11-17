@@ -35,6 +35,35 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+Bodyguard_ClearOffer(playerid)
+{
+	GuardOffer[playerid] = INVALID_PLAYER_ID;
+	GuardPrice[playerid] = 0;
+	DeletePVar(playerid, "GuardOfferSession");
+	return 1;
+}
+
+Bodyguard_CanTrade(playerid)
+{
+	if(!(0 <= playerid < MAX_PLAYERS) || !IsPlayerConnected(playerid) || !gPlayerLogged{playerid}) return 0;
+	new PLAYER_STATE:playerState = GetPlayerState(playerid);
+	return (playerState == PLAYER_STATE_ONFOOT || playerState == PLAYER_STATE_DRIVER || playerState == PLAYER_STATE_PASSENGER)
+		&& !PlayerIsDead[playerid] && !GetPVarInt(playerid, "Injured") && !PlayerInfo[playerid][pHospital]
+		&& !GetPVarType(playerid, "WatchingTV") && !GetPVarType(playerid, "PreviewingTV")
+		&& !GetPVarType(playerid, "IsInArena") && !GetPVarType(playerid, "EventToken")
+		&& HungerPlayerInfo[playerid][hgInEvent] == 0 && !PlayerBoxing[playerid] && !GetPVarInt(playerid, "_BoxingFight");
+}
+
+Bodyguard_IsNear(playerid, target, Float:range)
+{
+	if(!(0 <= playerid < MAX_PLAYERS) || !(0 <= target < MAX_PLAYERS) || playerid == target
+		|| !IsPlayerConnected(playerid) || !IsPlayerConnected(target) || !gPlayerLogged{playerid} || !gPlayerLogged{target}) return 0;
+	if(GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(target) || GetPlayerInterior(playerid) != GetPlayerInterior(target)) return 0;
+	new Float:x, Float:y, Float:z;
+	GetPlayerPos(target, x, y, z);
+	return IsPlayerInRangeOfPoint(playerid, range, x, y, z);
+}
+
 CMD:frisk(playerid, params[])
 {
 	if(IsACop(playerid) || PlayerInfo[playerid][pJob] == 8 || PlayerInfo[playerid][pJob2] == 8 || PlayerInfo[playerid][pJob3] == 8)
@@ -44,23 +73,15 @@ CMD:frisk(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /frisk [player]");
 			return 1;
 		}
-		/*if(sscanf(params, "ud", giveplayerid, storageid)) {
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /frisk [player] [storageid]");
-		SendClientMessageEx(playerid, COLOR_GREY, "StorageIDs: (0) Pocket - (1) Equipped Storage Device");
-		return 1;
-		}
+		if(GetPVarType(playerid, "WatchingTV") || GetPVarType(playerid, "PreviewingTV") || Spectating[playerid])
+			return SendClientMessageEx(playerid, COLOR_GREY, "You cannot frisk players while watching TV or spectating.");
+		if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot frisk yourself!");
 
-		if(storageid < 0 || storageid > 1) {
-			SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /frisk [player] [storageid]");
-			SendClientMessageEx(playerid, COLOR_GREY, "StorageIDs: (0) Pocket - (1) Equipped Storage Device");
-			return 1;
-		}*/
-
-		if(IsPlayerConnected(giveplayerid))
+		if(0 <= giveplayerid < MAX_PLAYERS && IsPlayerConnected(giveplayerid) && gPlayerLogged{giveplayerid})
 		{
-			if (ProxDetectorS(8.0, playerid, giveplayerid))
+			if (Bodyguard_IsNear(playerid, giveplayerid, 8.0))
 			{
-				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot frisk yourself!"); return 1; }
+				if(Spectating[giveplayerid] && PlayerInfo[playerid][pAdmin] < 2) return 1;
 				if(PlayerInfo[giveplayerid][pAdmin] >= 2 && !PlayerInfo[giveplayerid][pTogReports]) return 1;
 
 				PlayerFriskPlayer(playerid, giveplayerid); // It did a frisk ... why request?
@@ -87,7 +108,7 @@ CMD:frisk(playerid, params[])
 
 PlayerFriskPlayer(playerid, giveplayerid)
 {
-	if(playerid == giveplayerid) return 1; 
+	if(!(0 <= playerid < MAX_PLAYERS) || !(0 <= giveplayerid < MAX_PLAYERS) || playerid == giveplayerid) return 1;
 	if(!IsPlayerConnected(playerid) || !IsPlayerConnected(giveplayerid)) return 1;
 	szMiscArray[0] = 0;
 	new packages = GetPVarInt(giveplayerid, "Packages");
@@ -144,53 +165,25 @@ PlayerFriskPlayer(playerid, giveplayerid)
 
 CMD:guard(playerid, params[])
 {
-	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
 	if(PlayerInfo[playerid][pJob] != 8 && PlayerInfo[playerid][pJob2] != 8 && PlayerInfo[playerid][pJob3] != 8)
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not a bodyguard.");
-		return 1;
-	}
-	if(GetPVarInt(playerid, "WatchingTV")) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");
-	if(GetPVarType(playerid, "IsInArena"))
-	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
-		return 1;
-	}
+		return SendClientMessageEx(playerid, COLOR_GREY, "You're not a bodyguard.");
+	if(!Bodyguard_CanTrade(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot offer protection right now.");
+
 	new giveplayerid, money;
 	if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /guard [player] [price]");
-	if (GetPVarInt(playerid, "GuardTimer") > 0)
-	{
-		SendClientMessageEx(playerid,COLOR_GREY,"   You must wait %d seconds before selling another vest.", GetPVarInt(playerid, "GuardTimer"));
-		return 1;
-	}
-	if(money < 2000 || money > 10000) { SendClientMessageEx(playerid, COLOR_GREY, "Specified price must be between $2,000 and $10,000."); return 1; }
-	if(IsPlayerConnected(giveplayerid))
-	{
+	new now = gettime(), remaining = GetPVarInt(playerid, "GuardUntil") - now;
+	if(remaining > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before offering another vest.", remaining);
+	if(money < 2000 || money > 10000) return SendClientMessageEx(playerid, COLOR_GREY, "Specified price must be between $2,000 and $10,000.");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You can't /guard yourself.");
+	if(!Bodyguard_CanTrade(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not available to receive protection.");
+	if(!Bodyguard_IsNear(playerid, giveplayerid, 8.0))
+		return SendClientMessageEx(playerid, COLOR_GREY, "You must be near each other in the same interior and world.");
 
-		if(ProxDetectorS(8.0, playerid, giveplayerid))
-		{
-			if(giveplayerid == playerid)
-			{
-				SendClientMessageEx(playerid, COLOR_GREY, "You can't /guard yourself.");
-				return 1;
-			}
-
-			SetPVarInt(playerid, "GuardTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GUARDTIMER);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered protection to %s for $%d.", GetPlayerNameEx(giveplayerid), money);
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Bodyguard %s wants to protect you for $%d, type /accept bodyguard to accept.", GetPlayerNameEx(playerid), money);
-			GuardOffer[giveplayerid] = playerid;
-			SetPVarInt(giveplayerid, "GuardOfferSession", g_arrQueryHandle[playerid]);
-			GuardPrice[giveplayerid] = money;
-		}
-		else
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
-		}
-
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-	}
+	SetPVarInt(playerid, "GuardUntil", now + 10);
+	GuardOffer[giveplayerid] = playerid;
+	SetPVarInt(giveplayerid, "GuardOfferSession", g_arrQueryHandle[playerid]);
+	GuardPrice[giveplayerid] = money;
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered protection to %s for $%d.", GetPlayerNameEx(giveplayerid), money);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Bodyguard %s wants to protect you for $%d, type /accept bodyguard to accept.", GetPlayerNameEx(playerid), money);
 	return 1;
 }

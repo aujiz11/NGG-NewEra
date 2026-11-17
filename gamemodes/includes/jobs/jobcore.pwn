@@ -307,7 +307,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(response)
 			{
-				ShowPlayerDialogEx(playerid, BODYGUARDJOB2, DIALOG_STYLE_MSGBOX, "Bodyguard", "Note: The reload time is always 1 minute. There are no job levels for this job. In other words, you do not need to level it up to earn the max money you can.", "Next", "Cancel");
+				ShowPlayerDialogEx(playerid, BODYGUARDJOB2, DIALOG_STYLE_MSGBOX, "Bodyguard", "Note: You can offer a vest every 10 seconds. There are no job levels for this job. In other words, you do not need to level it up to earn the max money you can.", "Next", "Cancel");
 			}
 		}
 		case MECHANICJOB:

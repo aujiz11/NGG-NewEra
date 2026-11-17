@@ -69,7 +69,6 @@
 #define			TYPE_SEXTIMER 				6
 #define			TYPE_FLOODPROTECTION 		7
 #define			TYPE_HEALTIMER 				8
-#define 		TYPE_GUARDTIMER 			9
 #define			TYPE_SHOPORDERTIMER 		11
 #define 		TYPE_SELLMATSTIMER 			12
 #define 		TYPE_TPPIZZARUNTIMER 		13

@@ -1199,60 +1199,38 @@ CMD:accept(playerid, params[])
 			return Lawyer_Approve(playerid, params[6]);
         }
         else if(strcmp(params, "bodyguard", true) == 0) {
-			if(!Offer_IsCurrent(playerid, GuardOffer[playerid], "GuardOfferSession")) 
-				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
-        	
-			if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
-            if(GuardOffer[playerid] != INVALID_PLAYER_ID) {
-                if(GetPlayerCash(playerid) > GuardPrice[playerid]) {
-                    if(IsPlayerConnected(GuardOffer[playerid])) {
-                        if(ProxDetectorS(6.0, playerid, GuardOffer[playerid])) {
-                            new Float:armour;
-                            GetArmour(playerid, armour);
-                            if(armour >= 50) {
-                                SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You already have a vest!");
-                                return 1;
-                            }
-                            new ip[32], ipex[32];
-                            GetPlayerIp(playerid, ip, sizeof(ip));
-                            GetPlayerIp(GuardOffer[playerid], ipex, sizeof(ipex));
-                            //format(szMessage, sizeof(szMessage), "[BODYGUARD] %s (IP:%s) has paid $%d to %s (IP:%s)", GetPlayerNameEx(playerid), ip, GuardPrice[playerid], GetPlayerNameEx(GuardOffer[playerid]), ipex);
-                            // Log("logs/pay.log", szMessage);
+			new guardid = GuardOffer[playerid], price = GuardPrice[playerid];
+			if(!Offer_IsCurrent(playerid, guardid, "GuardOfferSession")) {
+				Bodyguard_ClearOffer(playerid);
+				return SendClientMessageEx(playerid, COLOR_GREY, "This protection offer is no longer valid.");
+			}
+			if(PlayerInfo[guardid][pJob] != 8 && PlayerInfo[guardid][pJob2] != 8 && PlayerInfo[guardid][pJob3] != 8) {
+				Bodyguard_ClearOffer(playerid);
+				return SendClientMessageEx(playerid, COLOR_GREY, "That player is no longer a bodyguard.");
+			}
+			if(price < 2000 || price > 10000) {
+				Bodyguard_ClearOffer(playerid);
+				return SendClientMessageEx(playerid, COLOR_GREY, "This protection price is no longer valid.");
+			}
+			if(!Bodyguard_CanTrade(playerid) || !Bodyguard_CanTrade(guardid))
+				return SendClientMessageEx(playerid, COLOR_GREY, "Both players must be available to complete this protection offer.");
+			if(!Bodyguard_IsNear(playerid, guardid, 6.0))
+				return SendClientMessageEx(playerid, COLOR_GREY, "The bodyguard must be near you in the same interior and world.");
 
-                            if(GuardPrice[playerid] >= 25000 && (PlayerInfo[GuardOffer[playerid]][pLevel] <= 3 || PlayerInfo[playerid][pLevel] <= 3)) {
-                                format(szMessage, sizeof(szMessage), "%s (IP:%s) has guarded %s (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(GuardOffer[playerid]), ipex, GuardPrice[playerid]);
-                                // Log("logs/pay.log", szMessage);
-                                ABroadCast(COLOR_YELLOW, szMessage, 2);
-                            }
+			new Float:armour;
+			GetArmour(playerid, armour);
+			if(armour >= 50.0) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You already have a vest!");
+			if(GetPlayerCash(playerid) < price) return SendClientMessageEx(playerid, COLOR_GREY, "You can't afford the protection!");
+			if(GetPlayerCash(guardid) > cellmax - price) return SendClientMessageEx(playerid, COLOR_GREY, "The bodyguard cannot carry this payment.");
 
-                            SetArmour(playerid, 50);
-                            GetPlayerName(GuardOffer[playerid], giveplayer, sizeof(giveplayer));
-                            GetPlayerName(playerid, sendername, sizeof(sendername));
-                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You accepted the protection for $%d from %s.",GuardPrice[playerid],GetPlayerNameEx(GuardOffer[playerid]));
-                            SendClientMessageEx(GuardOffer[playerid], COLOR_LIGHTBLUE, "* %s accepted your protection, and the $%d was added to your money.",GetPlayerNameEx(playerid),GuardPrice[playerid]);
-                            GivePlayerCash(GuardOffer[playerid], GuardPrice[playerid]);
-                            GivePlayerCash(playerid, -GuardPrice[playerid]);
-                            ExtortionTurfsWarsZone(GuardOffer[playerid], 2, GuardPrice[playerid]);
-                            GuardOffer[playerid] = INVALID_PLAYER_ID;
-                            GuardPrice[playerid] = 0;
-                            return 1;
-                        }
-                        else {
-                            SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the person offering you guard!");
-                            return 1;
-                        }
-                    }
-                    return 1;
-                }
-                else {
-                    SendClientMessageEx(playerid, COLOR_GREY, "   You can't afford the Protection!");
-                    return 1;
-                }
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GREY, "   No-one offered you any Protection!");
-                return 1;
-            }
+			Bodyguard_ClearOffer(playerid);
+			SetArmour(playerid, 50.0);
+			GivePlayerCash(guardid, price);
+			GivePlayerCash(playerid, -price);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You accepted the protection for $%d from %s.", price, GetPlayerNameEx(guardid));
+			SendClientMessageEx(guardid, COLOR_LIGHTBLUE, "* %s accepted your protection, and the $%d was added to your money.", GetPlayerNameEx(playerid), price);
+			ExtortionTurfsWarsZone(guardid, 2, price);
+			return 1;
         }
         else if(strcmp(params, "defense", true) == 0) {
 			return Lawyer_AcceptDefense(playerid);
@@ -2158,7 +2136,7 @@ CMD:cancel(playerid, params[])
 	else if(strcmp(choice,"lawyer",true) == 0) { WantLawyer[playerid] = 0; CallLawyer[playerid] = 0; }
 	else if(strcmp(choice,"defense",true) == 0) { DefendOffer[playerid] = INVALID_PLAYER_ID; DefendPrice[playerid] = 0; DeletePVar(playerid, "DefendOfferSession"); }
 	else if(strcmp(choice,"appeal",true) == 0) { Lawyer_ClearAppeal(playerid); }
-	else if(strcmp(choice,"bodyguard",true) == 0) { GuardOffer[playerid] = INVALID_PLAYER_ID; GuardPrice[playerid] = 0; }
+	else if(strcmp(choice,"bodyguard",true) == 0) { Bodyguard_ClearOffer(playerid); }
 	else if(strcmp(choice,"live",true) == 0) { LiveOffer[playerid] = INVALID_PLAYER_ID; }
 	else if(strcmp(choice,"refill",true) == 0) { RefillOffer[playerid] = INVALID_PLAYER_ID; RefillPrice[playerid] = 0; DeletePVar(playerid, "RefillOfferSession"); DeletePVar(playerid, "RefillVehicle"); }
 	else if(strcmp(choice,"car",true) == 0) { VehicleOffer[playerid] = INVALID_PLAYER_ID; VehiclePrice[playerid] = 0; VehicleId[playerid] = -1; DeletePVar(playerid, "VehicleOfferSession"); DeletePVar(playerid, "VehicleOfferSQLId"); }

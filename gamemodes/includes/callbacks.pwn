@@ -1331,7 +1331,6 @@ public OnPlayerConnect(playerid)
 	GunStorageID[playerid] = -1;
 	CraftOffer[playerid] = INVALID_PLAYER_ID;
 	RepairOffer[playerid] = INVALID_PLAYER_ID;
-	GuardOffer[playerid] = INVALID_PLAYER_ID;
 	LiveOffer[playerid] = INVALID_PLAYER_ID;
 	RefillOffer[playerid] = INVALID_PLAYER_ID;
 	MatsOffer[playerid] = INVALID_PLAYER_ID;
@@ -1357,8 +1356,6 @@ public OnPlayerConnect(playerid)
 	GettingJob[playerid]=0;
 	GettingJob2[playerid]=0;
 	GettingJob3[playerid]=0;
-	GuardOffer[playerid]= INVALID_PLAYER_ID;
-	GuardPrice[playerid]=0;
 	ApprovedLawyer[playerid]=0;
 	CallLawyer[playerid]=0;
 	WantLawyer[playerid]=0;
@@ -1498,6 +1495,8 @@ public OnPlayerConnect(playerid)
 	PlayerShots[playerid] = 0;
 	PlayerSniperShots[playerid] = 0;
 	PlayerKills[playerid] = 0;
+	Bodyguard_ClearOffer(playerid);
+	
 	// These need to be reset to prevent some bugs (DO NOT REMOVE)
 	PlayerInfo[playerid][pModel] = 0;
 	PlayerInfo[playerid][pLeader] = INVALID_GROUP_ID;
@@ -1657,7 +1656,7 @@ public OnPlayerDisconnect(playerid, reason)
 		if(CraftOffer[i] == playerid) CraftOffer[i] = INVALID_PLAYER_ID;
 		if(RepairOffer[i] == playerid) RepairOffer[i] = INVALID_PLAYER_ID;
 		if(RefillOffer[i] == playerid) RefillOffer[i] = INVALID_PLAYER_ID;
-		if(GuardOffer[i] == playerid) GuardOffer[i] = INVALID_PLAYER_ID;
+		if(GuardOffer[i] == playerid) Bodyguard_ClearOffer(i);
 		if(DefendOffer[i] == playerid) { DefendOffer[i] = INVALID_PLAYER_ID; DefendPrice[i] = 0; DeletePVar(i, "DefendOfferSession"); }
 		if(LiveOffer[i] == playerid) LiveOffer[i] = INVALID_PLAYER_ID;
 		if(BoxOffer[i] == playerid) BoxOffer[i] = INVALID_PLAYER_ID;
