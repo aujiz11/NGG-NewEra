@@ -160,50 +160,7 @@ CMD:accept(playerid, params[])
 		}
 		else if(strcmp(params, "weapon", true) == 0)
 		{
-			if(!GetPVarType(playerid, "pSellGunID") || GetPVarInt(playerid, "pSellGunID") == INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "No one has offered you a gun!");
-
-			new id = GetPVarInt(playerid, "pSellGunID");
-			if(!Offer_IsCurrent(playerid, id, "pSellGunSession")) 
-				return SendClientMessageEx(playerid, COLOR_GREY, "The weapon offer has expired.");
-			
-			new Float:x, Float:y, Float:z;
-			GetPlayerPos(id, x, y, z);
-			if(GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(id) || GetPlayerInterior(playerid) != GetPlayerInterior(id) || !IsPlayerInRangeOfPoint(playerid, 8.0, x, y, z))
-				return SendClientMessageEx(playerid, COLOR_GREY, "You are not near the arms dealer.");
-
-			if(PlayerInfo[id][pMats] < GetPVarInt(playerid, "pSellGunMats")) 
-			{
-				SendClientMessage(id, COLOR_WHITE, "You do not have enough materials to sell this item!");
-				return SendClientMessage(playerid, COLOR_WHITE, "The seller no longer has enough materials to sell this item!");
-			}
-
-			new weapon[16];
-			GetWeaponName(GetPVarInt(playerid, "pSellGun"), weapon, sizeof(weapon));
-
-			PlayerInfo[id][pMats] -= GetPVarInt(playerid, "pSellGunMats");
-			GivePlayerValidWeapon(playerid, GetPVarInt(playerid, "pSellGun"));
-
-  			if(PlayerInfo[id][pDoubleEXP] > 0)
-			{
-				SendClientMessageEx(id, COLOR_YELLOW, "You have gained 2 skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[id][pDoubleEXP]);
-   				PlayerInfo[id][pArmsSkill] += (GetPVarInt(playerid, "pSellGunXP")*2);
-			}
-			else
-			{
-  				PlayerInfo[id][pArmsSkill] += GetPVarInt(playerid, "pSellGunXP");
-			}
-
-			format(szMiscArray, sizeof(szMiscArray), "%s crafts a %s from their materials, handing it to %s.", GetPlayerNameEx(id), weapon, GetPlayerNameEx(playerid)); 
-			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-
-			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0); // Just a little 'classic' feel to it. -Winterfield
-			PlayerPlaySound(id, 1052, 0.0, 0.0, 0.0);
-
-			DeletePVar(playerid, "pSellGun");
-			DeletePVar(playerid, "pSellGunID");
-			DeletePVar(playerid, "pSellGunSession");
-			DeletePVar(playerid, "pSellGunMats");
-			DeletePVar(playerid, "pSellGunXP");
+			return ArmsDealer_Accept(playerid);
 		}
         else if(strcmp(params, "valentine", true) == 0)
 		{
@@ -2164,6 +2121,7 @@ CMD:cancel(playerid, params[])
 		ClearDoorSaleVariables(playerid);
 	}
 	else if(strcmp(choice,"renderaid",true) == 0) DeletePVar(playerid, "renderaid");
+	else if(strcmp(choice,"weapon",true) == 0) { ArmsDealer_ClearOffer(playerid); }
 	else if(strcmp(choice,"sex",true) == 0) {
         new target = GetPVarInt(playerid, "SexOfferTo");
         if(GetPVarType(playerid, "SexOfferTo") && 0 <= target < MAX_PLAYERS && SexOffer[target] == playerid

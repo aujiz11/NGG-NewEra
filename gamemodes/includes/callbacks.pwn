@@ -1672,8 +1672,9 @@ public OnPlayerDisconnect(playerid, reason)
             HitToGet[i] = INVALID_PLAYER_ID;
         }
         if(hInviteOfferTo[i] == playerid) hInviteOfferTo[i] = INVALID_PLAYER_ID;
+        if(GetPVarType(i, "pSellGunID") && GetPVarInt(i, "pSellGunID") == playerid) ArmsDealer_ClearOffer(i);
         static const pendingOffers[][] = {
-            "pSellGunID", "renderaid", "Group_Inviter", "Group_Invited", "RFLTeam_Inviter", "shrequest",
+            "renderaid", "Group_Inviter", "Group_Invited", "RFLTeam_Inviter", "shrequest",
             "Business_Inviter", "Business_WeapOfferer", "Business_ItemOfferer", "Business_VehicleOfferer",
             "RimOffer", "sellerVoucher", "kissvaloffer", "RepairOfferTo", "SexOfferTo", "WepVehSalePlayer"
         };

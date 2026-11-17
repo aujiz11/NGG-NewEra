@@ -36,495 +36,186 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+enum eArmsRecipe
+{
+	armsName[16],
+	armsWeapon,
+	armsMaterials,
+	armsSkill,
+	armsVIP,
+	armsExperience
+}
+
+new const ArmsRecipes[][eArmsRecipe] = {
+	{"flowers", 	WEAPON_FLOWER, 			100, 0, 0, 0},
+	{"knuckles", 	WEAPON_BRASSKNUCKLE, 	100, 0, 0, 0},
+	{"bat", 		WEAPON_BAT, 			100, 0, 0, 0},
+	{"cane",	 	WEAPON_CANE, 			100, 0, 0, 0},
+	{"shovel", 		WEAPON_SHOVEL, 			100, 0, 0, 0},
+	{"club", 		WEAPON_GOLFCLUB, 		100, 0, 0, 0},
+	{"pool", 		WEAPON_POOLSTICK, 		100, 0, 0, 0},
+	{"katana", 		WEAPON_KATANA, 			100, 0, 0, 0},
+	{"dildo", 		WEAPON_DILDO, 			100, 0, 0, 0},
+	{"9mm", 		WEAPON_COLT45, 			500, 0, 0, 1},
+	{"sdpistol", 	WEAPON_SILENCED, 		1000, 0, 0, 1},
+	{"shotgun", 	WEAPON_SHOTGUN, 		4000, 50, 0, 1},
+	{"mp5", 		WEAPON_MP5, 			2500, 200, 0, 1},
+	{"rifle", 		WEAPON_RIFLE, 			3000, 200, 0, 1},
+	{"tec9", 		WEAPON_TEC9, 			3000, 700, 0, 1},
+	{"uzi", 		WEAPON_UZI, 			2500, 700, 0, 1},
+	{"deagle", 		WEAPON_DEAGLE, 			5000, 1200, 0, 1},
+	{"ak47", 		WEAPON_AK47, 			10000, 1200, 3, 1}
+};
+
+ArmsDealer_ClearOffer(playerid)
+{
+	DeletePVar(playerid, "pSellGun");
+	DeletePVar(playerid, "pSellGunID");
+	DeletePVar(playerid, "pSellGunSession");
+	DeletePVar(playerid, "pSellGunMats");
+	DeletePVar(playerid, "pSellGunXP");
+	return 1;
+}
+
+ArmsDealer_CanTrade(playerid)
+{
+	if(!(0 <= playerid < MAX_PLAYERS) || !IsPlayerConnected(playerid) || !gPlayerLogged{playerid}) return 0;
+	#if defined zombiemode
+	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return 0;
+	#endif
+	return GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && !PlayerIsDead[playerid]
+		&& !PlayerTied[playerid] && !PlayerCuffed[playerid] && PlayerInfo[playerid][pJailTime] <= 0 && !PlayerInfo[playerid][pHospital]
+		&& !GetPVarInt(playerid, "Injured") && !GetPVarType(playerid, "PlayerCuffed") && !GetPVarInt(playerid, "pBagged")
+		&& !GetPVarType(playerid, "IsFrozen") && !GetPVarType(playerid, "WatchingTV") && !GetPVarType(playerid, "PreviewingTV")
+		&& !GetPVarType(playerid, "AttemptingLockPick") && !GetPVarType(playerid, "IsInArena") && !GetPVarType(playerid, "EventToken")
+		&& HungerPlayerInfo[playerid][hgInEvent] == 0 && !PlayerBoxing[playerid] && !GetPVarInt(playerid, "_BoxingFight");
+}
+
+ArmsDealer_Check(dealer, recipient, recipe, viewer)
+{
+	if(!ArmsDealer_CanTrade(dealer) || (recipient != dealer && !ArmsDealer_CanTrade(recipient)))
+		return SendClientMessageEx(viewer, COLOR_GREY, "Both players must be available on foot to craft or receive a weapon."), 0;
+	
+	if(PlayerInfo[dealer][pJob] != 9 && PlayerInfo[dealer][pJob2] != 9 && PlayerInfo[dealer][pJob3] != 9)
+		return SendClientMessageEx(viewer, COLOR_GREY, "The seller is no longer an Arms Dealer."), 0;
+	
+	if(PlayerInfo[recipient][pConnectHours] < 2 || PlayerInfo[recipient][pWRestricted] > 0)
+		return SendClientMessageEx(viewer, COLOR_GREY, "The recipient is currently weapon restricted."), 0;
+	
+	if(recipient != dealer)
+	{
+		new Float:x, Float:y, Float:z;
+		GetPlayerPos(dealer, x, y, z);
+		if(GetPlayerVirtualWorld(dealer) != GetPlayerVirtualWorld(recipient) || GetPlayerInterior(dealer) != GetPlayerInterior(recipient)
+			|| !IsPlayerInRangeOfPoint(recipient, 8.0, x, y, z))
+			return SendClientMessageEx(viewer, COLOR_GREY, "You must be near each other in the same interior and world."), 0;
+	}
+	if(PlayerInfo[dealer][pArmsSkill] < ArmsRecipes[recipe][armsSkill])
+		return SendClientMessageEx(viewer, COLOR_GREY, "The dealer does not have the required skill to craft this weapon."), 0;
+	
+	if(PlayerInfo[dealer][pDonateRank] < ArmsRecipes[recipe][armsVIP])
+		return SendClientMessageEx(viewer, COLOR_GREY, "Gold VIP is required to craft this weapon."), 0;
+	
+	if(PlayerInfo[dealer][pMats] < ArmsRecipes[recipe][armsMaterials])
+		return SendClientMessageEx(viewer, COLOR_GREY, "The dealer does not have enough materials to craft this weapon."), 0;
+	
+	return 1;
+}
+
+ArmsDealer_Complete(dealer, recipient, recipe)
+{
+	PlayerInfo[dealer][pMats] -= ArmsRecipes[recipe][armsMaterials];
+	GivePlayerValidWeapon(recipient, ArmsRecipes[recipe][armsWeapon]);
+	new gained = ArmsRecipes[recipe][armsExperience];
+	if(dealer != recipient && PlayerInfo[dealer][pDoubleEXP] > 0) gained *= 2;
+	if(PlayerInfo[dealer][pArmsSkill] > cellmax - gained) gained = cellmax - PlayerInfo[dealer][pArmsSkill];
+	PlayerInfo[dealer][pArmsSkill] += gained;
+	if(gained > 1) SendClientMessageEx(dealer, COLOR_YELLOW, "You gained %d arms dealer skill points with your Double EXP token. It has %d hours left.", gained, PlayerInfo[dealer][pDoubleEXP]);
+	new weapon[32], message[144];
+	GetWeaponName(ArmsRecipes[recipe][armsWeapon], weapon, sizeof(weapon));
+	format(message, sizeof(message), "%s crafts a %s from their materials, handing it to %s.", GetPlayerNameEx(dealer), weapon, GetPlayerNameEx(recipient));
+	ProxDetector(30.0, dealer, message, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
+	PlayerPlaySound(dealer, 1052, 0.0, 0.0, 0.0);
+	if(recipient != dealer) PlayerPlaySound(recipient, 1052, 0.0, 0.0, 0.0);
+	return 1;
+}
+
+ArmsDealer_Accept(playerid)
+{
+	if(!GetPVarType(playerid, "pSellGunID")) return SendClientMessageEx(playerid, COLOR_GREY, "No one has offered you a weapon.");
+	new dealer = GetPVarInt(playerid, "pSellGunID");
+	if(!Offer_IsCurrent(playerid, dealer, "pSellGunSession"))
+	{
+		ArmsDealer_ClearOffer(playerid);
+		return SendClientMessageEx(playerid, COLOR_GREY, "The weapon offer has expired.");
+	}
+	new weapon = GetPVarInt(playerid, "pSellGun"), recipe = -1;
+	for(new i; i < sizeof(ArmsRecipes); ++i)
+	{
+		if(ArmsRecipes[i][armsWeapon] == weapon)
+		{
+			recipe = i;
+			break;
+		}
+	}
+	if(recipe == -1 || dealer == playerid)
+	{
+		ArmsDealer_ClearOffer(playerid);
+		return SendClientMessageEx(playerid, COLOR_GREY, "This weapon offer is no longer valid.");
+	}
+	if(!ArmsDealer_Check(dealer, playerid, recipe, playerid)) return 1;
+	ArmsDealer_ClearOffer(playerid);
+	return ArmsDealer_Complete(dealer, playerid, recipe);
+}
+
 CMD:sellgun(playerid, params[])
 {
-	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
-	if(PlayerInfo[playerid][pJob] == 9 || PlayerInfo[playerid][pJob2] == 9 || PlayerInfo[playerid][pJob3] == 9)
+	if(PlayerInfo[playerid][pJob] != 9 && PlayerInfo[playerid][pJob2] != 9 && PlayerInfo[playerid][pJob3] != 9)
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not an Arms Dealer!");
+	if(!ArmsDealer_CanTrade(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot craft or offer weapons right now.");
+	new now = gettime();
+	if(GetPVarInt(playerid, "pSellGunTime") > now) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must wait %d seconds before offering another weapon.", GetPVarInt(playerid, "pSellGunTime") - now);
+	new target, name[16];
+	if(sscanf(params, "us[16]", target, name))
 	{
-		if(GetPVarInt(playerid, "pSellGunTime") > gettime()) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must wait 10 seconds before selling another gun.");
-		if(GetPVarType(playerid, "WatchingTV") || GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot use drugs while watching TV.");
-		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot sell a gun while in a vehicle!");
-		if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
-   		#if defined zombiemode
-		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
-		#endif
-		if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || (PlayerInfo[playerid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1))
-   		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
-		if(GetPVarType(playerid, "AttemptingLockPick")) return SendClientMessageEx(playerid, COLOR_WHITE, "You are attempting to lockpick, please wait.");
-		if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
-		if(PlayerInfo[playerid][pHospital]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this at this time.");
-
-		szMiscArray[0] = 0;
-		new id, weapon[16];
-		if(sscanf(params, "us[16]", id, weapon)) 
+		new line[128], entry[48];
+		SendClientMessageEx(playerid, COLOR_WHITE, "Available weapons and material costs:");
+		for(new i; i < sizeof(ArmsRecipes); ++i)
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "-------------------------------------");
-			switch(PlayerInfo[playerid][pArmsSkill])
+			if(PlayerInfo[playerid][pArmsSkill] < ArmsRecipes[i][armsSkill]) continue;
+			format(entry, sizeof(entry), "%s(%d)%s", ArmsRecipes[i][armsName], ArmsRecipes[i][armsMaterials], ArmsRecipes[i][armsVIP] ? (" [Gold VIP]") : (""));
+			if(strlen(line) + strlen(entry) + 2 >= sizeof(line))
 			{
-				case 0 .. 49: // level 1
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "flowers(100)    knuckles(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "bat(100)            cane(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "sdpistol(1000)");
-				}
-				case 50 .. 199: // level 2
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "flowers(100)    knuckles(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "bat(100)            cane(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "sdpistol(1000)  shotgun(4000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "mp5(2500)");
-				}
-				case 200 .. 699: // level 3
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "flowers(100)    knuckles(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "bat(100)            cane(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "sdpistol(1000)  shotgun(4000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "mp5(2500)		 rifle(3000)");
-				}
-				case 700 .. 1199:// Level 4 
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "flowers(100)    knuckles(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "bat(100)            cane(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "sdpistol(1000)  shotgun(4000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "mp5(2500)		 rifle(3000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "tec9(3000)       	uzi(2500)");
-				}
-				default:
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "flowers(100)    knuckles(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "bat(100)            cane(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "sdpistol(1000)  shotgun(4000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "mp5(2500)		  rifle(3000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "tec9(3000)        	uzi(2500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "deagle(5000)");
-				}
+				SendClientMessageEx(playerid, COLOR_WHITE, "%s", line);
+				line[0] = EOS;
 			}
-			if(PlayerInfo[playerid][pArmsSkill] >= 1200) SendClientMessageEx(playerid, COLOR_WHITE, "ak47(10000) - Requires Gold VIP");
-			SendClientMessageEx(playerid, COLOR_WHITE, "-------------------------------------");
-			SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /sellgun [playerid] [weapon]");
-			return 1;
+			if(line[0]) strcat(line, "  ", sizeof(line));
+			strcat(line, entry, sizeof(line));
 		}
-
-		if(IsPlayerConnected(id))
-		{
-			if(IsPlayerInAnyVehicle(id)) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot sell a gun to someone in a vehicle!");
-			if(!ProxDetectorS(8.0, playerid, id)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not near that player.");
-			if(PlayerInfo[id][pConnectHours] < 2 || PlayerInfo[id][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently weapon restricted!");
-
-			if(strcmp(weapon, "Flowers", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 0)
-			{
-				if(PlayerInfo[playerid][pMats] >= 100)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 14);
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 14);
-						SetPVarInt(id, "pSellGunMats", 100);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "Knuckles", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 0)
-			{
-				if(PlayerInfo[playerid][pMats] >= 100)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 1);
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 1);
-						SetPVarInt(id, "pSellGunMats", 100);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "Bat", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 0)
-			{
-				if(PlayerInfo[playerid][pMats] >= 100)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 5);
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 5);
-						SetPVarInt(id, "pSellGunMats", 100);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "Cane", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 0)
-			{
-				if(PlayerInfo[playerid][pMats] >= 100)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 15);
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 15);
-						SetPVarInt(id, "pSellGunMats", 100);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "Shovel", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 0)
-			{
-				if(PlayerInfo[playerid][pMats] >= 100)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 6);
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 6);
-						SetPVarInt(id, "pSellGunMats", 100);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "Club", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 0)
-			{
-				if(PlayerInfo[playerid][pMats] >= 100)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 2);
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 2);
-						SetPVarInt(id, "pSellGunMats", 100);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "Pool", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 0)
-			{
-				if(PlayerInfo[playerid][pMats] >= 100)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 7);
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 7);
-						SetPVarInt(id, "pSellGunMats", 100);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "Katana", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 0)
-			{
-				if(PlayerInfo[playerid][pMats] >= 100)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 8);
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 8);
-						SetPVarInt(id, "pSellGunMats", 100);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "Dildo", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 0)
-			{
-				if(PlayerInfo[playerid][pMats] >= 100)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 10);
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 10);
-						SetPVarInt(id, "pSellGunMats", 100);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "9mm", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 0)
-			{
-				if(PlayerInfo[playerid][pMats] >= 500)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 500;
-						GivePlayerValidWeapon(id, 22);
-
-						PlayerInfo[playerid][pArmsSkill] += 1;
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 22);
-						SetPVarInt(id, "pSellGunMats", 500);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-						SetPVarInt(id, "pSellGunXP", 1);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "Shotgun", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 50)
-			{
-				if(PlayerInfo[playerid][pMats] >= 4000)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 4000;
-						GivePlayerValidWeapon(id, 25);
-
-						PlayerInfo[playerid][pArmsSkill] += 1;
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 25);
-						SetPVarInt(id, "pSellGunMats", 4000);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-						SetPVarInt(id, "pSellGunXP", 1);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "SDPistol", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 0)
-			{
-				if(PlayerInfo[playerid][pMats] >= 1000)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 1000;
-						GivePlayerValidWeapon(id, 23);
-
-						PlayerInfo[playerid][pArmsSkill] += 1;
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 23);
-						SetPVarInt(id, "pSellGunMats", 1000);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-						SetPVarInt(id, "pSellGunXP", 1);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "Uzi", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 700)
-			{
-				if(PlayerInfo[playerid][pMats] >= 2500)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 2500;
-						GivePlayerValidWeapon(id, 28);
-
-						PlayerInfo[playerid][pArmsSkill] += 1;
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 28);
-						SetPVarInt(id, "pSellGunMats", 2500);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-						SetPVarInt(id, "pSellGunXP", 1);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "Tec9", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 700)
-			{
-				if(PlayerInfo[playerid][pMats] >= 3000)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 3000;
-						GivePlayerValidWeapon(id, 32);
-
-						PlayerInfo[playerid][pArmsSkill] += 1;
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 32);
-						SetPVarInt(id, "pSellGunMats", 3000);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-						SetPVarInt(id, "pSellGunXP", 1);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "Rifle", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 200)
-			{
-				if(PlayerInfo[playerid][pMats] >= 3000)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 3000;
-						GivePlayerValidWeapon(id, 33);
-
-						PlayerInfo[playerid][pArmsSkill] += 1;
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 33);
-						SetPVarInt(id, "pSellGunMats", 3000);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-						SetPVarInt(id, "pSellGunXP", 1);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "MP5", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 200)
-			{
-				if(PlayerInfo[playerid][pMats] >= 2500)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 2500;
-						GivePlayerValidWeapon(id, 29);
-
-						PlayerInfo[playerid][pArmsSkill] += 1;
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 29);
-						SetPVarInt(id, "pSellGunMats", 2500);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-						SetPVarInt(id, "pSellGunXP", 1);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "Deagle", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 1200)
-			{
-				if(PlayerInfo[playerid][pMats] >= 5000)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 5000;
-						GivePlayerValidWeapon(id, 24);
-
-						PlayerInfo[playerid][pArmsSkill] += 1;
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 24);
-						SetPVarInt(id, "pSellGunMats", 5000);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-						SetPVarInt(id, "pSellGunXP", 1);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "AK47", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 1200)
-			{
-				if(PlayerInfo[playerid][pDonateRank] > 2) {
-					if(PlayerInfo[playerid][pMats] >= 10000)
-					{
-						if(id == playerid)
-						{
-							PlayerInfo[playerid][pMats] -= 10000;
-							GivePlayerValidWeapon(id, 30);
-
-							PlayerInfo[playerid][pArmsSkill] += 1;
-						}
-						else
-						{
-							SetPVarInt(id, "pSellGun", 30);
-							SetPVarInt(id, "pSellGunMats", 10000);
-							SetPVarInt(id, "pSellGunID", playerid);
-							SetPVarInt(id, "pSellGunSession", g_arrQueryHandle[playerid]);
-							SetPVarInt(id, "pSellGunXP", 1);
-						}
-					}
-					else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-				}
-				else return SendClientMessageEx(playerid, COLOR_WHITE, "You need to be a Gold VIP to craft this weapon!");
-			}
-			else 
-			{
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Weapon!");
-			}
-			weapon[0] = toupper(weapon[0]);
-
-			if(id == playerid) 
-			{ 
-				format(szMiscArray, sizeof(szMiscArray), "%s crafts a %s from their materials, handing it to themselves.", GetPlayerNameEx(playerid), weapon); 
-				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-
-				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0); // Just a little 'classic' feel to it. -Winterfield
-			}
-			else 
-			{
-				format(szMiscArray, sizeof(szMiscArray), "You have offered %s a %s.", GetPlayerNameEx(id), weapon);
-				SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
-				format(szMiscArray, sizeof(szMiscArray), "%s has offered to sell you a %s, type /accept weapon to accept it.", GetPlayerNameEx(playerid), weapon);
-				SendClientMessage(id, COLOR_LIGHTBLUE, szMiscArray);
-			}
-
-			SetPVarInt(playerid, "pSellGunTime", gettime() + 10);
-			return 1; // Added so the error message would work.
-		}
-		else return SendClientMessageEx(playerid, COLOR_WHITE, "That player is not currently online, please try again!");
+		if(line[0]) SendClientMessageEx(playerid, COLOR_WHITE, "%s", line);
+		return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /sellgun [playerid] [weapon]");
 	}
-	SendClientMessage(playerid, COLOR_WHITE, "You are not an Arms Dealer!");
+	new recipe = -1;
+	for(new i; i < sizeof(ArmsRecipes); ++i)
+	{
+		if(!strcmp(name, ArmsRecipes[i][armsName], true))
+		{
+			recipe = i;
+			break;
+		}
+	}
+	if(recipe == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid weapon name. Use /sellgun to see available recipes.");
+	if(!ArmsDealer_Check(playerid, target, recipe, playerid)) return 1;
+	if(target == playerid) ArmsDealer_Complete(playerid, playerid, recipe);
+	else
+	{
+		ArmsDealer_ClearOffer(target);
+		SetPVarInt(target, "pSellGun", ArmsRecipes[recipe][armsWeapon]);
+		SetPVarInt(target, "pSellGunID", playerid);
+		SetPVarInt(target, "pSellGunSession", g_arrQueryHandle[playerid]);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You offered %s a %s.", GetPlayerNameEx(target), ArmsRecipes[recipe][armsName]);
+		SendClientMessageEx(target, COLOR_LIGHTBLUE, "%s offered to craft you a %s. Use /accept weapon to accept.", GetPlayerNameEx(playerid), ArmsRecipes[recipe][armsName]);
+	}
+	SetPVarInt(playerid, "pSellGunTime", now + 10);
 	return 1;
 }
