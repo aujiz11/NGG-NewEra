@@ -41,7 +41,7 @@ stock SendJobMessage(job, color, const string[])
 {
 	foreach(new i: Player)
 	{
-		if(((PlayerInfo[i][pJob] == job || PlayerInfo[i][pJob2] == job || PlayerInfo[i][pJob3] == job) && JobDuty[i] == 1) || ((PlayerInfo[i][pJob] == job || PlayerInfo[i][pJob2] == job || PlayerInfo[i][pJob3] == job) && (job == 7 && GetPVarInt(i, "MechanicDuty") == 1) || (job == 2 && GetPVarInt(i, "LawyerDuty") == 1))) {
+		if(((PlayerInfo[i][pJob] == job || PlayerInfo[i][pJob2] == job || PlayerInfo[i][pJob3] == job) && JobDuty[i] == 1) || ((PlayerInfo[i][pJob] == job || PlayerInfo[i][pJob2] == job || PlayerInfo[i][pJob3] == job) && (job == 7 && GetPVarInt(i, "MechanicDuty") == 1) || (job == 2 && IsALawyer(i) && GetPVarInt(i, "LawyerDuty") == 1))) {
 			SendClientMessageEx(i, color, string);
 		}
 	}
@@ -839,8 +839,8 @@ CMD:quitjob(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your Job.");
 					if(PlayerInfo[playerid][pJob] == 2)
 					{
-						if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
-						SetPVarInt(playerid, "LawyerDuty", 0);
+						Lawyer_StopDuty(playerid);
+						ApprovedLawyer[playerid] = 0;
 					}
 					if(PlayerInfo[playerid][pJob] == 7)
 					{
@@ -860,8 +860,8 @@ CMD:quitjob(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your second Job.");
 					if(PlayerInfo[playerid][pJob2] == 2)
 					{
-						if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
-						SetPVarInt(playerid, "LawyerDuty", 0);
+						Lawyer_StopDuty(playerid);
+						ApprovedLawyer[playerid] = 0;
 					}
 					if(PlayerInfo[playerid][pJob2] == 7)
 					{
@@ -881,8 +881,8 @@ CMD:quitjob(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your third job.");
 					if(PlayerInfo[playerid][pJob3] == 2)
 					{
-						if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
-						SetPVarInt(playerid, "LawyerDuty", 0);
+						Lawyer_StopDuty(playerid);
+						ApprovedLawyer[playerid] = 0;
 					}
 					if(PlayerInfo[playerid][pJob3] == 7)
 					{
@@ -910,8 +910,8 @@ CMD:quitjob(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your Job.");
 			if(PlayerInfo[playerid][pJob] == 2)
 			{
-				if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
-				SetPVarInt(playerid, "LawyerDuty", 0);
+				Lawyer_StopDuty(playerid);
+				ApprovedLawyer[playerid] = 0;
 			}
 			if(PlayerInfo[playerid][pJob] == 7)
 			{

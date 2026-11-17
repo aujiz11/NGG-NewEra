@@ -1238,31 +1238,8 @@ CMD:accept(playerid, params[])
                 return 1;
             }
         }
-        else if(strcmp(params, "lawyer", true) == 0) {
-            if(sscanf(params, "u", giveplayerid))
-            {
-                SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /accept lawyer [player]");
-                return 1;
-            }
-            if (IsACop(playerid)) {
-                if(IsPlayerConnected(giveplayerid)) {
-                    if(giveplayerid != INVALID_PLAYER_ID) {
-                        if(PlayerInfo[giveplayerid][pJob] == 2 || PlayerInfo[giveplayerid][pJob2] == 2 || PlayerInfo[giveplayerid][pJob3] == 2) {
-                            GetPlayerName(giveplayerid, giveplayer, sizeof(giveplayer));
-                            GetPlayerName(playerid, sendername, sizeof(sendername));
-                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You allowed %s to free a Jailed Person.", giveplayer);
-                            SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE,"* Officer %s approved (allowed) you to free a Jailed Person. (use /free)", sendername);
-                            ApprovedLawyer[giveplayerid] = 1;
-                            return 1;
-                        }
-                    }
-                }
-                return 1;
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GREY, "Invalid action! (You are no cop / person is not a Lawyer / Bad ID)");
-                return 1;
-            }
+        else if(!strcmp(params, "lawyer", true, 6) && (params[6] == ' ' || params[6] == EOS)) {
+			return Lawyer_Approve(playerid, params[6]);
         }
         else if(strcmp(params, "bodyguard", true) == 0) {
 			if(!Offer_IsCurrent(playerid, GuardOffer[playerid], "GuardOfferSession")) 
@@ -1321,61 +1298,10 @@ CMD:accept(playerid, params[])
             }
         }
         else if(strcmp(params, "defense", true) == 0) {
-			if(!Offer_IsCurrent(playerid, DefendOffer[playerid], "DefendOfferSession")) 
-				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
-            
-			if(DefendOffer[playerid] != INVALID_PLAYER_ID) {
-                if(GetPlayerCash(playerid) > DefendPrice[playerid]) {
-                    if(IsPlayerConnected(DefendOffer[playerid])) {
-                        /*new ip[32], ipex[32];
-                        GetPlayerIp(playerid, ip, sizeof(ip));
-                        GetPlayerIp(DefendOffer[playerid], ipex, sizeof(ipex));
-                        format(szMessage, sizeof(szMessage), "[LAWYER] %s (IP:%s) has paid $%d to %s (IP:%s)", GetPlayerNameEx(playerid), ip, DefendPrice[playerid], GetPlayerNameEx(DefendOffer[playerid]), ipex);
-                        Log("logs/pay.log", szMessage);*/
-                        PlayerInfo[playerid][pWantedLevel]--;
-                        SetPlayerWantedLevel(playerid, PlayerInfo[playerid][pWantedLevel]);
-                        SetPlayerToTeamColor(playerid);
-                        giveplayer = GetPlayerNameEx(DefendOffer[playerid]);
-                        sendername = GetPlayerNameEx(playerid);
-                        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You accepted the Defense for $%d from Lawyer %s.",DefendPrice[playerid],giveplayer);
-                        SendClientMessageEx(DefendOffer[playerid], COLOR_LIGHTBLUE, "* %s accepted your Defense, and the $%d was added to your money.",sendername,DefendPrice[playerid]);
-                        GivePlayerCash( DefendOffer[playerid],DefendPrice[playerid]);
-                        GivePlayerCash(playerid, -DefendPrice[playerid]);
-                        DefendOffer[playerid] = INVALID_PLAYER_ID;
-                        DefendPrice[playerid] = 0;
-                        return 1;
-                    }
-                    return 1;
-                }
-                else {
-                    SendClientMessageEx(playerid, COLOR_GREY, "   You can't afford the Protection!");
-                    return 1;
-                }
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GREY, "   No-one offered you any Protection!");
-                return 1;
-            }
+			return Lawyer_AcceptDefense(playerid);
         }
         else if(strcmp(params, "appeal", true) == 0) {
-			if(!Offer_IsCurrent(playerid, AppealOffer[playerid], "AppealOfferSession")) 
-				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
-            
-			if(AppealOffer[playerid] != INVALID_PLAYER_ID) {
-                if(IsPlayerConnected(AppealOffer[playerid])) {
-                    AppealOfferAccepted[playerid] = 1;
-                    giveplayer = GetPlayerNameEx(AppealOffer[playerid]);
-                    sendername = GetPlayerNameEx(playerid);
-                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You accepted the appeal from Lawyer %s.",giveplayer);
-                    SendClientMessageEx(AppealOffer[playerid], COLOR_LIGHTBLUE, "* %s accepted your appeal, a message to the Judicial System has been sent, please wait at the courtroom.",sendername);
-                    return 1;
-                }
-                return 1;
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GREY, "   No-one offered you any Protection!");
-                return 1;
-            }
+			return Lawyer_AcceptAppeal(playerid);
         }
  	    else if(strcmp(params, "rimkit", true) == 0) {
         	if (GetPVarType(playerid, "RimOffer")) {
@@ -2213,7 +2139,7 @@ CMD:cancel(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Cancel __________________|");
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cancel [name]");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Cannabis, Crack, Weapon, Craft, Repair, Lawyer, Bodyguard, Live, Refill, Car, Boxing");
+		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Cannabis, Crack, Weapon, Craft, Repair, Lawyer, Defense, Appeal, Bodyguard, Live, Refill, Car, Boxing");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Taxi, Bus, Medic, Mechanic, Ticket, Witness, Marriage, Drink, House, Shipment, Help, Firstaid, Garbage");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: FoodOffer, RenderAid, DrugRun");
 		if(PlayerInfo[playerid][pTut] != -1) SendClientMessageEx(playerid, COLOR_GREY, "Special: objectives");
@@ -2272,6 +2198,8 @@ CMD:cancel(playerid, params[])
         DeletePVar(playerid, "RepairOfferTo");
     }
 	else if(strcmp(choice,"lawyer",true) == 0) { WantLawyer[playerid] = 0; CallLawyer[playerid] = 0; }
+	else if(strcmp(choice,"defense",true) == 0) { DefendOffer[playerid] = INVALID_PLAYER_ID; DefendPrice[playerid] = 0; DeletePVar(playerid, "DefendOfferSession"); }
+	else if(strcmp(choice,"appeal",true) == 0) { Lawyer_ClearAppeal(playerid); }
 	else if(strcmp(choice,"bodyguard",true) == 0) { GuardOffer[playerid] = INVALID_PLAYER_ID; GuardPrice[playerid] = 0; }
 	else if(strcmp(choice,"live",true) == 0) { LiveOffer[playerid] = INVALID_PLAYER_ID; }
 	else if(strcmp(choice,"refill",true) == 0) { RefillOffer[playerid] = INVALID_PLAYER_ID; RefillPrice[playerid] = 0; DeletePVar(playerid, "RefillOfferSession"); DeletePVar(playerid, "RefillVehicle"); }

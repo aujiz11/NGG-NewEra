@@ -720,6 +720,7 @@ CMD:warrantarrest(playerid, params[])
 				SetPlayerWantedLevel(suspect, 0);
 				WantLawyer[suspect] = 1;
 				ClearAnimationsEx(suspect);
+				Lawyer_ClearAppeal(suspect);
 				PlayerInfo[suspect][pBeingSentenced] = 60;
 				SetPlayerColor(suspect, SHITTY_JUDICIALSHITHOTCH);
 				SendClientMessageEx(suspect, COLOR_LIGHTBLUE, "You have been arrested for a pending warrant on you, you'll be attended by a judge soon.");
@@ -753,6 +754,7 @@ CMD:adjourn(playerid, params[])
 	{
 	    if(PlayerInfo[giveplayerid][pBeingSentenced])
 	    {
+			Lawyer_ClearAppeal(giveplayerid);
 	    	PlayerInfo[giveplayerid][pBeingSentenced] = 0;
             TogglePlayerControllable(giveplayerid, true);
 	    	DeletePVar(giveplayerid, "IsFrozen");
@@ -784,6 +786,7 @@ CMD:sentence(playerid, params[]) {
 			SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
 		}
  		else if(PlayerInfo[giveplayerid][pBeingSentenced]) {
+			Lawyer_ClearAppeal(giveplayerid);
 			PlayerInfo[giveplayerid][pBeingSentenced] = 0;
             TogglePlayerControllable(giveplayerid, false);
 	    	SetPVarInt(giveplayerid, "IsFrozen", 1);

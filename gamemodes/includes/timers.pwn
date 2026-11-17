@@ -1955,6 +1955,7 @@ task SyncUp[60000]()
 				SetPlayerPos(i, 1415.5137,-1702.2272,13.5395);
 				SetPlayerFacingAngle(i, 240.0264);
 				SendClientMessageEx(i, COLOR_WHITE, "No Judge has attended your pending trial, you are free!");
+				Lawyer_ClearAppeal(i);
 				PlayerInfo[i][pBeingSentenced] = 0;
 			}
 		}

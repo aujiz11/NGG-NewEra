@@ -1604,7 +1604,11 @@ public OnPlayerConnect(playerid)
 
 public OnPlayerDisconnect(playerid, reason)
 {
-	if(InRing && (Boxer1 == playerid || Boxer2 == playerid)) Boxing_End(INVALID_PLAYER_ID, playerid);
+	if(InRing && (Boxer1 == playerid || Boxer2 == playerid)) {
+		Boxing_End(INVALID_PLAYER_ID, playerid);
+	}
+	
+	Lawyer_StopDuty(playerid);
 	CancelTruckDelivery(playerid, true, false);
 	Mechanic_CancelFix(playerid, false);
 	Craftsman_StopFirstAid(playerid);
@@ -1654,14 +1658,14 @@ public OnPlayerDisconnect(playerid, reason)
 		if(RepairOffer[i] == playerid) RepairOffer[i] = INVALID_PLAYER_ID;
 		if(RefillOffer[i] == playerid) RefillOffer[i] = INVALID_PLAYER_ID;
 		if(GuardOffer[i] == playerid) GuardOffer[i] = INVALID_PLAYER_ID;
-		if(DefendOffer[i] == playerid) DefendOffer[i] = INVALID_PLAYER_ID;
+		if(DefendOffer[i] == playerid) { DefendOffer[i] = INVALID_PLAYER_ID; DefendPrice[i] = 0; DeletePVar(i, "DefendOfferSession"); }
 		if(LiveOffer[i] == playerid) LiveOffer[i] = INVALID_PLAYER_ID;
 		if(BoxOffer[i] == playerid) BoxOffer[i] = INVALID_PLAYER_ID;
 		if(MarryWitnessOffer[i] == playerid) MarryWitnessOffer[i] = INVALID_PLAYER_ID;
 		if(ProposeOffer[i] == playerid) ProposeOffer[i] = INVALID_PLAYER_ID;
 		if(TicketOffer[i] == playerid) TicketOffer[i] = INVALID_PLAYER_ID;
 		if(SexOffer[i] == playerid) SexOffer[i] = INVALID_PLAYER_ID;
-		if(AppealOffer[i] == playerid) AppealOffer[i] = INVALID_PLAYER_ID;
+		if(AppealOffer[i] == playerid) Lawyer_ClearAppeal(i);
 		if(hInviteOffer[i] == playerid) hInviteOffer[i] = INVALID_PLAYER_ID;
         if(HitOffer[i] == playerid || HitToGet[i] == playerid) {
             HitOffer[i] = INVALID_PLAYER_ID;

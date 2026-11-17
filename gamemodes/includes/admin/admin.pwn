@@ -3547,6 +3547,7 @@ CMD:release(playerid, params[])
 				SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s has been released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				PhoneOnline[giveplayerid] = 0;
 				PlayerInfo[giveplayerid][pWantedLevel] = 0;
+				Lawyer_ClearAppeal(giveplayerid);
 				PlayerInfo[giveplayerid][pBeingSentenced] = 0;
 				SetPlayerToTeamColor(giveplayerid);
 				SetHealth(giveplayerid, 100);
@@ -5567,6 +5568,7 @@ CMD:srelease(playerid, params[])
 				ABroadCast(COLOR_LIGHTRED, string, 2);
 				PhoneOnline[giveplayerid] = 0;
 				PlayerInfo[giveplayerid][pWantedLevel] = 0;
+				Lawyer_ClearAppeal(giveplayerid);
 				PlayerInfo[giveplayerid][pBeingSentenced] = 0;
 				SetPlayerToTeamColor(giveplayerid);
 				SetHealth(giveplayerid, 100);

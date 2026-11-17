@@ -34,168 +34,302 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+stock Lawyer_CanAct(playerid)
+{
+	return 0 <= playerid < MAX_PLAYERS && IsPlayerConnected(playerid) && gPlayerLogged{playerid}
+		&& !PlayerIsDead[playerid] && PlayerInfo[playerid][pJailTime] <= 0 && PlayerInfo[playerid][pBeingSentenced] <= 0
+		&& !GetPVarInt(playerid, "Injured") && !GetPVarInt(playerid, "PlayerCuffed") && !GetPVarInt(playerid, "pBagged");
+}
+
+stock Lawyer_IsNear(playerid, target)
+{
+	if(!(0 <= playerid < MAX_PLAYERS) || !(0 <= target < MAX_PLAYERS) || !IsPlayerConnected(playerid) || !IsPlayerConnected(target)
+		|| !gPlayerLogged{playerid} || !gPlayerLogged{target} || playerid == target) return 0;
+	if(GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(target) || GetPlayerInterior(playerid) != GetPlayerInterior(target)) return 0;
+	new Float:x, Float:y, Float:z;
+	GetPlayerPos(target, x, y, z);
+	return IsPlayerInRangeOfPoint(playerid, 8.0, x, y, z);
+}
+
+stock Lawyer_StopDuty(playerid)
+{
+	if(GetPVarInt(playerid, "LawyerDuty") == 1 && Lawyers > 0) --Lawyers;
+	DeletePVar(playerid, "LawyerDuty");
+	return 1;
+}
+
+stock Lawyer_ClearAppeal(playerid)
+{
+	AppealOffer[playerid] = INVALID_PLAYER_ID;
+	AppealOfferAccepted[playerid] = 0;
+	DeletePVar(playerid, "AppealOfferSession");
+	return 1;
+}
+
+stock Lawyer_Approve(playerid, const params[])
+{
+	if(!IsACop(playerid) || !Lawyer_CanAct(playerid))
+		return SendClientMessageEx(playerid, COLOR_GREY, "Only an available officer can approve a lawyer.");
+	
+	new lawyer;
+	if(sscanf(params, "u", lawyer)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /accept lawyer [player]");
+	
+	if(!(0 <= lawyer < MAX_PLAYERS) || !IsPlayerConnected(lawyer) || !gPlayerLogged{lawyer})
+		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+	
+	if(!IsALawyer(lawyer) || !Lawyer_CanAct(lawyer)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not an available lawyer.");
+	if(!Lawyer_IsNear(playerid, lawyer)) return SendClientMessageEx(playerid, COLOR_GREY, "The lawyer must be near you in the same interior and world.");
+	
+	ApprovedLawyer[lawyer] = 1;
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You allowed %s to free one jailed person.", GetPlayerNameEx(lawyer));
+	SendClientMessageEx(lawyer, COLOR_LIGHTBLUE, "* Officer %s approved you to free one jailed person. Use /free [player].", GetPlayerNameEx(playerid));
+	return 1;
+}
+
+stock Lawyer_AcceptDefense(playerid)
+{
+	new lawyer = DefendOffer[playerid], price = DefendPrice[playerid];
+	if(!Offer_IsCurrent(playerid, lawyer, "DefendOfferSession"))
+	{
+		DefendOffer[playerid] = INVALID_PLAYER_ID;
+		DefendPrice[playerid] = 0;
+		DeletePVar(playerid, "DefendOfferSession");
+		return SendClientMessageEx(playerid, COLOR_GREY, "This defense offer is no longer valid.");
+	}
+	if(!IsALawyer(lawyer) || !Lawyer_CanAct(lawyer)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "The lawyer is no longer available to defend you.");
+	
+	if(!Lawyer_IsNear(playerid, lawyer)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "The lawyer must be near you in the same interior and world.");
+	
+	if(PlayerIsDead[playerid] || GetPVarInt(playerid, "Injured") || PlayerInfo[playerid][pJailTime] > 0 || PlayerInfo[playerid][pBeingSentenced] > 0)
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot receive this defense right now.");
+	
+	if(PlayerInfo[playerid][pWantedLevel] <= 0) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are no longer wanted.");
+	
+	if(PlayerInfo[playerid][pDefendTime] > 0) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d minutes before receiving a defense.", PlayerInfo[playerid][pDefendTime]);
+	
+	if(!(20000 <= price <= 1000000)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "This defense price is no longer valid.");
+	
+	if(GetPlayerCash(playerid) < price) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot afford this defense.");
+	
+	if(GetPlayerCash(lawyer) > cellmax - price) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "The lawyer cannot carry this payment.");
+
+	DefendOffer[playerid] = INVALID_PLAYER_ID;
+	DefendPrice[playerid] = 0;
+	DeletePVar(playerid, "DefendOfferSession");
+	--PlayerInfo[playerid][pWantedLevel];
+	GivePlayerCash(playerid, -price);
+	GivePlayerCash(lawyer, price);
+	SetPlayerWantedLevel(playerid, PlayerInfo[playerid][pWantedLevel]);
+	SetPlayerToTeamColor(playerid);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You accepted the defense for $%d from Lawyer %s.", price, GetPlayerNameEx(lawyer));
+	SendClientMessageEx(lawyer, COLOR_LIGHTBLUE, "* %s accepted your defense and paid you $%d.", GetPlayerNameEx(playerid), price);
+	return 1;
+}
+
+stock Lawyer_AcceptAppeal(playerid)
+{
+	new lawyer = AppealOffer[playerid];
+	if(!Offer_IsCurrent(playerid, lawyer, "AppealOfferSession"))
+	{
+		Lawyer_ClearAppeal(playerid);
+		return SendClientMessageEx(playerid, COLOR_GREY, "This appeal offer is no longer valid.");
+	}
+
+	if(AppealOfferAccepted[playerid]) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You have already accepted this lawyer.");
+	
+	if(PlayerInfo[playerid][pBeingSentenced] <= 0 || PlayerIsDead[playerid]) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not awaiting a sentence.");
+	
+	if(!IsALawyer(lawyer) || !Lawyer_CanAct(lawyer)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "That lawyer is no longer available.");
+	
+	if(!Lawyer_IsNear(playerid, lawyer)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "The lawyer must be near you in the same interior and world.");
+	
+	AppealOfferAccepted[playerid] = 1;
+	new message[128];
+	format(message, sizeof(message), "<< Lawyer %s is representing %s in a pending appeal >>", GetPlayerNameEx(lawyer), GetPlayerNameEx(playerid));
+	SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, message);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You accepted the appeal from Lawyer %s.", GetPlayerNameEx(lawyer));
+	SendClientMessageEx(lawyer, COLOR_LIGHTBLUE, "* %s accepted your appeal. The Judicial System has been notified.", GetPlayerNameEx(playerid));
+	return 1;
+}
+
 CMD:lawyerduty(playerid, params[])
 {
-	if(!IsALawyer(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Lawyer!");
 	if(GetPVarInt(playerid, "LawyerDuty") == 1)
 	{
-        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now off duty on your lawyer job and will not receive calls anymore.");
-		SetPVarInt(playerid, "LawyerDuty", 0);
-        Lawyers -= 1;
-    }
-    else if(GetPVarInt(playerid, "LawyerDuty") == 0)
-	{
-        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now on duty on your lawyer job and will receive calls from people in need.");
-		SetPVarInt(playerid, "LawyerDuty", 1);
-        Lawyers += 1;
-    }
-    return 1;
+		Lawyer_StopDuty(playerid);
+		return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now off duty and will not receive lawyer calls.");
+	}
+
+	if(!IsALawyer(playerid)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Lawyer!");
+	
+	if(!Lawyer_CanAct(playerid)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot go on lawyer duty right now.");
+	
+	SetPVarInt(playerid, "LawyerDuty", 1);
+	++Lawyers;
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now on lawyer duty and will receive calls from people in need.");
+	return 1;
 }
+
 CMD:defendtime(playerid, params[])
 {
-	if(PlayerInfo[playerid][pDefendTime] < 1)
-	{
-		SendClientMessageEx(playerid, COLOR_YELLOW, "You're able to receive defense now.");
+	if(PlayerInfo[playerid][pDefendTime] < 1) {
+		SendClientMessageEx(playerid, COLOR_YELLOW, "You are able to receive a defense now.");
 	}
-	else {	
+	else {
 		SendClientMessageEx(playerid, COLOR_YELLOW, "You will be able to receive a defense in %d minutes.", PlayerInfo[playerid][pDefendTime]);
-	}	
+	}
 	return 1;
 }
 
 CMD:offerappeal(playerid, params[])
 {
-  	if(!IsALawyer(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Lawyer!");
-    new giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /offerappeal [player]");
-	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
-	if(IsPlayerConnected(giveplayerid))
+	if(!IsALawyer(playerid)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Lawyer!");
+	
+	if(!Lawyer_CanAct(playerid)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot offer an appeal right now.");
+	
+	new target;
+	if(sscanf(params, "u", target)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /offerappeal [player]");
+	
+	if(!Lawyer_IsNear(playerid, target)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "The client must be near you in the same interior and world.");
+	
+	if(PlayerInfo[target][pBeingSentenced] <= 0 || PlayerIsDead[target]) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "That person is not awaiting a sentence.");
+	
+	if(AppealOfferAccepted[target])
 	{
-	    if(PlayerInfo[giveplayerid][pBeingSentenced] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "That person isn't pending a sentence!");
-	    if(AppealOfferAccepted[giveplayerid] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "That person has already accepted a lawyer to appeal for him!");
-		AppealOffer[giveplayerid] = playerid;
-		SetPVarInt(giveplayerid, "AppealOfferSession", g_arrQueryHandle[playerid]);
-	    SendClientMessageEx(playerid, COLOR_WHITE, "You have offered your lawyer services to %s.",GetPlayerNameEx(giveplayerid));
-	    SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has offered their lawyer services (use /accept appeal to accept them).", GetPlayerNameEx(playerid));
+		if(Offer_IsCurrent(target, AppealOffer[target], "AppealOfferSession") && IsALawyer(AppealOffer[target]))
+			return SendClientMessageEx(playerid, COLOR_GREY, "That person already has a lawyer for this appeal.");
+		
+		Lawyer_ClearAppeal(target);
 	}
+
+	AppealOffer[target] = playerid;
+	SetPVarInt(target, "AppealOfferSession", g_arrQueryHandle[playerid]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You offered your lawyer services to %s.", GetPlayerNameEx(target));
+	SendClientMessageEx(target, COLOR_WHITE, "%s offered their lawyer services. Use /accept appeal to accept.", GetPlayerNameEx(playerid));
 	return 1;
 }
 
 CMD:free(playerid, params[])
 {
+	if(!IsALawyer(playerid)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Lawyer!");
+	
+	if(!Lawyer_CanAct(playerid)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot release a client right now.");
+	
+	new target;
+	if(sscanf(params, "u", target)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /free [player]");
+	
+	if(!Lawyer_IsNear(playerid, target)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "The prisoner must be near you in the same interior and world.");
+	
+	if(PlayerInfo[playerid][pLawSkill] < 400 && !ApprovedLawyer[playerid])
+		return SendClientMessageEx(playerid, COLOR_GREY, "You need officer approval to release a prisoner.");
+	
+	if(PlayerInfo[target][pJailTime] <= 1 || WantLawyer[target] < 1 || PlayerIsDead[target]
+		|| PlayerInfo[target][pBeingSentenced] > 0 || strfind(PlayerInfo[target][pPrisonReason], "[OOC]", true) != -1)
+		return SendClientMessageEx(playerid, COLOR_GREY, "That person is not eligible for a lawyer release.");
 
-	if(!IsALawyer(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Lawyer!");
-
-	if(PlayerInfo[playerid][pLawSkill] >= 401)
+	ApprovedLawyer[playerid] = 0;
+	WantLawyer[target] = CallLawyer[target] = 0;
+	PlayerInfo[target][pBailPrice] = 0;
+	PlayerInfo[target][pJailTime] = 1;
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You freed %s from jail.", GetPlayerNameEx(target));
+	SendClientMessageEx(target, COLOR_LIGHTBLUE, "* Lawyer %s arranged your release from jail.", GetPlayerNameEx(playerid));
+	new oldSkill = PlayerInfo[playerid][pLawSkill], gained = PlayerInfo[playerid][pDoubleEXP] > 0 ? 2 : 1;
+	if(oldSkill > cellmax - gained) gained = cellmax - oldSkill;
+	PlayerInfo[playerid][pLawSkill] += gained;
+	if(gained > 1) SendClientMessageEx(playerid, COLOR_YELLOW, "You gained %d lawyer skill points with your Double EXP token. It has %d hours left.", gained, PlayerInfo[playerid][pDoubleEXP]);
+	static const levels[] = {50, 100, 200, 400};
+	for(new i; i < sizeof(levels); ++i)
 	{
-		ApprovedLawyer[playerid] = 1;
-	}
-
-	new
-		giveplayerid;
-
-	if(sscanf(params, "u", giveplayerid)) {
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /free [player]");
-	}
-	else if(!IsPlayerConnected(giveplayerid)) {
-		SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-	}
-	else if(giveplayerid == playerid) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You cannot free yourself.");
-	}
-	else if(PlayerInfo[giveplayerid][pJailTime] > 0 && ApprovedLawyer[playerid] == 1 && WantLawyer[giveplayerid] >= 1) {
-
-
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You freed %s from jail.", GetPlayerNameEx(giveplayerid));
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You were freed from jail, by Lawyer %s.", GetPlayerNameEx(playerid));
-		ApprovedLawyer[playerid] = 0;
-		WantLawyer[giveplayerid] = 0;
-		CallLawyer[giveplayerid] = 0;
-		PlayerInfo[giveplayerid][pBailPrice] = 0;
-		PlayerInfo[giveplayerid][pJailTime] = 1;
-
-		if(PlayerInfo[playerid][pDoubleEXP] > 0)
+		if(oldSkill < levels[i] && PlayerInfo[playerid][pLawSkill] >= levels[i])
 		{
-			SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 lawyer skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-			PlayerInfo[playerid][pLawSkill] += 2;
-		}
-		else ++PlayerInfo[playerid][pLawSkill];
-
-		switch(PlayerInfo[playerid][pLawSkill]) {
-			case 50: SendClientMessageEx(playerid, COLOR_YELLOW, "* Your lawyer skill is now Level 2, you will earn more money and now have a shorter reload time.");
-			case 100: SendClientMessageEx(playerid, COLOR_YELLOW, "* Your lawyer skill is now Level 3, you will earn more money and now have a shorter reload time.");
-			case 200: SendClientMessageEx(playerid, COLOR_YELLOW, "* Your lawyer skill is now Level 4, you will earn more money and now have a shorter reload time.");
-			case 400: SendClientMessageEx(playerid, COLOR_YELLOW, "* Your lawyer skill is now Level 5, you will earn more money and now have a shorter reload time.");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "* Your lawyer skill is now Level %d.", i + 2);
+			break;
 		}
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "That person doesn't need a laywer.");
 	return 1;
 }
+
 CMD:finishappeal(playerid, params[])
 {
-	if(!IsALawyer(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Lawyer!");
-    new giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /finishappeal [player]");
-	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
-	if(IsPlayerConnected(giveplayerid))
-	{
-	    if(AppealOffer[giveplayerid] != playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not offering your services to this player!");
-	    SendClientMessageEx(playerid, COLOR_WHITE, "You have finished your Lawyer services to %s.",GetPlayerNameEx(giveplayerid));
-	    SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has finished offering their Lawyer services.", GetPlayerNameEx(playerid));
-	    AppealOffer[giveplayerid] = INVALID_PLAYER_ID;
-		AppealOfferAccepted[giveplayerid] = 0;
-	}
+	if(!IsALawyer(playerid)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Lawyer!");
+	
+	new target;
+	if(sscanf(params, "u", target)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /finishappeal [player]");
+	
+	if(!(0 <= target < MAX_PLAYERS) || !IsPlayerConnected(target) || !gPlayerLogged{target}) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+	
+	if(AppealOffer[target] != playerid || !Offer_IsCurrent(target, playerid, "AppealOfferSession"))
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not offering services to that player.");
+	
+	Lawyer_ClearAppeal(target);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You finished offering lawyer services to %s.", GetPlayerNameEx(target));
+	SendClientMessageEx(target, COLOR_WHITE, "%s finished offering their lawyer services.", GetPlayerNameEx(playerid));
 	return 1;
 }
 
 CMD:defend(playerid, params[])
 {
-	if(!IsALawyer(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Lawyer!");
-
-	if(gettime() < PlayerInfo[playerid][pLawyerTime])
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1,"You must wait %d seconds!", PlayerInfo[playerid][pLawyerTime]-gettime());
-		return 1;
-	}
-
-	new giveplayerid, money;
-	if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /defend [player] [price]");
-	if(money < 20000 || money > 1000000) { SendClientMessageEx(playerid, COLOR_GREY, "   Price not lower then $20,000 or above $1,000,000!"); return 1; }
-	if(IsPlayerConnected(giveplayerid))
-	{
-		if(ProxDetectorS(8.0, playerid, giveplayerid))
-		{
-			if(giveplayerid == playerid)
-			{
-				SendClientMessageEx(playerid, COLOR_GREY, "   Cant offer protection to yourself!");
-				return 1;
-			}
-			if(PlayerInfo[giveplayerid][pDefendTime] > 0) {
-			    return SendClientMessageEx(playerid, COLOR_GRAD2, "You need wait 1 hour before defending this player.");
-			}
-			if(PlayerInfo[giveplayerid][pWantedLevel] > 0)
-			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered to defend %s for $%d.", GetPlayerNameEx(giveplayerid), money);
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Lawyer %s wants to defend you for $%d, (type /accept defense) to accept.", GetPlayerNameEx(playerid), money);
-				PlayerInfo[playerid][pLawyerTime] = gettime()+60;
-				DefendOffer[giveplayerid] = playerid;
-				SetPVarInt(giveplayerid, "DefendOfferSession", g_arrQueryHandle[playerid]);
-				DefendPrice[giveplayerid] = money;
-			}
-			else
-			{
-				SendClientMessageEx(playerid, COLOR_GREY, "   That person is not wanted!");
-			}
-		}
-		else
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
-		}
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-	}
+	if(!IsALawyer(playerid)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Lawyer!");
+	
+	if(!Lawyer_CanAct(playerid)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot offer a defense right now.");
+	
+	new now = gettime();
+	if(now < PlayerInfo[playerid][pLawyerTime]) 
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "You must wait %d seconds!", PlayerInfo[playerid][pLawyerTime] - now);
+	
+	new target, price;
+	if(sscanf(params, "ud", target, price)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /defend [player] [price]");
+	
+	if(!(20000 <= price <= 1000000)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "The defense price must be between $20,000 and $1,000,000.");
+	
+	if(!Lawyer_IsNear(playerid, target)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "The client must be near you in the same interior and world.");
+	
+	if(PlayerInfo[target][pWantedLevel] <= 0) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "That person is not wanted.");
+	
+	if(PlayerInfo[target][pDefendTime] > 0) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "That person must wait %d minutes before receiving a defense.", PlayerInfo[target][pDefendTime]);
+	
+	if(PlayerIsDead[target] || GetPVarInt(target, "Injured") || PlayerInfo[target][pJailTime] > 0 || PlayerInfo[target][pBeingSentenced] > 0)
+		return SendClientMessageEx(playerid, COLOR_GREY, "That person cannot receive a defense right now.");
+	
+	PlayerInfo[playerid][pLawyerTime] = now + 60;
+	DefendOffer[target] = playerid;
+	DefendPrice[target] = price;
+	SetPVarInt(target, "DefendOfferSession", g_arrQueryHandle[playerid]);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered to defend %s for $%d.", GetPlayerNameEx(target), price);
+	SendClientMessageEx(target, COLOR_LIGHTBLUE, "* Lawyer %s offered to defend you for $%d. Use /accept defense to accept.", GetPlayerNameEx(playerid), price);
 	return 1;
 }
-

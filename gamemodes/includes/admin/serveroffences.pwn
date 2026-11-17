@@ -81,6 +81,7 @@ CMD:reverse(playerid, params[])
 
 			PhoneOnline[giveplayerid] = 0;
 			//PlayerInfo[giveplayerid][pWantedLevel] = 0;
+			Lawyer_ClearAppeal(giveplayerid);
 			PlayerInfo[giveplayerid][pBeingSentenced] = 0;
 			SetPlayerToTeamColor(giveplayerid);
 			SetHealth(giveplayerid, 100);
@@ -393,6 +394,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			Log("logs/admin.log", string);
 			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s has been released from prison by %s, reason: Reversed (%s)", GetPlayerNameEx(releasedID), GetPlayerNameEx(playerid), GetPlayerNameEx(rPlayerID));
 			//PlayerInfo[releasedID][pWantedLevel] = 0;
+			Lawyer_ClearAppeal(releasedID);
 			PlayerInfo[releasedID][pBeingSentenced] = 0;
 			SetPlayerToTeamColor(releasedID);
 			SetHealth(releasedID, 100);
