@@ -1353,9 +1353,6 @@ public OnPlayerConnect(playerid)
 	szAdvert[playerid][0] = 0;
 	AdvertType[playerid] = 0;
 	SelectFCharPlace[playerid]=0;
-	GettingJob[playerid]=0;
-	GettingJob2[playerid]=0;
-	GettingJob3[playerid]=0;
 	ApprovedLawyer[playerid]=0;
 	CallLawyer[playerid]=0;
 	WantLawyer[playerid]=0;

@@ -47,36 +47,6 @@ stock SendJobMessage(job, color, const string[])
 	}
 }
 
-/*
-stock GetJobName(job)
-{
-	new name[20];
-	switch(job)
-	{
-		case 1: name = "Detective";
-		case 2: name = "Lawyer";
-		case 3: name = "Whore";
-		case 4: name = "Drugs Dealer";
-		case 6: name = "News Reporter";
-		case 7: name = "Car Mechanic";
-		case 8: name = "Bodyguard";
-		case 9: name = "Arms Dealer";
-		case 10: name = "Car Dealer";
-		case 12: name = "Boxer";
-		case 14: name = "Drug Smuggler";
-		case 15: name = "Paper Boy";
-		case 16: name = "Shipment Contractor";
-		case 17: name = "Taxi Driver";
-		case 18: name = "Craftsman";
-		case 19: name = "Bartender";
-		case 20: name = "Shipment Contractor";
-		case 21: name = "Pizza Boy";
-		default: name = "None";
-	}
-	return name;
-}
-*/
-
 stock GetJobLevel(playerid, job)
 {
 	new jlevel;
@@ -121,9 +91,9 @@ stock GetJobLevel(playerid, job)
 		case 9:
 		{
 			new skilllevel = PlayerInfo[playerid][pArmsSkill];
-			if(skilllevel >= 50 && skilllevel < 200) jlevel = 1;
-			else if(skilllevel >= 200 && skilllevel < 300) jlevel = 2;
-			else if(skilllevel >= 300 && skilllevel < 700) jlevel = 3;
+			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
+			else if(skilllevel >= 50 && skilllevel < 200) jlevel = 2;
+			else if(skilllevel >= 200 && skilllevel < 700) jlevel = 3;
 			else if(skilllevel >= 700 && skilllevel < 1200) jlevel = 4;
 			else if(skilllevel >= 1200) jlevel = 5;
 		}
@@ -386,312 +356,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 CMD:join(playerid, params[])
 {
-	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this while being inside a vehicle.");
-	if(GetPlayerState(playerid) == 1 && PlayerInfo[playerid][pJob] == 0 || (PlayerInfo[playerid][pJob2] == 0 && (PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0)) || (PlayerInfo[playerid][pJob3] == 0 && PlayerInfo[playerid][pDonateRank] >= 3)) {
-		if(IsPlayerInRangeOfPoint(playerid,3.0,251.99, 117.36, 1003.22) || IsPlayerInRangeOfPoint(playerid,3.0, 1478.9515, -1755.7147, 3285.2859) || IsPlayerInRangeOfPoint(playerid,3.0,301.042633, 178.700408, 1007.171875) || IsPlayerInRangeOfPoint(playerid,3.0,-1385.6786,2625.6636,55.5572)) {
-			if(PlayerInfo[playerid][pJob] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Detective, type /accept job.");
-				GettingJob[playerid] = 1;
-				return 1;
-			}
-			if((PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob2] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Detective, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a secondary job. Only VIP/Famed can do this.");
-				GettingJob2[playerid] = 1;
-				return 1;
-			}
-			if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pJob3] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Detective, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
-				GettingJob3[playerid] = 1;
-				return 1;
-			}
-		}
-		else if(IsPlayerInRangeOfPoint(playerid, 3.0, 1469.5247, -1755.7039, 3285.2859)) {
-			if(PlayerInfo[playerid][pJob] == 0){
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Lawyer, type /accept job.");
-				GettingJob[playerid] = 2;
-				return 1;
-			}
-			if((PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob2] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Lawyer, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a secondary job. Only VIP/Famed can do this.");
-				GettingJob2[playerid] = 2;
-				return 1;
-			}
-			if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pJob3] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Lawyer, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
-				GettingJob3[playerid] = 2;
-				return 1;
-			}
-		}
-		else if (IsPlayerInRangeOfPoint(playerid,3.0,1215.1304,-11.8431,1000.9219)) {
-			if(PlayerInfo[playerid][pJob] == 0){
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Whore, type /accept job.");
-				GettingJob[playerid] = 3;
-				return 1;
-			}
-			if((PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob2] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Whore, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a secondary job. Only VIP/Famed can do this.");
-				GettingJob2[playerid] = 3;
-				return 1;
-			}
-			if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pJob3] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Whore, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
-				GettingJob3[playerid] = 3;
-				return 1;
-			}
-		}
-		/*else if (IsPlayerInRangeOfPoint(playerid,3.0,2166.3772,-1675.3829,15.0859) || IsPlayerInRangeOfPoint(playerid,3.0,-2089.344970, 87.800231, 35.320312) || IsPlayerInRangeOfPoint(playerid,3.0,-1528.0924,2688.7837,55.8359)) {
-			if(PlayerInfo[playerid][pJob] == 0){
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Drug Dealer, type /accept job.");
-				GettingJob[playerid] = 4;
-				return 1;
-			}
-			if((PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob2] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Drug Dealer, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a secondary job. Only VIP/Famed can do this.");
-				GettingJob2[playerid] = 4;
-				return 1;
-			}
-			if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pJob3] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Drug Dealer, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
-				GettingJob3[playerid] = 4;
-				return 1;
-			}
-		}*/
-		else if (IsPlayerInRangeOfPoint(playerid,3.0,161.92, -25.70, 1.57) || IsPlayerInRangeOfPoint(playerid,3.0,-2032.601928, 143.866592, 28.835937) || IsPlayerInRangeOfPoint(playerid,3.0,-1475.4224,1877.3550,32.6328) || IsPlayerInRangeOfPoint(playerid,3.0,-2412.5095, 2279.8159, 4.8137)) {
-			if(PlayerInfo[playerid][pJob] == 0){
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Mechanic, type /accept job.");
-				GettingJob[playerid] = 7;
-				return 1;
-			}
-			if((PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob2] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Mechanic, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a secondary job. Only VIP/Famed can do this.");
-				GettingJob2[playerid] = 7;
-				return 1;
-			}
-			if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pJob3] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Mechanic, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
-				GettingJob3[playerid] = 7;
-				return 1;
-			}
-		}
-		else if (IsPlayerInRangeOfPoint(playerid,3.0,1224.13, 267.98, 19.55) || IsPlayerInRangeOfPoint(playerid,3.0,-2269.256103, -158.054321, 35.320312) || IsPlayerInRangeOfPoint(playerid,3.0,2226.1716,-1718.1792,13.5165) || IsPlayerInRangeOfPoint(playerid,3.0,1099.73,-1504.67,15.800) || IsPlayerInRangeOfPoint(playerid,3.0,-821.3508,1574.9393,27.1172) || IsPlayerInRangeOfPoint(playerid,3.0,-2412.5095, 2293.3923, 4.8137)) {
-			if(PlayerInfo[playerid][pJob] == 0){
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Bodyguard, type /accept job.");
-				GettingJob[playerid] = 8;
-				return 1;
-			}
-			if((PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob2] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Bodyguard, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a secondary job. Only VIP/Famed can do this.");
-				GettingJob2[playerid] = 8;
-				return 1;
-			}
-			if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pJob3] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Bodyguard, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
-				GettingJob3[playerid] = 8;
-				return 1;
-			}
-		}
-		/*else if (IsPlayerInRangeOfPoint(playerid,3.0,1366.4325,-1275.2096,13.5469) || IsPlayerInRangeOfPoint(playerid,3.0,-2623.333984, 209.235931, 4.684767) || IsPlayerInRangeOfPoint(playerid,3.0,-1513.4904,2614.3591,55.8078)) {
-			if(PlayerInfo[playerid][pJob] == 0){
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become an Arms Dealer, type /accept job.");
-				GettingJob[playerid] = 9;
-				return 1;
-			}
-			if((PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob2] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become an Arms Dealer, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a secondary job. Only VIP/Famed can do this.");
-				GettingJob2[playerid] = 9;
-				return 1;
-			}
-			if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pJob3] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become an Arms Dealer, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
-				GettingJob3[playerid] = 9;
-				return 1;
-			}
-		}*/
-		/*else if (PlayerInfo[playerid][pJob] == 0 && GetPlayerState(playerid) == 1 && IsPlayerInRangeOfPoint(playerid,3.0,531.7930,-1292.4044,17.2422)) {
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Car Dealer, type /accept job.");
-			GettingJob[playerid] = 10;
-			return 1;
-		}*/
-		else if (IsPlayerInRangeOfPoint(playerid,3.0,766.0804,14.5133,1000.7004) || IsPlayerInRangeOfPoint(playerid,3.0,758.98, -60.32, 1000.78)) {
-			if(PlayerInfo[playerid][pJob] == 0){
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Boxer, type /accept job.");
-				GettingJob[playerid] = 12;
-				return 1;
-			}
-			if((PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob2] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Boxer, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a secondary job. Only VIP/Famed can do this.");
-				GettingJob2[playerid] = 12;
-				return 1;
-			}
-			if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pJob3] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Boxer, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
-				GettingJob3[playerid] = 12;
-				return 1;
-			}
-		}
-		/*else if (IsPlayerInRangeOfPoint(playerid,3.0,2354.2808,-1169.2959,28.0066) || IsPlayerInRangeOfPoint(playerid,3.0,-2630.7375,2349.3994,8.4892)) {
-			if(PlayerInfo[playerid][pJob] == 0){
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Drug Smuggler, type /accept job.");
-				GettingJob[playerid] = 14;
-				return 1;
-			}
-			if((PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob2] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Drug Smuggler, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a secondary job. Only VIP/Famed can do this.");
-				GettingJob2[playerid] = 14;
-				return 1;
-			}
-			if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pJob3] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Drug Smuggler, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
-				GettingJob3[playerid] = 14;
-				return 1;
-			}
-		}*/
-		/*else if (PlayerInfo[playerid][pJob] == 0 && GetPlayerState(playerid) == 1 && IsPlayerInRangeOfPoint(playerid,3.0,-2040.9436,456.2395,35.1719)) {
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Paper Boy, type /accept job.");
-			GettingJob[playerid] = 15;
-			return 1;
-		}*/
-		/*else if (PlayerInfo[playerid][pJob] == 0 && GetPlayerState(playerid) == 1 && IsPlayerInRangeOfPoint(playerid,3.0,-77.7288,-1136.3896,1.0781)) {
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Trucker, type /accept job.");
-			GettingJob[playerid] = 16;
-			return 1;
-		}*/
-		/*else if (IsPlayerInRangeOfPoint(playerid,3.0,1741.5199,-1863.4615,13.5750) || IsPlayerInRangeOfPoint(playerid,3.0,-1981.144775, 133.063293, 27.687500)) {
-			if(PlayerInfo[playerid][pJob] == 0){
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Taxi Driver, type /accept job.");
-				GettingJob[playerid] = 17;
-				return 1;
-			}
-			if((PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob2] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Taxi Driver, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a secondary job. Only VIP/Famed can do this.");
-				GettingJob2[playerid] = 17;
-				return 1;
-			}
-			if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pJob3] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Taxi Driver, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
-				GettingJob3[playerid] = 17;
-				return 1;
-			}
-		}*/
-		else if (IsPlayerInRangeOfPoint(playerid,3.0,2195.8335,-1973.0638,13.5589) || IsPlayerInRangeOfPoint(playerid,3.0,-1356.7195,2065.3450,52.4677) || IsPlayerInRangeOfPoint(playerid,3.0,-2412.5095, 2246.2598, 4.8137)) {
-			if(PlayerInfo[playerid][pJob] == 0){
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Craftsman, type /accept job.");
-				GettingJob[playerid] = 18;
-				return 1;
-			}
-			if((PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob2] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Craftsman, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a secondary job. Only VIP/Famed can do this.");
-				GettingJob2[playerid] = 18;
-				return 1;
-			}
-			if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pJob3] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Craftsman, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
-				GettingJob3[playerid] = 18;
-				return 1;
-			}
-		}
-		else if (IsPlayerInRangeOfPoint(playerid,3.0,502.6696,-11.6603,1000.6797) || IsPlayerInRangeOfPoint(playerid,3.0,-864.3550,1536.9703,22.5870)) {
-			if(PlayerInfo[playerid][pJob] == 0){
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Bartender, type /accept job.");
-				GettingJob[playerid] = 19;
-				return 1;
-			}
-			if((PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob2] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Bartender, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a secondary job. Only VIP/Famed can do this.");
-				GettingJob2[playerid] = 19;
-				return 1;
-			}
-			if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pJob3] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Bartender, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
-				GettingJob3[playerid] = 19;
-				return 1;
-			}
-		}
-		else if (IsPlayerInRangeOfPoint(playerid,3.0,-1560.963867, 127.491157, 3.554687) || IsPlayerInRangeOfPoint(playerid,3.0,-2412.5095, 2240.7227, 4.8137)) {
-			if(PlayerInfo[playerid][pLevel] >= 2)
-			{
-				if(PlayerInfo[playerid][pJob] == 0){
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Shipment Contractor, type /accept job.");
-				GettingJob[playerid] = 20;
-				return 1;
-				}
-				if((PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob2] == 0) {
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Shipment Contractor, type /accept job.");
-					SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a secondary job. Only VIP/Famed can do this.");
-					GettingJob2[playerid] = 20;
-					return 1;
-				}
-				if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pJob3] == 0) {
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Shipment Contractor, type /accept job.");
-					SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
-					GettingJob3[playerid] = 20;
-					return 1;
-				}
-			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 2 to become a Shipment Contractor.");
-		}
-		else if (IsPlayerInRangeOfPoint(playerid,3.0,-1720.962646, 1364.456176, 7.187500)) {
-			if(PlayerInfo[playerid][pJob] == 0){
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Pizza Boy, type /accept job.");
-				GettingJob[playerid] = 21;
-				return 1;
-			}
-			if((PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob2] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Pizza Boy, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a secondary job. Only VIP/Famed can do this.");
-				GettingJob2[playerid] = 21;
-				return 1;
-			}
-			if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pJob3] == 0) {
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Pizza Boy, type /accept job.");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
-				GettingJob3[playerid] = 21;
-				return 1;
-			}
-		}
-		else {
-			SendClientMessageEx(playerid, COLOR_GREY, "You are not even near a place to get a Job!");
-		}
+	new point = Job_FindPoint(playerid);
+	if(point == -1) 
+	{
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be near a job point. Press Y there or use /join to apply.");
 	}
-	else {
-		if(PlayerInfo[playerid][pDonateRank] == 0) {
-			SendClientMessageEx(playerid, COLOR_GREY, "You already have a Job, use /quitjob first!");
-            SendClientMessageEx(playerid, COLOR_YELLOW, "Only VIP/Famed can get two jobs, Gold VIP+ can get three jobs!");
-		}
-		else if(PlayerInfo[playerid][pDonateRank] < 3 && PlayerInfo[playerid][pJob2] > 0)
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You already have 2 Jobs, use /quitjob first!");
-			SendClientMessageEx(playerid, COLOR_YELLOW, "Only Gold VIP+ can get three jobs!");
-		}
-		else {
-			SendClientMessageEx(playerid, COLOR_GREY, "You already have 3 Jobs, use /quitjob first!");
-		}
-	}
-    return 1;
+	return Job_GetJob(playerid, point);
 }
 
 CMD:skill(playerid, params[])
@@ -742,7 +412,7 @@ CMD:skill(playerid, params[])
             else if(level >= 50 && level < 100) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Drug Smuggling Level = 2"), format(string, sizeof(string), "You need to successfully smuggle %d more drugs to level up.", 100 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
 			else if(level >=100 && level < 200) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Drug Smuggling Level = 3"), format(string, sizeof(string), "You need to successfully smuggle %d more drugs to level up.", 200 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
 			else if(level >=200 && level < 400) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Drug Smuggling Level = 4"), format(string, sizeof(string), "You need successfully smuggle %d more drugs to level up.", 400 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-			else if(level >=400 && level < 885) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Drug Smuggling Level = 5");
+			else if(level >=400) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Drug Smuggling Level = 5");
 		}
 		case 5://Arms Dealer
 		{
@@ -783,10 +453,10 @@ CMD:skill(playerid, params[])
 		case 9://Trucker
 		{
 			new level = PlayerInfo[playerid][pTruckSkill];
-			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 1.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to transport goods %d times to level up.", 51 - level); }
-			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 2.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to transport goods %d times to level up.", 101 - level); }
-			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 3.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to transport goods %d times to level up.", 201 - level); }
-			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 4.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to transport goods %d times to level up.", 401 - level); }
+			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 1.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to transport goods %d times to level up.", 50 - level); }
+			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 2.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to transport goods %d times to level up.", 100 - level); }
+			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 3.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to transport goods %d times to level up.", 200 - level); }
+			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 4.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to transport goods %d times to level up.", 400 - level); }
 			else if(level >= 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 5."); }
 		}
 		case 10://Treasure Hunter
@@ -821,109 +491,45 @@ CMD:jobhelp(playerid, params[]) {
 
 CMD:quitjob(playerid, params[])
 {
-	if(PlayerInfo[playerid][pDonateRank] >= 1 || PlayerInfo[playerid][pFamed] >= 1)
+	new slot = 1;
+	if(!isnull(params) || PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0)
 	{
-		new jobid;
-		if(sscanf(params, "d", jobid))
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /quitjob [jobid]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Available: 1, 2, 3 (secondary VIP/Famed)");
-			return 1;
-		}
-
-		switch(jobid)
-		{
-		case 1:
-			{
-				if(PlayerInfo[playerid][pJob] > 0 ) {
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your Job.");
-					if(PlayerInfo[playerid][pJob] == 2)
-					{
-						Lawyer_StopDuty(playerid);
-						ApprovedLawyer[playerid] = 0;
-					}
-					if(PlayerInfo[playerid][pJob] == 7)
-					{
-						if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
-						SetPVarInt(playerid, "MechanicDuty", 0);
-					}
-					PlayerInfo[playerid][pJob] = 0;
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "   You don't have a job!");
-				}
-			}
-		case 2:
-			{
-				if(PlayerInfo[playerid][pJob2] > 0 ) {				
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your second Job.");
-					if(PlayerInfo[playerid][pJob2] == 2)
-					{
-						Lawyer_StopDuty(playerid);
-						ApprovedLawyer[playerid] = 0;
-					}
-					if(PlayerInfo[playerid][pJob2] == 7)
-					{
-						if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
-						SetPVarInt(playerid, "MechanicDuty", 0);
-					}
-					PlayerInfo[playerid][pJob2] = 0;
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "   You don't have a second job!");
-				}
-			}
-		case 3:
-			{
-				if(PlayerInfo[playerid][pJob3] > 0 ) {				
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your third job.");
-					if(PlayerInfo[playerid][pJob3] == 2)
-					{
-						Lawyer_StopDuty(playerid);
-						ApprovedLawyer[playerid] = 0;
-					}
-					if(PlayerInfo[playerid][pJob3] == 7)
-					{
-						if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
-						SetPVarInt(playerid, "MechanicDuty", 0);
-					}
-					PlayerInfo[playerid][pJob3] = 0;
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "   You don't have a third job!");
-				}
-			}
-		default:
-			{
-				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /quitjob [jobid]");
-				SendClientMessageEx(playerid, COLOR_GREY, "Available: 1, 2, 3 (secondary VIP/Famed)");
-			}
-		}
+		if(sscanf(params, "d", slot) || !(1 <= slot <= 3))
+			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /quitjob [slot 1, 2 or 3]");
 	}
-	else
+	new job;
+	switch(slot)
 	{
-		if(PlayerInfo[playerid][pJob] > 0 )
+		case 1: job = PlayerInfo[playerid][pJob];
+		case 2: job = PlayerInfo[playerid][pJob2];
+		case 3: job = PlayerInfo[playerid][pJob3];
+	}
+	if(job == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have a job in that slot.");
+	switch(slot)
+	{
+		case 1: PlayerInfo[playerid][pJob] = 0;
+		case 2: PlayerInfo[playerid][pJob2] = 0;
+		case 3: PlayerInfo[playerid][pJob3] = 0;
+	}
+	if(PlayerInfo[playerid][pJob] != job && PlayerInfo[playerid][pJob2] != job && PlayerInfo[playerid][pJob3] != job)
+	{
+		switch(job)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your Job.");
-			if(PlayerInfo[playerid][pJob] == 2)
+			case 2:
 			{
 				Lawyer_StopDuty(playerid);
 				ApprovedLawyer[playerid] = 0;
 			}
-			if(PlayerInfo[playerid][pJob] == 7)
+			case 7:
 			{
-				if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
-				SetPVarInt(playerid, "MechanicDuty", 0);
+				if(GetPVarInt(playerid, "MechanicDuty") == 1 && Mechanics > 0) --Mechanics;
+				DeletePVar(playerid, "MechanicDuty");
+				Mechanic_CancelFix(playerid);
 			}
-			PlayerInfo[playerid][pJob] = 0;
-		}
-		else
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   You don't even have a Job!");
+			case 20: CancelTruckDelivery(playerid);
+			case 21: Pizza_StopDelivery(playerid);
 		}
 	}
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have left %s in job slot %d.", GetJobName(job), slot);
 	return 1;
 }
