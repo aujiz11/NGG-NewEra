@@ -147,15 +147,15 @@ enum eGroupData {
 
 enum PlantData
 {
-	 pOwner,
-	 pObject,
-	 pPlantType,
+	pOwner,
+	pObject,
+	pPlantType,
 	Float: pPos[3],
-	 pVirtual,
-	 pInterior,
-	 pGrowth,
-	 pExpires,
-	pDrugsSkill,
+	pVirtual,
+	pInterior,
+ 	pGrowth,
+	pExpires,
+	pPlantDrugsSkill,
 	pObjectSpawned,
 }
 

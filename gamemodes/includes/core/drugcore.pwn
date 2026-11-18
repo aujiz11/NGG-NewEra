@@ -505,7 +505,7 @@ public PlantsLoadQuery() {
 		cache_get_value_name_int(iIndex, "Interior", Plants[iIndex][pInterior]);
 		cache_get_value_name_int(iIndex, "Growth", Plants[iIndex][pGrowth]);
 		cache_get_value_name_int(iIndex, "Expires", Plants[iIndex][pExpires]);
-		cache_get_value_name_int(iIndex, "DrugsSkill", Plants[iIndex][pDrugsSkill]);
+		cache_get_value_name_int(iIndex, "DrugsSkill", Plants[iIndex][pPlantDrugsSkill]);
 
 		if(Plants[iIndex][pOwner] != 0)
 		{
@@ -523,7 +523,7 @@ stock SavePlant(plant)
 	new query[300];
 	mysql_format(MainPipeline, query, sizeof(query), "UPDATE `plants` SET `Owner` = %d, `Object` = %d, `PlantType` = %d, `PositionX` = %f, `PositionY` = %f, `PositionZ` = %f, `Virtual` = %d, \
 	`Interior` = %d, `Growth` = %d, `Expires` = %d, `DrugsSkill` = %d WHERE `PlantID` = %d",Plants[plant][pOwner], Plants[plant][pObject], Plants[plant][pPlantType], Plants[plant][pPos][0], Plants[plant][pPos][1], Plants[plant][pPos][2],
-	Plants[plant][pVirtual], Plants[plant][pInterior], Plants[plant][pGrowth], Plants[plant][pExpires], Plants[plant][pDrugsSkill], plant+1);
+	Plants[plant][pVirtual], Plants[plant][pInterior], Plants[plant][pGrowth], Plants[plant][pExpires], Plants[plant][pPlantDrugsSkill], plant+1);
 	mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
@@ -629,7 +629,7 @@ CMD:plantpot(playerid, params[])
 		        GetPlayerPos(playerid, xyz[0], xyz[1], xyz[2]);
 				xyz[2] -= 1.5;
 
-		        Plants[i][pDrugsSkill] = PlayerInfo[playerid][pDrugSmuggler];
+		        Plants[i][pPlantDrugsSkill] = PlayerInfo[playerid][pDrugSmuggler];
 		        PlayerInfo[playerid][pWeedObject] = 1;
 		        PlayerInfo[playerid][pWSeeds]--;
                 PlacePlant(i, GetPlayerSQLId(playerid), 1, 19473, PlayerInfo[playerid][pDrugSmuggler], xyz[0], xyz[1], xyz[2], GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
@@ -968,7 +968,7 @@ PlacePlant(id, ownerid, planttype, objectid, drugskill, Float:x, Float:y, Float:
 	Plants[id][pVirtual] = virtualworld;
 	Plants[id][pInterior] = interior;
 	Plants[id][pExpires] = gettime()+86400;
-	Plants[id][pDrugsSkill] = drugskill;
+	Plants[id][pPlantDrugsSkill] = drugskill;
 	Plants[id][pObjectSpawned] = CreateDynamicObject(objectid, x, y, z, 0.0, 0.0, 0.0, virtualworld, interior);
 	return id;
 }
@@ -987,7 +987,7 @@ DestroyPlant(i)
 	Plants[i][pVirtual] = 0;
 	Plants[i][pInterior] = 0;
 	Plants[i][pExpires] = 0;
-	Plants[i][pDrugsSkill] = 0;
+	Plants[i][pPlantDrugsSkill] = 0;
 	if(IsValidDynamicObject(Plants[i][pObjectSpawned])) DestroyDynamicObject(Plants[i][pObjectSpawned]);
 	return i;
 }
@@ -1007,7 +1007,7 @@ PlantTimer()
 					{
 						if(Plants[i][pGrowth] < 45)
 						{
-							switch(Plants[i][pDrugsSkill])
+							switch(Plants[i][pPlantDrugsSkill])
 							{
 								case 0 .. 50: Plants[i][pGrowth] += 1;
 								case 51 .. 100: Plants[i][pGrowth] += 2;
