@@ -244,7 +244,7 @@ CMD:free(playerid, params[])
 	if(!Lawyer_IsNear(playerid, target)) 
 		return SendClientMessageEx(playerid, COLOR_GREY, "The prisoner must be near you in the same interior and world.");
 	
-	if(PlayerInfo[playerid][pLawSkill] < 400 && !ApprovedLawyer[playerid])
+	if(GetJobLevel(playerid, JOB_LAWYER) < 5 && !ApprovedLawyer[playerid])
 		return SendClientMessageEx(playerid, COLOR_GREY, "You need officer approval to release a prisoner.");
 	
 	if(PlayerInfo[target][pJailTime] <= 1 || WantLawyer[target] < 1 || PlayerIsDead[target]
@@ -261,10 +261,9 @@ CMD:free(playerid, params[])
 	if(oldSkill > cellmax - gained) gained = cellmax - oldSkill;
 	PlayerInfo[playerid][pLawSkill] += gained;
 	if(gained > 1) SendClientMessageEx(playerid, COLOR_YELLOW, "You gained %d lawyer skill points with your Double EXP token. It has %d hours left.", gained, PlayerInfo[playerid][pDoubleEXP]);
-	static const levels[] = {50, 100, 200, 400};
-	for(new i; i < sizeof(levels); ++i)
+	for(new i; i < 4; ++i)
 	{
-		if(oldSkill < levels[i] && PlayerInfo[playerid][pLawSkill] >= levels[i])
+		if(oldSkill < JobSkills[JOB_SKILL_LAWYER][jobSkillThreshold][i] && PlayerInfo[playerid][pLawSkill] >= JobSkills[JOB_SKILL_LAWYER][jobSkillThreshold][i])
 		{
 			SendClientMessageEx(playerid, COLOR_YELLOW, "* Your lawyer skill is now Level %d.", i + 2);
 			break;

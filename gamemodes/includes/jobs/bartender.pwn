@@ -37,7 +37,7 @@
 
 CMD:selldrink(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJob] == 19 || PlayerInfo[playerid][pJob2] == 19 || PlayerInfo[playerid][pJob3] == 19)
+	if(Job_HasJob(playerid, JOB_BARTENDER))
 	{
 		if(IsAtBar(playerid))
 		{
@@ -53,6 +53,7 @@ CMD:selldrink(playerid, params[])
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
 					DrinkOffer[giveplayerid] = playerid;
+					SetPVarInt(giveplayerid, "DrinkOfferSession", g_arrQueryHandle[playerid]);
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Bartender %s has offered has offered to pour you a drink. /accept drink to select a drink.", GetPlayerNameEx(playerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have offered %s a drink.",GetPlayerNameEx(giveplayerid));
 				}

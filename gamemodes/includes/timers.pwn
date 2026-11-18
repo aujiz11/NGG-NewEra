@@ -76,9 +76,9 @@ timer NOPCheck[5000](playerid)
 	new newcar = GetPlayerVehicleID(playerid);
 	if(PlayerInfo[playerid][pAdmin] > 1 || GetPlayerState(playerid) != 2) return 1;
     else if(IsAPlane(newcar) && (PlayerInfo[playerid][pFlyLic] != 1)) ExecuteNOPAction(playerid);
-    else if(IsAPizzaCar(newcar) && PlayerInfo[playerid][pJob] != 21 && PlayerInfo[playerid][pJob2] != 21 && PlayerInfo[playerid][pJob3] != 21) ExecuteNOPAction(playerid);
+    else if(IsAPizzaCar(newcar) && !Job_HasJob(playerid, JOB_PIZZA)) ExecuteNOPAction(playerid);
     else if(IsVIPcar(newcar) && PlayerInfo[playerid][pDonateRank] == 0) ExecuteNOPAction(playerid);
-    else if(IsATruckerCar(newcar) && PlayerInfo[playerid][pJob] != 20 && PlayerInfo[playerid][pJob2] != 20 && PlayerInfo[playerid][pJob3] != 20) ExecuteNOPAction(playerid);
+    else if(IsATruckerCar(newcar) && !Job_HasJob(playerid, JOB_SHIPMENT)) ExecuteNOPAction(playerid);
     else if(GetCarBusiness(newcar) != INVALID_BUSINESS_ID && PlayerInfo[playerid][pBusiness] != GetCarBusiness(newcar)) ExecuteNOPAction(playerid);
     else if(DynVeh[newcar] != -1)
 	{
@@ -2004,19 +2004,8 @@ task SyncUp[60000]()
 			SendClientMessageEx(i, COLOR_GREY, "Your Job Boost has expired! Reset Info: Job: %s | Skill: %d (Level: %d)", GetJobName(PlayerInfo[i][mBoost][0]), PlayerInfo[i][mBoost][1], GetJobLevel(i, PlayerInfo[i][mBoost][0]));
 			format(szMiscArray, sizeof(szMiscArray), "[JOBBOOST - Expired] %s(%d) Job: %s (%d) Skill: %d (%d)", GetPlayerNameEx(i), GetPlayerSQLId(i), GetJobName(PlayerInfo[i][mBoost][0]), PlayerInfo[i][mBoost][0], PlayerInfo[i][mBoost][1], GetJobLevel(i, PlayerInfo[i][mBoost][0]));
 			Log("logs/micro.log", szMiscArray);
-			new skill;
-			switch(PlayerInfo[i][mBoost][0])
-			{
-				case 1: skill = pInfo:pDetSkill;
-				case 2: skill = pInfo:pLawSkill;
-				case 3: skill = pInfo:pSexSkill;
-				case 4: skill = pInfo:pDrugsSkill;
-				case 7: skill = pInfo:pMechSkill;
-				case 9: skill = pInfo:pArmsSkill;
-				case 12: skill = pInfo:pBoxSkill;
-				case 20: skill = pInfo:pTruckSkill;
-			}
-			PlayerInfo[i][pInfo:skill] = PlayerInfo[i][mBoost][1];
+			new skill = Job_GetSkill(PlayerInfo[i][mBoost][0]);
+			if(skill != JOB_SKILL_NONE) PlayerInfo[i][JobSkills[skill][jobSkillField]] = PlayerInfo[i][mBoost][1];
 			PlayerInfo[i][mPurchaseCount][1] = 0;
 			PlayerInfo[i][mCooldown][1] = 0;
 			PlayerInfo[i][mBoost][0] = 0;

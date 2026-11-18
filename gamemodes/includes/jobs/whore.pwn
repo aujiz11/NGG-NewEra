@@ -37,7 +37,7 @@
 
 CMD:sex(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJob] == 3 || PlayerInfo[playerid][pJob2] == 3 || PlayerInfo[playerid][pJob3] == 3)
+	if(Job_HasJob(playerid, JOB_PROSTITUTE))
 	{
 		if(!IsPlayerInAnyVehicle(playerid))
 		{

@@ -44,6 +44,35 @@ stock SendTaxiMessage(color, const string[])
 	}	
 }
 
+stock Taxi_StopDuty(playerid)
+{
+	if(TransportDuty[playerid] == 0) return 1;
+	new payment = TransportMoney[playerid] / 100 * 50;
+	if(GetPlayerCash(playerid) > cellmax - payment)
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot carry your outstanding fare payment."), 0;
+
+	if(TransportDuty[playerid] == 1)
+	{
+		TaxiDrivers -= 1;
+	}
+	else if(TransportDuty[playerid] == 2)
+	{
+		BusDrivers -= 1;
+	}
+
+	TransportDuty[playerid] = 0;
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now off duty and earned $%d.", TransportMoney[playerid]);
+	GivePlayerCash(playerid, payment);
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI))
+	{
+		arrGroupData[PlayerInfo[playerid][pMember]][g_iBudget] += (TransportMoney[playerid] / 100 * 50);
+		if(TransportMoney[playerid]) format(szMiscArray, sizeof(szMiscArray), "%s is now off duty and earned $%s", GetPlayerNameEx(playerid), number_format(TransportMoney[playerid])), GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
+	}
+	TransportValue[playerid] = 0; TransportMoney[playerid] = 0;
+	SetPlayerToTeamColor(playerid);
+	return 1;
+}
+
 CMD:fare(playerid, params[])
 {
 	if(IsATaxiDriver(playerid))
@@ -53,29 +82,7 @@ CMD:fare(playerid, params[])
 
 		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this at this time.");
 
-		if(TransportDuty[playerid] > 0)
-		{
-			if(TransportDuty[playerid] == 1)
-			{
-				TaxiDrivers -= 1;
-			}
-			else if(TransportDuty[playerid] == 2)
-			{
-				BusDrivers -= 1;
-			}
-
-			TransportDuty[playerid] = 0;
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now off duty and earned $%d.", TransportMoney[playerid]);
-			GivePlayerCash(playerid, (TransportMoney[playerid] / 100 * 50));
-			if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI))
-			{
-				arrGroupData[PlayerInfo[playerid][pMember]][g_iBudget] += (TransportMoney[playerid] / 100 * 50);
-				if(TransportMoney[playerid]) format(szMiscArray, sizeof(szMiscArray), "%s is now off duty and earned $%s", GetPlayerNameEx(playerid), number_format(TransportMoney[playerid])), GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
-			}
-			TransportValue[playerid] = 0; TransportMoney[playerid] = 0;
-			SetPlayerToTeamColor(playerid);
-			return 1;
-		}
+		if(TransportDuty[playerid] > 0) return Taxi_StopDuty(playerid);
 		if(GetPVarInt(playerid, "MechanicDuty") == 1 || GetPVarInt(playerid, "LawyerDuty") == 1) return SendClientMessageEx(playerid,COLOR_GREY,"You need to get off duty with your mechanic/lawyer job first.");
 		if(GetPlayerState(playerid) != 2) return SendClientMessageEx(playerid, COLOR_GREY, "   You are not the driver!");
 		if(fare < 1 || fare > 2000) return SendClientMessageEx(playerid, COLOR_GREY, "   Fare price must be between $1 and $2000!");

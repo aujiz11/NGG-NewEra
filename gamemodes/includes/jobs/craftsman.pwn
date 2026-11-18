@@ -413,7 +413,7 @@ CMD:craft(playerid, params[])
 {
 	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
-	if (PlayerInfo[playerid][pJob] != 18 && PlayerInfo[playerid][pJob2] != 18 && PlayerInfo[playerid][pJob3] != 18)
+	if (!Job_HasJob(playerid, JOB_CRAFTSMAN))
 	{
 		SendClientMessageEx(playerid,COLOR_GREY,"   You are not a Craftsman!");
 		return 1;
@@ -599,11 +599,7 @@ CMD:craft(playerid, params[])
 					}
 				case 14:
 					{
-						if(PlayerInfo[playerid][pTreasureSkill] >=0 && PlayerInfo[playerid][pTreasureSkill] <= 24) PlayerInfo[playerid][pMetalDetector] += 25;
-						else if(PlayerInfo[playerid][pTreasureSkill] >=25 && PlayerInfo[playerid][pTreasureSkill] <= 149) PlayerInfo[playerid][pMetalDetector] += 50;
-						else if(PlayerInfo[playerid][pTreasureSkill] >=150 && PlayerInfo[playerid][pTreasureSkill] <= 299) PlayerInfo[playerid][pMetalDetector] += 75;
-						else if(PlayerInfo[playerid][pTreasureSkill] >=300 && PlayerInfo[playerid][pTreasureSkill] <= 599) PlayerInfo[playerid][pMetalDetector] += 100;
-						else if(PlayerInfo[playerid][pTreasureSkill] >=600) PlayerInfo[playerid][pMetalDetector] += 125;
+						PlayerInfo[playerid][pMetalDetector] += GetJobLevel(playerid, JOB_TREASURE) * 25;
 						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "/search");
 					}
 				case 15:

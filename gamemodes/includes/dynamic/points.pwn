@@ -40,8 +40,12 @@
 
 CMD:getmats(playerid, params[])
 {	
-	if(PlayerInfo[playerid][pJob] != 9 && PlayerInfo[playerid][pJob2] != 9 && PlayerInfo[playerid][pJob3] != 9 && PlayerInfo[playerid][pJob] != 18 && PlayerInfo[playerid][pJob2] != 18 && PlayerInfo[playerid][pJob3] != 18) return SendClientMessageEx(playerid,COLOR_GREY,"   You are not an Arms Dealer or Craftsman!");
-	if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
+	if(!Job_HasJob(playerid, JOB_ARMS_DEALER) && !Job_HasJob(playerid, JOB_CRAFTSMAN)) 
+		return SendClientMessageEx(playerid,COLOR_GREY,"   You are not an Arms Dealer or Craftsman!");
+	
+	if(CheckPointCheck(playerid)) 
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
+	
 	new point, drank[64], vip = ((0 <= PlayerInfo[playerid][pDonateRank] < 5) ? PlayerInfo[playerid][pDonateRank] : 0);
 	switch(vip)
 	{
@@ -82,7 +86,7 @@ CMD:getmats(playerid, params[])
 
 CMD:getdrugs(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pJob] != 14 && PlayerInfo[playerid][pJob2] != 14 && PlayerInfo[playerid][pJob3] != 14 && !IsACriminal(playerid)) return SendClientMessageEx(playerid,COLOR_GREY,"  You are not a drug smuggler or in a family!");
+	if(!Job_HasJob(playerid, JOB_DRUG_SMUGGLER) && !IsACriminal(playerid)) return SendClientMessageEx(playerid,COLOR_GREY,"  You are not a drug smuggler or in a family!");
 	if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
 	new point, drank[64], vip = ((0 <= PlayerInfo[playerid][pDonateRank] < 5) ? PlayerInfo[playerid][pDonateRank] : 0), string[128];
 	switch(vip)
@@ -106,7 +110,7 @@ CMD:getdrugs(playerid, params[]) {
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased %sg of pot packages for $2,000", number_format(DynPoints[point][poAmount][vip]));
 	}
 	if(DynPoints[point][poType] == 2) { // Crack
-		if(PlayerInfo[playerid][pDrugSmuggler] < 50) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be at least level two drug smuggler to do this run!");
+		if(GetJobLevel(playerid, JOB_DRUG_SMUGGLER) < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be at least level two drug smuggler to do this run!");
 		if(GetPlayerMoney(playerid) < 10000) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot afford the $10,000!");
 		GivePlayerCashEx(playerid, TYPE_ONHAND, -10000);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased %sg of crack packages for $10,000!", number_format(DynPoints[point][poAmount][vip]));
@@ -118,7 +122,7 @@ CMD:getdrugs(playerid, params[]) {
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased %sg of meth packages for $25,000!", number_format(DynPoints[point][poAmount][vip]));
 	}
 	if(DynPoints[point][poType] == 4) { // Ecstasy
-		if(PlayerInfo[playerid][pDrugSmuggler] < 400) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be at least level five drug smuggler to do this run!");
+		if(GetJobLevel(playerid, JOB_DRUG_SMUGGLER) < 5) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be at least level five drug smuggler to do this run!");
 		if(GetPlayerMoney(playerid) < 50000) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot afford the $50,000!");
 		GivePlayerCashEx(playerid, TYPE_ONHAND, -50000);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased %sg of ecstasy packages for $50,000!", number_format(DynPoints[point][poAmount][vip]));

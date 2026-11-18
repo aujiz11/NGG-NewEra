@@ -252,8 +252,8 @@
 
 			/*  ---------------- JOBS ----------------- */
 
-#define 	MAX_JOBNAME_LEN			24
-#define 	MAX_JOBTYPES			31
+#define 	MAX_JOBNAME_LEN			32
+#define 	MAX_JOBTYPES			JOB_TYPE_COUNT
 #define 	MAX_JOBPOINTS 			100
 
 			/*  ---------------- BUSINESSES ----------------- */
@@ -1605,5 +1605,6 @@
 forward Float:player_get_speed(playerid);
 forward Float:GetDistanceBetweenPoints(Float:x1, Float:y1, Float:z1, Float:x2, Float:y2, Float:z2);
 
+forward bool:Mechanic_CanFix(playerid);
 forward bool:Mechanic_NearVehicle(playerid, vehicleid, Float:range);
 forward Float:Mechanic_RefillAmount(skill);

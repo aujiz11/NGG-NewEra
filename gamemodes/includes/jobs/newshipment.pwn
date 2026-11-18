@@ -137,7 +137,7 @@ new ShipmentTrucks[13][3]; // 0 = id, 1 = model, 2 = cargo max amt.
 
 stock IsATrucker(playerid)
 {
-    if(PlayerInfo[playerid][pJob] != 20 && PlayerInfo[playerid][pJob2] != 20 && PlayerInfo[playerid][pJob3] != 20) return 0;
+    if(!Job_HasJob(playerid, JOB_SHIPMENT)) return 0;
     return 1;
 }
 

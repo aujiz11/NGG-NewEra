@@ -824,163 +824,15 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 		case DIALOG_HELPCATJOB:
 		{
 			ClearHelpSearch(playerid);
-			new j = 0;
-			if(Help_Perm(playerid, 9, 1, 0))
+			new count, line[MAX_JOBNAME_LEN + 2];
+			szMiscArray[0] = EOS;
+			for(new job = 1; job < MAX_JOBTYPES; ++job)
 			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 1);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "Detective\n");
-			}
-			if(Help_Perm(playerid, 9, 2, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 2);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sLawyer\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 3, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 3);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sWhore\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 4, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 4);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sDrug Dealer\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 5, 0))
-			{
-				// Job 5 is undefined; Modify if one is added!
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 5);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%s[PLACEHOLDER]\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 6, 0))
-			{
-				// Job 6 is undefined; Modify if one is added!
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 6);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%s[PLACEHOLDER]\n");
-			}
-			if(Help_Perm(playerid, 9, 7, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 7);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sMechanic\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 8, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 8);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sBodyguard\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 9, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 9);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sArms Dealer\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 10, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 10);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sCar Dealer\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 11, 0))
-			{
-				// Job 11 is undefined; Modify if one is added!
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 11);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%s[PLACEHOLDER]\n");
-			}
-			if(Help_Perm(playerid, 9, 12, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 12);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sBoxer\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 13, 0))
-			{
-				// Job 13 is undefined; Modify if one is added!
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 13);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%s[PLACEHOLDER]\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 14, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 14);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sDrug Smuggler\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 15, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 15);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sPaper Boy\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 16, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 16);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sTrucker\n");
-			}
-			if(Help_Perm(playerid, 9, 17, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 17);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sTaxi Driver\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 18, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 18);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sCraftsman\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 19, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 19);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sBartender\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 20, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 20);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sShipment Contractor\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 21, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 21);
-				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sPizza Boy\n", szMiscArray);
-			}
-			if(Help_Perm(playerid, 9, 27, 0))
-			{
-				format(string, sizeof(string), "HelpResultCat%i", j);
-				SetPVarInt(playerid, string, 27);
-				format(szMiscArray, sizeof(szMiscArray), "%sGarbage Collector\n", szMiscArray);
+				if(!Help_Perm(playerid, 9, job, 0)) continue;
+				format(string, sizeof(string), "HelpResultCat%i", count++);
+				SetPVarInt(playerid, string, job);
+				format(line, sizeof(line), "%s\n", GetJobName(job));
+				strcat(szMiscArray, line, sizeof(szMiscArray));
 			}
 			Help_GenerateCMDList(playerid, 3, -1, 9, 0);
 			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATJOB, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
@@ -1367,7 +1219,7 @@ stock Help_Perm(playerid, type, subtype, level)
 	// Job
 	else if(type == 9)
 	{
-		if(PlayerInfo[playerid][pJob] == subtype || PlayerInfo[playerid][pJob2] == subtype || PlayerInfo[playerid][pJob3] == subtype) return 1;
+		if(Job_HasJob(playerid, subtype)) return 1;
 	}
 	// Group
 	else if(type == 10)
@@ -1497,66 +1349,63 @@ CMD:ohelp(playerid, params[])
 
 	switch(PlayerInfo[playerid][pJob])
 	{
-		case 1: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /trace");
-		case 2: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted /offerappeal /finishappeal");
-		case 3: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
-		case 4: pc_cmd_odrughelp(playerid, "");
-		case 5: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /dropcar");
-		case 7: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fix /nos /hyd /repair /refill /mechduty");
-		case 8: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /guard /frisk");
-		case 9: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /sellgun");
-		case 10: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sellnewcar");
-		case 12: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fight");
-		case 14: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getcrate");
-		// case 15: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /papers /bring /deliver");
-		case 17: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fare");
-		case 18: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /craft");
-		case 19: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
-		case 20: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /loadshipment /checkcargo /hijackcargo");
-		case 21: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza*");
-		case 27: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /garbagerun");
+		case JOB_DETECTIVE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /trace");
+		case JOB_LAWYER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted /offerappeal /finishappeal");
+		case JOB_PROSTITUTE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
+		case JOB_DRUG_DEALER: pc_cmd_odrughelp(playerid, "");
+		case JOB_PIMP: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /dropcar");
+		case JOB_MECHANIC: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fix /nos /hyd /repair /refill /mechduty");
+		case JOB_BODYGUARD: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /guard /frisk");
+		case JOB_ARMS_DEALER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /sellgun");
+		case JOB_BOXER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fight");
+		case JOB_DRUG_SMUGGLER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getcrate");
+		// case JOB_STREET_SWEEPER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /papers /bring /deliver");
+		case JOB_TAXI: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fare");
+		case JOB_CRAFTSMAN: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /craft");
+		case JOB_BARTENDER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
+		case JOB_SHIPMENT: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /loadshipment /checkcargo /hijackcargo");
+		case JOB_PIZZA: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza*");
+		case JOB_GARBAGE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /garbagerun");
 	}
 	switch(PlayerInfo[playerid][pJob2])
 	{
-		case 1: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /trace");
-		case 2: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted");
-		case 3: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
-		case 4: pc_cmd_odrughelp(playerid, "");
-		case 5: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /dropcar");
-		case 7: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fix /nos /hyd /repair /refill /mechduty");
-		case 8: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /guard /frisk");
-		case 9: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /sellgun");
-		case 10: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sellnewcar");
-		case 12: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fight");
-		case 14: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getcrate");
-		// case 15: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /papers /bring /deliver");
-		case 17: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fare");
-		case 18: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /craft");
-		case 19: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
-		case 20: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /loadshipment /checkcargo /hijackcargo");
-		case 21: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza");
-		case 27: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /garbagerun");
+		case JOB_DETECTIVE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /trace");
+		case JOB_LAWYER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted");
+		case JOB_PROSTITUTE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
+		case JOB_DRUG_DEALER: pc_cmd_odrughelp(playerid, "");
+		case JOB_PIMP: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /dropcar");
+		case JOB_MECHANIC: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fix /nos /hyd /repair /refill /mechduty");
+		case JOB_BODYGUARD: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /guard /frisk");
+		case JOB_ARMS_DEALER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /sellgun");
+		case JOB_BOXER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fight");
+		case JOB_DRUG_SMUGGLER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getcrate");
+		// case JOB_STREET_SWEEPER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /papers /bring /deliver");
+		case JOB_TAXI: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fare");
+		case JOB_CRAFTSMAN: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /craft");
+		case JOB_BARTENDER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
+		case JOB_SHIPMENT: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /loadshipment /checkcargo /hijackcargo");
+		case JOB_PIZZA: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza");
+		case JOB_GARBAGE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /garbagerun");
 	}
 	switch(PlayerInfo[playerid][pJob3])
 	{
-		case 1: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /trace");
-		case 2: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted");
-		case 3: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
-		case 4: pc_cmd_odrughelp(playerid, "");
-		case 5: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /dropcar");
-		case 7: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fix /nos /hyd /repair /refill /mechduty");
-		case 8: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /guard /frisk");
-		case 9: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /sellgun");
-		case 10: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sellnewcar");
-		case 12: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fight");
-		case 14: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getcrate");
-		// case 15: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /papers /bring /deliver");
-		case 17: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fare");
-		case 18: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /craft");
-		case 19: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
-		case 20: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /loadshipment /checkcargo /hijackcargo");
-		case 21: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza");
-		case 27: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /garbagerun");
+		case JOB_DETECTIVE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /trace");
+		case JOB_LAWYER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted");
+		case JOB_PROSTITUTE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
+		case JOB_DRUG_DEALER: pc_cmd_odrughelp(playerid, "");
+		case JOB_PIMP: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /dropcar");
+		case JOB_MECHANIC: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fix /nos /hyd /repair /refill /mechduty");
+		case JOB_BODYGUARD: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /guard /frisk");
+		case JOB_ARMS_DEALER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /sellgun");
+		case JOB_BOXER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fight");
+		case JOB_DRUG_SMUGGLER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getcrate");
+		// case JOB_STREET_SWEEPER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /papers /bring /deliver");
+		case JOB_TAXI: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fare");
+		case JOB_CRAFTSMAN: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /craft");
+		case JOB_BARTENDER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
+		case JOB_SHIPMENT: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /loadshipment /checkcargo /hijackcargo");
+		case JOB_PIZZA: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza");
+		case JOB_GARBAGE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /garbagerun");
 	}
 	new iGroupID = PlayerInfo[playerid][pMember];
 	if(0 <= iGroupID < MAX_GROUPS)

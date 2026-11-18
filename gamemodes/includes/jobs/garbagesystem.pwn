@@ -129,7 +129,7 @@ stock Garbage_IsDriver(playerid, vehicleid)
 		&& !PlayerIsDead[playerid] && !PlayerInfo[playerid][pHospital] && !GetPVarInt(playerid, "Injured")
 		&& !PlayerCuffed[playerid] && !GetPVarInt(playerid, "PlayerCuffed") && !GetPVarInt(playerid, "pBagged")
 		&& !GetPVarType(playerid, "IsFrozen") && !GetPVarType(playerid, "IsTackled")
-		&& (PlayerInfo[playerid][pJob] == 27 || PlayerInfo[playerid][pJob2] == 27 || PlayerInfo[playerid][pJob3] == 27);
+		&& (Job_HasJob(playerid, JOB_GARBAGE));
 }
 
 stock Garbage_GetDestination(playerid, &Float:x, &Float:y, &Float:z)
@@ -260,7 +260,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 
 CMD:garbagerun(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJob] != 27 && PlayerInfo[playerid][pJob2] != 27 && PlayerInfo[playerid][pJob3] != 27)
+	if(!Job_HasJob(playerid, JOB_GARBAGE))
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not a garbage man!");
 	if(GetPVarInt(playerid, "pGarbageRun"))
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are already on a garbage run!");

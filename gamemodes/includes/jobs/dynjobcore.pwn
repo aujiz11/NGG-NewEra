@@ -13,8 +13,10 @@ hook OnGameModeInit()
 		JobData[i][jId] = -1;
 		JobData[i][jLevel] = 1;
 	}
-	for(new i; i < MAX_JOBTYPES; ++i) format(JobName[i], sizeof(JobName[]), "-----");
-	format(JobName[0], sizeof(JobName[]), "None");
+	for(new i; i < MAX_JOBTYPES; ++i) 
+	{
+		format(JobName[i], sizeof(JobName[]), "%s", JobDefinitions[i][jobDefaultName]);
+	}
 	return 1;
 }
 
@@ -61,8 +63,11 @@ public OnLoadJobNames()
 	{
 		new id;
 		cache_get_value_name_int(row, "id", id);
-		if(!(1 <= id < MAX_JOBTYPES)) continue;
-		cache_get_value_name(row, "name", JobName[id], sizeof(JobName[]));
+		if(!Job_IsKnownType(id)) continue;
+		new name[MAX_JOBNAME_LEN];
+		cache_get_value_name(row, "name", name, sizeof(name));
+		if(name[0] == EOS || !strcmp(name, "-----") || strfind(name, "\n") != -1 || strfind(name, "\r") != -1 || strfind(name, "\t") != -1) continue;
+		format(JobName[id], sizeof(JobName[]), "%s", name);
 		++loaded;
 	}
 	printf("[Dynamic Job Names] Loaded %d job names.", loaded);
@@ -131,7 +136,7 @@ public UpdateJobPoint(id)
 	JobData[id][jPickupID] = INVALID_STREAMER_ID;
 	JobData[id][jTextID] = Text3D:INVALID_STREAMER_ID;
 	JobData[id][jMapMarker] = INVALID_STREAMER_ID;
-	if(JobData[id][jId] != id + 1 || !(1 <= JobData[id][jType] < MAX_JOBTYPES)
+	if(JobData[id][jId] != id + 1 || !Job_IsKnownType(JobData[id][jType])
 		|| (JobData[id][jPos][0] == 0.0 && JobData[id][jPos][1] == 0.0 && JobData[id][jPos][2] == 0.0)) return 1;
 
 	JobData[id][jAreaID] = CreateDynamicSphere(JobData[id][jPos][0], JobData[id][jPos][1], JobData[id][jPos][2], 3.0, .worldid = JobData[id][jVw], .interiorid = JobData[id][jInt]);
@@ -147,23 +152,13 @@ public UpdateJobPoint(id)
 	return 1;
 }
 
-stock Job_GetPlayerJob(playerID)
-{
-	return 1 <= PlayerInfo[playerID][pJob] < MAX_JOBTYPES ? PlayerInfo[playerID][pJob] : 0;
-}
-
-stock Job_GetPlayerJob2(playerID)
-{
-	return 1 <= PlayerInfo[playerID][pJob2] < MAX_JOBTYPES ? PlayerInfo[playerID][pJob2] : 0;
-}
-
 stock Job_CheckApplication(playerid, point)
 {
 	if(!gPlayerLogged{playerid} || GetPlayerState(playerid) != PLAYER_STATE_ONFOOT || PlayerIsDead[playerid]
 		|| GetPVarInt(playerid, "Injured") || PlayerInfo[playerid][pJailTime] > 0 || PlayerCuffed[playerid] || PlayerTied[playerid]
 		|| GetPVarInt(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged"))
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be available on foot to apply for a job."), 0;
-	if(!(0 <= point < MAX_JOBPOINTS) || JobData[point][jId] != point + 1 || !(1 <= JobData[point][jType] < MAX_JOBTYPES)
+	if(!(0 <= point < MAX_JOBPOINTS) || JobData[point][jId] != point + 1 || !Job_IsKnownType(JobData[point][jType])
 		|| !IsValidDynamicArea(JobData[point][jAreaID]))
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "This job point is no longer available."), 0;
 	if(GetPlayerVirtualWorld(playerid) != JobData[point][jVw] || GetPlayerInterior(playerid) != JobData[point][jInt]
@@ -172,11 +167,10 @@ stock Job_CheckApplication(playerid, point)
 	if(PlayerInfo[playerid][pLevel] < JobData[point][jLevel])
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be level %i to get this job.", JobData[point][jLevel]), 0;
 	new job = JobData[point][jType];
-	if(PlayerInfo[playerid][pJob] == job || PlayerInfo[playerid][pJob2] == job || PlayerInfo[playerid][pJob3] == job)
+	if(!Job_IsAvailable(job)) return SendClientMessageEx(playerid, COLOR_GRAD1, "This legacy job is not accepting new applications."), 0;
+	if(Job_HasJob(playerid, job))
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have this job."), 0;
-	if(PlayerInfo[playerid][pJob] == 0) return 1;
-	if((PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob2] == 0) return 2;
-	if((PlayerInfo[playerid][pDonateRank] >= 3 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob3] == 0) return 3;
+	for(new slot = 1; slot <= 3; ++slot) if(Job_CanUseSlot(playerid, slot) && Job_GetSlot(playerid, slot) == JOB_NONE) return slot;
 	return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot take another job. Use /quitjob to leave an existing job first."), 0;
 }
 
@@ -200,15 +194,10 @@ Dialog:acceptjob(playerid, response, listitem, inputtext[])
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "This job application is no longer valid.");
 	new slot = Job_CheckApplication(playerid, point);
 	if(!slot) return 1;
-	switch(slot)
-	{
-		case 1: PlayerInfo[playerid][pJob] = job;
-		case 2: PlayerInfo[playerid][pJob2] = job;
-		case 3: PlayerInfo[playerid][pJob3] = job;
-	}
+	if(!Job_SetPlayerSlot(playerid, slot, job)) return 1;
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have joined %s. Use /jobhelp for job information.", GetJobName(job));
 	if(slot > 1) SendClientMessageEx(playerid, COLOR_YELLOW, "You have taken this as job slot %d.", slot);
-	if(job == 21)
+	if(job == JOB_PIZZA)
 	{
 		SetPlayerSkin(playerid, 155);
 		PlayerInfo[playerid][pModel] = 155;
@@ -219,7 +208,7 @@ Dialog:acceptjob(playerid, response, listitem, inputtext[])
 
 stock GetJobName(i)
 {
-	if(!(0 <= i < MAX_JOBTYPES)) i = 0;
+	if(!(0 <= i < MAX_JOBTYPES)) i = JOB_NONE;
 	return JobName[i];
 }
 
@@ -270,21 +259,17 @@ CMD:editjobpoint(playerid, params[])
 CMD:editjob(playerid, params[])
 {
 	if(!Job_CanEdit(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to do this.");
-	szMiscArray[0] = EOS;
-	new line[48];
-	for(new i = 1; i < MAX_JOBTYPES; ++i)
-	{
-		format(line, sizeof(line), "%s(%d) %s", i > 1 ? "\n" : "", i, GetJobName(i));
-		strcat(szMiscArray, line, sizeof(szMiscArray));
-	}
+	Job_BuildMenu(szMiscArray, sizeof(szMiscArray));
 	return Dialog_Show(playerid, job_name, DIALOG_STYLE_LIST, "Edit Job Name", szMiscArray, "Select", "Cancel");
 }
 
 Dialog:job_name(playerid, response, listitem, inputtext[])
 {
-	if(!response || !Job_CanEdit(playerid) || !(0 <= listitem < MAX_JOBTYPES - 1)) return 1;
-	SetPVarInt(playerid, "JobEditName", listitem + 1);
-	format(szMiscArray, sizeof(szMiscArray), "Enter a new name for %s (ID: %d), between 1 and %d characters.", GetJobName(listitem + 1), listitem + 1, sizeof(JobName[]) - 1);
+	if(!response || !Job_CanEdit(playerid)) return 1;
+	new type = Job_GetMenuType(listitem);
+	if(type == JOB_NONE) return 1;
+	SetPVarInt(playerid, "JobEditName", type);
+	format(szMiscArray, sizeof(szMiscArray), "Enter a new name for %s (ID: %d), between 1 and %d characters.", GetJobName(type), type, sizeof(JobName[]) - 1);
 	return Dialog_Show(playerid, job_name_confirm, DIALOG_STYLE_INPUT, "Edit Job Name", szMiscArray, "Edit", "Close");
 }
 
@@ -292,7 +277,7 @@ Dialog:job_name_confirm(playerid, response, listitem, inputtext[])
 {
 	if(!Job_CanEdit(playerid) || !GetPVarType(playerid, "JobEditName")) return 1;
 	new id = GetPVarInt(playerid, "JobEditName");
-	if(!response || !(1 <= id < MAX_JOBTYPES)) return DeletePVar(playerid, "JobEditName");
+	if(!response || !Job_IsAvailable(id)) return DeletePVar(playerid, "JobEditName");
 	if(!(1 <= strlen(inputtext) < sizeof(JobName[])) || strfind(inputtext, "\n") != -1 || strfind(inputtext, "\r") != -1 || strfind(inputtext, "\t") != -1)
 		return Dialog_Show(playerid, job_name_confirm, DIALOG_STYLE_INPUT, "Edit Job Name", "Use 1 to 31 characters on a single line.", "Edit", "Close");
 	format(szMiscArray, sizeof(szMiscArray), "%s changed job %d's name from %s to %s.", GetPlayerNameEx(playerid), id, GetJobName(id), inputtext);
@@ -359,12 +344,7 @@ Dialog:editjob(playerid, response, listitem, inputtext[])
 	{
 		case 0:
 		{
-			szMiscArray[0] = EOS;
-			for(new type = 1; type < MAX_JOBTYPES; ++type)
-			{
-				if(type > 1) strcat(szMiscArray, "\n", sizeof(szMiscArray));
-				strcat(szMiscArray, GetJobName(type), sizeof(szMiscArray));
-			}
+			Job_BuildMenu(szMiscArray, sizeof(szMiscArray));
 			Dialog_Show(playerid, job_type, DIALOG_STYLE_LIST, "Edit Job Type", szMiscArray, "Select", "Back");
 		}
 		case 1: Dialog_Show(playerid, moveconfirm, DIALOG_STYLE_MSGBOX, "Move Job Point", "Move this job point to your current position, interior and world?", "Yes", "No");
@@ -379,10 +359,11 @@ Dialog:job_type(playerid, response, listitem, inputtext[])
 	new id = Job_GetEditPoint(playerid);
 	if(id == -1) return 1;
 	if(!response) return JobEditID(playerid, id);
-	if(!(0 <= listitem < MAX_JOBTYPES - 1)) return 1;
-	format(szMiscArray, sizeof(szMiscArray), "%s changed job point %d's type from %d to %d.", GetPlayerNameEx(playerid), id, JobData[id][jType], listitem + 1);
+	new type = Job_GetMenuType(listitem);
+	if(type == JOB_NONE) return 1;
+	format(szMiscArray, sizeof(szMiscArray), "%s changed job point %d's type from %d to %d.", GetPlayerNameEx(playerid), id, JobData[id][jType], type);
 	Log("logs/jobedit.log", szMiscArray);
-	JobData[id][jType] = listitem + 1;
+	JobData[id][jType] = type;
 	SaveJobPoint(id);
 	UpdateJobPoint(id);
 	return JobEditID(playerid, id);
@@ -430,7 +411,7 @@ Dialog:pointdeleteconfirm(playerid, response, listitem, inputtext[])
 	if(!response) return JobEditID(playerid, id);
 	format(szMiscArray, sizeof(szMiscArray), "%s removed job point %d (%s).", GetPlayerNameEx(playerid), id, GetJobName(JobData[id][jType]));
 	Log("logs/jobedit.log", szMiscArray);
-	JobData[id][jType] = 0;
+	JobData[id][jType] = JOB_NONE;
 	JobData[id][jPos][0] = JobData[id][jPos][1] = JobData[id][jPos][2] = 0.0;
 	JobData[id][jVw] = JobData[id][jInt] = JobData[id][jMarkerID] = 0;
 	JobData[id][jLevel] = 1;

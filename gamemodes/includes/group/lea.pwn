@@ -2112,7 +2112,7 @@ CMD:drag(playerid, params[])
 
 CMD:wanted(playerid, params[])
 {
-	if(IsACop(playerid) || IsAJudge(playerid) || IsAGovernment(playerid) || PlayerInfo[playerid][pJob] == 2 || PlayerInfo[playerid][pJob2] == 2 || PlayerInfo[playerid][pJob3] == 2)
+	if(IsACop(playerid) || IsAJudge(playerid) || IsAGovernment(playerid) || Job_HasJob(playerid, JOB_LAWYER))
 	{
 		szMiscArray[0] = 0;
 		

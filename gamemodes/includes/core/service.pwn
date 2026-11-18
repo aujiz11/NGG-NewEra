@@ -131,7 +131,7 @@ CMD:service(playerid, const params[])
 			return 1;
 		}
 		format(string, sizeof(string), "** %s is in need of a car mechanic - use /accept mechanic to accept the call.", GetPlayerNameEx(playerid));
-		SendJobMessage(7, TEAM_AZTECAS_COLOR, string);
+		SendJobMessage(JOB_MECHANIC, TEAM_AZTECAS_COLOR, string);
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have called for a car mechanic, wait for a reply.");
 		MechanicCall = playerid;
 		PlayerInfo[playerid][pServiceTime] = gettime()+30;

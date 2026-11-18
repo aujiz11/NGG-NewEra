@@ -67,7 +67,7 @@ Pizza_StopDelivery(playerid)
 Pizza_CanWork(playerid)
 {
 	return gPlayerLogged{playerid} && !PlayerIsDead[playerid] && !GetPVarInt(playerid, "Injured") && !PlayerInfo[playerid][pHospital]
-		&& (PlayerInfo[playerid][pJob] == 21 || PlayerInfo[playerid][pJob2] == 21 || PlayerInfo[playerid][pJob3] == 21)
+		&& (Job_HasJob(playerid, JOB_PIZZA))
 		&& GetPlayerSkin(playerid) == 155 && GetPlayerState(playerid) != PLAYER_STATE_SPECTATING
 		&& GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0
 		&& !GetPVarType(playerid, "WatchingTV") && !GetPVarType(playerid, "PreviewingTV")
@@ -127,7 +127,7 @@ Pizza_Update(playerid, bool:deliver = false)
 
 CMD:getpizza(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJob] != 21 && PlayerInfo[playerid][pJob2] != 21 && PlayerInfo[playerid][pJob3] != 21)
+	if(!Job_HasJob(playerid, JOB_PIZZA))
 		return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Pizza Boy!");
 	
 	if(GetPVarType(playerid, "Pizza")) 

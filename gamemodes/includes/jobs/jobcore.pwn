@@ -35,458 +35,281 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <YSI_Coding\y_hooks>
-
-stock SendJobMessage(job, color, const string[])
+stock bool:Job_IsKnownType(job)
 {
-	foreach(new i: Player)
-	{
-		if(((PlayerInfo[i][pJob] == job || PlayerInfo[i][pJob2] == job || PlayerInfo[i][pJob3] == job) && JobDuty[i] == 1) || ((PlayerInfo[i][pJob] == job || PlayerInfo[i][pJob2] == job || PlayerInfo[i][pJob3] == job) && (job == 7 && GetPVarInt(i, "MechanicDuty") == 1) || (job == 2 && IsALawyer(i) && GetPVarInt(i, "LawyerDuty") == 1))) {
-			SendClientMessageEx(i, color, string);
-		}
-	}
+	return 0 < job < MAX_JOBTYPES;
 }
 
-stock GetJobLevel(playerid, job)
+stock bool:Job_IsAvailable(job)
 {
-	new jlevel;
+	return 0 < job < MAX_JOBTYPES && JobDefinitions[job][jobStatus] == JOB_STATUS_ACTIVE;
+}
+
+stock bool:Job_HasJob(playerid, job)
+{
+	return 0 <= playerid < MAX_PLAYERS && job != JOB_NONE && (PlayerInfo[playerid][pJob] == job || PlayerInfo[playerid][pJob2] == job || PlayerInfo[playerid][pJob3] == job);
+}
+
+stock Job_GetSlot(playerid, slot)
+{
+	switch(slot)
+	{
+		case 1: return PlayerInfo[playerid][pJob];
+		case 2: return PlayerInfo[playerid][pJob2];
+		case 3: return PlayerInfo[playerid][pJob3];
+	}
+	return JOB_NONE;
+}
+
+stock bool:Job_CanUseSlot(playerid, slot)
+{
+	switch(slot)
+	{
+		case 1: {
+			return true;
+		}
+		case 2: {
+			return PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0;
+		}
+		case 3: {
+			return PlayerInfo[playerid][pDonateRank] >= 3 || PlayerInfo[playerid][pFamed] > 0;
+		}
+	}
+	return false;
+}
+
+stock bool:Job_CanSetSlot(playerid, slot, job)
+{
+	if(!(0 <= playerid < MAX_PLAYERS) || !(1 <= slot <= 3)) return false;
+	if(job != JOB_NONE && (!Job_IsAvailable(job) || !Job_CanUseSlot(playerid, slot))) return false;
+	
+	for(new other = 1; job != JOB_NONE && other <= 3; ++other) {
+		if(other != slot && Job_GetSlot(playerid, other) == job) {
+			return false;
+		}	
+	}
+	
+	if(Job_GetSlot(playerid, slot) == JOB_TAXI && job != JOB_TAXI && TransportDuty[playerid] > 0
+		&& GetPlayerCash(playerid) > cellmax - (TransportMoney[playerid] / 100 * 50)) return false;
+	
+	return true;
+}
+
+stock Job_ClearPointDelivery(playerid)
+{
+	new point = MatDeliver[playerid];
+	if(!(0 <= point < MAX_POINTS)) return 1;
+	if(DynPoints[point][poType] == 0)
+	{
+		if(Job_HasJob(playerid, JOB_ARMS_DEALER) || Job_HasJob(playerid, JOB_CRAFTSMAN)) return 1;
+	}
+	else if(Job_HasJob(playerid, JOB_DRUG_SMUGGLER) || IsACriminal(playerid)) return 1;
+	new Float:x, Float:y, Float:z, Float:radius;
+	if(GetPlayerCheckpoint(playerid, x, y, z, radius) && x == DynPoints[point][poPos2][0] && y == DynPoints[point][poPos2][1] && z == DynPoints[point][poPos2][2] && radius == 5.0)
+	{
+		DisablePlayerCheckpoint(playerid);
+	}
+
+	MatDeliver[playerid] = -1;
+	MatsAmount[playerid] = 0;
+	DeletePVar(playerid, "tpMatRunTimer");
+	return 1;
+}
+
+stock Job_ClearActivity(playerid, job)
+{
 	switch(job)
 	{
-		case 1:
+		case JOB_DETECTIVE:
 		{
-			new skilllevel = PlayerInfo[playerid][pDetSkill];
-			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
-			else if(skilllevel >= 50 && skilllevel < 100) jlevel = 2;
-			else if(skilllevel >= 100 && skilllevel < 200) jlevel = 3;
-			else if(skilllevel >= 200 && skilllevel < 400) jlevel = 4;
-			else if(skilllevel >= 400) jlevel = 5;
-		}
-		case 2:
-		{
-			new skilllevel = PlayerInfo[playerid][pLawSkill];
-			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
-			else if(skilllevel >= 50 && skilllevel < 100) jlevel = 2;
-			else if(skilllevel >= 100 && skilllevel < 200) jlevel = 3;
-			else if(skilllevel >= 200 && skilllevel < 400) jlevel = 4;
-			else if(skilllevel >= 400) jlevel = 5;
-		}
-		case 3:
-		{
-			new skilllevel = PlayerInfo[playerid][pSexSkill];
-			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
-			else if(skilllevel >= 50 && skilllevel < 100) jlevel = 2;
-			else if(skilllevel >= 100 && skilllevel < 200) jlevel = 3;
-			else if(skilllevel >= 200 && skilllevel < 400) jlevel = 4;
-			else if(skilllevel >= 400) jlevel = 5;
-		}
-		case 7:
-		{
-			new skilllevel = PlayerInfo[playerid][pMechSkill];
-			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
-			else if(skilllevel >= 50 && skilllevel < 100) jlevel = 2;
-			else if(skilllevel >= 100 && skilllevel < 200) jlevel = 3;
-			else if(skilllevel >= 200 && skilllevel < 400) jlevel = 4;
-			else if(skilllevel >= 400) jlevel = 5;
-		}
-		case 9:
-		{
-			new skilllevel = PlayerInfo[playerid][pArmsSkill];
-			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
-			else if(skilllevel >= 50 && skilllevel < 200) jlevel = 2;
-			else if(skilllevel >= 200 && skilllevel < 700) jlevel = 3;
-			else if(skilllevel >= 700 && skilllevel < 1200) jlevel = 4;
-			else if(skilllevel >= 1200) jlevel = 5;
-		}
-		case 12:
-		{
-			new skilllevel = PlayerInfo[playerid][pBoxSkill];
-			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
-			else if(skilllevel >= 50 && skilllevel < 100) jlevel = 2;
-			else if(skilllevel >= 100 && skilllevel < 200) jlevel = 3;
-			else if(skilllevel >= 200 && skilllevel < 400) jlevel = 4;
-			else if(skilllevel >= 400) jlevel = 5;
-		}
-		case 14:
-		{
-			new skilllevel = PlayerInfo[playerid][pDrugSmuggler];
-			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
-			else if(skilllevel >= 50 && skilllevel < 100) jlevel = 2;
-			else if(skilllevel >= 100 && skilllevel < 200) jlevel = 3;
-			else if(skilllevel >= 200 && skilllevel < 400) jlevel = 4;
-			else if(skilllevel >= 400) jlevel = 5;
-		}
-		case 20:
-		{
-			new skilllevel = PlayerInfo[playerid][pTruckSkill];
-			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
-			else if(skilllevel >= 50 && skilllevel < 100) jlevel = 2;
-			else if(skilllevel >= 100 && skilllevel < 200) jlevel = 3;
-			else if(skilllevel >= 200 && skilllevel < 400) jlevel = 4;
-			else if(skilllevel >= 400) jlevel = 5;
-		}
-		case 22:
-		{
-			new skilllevel = PlayerInfo[playerid][pTreasureSkill];
-			if(skilllevel >= 0 && skilllevel <= 24) jlevel = 1;
-			else if(skilllevel >= 25 && skilllevel <= 149) jlevel = 2;
-			else if(skilllevel >= 150 && skilllevel <= 299) jlevel = 3;
-			else if(skilllevel >= 300 && skilllevel <= 599) jlevel = 4;
-			else if(skilllevel >= 600) jlevel = 5;
-		}
-	}
-	return jlevel;
-}
-
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
-
-	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
-	switch(dialogid)
-	{
-		case JOBHELPMENU:
-		{
-			if(response)
+			DeletePVar(playerid, "TRC_STP");
+			DeletePVar(playerid, "TRC_STR");
+			if(Bit_State(arrPlayerBits[playerid], phone_bitTraceState))
 			{
-				switch(listitem)
+				GangZoneDestroy(GetPVarInt(playerid, "PTR_GZ"));
+				DeletePVar(playerid, "PTR_GZ");
+				Bit_Off(arrPlayerBits[playerid], phone_bitTraceState);
+			}
+			FindingPlayer[playerid] = INVALID_PLAYER_ID;
+			FindTime[playerid] = 0;
+		}
+		case JOB_LAWYER:
+		{
+			if(IsALawyer(playerid)) return 1;
+			Lawyer_StopDuty(playerid);
+			ApprovedLawyer[playerid] = 0;
+		}
+		case JOB_MECHANIC:
+		{
+			if(GetPVarInt(playerid, "MechanicDuty") == 1 && Mechanics > 0) --Mechanics;
+			DeletePVar(playerid, "MechanicDuty");
+			if(!Mechanic_CanFix(playerid)) Mechanic_CancelFix(playerid);
+		}
+		case JOB_ARMS_DEALER, JOB_CRAFTSMAN, JOB_DRUG_SMUGGLER: Job_ClearPointDelivery(playerid);
+		case JOB_STREET_SWEEPER:
+		{
+			if(gGangTagTimer[playerid] && !GetPVarType(playerid, PVAR_GANGTAGTEXT) && !IsAStreetSweeper(playerid)
+				&& strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) == -1) GangTag_Cancel(playerid);
+		}
+		case JOB_TAXI:
+		{
+			if(!IsATaxiDriver(playerid)) Taxi_StopDuty(playerid);
+		}
+		case JOB_SHIPMENT: CancelTruckDelivery(playerid);
+		case JOB_PIZZA: Pizza_StopDelivery(playerid);
+		case JOB_GARBAGE: Garbage_CancelRun(playerid);
+	}
+	foreach(new target: Player)
+	{
+		switch(job)
+		{
+			case JOB_LAWYER:
+			{
+				if(DefendOffer[target] == playerid)
 				{
-					case 0: //Detective
-					{
-						ShowPlayerDialogEx(playerid, DETECTIVEJOB, DIALOG_STYLE_MSGBOX, "Detective", "Information:\n\nThis job can be used to locate people anywhere around San Andreas.\nThis is helpful for the Government factions, and can be used to find criminals. It is a legal job and you cannot get busted for doing it.\nIt will tell you the last known location(area) they were found in and give you a beacon.", "Next", "Cancel");
-					}
-					case 1: //Lawyer
-					{
-						ShowPlayerDialogEx(playerid, LAWYERJOB, DIALOG_STYLE_MSGBOX, "Lawyer", "Information:\n\nThis job can be used to remove wanted stars, reduce jail time, and list all criminals.\nThis is helpful for criminals and crooks, it is a legal job and you cannot get busted for doing it.\nIt will come in handy for your friends and families who got trouble with the cops.", "Next", "Cancel");
-					}
-					case 2: //Whore
-					{
-						ShowPlayerDialogEx(playerid, WHOREJOB, DIALOG_STYLE_MSGBOX, "Whore", "Information:\n\nThis job can be used to bring pleasure to any clients who may be interested in having some fun.\nThis is a job that offers sex to every client who comes along.\nThis is an illegal job and you can get busted for doing it.", "Next", "Cancel");
-					}
-					case 3: //Drug Dealer
-					{
-						ShowPlayerDialogEx(playerid, DRUGDEALERJOB, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Information:\n\nThis job can be used to sell Cannabis and crack to any customers you might find.\nIt often comes in handy, when you're a higher level at it.\nThe higher the level, the more drugs you can hold.\nThis is an illegal job and you can get busted for doing it.", "Next", "Cancel");
-					}
-					case 4: //Mechanic
-					{
-						ShowPlayerDialogEx(playerid, MECHANICJOB, DIALOG_STYLE_MSGBOX, "Mechanic", "Information:\n\nThis job can be used to repair, add nos, and add hydraulics to vehicles.\nThis job can sometimes be rewarding, but often people do not require assistance.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
-					}
-					case 5: //Bodyguard
-					{
-						ShowPlayerDialogEx(playerid, BODYGUARDJOB, DIALOG_STYLE_MSGBOX, "Bodyguard", "Information:\n\nThis job can be used to give people half armor.\nThis job is very profitable and the common spot for purchasing off bodyguards is the gym.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
-					}
-					case 6: //Arms Dealer
-					{
-						ShowPlayerDialogEx(playerid, ARMSDEALERJOB, DIALOG_STYLE_MSGBOX, "Arms Dealer", "Information:\n\nThis job can be used to sell people weapons.\nThis job is very profitable and can earn you big cash at later levels.\nThis is an illegal job and you can get busted for doing it.", "Next", "Cancel");
-					}
-					case 7: //Boxer
-					{
-						ShowPlayerDialogEx(playerid, BOXERJOB, DIALOG_STYLE_MSGBOX, "Boxer", "Information:\n\nThis job can be used to box people inside the Ganton Gym.\nThis job is not very money-making, but you can become the boxing champion.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
-					}
-					case 8: //Taxi Driver
-					{
-						ShowPlayerDialogEx(playerid, TAXIJOB, DIALOG_STYLE_MSGBOX, "Taxi Driver", "Information:\n\nThis job can be used to take passengers around the city for any price you desire($1 - $500 per 16 seconds).\nThis job is not very profitable as people do not usually call taxis, and sometimes they try to steal your taxi vehicle.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
-					}
-					case 9: //Drug Smuggling
-					{
-						ShowPlayerDialogEx(playerid, SMUGGLEJOB, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Information:\n\nThis job can be used to keep Crack and Cannabis filled in the Crack Lab.\nThis job is very profitable as people usually buy crack and Cannabis, and sometimes they try to steal your Cannabis and crack.\nThis is an ilegal job and you can get busted for doing it.", "Next", "Cancel");
-					}
-					case 10: //Craftsman
-					{
-						ShowPlayerDialogEx(playerid, CRAFTJOB, DIALOG_STYLE_MSGBOX, "Craftsman", "Information:\nThis job can be used to sell crafts to other players.\nThis job is very profitable as people have a need for many of the things you can make.\nThis is a legal job and you can not get busted for doing it.\n\nCommands:\n/getmats /craft\nLocation of job: This job can be obtained in Willowfield at the junkyard, at the job icon(yellow circle).", "Done", "Cancel");
-					}
-					case 11: //Bartender
-					{
-						ShowPlayerDialogEx(playerid, BARTENDERJOB, DIALOG_STYLE_MSGBOX, "Bartender", "Information:\nThis job can be used to sell drinks to other players.\nThis is a legal job and you can not get busted for doing it.\n\nCommands:\n/selldrink\nLocation of job: This job can be obtained in Idlewood inside the Alhambra Club, at the job icon(yellow i).", "Done", "Cancel");
-					}
-					case 12: //Trucker
-					{
-						ShowPlayerDialogEx(playerid, TRUCKERJOB, DIALOG_STYLE_MSGBOX, "Shipment Contractor","Information:\nThis job can be used to earn money by making truck deliveries\nThis is a legal job, however you can get busted if you transport illegal goods or hijack trucks. Also Shipment Contractors get a 25 percent bonus for carting illegal goods.\n\nCommands:\n/loadshipment /checkcargo /hijackcargo\nLocation of job: This job can be obtained at the San Fierro Docks, at the job icon(yellow I).", "Done", "Cancel");
-					}
-					case 13: //Pizza Boy
-					{
-						ShowPlayerDialogEx(playerid, PIZZAJOB, DIALOG_STYLE_MSGBOX, "Pizza Boy","Information:\nThis job can be used to earn money by grabbing a pizza from the\n SF Pizza Stack and then delivering it to different houses.\n You will get less and less money as time moves on and eventually,\n when the pizza is cold, it will be worthless.\n\nCommands:\n/getpizza\nLocation of job: This job can be obtained at the Pizza Stacks in Idlewood, at the job icon(yellow I).", "Done", "Cancel");
-					}
-					case 14: { // Garbageman
-						ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Garbageman","Information:\nThis job can be used to earn money by collecting trash from\n the streets.\n\nCommands:\n/garbagerun\nLocation of job: Use /map to find it.", "Done", "Cancel");
-					}
+					DefendOffer[target] = INVALID_PLAYER_ID;
+					DefendPrice[target] = 0;
+					DeletePVar(target, "DefendOfferSession");
+				}
+				if(AppealOffer[target] == playerid) Lawyer_ClearAppeal(target);
+			}
+			case JOB_MECHANIC:
+			{
+				if(RepairOffer[target] == playerid)
+				{
+					RepairOffer[target] = INVALID_PLAYER_ID;
+					RepairPrice[target] = RepairCar[target] = 0;
+					DeletePVar(target, "RepairOfferSession");
+				}
+				if(RefillOffer[target] == playerid)
+				{
+					RefillOffer[target] = INVALID_PLAYER_ID;
+					RefillPrice[target] = 0;
+					DeletePVar(target, "RefillVehicle");
+					DeletePVar(target, "RefillOfferSession");
 				}
 			}
-		}
-		case SMUGGLEJOB2:
-		{
-			if(response)
+			case JOB_PROSTITUTE:
 			{
-				ShowPlayerDialogEx(playerid, SMUGGLEJOB3, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Commands:\n\n/getcrate [name(Cannabis/Crack)]\n\nLocation of job: This job can be obtained inside the Crack Lab, at the job icon(yellow circle).", "Done", "Cancel");
+				if(SexOffer[target] == playerid)
+				{
+					SexOffer[target] = INVALID_PLAYER_ID;
+					SexPrice[target] = 0;
+					DeletePVar(target, "SexOfferSession");
+				}
 			}
-		}
-		case SMUGGLEJOB:
-		{
-			if(response)
+			case JOB_BARTENDER:
 			{
-				ShowPlayerDialogEx(playerid, SMUGGLEJOB2, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Note: There is no reload time for drug smuggling and you do need to level it up to obtain more money. There are 5 levels for this job.", "Next", "Cancel");
+				if(DrinkOffer[target] == playerid)
+				{
+					DrinkOffer[target] = INVALID_PLAYER_ID;
+					DeletePVar(target, "DrinkOfferSession");
+				}
 			}
-		}
-		case TAXIJOB:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, TAXIJOB2, DIALOG_STYLE_MSGBOX, "Taxi Driver", "Note: There is no reload time for taxi fares and there are no levels for this job. In other words, you do not need to level it up to earn the max money you can.", "Next", "Cancel");
-			}
-		}
-		case TAXIJOB2:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, TAXIJOB3, DIALOG_STYLE_MSGBOX, "Taxi Driver", "Commands:\n\n/fare [$1 - $500]\n\nLocation of job: This job can be obtained in front of Unity Station at the job icon(yellow circle).", "Done", "Cancel");
-			}
-		}
-		case BOXERJOB2:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, BOXERJOB3, DIALOG_STYLE_MSGBOX, "Boxer", "Commands:\n\n/fight [PlayerID/Name], /boxstats\n\nLocation of job: This job can be obtained inside the Ganton Gym, at the job icon(yellow circle).", "Done", "Cancel");
-			}
-		}
-		case BOXERJOB:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, BOXERJOB2, DIALOG_STYLE_MSGBOX, "Boxer", "Note: There is no reload time for boxing and you don't need to level it up to box people in the gym. There are 3 levels for this job.\n\nLevel 1: Beginner Boxer.\nLevel 2: Amateur Boxer.\nLevel 3: Professional Boxer.", "Next", "Cancel");
-			}
-		}
-		case ARMSDEALERJOB:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, ARMSDEALERJOB2, DIALOG_STYLE_MSGBOX, "Arms Dealer", "Note: The reload time for selling guns is always 10 seconds, no matter what level.\n\nSkills:\n\nLevel 1 Weapons: Flowers, Knuckles, SDPistol, 9mm, and Shotgun.\nLevel 2 Weapons: Baseball Bat, Cane, MP5, and Rifle.\nLevel 3 Weapons: Shovel and Deagle.\nLevel 4 Weapons: Poolcue and Golf Club.\nLevel 5 Weapons: Katana, Dildo, UZI & TEC9.\nGold+ VIP Feature: AK-47", "Next", "Cancel");
-			}
-		}
-		case ARMSDEALERJOB2:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, ARMSDEALERJOB3, DIALOG_STYLE_MSGBOX, "Arms Dealer", "Commands:\n\n/getmats, /sellgun\n\nLocation of job: This job can be obtained outside the large Ammunation, at the 'gun' icon.", "Done", "Cancel");
-			}
-		}
-		case BODYGUARDJOB2:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, BODYGUARDJOB3, DIALOG_STYLE_MSGBOX, "Bodyguard", "Commands:\n\n/guard [player] [Price $2000 - $10000]\n/frisk [player]\n\nLocation of job: This job can be obtained outside the Ganton Gym, at the job icon(yellow circle).", "Done", "Cancel");
-			}
-		}
-		case BODYGUARDJOB:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, BODYGUARDJOB2, DIALOG_STYLE_MSGBOX, "Bodyguard", "Note: You can offer a vest every 10 seconds. There are no job levels for this job. In other words, you do not need to level it up to earn the max money you can.", "Next", "Cancel");
-			}
-		}
-		case MECHANICJOB:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, MECHANICJOB2, DIALOG_STYLE_MSGBOX, "Mechanic", "Note: The reload time is always 1 minute, no matter what level.", "Next", "Cancel");
-			}
-		}
-		case MECHANICJOB2:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, MECHANICJOB3, DIALOG_STYLE_MSGBOX, "Mechanic", "Commands:\n\n/fix, /repair, /hyd, /nos, /refill, /mechduty\n\nLocation of job: This job can be obtained at blueberry, at the job icon(yellow circle).", "Done", "Cancel");
-			}
-		}
-		case DRUGDEALERJOB:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, DRUGDEALERJOB2, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Note: The reload time is always 1 minute, no matter what level.\n\nSkills:\n\nLevel 1: You can hold 10 Cannabis and 5 crack.\nLevel 2: You can hold 20 Cannabis and 15 crack.\nLevel 3: You can hold 30 Cannabis and 15 crack.\nLevel 4: You can hold 40 Cannabis and 20 crack.\nLevel 5: You can hold 50 Cannabis and 25 crack.", "Next", "Cancel");
-			}
-		}
-		case DRUGDEALERJOB2:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, DRUGDEALERJOB3, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Commands:\n\n/sell, /mydrugs, /usedrug, /buypot, /buyopium, /plantpot, /plantopium, /pickplant, /checkplant, /makeheroin\n\nLocation of job: This job can be located outside the Drug Den, opposite the Ganton Gym, at the 'D' icon.", "Done", "Cancel");
-			}
-		}
-		case WHOREJOB2:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, WHOREJOB3, DIALOG_STYLE_MSGBOX, "Whore", "Commands:\n\n/sex\n/sex is a command to offer sex to a client, and may only be used in a vehicle.\n\nLocation of job: This job can be obtained inside the Pig Pen, at the job icon(yellow circle).", "Done", "Cancel");
-			}
-		}
-		case LAWYERJOB2:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, LAWYERJOB3, DIALOG_STYLE_MSGBOX, "Lawyer", "Commands:\n\n/defend, /free, /wanted, /lawyerduty, /offerappeal, /finishappeal\n\nLocation of job: This job can be found at the job map icon(yellow circle)near the bank.", "Done", "Cancel");
-			}
-		}
-		case WHOREJOB:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, WHOREJOB2, DIALOG_STYLE_MSGBOX, "Whore", "Note: The reload time is always 1 minute, no matter what level.\n\nSkills:\n\nLevel 1: You have a very high chance of catching/giving STD's.\nLevel 2: You have a high chance of catching/giving STD's.\nLevel 3: You have a medium chance of catching/giving STD's.\nLevel 4: You have a low chance of catching/giving STD's.\nLevel 5: You have a very low chance of catching/giving STD's.", "Next", "Cancel");
-			}
-		}
-		case LAWYERJOB:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, LAWYERJOB2, DIALOG_STYLE_MSGBOX, "Lawyer", "Note: The reload time is always 2 minutes, no matter what level.\n\nSkills:\n\nLevel 1: You can reduce inmates sentences by 1 minute.\nLevel 2: You can reduce inmates sentences by 2 minutes.\nLevel 3: You can reduce inmates sentences by 3 minutes.\nLevel 4: You can reduce inmates sentences by 4 minutes.\nLevel 5: You can reduce inmates sentences by 5 minutes.", "Next", "Cancel");
-			}
-		}
-		case DETECTIVEJOB2:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, DETECTIVEJOB3, DIALOG_STYLE_MSGBOX, "Detective", "Commands:\n\n/trace\n/trace is a command that can locate a player's phone position.\n\nLocation of job: This job can be obtained in the Los Santos Police Department.", "Done", "Cancel");
-			}
-		}
-		case DETECTIVEJOB:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, DETECTIVEJOB2, DIALOG_STYLE_MSGBOX, "Detective", "Skills:\n\nLevel 1: You can find someone for 3 seconds, the reload time is 2 minutes.\nLevel 2: You can find someone for 5 seconds, the reload time is 1 minute, 20 seconds.\nLevel 3: You can find someone for 7 seconds, the reload time is 1 minute.\nLevel 4: You can find someone for 9 seconds, the reload time is 30 seconds.\nLevel 5: You can find someone for 11 seconds, the reload time is 20 seconds.", "Next", "Cancel");
-			}
-		}
-	}
-	return 0;
-}
-
-CMD:join(playerid, params[])
-{
-	new point = Job_FindPoint(playerid);
-	if(point == -1) 
-	{
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be near a job point. Press Y there or use /join to apply.");
-	}
-	return Job_GetJob(playerid, point);
-}
-
-CMD:skill(playerid, params[])
-{
-	if(isnull(params))
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /skill [number]");
-		SendClientMessageEx(playerid, COLOR_GREY, "| 1: Detective\t\t\t\t\t\t\t\t\t\t\t\t6: Car Mechanic");
-		SendClientMessageEx(playerid, COLOR_GREY, "| 2: Lawyer\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t7: Boxer");
-		SendClientMessageEx(playerid, COLOR_GREY, "| 3: Whore\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t8: Fishing");
-		SendClientMessageEx(playerid, COLOR_GREY, "| 4: Drug Smuggler\t\t\t\t\t9: Trucker");
-		SendClientMessageEx(playerid, COLOR_GREY, "| 5: Arms Dealer\t\t\t\t\t\t\t10: Treasure Hunter");
-		SendClientMessageEx(playerid, COLOR_GREY, "| 11: Lock Picking");
-		return 1;
-	}
-	else switch(strval(params)) {
-		case 1: //Detective
-		{
-			new level = PlayerInfo[playerid][pDetSkill];
-			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Detective Skill Level = 1.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to find %d more people to level up.", 50 - level); }
-			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Detective Skill Level = 2.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to find %d more people to level up.", 100 - level); }
-			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Detective Skill Level = 3.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to find %d more people to level up.", 200 - level); }
-			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Detective Skill Level = 4.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to find %d more people to level up.", 400 - level); }
-			else if(level >= 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Detective Skill Level = 5."); }
-		}
-		case 2://Lawyer
-		{
-			new level = PlayerInfo[playerid][pLawSkill];
-			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Lawyer Skill Level = 1.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to free %d more people to level up.", 50 - level); }
-			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Lawyer Skill Level = 2.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to free %d more people to level up.", 100 - level); }
-			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Lawyer Skill Level = 3.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to free %d more people to level up.", 200 - level); }
-			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Lawyer Skill Level = 4.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to free %d more people to level up.", 400 - level); }
-			else if(level >= 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Lawyer Skill Level = 5."); }
-		}
-		case 3://Whore
-		{
-			new level = PlayerInfo[playerid][pSexSkill];
-			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Whore Skill Level = 1.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to have sex %d times more to level up.", 50 - level); }
-			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Whore Skill Level = 2.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to have sex %d times more to level up.", 100 - level); }
-			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Whore Skill Level = 3.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to have sex %d times more to level up.", 200 - level); }
-			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Whore Skill Level = 4.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to have sex %d times more to level up.", 400 - level); }
-			else if(level >= 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Whore Skill Level = 5."); }
-		}
-		case 4://Drug Smuggling
-		{
-			new level = PlayerInfo[playerid][pDrugSmuggler], string[61];
-            if(level >=0 && level < 50) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Drug Smuggling Level = 1"), format(string, sizeof(string), "You need to successfully smuggle %d more drugs to level up.", 50 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-            else if(level >= 50 && level < 100) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Drug Smuggling Level = 2"), format(string, sizeof(string), "You need to successfully smuggle %d more drugs to level up.", 100 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-			else if(level >=100 && level < 200) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Drug Smuggling Level = 3"), format(string, sizeof(string), "You need to successfully smuggle %d more drugs to level up.", 200 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-			else if(level >=200 && level < 400) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Drug Smuggling Level = 4"), format(string, sizeof(string), "You need successfully smuggle %d more drugs to level up.", 400 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-			else if(level >=400) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Drug Smuggling Level = 5");
-		}
-		case 5://Arms Dealer
-		{
-			new level = PlayerInfo[playerid][pArmsSkill];
-			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 1.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to sell %d more guns to level up.", 50 - level); }
-			else if(level >= 50 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 2.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to sell %d more guns to level up.", 200 - level); }
-			else if(level >= 200 && level < 700) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 3.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to sell %d more guns to level up.", 700 - level); }
-			else if(level >= 700 && level < 1200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 4.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to sell %d more guns to level up.", 1200 - level); }
-			else if(level >= 1200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 5."); }
-		}
-		case 6://Car Mechanic
-		{
-			new level = PlayerInfo[playerid][pMechSkill];
-			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 1.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to repair/refill a car for %d times more to level up.", 50 - level); }
-			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 2.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to repair/refill a car for %d times more to level up.", 100 - level); }
-			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 3.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to repair/refill a car for %d times more to level up.", 200 - level); }
-			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 4.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to repair/refill a car for %d times more to level up.", 400 - level); }
-			else if(level >= 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 5."); }
-		}
-		case 7://Boxer
-		{
-			new level = PlayerInfo[playerid][pBoxSkill];
-			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Boxing Skill Level = 1.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to Win %d more Matches to level up.", 50 - level); }
-			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Boxing Skill Level = 2.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to Win %d more Matches to level up.", 100 - level); }
-			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Boxing Skill Level = 3.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to Win %d more Matches to level up.", 200 - level); }
-			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Boxing Skill Level = 4.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to Win %d more Matches to level up.", 400 - level); }
-			else if(level >= 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Boxing Skill Level = 5."); }
-		}
-		case 8: //Fishing
-		{
-		    new level = PlayerInfo[playerid][pFishingSkill], string[61];
-            if(level >=0 && level < 50) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Fishing Level = 1"), format(string, sizeof(string), "You need to successfully fish %d more times to level up.", 50 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-            else if(level >= 50 && level < 100) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Fishing Level = 2"), format(string, sizeof(string), "You need to successfully fish %d more times to level up.", 100 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-			else if(level >=100 && level < 200) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Fishing Level = 3"), format(string, sizeof(string), "You need to successfully fish %d more times to level up.", 200 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-			else if(level >=200 && level < 400) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Fishing Level = 4"), format(string, sizeof(string), "You need successfully fish %d more times to level up.", 400 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-			else if(level >=400) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Fishing Level = 5");
-		}
-		case 9://Trucker
-		{
-			new level = PlayerInfo[playerid][pTruckSkill];
-			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 1.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to transport goods %d times to level up.", 50 - level); }
-			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 2.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to transport goods %d times to level up.", 100 - level); }
-			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 3.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to transport goods %d times to level up.", 200 - level); }
-			else if(level >= 200 && level < 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 4.");  SendClientMessageEx(playerid, COLOR_YELLOW, "You need to transport goods %d times to level up.", 400 - level); }
-			else if(level >= 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor Skill Level = 5."); }
-		}
-		case 10://Treasure Hunter
-		{
-		    new level = PlayerInfo[playerid][pTreasureSkill], string[50];
-            if(level >=0 && level <= 24) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Treasure Hunting Skill Level = 1"), format(string, sizeof(string), "You need to find treasure %d times to level up.", 25 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-            else if(level >= 25 && level <= 149) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Treasure Hunting Skill Level = 2"), format(string, sizeof(string), "You need to find treasure %d times to level up.", 150 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-			else if(level >=150 && level <= 299) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Treasure Hunting Skill Level = 3"), format(string, sizeof(string), "You need to find treasure %d times to level up.", 300 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-			else if(level >=300 && level <= 599) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Treasure Hunting Skill Level = 4"), format(string, sizeof(string), "You need to find treasure %d times to level up.", 600 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-			else if(level >=600) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Treasure Hunting Skill Level = 5");
-		}
-		case 11: //Lock Picking
-		{
-		    new level = PlayerInfo[playerid][pCarLockPickSkill], string[61];
-            if(level >=0 && level <= 49) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Lock Picking Skill Level = 1"), format(string, sizeof(string), "You need to successfully lock pick %d more cars to level up.", 50 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-            else if(level >= 50 && level <= 124) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Lock Picking Skill Level = 2"), format(string, sizeof(string), "You need to successfully lock pick %d more cars to level up.", 125 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-			else if(level >=125 && level <= 224) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Lock Picking Skill Level = 3"), format(string, sizeof(string), "You need to successfully lock pick %d more cars to level up.", 225 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-			else if(level >=225 && level <= 349) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Lock Picking Skill Level = 4"), format(string, sizeof(string), "You need successfully lock pick %d more cars to level up.", 350 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
-			else if(level >=350) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Lock Picking Skill Level = 5");
-		}
-		default:
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid skill number specified.");
+			case JOB_BODYGUARD: if(GuardOffer[target] == playerid) Bodyguard_ClearOffer(target);
+			case JOB_ARMS_DEALER: if(GetPVarType(target, "pSellGunID") && GetPVarInt(target, "pSellGunID") == playerid) ArmsDealer_ClearOffer(target);
 		}
 	}
 	return 1;
 }
 
-CMD:jobhelp(playerid, params[]) {
-    return ShowPlayerDialogEx(playerid, JOBHELPMENU, DIALOG_STYLE_LIST, "Which job do you need help with?","Detective\nLawyer\nWhore\nDrug Dealer\nMechanic\nBodyguard\nArms Dealer\nBoxer\nTaxi Driver\nDrug Smuggling\nCraftsman\nBartender\nShipment Contractor\nPizza Boy\nGarbageman", "Select", "Cancel");
+stock Job_SetPlayerSlot(playerid, slot, job)
+{
+	if(!Job_CanSetSlot(playerid, slot, job)) return 0;
+	new oldjob = Job_GetSlot(playerid, slot);
+	if(oldjob == job) return 1;
+	switch(slot)
+	{
+		case 1: PlayerInfo[playerid][pJob] = job;
+		case 2: PlayerInfo[playerid][pJob2] = job;
+		case 3: PlayerInfo[playerid][pJob3] = job;
+	}
+	if(oldjob != JOB_NONE && !Job_HasJob(playerid, oldjob)) Job_ClearActivity(playerid, oldjob);
+	return 1;
+}
+
+stock Job_GetMenuType(listitem, bool:boost = false)
+{
+	if(listitem < 0) return JOB_NONE;
+	for(new job = 1; job < MAX_JOBTYPES; ++job)
+	{
+		if(!Job_IsAvailable(job) || (boost && !JobDefinitions[job][jobBoostable])) continue;
+		if(listitem-- == 0) return job;
+	}
+	return JOB_NONE;
+}
+
+stock Job_BuildMenu(output[], size, bool:boost = false)
+{
+	output[0] = EOS;
+	new count, line[MAX_JOBNAME_LEN + 12];
+	for(new job = 1; job < MAX_JOBTYPES; ++job)
+	{
+		if(!Job_IsAvailable(job) || (boost && !JobDefinitions[job][jobBoostable])) continue;
+		format(line, sizeof(line), "%s%d. %s", count ? "\n" : "", count + 1, GetJobName(job));
+		strcat(output, line, size);
+		++count;
+	}
+	return count;
+}
+
+stock Job_ShowMenu(playerid, bool:shop = false, bool:boost = false)
+{
+	DeletePVar(playerid, "jobSelection");
+	DeletePVar(playerid, "m_Response");
+	if(shop) SetPVarInt(playerid, "m_Item", boost ? 1 : 0);
+	else DeletePVar(playerid, "m_Item");
+	Job_BuildMenu(szMiscArray, sizeof(szMiscArray), boost);
+	return ShowPlayerDialogEx(playerid, 7484, DIALOG_STYLE_LIST, boost ? "Micro Shop: Job Boost" : "Job Center", szMiscArray, "Proceed", "Cancel");
+}
+
+stock Job_GetSkill(job)
+{
+	return Job_IsKnownType(job) ? JobDefinitions[job][jobSkill] : JOB_SKILL_NONE;
+}
+
+stock Job_SkillLevel(skill, points)
+{
+	if(!(0 <= skill < sizeof(JobSkills)) || points < 0) return 0;
+	for(new level; level < 4; ++level)
+		if(points < JobSkills[skill][jobSkillThreshold][level]) return level + 1;
+	return 5;
+}
+
+stock GetJobLevel(playerid, job)
+{
+	new skill = Job_GetSkill(job);
+	if(skill == JOB_SKILL_NONE) return 0;
+	return Job_SkillLevel(skill, PlayerInfo[playerid][JobSkills[skill][jobSkillField]]);
+}
+
+stock Job_IsOnDuty(playerid, job)
+{
+	switch(job)
+	{
+		case JOB_LAWYER: return IsALawyer(playerid) && GetPVarInt(playerid, "LawyerDuty") == 1;
+		case JOB_MECHANIC: return Job_HasJob(playerid, job) && GetPVarInt(playerid, "MechanicDuty") == 1;
+		case JOB_TAXI: return IsATaxiDriver(playerid) && TransportDuty[playerid] > 0;
+	}
+	return 0;
+}
+
+stock SendJobMessage(job, color, const string[])
+{
+	foreach(new i: Player) {
+		if(Job_IsOnDuty(i, job)) {
+			SendClientMessageEx(i, color, string);
+		}
+	}
+}
+
+CMD:join(playerid, params[])
+{
+	new point = Job_FindPoint(playerid);
+	if(point == -1) {
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be near a job point. Press Y there or use /join to apply.");
+	}
+	return Job_GetJob(playerid, point);
 }
 
 CMD:quitjob(playerid, params[])
@@ -497,40 +320,9 @@ CMD:quitjob(playerid, params[])
 		if(sscanf(params, "d", slot) || !(1 <= slot <= 3))
 			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /quitjob [slot 1, 2 or 3]");
 	}
-	new job;
-	switch(slot)
-	{
-		case 1: job = PlayerInfo[playerid][pJob];
-		case 2: job = PlayerInfo[playerid][pJob2];
-		case 3: job = PlayerInfo[playerid][pJob3];
-	}
-	if(job == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have a job in that slot.");
-	switch(slot)
-	{
-		case 1: PlayerInfo[playerid][pJob] = 0;
-		case 2: PlayerInfo[playerid][pJob2] = 0;
-		case 3: PlayerInfo[playerid][pJob3] = 0;
-	}
-	if(PlayerInfo[playerid][pJob] != job && PlayerInfo[playerid][pJob2] != job && PlayerInfo[playerid][pJob3] != job)
-	{
-		switch(job)
-		{
-			case 2:
-			{
-				Lawyer_StopDuty(playerid);
-				ApprovedLawyer[playerid] = 0;
-			}
-			case 7:
-			{
-				if(GetPVarInt(playerid, "MechanicDuty") == 1 && Mechanics > 0) --Mechanics;
-				DeletePVar(playerid, "MechanicDuty");
-				Mechanic_CancelFix(playerid);
-			}
-			case 20: CancelTruckDelivery(playerid);
-			case 21: Pizza_StopDelivery(playerid);
-			case 27: Garbage_CancelRun(playerid);
-		}
-	}
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have left %s in job slot %d.", GetJobName(job), slot);
-	return 1;
+	
+	new job = Job_GetSlot(playerid, slot);
+	if(job == JOB_NONE) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have a job in that slot.");
+	if(!Job_SetPlayerSlot(playerid, slot, JOB_NONE)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot leave this job until you can receive the outstanding fare payment.");
+	return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have left %s in job slot %d.", GetJobName(job), slot);
 }

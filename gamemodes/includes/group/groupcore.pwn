@@ -337,14 +337,14 @@ stock IsAJudge(playerid)
 stock IsALawyer(playerid)
 {
 	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_JUDICIAL) && PlayerInfo[playerid][pRank] > 1) return 1;
-	if(PlayerInfo[playerid][pJob] == 2 || PlayerInfo[playerid][pJob2] == 2 || PlayerInfo[playerid][pJob3] == 2) return 1;
+	if(Job_HasJob(playerid, JOB_LAWYER)) return 1;
 	return 0;
 }
 
 stock IsATaxiDriver(playerid)
 {
 	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI) && TransportDuty[playerid] > 0) return 1;
-	if(PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || PlayerInfo[playerid][pTaxiLicense] == 1 && TransportDuty[playerid] > 0) return 1;
+	if(Job_HasJob(playerid, JOB_TAXI) || PlayerInfo[playerid][pTaxiLicense] == 1 && TransportDuty[playerid] > 0) return 1;
 	return 0;
 }
 

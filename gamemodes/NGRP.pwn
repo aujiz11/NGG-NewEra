@@ -84,7 +84,7 @@
 #include <open.mp>
 
 /*  ---------------- SCRIPT REVISION ----------------- */
-#define SERVER_GM_TEXT "NG:RP v4.0.44"
+#define SERVER_GM_TEXT "NG:RP v4.1.0"
 
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
@@ -117,6 +117,7 @@
 
 #include "./includes/defines.pwn"
 #include "./includes/enums.pwn"
+#include "./includes/jobs/job_types.pwn"
 #include "./includes/variables.pwn"
 #include "./includes/wrappers.pwn"
 #include "./includes/timers.pwn"
@@ -300,16 +301,15 @@
 #include "./includes/jobs/boxing.pwn"
 #include "./includes/jobs/craftsman.pwn"
 #include "./includes/jobs/detective.pwn"
-#include "./includes/jobs/drugs.pwn"
 #include "./includes/jobs/garbagesystem.pwn"
 #include "./includes/jobs/fishing.pwn"
 #include "./includes/jobs/jobcore.pwn"
+#include "./includes/jobs/jobhelp.pwn"
 #include "./includes/jobs/dynjobcore.pwn"
 #include "./includes/jobs/lawyer.pwn"
 #include "./includes/jobs/mechanic.pwn"
 #include "./includes/jobs/pizzaboy.pwn"
 #include "./includes/jobs/shipment.pwn"
-#include "./includes/jobs/taxi.pwn"
 #include "./includes/jobs/treasure.pwn"
 #include "./includes/jobs/whore.pwn"
 #include "./includes/jobs/armsdealer.pwn"

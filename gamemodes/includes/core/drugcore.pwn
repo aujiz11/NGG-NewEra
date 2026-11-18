@@ -134,7 +134,7 @@ CMD:usedrug(playerid, params[])
 CMD:buypot(playerid, params[])
 {
 	new string[256];
-	if(PlayerInfo[playerid][pJob] != 14 && PlayerInfo[playerid][pJob2] != 14 && PlayerInfo[playerid][pJob3] != 14) return SendClientMessageEx(playerid,COLOR_GREY,"  You are not a drug smuggler!");
+	if(!Job_HasJob(playerid, JOB_DRUG_SMUGGLER)) return SendClientMessageEx(playerid,COLOR_GREY,"  You are not a drug smuggler!");
 
 	for (new i=0; i<MAX_POINTS; i++)
 	{
@@ -156,7 +156,7 @@ CMD:buypot(playerid, params[])
 CMD:buyopium(playerid, params[])
 {
 	new string[256];
-	if(PlayerInfo[playerid][pJob] != 14 && PlayerInfo[playerid][pJob2] != 14 && PlayerInfo[playerid][pJob3] != 14) return SendClientMessageEx(playerid,COLOR_GREY,"  You are not a drug smuggler!");
+	if(!Job_HasJob(playerid, JOB_DRUG_SMUGGLER)) return SendClientMessageEx(playerid,COLOR_GREY,"  You are not a drug smuggler!");
 	if(GetPlayerMoney(playerid) < 100000) return SendClientMessageEx(playerid,COLOR_GREY,"  You can't afford to buy Opium");
 
 	for (new i=0; i<MAX_POINTS; i++)

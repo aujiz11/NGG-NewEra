@@ -2051,7 +2051,7 @@ stock SetPlayerToTeamColor(playerid)
 		{
 			SetPlayerColor(playerid, SHITTY_JUDICIALSHITHOTCH);
 		}
-		else if((PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || PlayerInfo[playerid][pTaxiLicense] == 1) && TransportDuty[playerid] != 0) {
+		else if((Job_HasJob(playerid, JOB_TAXI) || PlayerInfo[playerid][pTaxiLicense] == 1) && TransportDuty[playerid] != 0) {
 			SetPlayerColor(playerid,TEAM_TAXI_COLOR);
 		}
 	    else if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && PlayerInfo[playerid][pDuty]) {

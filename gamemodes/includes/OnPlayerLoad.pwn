@@ -580,16 +580,15 @@ public OnPlayerLoad(playerid)
 	        SendClientMessageEx(playerid, COLOR_RED, "Your business expires in less than three days - renew today at shop.ng-gaming.net! Type /businessdate for more information.");
 	    }
 	}
-	if(PlayerInfo[playerid][pJob2] >= 1 && (PlayerInfo[playerid][pDonateRank] < 1 && PlayerInfo[playerid][pFamed] < 1))
+	for(new slot = 2; slot <= 3; ++slot)
 	{
-		PlayerInfo[playerid][pJob2] = 0;
-		SendClientMessageEx(playerid, COLOR_YELLOW, "You have lost your secondary job due to the fact that you are no longer a VIP/Famed.");
+		if(Job_GetSlot(playerid, slot) != JOB_NONE && !Job_CanUseSlot(playerid, slot))
+		{
+			Job_SetPlayerSlot(playerid, slot, JOB_NONE);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Your job in slot %d was removed because its VIP or Famed requirement is no longer met.", slot);
+		}
 	}
-	if(PlayerInfo[playerid][pJob3] >= 1 && PlayerInfo[playerid][pDonateRank] < 3)
-	{
-		PlayerInfo[playerid][pJob3] = 0;
-		SendClientMessageEx(playerid, COLOR_YELLOW, "You have lost your third job due to the fact that you are no longer a Gold VIP+.");
-	}	
+
 	if(PlayerInfo[playerid][pDonateRank] >= 4 && PlayerInfo[playerid][pArmsSkill] < 1200)
 	{
 		PlayerInfo[playerid][pArmsSkill] = 1200;

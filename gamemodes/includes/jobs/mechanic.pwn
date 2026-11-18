@@ -37,7 +37,7 @@
 
 stock bool:Mechanic_CanFix(playerid)
 {
-	if(PlayerInfo[playerid][pJob] == 7 || PlayerInfo[playerid][pJob2] == 7 || PlayerInfo[playerid][pJob3] == 7) return true;
+	if(Job_HasJob(playerid, JOB_MECHANIC)) return true;
 	new businessid = PlayerInfo[playerid][pBusiness];
 	return 0 <= businessid < MAX_BUSINESSES && Businesses[businessid][bType] == BUSINESS_TYPE_MECHANIC && InBusiness(playerid) == businessid;
 }
@@ -52,14 +52,7 @@ stock bool:Mechanic_NearVehicle(playerid, vehicleid, Float:range)
 
 stock Float:Mechanic_RefillAmount(skill)
 {
-	switch(skill)
-	{
-		case 0 .. 49: return 2.0;
-		case 50 .. 99: return 4.0;
-		case 100 .. 199: return 6.0;
-		case 200 .. 399: return 8.0;
-	}
-	return 10.0;
+	return float(Job_SkillLevel(JOB_SKILL_MECHANIC, skill) * 2);
 }
 
 stock Mechanic_CancelFix(playerid, bool:restore = true)
@@ -190,7 +183,7 @@ public FixVehicle(playerid, vehicleid, session)
 
 CMD:mechduty(playerid, params[])
 {
-    if(PlayerInfo[playerid][pJob] == 7 || PlayerInfo[playerid][pJob2] == 7 || PlayerInfo[playerid][pJob3] == 7)
+    if(Job_HasJob(playerid, JOB_MECHANIC))
 	{
         if(GetPVarInt(playerid, "MechanicDuty") == 1)
 		{
@@ -215,7 +208,7 @@ CMD:mechduty(playerid, params[])
 
 CMD:nos(playerid, params[])
 {
-    if(PlayerInfo[playerid][pJob] == 7 || PlayerInfo[playerid][pJob2] == 7 || PlayerInfo[playerid][pJob3] == 7) {
+    if(Job_HasJob(playerid, JOB_MECHANIC)) {
         if(IsPlayerInAnyVehicle(playerid)) {
 			if(GetPVarInt(playerid, "EventToken")) {
 				return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
@@ -258,7 +251,7 @@ CMD:nos(playerid, params[])
 
 CMD:hyd(playerid, params[])
 {
-    if(PlayerInfo[playerid][pJob] == 7 || PlayerInfo[playerid][pJob2] == 7 || PlayerInfo[playerid][pJob3] == 7) {
+    if(Job_HasJob(playerid, JOB_MECHANIC)) {
         if(IsPlayerInAnyVehicle(playerid)) {
 			new vehicleid = GetPlayerVehicleID(playerid), dynid = DynVeh[vehicleid];
 			if(IsPlayerInInvalidNosVehicle(playerid) || !VehicleCanHaveComponent(GetVehicleModel(vehicleid), 1087)) return SendClientMessageEx(playerid, COLOR_WHITE, "Hydraulics cannot be installed in this vehicle.");

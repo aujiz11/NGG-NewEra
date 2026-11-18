@@ -3757,7 +3757,7 @@ CMD:setstat(playerid, params[])
 				}
 				case 25:
 				{
-					PlayerInfo[giveplayerid][pJob] = amount;
+					if(!Job_SetPlayerSlot(giveplayerid, 1, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "That job change is not available. Check the job type, existing slots and outstanding fare payment.");
 					format(string, sizeof(string), "   %s's(%d) Job has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 				case 26:
@@ -4117,7 +4117,7 @@ CMD:setmystat(playerid, params[])
 			}
 		case 25:
 			{
-				PlayerInfo[playerid][pJob] = amount;
+				if(!Job_SetPlayerSlot(playerid, 1, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "That job change is not available. Check the job type, existing slots and outstanding fare payment.");
 				format(string, sizeof(string), "   %s's Job has been set to %d.", GetPlayerNameEx(playerid), amount);
 			}
 		case 26:

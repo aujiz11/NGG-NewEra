@@ -649,7 +649,7 @@ CMD:trace(playerid, const params[]) {
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "[Phone]: Quit GPS traceroute process. All geographical data has been deleted.");
 	}
 
-	if(PlayerInfo[playerid][pJob] != 1 && PlayerInfo[playerid][pJob2] != 1 && PlayerInfo[playerid][pJob3] != 1) {
+	if(!Job_HasJob(playerid, JOB_DETECTIVE)) {
 		return SendClientMessageEx(playerid, COLOR_GREY, "You're not a detective.");
 	}
 	if(gettime() < UsedFind[playerid]) { // || FindTimePoints[playerid] == 0) {
@@ -677,21 +677,21 @@ CMD:trace(playerid, const params[]) {
 
 			if(PhoneOnline[i] == 0) {
 
-				switch(PlayerInfo[playerid][pDetSkill]) {
+				switch(GetJobLevel(playerid, JOB_DETECTIVE)) {
 
-					case 0 .. 50: {
+					case 1: {
 						FindTimePoints[playerid] = 4;
 						UsedFind[playerid] = gettime()+120;
 					}
-					case 51 .. 100: {
+					case 2: {
 						FindTimePoints[playerid] = 6;
 						UsedFind[playerid] = gettime()+90;
 					}
-					case 101 .. 200: {
+					case 3: {
 						FindTimePoints[playerid] = 8;
 						UsedFind[playerid] = gettime()+60;
 					}
-					case 201 .. 400: {
+					case 4: {
 						FindTimePoints[playerid] = 10;
 						UsedFind[playerid] = gettime()+30;
 					}
@@ -716,7 +716,7 @@ CMD:trace(playerid, const params[]) {
 forward Phone_Trace(playerid, i);
 public Phone_Trace(playerid, i)
 {
-	if(!GetPVarType(playerid, "TRC_STP")) return 1;
+	if(!GetPVarType(playerid, "TRC_STP") || !Job_HasJob(playerid, JOB_DETECTIVE)) return 1;
 
 	new x = GetPVarInt(playerid, "TRC_STP"),
 		szStrength[16],

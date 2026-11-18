@@ -396,7 +396,7 @@ CMD:gangtaghelp(playerid, params[])
 
 IsAStreetSweeper(playerid) {
 
-	if(PlayerInfo[playerid][pJob] == 15 || PlayerInfo[playerid][pJob2] == 15 || (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 8)) return 1;
+	if(Job_HasJob(playerid, JOB_STREET_SWEEPER) || (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 8)) return 1;
 	return 0;
 }
 

@@ -71,7 +71,7 @@
 
 stock Boxing_IsBoxer(playerid)
 {
-	return PlayerInfo[playerid][pJob] == 12 || PlayerInfo[playerid][pJob2] == 12 || PlayerInfo[playerid][pJob3] == 12;
+	return Job_HasJob(playerid, JOB_BOXER);
 }
 
 stock Boxing_GetGym(playerid, Float:range = 20.0)
@@ -93,8 +93,7 @@ stock Boxing_CanFight(playerid)
 stock Boxing_FightHealth(playerid)
 {
 	if(!Boxing_IsBoxer(playerid)) return 30;
-	new skill = PlayerInfo[playerid][pBoxSkill];
-	return skill <= 50 ? 40 : (skill <= 100 ? 50 : (skill <= 200 ? 60 : (skill <= 400 ? 70 : 80)));
+	return 30 + GetJobLevel(playerid, JOB_BOXER) * 10;
 }
 
 stock Boxing_IsCurrent(playerid)
@@ -307,7 +306,7 @@ stock Boxing_LearnStyle(playerid, listitem)
 
 CMD:boxstats(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJob] != 12 && PlayerInfo[playerid][pJob2] != 12 && PlayerInfo[playerid][pJob3] != 12)
+	if(!Job_HasJob(playerid, JOB_BOXER))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Boxer!");
 		return 1;

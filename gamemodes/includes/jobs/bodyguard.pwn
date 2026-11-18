@@ -66,7 +66,7 @@ Bodyguard_IsNear(playerid, target, Float:range)
 
 CMD:frisk(playerid, params[])
 {
-	if(IsACop(playerid) || PlayerInfo[playerid][pJob] == 8 || PlayerInfo[playerid][pJob2] == 8 || PlayerInfo[playerid][pJob3] == 8)
+	if(IsACop(playerid) || Job_HasJob(playerid, JOB_BODYGUARD))
 	{
 		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) {
@@ -165,7 +165,7 @@ PlayerFriskPlayer(playerid, giveplayerid)
 
 CMD:guard(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJob] != 8 && PlayerInfo[playerid][pJob2] != 8 && PlayerInfo[playerid][pJob3] != 8)
+	if(!Job_HasJob(playerid, JOB_BODYGUARD))
 		return SendClientMessageEx(playerid, COLOR_GREY, "You're not a bodyguard.");
 	if(!Bodyguard_CanTrade(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot offer protection right now.");
 

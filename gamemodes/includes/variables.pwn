@@ -631,7 +631,6 @@ new Boxer2 = INVALID_PLAYER_ID;
 new TBoxer = INVALID_PLAYER_ID;
 new PlayerBoxing[MAX_PLAYERS];
 new Medics = 0;
-new Coastguard = 0;
 new MedicCall = INVALID_PLAYER_ID;
 new MedicCallTime[MAX_PLAYERS];
 new MedicAccepted[MAX_PLAYERS];
@@ -659,7 +658,6 @@ new TransportMoney[MAX_PLAYERS];
 new TransportTime[MAX_PLAYERS];
 new TransportCost[MAX_PLAYERS];
 new TransportDriver[MAX_PLAYERS];
-new JobDuty[MAX_PLAYERS];
 new RegistrationStep[MAX_PLAYERS];
 new playerSeconds[MAX_PLAYERS];
 new playerTabbed[MAX_PLAYERS];
@@ -2705,7 +2703,7 @@ new bool:DDSalePendingAdmin[MAX_PLAYERS];
 new bool:DDSalePendingPlayer[MAX_PLAYERS];
 
 new GunPrices[7];
-new JobName[MAX_JOBTYPES][32];
+new JobName[MAX_JOBTYPES][MAX_JOBNAME_LEN];
 
 new PlayerText:phone_PTextDraw[MAX_PLAYERS][24];
 

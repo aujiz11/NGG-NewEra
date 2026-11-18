@@ -56,8 +56,8 @@ new const TreasureItems[][eTreasureItem] = {
 
 stock FoundTreasure(playerid)
 {
-	new skill = PlayerInfo[playerid][pTreasureSkill], message[128];
-	if(Random(1, skill < 300 ? 101 : 126) > (skill < 150 ? 50 : 75))
+	new level = GetJobLevel(playerid, JOB_TREASURE), message[128];
+	if(Random(1, level < 4 ? 101 : 126) > (level < 3 ? 50 : 75))
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "You did not discover anything.");
 		format(message, sizeof(message), "%s's metal detector seems to have malfunctioned.", GetPlayerNameEx(playerid));
@@ -66,8 +66,8 @@ stock FoundTreasure(playerid)
 	}
 
 	new roll = Random(1, 11), item;
-	if(skill < 150) item = (roll - 1) / 2;
-	else if(roll < (skill >= 600 ? 9 : 10))
+	if(level < 3) item = (roll - 1) / 2;
+	else if(roll < (level == 5 ? 9 : 10))
 	{
 		switch(roll)
 		{
@@ -78,7 +78,7 @@ stock FoundTreasure(playerid)
 			case 8, 9: item = 4;
 		}
 	}
-	else if(skill < 600) item = 5 + random(3);
+	else if(level < 5) item = 5 + random(3);
 	else
 	{
 		switch(Random(1, 101))
@@ -117,7 +117,7 @@ public HideTreasureCheckpoint(playerid, session, target)
 
 CMD:search(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJob] != 22 && PlayerInfo[playerid][pJob2] != 22 && PlayerInfo[playerid][pJob3] != 22)
+	if(!Job_HasJob(playerid, JOB_TREASURE))
 		return SendClientMessageEx(playerid, COLOR_GREY, "You are not a treasure hunter.");
 	if(!GetPVarInt(playerid, "TreasureLoaded"))
 		return SendClientMessageEx(playerid, COLOR_GREY, "Your treasure inventory is still loading. Please try again shortly.");
@@ -140,8 +140,8 @@ CMD:search(playerid, params[])
 		target = random(sizeof(HiddenTreasure));
 		SetPVarInt(playerid, "HiddenTreasure", target);
 	}
-	new skill = PlayerInfo[playerid][pTreasureSkill];
-	SetPVarInt(playerid, "ScanReload", skill < 25 ? 20 : (skill < 300 ? 15 : (skill < 600 ? 10 : 5)));
+	new skill = PlayerInfo[playerid][pTreasureSkill], level = GetJobLevel(playerid, JOB_TREASURE);
+	SetPVarInt(playerid, "ScanReload", level == 1 ? 20 : (level < 4 ? 15 : (level < 5 ? 10 : 5)));
 	SetPVarInt(playerid, "LastScan", gettime());
 	--PlayerInfo[playerid][pMetalDetector];
 	if(PlayerInfo[playerid][pMetalDetector] == 1)
@@ -162,12 +162,16 @@ CMD:search(playerid, params[])
 	DeletePVar(playerid, "HiddenTreasure");
 	FoundTreasure(playerid);
 	if(skill < cellmax) ++PlayerInfo[playerid][pTreasureSkill];
-	switch(PlayerInfo[playerid][pTreasureSkill])
+	new newLevel = GetJobLevel(playerid, JOB_TREASURE);
+	if(newLevel > level)
 	{
-		case 25: SendClientMessageEx(playerid, COLOR_WHITE, "* Your Treasure Hunting Skill is now Level 2, your metal detector now charges in 15 seconds!");
-		case 150: SendClientMessageEx(playerid, COLOR_WHITE, "* Your Treasure Hunting Skill is now Level 3, found items now have a 10% chance of being rare!");
-		case 300: SendClientMessageEx(playerid, COLOR_WHITE, "* Your Treasure Hunting Skill is now Level 4, your metal detector now charges in 10 seconds!");
-		case 600: SendClientMessageEx(playerid, COLOR_WHITE, "* Your Treasure Hunting Skill is now Level 5, found items now have a 20% chance of being rare!");
+		switch(newLevel)
+		{
+			case 2: SendClientMessageEx(playerid, COLOR_WHITE, "* Your Treasure Hunting Skill is now Level 2, your metal detector now charges in 15 seconds!");
+			case 3: SendClientMessageEx(playerid, COLOR_WHITE, "* Your Treasure Hunting Skill is now Level 3, found items now have a 10% chance of being rare!");
+			case 4: SendClientMessageEx(playerid, COLOR_WHITE, "* Your Treasure Hunting Skill is now Level 4, your metal detector now charges in 10 seconds!");
+			case 5: SendClientMessageEx(playerid, COLOR_WHITE, "* Your Treasure Hunting Skill is now Level 5, found items now have a 20% chance of being rare!");
+		}
 	}
 	return 1;
 }

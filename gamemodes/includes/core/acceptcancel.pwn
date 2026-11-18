@@ -1131,7 +1131,7 @@ CMD:accept(playerid, params[])
             }
         }
         else if(strcmp(params, "mechanic", true) == 0) {
-            if(PlayerInfo[playerid][pJob] != 7 && PlayerInfo[playerid][pJob2] != 7 && PlayerInfo[playerid][pJob3] != 7) {
+            if(!Job_HasJob(playerid, JOB_MECHANIC)) {
                 SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Car Mechanic!");
                 return 1;
             }
@@ -1204,7 +1204,7 @@ CMD:accept(playerid, params[])
 				Bodyguard_ClearOffer(playerid);
 				return SendClientMessageEx(playerid, COLOR_GREY, "This protection offer is no longer valid.");
 			}
-			if(PlayerInfo[guardid][pJob] != 8 && PlayerInfo[guardid][pJob2] != 8 && PlayerInfo[guardid][pJob3] != 8) {
+			if(!Job_HasJob(guardid, JOB_BODYGUARD)) {
 				Bodyguard_ClearOffer(playerid);
 				return SendClientMessageEx(playerid, COLOR_GREY, "That player is no longer a bodyguard.");
 			}
@@ -1695,7 +1695,7 @@ CMD:accept(playerid, params[])
 			}
 		}
         else if(strcmp(params,"sex",true) == 0) {
-			if(!Offer_IsCurrent(playerid, SexOffer[playerid], "SexOfferSession")) 
+			if(!Offer_IsCurrent(playerid, SexOffer[playerid], "SexOfferSession") || !Job_HasJob(SexOffer[playerid], JOB_PROSTITUTE))
 				return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
             
 			if(SexOffer[playerid] != INVALID_PLAYER_ID) {
@@ -1751,8 +1751,8 @@ CMD:accept(playerid, params[])
                             if(!GetPVarType(playerid, "STD")) {
                                 if(Condom[playerid] == 0) {
                                     new Float:health;
-                                    new level = PlayerInfo[SexOffer[playerid]][pSexSkill];
-                                    if(level >= 0 && level <= 50) {
+                                    new level = GetJobLevel(SexOffer[playerid], JOB_PROSTITUTE);
+                                    if(level == 1) {
                                         GetHealth(playerid, health);
                                         if(health < 100) {
                                             if(health > 90) {
@@ -1772,7 +1772,7 @@ CMD:accept(playerid, params[])
                                         else if(STD1[rand] == 2) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 10 Health and Gonorrhea because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Gonorrhea because of unsafe sex."); }
                                         else if(STD1[rand] == 3) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 10 Health and Syphilis because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Syphilis because of unsafe sex."); }
                                     }
-                                    else if(level >= 51 && level <= 100) {
+                                    else if(level == 2) {
                                         GetHealth(playerid, health);
                                         if(health < 100) {
                                             if(health > 80) {
@@ -1790,7 +1790,7 @@ CMD:accept(playerid, params[])
                                         else if(STD2[rand] == 2) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 20 Health and Gonorrhea because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Gonorrhea because of unsafe sex."); }
                                         else if(STD2[rand] == 3) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 20 Health and Syphilis because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Syphilis because of unsafe sex."); }
                                     }
-                                    else if(level >= 101 && level <= 200) {
+                                    else if(level == 3) {
                                         GetHealth(playerid, health);
                                         if(health < 100) {
                                             if(health > 70) {
@@ -1808,7 +1808,7 @@ CMD:accept(playerid, params[])
                                         else if(STD3[rand] == 2) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 30 Health and Gonorrhea because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Gonorrhea because of unsafe sex."); }
                                         else if(STD3[rand] == 3) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 30 Health and Syphilis because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Syphilis because of unsafe sex."); }
                                     }
-                                    else if(level >= 201 && level <= 400) {
+                                    else if(level == 4) {
                                         GetHealth(playerid, health);
                                         if(health < 100) {
                                             if(health > 60) {
@@ -1826,7 +1826,7 @@ CMD:accept(playerid, params[])
                                         else if(STD4[rand] == 2) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 40 Health and Gonorrhea because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Gonorrhea because of unsafe sex."); }
                                         else if(STD4[rand] == 3) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 40 Health and Syphilis because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Syphilis because of unsafe sex."); }
                                     }
-                                    else if(level >= 401) {
+                                    else if(level == 5) {
                                         GetHealth(playerid, health);
                                         if(health > 50) {
                                             SetHealth(playerid, 100);
@@ -1875,7 +1875,7 @@ CMD:accept(playerid, params[])
 
 			new mechanicid = RepairOffer[playerid], vehicleid = RepairCar[playerid];
 			if(GetPlayerCash(mechanicid) > cellmax - RepairPrice[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "The mechanic cannot receive this payment.");
-			if(PlayerInfo[mechanicid][pJob] != 7 && PlayerInfo[mechanicid][pJob2] != 7 && PlayerInfo[mechanicid][pJob3] != 7)
+			if(!Job_HasJob(mechanicid, JOB_MECHANIC))
 				return SendClientMessageEx(playerid, COLOR_GREY, "That player is no longer a mechanic.");
 			if(!IsPlayerInVehicle(playerid, vehicleid) || !Mechanic_NearVehicle(playerid, vehicleid, 8.0) || !Mechanic_NearVehicle(mechanicid, vehicleid, 8.0))
 				return SendClientMessageEx(playerid, COLOR_GREY, "You must be in the offered vehicle and near the mechanic.");
@@ -1935,7 +1935,7 @@ CMD:accept(playerid, params[])
 			if(!Offer_IsCurrent(playerid, RefillOffer[playerid], "RefillOfferSession")) return SendClientMessageEx(playerid, COLOR_GREY, "This offer is no longer valid.");
 			new mechanicid = RefillOffer[playerid], vehicleid = GetPVarInt(playerid, "RefillVehicle");
 			if(GetPlayerCash(mechanicid) > cellmax - RefillPrice[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "The mechanic cannot receive this payment.");
-			if(PlayerInfo[mechanicid][pJob] != 7 && PlayerInfo[mechanicid][pJob2] != 7 && PlayerInfo[mechanicid][pJob3] != 7)
+			if(!Job_HasJob(mechanicid, JOB_MECHANIC))
 				return SendClientMessageEx(playerid, COLOR_GREY, "That player is no longer a mechanic.");
 			if(!IsPlayerInVehicle(playerid, vehicleid) || !Mechanic_NearVehicle(playerid, vehicleid, 8.0) || !Mechanic_NearVehicle(mechanicid, vehicleid, 8.0))
 				return SendClientMessageEx(playerid, COLOR_GREY, "You must be in the offered vehicle and near the mechanic.");
@@ -2284,7 +2284,7 @@ CMD:cancel(playerid, params[])
 
 CMD:refill(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJob] != 7 && PlayerInfo[playerid][pJob2] != 7 && PlayerInfo[playerid][pJob3] != 7)
+	if(!Job_HasJob(playerid, JOB_MECHANIC))
 	{
 		return SendClientMessageEx(playerid, COLOR_GREY, "You're not a mechanic.");
 	}
@@ -2355,7 +2355,7 @@ CMD:refill(playerid, params[])
 
 CMD:repair(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJob] != 7 && PlayerInfo[playerid][pJob2] != 7 && PlayerInfo[playerid][pJob3] != 7)
+	if(!Job_HasJob(playerid, JOB_MECHANIC))
 		return SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Car Mechanic!");
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not repair while inside the vehicle.");
 	if(PlayerIsDead[playerid] || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") || GetPVarType(playerid, "IsFrozen") || GetPVarType(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") || PlayerInfo[playerid][pHospital] > 0)

@@ -1682,7 +1682,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		}
 		else if(IsAPizzaCar(vehicleid))
 		{
-		    if(PlayerInfo[playerid][pJob] != 21 && PlayerInfo[playerid][pJob2] != 21 && PlayerInfo[playerid][pJob3] != 21)
+		    if(!Job_HasJob(playerid, JOB_PIZZA))
 		    {
 			    new Float:slx, Float:sly, Float:slz;
 				GetPlayerPos(playerid, slx, sly, slz);
@@ -1696,7 +1696,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 
 		else if(IsATruckerCar(vehicleid))
 		{
-		    if((PlayerInfo[playerid][pJob] == 20 || PlayerInfo[playerid][pJob2] == 20 || PlayerInfo[playerid][pJob3] == 20))
+		    if((Job_HasJob(playerid, JOB_SHIPMENT)))
 			{
 				new iTruckContents = TruckContents{vehicleid};
 				new truckcontentname[50];
@@ -1755,7 +1755,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		}
 		else if(IsInGarbageTruck(vehicleid))
 		{
-			if(PlayerInfo[playerid][pJob] == 27 || PlayerInfo[playerid][pJob2] == 27 || PlayerInfo[playerid][pJob3] == 27)
+			if(Job_HasJob(playerid, JOB_GARBAGE))
 			{
 			}
 		    else
@@ -1789,7 +1789,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		}
 		else if(IsAnTaxi(vehicleid) || IsAnBus(vehicleid))
 		{
-	        if(PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || IsATaxiDriver(playerid) || PlayerInfo[playerid][pTaxiLicense] == 1)
+	        if(Job_HasJob(playerid, JOB_TAXI) || IsATaxiDriver(playerid) || PlayerInfo[playerid][pTaxiLicense] == 1)
 			{
 			}
 		    else
@@ -2827,7 +2827,7 @@ CMD:userimkit(playerid, params[])
     if(!IsPlayerInAnyVehicle(playerid))
  		return SendClientMessageEx(playerid, COLOR_GREY, "You aren't in a vehicle.");
 
- 	if(PlayerInfo[playerid][pJob] != 7 && PlayerInfo[playerid][pJob2] != 7 && PlayerInfo[playerid][pJob3] != 7) 
+	if(!Job_HasJob(playerid, JOB_MECHANIC))
  		return SendClientMessageEx(playerid, COLOR_GREY, "You must be a mechanic to use this command.");
 	
 	new iVeh = GetPlayerVehicleID(playerid);

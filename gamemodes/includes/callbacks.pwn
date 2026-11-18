@@ -1412,7 +1412,6 @@ public OnPlayerConnect(playerid)
 	FindTimePoints[playerid]=0;
 	FindingPlayer[playerid]=-1;
 	FindTime[playerid]=0;
-	JobDuty[playerid]=0;
 	Mobile[playerid]=INVALID_PLAYER_ID;
 	Music[playerid]=0;
 	BoxOffer[playerid]= INVALID_PLAYER_ID;
@@ -2521,17 +2520,11 @@ public OnPlayerDisconnect(playerid, reason)
 		{
 			BusDrivers -= 1;
 		}
-		if(PlayerInfo[playerid][pJob] == 11 || PlayerInfo[playerid][pJob2] == 11 || PlayerInfo[playerid][pJob3] == 11)
+		if(Job_HasJob(playerid, JOB_MECHANIC))
 		{
-			if(JobDuty[playerid] == 1) { Medics -= 1; }
-		}
-		if(PlayerInfo[playerid][pJob] == 7 || PlayerInfo[playerid][pJob2] == 7 || PlayerInfo[playerid][pJob3] == 7)
-		{
-			if(GetPVarInt(playerid, "MechanicDuty") == 1) { Mechanics -= 1; }
-		}
-		if(PlayerInfo[playerid][pJob] == 11 || PlayerInfo[playerid][pJob2] == 11 || PlayerInfo[playerid][pJob3] == 11)
-		{
-			if(JobDuty[playerid] == 1) { Coastguard -= 1; }
+			if(GetPVarInt(playerid, "MechanicDuty") == 1) { 
+				Mechanics -= 1; 
+			}
 		}
 		new Float:health, Float:armor;
 		if(GetPVarType(playerid, "pGodMode") == 1)
@@ -3456,13 +3449,12 @@ public OnPlayerEnterCheckpoint(playerid)
 			    DisablePlayerCheckpoint(playerid);
 			    gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
    				new string[128], payment;
-				new level = PlayerInfo[playerid][pTruckSkill];
+				new level = GetJobLevel(playerid, JOB_SHIPMENT);
 				switch(level) {
-					case 0 .. 50: payment = 4000;
-					case 51 .. 100: payment = 6250;
-					case 101 .. 200: payment = 8500;
-					case 201 .. 400: payment = 9750;
-					case 401: payment = 10500;
+					case 1: payment = 4000;
+					case 2: payment = 6250;
+					case 3: payment = 8500;
+					case 4: payment = 9750;
 					default: payment = 10500;
 				}
 				new Float:distancepay;
@@ -4671,7 +4663,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		}
 		else if(IsAnTaxi(vehicleid) || IsAnBus(vehicleid))
 		{
-		    if(PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || IsATaxiDriver(playerid) || PlayerInfo[playerid][pTaxiLicense] == 1)
+		    if(Job_HasJob(playerid, JOB_TAXI) || IsATaxiDriver(playerid) || PlayerInfo[playerid][pTaxiLicense] == 1)
 			{
 			}
 			else
@@ -5155,8 +5147,8 @@ public OnPlayerText(playerid, text[])
 		if (strcmp("yes", text, true) == 0)
 		{
 			format(string, sizeof(string), "** %s is in jail, and needs a lawyer. Go to the Police Station.", GetPlayerNameEx(playerid));
-			SendJobMessage(2, TEAM_AZTECAS_COLOR, string);
-			SendJobMessage(2, TEAM_AZTECAS_COLOR, "* When you are at the Police Station, ask an officer to approve you with /accept lawyer.");
+			SendJobMessage(JOB_LAWYER, TEAM_AZTECAS_COLOR, string);
+			SendJobMessage(JOB_LAWYER, TEAM_AZTECAS_COLOR, "* When you are at the Police Station, ask an officer to approve you with /accept lawyer.");
 			SendClientMessageEx(playerid, COLOR_LIGHTRED, "A message has been sent to all available lawyers, please wait.");
 			WantLawyer[playerid] = 0;
 			CallLawyer[playerid] = 0;

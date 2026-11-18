@@ -159,7 +159,8 @@ CMD:fish(playerid, params[])
 	if(remaining > 0) 
 		return SendClientMessageEx(playerid, COLOR_GRAD2, "Wait %d seconds before casting again.", remaining);
 	
-	new outcomes = skill < 50 ? 3 : (skill < 100 ? 5 : (skill < 200 ? 9 : (skill < 400 ? 12 : sizeof(FishingCatches))));
+	static const outcomesByLevel[] = {3, 5, 9, 12, sizeof(FishingCatches)};
+	new outcomes = outcomesByLevel[Job_SkillLevel(JOB_SKILL_FISHING, skill) - 1];
 	new caught = random(outcomes), message[128];
 	
 	SetPVarInt(playerid, "pFishTime", now + 10);

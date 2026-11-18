@@ -3498,7 +3498,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		if(listitem == 3)
 		{
-			ShowPlayerDialogEx(playerid, 7484, DIALOG_STYLE_LIST, "Job Center", "Detective\nLawyer\nWhore\nDrugs Dealer\nBodyguard\nMechanic\nArms Dealer\nBoxer\nDrugs Smuggler\nTaxi Driver\nCraftsman\nBartender\nShipment Contractor\nPizza Boy", "Proceed", "Cancel");
+			Job_ShowMenu(playerid);
 		}
 	}
 	if(dialogid == DIALOG_LOCKER_COS)
@@ -3546,7 +3546,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		if(listitem == 3)
 		{
-			ShowPlayerDialogEx(playerid, 7484, DIALOG_STYLE_LIST, "Job Center", "Detective\nLawyer\nWhore\nDrugs Dealer\nBodyguard\nMechanic\nArms Dealer\nBoxer\nDrugs Smuggler\nTaxi Driver\nCraftsman\nBartender\nShipment Contractor\nPizza Boy", "Proceed", "Cancel");
+			Job_ShowMenu(playerid);
 		}
 	}
 	if(dialogid == DIALOG_LOCKER_FAMED)
@@ -3593,7 +3593,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		if(listitem == 4)
 		{
-			ShowPlayerDialogEx(playerid, 7484, DIALOG_STYLE_LIST, "Job Center", "Detective\nLawyer\nWhore\nDrugs Dealer\nBodyguard\nMechanic\nArms Dealer\nBoxer\nDrugs Smuggler\nTaxi Driver\nCraftsman\nBartender\nShipment Contractor\nPizza Boy", "Proceed", "Cancel");
+			Job_ShowMenu(playerid);
 		}
 		if(listitem == 5)
 		{
@@ -3711,7 +3711,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(PlayerInfo[playerid][pDonateRank] >= 2)
 				{
-					ShowPlayerDialogEx(playerid, 7484, DIALOG_STYLE_LIST, "VIP: Job Center", "Detective\nLawyer\nWhore\nDrugs Dealer\nBodyguard\nMechanic\nArms Dealer\nBoxer\nDrugs Smuggler\nTaxi Driver\nCraftsman\nBartender\nShipment Contractor\nPizza Boy", "Proceed", "Cancel");
+					Job_ShowMenu(playerid);
 				}
 				else
 				{
@@ -3724,122 +3724,49 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 		}
 	}
-	if(dialogid == 7484) //This is now the default dialog for job centers in any lockers AKA VIP & Famed
+	if(dialogid == 7484)
 	{
 		if(!response) return DeletePVar(playerid, "m_Item");
-		switch(listitem)
+		new bool:boost = GetPVarType(playerid, "m_Item") != 0 && GetPVarInt(playerid, "m_Item") == 1;
+		new job = Job_GetMenuType(listitem, boost);
+		if(job == JOB_NONE || !gPlayerLogged{playerid}) return 1;
+		SetPVarInt(playerid, "jobSelection", job);
+		if(boost)
 		{
-			case 0: // Detective
-			{
-				SetPVarInt(playerid, "jobSelection", 1);
-			}
-			case 1: // Lawyer
-			{
-				SetPVarInt(playerid, "jobSelection", 2);
-			}
-			case 2: // Whore
-			{
-				SetPVarInt(playerid, "jobSelection", 3);
-			}
-			case 3: // Drugs Dealer
-			{
-				//SetPVarInt(playerid, "jobSelection", 4);
-			}
-			case 4: // Bodyguard
-			{
-				SetPVarInt(playerid, "jobSelection", 8);
-				if(GetPVarInt(playerid, "m_Item") == 1) SetPVarInt(playerid, "jobSelection", 7);
-			}
-			case 5: // Mechanic
-			{
-				SetPVarInt(playerid, "jobSelection", 7);
-				if(GetPVarInt(playerid, "m_Item") == 1) SetPVarInt(playerid, "jobSelection", 9);
-			}
-			case 6: // Arms Dealer
-			{
-				SetPVarInt(playerid, "jobSelection", 9);
-				if(GetPVarInt(playerid, "m_Item") == 1) SetPVarInt(playerid, "jobSelection", 12);
-			}
-			case 7: // Boxer
-			{
-				SetPVarInt(playerid, "jobSelection", 12);
-				if(GetPVarInt(playerid, "m_Item") == 1) SetPVarInt(playerid, "jobSelection", 20);
-			}
-			case 8: // Drugs Smuggler
-			{
-				SetPVarInt(playerid, "jobSelection", 14);
-			}
-			case 9: // Taxi Driver
-			{
-				SetPVarInt(playerid, "jobSelection", 17);
-			}
-			case 10: // Craftsman
-			{
-				SetPVarInt(playerid, "jobSelection", 18);
-			}
-			case 11: // Bartender
-			{
-				SetPVarInt(playerid, "jobSelection", 19);
-			}
-			case 12: // Trucker
-			{
-				SetPVarInt(playerid, "jobSelection", 20);
-			}
-			case 13: // Pizza Boy
-			{
-				SetPVarInt(playerid, "jobSelection", 21);
-			}
-		}
-		if(GetPVarInt(playerid, "m_Item") == 1)
-		{
-			if(GetJobLevel(playerid, GetPVarInt(playerid, "jobSelection")) == 5) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your skill level for this job is already at its highest.");
+			if(GetJobLevel(playerid, job) == 5) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your skill level for this job is already at its highest.");
 			strunpack(microItemName, mItemName[1], sizeof(microItemName));
-			format(string, sizeof(string), "Item: %s - %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", microItemName, GetJobName(GetPVarInt(playerid, "jobSelection")), number_format(PlayerInfo[playerid][pCredits]), number_format(MicroItems[1]), number_format(PlayerInfo[playerid][pCredits]-MicroItems[1]));
+			format(string, sizeof(string), "Item: %s - %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", microItemName, GetJobName(job), number_format(PlayerInfo[playerid][pCredits]), number_format(MicroItems[1]), number_format(PlayerInfo[playerid][pCredits]-MicroItems[1]));
 			return ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP3, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
 		}
-		if(GetPVarType(playerid, "m_Item") && GetPVarInt(playerid, "m_Item") == 0) strcat(string, "Micro Shop: Change a Job"); else strcat(string, "Locker: Job Center");
-		if(PlayerInfo[playerid][pFamed] > 0 && PlayerInfo[playerid][pDonateRank] < 3)
+		string[0] = EOS;
+		for(new slot = 1; slot <= 3; ++slot)
 		{
-			ShowPlayerDialogEx(playerid, 7485, DIALOG_STYLE_LIST, string, "Job Slot 1\nJob Slot 2", "Proceed", "Cancel");
+			if(!Job_CanUseSlot(playerid, slot)) continue;
+			new line[20];
+			format(line, sizeof(line), "%sJob Slot %d", slot > 1 ? "\n" : "", slot);
+			strcat(string, line, sizeof(string));
 		}
-		else if(PlayerInfo[playerid][pDonateRank] == 2)
-		{
-			ShowPlayerDialogEx(playerid, 7485, DIALOG_STYLE_LIST, string, "Job Slot 1\nJob Slot 2", "Proceed", "Cancel");
-		}
-		else if(PlayerInfo[playerid][pDonateRank] >= 3)
-		{
-			ShowPlayerDialogEx(playerid, 7485, DIALOG_STYLE_LIST, string, "Job Slot 1\nJob Slot 2\nJob Slot 3", "Proceed", "Cancel");
-		}
-		else ShowPlayerDialogEx(playerid, 7485, DIALOG_STYLE_LIST, string, "Job Slot 1", "Proceed", "Cancel");
+		return ShowPlayerDialogEx(playerid, 7485, DIALOG_STYLE_LIST, "Select Job Slot", string, "Proceed", "Cancel");
 	}
 	if(dialogid == 7485)
 	{
 		if(!response) return DeletePVar(playerid, "m_Item");
+		if(!gPlayerLogged{playerid} || !GetPVarType(playerid, "jobSelection") || !(0 <= listitem < 3)) return 1;
+		new job = GetPVarInt(playerid, "jobSelection"), slot = listitem + 1;
+		if(!Job_CanSetSlot(playerid, slot, job) || Job_GetSlot(playerid, slot) == job)
+			return SendClientMessageEx(playerid, COLOR_GREY, "That job or slot is not available. Check your existing jobs and slot requirements.");
 		if(GetPVarType(playerid, "m_Item") && GetPVarInt(playerid, "m_Item") == 0)
 		{
 			SetPVarInt(playerid, "m_Response", listitem);
 			strunpack(microItemName, mItemName[0], sizeof(microItemName));
-			format(string, sizeof(string), "Item: %s - %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", microItemName, GetJobName(GetPVarInt(playerid, "jobSelection")), number_format(PlayerInfo[playerid][pCredits]), number_format(MicroItems[0]), number_format(PlayerInfo[playerid][pCredits]-MicroItems[0]));
+			format(string, sizeof(string), "Item: %s - %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", microItemName, GetJobName(job), number_format(PlayerInfo[playerid][pCredits]), number_format(MicroItems[0]), number_format(PlayerInfo[playerid][pCredits]-MicroItems[0]));
 			return ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP3, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
 		}
-		switch(listitem)
-		{
-			case 0:
-			{
-				PlayerInfo[playerid][pJob] = GetPVarInt(playerid, "jobSelection");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed your first job!");
-			}
-			case 1:
-			{
-				PlayerInfo[playerid][pJob2] = GetPVarInt(playerid, "jobSelection");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed your second job!");
-			}
-			case 2:
-			{
-				PlayerInfo[playerid][pJob3] = GetPVarInt(playerid, "jobSelection");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed your third job!");
-			}
-		}
+		if(PlayerInfo[playerid][pDonateRank] < 2 && PlayerInfo[playerid][pFamed] <= 0)
+			return SendClientMessageEx(playerid, COLOR_GREY, "You no longer have access to the job center.");
+		if(Job_SetPlayerSlot(playerid, slot, job)) SendClientMessageEx(playerid, COLOR_YELLOW, "Your job in slot %d is now %s.", slot, GetJobName(job));
+		DeletePVar(playerid, "jobSelection");
+		return 1;
 	}
 	if(dialogid == 7486)
 	{
@@ -5948,6 +5875,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	}
 	if((dialogid == DRINKDIALOG))
 	{
+		if(!Offer_IsCurrent(playerid, DrinkOffer[playerid], "DrinkOfferSession") || !Job_HasJob(DrinkOffer[playerid], JOB_BARTENDER))
+		{
+			DrinkOffer[playerid] = INVALID_PLAYER_ID;
+			return SendClientMessageEx(playerid, COLOR_GREY, "The bartender service is no longer available.");
+		}
 		if(response)
 		{
 			ShowPlayerDialogEx(playerid, TIPDIALOG, DIALOG_STYLE_INPUT, "Tipping the Bartender", "How much would you like to tip the bartender for their service?", "OK", "Cancel");
@@ -5959,6 +5891,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	}
 	if((dialogid == TIPDIALOG))
 	{
+		if(!Offer_IsCurrent(playerid, DrinkOffer[playerid], "DrinkOfferSession") || !Job_HasJob(DrinkOffer[playerid], JOB_BARTENDER))
+		{
+			DrinkOffer[playerid] = INVALID_PLAYER_ID;
+			return SendClientMessageEx(playerid, COLOR_GREY, "The bartender service is no longer available.");
+		}
 		if(response)
 		{
 			if(GetPlayerCash(playerid) >= strval(inputtext))
@@ -12790,7 +12727,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					return pc_cmd_microshop(playerid, "");
 				}
 				PlayerInfo[playerid][mCooldown][item] = 0;
-				return ShowPlayerDialogEx(playerid, 7484, DIALOG_STYLE_LIST, "Micro Shop: Job Center", "Detective\nLawyer\nWhore\nDrugs Dealer\nBodyguard\nMechanic\nArms Dealer\nBoxer\nDrugs Smuggler\nTaxi Driver\nCraftsman\nBartender\nShipment Contractor\nPizza Boy", "Proceed", "Cancel");
+				return Job_ShowMenu(playerid, true);
 			}
 			if(item == 1)//Job Boost
 			{
@@ -12799,7 +12736,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SendClientMessageEx(playerid, COLOR_GRAD2, "You currently have a active job boost, please wait for it to expire in %d minute(s) to purchase again.", PlayerInfo[playerid][mCooldown][item]);
 					return pc_cmd_microshop(playerid, "");
 				}
-				return ShowPlayerDialogEx(playerid, 7484, DIALOG_STYLE_LIST, "Micro Shop: Job Boost", "Detective\nLawyer\nWhore\nDrugs Dealer\nMechanic\nArms Dealer\nBoxer\nShipment Contractor", "Proceed", "Cancel");
+				return Job_ShowMenu(playerid, true, true);
 			}
 			if(item == 2)//Buddy Invites Reset
 			{
@@ -12890,6 +12827,19 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				AmountMadeMicro[item] < 0 || AmountMadeMicro[item] > cellmax - MicroItems[item]) return 1;
 			if(PlayerInfo[playerid][pCredits] < MicroItems[item]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
+			if(item == 0)
+			{
+				new slot = GetPVarInt(playerid, "m_Response") + 1, job = GetPVarInt(playerid, "jobSelection");
+				if(!GetPVarType(playerid, "m_Response") || !GetPVarType(playerid, "jobSelection")
+					|| !Job_CanSetSlot(playerid, slot, job) || job == JOB_NONE || Job_GetSlot(playerid, slot) == job)
+					return SendClientMessageEx(playerid, COLOR_GREY, "This job change is no longer available. No credits were charged.");
+			}
+			if(item == 1)
+			{
+				new job = GetPVarInt(playerid, "jobSelection");
+				if(!Job_IsAvailable(job) || !JobDefinitions[job][jobBoostable] || PlayerInfo[playerid][mPurchaseCount][1] || GetJobLevel(playerid, job) == 5)
+					return SendClientMessageEx(playerid, COLOR_GREY, "This job boost is no longer available. No credits were charged.");
+			}
 			DeletePVar(playerid, "m_Item");
 			if(item == 11)
 			{
@@ -12921,36 +12871,28 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			Log("logs/micro.log", string), print(string);
 			strunpack(microItemName, mItemName[item], sizeof(microItemName));
 			SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased \"%s\" for %s credits.", microItemName, number_format(MicroItems[item]));
-			if(item == 0)//Change a Job
+			if(item == 0)
 			{
-				if(GetPVarInt(playerid, "m_Response") == 0) PlayerInfo[playerid][pJob] = GetPVarInt(playerid, "jobSelection"), SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed your first job!");
-				if(GetPVarInt(playerid, "m_Response") == 1) PlayerInfo[playerid][pJob2] = GetPVarInt(playerid, "jobSelection"), SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed your second job!");
-				if(GetPVarInt(playerid, "m_Response") == 2) PlayerInfo[playerid][pJob3] = GetPVarInt(playerid, "jobSelection"), SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed your third job!");
+				new slot = GetPVarInt(playerid, "m_Response") + 1, job = GetPVarInt(playerid, "jobSelection");
+				Job_SetPlayerSlot(playerid, slot, job);
+				DeletePVar(playerid, "m_Response");
+				DeletePVar(playerid, "jobSelection");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Your job in slot %d is now %s.", slot, GetJobName(job));
 				PlayerInfo[playerid][mInventory][item]++;
 				if(++PlayerInfo[playerid][mPurchaseCount][item] == 3) PlayerInfo[playerid][mCooldown][item] = gettime()+86400, PlayerInfo[playerid][mPurchaseCount][item] = 0;
 			}
-			if(item == 1)//Job Boost
+			if(item == 1)
 			{
-				new skill;
-				switch(GetPVarInt(playerid, "jobSelection"))
-				{	//Point to enum
-					case 1: skill = pInfo:pDetSkill;
-					case 2: skill = pInfo:pLawSkill;
-					case 3: skill = pInfo:pSexSkill;
-					case 4: skill = pInfo:pDrugsSkill;
-					case 7: skill = pInfo:pMechSkill;
-					case 9: skill = pInfo:pArmsSkill;
-					case 12: skill = pInfo:pBoxSkill;
-					case 20: skill = pInfo:pTruckSkill;
-				}
-				PlayerInfo[playerid][mBoost][0] = GetPVarInt(playerid, "jobSelection");
-				PlayerInfo[playerid][mBoost][1] = PlayerInfo[playerid][pInfo:skill];
-				PlayerInfo[playerid][pInfo:skill] = 401;
-				PlayerInfo[playerid][mPurchaseCount][item] = 1;//Set Active
-				PlayerInfo[playerid][mCooldown][item] = 120;//2 Hours
-				format(string, sizeof(string), "[JOBBOOST] %s(%d) Job: %s (%d) Skill: %d (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetJobName(GetPVarInt(playerid, "jobSelection")), GetPVarInt(playerid, "jobSelection"), PlayerInfo[playerid][mBoost][1], GetJobLevel(playerid, GetPVarInt(playerid, "jobSelection")));
+				new job = GetPVarInt(playerid, "jobSelection"), skill = Job_GetSkill(job);
+				PlayerInfo[playerid][mBoost][0] = job;
+				PlayerInfo[playerid][mBoost][1] = PlayerInfo[playerid][JobSkills[skill][jobSkillField]];
+				PlayerInfo[playerid][JobSkills[skill][jobSkillField]] = JobSkills[skill][jobSkillThreshold][3];
+				PlayerInfo[playerid][mPurchaseCount][item] = 1;
+				PlayerInfo[playerid][mCooldown][item] = 120;
+				format(string, sizeof(string), "[JOBBOOST] %s(%d) Job: %s (%d) Skill: %d (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetJobName(job), job, PlayerInfo[playerid][mBoost][1], GetJobLevel(playerid, job));
 				Log("logs/micro.log", string);
-				SendClientMessageEx(playerid, -1, "Job Boost for the %s job is now active and will expire in 60 minutes.", GetJobName(GetPVarInt(playerid, "jobSelection")));
+				SendClientMessageEx(playerid, -1, "Job Boost for %s is active for %d minutes.", GetJobName(job), PlayerInfo[playerid][mCooldown][item]);
+				DeletePVar(playerid, "jobSelection");
 			}
 			if(item == 2)//Buddy Invites Reset
 			{

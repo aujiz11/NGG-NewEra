@@ -96,7 +96,7 @@ ArmsDealer_Check(dealer, recipient, recipe, viewer)
 	if(!ArmsDealer_CanTrade(dealer) || (recipient != dealer && !ArmsDealer_CanTrade(recipient)))
 		return SendClientMessageEx(viewer, COLOR_GREY, "Both players must be available on foot to craft or receive a weapon."), 0;
 	
-	if(PlayerInfo[dealer][pJob] != 9 && PlayerInfo[dealer][pJob2] != 9 && PlayerInfo[dealer][pJob3] != 9)
+	if(!Job_HasJob(dealer, JOB_ARMS_DEALER))
 		return SendClientMessageEx(viewer, COLOR_GREY, "The seller is no longer an Arms Dealer."), 0;
 	
 	if(PlayerInfo[recipient][pConnectHours] < 2 || PlayerInfo[recipient][pWRestricted] > 0)
@@ -170,9 +170,12 @@ ArmsDealer_Accept(playerid)
 
 CMD:sellgun(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJob] != 9 && PlayerInfo[playerid][pJob2] != 9 && PlayerInfo[playerid][pJob3] != 9)
+	if(!Job_HasJob(playerid, JOB_ARMS_DEALER))
 		return SendClientMessageEx(playerid, COLOR_GREY, "You are not an Arms Dealer!");
-	if(!ArmsDealer_CanTrade(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot craft or offer weapons right now.");
+	
+	if(!ArmsDealer_CanTrade(playerid)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot craft or offer weapons right now.");
+	
 	new now = gettime();
 	if(GetPVarInt(playerid, "pSellGunTime") > now) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must wait %d seconds before offering another weapon.", GetPVarInt(playerid, "pSellGunTime") - now);
 	new target, name[16];

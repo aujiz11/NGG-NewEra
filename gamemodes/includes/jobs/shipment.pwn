@@ -44,7 +44,7 @@ stock Shipment_IsDriver(playerid, vehicleid)
 		&& GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0
 		&& GetVehicleVirtualWorld(vehicleid) == 0 && GetVehicleInterior(vehicleid) == 0
 		&& !PlayerIsDead[playerid] && !GetPVarType(playerid, "Injured") && !GetPVarType(playerid, "PlayerCuffed") && !GetPVarInt(playerid, "pBagged")
-		&& (PlayerInfo[playerid][pJob] == 20 || PlayerInfo[playerid][pJob2] == 20 || PlayerInfo[playerid][pJob3] == 20);
+		&& (Job_HasJob(playerid, JOB_SHIPMENT));
 }
 
 stock Shipment_OrderFits(model, type)
@@ -341,7 +341,7 @@ stock Shipment_ShowWeaponReward(playerid, count)
 
 CMD:checkcargo(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJob] != 20 && PlayerInfo[playerid][pJob2] != 20 && PlayerInfo[playerid][pJob3] != 20 && !IsACop(playerid))
+	if(!Job_HasJob(playerid, JOB_SHIPMENT) && !IsACop(playerid))
 	{
         SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Shipment Contractor or a Cop!");
         return 1;
@@ -402,7 +402,7 @@ CMD:checkcargo(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_YELLOW, "To remove the illegal goods, type /clearcargo near the truck.");
 		}
 
-		if(PlayerInfo[playerid][pJob] == 20 || PlayerInfo[playerid][pJob2] == 20 || PlayerInfo[playerid][pJob3] == 20)
+		if(Job_HasJob(playerid, JOB_SHIPMENT))
 		{
 			if((TruckContents{closestcar} > 0 || (0 <= TruckDeliveringTo[closestcar] < MAX_BUSINESSES && Businesses[TruckDeliveringTo[closestcar]][bOrderState] == 2)) && TruckUsed[playerid] == INVALID_VEHICLE_ID)
 			{
@@ -436,7 +436,7 @@ CMD:checkcargo(playerid, params[])
 
 CMD:hijackcargo(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJob] == 20 || PlayerInfo[playerid][pJob2] == 20 || PlayerInfo[playerid][pJob3] == 20)
+	if(Job_HasJob(playerid, JOB_SHIPMENT))
 	{
 	    new vehicleid = GetPlayerVehicleID(playerid);
 	    if(Shipment_IsDriver(playerid, vehicleid))
@@ -470,7 +470,7 @@ CMD:hijackcargo(playerid, params[])
 				} 
 				else 
 				{
-					if(PlayerInfo[playerid][pTruckSkill] >= 200)
+					if(GetJobLevel(playerid, JOB_SHIPMENT) >= 4)
 					{
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You are now attempting to hijack the boat, please wait....");
 					}
@@ -489,7 +489,7 @@ CMD:hijackcargo(playerid, params[])
 
 CMD:loadshipment(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJob] == 20 || PlayerInfo[playerid][pJob2] == 20 || PlayerInfo[playerid][pJob3] == 20)
+	if(Job_HasJob(playerid, JOB_SHIPMENT))
 	{
 	    new vehicleid = GetPlayerVehicleID(playerid);
 	    if(Shipment_IsDriver(playerid, vehicleid))
@@ -516,14 +516,14 @@ CMD:loadshipment(playerid, params[])
 				}
 				if(GetVehicleModel(vehicleid) == 440 || GetVehicleModel(vehicleid) == 413) // Level Three Vehicle Check
 				{
-					if(PlayerInfo[playerid][pTruckSkill] < 100) 
+					if(GetJobLevel(playerid, JOB_SHIPMENT) < 3)
 					{
 						return SendClientMessageEx(playerid, COLOR_GRAD2, "Only level 3 Shipment Contractors may use this vehicle.");
 					}
 				}
 				if(GetVehicleModel(vehicleid) == 482) // Level Five Vehicle Check
 				{
-					if(PlayerInfo[playerid][pTruckSkill] < 400)  
+					if(GetJobLevel(playerid, JOB_SHIPMENT) < 5)
 					{
 						return SendClientMessageEx(playerid, COLOR_GRAD2, "Only level 5 Shipment Contractors may use this vehicle.");
 					}
@@ -536,7 +536,7 @@ CMD:loadshipment(playerid, params[])
 				}
 				else
 				{
-					if(PlayerInfo[playerid][pTruckSkill] >= 200)
+					if(GetJobLevel(playerid, JOB_SHIPMENT) >= 4)
 					{
 						SetPlayerCheckpoint(playerid,2098.6543,-104.3568,-0.4820, 4);
 						GameTextForPlayer(playerid, "~w~Waypoint set ~r~Palamino Docks", 5000, 1);
