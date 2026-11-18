@@ -43,11 +43,6 @@
       "discord-connector"
     ],
     "legacy_plugins": [
-      "crashdetect",
-      "gvar",
-      "mysql",
-      "streamer",
-      "samp_bcrypt",
       "streamer",
       "samp_bcrypt",
       "crashdetect",

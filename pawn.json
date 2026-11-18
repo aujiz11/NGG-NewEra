@@ -23,13 +23,6 @@
     "hostname": "We love Open Multiplayer!",
     "maxplayers": 500,
     "language": "English",
-    "plugins": [
-      "crashdetect",
-      "gvar",
-      "mysql",
-      "streamer",
-      "samp_bcrypt"
-    ],
     "gamemodes": [
       "NGRP"
     ],
