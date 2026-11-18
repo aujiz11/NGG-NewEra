@@ -2,126 +2,129 @@
 
 #define ACCOUNT_SETTINGS	10020
 #define ACCOUNT_TOGGLEMENU	10021
-#define ACCOUNT_CHATBOX		10022
 
-CMD:settings(playerid, params[]) {
+enum eAccountToggle
+{
+	toggleID,
+	toggleName[32],
+	toggleCommand[16]
+}
 
-	ShowAccountSettings(playerid);
+static const AccountToggles[][eAccountToggle] =
+{
+	{CHAT_NEWBIE, "Newbie Chat", "newbie"},
+	{CHAT_NEWS, "News", "news"},
+	{CHAT_OOC, "Global OOC", "ooc"},
+	{CHAT_WHISPERS, "Whispers", "whisper"},
+	{CHAT_PRIVATE_RADIO, "Private Radio", "pr"},
+	{CHAT_PHONE, "Phone", "phone"},
+	{CHAT_FAMED, "Famed Chat", "famed"},
+	{CHAT_VIP, "VIP Chat", "vip"},
+	{CHAT_DEPARTMENT, "Department Radio", "dept"},
+	{CHAT_INTERNATIONAL, "International Radio", "int"},
+	{CHAT_GROUP_OOC, "OOC Group", "gooc"},
+	{CHAT_GROUP_RADIO, "Group Radio", "radio"},
+	{CHAT_BUG, "Bug Chat", "bug"},
+	{CHAT_BUSINESS, "Business Radio", "biz"},
+	{CHAT_POINTS, "Point Messages", "points"},
+	{CHAT_REPFAM_HUD, "RepFam HUD", "rf"},
+	{CHAT_STAFF, "Staff Chat", "staff"},
+	{CHAT_ADVISOR, "Advisor Chat", "advisor"},
+	{CHAT_WATCHDOG, "Watchdog Chat", "watchdog"}
+};
+
+stock bool:AccountToggle_CanAccess(playerid, id)
+{
+	new group = PlayerInfo[playerid][pMember];
+	switch(id)
+	{
+		case CHAT_FAMED: return PlayerInfo[playerid][pFamed] >= 1 || PlayerInfo[playerid][pAdmin] >= 4;
+		case CHAT_VIP: return PlayerInfo[playerid][pDonateRank] >= 1 || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pVIPMod] > 0;
+		case CHAT_DEPARTMENT: return PlayerInfo[playerid][pReceiver] > 0 || PlayerInfo[playerid][pAdmin] >= 2 || (0 <= group < MAX_GROUPS && PlayerInfo[playerid][pRank] >= arrGroupData[group][g_iDeptRadioAccess]);
+		case CHAT_INTERNATIONAL: return 0 <= group < MAX_GROUPS && PlayerInfo[playerid][pRank] >= arrGroupData[group][g_iIntRadioAccess];
+		case CHAT_GROUP_OOC: return 0 <= group < MAX_GROUPS;
+		case CHAT_GROUP_RADIO: return 0 <= group < MAX_GROUPS || PlayerInfo[playerid][pAdmin] >= 2;
+		case CHAT_BUG: return 0 <= group < MAX_GROUPS && PlayerInfo[playerid][pRank] >= arrGroupData[group][g_iBugAccess];
+		case CHAT_BUSINESS: return IsValidBusinessID(PlayerInfo[playerid][pBusiness]) != 0;
+		case CHAT_REPFAM_HUD: return IsACriminal(playerid) != 0;
+		case CHAT_STAFF: return PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pVIPMod] > 0 || PlayerInfo[playerid][pWatchdog] >= 1;
+		case CHAT_ADVISOR: return PlayerInfo[playerid][pHelper] >= 1 || PlayerInfo[playerid][pAdmin] >= 2;
+		case CHAT_WATCHDOG: return PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 1;
+	}
+	return true;
+}
+
+stock ToggleAccountSetting(playerid, id)
+{
+	if(!gPlayerLogged{playerid}) return SendClientMessageEx(playerid, COLOR_WHITE, "You must be logged in to use this.");
+	new entry = -1;
+	for(new i; i < sizeof(AccountToggles); ++i)
+	{
+		if(AccountToggles[i][toggleID] == id)
+		{
+			entry = i;
+			break;
+		}
+	}
+	if(entry == -1 || !AccountToggle_CanAccess(playerid, id)) return SendClientMessageEx(playerid, COLOR_GREY, "This setting is not available to you.");
+	if(id == CHAT_WATCHDOG && PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pWatchdog] < 3)
+		return SendClientMessageEx(playerid, COLOR_GREY, "Watchdog chat must remain enabled for your rank.");
+
+	new disabled = PlayerInfo[playerid][pToggledChats][id] == 0;
+	if(id == CHAT_PHONE && !disabled && (PlayerInfo[playerid][pJailTime] > 0 || PlayerInfo[playerid][pBeingSentenced] > 0))
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot switch on your phone while in custody.");
+
+	PlayerInfo[playerid][pToggledChats][id] = disabled;
+	switch(id)
+	{
+		case CHAT_PHONE: PhoneOnline[playerid] = disabled;
+		case CHAT_REPFAM_HUD:
+		{
+			if(disabled) TextDrawHideForPlayer(playerid, TD_RepFam);
+			else if(GetPVarType(playerid, "RepFam_TL")) TextDrawShowForPlayer(playerid, TD_RepFam);
+		}
+	}
+	SendClientMessageEx(playerid, COLOR_GRAD1, "%s is now %s.", AccountToggles[entry][toggleName], disabled ? "off" : "on");
 	return 1;
 }
 
-ShowAccountSettings(playerid, menu = 0) {
-	
+CMD:settings(playerid, params[])
+{
+	return ShowAccountSettings(playerid);
+}
+
+ShowAccountSettings(playerid, menu = 0)
+{
 	if(!gPlayerLogged{playerid}) return SendClientMessageEx(playerid, COLOR_WHITE, "You must be logged in to use this.");
-
-	szMiscArray[0] = 0;
-	new szTitle[32];
-
-	switch(menu) {
-
-		case 0: {
-			format(szTitle, sizeof(szTitle), "Account Settings - %s", GetPlayerNameEx(playerid));
-			format(szMiscArray, sizeof(szMiscArray), "Toggle Menu\nChange Account Email\nAccount Password\nChange Shop Pin");
-			ShowPlayerDialogEx(playerid, ACCOUNT_SETTINGS, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
+	szMiscArray[0] = EOS;
+	switch(menu)
+	{
+		case 0:
+		{
+			new title[48];
+			format(title, sizeof(title), "Account Settings - %s", GetPlayerNameEx(playerid));
+			ShowPlayerDialogEx(playerid, ACCOUNT_SETTINGS, DIALOG_STYLE_LIST, title, "Toggle Menu\nChange Account Email\nAccount Password\nChange Shop Pin", "Select", "Cancel");
 		}
-
-		case 1: {
-			
-			format(szMiscArray, sizeof(szMiscArray), "Item\tStatus\n\
-				{FFFFFF}---General---\t\n\
-				{FFFFFF}NG:RP Phone Mod\t%s\n\
-				{FFFFFF}Newbie Chat\t%s\n\
-				{FFFFFF}News\t%s\n\
-				{FFFFFF}OOC Chat\t%s\n\
-				{FFFFFF}Whispers\t%s\n\
-				{FFFFFF}First ChatBox\t%s\n\
-				{FFFFFF}Private Radio\t%s\n\
-				{FFFFFF}Phone\t%s\n\
-				{FFFFFF}Famed\t%s\n\
-				{FFFFFF}VIP\t%s\n",
-				(PlayerInfo[playerid][pToggledChats][20] == 1) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][0] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][1] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][2] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][3] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][4] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				// (PlayerInfo[playerid][pToggledChats][19] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][5] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][6] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][7] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][8] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][9] == 0) ? ("{00FF00}On") : ("{FF0000}Off")
-			);
-			format(szMiscArray, sizeof(szMiscArray), "%s\
-				{FFFFFF}---Groups---\t\n\
-				{FFFFFF}Dept\t%s\n\
-				{FFFFFF}International\t%s\n\
-				{FFFFFF}OOC Group\t%s\n\
-				{FFFFFF}Radio\t%s\n\
-				{FFFFFF}Bug Chat\t%s\n\
-				{FFFFFF}Biz Radio\t%s\n\
-				{FFFFFF}Point Messages\t%s\n\
-				{FFFFFF}--- Staff ---\t\n\
-				{FFFFFF}Staff Chat\t%s\n\
-				{FFFFFF}Advisor Chat\t%s\n\
-				{FFFFFF}Watchdog Chat\t%s\n",
-				szMiscArray,
-				(PlayerInfo[playerid][pToggledChats][10] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][21] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][11] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][12] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][13] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][14] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][15] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][22] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][16] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][17] == 0) ? ("{00FF00}On") : ("{FF0000}Off")
-			);
-			ShowPlayerDialogEx(playerid, ACCOUNT_TOGGLEMENU, DIALOG_STYLE_TABLIST_HEADERS, "Toggle Menu", szMiscArray, "Select", "Cancel");
+		case 1:
+		{
+			new line[128], row;
+			for(new i; i < sizeof(AccountToggles); ++i) ListItemTrackId[playerid][i] = -1;
+			strcat(szMiscArray, "Item\tStatus\tCommand\n", sizeof(szMiscArray));
+			for(new i; i < sizeof(AccountToggles); ++i)
+			{
+				new id = AccountToggles[i][toggleID];
+				if(!AccountToggle_CanAccess(playerid, id)) continue;
+				ListItemTrackId[playerid][row++] = id;
+				if(id == CHAT_WATCHDOG && PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pWatchdog] < 3)
+					format(line, sizeof(line), "%s\t{00FF00}On (required)\t/tog %s\n", AccountToggles[i][toggleName], AccountToggles[i][toggleCommand]);
+				else if(id == CHAT_PHONE && (PlayerInfo[playerid][pJailTime] > 0 || PlayerInfo[playerid][pBeingSentenced] > 0))
+					format(line, sizeof(line), "%s\t{FF0000}Off (in custody)\t/tog %s\n", AccountToggles[i][toggleName], AccountToggles[i][toggleCommand]);
+				else
+					format(line, sizeof(line), "%s\t%s\t/tog %s\n", AccountToggles[i][toggleName], PlayerInfo[playerid][pToggledChats][id] == 0 ? "{00FF00}On" : "{FF0000}Off", AccountToggles[i][toggleCommand]);
+				strcat(szMiscArray, line, sizeof(szMiscArray));
+			}
+			ShowPlayerDialogEx(playerid, ACCOUNT_TOGGLEMENU, DIALOG_STYLE_TABLIST_HEADERS, "Toggle Menu", szMiscArray, "Toggle", "Back");
 		}
-		case 2: {
-			
-			format(szMiscArray, sizeof(szMiscArray), "Item\tChatbox\n\
-				---General---\t\n\
-				Newbie Chat\t%d\n\
-				News\t%d\n\
-				OOC Chat\t%d\n\
-				Whispers\t%d\n\
-				Private Radio\t%d\n\
-				Phone\t%d\n\
-				Famed\t%d\n\
-				VIP\t%d\n\
-				---Groups---\t\n\
-				Dept\t%d\n\
-				OOC Group\t%d\n\
-				Radio\t%d\n\
-				Bug Chat\t%d\n\
-				Biz Radio\t%d\n\
-				--- Staff ---\t\n\
-				Staff Chat\t%d\n\
-				Advisor Chat\t%d\n\
-				Watchdog Chat\t%d\n",
-				PlayerInfo[playerid][pChatbox][0],
-				PlayerInfo[playerid][pChatbox][1],
-				PlayerInfo[playerid][pChatbox][2],
-				PlayerInfo[playerid][pChatbox][3],
-				PlayerInfo[playerid][pChatbox][5],
-				PlayerInfo[playerid][pChatbox][7],
-				PlayerInfo[playerid][pChatbox][8],
-				PlayerInfo[playerid][pChatbox][9],
-				PlayerInfo[playerid][pChatbox][10],
-				PlayerInfo[playerid][pChatbox][11],
-				PlayerInfo[playerid][pChatbox][12],
-				PlayerInfo[playerid][pChatbox][13],
-				PlayerInfo[playerid][pChatbox][14],
-				PlayerInfo[playerid][pChatbox][15],
-				PlayerInfo[playerid][pChatbox][16],
-				PlayerInfo[playerid][pChatbox][17],
-				PlayerInfo[playerid][pChatbox][18]
-			);
-			ShowPlayerDialogEx(playerid, ACCOUNT_CHATBOX, DIALOG_STYLE_TABLIST_HEADERS, "Chat Preferences", szMiscArray, "Select", "Cancel");
-		}
-
 		case 3: { // account email 
 			ShowPlayerDialogEx(playerid, EMAIL_VALIDATION, DIALOG_STYLE_INPUT, "E-mail Registration", "Please enter a valid e-mail address to associate with your account.", "Submit", "");
 		}
@@ -133,8 +136,8 @@ ShowAccountSettings(playerid, menu = 0) {
 		case 5: { // shop pin
 			
 			if(GetPVarInt(playerid, "PinConfirmed")) {
-			    SetPVarInt(playerid, "ChangePin", 1);
-			    ShowPlayerDialogEx(playerid, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Change Pin Number", "Enter a new pin number to change your current one.", "Change", "Cancel");
+				SetPVarInt(playerid, "ChangePin", 1);
+				ShowPlayerDialogEx(playerid, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Change Pin Number", "Enter a new pin number to change your current one.", "Change", "Cancel");
 			}
 			else PinLogin(playerid);
 		}
@@ -142,187 +145,42 @@ ShowAccountSettings(playerid, menu = 0) {
 	return 1;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
-
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
 	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
-	switch(dialogid) {
-
-		case ACCOUNT_SETTINGS: {
-
-			if(!response) {
-				return 1;
+	switch(dialogid)
+	{
+		case ACCOUNT_SETTINGS:
+		{
+			if(!response || !gPlayerLogged{playerid}) return 1;
+			switch(listitem)
+			{
+				case 0: ShowAccountSettings(playerid, 1);
+				case 1: ShowAccountSettings(playerid, 3);
+				case 2: ShowAccountSettings(playerid, 4);
+				case 3: ShowAccountSettings(playerid, 5);
 			}
-
-			switch(listitem) {
-
-				case 0: {
-					ShowAccountSettings(playerid, 1); // toggle settings
-				}
-				case 1: {
-					ShowAccountSettings(playerid, 3); // account email
-				}
-				case 2: {
-					ShowAccountSettings(playerid, 4);
-				}
-				case 3: {
-					ShowAccountSettings(playerid, 5);
-				}
-				/*case 4: {
-					ShowAccountSettings(playerid, 5);
-				}*/
-			}
-
-		}
-
-		case ACCOUNT_TOGGLEMENU: {
-			
-			if(!response) return ShowAccountSettings(playerid, 0);
-			new id = -1;
-			if(strcmp(inputtext, "NG:RP Phone Mod", true) == 0) id = 20;
-			else if(strcmp(inputtext, "Newbie Chat", true) == 0) id = 0;
-			else if(strcmp(inputtext, "News", true) == 0) id = 1;
-			else if(strcmp(inputtext, "OOC Chat", true) == 0) id = 2;
-			else if(strcmp(inputtext, "Whispers", true) == 0) id = 3;
-			else if(strcmp(inputtext, "First ChatBox", true) == 0) id = 4;
-			else if(strcmp(inputtext, "Secondary ChatBox", true) == 0) id = 19;
-			else if(strcmp(inputtext, "Private Radio", true) == 0) id = 5;
-			else if(strcmp(inputtext, "Phone", true) == 0) id = 7;
-			else if(strcmp(inputtext, "Famed", true) == 0) id = 8;
-			else if(strcmp(inputtext, "VIP", true) == 0) id = 9;
-			else if(strcmp(inputtext, "Dept", true) == 0) id = 10;
-			else if(strcmp(inputtext, "International", true) == 0) id = 21;
-			else if(strcmp(inputtext, "OOC Group", true) == 0) id = 11;
-			else if(strcmp(inputtext, "Radio", true) == 0) id = 12;
-			else if(strcmp(inputtext, "Bug Chat", true) == 0) id = 13;
-			else if(strcmp(inputtext, "Biz Radio", true) == 0) id = 14;
-			else if(strcmp(inputtext, "Point Messages", true) == 0) id = 22;
-			else if(strcmp(inputtext, "Staff Chat", true) == 0) id = 15;
-			else if(strcmp(inputtext, "Advisor Chat", true) == 0) id = 16;
-			else if(strcmp(inputtext, "Watchdog Chat", true) == 0) id = 17;
-			// else if(strcmp(inputtext, "Admin", true) == 0) id = 18;
-			if(id == -1) return ShowAccountSettings(playerid, 1);
-			if(PlayerInfo[playerid][pToggledChats][id] == 0) {
-
-				PlayerInfo[playerid][pToggledChats][id] = 1;
-				switch(id) {
-
-					case 7: PhoneOnline[playerid] = 1;
-					case 15: advisorchat[playerid] = 0;
-					case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawHide(playerid, TD_ChatBox[i]);
-				}
-			}
-			else {
-
-				PlayerInfo[playerid][pToggledChats][id] = 0;
-				switch(id) {
-					case 7: PhoneOnline[playerid] = 0;
-					case 15: advisorchat[playerid] = 1;
-					case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawShow(playerid, TD_ChatBox[i]);
-				}
-			}
-			ShowAccountSettings(playerid, 1);
 			return 1;
 		}
-		case ACCOUNT_CHATBOX: {
-
-			if(!response) return DeletePVar(playerid, "ChatboxPref"), ShowAccountSettings(playerid, 0);
-			if(GetPVarType(playerid, "ChatboxPref")) {
-
-				if(0 > strval(inputtext) > 1) return DeletePVar(playerid, "ChatboxPref"), SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid value.");
-				PlayerInfo[playerid][pChatbox][GetPVarInt(playerid, "ChatBoxPref")] = strval(inputtext);
-				DeletePVar(playerid, "ChatboxPref");
-				ShowAccountSettings(playerid, 2);
-				return 1;
-			}
-			else {
-
-				new id = -1;
-				if(strcmp(inputtext, "Newbie Chat", true) == 0) id = 0;
-				else if(strcmp(inputtext, "News", true) == 0) id = 1;
-				else if(strcmp(inputtext, "OOC Chat", true) == 0) id = 2;
-				else if(strcmp(inputtext, "Whispers", true) == 0) id = 3;
-				else if(strcmp(inputtext, "Private Radio", true) == 0) id = 5;
-				else if(strcmp(inputtext, "Phone", true) == 0) id = 7;
-				else if(strcmp(inputtext, "Famed", true) == 0) id = 8;
-				else if(strcmp(inputtext, "VIP", true) == 0) id = 9;
-				else if(strcmp(inputtext, "Dept", true) == 0) id = 10;
-				else if(strcmp(inputtext, "OOC Group", true) == 0) id = 11;
-				else if(strcmp(inputtext, "Radio", true) == 0) id = 12;
-				else if(strcmp(inputtext, "Bug Chat", true) == 0) id = 13;
-				else if(strcmp(inputtext, "Biz Radio", true) == 0) id = 14;
-				else if(strcmp(inputtext, "Staff Chat", true) == 0) id = 15;
-				else if(strcmp(inputtext, "Advisor Chat", true) == 0) id = 16;
-				else if(strcmp(inputtext, "Watchdog Chat", true) == 0) id = 17;
-				if(id == -1) return ShowAccountSettings(playerid, 1);
-				// else if(strcmp(inputtext, "Admin", true) == 0) id = 18;
-				SetPVarInt(playerid, "ChatboxPref", id);
-				ShowPlayerDialogEx(playerid, ACCOUNT_CHATBOX, DIALOG_STYLE_INPUT, "Chatbox Preferences", "In which chatbox would you like this chat channel?\n\nAvailable options: Main (0), Bottom Right (1).", "Select", "Cancel");
-			}
+		case ACCOUNT_TOGGLEMENU:
+		{
+			if(!gPlayerLogged{playerid}) return 1;
+			if(!response) return ShowAccountSettings(playerid);
+			if(0 <= listitem < sizeof(AccountToggles) && ListItemTrackId[playerid][listitem] != -1)
+				ToggleAccountSetting(playerid, ListItemTrackId[playerid][listitem]);
+			return ShowAccountSettings(playerid, 1);
 		}
 	}
 	return 0;
 }
 
-CMD:tog(playerid, params[]) {
- 
-    if(isnull(params)) {
- 
-        SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /tog [option]");
-        SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: newbie | ooc | whisper | pr | phone | famed | vip | dept | gooc | radio | bug");
-        SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: biz | staff | advisor | news | chatbox | advisor | points | rf");
-        return 1;
-    }
- 
-    new iChatID = -1, chatname[50];
-    mysql_escape_string(params, chatname);
- 
-    if(strcmp(params, "newbie", true) == 0) iChatID = 0;
-    else if(strcmp(params, "ooc", true) == 0) iChatID = 2;
-    else if(strcmp(params, "whisper", true) == 0) iChatID = 3;
-    else if(strcmp(params, "pr", true) == 0) iChatID = 5;
-    else if(strcmp(params, "phone", true) == 0) iChatID = 7;
-    else if(strcmp(params, "famed", true) == 0) iChatID = 8;
-    else if(strcmp(params, "vip", true) == 0) iChatID = 9;
-    else if(strcmp(params, "dept", true) == 0) iChatID = 10;
-    else if(strcmp(params, "gooc", true) == 0) iChatID = 11;
-    else if(strcmp(params, "radio", true) == 0) iChatID = 12;
-    else if(strcmp(params, "bug", true) == 0) iChatID = 13;
-    else if(strcmp(params, "biz", true) == 0) iChatID = 14;
-    else if(strcmp(params, "staff", true) == 0) iChatID = 15;
-    else if(strcmp(params, "advisor", true) == 0) iChatID = 16;
-    else if(strcmp(params, "news", true) == 0) iChatID = 1;
-    else if(strcmp(params, "chatbox", true) == 0) iChatID = 4;
-    else if(strcmp(params, "advisor", true) == 0) iChatID = 16;
-    else if(strcmp(params, "points", true) == 0) iChatID = 22;
-    else if(strcmp(params, "rf", true) == 0) iChatID = 23;
- 
-    if(!(0 <= iChatID < MAX_CHATSETS)) return 1; // preventing OOB issues.
- 
-    if(PlayerInfo[playerid][pToggledChats][iChatID] == 0) {
- 
-        PlayerInfo[playerid][pToggledChats][iChatID] = 1;
-        switch(iChatID) {
- 
-            case 7: PhoneOnline[playerid] = 1;
-            case 15: advisorchat[playerid] = 0;
-            case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawHide(playerid, TD_ChatBox[i]);
-            case 23: TextDrawHideForPlayer(playerid, TD_RepFam);
-           
-        }
-        format(szMiscArray, sizeof(szMiscArray), "You have toggled %s off.", chatname);
-        SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
-    }
-    else {
- 
-        PlayerInfo[playerid][pToggledChats][iChatID] = 0;
-        switch(iChatID) {
-            case 7: PhoneOnline[playerid] = 0;
-            case 15: advisorchat[playerid] = 1;
-            case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawShow(playerid, TD_ChatBox[i]);
-            case 23: if(GetPVarInt(playerid, "RepFam_TL")) TextDrawShowForPlayer(playerid, TD_RepFam);
-        }
-        format(szMiscArray, sizeof(szMiscArray), "You have toggled %s on.", chatname);
-        SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
-    }
-    return 1;
+CMD:tog(playerid, params[])
+{
+	if(!gPlayerLogged{playerid}) return SendClientMessageEx(playerid, COLOR_WHITE, "You must be logged in to use this.");
+	if(isnull(params)) return ShowAccountSettings(playerid, 1);
+	for(new i; i < sizeof(AccountToggles); ++i)
+	{
+		if(!strcmp(params, AccountToggles[i][toggleCommand], true)) return ToggleAccountSetting(playerid, AccountToggles[i][toggleID]);
+	}
+	return SendClientMessageEx(playerid, COLOR_GREY, "Unknown toggle. Use /tog to view the available settings.");
 }

@@ -1296,9 +1296,7 @@ public OnPlayerConnect(playerid)
 	HousePrice[playerid] = 0;
 	playerTabbed[playerid] = 0;
 	playerAFK[playerid] = 0;
-	gBug{playerid} = 1;
 	TazerTimeout[playerid] = 0;
-	gRadio{playerid} = 1;
 	playerLastTyped[playerid] = 0;
 	pTazer{playerid} = 0;
 	pTazerReplace{playerid} = 0;
@@ -1342,10 +1340,8 @@ public OnPlayerConnect(playerid)
 	MarryWitnessOffer[playerid] = INVALID_PLAYER_ID;
 	ProposeOffer[playerid] = INVALID_PLAYER_ID;
 	DivorceOffer[playerid] = INVALID_PLAYER_ID;
-	HidePM[playerid] = 0;
 	PhoneOnline[playerid] = 0;
 	unbanip[playerid][0] = 0;
-    advisorchat[playerid] = 1;
 	ChosenSkin[playerid]=0;
 	SelectFChar[playerid]=0;
 	MatsHolding[playerid]=0;
@@ -1431,10 +1427,8 @@ public OnPlayerConnect(playerid)
 	TextSpamUnmute[playerid] = 0;
  	CommandSpamTimes[playerid] = 0;
 	CommandSpamUnmute[playerid] = 0;
-	gOoc[playerid] = 0;
 	arr_Towing[playerid] = INVALID_VEHICLE_ID;
-	gNews[playerid] = 0;
-	PlayerInfo[playerid][pToggledChats][0] = 1;
+	PlayerInfo[playerid][pToggledChats][CHAT_NEWBIE] = 1;
 	gPlayerLogged{playerid} = 0;
 	gPlayerLogTries[playerid] = 0;
 	IsSpawned[playerid] = 0;
@@ -2077,7 +2071,7 @@ public OnPlayerDisconnect(playerid, reason)
 							format(string, sizeof(string), "** %s%s %s is code 0 **", badge, rank, GetPlayerNameEx(playerid));
 							foreach(new i: Player)
 							{
-								if(PlayerInfo[i][pToggledChats][12] == 0)
+								if(PlayerInfo[i][pToggledChats][CHAT_GROUP_RADIO] == 0)
 								{
 									if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 								}
@@ -2093,7 +2087,7 @@ public OnPlayerDisconnect(playerid, reason)
 							format(string, sizeof(string), "** %s%s %s is no longer available (( lost connection )) **", badge, rank, GetPlayerNameEx(playerid));
 							foreach(new i: Player)
 							{
-								if(PlayerInfo[i][pToggledChats][12] == 0)
+								if(PlayerInfo[i][pToggledChats][CHAT_GROUP_RADIO] == 0)
 								{
 									if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 								}
@@ -2186,7 +2180,7 @@ public OnPlayerDisconnect(playerid, reason)
 							format(string, sizeof(string), "** %s%s %s is out of service **", badge, rank, GetPlayerNameEx(playerid));
 							foreach(new i: Player)
 							{
-								if(PlayerInfo[i][pToggledChats][12] == 0)
+								if(PlayerInfo[i][pToggledChats][CHAT_GROUP_RADIO] == 0)
 								{
 									if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 								}
@@ -2202,7 +2196,7 @@ public OnPlayerDisconnect(playerid, reason)
 							format(string, sizeof(string), "** %s%s %s is no longer available **", badge, rank, GetPlayerNameEx(playerid));
 							foreach(new i: Player)
 							{
-								if(PlayerInfo[i][pToggledChats][12] == 0)
+								if(PlayerInfo[i][pToggledChats][CHAT_GROUP_RADIO] == 0)
 								{
 									if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 								}
@@ -5200,7 +5194,7 @@ public OnPlayerText(playerid, text[])
 				}
 				else
 				{
-				    ChatTrafficProcess(Mobile[playerid], COLOR_YELLOW, string, 7);
+				    ChatTrafficProcess(Mobile[playerid], COLOR_YELLOW, string, CHAT_PHONE);
 				}
 				if(PlayerInfo[playerid][pBugged] != INVALID_GROUP_ID)
 			    {
@@ -5223,7 +5217,7 @@ public OnPlayerText(playerid, text[])
 				}
 				else
 				{
-					ChatTrafficProcess(Mobile[playerid], COLOR_YELLOW, string, 7);
+					ChatTrafficProcess(Mobile[playerid], COLOR_YELLOW, string, CHAT_PHONE);
 				}
 				if(PlayerInfo[playerid][pBugged] != INVALID_GROUP_ID)
 			    {
@@ -5458,7 +5452,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 				/*format(string, sizeof(string), "** HQ: A barricade has been deployed by %s at %s **", GetPlayerNameEx(playerid), Barricades[iGroup][i][sDeployedAt]);
 				foreach(new x: Player)
 				{
-					if(PlayerInfo[x][pToggledChats][12] == 0)
+					if(PlayerInfo[x][pToggledChats][CHAT_GROUP_RADIO] == 0)
 					{
 						if(PlayerInfo[x][pMember] == iGroup) SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
 						if(GetPVarInt(x, "BigEar") == 4 && GetPVarInt(x, "BigEarGroup") == iGroup)

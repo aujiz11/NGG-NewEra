@@ -160,8 +160,8 @@ public AnnounceRespawn(group, const type[], veh, amount) {
 		strunpack(vehicleName, VehicleName[CrateVehicle[veh][cvModel] - 400], sizeof(vehicleName));
 		format(string, sizeof(string), "** Vehicle %s was %s %d crate(s) were destroyed. **", vehicleName, type, amount);
 		foreach(new i: Player) {
-			if(PlayerInfo[i][pMember] == group && GetPVarInt(i, "OOCRadioTogged") == 0) {
-				ChatTrafficProcess(i, arrGroupData[group][g_hOOCColor] * 256 + 255, string, 11);
+			if(PlayerInfo[i][pMember] == group) {
+				ChatTrafficProcess(i, arrGroupData[group][g_hOOCColor] * 256 + 255, string, CHAT_GROUP_OOC);
 			}
 		}
 	}
@@ -578,7 +578,7 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 					format(szMiscArray, sizeof(szMiscArray), "* Your %s tickets have been removed by an administrator.", vehicleName);
 					foreach(new i: Player) {
 						if(PlayerInfo[i][pLeader] == CrateVehicle[carid][cvGroupID]) {
-							ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, 12);
+							ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
 						}
 					}
 					SendClientMessageEx(playerid, COLOR_YELLOW, "You have removed all vehicle tickets on the vehicle.");
@@ -595,7 +595,7 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 					SaveCrateVehicle(carid);
 					foreach(new i: Player) {
 						if(PlayerInfo[i][pLeader] == CrateVehicle[carid][cvGroupID]) {
-							ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, 12);
+							ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
 						}
 					}
 					return CarOptions(playerid);
@@ -621,7 +621,7 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 						format(szMiscArray, sizeof(szMiscArray), "* Your %s has been impounded by an admin you can recover it from your garage. (( /cvstorage ))", vehicleName);
 						foreach(new i: Player) {
 							if(PlayerInfo[i][pLeader] == CrateVehicle[carid][cvGroupID]) {
-								ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, 12);
+								ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
 							}
 						}
 						strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
@@ -639,7 +639,7 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 						format(szMiscArray, sizeof(szMiscArray), "* Your %s has been released by an admin and has been parked at it's location.", vehicleName);
 						foreach(new i: Player) {
 							if(PlayerInfo[i][pLeader] == CrateVehicle[carid][cvGroupID]) {
-								ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, 12);
+								ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
 							}
 						}
 						strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
@@ -670,7 +670,7 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 					format(szMiscArray, sizeof(szMiscArray), "* Your %s has been released from the impound by %s and has been parked at it's location.", vehicleName, GetPlayerNameEx(playerid));
 					foreach(new i: Player) {
 						if(PlayerInfo[i][pLeader] == CrateVehicle[carid][cvGroupID]) {
-							ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, 12);
+							ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
 						}
 					}
 					return CarOptions(playerid);
@@ -696,7 +696,7 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 							format(szMiscArray, sizeof(szMiscArray), "* Your %s has been disabled by an admin you'll be unable to use the vehicle.", vehicleName);
 							foreach(new i: Player) {
 								if(PlayerInfo[i][pLeader] == CrateVehicle[carid][cvGroupID]) {
-									ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, 12);
+									ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
 								}
 							}
 							strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
@@ -719,7 +719,7 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 							format(szMiscArray, sizeof(szMiscArray), "* Your %s has been re-enabled by an admin it has been parked at it's location.", vehicleName);
 							foreach(new i: Player) {
 								if(PlayerInfo[i][pLeader] == CrateVehicle[carid][cvGroupID]) {
-									ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, 12);
+									ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
 								}
 							}
 							strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
@@ -798,7 +798,7 @@ stock DeleteCrateVehicle(playerid, veh) {
 		format(szMiscArray, sizeof(szMiscArray), "* Your %s has been deleted by an administrator.", vehicleName);
 		foreach(new i: Player) {
 			if(PlayerInfo[i][pLeader] == CrateVehicle[veh][cvGroupID]) {
-				ChatTrafficProcess(i, arrGroupData[CrateVehicle[veh][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, 12);
+				ChatTrafficProcess(i, arrGroupData[CrateVehicle[veh][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
 			}
 		}
 		strunpack(vehicleName, VehicleName[CrateVehicle[veh][cvModel] - 400], sizeof(vehicleName));
@@ -930,7 +930,7 @@ CMD:cvedit(playerid, params[]) {
 					format(szMiscArray, sizeof(szMiscArray), "* Your %s has been disabled by an admin you'll be unable to use the vehicle.", vehicleName);
 					foreach(new i: Player) {
 						if(PlayerInfo[i][pLeader] == CrateVehicle[cveh][cvGroupID]) {
-							ChatTrafficProcess(i, arrGroupData[CrateVehicle[cveh][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, 12);
+							ChatTrafficProcess(i, arrGroupData[CrateVehicle[cveh][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
 						}
 					}
 					strunpack(vehicleName, VehicleName[CrateVehicle[cveh][cvModel] - 400], sizeof(vehicleName));

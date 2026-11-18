@@ -257,7 +257,7 @@ public ProgressTimer(id)
 			if(IsValidDynamicPickup(DynPoints[id][poPickupID])) DestroyDynamicPickup(DynPoints[id][poPickupID]);
 			DynPoints[id][poPickupID] = CreateDynamicPickup(1313, 23, DynPoints[id][poPos][0], DynPoints[id][poPos][1], DynPoints[id][poPos][2], .worldid = DynPoints[id][poVW], .interiorid = DynPoints[id][poInt]);
 		   	format(szMiscArray, sizeof(szMiscArray), "%s has attempted to take control of the %s for %s, it will be theirs in 10 minutes.", DynPoints[id][poPName], DynPoints[id][poName], arrGroupData[fam][g_szGroupName]);
-			SendClientMessageToAllEx(COLOR_YELLOW, szMiscArray);
+			foreach(new i: Player) ChatTrafficProcess(i, COLOR_YELLOW, szMiscArray, CHAT_POINTS);
 			UpdateDynamic3DTextLabelText(DynPoints[id][poTextID], COLOR_YELLOW, szMiscArray);
 
 			DynPoints[id][poCapping] = INVALID_PLAYER_ID;
@@ -283,7 +283,8 @@ public CaptureTimer(id)
 		format(szMiscArray, sizeof(szMiscArray), "%s has successfully attempted to take over of %s for %s, it will be theirs in %d minutes!", DynPoints[id][poPName], DynPoints[id][poName], arrGroupData[DynPoints[id][poCapperGroup]][g_szGroupName], DynPoints[id][poTimeLeft]);
 		UpdateDynamic3DTextLabelText(DynPoints[id][poTextID], COLOR_YELLOW, szMiscArray);
 	} else {
-		SendClientMessageToAllEx(COLOR_YELLOW, "%s has successfully taken control of the %s for %s.", DynPoints[id][poPName], DynPoints[id][poName], arrGroupData[DynPoints[id][poCapperGroup]][g_szGroupName]);
+		format(szMiscArray, sizeof(szMiscArray), "%s has successfully taken control of the %s for %s.", DynPoints[id][poPName], DynPoints[id][poName], arrGroupData[DynPoints[id][poCapperGroup]][g_szGroupName]);
+		foreach(new i: Player) ChatTrafficProcess(i, COLOR_YELLOW, szMiscArray, CHAT_POINTS);
 		DynPoints[id][poCaptureGroup] = DynPoints[id][poCapperGroup];
 		DynPoints[id][poCapperGroup] = INVALID_GROUP_ID;
 		strmid(DynPoints[id][poCaptureName], DynPoints[id][poPName], 0, 32, 32);

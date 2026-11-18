@@ -165,10 +165,10 @@ stock SendClientMessageWrap(playerid, color, width, const string[])
 		strmid(secondline, string, 88, 128);
 		format(firstline, sizeof(firstline), "%s...", firstline);
 		format(secondline, sizeof(secondline), "...%s", secondline);
-		ChatTrafficProcess(playerid, color, firstline, 3);
-		ChatTrafficProcess(playerid, color, secondline, 3);
+		SendClientMessageEx(playerid, color, "%s", firstline);
+		SendClientMessageEx(playerid, color, "%s", secondline);
 	}
-	else ChatTrafficProcess(playerid, color, string, 3);
+	else SendClientMessageEx(playerid, color, "%s", string);
 }
 	
 stock ClearChatbox(playerid)
@@ -179,24 +179,20 @@ stock ClearChatbox(playerid)
 	return 1;
 }
 
-stock OOCOff(color,const string[])
+stock OOCOff(color, const string[])
 {
-	foreach(new i: Player)
-	{
-		if(!gOoc[i]) {
-			SendClientMessageEx(i, color, string);
-		}
-	}	
+	foreach(new i: Player) ChatTrafficProcess(i, color, string, CHAT_OOC);
+	return 1;
 }
 
 stock RadioBroadCast(playerid, string[])
 {
 	foreach(new i: Player)
 	{
-		if(PlayerInfo[i][pRadioFreq] == PlayerInfo[playerid][pRadioFreq] && PlayerInfo[i][pRadio] >= 1 && gRadio{i} != 0)
+		if(PlayerInfo[i][pRadioFreq] == PlayerInfo[playerid][pRadioFreq] && PlayerInfo[i][pRadio] >= 1)
 		{
 			format(szMiscArray, sizeof(szMiscArray), "** Radio (%d kHz) ** %s: %s", PlayerInfo[playerid][pRadioFreq], GetPlayerNameEx(playerid), string);
-			ChatTrafficProcess(i, PUBLICRADIO_COLOR, szMiscArray, 5);
+			ChatTrafficProcess(i, PUBLICRADIO_COLOR, szMiscArray, CHAT_PRIVATE_RADIO);
 			format(szMiscArray, sizeof(szMiscArray), "(radio) %s", string);
 			SetPlayerChatBubble(playerid, szMiscArray, COLOR_WHITE, 15.0, 5000);
 		}
@@ -205,17 +201,7 @@ stock RadioBroadCast(playerid, string[])
 
 CMD:togooc(playerid, params[])
 {
-	if (!gOoc[playerid])
-	{
-		gOoc[playerid] = 1;
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You have disabled global OOC chat.");
-	}
-	else
-	{
-		gOoc[playerid] = 0;
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You have enabled global OOC chat.");
-	}
-	return 1;
+	return ToggleAccountSetting(playerid, CHAT_OOC);
 }
 
 CMD:me(playerid, params[])
@@ -254,7 +240,7 @@ CMD:w(playerid, params[])
 	}
 	if (IsPlayerConnected(giveplayerid))
 	{
-		if(HidePM[giveplayerid] > 0 && PlayerInfo[playerid][pAdmin] < 2)
+		if(PlayerInfo[giveplayerid][pToggledChats][CHAT_WHISPERS] != 0 && PlayerInfo[playerid][pAdmin] < 2)
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "That person is blocking whispers!");
 			return 1;
@@ -340,7 +326,7 @@ CMD:ooc(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD2, "   The OOC channel has been disabled by an Admin!");
 		return 1;
 	}
-	if(gOoc[playerid])
+	if(PlayerInfo[playerid][pToggledChats][CHAT_OOC])
 	{
 		SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "   You have disabled OOC Chat, re-enable with /togooc!");
 		return 1;
@@ -438,7 +424,7 @@ CMD:b(playerid, params[])
 	format(string, sizeof(string), "%s: (( %s ))", GetPlayerNameEx(playerid), params);
 	
 	if(PlayerInfo[playerid][pIsolated] != 0) ProxDetector(5.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
-	else ProxDetector(20.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5, 1, 2, 1);
+	else ProxDetector(20.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5, 1, -1, 1);
 
 	foreach(new i: Player)
 	{
@@ -446,7 +432,7 @@ CMD:b(playerid, params[])
 		{
 			new szAntiprivacy[128];
 			format(szAntiprivacy, sizeof(szAntiprivacy), "(BE) %s: %s", GetPlayerNameEx(playerid), params);
-			ChatTrafficProcess(i, COLOR_FADE1, szAntiprivacy, 2);
+			SendClientMessageEx(i, COLOR_FADE1, szAntiprivacy);
 		}
 	}	
 	return 1;
@@ -681,17 +667,17 @@ CMD:setfreq(playerid, params[])
 
 ChatTrafficProcess(playerid, color, const szString[], chattype) {
 
-	if(PlayerInfo[playerid][pToggledChats][chattype] == 0) SendClientMessageEx(playerid, color, szString);
+	if(PlayerInfo[playerid][pToggledChats][chattype] == 0) SendClientMessageEx(playerid, color, "%s", szString);
 	return 1;
 	/*
 	if(PlayerInfo[playerid][pChatbox][chattype] > 0 && PlayerInfo[playerid][pToggledChats][19] == 0) { // if Secondary Chatbox is not active, route all chat to normal chatbox.
 
-		if(chattype == 1) return SendClientMessageEx(playerid, color, szString); // temp bug fix for /news.
-		if(chattype == 16) return SendClientMessageEx(playerid, color, szString); // temp bug fix for /staff.
+		if(chattype == 1) return SendClientMessageEx(playerid, color, "%s", szString); // temp bug fix for /news.
+		if(chattype == 16) return SendClientMessageEx(playerid, color, "%s", szString); // temp bug fix for /staff.
 
 		ChatBoxProcess(playerid, color, szString);
 	}
-	else SendClientMessageEx(playerid, color, szString);
+	else SendClientMessageEx(playerid, color, "%s", szString);
 	return 1;
 	*/
 }

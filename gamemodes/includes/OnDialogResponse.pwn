@@ -11999,7 +11999,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			foreach(new i: Player)
 			{
-				if(!gNews[i] && InsideMainMenu{i} != 1 && ActiveChatbox[i] != 0) SendClientMessage(i, TEAM_GROVE_COLOR, advert);
+				if(PlayerInfo[i][pToggledChats][CHAT_NEWS] == 0 && InsideMainMenu{i} != 1 && ActiveChatbox[i] != 0) SendClientMessage(i, TEAM_GROVE_COLOR, advert);
 			}
 			format(advert, sizeof(advert), "%s -- (SQLID: %d) | Accepted by: %s -- (SQLID: %d)", advert, GetPlayerSQLId(reportid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 			Log("logs/pads.log", advert);

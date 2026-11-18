@@ -76,7 +76,7 @@ Rivalry_Toggle(playerid, bool:bState) {
             PlayerInfo[playerid][pGroupToy][6], PlayerInfo[playerid][pGroupToy][7], PlayerInfo[playerid][pGroupToy][8]);
         SendClientMessageEx(playerid, COLOR_WHITE, "You are now representing your gang (/grouptoy to adjust).");
  
-        //if(PlayerInfo[playerid][pToggledChats][23] == 0) TextDrawShowForPlayer(playerid, TD_RepFam);
+        if(PlayerInfo[playerid][pToggledChats][CHAT_REPFAM_HUD] == 0) TextDrawShowForPlayer(playerid, TD_RepFam);
     }
     else {
         DestroyDynamic3DTextLabel(Text3D:GetPVarInt(playerid, "RepFam_TL"));

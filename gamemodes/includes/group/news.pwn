@@ -51,26 +51,14 @@ stock OOCNews(color, const string[])
 {
 	foreach(new i: Player) {
 		
-		ChatTrafficProcess(i, color, string, 1);
+		ChatTrafficProcess(i, color, string, CHAT_NEWS);
 	}	
 }
 
 
 CMD:tognews(playerid, params[])
 {
-	if (!gNews[playerid])
-	{
-		gNews[playerid] = 1;
-		PlayerInfo[playerid][pToggledChats][1] = 1;
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You have disabled news chat.");
-	}
-	else
-	{
-		gNews[playerid] = 0;
-		PlayerInfo[playerid][pToggledChats][1] = 0;
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You have enabled news chat.");
-	}
-	return 1;
+	return ToggleAccountSetting(playerid, CHAT_NEWS);
 }
 
 CMD:liveban(playerid, params[])

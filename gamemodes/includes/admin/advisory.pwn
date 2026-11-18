@@ -73,9 +73,9 @@ stock SendAdvisorMessage(color, const string[])
 {
 	foreach(new i: Player)
 	{
-		if((PlayerInfo[i][pAdmin] >= 1 || PlayerInfo[i][pHelper] >= 2 || PlayerInfo[i][pVIPMod] || PlayerInfo[i][pWatchdog] >= 1) && advisorchat[i])
+		if(PlayerInfo[i][pAdmin] >= 1 || PlayerInfo[i][pHelper] >= 2 || PlayerInfo[i][pVIPMod] || PlayerInfo[i][pWatchdog] >= 1)
 		{
-			ChatTrafficProcess(i, color, string, 15);
+			ChatTrafficProcess(i, color, string, CHAT_STAFF);
 		}
 	}
 }
@@ -263,18 +263,18 @@ CMD:checkrequestcount(playerid, params[])
 
 					foreach(new n: Player)
 					{
-						if(PlayerInfo[n][pToggledChats][0] == 0)
+						if(PlayerInfo[n][pToggledChats][CHAT_NEWBIE] == 0)
 						{
 							format(string, sizeof(string), "* %s has been banned from the helper channel by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 							SendClientMessageEx(n, COLOR_JOINHELPERCHAT, string);
 						}
 					}
-					if(PlayerInfo[playerid][pToggledChats][0] != 0)
+					if(PlayerInfo[playerid][pToggledChats][CHAT_NEWBIE] != 0)
 					{
 						format(string, sizeof(string), "* %s has been banned from the helper channel by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 						SendClientMessageEx(playerid, COLOR_JOINHELPERCHAT, string);
 					}
-                    PlayerInfo[giveplayerid][pToggledChats][0] = 1;
+                    PlayerInfo[giveplayerid][pToggledChats][CHAT_NEWBIE] = 1;
 
 					format(string, sizeof(string), "You have been banned from helper channel by %s.", GetPlayerNameEx(playerid));
 					SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
@@ -287,13 +287,13 @@ CMD:checkrequestcount(playerid, params[])
 
 					foreach(new n: Player)
 					{
-						if (PlayerInfo[n][pToggledChats][0] == 0)
+						if (PlayerInfo[n][pToggledChats][CHAT_NEWBIE] == 0)
 						{
 							format(string, sizeof(string), "* %s has been unbanned from the helper channel by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 							SendClientMessageEx(n, COLOR_JOINHELPERCHAT, string);
 						}
 					}
-					if(PlayerInfo[playerid][pToggledChats][0] != 0)
+					if(PlayerInfo[playerid][pToggledChats][CHAT_NEWBIE] != 0)
 					{
 						format(string, sizeof(string), "* %s has been unbanned from the helper channel by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 						SendClientMessageEx(playerid, COLOR_JOINHELPERCHAT, string);
@@ -321,7 +321,7 @@ CMD:hl(playerid, params[])
 	if(PlayerInfo[playerid][pTut] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do that at this time.");
 	if((nonewbie) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "The newbie chat channel has been disabled by an administrator!");
 	if(PlayerInfo[playerid][pNMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are muted from the newbie chat channel.");
-	if(PlayerInfo[playerid][pToggledChats][0]) return SendClientMessageEx(playerid, COLOR_GREY, "You have the channel toggled, /tog newbie to re-enable!");
+	if(PlayerInfo[playerid][pToggledChats][CHAT_NEWBIE]) return SendClientMessageEx(playerid, COLOR_GREY, "You have the channel toggled, /tog newbie to re-enable!");
 
 	new string[128];
 	if(gettime() < NewbieTimer[playerid])
@@ -375,14 +375,14 @@ CMD:hl(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2) format(string, sizeof(string), "** %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
 	foreach(new n: Player)
 	{
-		ChatTrafficProcess(n, COLOR_HELPERCHAT, string, 0);
+		ChatTrafficProcess(n, COLOR_HELPERCHAT, string, CHAT_NEWBIE);
 	}
 	return 1;
 }
 
 CMD:joinhelp(playerid, params[])
 {
-	if(PlayerInfo[playerid][pToggledChats][0] == 0)
+	if(PlayerInfo[playerid][pToggledChats][CHAT_NEWBIE] == 0)
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "You are already in the helper channel!");
 		return 1;
@@ -401,27 +401,27 @@ CMD:joinhelp(playerid, params[])
 
 	foreach(new n : Player)
 	{
-		if(PlayerInfo[n][pToggledChats][0] == 0)
+		if(PlayerInfo[n][pToggledChats][CHAT_NEWBIE] == 0)
 		{
 			format(szMiscArray, sizeof(szMiscArray), "* %s has joined the helper channel.", GetPlayerNameEx(playerid));
 			SendClientMessageEx(n, COLOR_JOINHELPERCHAT, szMiscArray);
 		}
 	}
-	PlayerInfo[playerid][pToggledChats][0] = 0;
+	PlayerInfo[playerid][pToggledChats][CHAT_NEWBIE] = 0;
 	return 1;
 }
 
 CMD:leavehelp(playerid, params[])
 {
-	if(PlayerInfo[playerid][pToggledChats][0] == 1)
+	if(PlayerInfo[playerid][pToggledChats][CHAT_NEWBIE] == 1)
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "You are not in the helper channel!");
 		return 1;
 	}
 
 	format(szMiscArray, sizeof(szMiscArray), "* %s has left the helper channel.", GetPlayerNameEx(playerid));
-	foreach(new n: Player) ChatTrafficProcess(n, COLOR_JOINHELPERCHAT, szMiscArray, 0);
-	PlayerInfo[playerid][pToggledChats][0] = 1;
+	foreach(new n: Player) ChatTrafficProcess(n, COLOR_JOINHELPERCHAT, szMiscArray, CHAT_NEWBIE);
+	PlayerInfo[playerid][pToggledChats][CHAT_NEWBIE] = 1;
 	return 1;
 }
 
@@ -431,18 +431,18 @@ CMD:hlkick(playerid, params[])
 		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hlkick [player]");
 		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-		if(PlayerInfo[giveplayerid][pToggledChats][0] == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "That person is not in the helper channel!");
+		if(PlayerInfo[giveplayerid][pToggledChats][CHAT_NEWBIE] == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "That person is not in the helper channel!");
 		if(PlayerInfo[giveplayerid][pHelper] >= 1 || PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GREY, "You can not kick admins/advisors from the helper channel!");
 		new string[128];
 		HlKickTimer[giveplayerid] = gettime()+120;
 		format(string, sizeof(string), "* %s has been kicked from the helper channel by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 		foreach(new n: Player)
 		{
-			if(PlayerInfo[playerid][pToggledChats][0] == 0) {
+			if(PlayerInfo[playerid][pToggledChats][CHAT_NEWBIE] == 0) {
 				SendClientMessageEx(n, COLOR_JOINHELPERCHAT, string);
 			}
 		}
-		PlayerInfo[giveplayerid][pToggledChats][0] = 1;
+		PlayerInfo[giveplayerid][pToggledChats][CHAT_NEWBIE] = 1;
 	}
 	else {
 		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
@@ -970,26 +970,14 @@ CMD:finishhelp(playerid, params[])
 
 CMD:togca(playerid, params[])
 {
-	if(PlayerInfo[playerid][pHelper] < 2 && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
-	if(GetPVarInt(playerid, "CAChat") == 1)
-	{
-		PlayerInfo[playerid][pToggledChats][16] = 1;
-		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled Advisor chat.");
-		return SetPVarInt(playerid, "CAChat", 0);
-	}
-	else
-	{
-		PlayerInfo[playerid][pToggledChats][16] = 0;
-		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have enabled Advisor chat.");
-		return SetPVarInt(playerid, "CAChat", 1);
-	}
+	return ToggleAccountSetting(playerid, CHAT_ADVISOR);
 }
 
 CMD:ca(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(PlayerInfo[playerid][pHelper] < 1 && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
-	if(PlayerInfo[playerid][pToggledChats][16] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You have Advisor chat disabled - /tog advisor or /settings to enable it.");
+	if(PlayerInfo[playerid][pToggledChats][CHAT_ADVISOR] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You have Advisor chat disabled - /tog advisor or /settings to enable it.");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ca [text]");
 	if(strlen(params) >= 128)  return SendClientMessageEx(playerid, COLOR_GREY, "Your input was too long. ");
 	szMiscArray[0] = 0;
@@ -997,9 +985,9 @@ CMD:ca(playerid, params[])
 	format(szMiscArray, sizeof(szMiscArray), "- %s %s: %s", GetStaffRank(playerid), GetPlayerNameEx(playerid), params);
 	foreach(new i : Player)
 	{
-		if((PlayerInfo[i][pHelper] >= 1 || PlayerInfo[i][pAdmin] >= 2) && !PlayerInfo[playerid][pToggledChats][16])
+		if((PlayerInfo[i][pHelper] >= 1 || PlayerInfo[i][pAdmin] >= 2))
 		{
-			ChatTrafficProcess(i, 0x5288f3FF, szMiscArray, 16);
+			ChatTrafficProcess(i, 0x5288f3FF, szMiscArray, CHAT_ADVISOR);
 		}
 	}
 	return 1;

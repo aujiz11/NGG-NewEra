@@ -729,13 +729,11 @@ public SAN_PInit(playerid, choice)
 forward TVNews(color, string[], channel);
 public TVNews(color, string[], channel)
 {
-	foreach(new i : Player)
+	if(SANShows[channel][ChannelActive] != 1) return 1;
+	foreach(new i: Player)
 	{
-		if(!gNews[i])
-		{
-			if(SANShows[channel][ChannelActive] == 1 && SANShows[channel][Global] == 0) return SendClientMessage(i, color, szMiscArray);
-			if((SANShows[channel][ChannelActive] == 1 && SANShows[channel][Global] == 1 && GetPVarInt(i, "ChannelID") == channel)) return SendClientMessage(i, color, szMiscArray);
-		}
+		if(PlayerInfo[i][pToggledChats][CHAT_NEWS] == 0 && (SANShows[channel][Global] == 0 || GetPVarInt(i, "ChannelID") == channel))
+			SendClientMessageEx(i, color, "%s", string);
 	}
 	return 1;
 }
@@ -2239,19 +2237,7 @@ CMD:editshow(playerid, params[])
 
 CMD:togshow(playerid, params[])
 {
-	if (!gNews[playerid])
-	{
-		gNews[playerid] = 1;
-		PlayerInfo[playerid][pToggledChats][1] = 1;
-		SendClientMessage(playerid, COLOR_GRAD2, "You have disabled the TV chat.");
-	}
-	else
-	{
-		gNews[playerid] = 0;
-		PlayerInfo[playerid][pToggledChats][1] = 0;
-		SendClientMessage(playerid, COLOR_GRAD2, "You have enabled the TV chat.");
-	}
-	return 1;
+	return ToggleAccountSetting(playerid, CHAT_NEWS);
 }
 
 CMD:listcameras(playerid, params[])

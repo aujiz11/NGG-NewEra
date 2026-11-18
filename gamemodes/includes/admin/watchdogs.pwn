@@ -353,7 +353,7 @@ CMD:watchdogs(playerid, params[])
 				else if(PlayerInfo[i][pWatchdog] == 3) format(string, sizeof(string), "RP Specialist %s (ID %i)", GetPlayerNameEx(i), i);
 				else if(PlayerInfo[i][pWatchdog] == 4) format(string, sizeof(string), "Director of RP Improvement %s (ID %i)", GetPlayerNameEx(i), i);
 				if((i == playerid || PlayerInfo[playerid][pWatchdog] >= 3) && PlayerInfo[i][pAdmin] < 2) format(string, sizeof(string), "%s (This Hour: %d | Today: %d)", string, WDReportHourCount[i], WDReportCount[i]);
-				if(PlayerInfo[playerid][pToggledChats][17]) strcat(string, " (WD Chat Toggled)");
+				if(PlayerInfo[playerid][pToggledChats][CHAT_WATCHDOG]) strcat(string, " (WD Chat Toggled)");
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
@@ -364,26 +364,15 @@ CMD:watchdogs(playerid, params[])
 
 CMD:togwd(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pWatchdog] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
-	if(PlayerInfo[playerid][pToggledChats][17])
-	{
-		PlayerInfo[playerid][pToggledChats][17] = 0;
-		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have enabled the watchdog chat.");
-	}
-	else
-	{
-		PlayerInfo[playerid][pToggledChats][17] = 1;
-		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled the watchdog chat.");
-	}
-	return 1;
+	return ToggleAccountSetting(playerid, CHAT_WATCHDOG);
 }
 		
 CMD:wd(playerid, params[]) 
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 1) 
 	{
-		if(PlayerInfo[playerid][pWatchdog] < 3) PlayerInfo[playerid][pToggledChats][17] = 0;
-		if(PlayerInfo[playerid][pToggledChats][17]) return SendClientMessageEx(playerid, COLOR_GREY, "You have watchdog chat disabled - /togwd to enable it.");
+		if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pWatchdog] < 3) PlayerInfo[playerid][pToggledChats][CHAT_WATCHDOG] = 0;
+		if(PlayerInfo[playerid][pToggledChats][CHAT_WATCHDOG]) return SendClientMessageEx(playerid, COLOR_GREY, "You have watchdog chat disabled - /togwd to enable it.");
 		if(!isnull(params)) 
 		{
 			szMiscArray[0] = 0;
@@ -401,9 +390,9 @@ CMD:wd(playerid, params[])
 
 			foreach(new i : Player)
 			{
-				if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 1) && PlayerInfo[playerid][pToggledChats][17] == 0)
+				if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 1) && PlayerInfo[playerid][pToggledChats][CHAT_WATCHDOG] == 0)
 				{
-					ChatTrafficProcess(i, 0x2267F0FF, szMiscArray, 17);
+					ChatTrafficProcess(i, 0x2267F0FF, szMiscArray, CHAT_WATCHDOG);
 				}
 			}
 		}

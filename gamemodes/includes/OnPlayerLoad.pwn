@@ -612,11 +612,11 @@ public OnPlayerLoad(playerid)
 	}	
 	if (PlayerInfo[playerid][pLevel] < 6 || PlayerInfo[playerid][pHelper] > 0)
 	{
-		PlayerInfo[playerid][pToggledChats][0] = 0;
+		PlayerInfo[playerid][pToggledChats][CHAT_NEWBIE] = 0;
 	}
 	if (PlayerInfo[playerid][pHelper] == 1)
 	{
-		PlayerInfo[playerid][pToggledChats][0] = 0;
+		PlayerInfo[playerid][pToggledChats][CHAT_NEWBIE] = 0;
 	}
 	if(PlayerInfo[playerid][pAdmin] != 0 && PlayerInfo[playerid][pAdmin] != 1 && PlayerInfo[playerid][pAdmin] != 2 && PlayerInfo[playerid][pAdmin] != 3 && PlayerInfo[playerid][pAdmin] != 4 &&PlayerInfo[playerid][pAdmin] != 1337 && PlayerInfo[playerid][pAdmin] != 1338 && PlayerInfo[playerid][pAdmin] != 99999)
 	{
@@ -682,7 +682,7 @@ public OnPlayerLoad(playerid)
 				format(string, sizeof(string), "** %s%s %s is in service **", badge, rank, GetPlayerNameEx(playerid));
 				foreach(new i: Player) 
 				{
-					if(PlayerInfo[i][pToggledChats][12] == 0)
+					if(PlayerInfo[i][pToggledChats][CHAT_GROUP_RADIO] == 0)
 					{
 						if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 					}
@@ -698,7 +698,7 @@ public OnPlayerLoad(playerid)
 				format(string, sizeof(string), "** %s%s %s is now available **", badge, rank, GetPlayerNameEx(playerid));
 				foreach(new i: Player) 
 				{
-					if(PlayerInfo[i][pToggledChats][12] == 0)
+					if(PlayerInfo[i][pToggledChats][CHAT_GROUP_RADIO] == 0)
 					{
 						if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 					}
@@ -784,7 +784,6 @@ public OnPlayerLoad(playerid)
 		SendClientMessageEx(playerid, TEAM_AZTECAS_COLOR, CAMOTD);
 		if(PlayerInfo[playerid][pHelper] >= 2) {
 			SetPVarInt(playerid, "AdvisorDuty", 1);
-			SetPVarInt(playerid, "CAChat", 1);
 			++Advisors;
 		}
 	}
@@ -1033,7 +1032,7 @@ public OnPlayerLoad(playerid)
 	
 	if(PlayerInfo[playerid][pWatchdog] >= 1)
 	{
-		PlayerInfo[playerid][pToggledChats][17] = 0;
+		PlayerInfo[playerid][pToggledChats][CHAT_WATCHDOG] = 0;
 	}
 	if(PlayerInfo[playerid][pVIPMod])
 	{
@@ -1104,7 +1103,7 @@ public OnPlayerLoad(playerid)
 	}
 	//if(PlayerInfo[playerid][pChatbox][19] == 0) PlayerTextDrawShow(playerid, TD_ChatBox[0]);
 
-	if(PlayerInfo[playerid][pToggledChats][7]) PhoneOnline[playerid] = 1;
+	if(PlayerInfo[playerid][pToggledChats][CHAT_PHONE]) PhoneOnline[playerid] = 1;
 
 	if(PlayerInfo[playerid][pTut] == -1 && PlayerInfo[playerid][pNation] != 0 && PlayerInfo[playerid][pNation] != 1) return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_NATION, DIALOG_STYLE_LIST, "You currently do not have a nation. Please chose one.", "San Andreas\nNew Robada", "Select", "<<");
 	return 1;

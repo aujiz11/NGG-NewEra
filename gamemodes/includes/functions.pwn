@@ -1306,9 +1306,9 @@ stock SendBugMessage(playerid, member, const string[])
 	foreach(new i: Player)
 	{
 		iGroupID = PlayerInfo[i][pMember];
-		if(iGroupID == member && PlayerInfo[i][pRank] >= arrGroupData[iGroupID][g_iBugAccess] && gBug{i} == 1)	{
+		if(iGroupID == member && PlayerInfo[i][pRank] >= arrGroupData[iGroupID][g_iBugAccess])	{
 
-			if(playerid != i) ChatTrafficProcess(i, COLOR_LIGHTGREEN, string, 13);				
+			if(playerid != i) ChatTrafficProcess(i, COLOR_LIGHTGREEN, string, CHAT_BUG);
 		}
 	}	
 	return 1;

@@ -141,7 +141,8 @@ NationSel_HandleNationSelection(playerid)
 		TextDrawHideForPlayer(playerid,txtTierraRobada);
 		RegistrationStep[playerid] = 0;
 	    PlayerInfo[playerid][pTut] = 1;
-		gOoc[playerid] = 0; gNews[playerid] = 0;
+		PlayerInfo[playerid][pToggledChats][CHAT_OOC] = 0;
+		PlayerInfo[playerid][pToggledChats][CHAT_NEWS] = 0;
 		TogglePlayerControllable(playerid, 1);
 		SetCamBack(playerid);
 		DeletePVar(playerid, "MedicBill");
