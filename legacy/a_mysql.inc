@@ -1,5 +1,5 @@
 /**
- * MySQL plugin R41-4
+ * MySQL plugin @MYSQL_PLUGIN_VERSION@
  */
 
 

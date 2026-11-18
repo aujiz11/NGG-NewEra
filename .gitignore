@@ -1,28 +1,26 @@
-# Compiled sources
 *.amx
+*.lst
+*.asm
 
-# Local compiler output and diagnostics
 /build/
+/plugins/
+/components/
 
-# Compressed sources
+*.exe
+*.dll
+*.so
 *.zip
 *.rar
 
-# Temporary
 *.log
 log.txt
-logs/
 scriptfiles/logs.db
 scriptfiles/logs.db-journal
+/logs/
 
-# open.mp files
 omp-server.exe
 omp-server.pdb
 
-/qawno/
-!qawno/include
-
-/components/
-!components/sscanf.dll
-!components/pawncmd.dll
-!components/discord-connector.dll
+/dependencies/
+pawn.lock
+sampctl_build_file.inc

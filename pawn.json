@@ -1,0 +1,88 @@
+{
+  "user": "aujiz11",
+  "repo": "NGG-NewEra",
+  "preset": "openmp",
+  "entry": "gamemodes/NGRP.pwn",
+  "output": "gamemodes/NGRP.amx",
+  "dependencies": [
+    "openmultiplayer/omp-stdlib@master",
+    "pawn-lang/samp-stdlib@open.mp",
+    "pawn-lang/pawn-stdlib@open.mp",
+    "samp-incognito/samp-streamer-plugin:v2.9.6",
+    "Sreyas-Sreelal/samp-bcrypt:0.4.1",
+    "AmyrAhmady/samp-plugin-crashdetect:v4.22",
+    "plugin://samp-incognito/samp-gvar-plugin:v1.3",
+    "plugin://pBlueG/SA-MP-MySQL:R41-4",
+    "component://Y-Less/sscanf:v2.13.8",
+    "component://katursis/Pawn.CMD:3.4.0-omp",
+    "component://aujiz11/samp-discord-connector:v0.3.6-pre"
+  ],
+  "local": true,
+  "runtime": {
+    "version": "openmp",
+    "hostname": "We love Open Multiplayer!",
+    "maxplayers": 500,
+    "language": "English",
+    "plugins": [
+      "crashdetect",
+      "gvar",
+      "mysql",
+      "streamer",
+      "samp_bcrypt"
+    ],
+    "gamemodes": [
+      "NGRP"
+    ],
+    "game": {
+      "map": "San Andreas",
+      "mode": "NG:RP",
+      "nametag_draw_radius": 40.0,
+      "player_marker_mode": 2,
+      "use_entry_exit_markers": false,
+      "use_manual_engine_and_lights": true,
+      "use_player_ped_anims": true,
+      "use_stunt_bonuses": false
+    },
+    "network": {
+      "acks_limit": 12000,
+      "use_omp_encryption": true
+    },
+    "discord": {
+      "bot_token": "",
+      "intents": 131071
+    },
+    "pawn": {
+      "side_scripts": [
+        "filterscripts/yom_buttons",
+        "filterscripts/Mapping/FurnitureSystem",
+        "filterscripts/Mapping/Gang",
+        "filterscripts/Mapping/PlayerExteriors",
+        "filterscripts/Mapping/PlayerInteriors",
+        "filterscripts/Mapping/Server"
+      ]
+    },
+    "rcon_password": "ok@"
+  },
+  "builds": [
+    {
+      "name": "main",
+      "args": [
+        "-Z-",
+        "-;+",
+        "-(+",
+        "-d3"
+      ],
+      "includes": [
+        "legacy/YSI-Includes",
+        "legacy",
+        "gamemodes"
+      ],
+      "compiler": {
+        "site": "github.com",
+        "user": "openmultiplayer",
+        "repo": "compiler",
+        "version": "3.10.11"
+      }
+    }
+  ]
+}
