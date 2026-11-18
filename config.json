@@ -1,0 +1,73 @@
+{
+  "announce": false,
+  "discord": {
+    "bot_token": "",
+    "intents": 131071
+  },
+  "enable_query": false,
+  "game": {
+    "allow_interior_weapons": true,
+    "map": "San Andreas",
+    "mode": "NG:RP",
+    "nametag_draw_radius": 40,
+    "player_marker_mode": 2,
+    "use_entry_exit_markers": false,
+    "use_manual_engine_and_lights": true,
+    "use_nametag_los": true,
+    "use_nametags": true,
+    "use_player_ped_anims": true,
+    "use_stunt_bonuses": false,
+    "validate_animations": true
+  },
+  "language": "English",
+  "logging": {
+    "enable": true,
+    "log_chat": true,
+    "log_connection_messages": true,
+    "log_deaths": true,
+    "use_prefix": true,
+    "use_timestamp": true
+  },
+  "max_players": 500,
+  "name": "We love Open Multiplayer!",
+  "network": {
+    "acks_limit": 12000,
+    "allow_037_clients": true,
+    "port": 7777,
+    "use_omp_encryption": true
+  },
+  "pawn": {
+    "components": [
+      "sscanf",
+      "pawncmd",
+      "discord-connector"
+    ],
+    "legacy_plugins": [
+      "crashdetect",
+      "gvar",
+      "mysql",
+      "streamer",
+      "samp_bcrypt",
+      "streamer",
+      "samp_bcrypt",
+      "crashdetect",
+      "gvar",
+      "mysql"
+    ],
+    "main_scripts": [
+      "NGRP"
+    ],
+    "side_scripts": [
+      "filterscripts/yom_buttons",
+      "filterscripts/Mapping/FurnitureSystem",
+      "filterscripts/Mapping/Gang",
+      "filterscripts/Mapping/PlayerExteriors",
+      "filterscripts/Mapping/PlayerInteriors",
+      "filterscripts/Mapping/Server"
+    ]
+  },
+  "rcon": {
+    "password": "ok@"
+  },
+  "use_dyn_ticks": true
+}
