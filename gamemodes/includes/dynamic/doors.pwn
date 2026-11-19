@@ -72,7 +72,7 @@ stock Float:GetPlayerDynamicDoorDistance(playerid, doorid)
 	return distance;
 }
 
-stock bool:CalculateDoorMoveFine(playerid, percent, minimum, &fine)
+stock bool:CalculatePropertyMoveFine(playerid, percent, minimum, &fine)
 {
 	fine = 0;
 	if(!(0 <= percent <= 100) || minimum < 0) return false;
@@ -1087,7 +1087,7 @@ CMD:ddmove(playerid, params[])
 	if(GetPVarInt(target, "FurniturePurchaseUncertain"))
 		return SendClientMessageEx(playerid, COLOR_GREY, "That player's account is awaiting a furniture purchase result.");
 	
-	if(!CalculateDoorMoveFine(target, percent, minimum, fine))
+	if(!CalculatePropertyMoveFine(target, percent, minimum, fine))
 		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid fee or the calculated fine exceeds the supported money range.");
 	
 	if(!strcmp(choice, "interior", true))

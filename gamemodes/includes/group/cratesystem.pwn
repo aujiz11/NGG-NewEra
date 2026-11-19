@@ -1418,6 +1418,7 @@ CMD:cfedit(playerid, params[]) {
 			for(new g = 0; g < MAX_GATES; g++) {
 				if(GateInfo[g][gFacility] == id) {
 					GateInfo[g][gFacility] = -1;
+					CreateGate(g);
 					SaveGate(g);
 				}
 			}
@@ -1928,18 +1929,14 @@ Dialog:cgun_take(playerid, response, listitem, inputtext[]) {
 	return 1;
 }
 
-// Ignore gate status incase someone is opening a gate at the time of the gate timer.
-stock TriggerGates(fac, status = 1) {
-	for(new g = 0; g < MAX_GATES; g++) {
-		if(GateInfo[g][gFacility] == fac) {
-			if(status) {
-				MoveDynamicObject(GateInfo[g][gGATE], GateInfo[g][gPosXM], GateInfo[g][gPosYM], GateInfo[g][gPosZM], GateInfo[g][gSpeed], GateInfo[g][gRotXM], GateInfo[g][gRotYM], GateInfo[g][gRotZM]);
-				GateInfo[g][gStatus] = 1;
-			} else {
-				MoveDynamicObject(GateInfo[g][gGATE], GateInfo[g][gPosX], GateInfo[g][gPosY], GateInfo[g][gPosZ], GateInfo[g][gSpeed], GateInfo[g][gRotX], GateInfo[g][gRotY], GateInfo[g][gRotZ]);
-				GateInfo[g][gStatus] = 0;
-			}
-		}
+stock TriggerGates(fac, status = 1)
+{
+	if(!(0 <= fac < MAX_CRATE_FACILITY)) return 0;
+	foreach(new gateid : ActiveGates)
+	{
+		if(GateInfo[gateid][gFacility] != fac) continue;
+		if(GateEditor[gateid]) CreateGate(gateid);
+		SetGateOpen(gateid, status != 0, true);
 	}
 	return 1;
 }

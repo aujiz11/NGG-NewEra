@@ -1,3 +1,5 @@
+forward bool:IsGateActive(gateid);
+
 /* 	The streamer is using a new version of sampGDK which conflicts with YSI's hooks library.
 	Therefore, all of it is routed to a regular callback until a resolution is found.
 */
@@ -202,53 +204,54 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 	}
 	
 	// Gates
-	if(response == EDIT_RESPONSE_FINAL)
+	if(GetPVarType(playerid, "gEdit"))
 	{
-		szMiscArray[0] = 0;
-		if(GetPVarInt(playerid, "gEdit") == 1)
+		new gateid = GetPVarInt(playerid, "EditingGateID"), mode = GetPVarInt(playerid, "gEdit");
+		if(!IsGateActive(gateid) || GateEditor[gateid] != playerid + 1 || GetPVarInt(playerid, "GateEditRevision") != GateRevision[gateid])
 		{
-			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
-			new gateid = GetPVarInt(playerid, "EditingGateID");
-			GateInfo[gateid][gPosX] = x;
-			GateInfo[gateid][gPosY] = y;
-			GateInfo[gateid][gPosZ] = z;
-			GateInfo[gateid][gRotX] = rx;
-			GateInfo[gateid][gRotY] = ry;
-			GateInfo[gateid][gRotZ] = rz;
-			CreateGate(gateid);
-			SaveGate(gateid);
-			format(szMiscArray, sizeof(szMiscArray), "You have finished editing the open position of Gate ID: %d", gateid);
-			SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
-			DeletePVar(playerid, "gEdit");
-			DeletePVar(playerid, "EditingGateID");
+			ClearGateEditor(playerid);
+			return 1;
 		}
-		if(GetPVarInt(playerid, "gEdit") == 2)
+		
+		if(objectid != GateInfo[gateid][gGATE]) return 1;
+		if(response != EDIT_RESPONSE_FINAL && response != EDIT_RESPONSE_CANCEL) return 1;
+		ClearGateEditor(playerid);
+		if(response == EDIT_RESPONSE_CANCEL)
 		{
-			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
-			new gateid = GetPVarInt(playerid, "EditingGateID");
+			CreateGate(gateid);
+			return SendClientMessageEx(playerid, COLOR_WHITE, "Gate editing cancelled.");
+		}
+		if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1)
+		{
+			CreateGate(gateid);
+			return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action.");
+		}
+		if(!(-20000.0 <= x <= 20000.0) || !(-20000.0 <= y <= 20000.0) || !(-20000.0 <= z <= 20000.0))
+		{
+			CreateGate(gateid);
+			return SendClientMessageEx(playerid, COLOR_GREY, "Gate coordinates must be between -20000 and 20000.");
+		}
+		if(mode == 1)
+		{
 			GateInfo[gateid][gPosXM] = x;
 			GateInfo[gateid][gPosYM] = y;
 			GateInfo[gateid][gPosZM] = z;
 			GateInfo[gateid][gRotXM] = rx;
 			GateInfo[gateid][gRotYM] = ry;
 			GateInfo[gateid][gRotZM] = rz;
-			CreateGate(gateid);
-			SaveGate(gateid);
-			format(szMiscArray, sizeof(szMiscArray), "You have finished editing the closed position of Gate ID: %d", gateid);
-			SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
-			DeletePVar(playerid, "gEdit");
-			DeletePVar(playerid, "EditingGateID");
 		}
-	}
-	if(response == EDIT_RESPONSE_CANCEL)
-	{
-		if(GetPVarType(playerid, "gEdit") == 1)
+		else
 		{
-			CreateGate(GetPVarInt(playerid, "EditingGateID"));
-			DeletePVar(playerid, "gEdit");
-			DeletePVar(playerid, "EditingGateID");
-			SendClientMessage(playerid, COLOR_WHITE, "You have stopped yourself from editing the gate.");
+			GateInfo[gateid][gPosX] = x;
+			GateInfo[gateid][gPosY] = y;
+			GateInfo[gateid][gPosZ] = z;
+			GateInfo[gateid][gRotX] = rx;
+			GateInfo[gateid][gRotY] = ry;
+			GateInfo[gateid][gRotZ] = rz;
 		}
+		CreateGate(gateid);
+		SaveGate(gateid);
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Updated gate %d's %s position.", gateid, mode == 1 ? ("open") : ("closed"));
 	}
 	if(GetPVarType(playerid, PVAR_EMETDET))
 	{
