@@ -23,6 +23,7 @@
     "hostname": "We love Open Multiplayer!",
     "maxplayers": 500,
     "language": "English",
+    "query": true,
     "gamemodes": [
       "NGRP"
     ],
