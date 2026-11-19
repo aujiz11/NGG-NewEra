@@ -959,9 +959,7 @@ Phone_Music(iPlayerID)
 
 Phone_Map(iPlayerID)
 {
-	
-	DisablePlayerCheckpoint(iPlayerID);
-	pc_cmd_mygps(iPlayerID, "");
+	return pc_cmd_mygps(iPlayerID, "");
 }
 
 Phone_SAN(iPlayerID)

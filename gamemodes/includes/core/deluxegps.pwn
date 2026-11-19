@@ -61,6 +61,7 @@
 #define 	CHECKPOINT_HOUSE			4504
 
 #define		MAX_GPSFAV					(5)
+#define		MAP_BUSINESS_PAGE_SIZE 		(20)
 
 /*
 enum gpsFavs
@@ -177,9 +178,23 @@ new gpsZoneName[50][] = {
 	"Pershing Square Apartments"
 };
 
+new const MapBusinessTypes[] = {
+	BUSINESS_TYPE_STORE, 
+	BUSINESS_TYPE_CLOTHING, 
+	BUSINESS_TYPE_RESTAURANT, 
+	BUSINESS_TYPE_BAR,
+	BUSINESS_TYPE_GUNSHOP, 
+	BUSINESS_TYPE_GASSTATION, 
+	BUSINESS_TYPE_NEWCARDEALERSHIP, 
+	BUSINESS_TYPE_CLUB
+};
+
+new const MapLocationStarts[] = {0, 9, 14, 19, 24, 33, sizeof(gpsZones)};
+
 GetEntity3DZone(entityID, type, zone[], len, Float:x2 = 0.0, Float:y2 = 0.0, Float:z2 = 0.0) //Credits to Cueball, Betamaster, Mabako, and Simon.
 {
 	new Float:x, Float:y, Float:z;
+	format(zone, len, "Unknown");
 	switch(type) {
 		case 0: {
 			x = Businesses[entityID][bExtPos][0];
@@ -229,21 +244,97 @@ CMD:gpsfaves(playerid,params[])
 }
 */
 
-CMD:map(playerid, params[]) {
-
-	Phone_Map(playerid);
-	return 1;
+CMD:map(playerid, params[])
+{
+	return Phone_Map(playerid);
 }
 
-CMD:mygps(playerid, const params[]) {
-	if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
-	ShowPlayerDialogEx(playerid, DIALOG_GPS_ONE, DIALOG_STYLE_LIST, "Doodle Maps | Main Menu", "Businesses\n\
-		Jobs\n\
-		General Locations\n\
-		Business Address\n\
-		House Address\n\
-		Door Address\n", "Okay", "Cancel");
-	
+CMD:mygps(playerid, const params[])
+{
+	if(CheckPointCheck(playerid) || IsPlayerCheckpointActive(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please clear your current checkpoint before using the map.");
+	return ShowPlayerDialogEx(playerid, DIALOG_GPS_ONE, DIALOG_STYLE_TABLIST_HEADERS, "Doodle Maps | Destinations",
+		"Category\tFind a destination\nBusinesses\tShops and services\nJobs\tNearest recruitment points\nGeneral Locations\tLandmarks and public services\nBusiness Address\tSearch by business ID\nHouse Address\tSearch by house ID\nDoor Address\tSearch by door ID", "Open", "Close");
+}
+
+Map_ShowBusinessTypes(playerid)
+{
+	return ShowPlayerDialogEx(playerid, DIALOG_MAP_BUSINESSES, DIALOG_STYLE_LIST, "Doodle Maps | Business Categories",
+		"24/7\nClothing Stores\nRestaurants\nBars\nGun Stores\nPetrol Stations\nCar Dealerships\nClubs", "Open", "Back");
+}
+
+Map_ShowLocationTypes(playerid)
+{
+	SetPVarInt(playerid, "gpsUsingID", 0);
+	return ShowPlayerDialogEx(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_LIST, "Doodle Maps | Location Categories",
+		"Faction HQs\nBanks\nVIP Areas\nHospitals\nNew Robada\nMiscellaneous", "Open", "Back");
+}
+
+Map_GetDestination(type, id, name[], len, &Float:x, &Float:y, &Float:z)
+{
+	switch(type)
+	{
+		case CHECKPOINT_BUSINESS:
+		{
+			if(!IsValidBusinessID(id) || Businesses[id][bType] == 0) return 0;
+			format(name, len, "%s", Businesses[id][bName]);
+			x = Businesses[id][bExtPos][0];
+			y = Businesses[id][bExtPos][1];
+			z = Businesses[id][bExtPos][2];
+		}
+		case CHECKPOINT_HOUSE:
+		{
+			if(!(0 <= id < MAX_HOUSES) || !HouseInfo[id][hOwned]) return 0;
+			format(name, len, "House #%d", id);
+			x = HouseInfo[id][hExteriorX];
+			y = HouseInfo[id][hExteriorY];
+			z = HouseInfo[id][hExteriorZ];
+		}
+		case CHECKPOINT_DOOR:
+		{
+			if(!(0 <= id < MAX_DDOORS) || !DDoorsInfo[id][ddDescription][0]) return 0;
+			format(name, len, "Door #%d (%s)", id, DDoorsInfo[id][ddDescription]);
+			x = DDoorsInfo[id][ddExteriorX];
+			y = DDoorsInfo[id][ddExteriorY];
+			z = DDoorsInfo[id][ddExteriorZ];
+		}
+		case CHECKPOINT_JOB:
+		{
+			if(!(0 <= id < MAX_JOBPOINTS) || JobData[id][jId] != id + 1
+				|| !Job_IsAvailable(JobData[id][jType]) || !IsValidDynamicArea(JobData[id][jAreaID])) return 0;
+			format(name, len, "%s", GetJobName(JobData[id][jType]));
+			x = JobData[id][jPos][0];
+			y = JobData[id][jPos][1];
+			z = JobData[id][jPos][2];
+		}
+		case CHECKPOINT_GEN_LOCATION:
+		{
+			if(!(0 <= id < sizeof(gpsZones))) return 0;
+			format(name, len, "%s", gpsZoneName[id]);
+			x = gpsZones[id][0];
+			y = gpsZones[id][1];
+			z = gpsZones[id][2];
+		}
+		default: return 0;
+	}
+	return x != 0.0 || y != 0.0 || z != 0.0;
+}
+
+Map_SetDestination(playerid, type, id)
+{
+	if(CheckPointCheck(playerid) || IsPlayerCheckpointActive(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please clear your current checkpoint before using the map.");
+	new name[160], area[32], Float:x, Float:y, Float:z;
+	if(!Map_GetDestination(type, id, name, sizeof(name), x, y, z))
+		return SendClientMessageEx(playerid, COLOR_GREY, "That destination is no longer available.");
+	if(type == CHECKPOINT_JOB && (JobData[id][jVw] != GetPlayerVirtualWorld(playerid) || JobData[id][jInt] != GetPlayerInterior(playerid)))
+		return SendClientMessageEx(playerid, COLOR_GREY, "That job point is in a different world or interior. Please reopen the map.");
+
+	GetEntity3DZone(0, 3, area, sizeof(area), x, y, z);
+	DisablePlayerCheckpoint(playerid);
+	SetPlayerCheckpoint(playerid, x, y, z, type == CHECKPOINT_JOB ? 5.0 : 15.0);
+	gPlayerCheckpointStatus[playerid] = type;
+	SetPVarString(playerid, "gpsName", name);
+	DeletePVar(playerid, "gpsAddressID");
+	SendClientMessageEx(playerid, COLOR_WHITE, "GPS destination: {33CCFF}%s{FFFFFF} in %s (%.0f meters).", name, area, GetPlayerDistanceFromPoint(playerid, x, y, z));
 	return 1;
 }
 
@@ -251,320 +342,101 @@ hook OnPlayerEnterCheckpoint(playerid)
 {
 	switch(gPlayerCheckpointStatus[playerid])
 	{
-		case CHECKPOINT_GEN_LOCATION:
+		case CHECKPOINT_GEN_LOCATION, CHECKPOINT_BUSINESS, CHECKPOINT_JOB, CHECKPOINT_HOUSE, CHECKPOINT_DOOR:
 		{
-			GetPVarString(playerid, "gpsName", szMiscArray, sizeof(szMiscArray));
-			format(szMiscArray, sizeof(szMiscArray),"You have arrived at {33CCFF}%s{FFFFFF}.", szMiscArray);
-			SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-			DeletePVar(playerid,"gpsName");
+			new name[160];
+			GetPVarString(playerid, "gpsName", name, sizeof(name));
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have arrived at {33CCFF}%s{FFFFFF}.", name);
+			DeletePVar(playerid, "gpsName");
 			DisablePlayerCheckpoint(playerid);
 			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 		}
-		case CHECKPOINT_BUSINESS:
-		{
-			new id = GetPVarInt(playerid,"gpsBiz");
-			SendClientMessageEx(playerid,COLOR_WHITE, "You have arrived at {33CCFF}%s{FFFFFF}.", Businesses[id][bName]);
-			DisablePlayerCheckpoint(playerid);
-			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
-		}
-		case CHECKPOINT_JOB:
-		{
-			new id = GetPVarInt(playerid,"gpsJob");
-			SendClientMessageEx(playerid,COLOR_WHITE, "You have arrived at {33CCFF}%s{FFFFFF}.", GetJobName(JobData[id][jType]));
-			DisablePlayerCheckpoint(playerid);
-			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
-		}
-
-		case CHECKPOINT_HOUSE:
-		{
-			new id = GetPVarInt(playerid,"gpsHouse");
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have arrived at house #{33CCFF}%i{FFFFFF}.", id);
-			DisablePlayerCheckpoint(playerid);
-			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
-		}
-		case CHECKPOINT_DOOR:
-		{
-			new id = GetPVarInt(playerid,"gpsDoor");
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have arrived at door #%i ({33CCFF}%s{FFFFFF}).", id,DDoorsInfo[id][ddDescription]);
-			DisablePlayerCheckpoint(playerid);
-			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
-		}
-		/*
-		case CHECKPOINT_FAVORITES:
-		{
-			new id = GetPVarInt(playerid, "gpsFav");
-			DeletePVar(playerid, "gpsFav");
-			format(szMiscArray, sizeof(szMiscArray), "You have arrived at {33CCFF}%s{FFFFFF}.", GPSFav[playerid][id][FavName]);
-			SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-			DisablePlayerCheckpoint(playerid);
-		}
-		*/
 	}
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
-
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
 	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
-	switch(dialogid) {
-
-		case DIALOG_MAP_BUSINESSES:	{
-
-			if(!response) {
-
-				return ShowPlayerDialogEx(playerid, DIALOG_GPS_ONE, DIALOG_STYLE_LIST, "Doodle Maps | Main Menu", "Businesses\n\
-					Jobs\n\
-					General Locations\n\
-					Business Address\n\
-					House Address\n\
-					Door Address\n", "Okay", "Cancel");
-			}
-
-			Map_ShowBusinesses(playerid, listitem);
-			return 1;
-		}
-		case DIALOG_MAP_BUSINESSES2: {
-
-			if(!response) {
-
-				return ShowPlayerDialogEx(playerid, DIALOG_MAP_BUSINESSES, DIALOG_STYLE_LIST, "San Andreas | Map | Businesses", "\
-						24/7\n\
-						Clothing Stores\n\
-						Restaurants\n\
-						Bars\n\
-						Gun Stores\n\
-						Petrol Stations\n\
-						Car Dealerships\n\
-						Clubs", "Select", "Back");
-			}
-			else {
-
-				new id = ListItemTrackId[playerid][listitem];
-
-				GetEntity3DZone(id, 0, szMiscArray, sizeof(szMiscArray));
-				format(szMiscArray,sizeof(szMiscArray),"Your GPS Destination has been set to {33CCFF}%s{FFFFFF} in the area of {FF0000}%s{FFFFFF}.", Businesses[id][bName], szMiscArray);
-				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-				
-				gPlayerCheckpointStatus[playerid] = CHECKPOINT_BUSINESS;
-				DisablePlayerCheckpoint(playerid);
-				SetPlayerCheckpoint(playerid, Businesses[id][bExtPos][0], Businesses[id][bExtPos][1], Businesses[id][bExtPos][2], 15.0);
-			}
-			return 1;
-		}
-		case DIALOG_MAP_JOBS: if(response) return Map_ShowJobs(playerid, listitem);
-		case DIALOG_GPS_ONE: {
-
+	switch(dialogid)
+	{
+		case DIALOG_GPS_ONE:
+		{
 			if(!response) return 1;
-
-			switch(listitem) {
-
-				case 0:
-				{
-					if(!response) return 1;
-					ShowPlayerDialogEx(playerid, DIALOG_MAP_BUSINESSES, DIALOG_STYLE_LIST, "San Andreas | Map | Businesses", "\
-						24/7\n\
-						Clothing Stores\n\
-						Restaurants\n\
-						Bars\n\
-						Gun Stores\n\
-						Petrol Stations\n\
-						Car Dealerships\n\
-						Clubs", "Select", "Back");
-				}
-				case 1:
-				{
-					for(new i; i < MAX_JOBTYPES; ++i)
-					{
-						format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, JobName[i]);
-					}
-					return ShowPlayerDialogEx(playerid, DIALOG_MAP_JOBS, DIALOG_STYLE_LIST, "San Andreas | Map | Jobs", szMiscArray, "Select", "Back");
-				}
-				case 2: {
-					SetPVarInt(playerid, "gpsUsingID", 0);
-					ShowPlayerDialogEx(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_LIST, "General Locations", "Faction HQs\nBanks\nVIP Areas\nHospitals\nNew Robada\nMiscellaneous", "Okay", "Cancel");
-				}
-				case 3: {
-					SetPVarInt(playerid, "gpsUsingID", 1);
-					ShowPlayerDialogEx(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_INPUT, "Find Business", "Enter the address of the business (ID)", "Okay", "Cancel");
-				}
-				case 4: {
-					SetPVarInt(playerid, "gpsUsingID", 2);
-					ShowPlayerDialogEx(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_INPUT, "Find House", "Enter the address of the house (ID)", "Okay", "Cancel");
-				}
-				case 5: {
-					SetPVarInt(playerid, "gpsUsingID", 3);
-					ShowPlayerDialogEx(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_INPUT, "Find Door", "Enter the address of the building (ID)", "Okay", "Cancel");
-				}
-			}
-		}
-		case DIALOG_GPS_TWO: {
-
-			if(!response) return 1;
-			
-			switch(GetPVarInt(playerid, "gpsUsingID")) {
-				
-				case 0: {
-
-					SetPVarInt(playerid, "gpsUsingID", listitem);
-					switch(listitem) {
-						case 0: {
-							ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "HQs", "LSPD\nSASD\nSFPD\nFBI\nFBI SF\nDoC\nFDSA\nSAN NEWS\nRCTR", "Okay", "Cancel");
-						}
-						case 1: {
-							ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "Banks", "San Fierro\nMullholand\nLas Venturas\nRodeo\nDillimore", "Okay", "Cancel");
-						}
-						case 2:	{
-							ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "VIP", "San Fierro\nLos Santos\nLas Venturas\nGlen Park\nFamed Lounge", "Okay", "Cancel");
-						}
-						case 3:	{
-							ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "Hospitals", "San Fierro\nCounty General\nAll Saints\nMontgomery Hospital", "Okay", "Cancel");
-						}
-						case 4:
-						{
-							ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "New Robada", "Flint Hospital\nBayside Apartments\nBayside VIP\nCapitol\nTRES HQ\n\
-								TRAF HQ\nTRES Recruitment\nEl Quebrados Hospital\nLas Barranca Bank\nFort Carsonal Hospital", "Okay", "Cancel");
-						}
-						case 5: 
-						{
-							ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "Miscellaneous","LS City Hall\nSF City Hall\nSF Apartments\nNG Recruitment\nDonahue Condos SF\nGlen Park Community Center\n\
-								Los Flores Hotel\nSeville Apartments\nGanton Apartments\nIdlewood\nRodeo Apartments\nFuente's Rodeo Apartments\n\
-								Mall Apartments\nMarket Apartments\nDonahue Apartments LS\nCommerce Apartments\nPershing Sq. Apartments", "Okay", "Cancel");
-						}
-					}
-				}
-				case 1: {
-
-					for (new i = 0, j = strlen(inputtext); i < j; i++) {
-						if(inputtext[i] > '9' || inputtext[i] < '0') {
-							SendClientMessageEx(playerid, COLOR_WHITE, "You must input a numerical value. In this case, the ID of the business.");
-							return 1;
-						}
-					}
-
-					new id = strval(inputtext);
-
-					if(!IsValidBusinessID(id)) {
-
-						SendClientMessageEx(playerid, COLOR_WHITE, "That business does not exist.");
-						return 1;
-					}
-
-					GetEntity3DZone(id, 0, szMiscArray, sizeof(szMiscArray));
-					format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Would you like to set your destination to:\n\n\
-					{33CCFF}%s{FFFFFF} in the area of {FF0000}%s{FFFFFF}?", Businesses[id][bName], szMiscArray);
-					
-					SetPVarInt(playerid, "gpsUsingID", 1);
-					SetPVarInt(playerid,"gpsBiz", id);
-					
-					ShowPlayerDialogEx(playerid, DIALOG_GPS_THREE, DIALOG_STYLE_MSGBOX, "{FF0000}Delux GPS - Business", szMiscArray, "Yes", "Cancel");
-				}
-				case 2:
-				{
-					for (new i = 0, j = strlen(inputtext); i < j; i++) {
-						if (inputtext[i] > '9' || inputtext[i] < '0')
-						{
-							SendClientMessageEx(playerid, COLOR_WHITE, "You must input a numerical value. In this case, the ID of the house.");
-							return 1;
-						}
-					}
-
-					new id = strval(inputtext);
-
-					SetPVarInt(playerid, "gpsHouse", id);
-
-					if(HouseInfo[id][hOwned] == 0)
-					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "That house address is invalid.");
-						return 1;
-					}
-					GetEntity3DZone(id, 1, szMiscArray, sizeof(szMiscArray));
-					SetPVarInt(playerid, "gpsUsingID", 2);
-					format(szMiscArray,sizeof(szMiscArray),"{FFFFFF}Would you like to set your destination to:\n\n\
-					house {33CCFF}#%i{FFFFFF} in the area of {FF0000}%s{FFFFFF}?", id, szMiscArray);
-					ShowPlayerDialogEx(playerid, DIALOG_GPS_THREE, DIALOG_STYLE_MSGBOX, "{FF0000}Delux GPS - House", szMiscArray, "Yes", "Cancel");
- 				}
-				case 3:
-				{
-					for (new i = 0, j = strlen(inputtext); i < j; i++) {
-
-						if (inputtext[i] > '9' || inputtext[i] < '0') {
-
-							SendClientMessageEx(playerid, COLOR_WHITE, "You must input a numerical value. In this case, the ID of the door.");
-							return 1;
-						}
-					}
-
-					new id = strval(inputtext);
-					SetPVarInt(playerid, "gpsDoor", id);
-					if(DDoorsInfo[id][ddDescription] == 0)
-					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "That house address is invalid.");
-						return 1;
-					}
-
-			     	GetEntity3DZone(id, 2, szMiscArray, sizeof(szMiscArray));
-					SetPVarInt(playerid, "gpsUsingID", 3);
-					format(szMiscArray,sizeof(szMiscArray),"{FFFFFF}Would you like to set your destination to:\n\n\
-					Door #%i ({33CCFF}%s{FFFFFF}) in the area of {FF0000}%s{FFFFFF}?", id, DDoorsInfo[id][ddDescription], szMiscArray);
-
-					ShowPlayerDialogEx(playerid, DIALOG_GPS_THREE, DIALOG_STYLE_MSGBOX, "{FF0000}Delux GPS - Door", szMiscArray, "Yes", "Cancel");
-				}
-			}
-		}
-		case DIALOG_GPS_GEN: {
-			if(!response) return 1;
-			new gpsItemStart;
-			switch(GetPVarInt(playerid, "gpsUsingID")) {
-
-				case 0: gpsItemStart = 0;
-				case 1:	gpsItemStart = 9;
-				case 2: gpsItemStart = 14;
-				case 3: gpsItemStart = 19;
-				case 4: gpsItemStart = 23;
-				case 5: gpsItemStart = 33;
-			}
-			GetEntity3DZone(0, 3, szMiscArray, sizeof(szMiscArray), gpsZones[gpsItemStart + listitem][0], gpsZones[gpsItemStart + listitem][1], gpsZones[gpsItemStart + listitem][2]);
-			DisablePlayerCheckpoint(playerid);
-			SetPlayerCheckpoint(playerid, gpsZones[gpsItemStart + listitem][0], gpsZones[gpsItemStart + listitem][1], gpsZones[gpsItemStart + listitem][2] , 15.0);
-			format(szMiscArray,sizeof(szMiscArray),"Your GPS Destination has been set to {33CCFF}%s{FFFFFF} in the area of {FF0000}%s{FFFFFF}.", gpsZoneName[gpsItemStart + listitem], szMiscArray);
-			SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
-			SetPVarString(playerid, "gpsName", gpsZoneName[gpsItemStart + listitem]);
-		}
-		case DIALOG_GPS_THREE:{
-
-			if(!response) return 1;
-
-			switch(GetPVarInt(playerid,"gpsUsingID"))
+			switch(listitem)
 			{
-				case 1:
+				case 0: return Map_ShowBusinessTypes(playerid);
+				case 1: return Map_ShowJobs(playerid);
+				case 2: return Map_ShowLocationTypes(playerid);
+				case 3, 4, 5:
 				{
-					new id = GetPVarInt(playerid,"gpsBiz");
-					GetEntity3DZone(id, 1, szMiscArray, sizeof(szMiscArray));
-					format(szMiscArray,sizeof(szMiscArray),"Your GPS Destination has been set to {33CCFF}%s{FFFFFF} in the area of {FF0000}%s{FFFFFF}.", Businesses[id][bName], szMiscArray);
-					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-					DisablePlayerCheckpoint(playerid);		
-					SetPlayerCheckpoint(playerid, Businesses[id][bExtPos][0], Businesses[id][bExtPos][1], Businesses[id][bExtPos][2], 15.0);
-				}
-				case 2:
-				{
-					new id = GetPVarInt(playerid,"gpsHouse");
-					GetEntity3DZone(id, 1, szMiscArray, sizeof(szMiscArray));
-					format(szMiscArray,sizeof(szMiscArray),"Your GPS Destination has been set to house #{33CCFF}%i{FFFFFF} in the area of {FF0000}%s{FFFFFF}.", id, szMiscArray);
-					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-					gPlayerCheckpointStatus[playerid] = CHECKPOINT_HOUSE;
-					DisablePlayerCheckpoint(playerid);
-					SetPlayerCheckpoint(playerid, HouseInfo[id][hExteriorX], HouseInfo[id][hExteriorY], HouseInfo[id][hExteriorZ], 15.0);
-				}
-				case 3:
-				{
-					new id = GetPVarInt(playerid,"gpsDoor");
-					GetEntity3DZone(id, 1, szMiscArray, sizeof(szMiscArray));
-					format(szMiscArray,sizeof(szMiscArray),"Your GPS Destination has been set to door #%i ({33CCFF}%s{FFFFFF}) in the area of {FF0000}%s{FFFFFF}.", id, DDoorsInfo[id][ddDescription],  szMiscArray);
-					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-					gPlayerCheckpointStatus[playerid] = CHECKPOINT_DOOR;
-					DisablePlayerCheckpoint(playerid);
-					SetPlayerCheckpoint(playerid, DDoorsInfo[id][ddExteriorX], DDoorsInfo[id][ddExteriorY], DDoorsInfo[id][ddExteriorZ], 15.0);
+					SetPVarInt(playerid, "gpsUsingID", listitem - 2);
+					return ShowPlayerDialogEx(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_INPUT, "Doodle Maps | Address Search",
+						"Enter the destination's numeric ID.", "Find", "Back");
 				}
 			}
+			return 1;
+		}
+		case DIALOG_MAP_BUSINESSES:
+		{
+			if(!response) return pc_cmd_mygps(playerid, "");
+			return Map_ShowBusinesses(playerid, listitem);
+		}
+		case DIALOG_MAP_BUSINESSES2:
+		{
+			if(!response) return Map_ShowBusinessTypes(playerid);
+			if(!(0 <= listitem < GetPVarInt(playerid, "gpsMapRows"))) return 1;
+			new id = ListItemTrackId[playerid][listitem];
+			if(id == -1) return Map_ShowBusinesses(playerid, GetPVarInt(playerid, "gpsBusinessType"), GetPVarInt(playerid, "gpsBusinessPage") + 1);
+			if(id == -2) return Map_ShowBusinesses(playerid, GetPVarInt(playerid, "gpsBusinessType"), GetPVarInt(playerid, "gpsBusinessPage") - 1);
+			return Map_SetDestination(playerid, CHECKPOINT_BUSINESS, id);
+		}
+		case DIALOG_MAP_JOBS:
+		{
+			if(!response) return pc_cmd_mygps(playerid, "");
+			if(!(0 <= listitem < GetPVarInt(playerid, "gpsMapRows"))) return 1;
+			return Map_SetDestination(playerid, CHECKPOINT_JOB, ListItemTrackId[playerid][listitem]);
+		}
+		case DIALOG_GPS_TWO:
+		{
+			if(!response) return pc_cmd_mygps(playerid, "");
+			new mode = GetPVarInt(playerid, "gpsUsingID");
+			if(mode == 0) return Map_ShowLocations(playerid, listitem);
+			if(!inputtext[0] || strlen(inputtext) > 5 || !IsNumericString(inputtext))
+				return SendClientMessageEx(playerid, COLOR_GREY, "Enter a valid numeric destination ID.");
+
+			new id = strval(inputtext), type, name[160], area[32], Float:x, Float:y, Float:z;
+			switch(mode)
+			{
+				case 1: type = CHECKPOINT_BUSINESS;
+				case 2: type = CHECKPOINT_HOUSE;
+				case 3: type = CHECKPOINT_DOOR;
+				default: return 1;
+			}
+			if(!Map_GetDestination(type, id, name, sizeof(name), x, y, z))
+				return SendClientMessageEx(playerid, COLOR_GREY, "That destination address is invalid or has not been configured.");
+			GetEntity3DZone(0, 3, area, sizeof(area), x, y, z);
+			format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Set your GPS destination to:\n\n{33CCFF}%s{FFFFFF}\nArea: %s\nDistance: %.0f meters", name, area, GetPlayerDistanceFromPoint(playerid, x, y, z));
+			SetPVarInt(playerid, "gpsAddressID", id);
+			return ShowPlayerDialogEx(playerid, DIALOG_GPS_THREE, DIALOG_STYLE_MSGBOX, "Doodle Maps | Confirm Destination", szMiscArray, "Navigate", "Back");
+		}
+		case DIALOG_GPS_GEN:
+		{
+			if(!response) return Map_ShowLocationTypes(playerid);
+			new category = GetPVarInt(playerid, "gpsUsingID");
+			if(!(0 <= category < sizeof(MapLocationStarts) - 1)) return 1;
+			if(!(0 <= listitem < MapLocationStarts[category + 1] - MapLocationStarts[category])) return 1;
+			return Map_SetDestination(playerid, CHECKPOINT_GEN_LOCATION, MapLocationStarts[category] + listitem);
+		}
+		case DIALOG_GPS_THREE:
+		{
+			if(!response) return pc_cmd_mygps(playerid, "");
+			switch(GetPVarInt(playerid, "gpsUsingID"))
+			{
+				case 1: return Map_SetDestination(playerid, CHECKPOINT_BUSINESS, GetPVarInt(playerid, "gpsAddressID"));
+				case 2: return Map_SetDestination(playerid, CHECKPOINT_HOUSE, GetPVarInt(playerid, "gpsAddressID"));
+				case 3: return Map_SetDestination(playerid, CHECKPOINT_DOOR, GetPVarInt(playerid, "gpsAddressID"));
+			}
+			return 1;
 		}
 		/*
 		case DIALOG_GPS_FAVS:
@@ -600,166 +472,96 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	return 0;
 }
 
-
-Map_ShowBusinesses(playerid, btype)
+Map_ShowBusinesses(playerid, btype, page = 0)
 {
-	szMiscArray[0] = 0;
-	new szStatus[20],
-		j;
-	switch(btype)
+	if(!(0 <= btype < sizeof(MapBusinessTypes)) || !(0 <= page < (MAX_BUSINESSES + MAP_BUSINESS_PAGE_SIZE - 1) / MAP_BUSINESS_PAGE_SIZE)) return 1;
+	new row[192], area[32], count, rows;
+	format(szMiscArray, sizeof(szMiscArray), "Business\tArea\tStatus\tDistance (m)\n");
+	for(new i; i < MAX_BUSINESSES; ++i)
 	{
-		case 0:
-		{
-			for(new i; i < MAX_BUSINESSES; ++i)
-			{
-				if(Businesses[i][bType] == BUSINESS_TYPE_STORE)
-				{
-					switch(Businesses[i][bStatus])
-					{
-						case 0: szStatus = "{FF0000} CLOSED";
-						case 1: szStatus = "{00FF00} OPEN";
-					}
-					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
-					ListItemTrackId[playerid][j++] = i;
-				}
-			}
-		}
-		case 1:
-		{
-			for(new i; i < MAX_BUSINESSES; ++i)
-			{
-				if(Businesses[i][bType] == BUSINESS_TYPE_CLOTHING)
-				{
-					switch(Businesses[i][bStatus])
-					{
-						case 0: szStatus = "{FF0000} CLOSED";
-						case 1: szStatus = "{00FF00} OPEN";
-					}
-					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
-					ListItemTrackId[playerid][j++] = i;
-				}
-			}
-		}
-		case 2:
-		{
-			for(new i; i < MAX_BUSINESSES; ++i)
-			{
-				if(Businesses[i][bType] == BUSINESS_TYPE_RESTAURANT)
-				{
-					switch(Businesses[i][bStatus])
-					{
-						case 0: szStatus = "{FF0000} CLOSED";
-						case 1: szStatus = "{00FF00} OPEN";
-					}
-					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
-					ListItemTrackId[playerid][j++] = i;
-				}
-			}
-			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "There are none.");
-		}
-		case 3:
-		{
-			for(new i; i < MAX_BUSINESSES; ++i)
-			{
-				if(Businesses[i][bType] == BUSINESS_TYPE_BAR)
-				{
-					switch(Businesses[i][bStatus])
-					{
-						case 0: szStatus = "{FF0000} CLOSED";
-						case 1: szStatus = "{00FF00} OPEN";
-					}
-					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
-					ListItemTrackId[playerid][j++] = i;
-				}
-			}
-			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "There are none.");
-		}
-		case 4:
-		{
-			for(new i; i < MAX_BUSINESSES; ++i)
-			{
-				if(Businesses[i][bType] == BUSINESS_TYPE_GUNSHOP)
-				{
-					switch(Businesses[i][bStatus])
-					{
-						case 0: szStatus = "{FF0000} CLOSED";
-						case 1: szStatus = "{00FF00} OPEN";
-					}
-					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
-					ListItemTrackId[playerid][j++] = i;
-				}
-			}
-			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "There are none.");
-		}
-		case 5:
-		{
-			for(new i; i < MAX_BUSINESSES; ++i)
-			{
-				if(Businesses[i][bType] == BUSINESS_TYPE_GASSTATION)
-				{
-					switch(Businesses[i][bStatus])
-					{
-						case 0: szStatus = "{FF0000} CLOSED";
-						case 1: szStatus = "{00FF00} OPEN";
-					}
-					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
-					ListItemTrackId[playerid][j++] = i;					
-				}
-			}
-			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "There are none.");
-		}
-		case 6:
-		{
-			for(new i; i < MAX_BUSINESSES; ++i)
-			{
-				if(Businesses[i][bType] == BUSINESS_TYPE_NEWCARDEALERSHIP)
-				{
-					switch(Businesses[i][bStatus])
-					{
-						case 0: szStatus = "{FF0000} CLOSED";
-						case 1: szStatus = "{00FF00} OPEN";
-					}
-					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
-					ListItemTrackId[playerid][j++] = i;
-				}
-			}
-			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "There are none.");
-		}
-		case 7:
-		{
-			for(new i; i < MAX_BUSINESSES; ++i)
-			{
-				if(Businesses[i][bType] == BUSINESS_TYPE_CLUB) 
-				{
-					switch(Businesses[i][bStatus])
-					{
-						case 0: szStatus = "{FF0000} CLOSED";
-						case 1: szStatus = "{00FF00} OPEN";
-					}
-					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
-					ListItemTrackId[playerid][j++] = i;
-				}
-			}
-			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "There are none.");
-		}
+		if(Businesses[i][bType] != MapBusinessTypes[btype]) continue;
+		if(Businesses[i][bExtPos][0] == 0.0 && Businesses[i][bExtPos][1] == 0.0 && Businesses[i][bExtPos][2] == 0.0) continue;
+		if(count++ < page * MAP_BUSINESS_PAGE_SIZE || rows >= MAP_BUSINESS_PAGE_SIZE) continue;
+		GetEntity3DZone(i, 0, area, sizeof(area));
+		format(row, sizeof(row), "%s [#%d]\t%s\t%s\t%.0f m\n", Businesses[i][bName], i, area,
+			Businesses[i][bStatus] ? ("{00CC66}Open") : ("{FF6666}Closed"),
+			GetPlayerDistanceFromPoint(playerid, Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2]));
+		strcat(szMiscArray, row, sizeof(szMiscArray));
+		ListItemTrackId[playerid][rows++] = i;
 	}
-	ShowPlayerDialogEx(playerid, DIALOG_MAP_BUSINESSES2, DIALOG_STYLE_TABLIST, "San Andreas | Map | Businesses", szMiscArray, "Select", "Back");
-	return 1;
+	if(!rows)
+	{
+		if(page > 0) return Map_ShowBusinesses(playerid, btype, 0);
+		SendClientMessageEx(playerid, COLOR_GREY, "No configured businesses were found in this category.");
+		return Map_ShowBusinessTypes(playerid);
+	}
+	if(page > 0)
+	{
+		strcat(szMiscArray, "{33CCFF}<< Previous page\t\t\t\n", sizeof(szMiscArray));
+		ListItemTrackId[playerid][rows++] = -2;
+	}
+	if(count > (page + 1) * MAP_BUSINESS_PAGE_SIZE)
+	{
+		strcat(szMiscArray, "{33CCFF}Next page >>\t\t\t\n", sizeof(szMiscArray));
+		ListItemTrackId[playerid][rows++] = -1;
+	}
+	new title[64];
+	format(title, sizeof(title), "Doodle Maps | Businesses | %d/%d", page + 1, (count + MAP_BUSINESS_PAGE_SIZE - 1) / MAP_BUSINESS_PAGE_SIZE);
+	SetPVarInt(playerid, "gpsBusinessType", btype);
+	SetPVarInt(playerid, "gpsBusinessPage", page);
+	SetPVarInt(playerid, "gpsMapRows", rows);
+	return ShowPlayerDialogEx(playerid, DIALOG_MAP_BUSINESSES2, DIALOG_STYLE_TABLIST_HEADERS, title, szMiscArray, "Navigate", "Back");
 }
 
-
-Map_ShowJobs(playerid, iJobType)
+Map_ShowJobs(playerid)
 {
-	if(!(1 <= iJobType < MAX_JOBPOINTS)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid job type specified.");
-	for(new i; i < MAX_JOBPOINTS; ++i) {
-		if(JobData[i][jType] == iJobType) {
-			gPlayerCheckpointStatus[playerid] = CHECKPOINT_JOB;
-			SetPVarInt(playerid, "gpsJob", i);
-			SetPlayerCheckpoint(playerid, JobData[i][jPos][0], JobData[i][jPos][1], JobData[i][jPos][2], 5.0);
-			SendClientMessage(playerid, COLOR_YELLOW, "A checkpoint has been marked on your map.");
-			return 1;
+	new nearest[MAX_JOBTYPES], Float:distances[MAX_JOBTYPES], Float:x, Float:y, Float:z;
+	new world = GetPlayerVirtualWorld(playerid), interior = GetPlayerInterior(playerid);
+	for(new type; type < MAX_JOBTYPES; ++type) nearest[type] = -1;
+	GetPlayerPos(playerid, x, y, z);
+	for(new i; i < MAX_JOBPOINTS; ++i)
+	{
+		if(JobData[i][jId] != i + 1 || !Job_IsAvailable(JobData[i][jType]) || !IsValidDynamicArea(JobData[i][jAreaID])) continue;
+		if(JobData[i][jVw] != world || JobData[i][jInt] != interior) continue;
+		new type = JobData[i][jType];
+		new Float:distance = VectorSize(JobData[i][jPos][0] - x, JobData[i][jPos][1] - y, JobData[i][jPos][2] - z);
+		if(nearest[type] == -1 || distance < distances[type])
+		{
+			nearest[type] = i;
+			distances[type] = distance;
 		}
 	}
-	SendClientMessage(playerid, COLOR_GRAD1, "Applications are currently closed for that job.");
-	return 1;
+	new row[192], area[32], rows;
+	format(szMiscArray, sizeof(szMiscArray), "Job\tArea\tLevel\tDistance (m)\n");
+	for(new type = 1; type < MAX_JOBTYPES; ++type)
+	{
+		new point = nearest[type];
+		if(point == -1) continue;
+		GetEntity3DZone(0, 3, area, sizeof(area), JobData[point][jPos][0], JobData[point][jPos][1], JobData[point][jPos][2]);
+		format(row, sizeof(row), "%s\t%s\t%d\t%.0f m\n", GetJobName(type), area, JobData[point][jLevel], distances[type]);
+		strcat(szMiscArray, row, sizeof(szMiscArray));
+		ListItemTrackId[playerid][rows++] = point;
+	}
+	if(!rows)
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "No active job recruitment points were found in your current world and interior.");
+		return pc_cmd_mygps(playerid, "");
+	}
+	SetPVarInt(playerid, "gpsMapRows", rows);
+	return ShowPlayerDialogEx(playerid, DIALOG_MAP_JOBS, DIALOG_STYLE_TABLIST_HEADERS, "Doodle Maps | Nearest Job Points", szMiscArray, "Navigate", "Back");
+}
+
+Map_ShowLocations(playerid, category)
+{
+	if(!(0 <= category < sizeof(MapLocationStarts) - 1)) return 1;
+	new row[160], area[32];
+	format(szMiscArray, sizeof(szMiscArray), "Location\tArea\tDistance (m)\n");
+	for(new i = MapLocationStarts[category]; i < MapLocationStarts[category + 1]; ++i)
+	{
+		GetEntity3DZone(0, 3, area, sizeof(area), gpsZones[i][0], gpsZones[i][1], gpsZones[i][2]);
+		format(row, sizeof(row), "%s\t%s\t%.0f m\n", gpsZoneName[i], area, GetPlayerDistanceFromPoint(playerid, gpsZones[i][0], gpsZones[i][1], gpsZones[i][2]));
+		strcat(szMiscArray, row, sizeof(szMiscArray));
+	}
+	SetPVarInt(playerid, "gpsUsingID", category);
+	return ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_TABLIST_HEADERS, "Doodle Maps | General Locations", szMiscArray, "Navigate", "Back");
 }
