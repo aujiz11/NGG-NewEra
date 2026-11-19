@@ -483,6 +483,9 @@ DDoor_Exit(playerid, i)
 
 House_Enter(playerid, i) {
 
+	if(HouseInfo[i][hInteriorX] == 0.0 && HouseInfo[i][hInteriorY] == 0.0 && HouseInfo[i][hInteriorZ] == 0.0)
+		return SendClientMessageEx(playerid, COLOR_GREY, "The interior of this house has not been configured.");
+
 	if(PlayerInfo[playerid][pPhousekey] == i || PlayerInfo[playerid][pPhousekey2] == i || HouseInfo[i][hLock] == 0 || PlayerInfo[playerid][pRenting] == i) {
 		if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to enter this door.", DoorTimer[playerid]-gettime());
 		if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
@@ -526,6 +529,9 @@ House_Exit(playerid, i) {
 
 Business_Enter(playerid, i)
 {
+	if(Businesses[i][bIntPos][0] == 0.0 && Businesses[i][bIntPos][1] == 0.0 && Businesses[i][bIntPos][2] == 0.0)
+		return SendClientMessageEx(playerid, COLOR_GREY, "The interior of this business has not been configured.");
+
 	if(PlayerInfo[playerid][pLevel] < 3 && Businesses[i][bType] == BUSINESS_TYPE_CASINO) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "Sadly, you can't enter the Casino");
 	if(Businesses[i][bExtPos][1] == 0.0) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot enter this business.");
 	if(Businesses[i][bStatus]) {
@@ -592,6 +598,9 @@ Business_Exit(playerid, i)
 }
 
 Garage_Enter(playerid, i) {
+
+	if(GarageInfo[i][gar_InteriorX] == 0.0 && GarageInfo[i][gar_InteriorY] == 0.0 && GarageInfo[i][gar_InteriorZ] == 0.0)
+		return SendClientMessageEx(playerid, COLOR_GREY, "The interior of this garage has not been configured.");
 
 	if(GarageInfo[i][gar_Locked] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "This garage is currently locked.");
 	if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
