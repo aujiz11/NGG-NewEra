@@ -5363,8 +5363,7 @@ public Group_QueryFinish(iType, iExtraID) {
 		iIndex,
 		i = 0,
 		szResult[128],
-		number[12],
-		value;
+		number[12];
 
 	cache_get_row_count(iRows);
 
@@ -5389,29 +5388,31 @@ public Group_QueryFinish(iType, iExtraID) {
 				iIndex++;
 			}
 		}
-		case GROUP_QUERY_GWEAPONS: while(iIndex < iRows) {
-
-			if (!(0 <= iIndex < MAX_GROUPS)) break;
-			cache_get_value_name_int(iIndex, "id", value);
-			LockerWep[iIndex][lwGroup] = value;
-
-			for(new w = 0; w < 46; w++) {
-				format(number, sizeof(number), "%d", w+1);
-				cache_get_value_name_int(iIndex, number, value);
-				LockerWep[iIndex][lwWep][w] = value;
+		case GROUP_QUERY_GWEAPONS: {
+			for(new row; row < iRows; ++row) {
+				new group;
+				cache_get_value_name_int(row, "id", group);
+				if(!(1 <= group <= MAX_GROUPS)) continue;
+				--group;
+				LockerWep[group][lwGroup] = group + 1;
+				for(new w; w < 46; ++w) {
+					if(18 <= w <= 20) continue;
+					format(number, sizeof(number), "%d", w + 1);
+					cache_get_value_name_int(row, number, LockerWep[group][lwWep][w]);
+				}
 			}
-			iIndex++;
 		}
-		case GROUP_QUERY_GWEAPONS_RANK: while(iIndex < iRows) {
-
-			if (!(0 <= iIndex < MAX_GROUPS)) break;
-
-			for(new w = 0; w < 16; w++) {
-				format(number, sizeof(number), "%d", w+1);
-				cache_get_value_name_int(iIndex, number, value);
-				LockerWep[iIndex][lwRank][w] = value;
+		case GROUP_QUERY_GWEAPONS_RANK: {
+			for(new row; row < iRows; ++row) {
+				new group;
+				cache_get_value_name_int(row, "id", group);
+				if(!(1 <= group <= MAX_GROUPS)) continue;
+				--group;
+				for(new w; w < MAX_GROUP_WEAPONS; ++w) {
+					format(number, sizeof(number), "%d", w + 1);
+					cache_get_value_name_int(row, number, LockerWep[group][lwRank][w]);
+				}
 			}
-			iIndex++;
 		}
 		case GROUP_QUERY_LOCKERS: while(iIndex < iRows) {
 

@@ -160,6 +160,9 @@ Dialog:weapon_withdraw(playerid, response, listitem, inputtext[]) {
 		if(PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(GunID)] != GunID) {
 			arrGroupData[group][g_iLockerStock] -= arrGroupData[group][g_iLockerCost][listitem];
 			GivePlayerValidWeapon(playerid, GunID);
+			SaveGroup(group);
+			LockerReq[playerid][0] = 0;
+			LockerReq[playerid][1] = -1;
 			SendClientMessageEx(playerid, COLOR_WHITE, "You withdraw a %s from the locker.", Weapon_ReturnName(GunID));
 			format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn a %s from the weapon locker (Cost: %d)", GetPlayerNameEx(playerid), Weapon_ReturnName(GunID), arrGroupData[group][g_iLockerCost][listitem]);
 			GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
@@ -193,12 +196,13 @@ Dialog:weapon_deposit(playerid, response, listitem, inputtext[]) {
 		new cost = arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerCost][slot];
 		if(cost < 0 || arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerStock] > cellmax - cost)
 			return SendClientMessageEx(playerid, COLOR_RED, "The locker cannot accept these materials.");
-		PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(id)] = 0;
+		PlayerInfo[playerid][pGuns][weaponSlot] = 0;
 		SetPlayerWeaponsEx(playerid);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited a %s into the locker.", Weapon_ReturnName(id));
 		format(szMiscArray, sizeof(szMiscArray), "%s has deposited a %s into the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(id));
 		GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
-		arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerStock] += arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerCost][slot];
+		arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerStock] += cost;
+		SaveGroup(PlayerInfo[playerid][pMember]);
 		DepositMenu(playerid, PlayerInfo[playerid][pMember]);
 	} else {
 		ShowGroupWeapons(playerid, PlayerInfo[playerid][pMember]);
@@ -207,6 +211,7 @@ Dialog:weapon_deposit(playerid, response, listitem, inputtext[]) {
 }
 
 stock SaveLockerRanks(i) {
+	if(!ValidGroup(i)) return 0;
 	new query[2048], wep[12];
 	format(query, 2048, "UPDATE `locker_restrict` SET ");
 	for(new w = 0; w < 16; w++) {
@@ -218,9 +223,11 @@ stock SaveLockerRanks(i) {
 }
 
 stock SaveWeapons(i) {
+	if(!ValidGroup(i)) return 0;
 	new query[2048], wep[12];
 	format(query, 2048, "UPDATE `gweaponsnew` SET ");
 	for(new w = 0; w < 46; w++) {
+		if(18 <= w <= 20) continue;
 		format(wep, sizeof(wep), "%d", w+1);
 		SaveInteger(query, "gweaponsnew", i+1, wep, LockerWep[i][lwWep][w]);
 	}
@@ -229,7 +236,9 @@ stock SaveWeapons(i) {
 }
 
 stock CrateTransferOption(playerid, group) {
-	if(!ValidGroup(group)) return 1;
+	if(!ValidGroup(group) || group != PlayerInfo[playerid][pMember]) return 1;
+	SetPVarInt(playerid, "WeaponLockerGroup", group);
+	if(!CanUseGroupWeaponLocker(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this weapon locker at this time.");
 	if(PlayerInfo[playerid][pLeader] == group) {
 		new dialogInfo[] = "Deploy Crate Box\nTransfer to Crate\nDeposit Crate\nRecall Crate";
 		Dialog_Show(playerid, crate_tran_option, DIALOG_STYLE_LIST, "Crate Transfer", dialogInfo, "Select", "Go Back");
@@ -241,6 +250,7 @@ stock CrateTransferOption(playerid, group) {
 }
 
 Dialog:crate_tran_option(playerid, response, listitem, inputtext[]) {
+	if(!CanUseGroupWeaponLocker(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this weapon locker at this time.");
 	if(response) {
 		if(!ValidGroup(PlayerInfo[playerid][pMember])) return 1;
 		szMiscArray[0] = 0;
@@ -279,6 +289,8 @@ Dialog:crate_tran_option(playerid, response, listitem, inputtext[]) {
 					if(CrateBox[gbox][cbLifespan] > gettime()) return SendClientMessageEx(playerid, COLOR_YELLOW, "SMS: Signal will be active after %s, Sender: MOLE (555)", date(CrateBox[gbox][cbLifespan], 1));
 					strcat(szMiscArray, "{F69500}WARNING: Are you sure you want to recall your group crate?{FFFFFF}\n\n");
 					strcat(szMiscArray, "By recalling the crate it will be destroyed along with all of it's contents!\n");
+					SetPVarInt(playerid, "RecallCrate", gbox);
+					SetPVarInt(playerid, "RecallCrateGeneration", CrateGeneration[gbox]);
 					Dialog_Show(playerid, recall_box_check, DIALOG_STYLE_MSGBOX, "Recall Crate?", szMiscArray, "Recall", "Cancel");
 				}
 			}
@@ -297,24 +309,36 @@ Dialog:crate_tran_option(playerid, response, listitem, inputtext[]) {
 }
 
 Dialog:recall_box_check(playerid, response, listitem, inputtext[]) {
-	if(!ValidGroup(PlayerInfo[playerid][pMember])) return 1;
+	new box = GetPVarInt(playerid, "RecallCrate"), generation = GetPVarInt(playerid, "RecallCrateGeneration");
+	new bool:pending = GetPVarType(playerid, "RecallCrate") != 0;
+	DeletePVar(playerid, "RecallCrate");
+	DeletePVar(playerid, "RecallCrateGeneration");
+	if(!CanUseGroupWeaponLocker(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this weapon locker at this time.");
 	if(response) {
-		new gbox;
-		GetGroupCrate(playerid, gbox);
-		if(gbox == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Appears your group crate has already been recalled."), CrateTransferOption(playerid, PlayerInfo[playerid][pMember]);
-		DestroyCrate(gbox);
+		if(!pending || !IsGroupLeader(playerid)) return 1;
+		if(!IsValidCrate(box) || !CrateBox[box][cbActive] || CrateBox[box][cbGroup] != PlayerInfo[playerid][pMember] || CrateGeneration[box] != generation) return SendClientMessageEx(playerid, COLOR_GREY, "The group crate has changed. Open the crate menu again.");
+		if(CrateBox[box][cbLifespan] > gettime()) return SendClientMessageEx(playerid, COLOR_YELLOW, "You can recall this crate after %s.", date(CrateBox[box][cbLifespan], 1));
+		DestroyCrate(box);
 		SendClientMessageEx(playerid, COLOR_YELLOW, "You have recalled your group crate, all contents were removed.");
-		CrateTransferOption(playerid, PlayerInfo[playerid][pMember]);
-	} else {
-		CrateTransferOption(playerid, PlayerInfo[playerid][pMember]);
 	}
-	return 1;
+	return CrateTransferOption(playerid, PlayerInfo[playerid][pMember]);
 }
 
 Dialog:deploy_transfer_crate(playerid, response, listitem, inputtext[]) {
-	if(!ValidGroup(PlayerInfo[playerid][pMember])) return 1;
+	if(!CanUseGroupWeaponLocker(playerid)) 
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this weapon locker at this time.");
+	
 	if(response) {
 		szMiscArray[0] = 0;
+		if(!IsGroupLeader(playerid)) 
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Only group leaders can deploy a transfer crate.");
+		
+		if(CrateAction[playerid][caTimer]) 
+			return SendClientMessageEx(playerid, COLOR_GREY, "Please finish your current crate action first.");
+		
+		new box;
+		GetGroupCrate(playerid, box);
+		if(box != -1) return SendClientMessageEx(playerid, COLOR_YELLOW, "Your group already has an active transfer crate.");
 		new Float: pcbPos[3];
 		if(CarryCrate[playerid] != -1) return SendClientMessageEx(playerid, COLOR_RED, "Your carrying a crate put it down before deploying a transfer crate!"), CrateTransferOption(playerid, PlayerInfo[playerid][pMember]);
 		GetPlayerPos(playerid, pcbPos[0], pcbPos[1], pcbPos[2]);
@@ -338,12 +362,12 @@ Dialog:deploy_transfer_crate(playerid, response, listitem, inputtext[]) {
 				CrateBox[c][cbActive] = 1;
 				SaveCrate(c);
 				UpdateCrateBox(c);
-				break;
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You take out a transfer crate from the locker!");
+				Streamer_Update(playerid);
+				return CrateTransferOption(playerid, PlayerInfo[playerid][pMember]);
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_YELLOW, "You take out a transfer crate from the locker!");
-		Streamer_Update(playerid);
-		CrateTransferOption(playerid, PlayerInfo[playerid][pMember]);
+		SendClientMessageEx(playerid, COLOR_RED, "No free crate slots are available.");
 	} else {
 		CrateTransferOption(playerid, PlayerInfo[playerid][pMember]);
 	}
@@ -365,6 +389,10 @@ Dialog:crate_withdraw(playerid, response, listitem, inputtext[]) {
 		if(!CanTransferToCrate(GunID)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't transfer that item to the crate!"), WeaponMenu(playerid, PlayerInfo[playerid][pMember], 1);
 		if(arrGroupData[group][g_iLockerStock] < arrGroupData[group][g_iLockerCost][listitem]) return SendClientMessageEx(playerid, COLOR_RED, "Your locker doesn't have the materials to craft a %s.", Weapon_ReturnName(GunID)), WeaponMenu(playerid, PlayerInfo[playerid][pMember], 1);
 
+		new box = CarryCrate[playerid];
+		if(!IsValidCrate(box) || !CrateBox[box][cbActive] || CrateBox[box][cbGroup] != group || BeingMoved[box] != playerid) return SendClientMessageEx(playerid, COLOR_RED, "You must be holding your group's transfer crate.");
+		SetPVarInt(playerid, "GunCrateBox", box);
+		SetPVarInt(playerid, "GunCrateGeneration", CrateGeneration[box]);
 		SetPVarInt(playerid, "GunCrateID", GunID);
 		SetPVarInt(playerid, "GunCrateSlot", listitem);
 		format(szMiscArray, sizeof(szMiscArray), "Please enter the amount you would like to transfer to the crate.\n\nLocker Stock: %s\nCost Per %s: %s", number_format(arrGroupData[group][g_iLockerStock]), Weapon_ReturnName(GunID), number_format(arrGroupData[group][g_iLockerCost][listitem]));
@@ -384,22 +412,24 @@ Dialog:crate_tran_amount(playerid, response, listitem, inputtext[]) {
 			|| !GetPVarType(playerid, "GunCrateSlot") || !(0 <= slot < MAX_GROUP_WEAPONS)) return 1;
 		if(arrGroupData[group][g_iLockerGuns][slot] != gun || !CanTransferToCrate(gun)
 			|| PlayerInfo[playerid][pRank] < LockerWep[group][lwRank][slot]) return 1;
-		new gbox, amount, cost = arrGroupData[group][g_iLockerCost][slot];
+		new gbox = GetPVarInt(playerid, "GunCrateBox"), amount, cost = arrGroupData[group][g_iLockerCost][slot];
+		if(CrateAction[playerid][caTimer]) return SendClientMessageEx(playerid, COLOR_GREY, "Please finish your current crate action first.");
 		if(cost < 0 || !ParseBankTransferAmount(inputtext, amount)) return SendClientMessageEx(playerid, COLOR_RED, "Enter a valid positive amount.");
-		GetGroupCrate(playerid, gbox);
-		if(gbox < 0 || gbox >= MAX_CRATES || CarryCrate[playerid] != gbox || CrateBox[gbox][cbGroup] != group) return SendClientMessageEx(playerid, COLOR_RED, "Your no longer holding the group crate.");
+		if(!GetPVarType(playerid, "GunCrateBox") || !IsValidCrate(gbox) || !CrateBox[gbox][cbActive]
+			|| CarryCrate[playerid] != gbox || BeingMoved[gbox] != playerid || CrateBox[gbox][cbGroup] != group
+			|| CrateGeneration[gbox] != GetPVarInt(playerid, "GunCrateGeneration")) return SendClientMessageEx(playerid, COLOR_RED, "You are no longer holding the selected group crate.");
 		if(arrGroupData[group][g_iLockerStock] < 0 || (cost > 0 && amount > arrGroupData[group][g_iLockerStock] / cost)) {
 			format(szMiscArray, sizeof(szMiscArray), "Please enter the amount you would like to transfer to the crate.\n\nLocker Stock: %s\nCost Per %s: %s\n\n{FF0000}Error: You can't go below 0 or you don't have enough materials.", number_format(arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerStock]), Weapon_ReturnName(GetPVarInt(playerid, "GunCrateID")), number_format(arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerCost][GetPVarInt(playerid, "GunCrateSlot")]));
 	    	Dialog_Show(playerid, crate_tran_amount, DIALOG_STYLE_INPUT, "How many to transfer?", szMiscArray, "Submit", "Go Back");
 			return 1;
 		}
-		if(CrateBox[gbox][cbWepAmount][slot] > cellmax - amount
+		if(CrateBox[gbox][cbWepAmount][slot] < 0 || CrateBox[gbox][cbWepAmount][slot] > cellmax - amount
 			|| (CrateBox[gbox][cbWepAmount][slot] > 0 && CrateBox[gbox][cbWep][slot] != gun))
 			return SendClientMessageEx(playerid, COLOR_RED, "The crate cannot accept these weapons.");
 		new total = cost * amount;
-		CrateBox[CarryCrate[playerid]][cbWep][GetPVarInt(playerid, "GunCrateSlot")] = GetPVarInt(playerid, "GunCrateID");
-		CrateBox[CarryCrate[playerid]][cbWepAmount][GetPVarInt(playerid, "GunCrateSlot")] += amount;
-		arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerStock] -= total;
+		CrateBox[gbox][cbWep][slot] = gun;
+		CrateBox[gbox][cbWepAmount][slot] += amount;
+		arrGroupData[group][g_iLockerStock] -= total;
 		SendClientMessageEx(playerid, COLOR_WHITE, "You transferred %s %s(s) to the crate.", number_format(amount), Weapon_ReturnName(GetPVarInt(playerid, "GunCrateID")));
 		SaveGroup(PlayerInfo[playerid][pMember]);
 		SaveCrate(CarryCrate[playerid]);
@@ -407,59 +437,76 @@ Dialog:crate_tran_amount(playerid, response, listitem, inputtext[]) {
 		GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
 		DeletePVar(playerid, "GunCrateID");
 		DeletePVar(playerid, "GunCrateSlot");
+		DeletePVar(playerid, "GunCrateBox");
+		DeletePVar(playerid, "GunCrateGeneration");
 		WeaponMenu(playerid, PlayerInfo[playerid][pMember], 1);
 	} else {
 		DeletePVar(playerid, "GunCrateID");
 		DeletePVar(playerid, "GunCrateSlot");
+		DeletePVar(playerid, "GunCrateBox");
+		DeletePVar(playerid, "GunCrateGeneration");
 		WeaponMenu(playerid, PlayerInfo[playerid][pMember], 1);
 	}
 	return 1;
 }
 
 stock DepositCrateContents(playerid, boxid) {
-	if(!IsValidCrate(boxid) || !CrateBox[boxid][cbActive]) return 0;
-	if(!ValidGroup(PlayerInfo[playerid][pMember])) return 1;
+	if(!CanUseGroupWeaponLocker(playerid)) 
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this weapon locker at this time.");
+	
+	if(!IsValidCrate(boxid) || !CrateBox[boxid][cbActive] || CarryCrate[playerid] != boxid || BeingMoved[boxid] != playerid) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You must be holding the crate to deposit it.");
+	
+	if(CrateAction[playerid][caTimer]) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "Please finish your current crate action first.");
+	
+	new group = PlayerInfo[playerid][pMember], materials, remaining;
+	if(arrGroupData[group][g_iLockerStock] < 0) 
+		return SendClientMessageEx(playerid, COLOR_RED, "The locker material stock is invalid.");
+	
 	if(CrateBox[boxid][cbGroup] != -1) {
-		for(new c = 0; c < 16; c++) {
-			if(CrateBox[boxid][cbWep][c] > 0) {
-				for(new l = 0; l < 16; l++) {
-					if(CrateBox[boxid][cbWep][c] == arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerGuns][l]) {
-						arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerStock] += (CrateBox[boxid][cbWepAmount][c] * arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerCost][l]);
-						CrateBox[boxid][cbWep][c] = 0;
-					}
-				}
+		new slots[MAX_GROUP_WEAPONS], accepted;
+		for(new c; c < MAX_GROUP_WEAPONS; ++c) {
+			slots[c] = -1;
+			new gun = CrateBox[boxid][cbWep][c], amount = CrateBox[boxid][cbWepAmount][c];
+			if(amount < 0 || (amount > 0 && !CanTransferToCrate(gun))) return SendClientMessageEx(playerid, COLOR_RED, "The crate contains an invalid weapon amount or type.");
+			if(!amount) continue;
+			IsInSlot(group, gun, slots[c]);
+			if(slots[c] == -1) {
+				++remaining;
+				continue;
 			}
+			new cost = arrGroupData[group][g_iLockerCost][slots[c]];
+			if(cost < 0 || (cost > 0 && amount > (cellmax - materials) / cost)) return SendClientMessageEx(playerid, COLOR_RED, "The crate material value is invalid or too large.");
+			materials += amount * cost;
+			++accepted;
 		}
-		format(szMiscArray, sizeof(szMiscArray), "* %s has unloaded the contents of the crate into the locker.", GetPlayerNameEx(playerid));
-		ProxDetector(25.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		DestroyCrate(boxid);
+		if(!accepted) return SendClientMessageEx(playerid, COLOR_GREY, "This locker does not accept any of the weapons in this crate.");
+		if(arrGroupData[group][g_iLockerStock] > cellmax - materials) return SendClientMessageEx(playerid, COLOR_RED, "The locker cannot accept these materials.");
+		for(new c; c < MAX_GROUP_WEAPONS; ++c) {
+			if(slots[c] == -1) continue;
+			CrateBox[boxid][cbWep][c] = 0;
+			CrateBox[boxid][cbWepAmount][c] = 0;
+		}
 	} else {
-		new 
-			facility = CrateBox[boxid][cbFacility], 	
-			group = PlayerInfo[playerid][pMember];
-		
-		if(!(0 <= facility < MAX_CRATE_FACILITY)) 
-			return SendClientMessageEx(playerid, COLOR_GREY, "This crate has no valid source facility.");
-		
+		new facility = CrateBox[boxid][cbFacility];
+		if(!(0 <= facility < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GREY, "This crate has no valid source facility.");
+		if(CrateFacility[facility][cfGroup] == group && !CrateBox[boxid][cbPaid]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot deposit an unpaid crate from your own facility. Use /ordercrates to buy locker stock.");
 		new multiplier = CrateFacility[facility][cfProdMulti];
-		if(multiplier < 1 || CrateBox[boxid][cbMats] < 0 || CrateBox[boxid][cbMats] > cellmax / multiplier) 
-			return SendClientMessageEx(playerid, COLOR_RED, "The crate material amount is invalid.");
-		
-		new materials = CrateBox[boxid][cbMats] * multiplier;
-		if(arrGroupData[group][g_iLockerStock] < 0 || arrGroupData[group][g_iLockerStock] > cellmax - materials) 
-			return SendClientMessageEx(playerid, COLOR_RED, "The locker cannot accept these materials.");
-		
-		if(CrateFacility[facility][cfGroup] == group && !CrateBox[boxid][cbPaid]) {
-			SendClientMessageEx(playerid, COLOR_GRAD2, "You can't deposit this crate as it's unpaid!");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "Please have the group leader order crates if you need to stock up.");
-		} else {
-			arrGroupData[group][g_iLockerStock] += materials;
-			SaveGroup(group);
-			DestroyCrate(boxid);
-			format(szMiscArray, sizeof(szMiscArray), "* %s has unloaded the contents of the crate into the locker.", GetPlayerNameEx(playerid));
-			ProxDetector(25.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		}
+		if(multiplier < 1 || CrateBox[boxid][cbMats] < 0 || CrateBox[boxid][cbMats] > cellmax / multiplier) return SendClientMessageEx(playerid, COLOR_RED, "The crate material amount is invalid.");
+		materials = CrateBox[boxid][cbMats] * multiplier;
+		if(arrGroupData[group][g_iLockerStock] > cellmax - materials) return SendClientMessageEx(playerid, COLOR_RED, "The locker cannot accept these materials.");
 	}
+	arrGroupData[group][g_iLockerStock] += materials;
+	SaveGroup(group);
+	if(remaining) {
+		SaveCrate(boxid);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Deposited %s materials. Weapons not accepted by this locker remain in the crate.", number_format(materials));
+	} else DestroyCrate(boxid);
+	format(szMiscArray, sizeof(szMiscArray), "%s deposited crate contents into the weapon locker (Materials: %d).", GetPlayerNameEx(playerid), materials);
+	GroupLog(group, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "* %s has unloaded the accepted contents of the crate into the locker.", GetPlayerNameEx(playerid));
+	ProxDetector(25.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	return 1;
 }
 
@@ -540,6 +587,8 @@ Dialog:wep_restrict(playerid, response, listitem, inputtext[]) {
 		if(!(0 <= listitem < MAX_GROUP_WEAPONS)) return 1;
 		if(!arrGroupData[group][g_iLockerGuns][listitem]) return SendClientMessageEx(playerid, COLOR_GRAD1, "The selected slot is currently empty!"), WeaponRankList(playerid);
 		SetPVarInt(playerid, "RGunID", listitem);
+		SetPVarInt(playerid, "RGunGroup", group);
+		SetPVarInt(playerid, "RGunWeapon", arrGroupData[group][g_iLockerGuns][listitem]);
 		format(szMiscArray, sizeof(szMiscArray), "Please specify what rank & above can access the %s.\n\nCurrent Rank: %d+", Weapon_ReturnName(arrGroupData[group][g_iLockerGuns][listitem]), LockerWep[group][lwRank][listitem]);
 		Dialog_Show(playerid, set_weprank, DIALOG_STYLE_INPUT, "Restrict Weapon Withdraw", szMiscArray, "Ok", "Go Back");
 	}
@@ -551,7 +600,8 @@ Dialog:set_weprank(playerid, response, listitem, inputtext[]) {
 	if(!IsGroupLeader(playerid)) return 1;
 	new group = PlayerInfo[playerid][pMember];
 	if(response) {
-		if(!GetPVarType(playerid, "RGunID") || !(0 <= GetPVarInt(playerid, "RGunID") < MAX_GROUP_WEAPONS)) return 1;
+		if(!GetPVarType(playerid, "RGunID") || !(0 <= GetPVarInt(playerid, "RGunID") < MAX_GROUP_WEAPONS) || GetPVarInt(playerid, "RGunGroup") != group) return 1;
+		if(!arrGroupData[group][g_iLockerGuns][GetPVarInt(playerid, "RGunID")] || arrGroupData[group][g_iLockerGuns][GetPVarInt(playerid, "RGunID")] != GetPVarInt(playerid, "RGunWeapon")) return SendClientMessageEx(playerid, COLOR_GREY, "The weapon slot changed. Open the restriction menu again.");
 		if(isnull(inputtext)) {
 			format(szMiscArray, sizeof(szMiscArray), "Please specify what rank & above can access the %s.\n\nCurrent Rank: %d+\n\n{FF0000}ERROR: You must specify a rank number!", Weapon_ReturnName(arrGroupData[group][g_iLockerGuns][GetPVarInt(playerid, "RGunID")]), LockerWep[group][lwRank][GetPVarInt(playerid, "RGunID")], MAX_GROUP_RANKS-1);
 			Dialog_Show(playerid, set_weprank, DIALOG_STYLE_INPUT, "Restrict Weapon Withdraw", szMiscArray, "Ok", "Go Back");
@@ -573,9 +623,13 @@ Dialog:set_weprank(playerid, response, listitem, inputtext[]) {
 		SendClientMessageEx(playerid, COLOR_YELLOW, "You have set the %s weapon restriction to %d+ only.", Weapon_ReturnName(arrGroupData[group][g_iLockerGuns][GetPVarInt(playerid, "RGunID")]), strval(inputtext));
 		SaveLockerRanks(group);
 		DeletePVar(playerid, "RGunID");
+		DeletePVar(playerid, "RGunGroup");
+		DeletePVar(playerid, "RGunWeapon");
 		WeaponRankList(playerid);
 	} else {
 		DeletePVar(playerid, "RGunID");
+		DeletePVar(playerid, "RGunGroup");
+		DeletePVar(playerid, "RGunWeapon");
 		WeaponRankList(playerid);
 	}
 	return 1;
@@ -616,6 +670,7 @@ CMD:allow(playerid, params[]) {
 	if(PlayerInfo[target][pGuns][GetLoadoutWeaponSlot(LockerReq[target][0])] != LockerReq[target][0]) {
 		arrGroupData[PlayerInfo[target][pMember]][g_iLockerStock] -= arrGroupData[PlayerInfo[target][pMember]][g_iLockerCost][LockerReq[target][1]];
 		GivePlayerValidWeapon(target, LockerReq[target][0]);
+		SaveGroup(group);
 		SendClientMessageEx(target, COLOR_WHITE, "You withdraw a %s from the locker - authorized by %s.", Weapon_ReturnName(LockerReq[target][0]), GetPlayerNameEx(playerid));
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have authorized %s to withdraw a %s from the locker.", GetPlayerNameEx(target), Weapon_ReturnName(LockerReq[target][0]));
 		format(szMiscArray, sizeof(szMiscArray), "%s has authorized %s to withdraw a %s from the weapon locker (Cost: %d)", GetPlayerNameEx(playerid), GetPlayerNameEx(target), Weapon_ReturnName(LockerReq[target][0]), arrGroupData[PlayerInfo[target][pMember]][g_iLockerCost][LockerReq[target][1]]);
@@ -630,70 +685,80 @@ CMD:allow(playerid, params[]) {
 }
 
 ptask LockerTimer[1000](i) {
-	if(LockerReq[i][0] > 0) {
-		if(LockerReq[i][2] > gettime()) {
-			if(PlayerBusy(i) || PlayerInfo[i][pJailTime] > 0 || PlayerCuffed[i] != 0) {
-			SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Your weapon withdraw request for the %s was interrupted.", Weapon_ReturnName(LockerReq[i][0]));
-			LockerReq[i][0] = 0;
-			LockerReq[i][1] = -1;
-			}
-		}
-		if(LockerReq[i][2] <= gettime()) {
-			SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Your weapon withdraw request for the %s has expired.", Weapon_ReturnName(LockerReq[i][0]));
-			LockerReq[i][0] = 0;
-			LockerReq[i][1] = -1;
-		}
+	if(!LockerReq[i][0]) return 1;
+	if(LockerReq[i][2] <= gettime()) {
+		SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Your weapon withdraw request for the %s has expired.", Weapon_ReturnName(LockerReq[i][0]));
+	} else {
+		new group = LockerReq[i][3], slot = LockerReq[i][1];
+		if(ValidGroup(group) && PlayerInfo[i][pMember] == group && 0 <= slot < MAX_GROUP_WEAPONS
+			&& arrGroupData[group][g_iLockerGuns][slot] == LockerReq[i][0]
+			&& !PlayerBusy(i) && !PlayerInfo[i][pJailTime] && !PlayerCuffed[i] && !PlayerTied[i]) return 1;
+		SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Your weapon withdraw request for the %s was interrupted.", Weapon_ReturnName(LockerReq[i][0]));
+	}
+	LockerReq[i][0] = 0;
+	LockerReq[i][1] = -1;
+	LockerReq[i][3] = INVALID_GROUP_ID;
+	return 1;
+}
+
+stock GetLockerConversion(group, &total, &materials) {
+	total = 0;
+	materials = 0;
+	if(!ValidGroup(group)) return 0;
+	for(new w; w < 46; ++w) {
+		new amount = LockerWep[group][lwWep][w], slot;
+		if(amount < 0) return 0;
+		if(!amount) continue;
+		IsInSlot(group, w + 1, slot);
+		if(slot == -1) continue;
+		new cost = arrGroupData[group][g_iLockerCost][slot];
+		if(cost < 0) return 0;
+		if(!cost) continue;
+		if(amount > cellmax - total || amount > (cellmax - materials) / cost) return 0;
+		total += amount;
+		materials += amount * cost;
 	}
 	return 1;
 }
 
 CMD:convertlocker(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
-		new group, total, amount;
-		if(sscanf(params, "i", group)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /convertlocker [groupid]");
-		if(!ValidGroup(group)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group specified!");
-		for(new l = 0; l < MAX_GROUP_WEAPONS; l++) {
-			if(arrGroupData[group][g_iLockerGuns][l] > 0) {
-				if(LockerWep[group][lwWep][arrGroupData[group][g_iLockerGuns][l]-1] > 0) {
-					total += LockerWep[group][lwWep][arrGroupData[group][g_iLockerGuns][l]-1];
-					amount += (LockerWep[group][lwWep][arrGroupData[group][g_iLockerGuns][l]-1] * arrGroupData[group][g_iLockerCost][l]);
-				}
-			}
-		}
-		SetPVarInt(playerid, "converttotal", total);
-		SetPVarInt(playerid, "convertamount", amount);
-		SetPVarInt(playerid, "convertgroup", group);
-		format(szMiscArray, sizeof(szMiscArray), "You're about to convert %s's old locker into \"High Grade Materials\"!\n\nHave you finished setting up the group lockers & costs via /editgroup?\n\nTotal Weapons: %s\nTotal Materials: %s", arrGroupData[group][g_szGroupName], number_format(total), number_format(amount));
-		if(amount > 0) {
-			Dialog_Show(playerid, convert_locker, DIALOG_STYLE_MSGBOX, "Are you sure?", szMiscArray, "Yes", "No");
-		} else {
-			new dialogInfo[] = "There is no weapons to convert from the old locker.";
-			Dialog_Show(playerid, -1, DIALOG_STYLE_MSGBOX, "No materials to convert", dialogInfo, "Close", "");
-		}
-	} else {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command!");
-	}
-	return 1;
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pFactionModerator] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command!");
+	new group, total, materials;
+	if(sscanf(params, "i", group)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /convertlocker [groupid]");
+	if(!ValidGroup(group)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group specified!");
+	if(!GetLockerConversion(group, total, materials)) return SendClientMessageEx(playerid, COLOR_RED, "The old locker contains invalid quantities or weapon costs.");
+	if(!materials) return SendClientMessageEx(playerid, COLOR_GREY, "There are no priced weapons to convert. Configure the locker weapons and costs first.");
+	if(arrGroupData[group][g_iLockerStock] < 0 || arrGroupData[group][g_iLockerStock] > cellmax - materials) return SendClientMessageEx(playerid, COLOR_RED, "The locker cannot accept these materials.");
+	SetPVarInt(playerid, "converttotal", total);
+	SetPVarInt(playerid, "convertamount", materials);
+	SetPVarInt(playerid, "convertgroup", group);
+	format(szMiscArray, sizeof(szMiscArray), "Convert %s's old locker into high grade materials?\n\nWeapons to convert: %s\nMaterials to add: %s\n\nWeapons without a configured positive cost will remain in the old locker.", arrGroupData[group][g_szGroupName], number_format(total), number_format(materials));
+	return Dialog_Show(playerid, convert_locker, DIALOG_STYLE_MSGBOX, "Convert Old Locker", szMiscArray, "Convert", "Cancel");
 }
 
 Dialog:convert_locker(playerid, response, listitem, inputtext[]) {
-	if(response) {
-		if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
-
-			arrGroupData[GetPVarInt(playerid, "convertgroup")][g_iLockerStock] += GetPVarInt(playerid, "convertamount");
-			SendClientMessageEx(playerid, COLOR_YELLOW, "%s weapons have been converted into materials (Amount: %s)", number_format(GetPVarInt(playerid, "converttotal")), number_format(GetPVarInt(playerid, "convertamount")));
-			for(new w = 0; w < 46; w++) {
-				LockerWep[GetPVarInt(playerid, "convertgroup")][lwWep][w] = 0;
-			}
-			//SaveWeapons(GetPVarInt(playerid, "convertgroup"));
-			DeletePVar(playerid, "converttotal");
-			DeletePVar(playerid, "convertamount");
-			DeletePVar(playerid, "convertgroup");
-		}
-	} else {
-		DeletePVar(playerid, "converttotal");
-		DeletePVar(playerid, "convertamount");
-		DeletePVar(playerid, "convertgroup");
+	new group = GetPVarInt(playerid, "convertgroup"), quotedTotal = GetPVarInt(playerid, "converttotal"), quotedMaterials = GetPVarInt(playerid, "convertamount");
+	new bool:pending = GetPVarType(playerid, "convertgroup") != 0;
+	DeletePVar(playerid, "convertgroup");
+	DeletePVar(playerid, "converttotal");
+	DeletePVar(playerid, "convertamount");
+	if(!response || !pending) return 1;
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pFactionModerator] < 1) return 1;
+	new total, materials;
+	if(!ValidGroup(group) || !GetLockerConversion(group, total, materials) || materials < 1) return SendClientMessageEx(playerid, COLOR_GREY, "The old locker is no longer available for conversion.");
+	if(total != quotedTotal || materials != quotedMaterials) return SendClientMessageEx(playerid, COLOR_GREY, "The locker contents or costs changed. Use /convertlocker again.");
+	if(arrGroupData[group][g_iLockerStock] < 0 || arrGroupData[group][g_iLockerStock] > cellmax - materials) return SendClientMessageEx(playerid, COLOR_RED, "The locker cannot accept these materials.");
+	for(new w; w < 46; ++w) {
+		if(!LockerWep[group][lwWep][w]) continue;
+		new slot;
+		IsInSlot(group, w + 1, slot);
+		if(slot != -1 && arrGroupData[group][g_iLockerCost][slot] > 0) LockerWep[group][lwWep][w] = 0;
 	}
+	arrGroupData[group][g_iLockerStock] += materials;
+	SaveWeapons(group);
+	SaveGroup(group);
+	format(szMiscArray, sizeof(szMiscArray), "%s converted %d old locker weapons into %d materials.", GetPlayerNameEx(playerid), total, materials);
+	GroupLog(group, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "%s weapons have been converted into %s materials.", number_format(total), number_format(materials));
 	return 1;
 }
