@@ -58,8 +58,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	{
 		case DIALOG_AMMUNATION_GUNS:
 		{
-			if(PlayerInfo[playerid][pGunLic] < gettime())
+			if(PlayerInfo[playerid][pGunLic] <= gettime())
 				return SendClientMessageEx(playerid, COLOR_GREY, "You must have an active license to purchase guns from a gun-shop!");
+			
 			if(!response)
 				return 1;
 

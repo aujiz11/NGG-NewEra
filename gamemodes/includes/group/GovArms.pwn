@@ -160,7 +160,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 					if(!response) return ShowArmsMenu(playerid);
 
-					if(PlayerInfo[playerid][pGunLic] > gettime()) return SendClientMessageEx(playerid, COLOR_GRAD2, "You already have a valid gun license");
+					if(!GunLicense_CanApply(playerid)) return 1;
 
 					ShowPlayerDialogEx(playerid, APPLY_GUN_LIC, DIALOG_STYLE_MSGBOX, 
 						"Gun License Application", 

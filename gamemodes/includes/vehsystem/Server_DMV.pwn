@@ -130,8 +130,9 @@ CMD:revokelicense(playerid, params[])
 					format(string,sizeof(string),"HQ: %s %s %s has revoked %s' firearm's license, reason: %s.", sz_FacInfo[2], sz_FacInfo[0], GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
 					SendGroupMessage(GROUP_TYPE_LEA,TEAM_BLUE_COLOR,string);
 					SendClientMessageEx(playerid,COLOR_WHITE,"You have revoked %s' firearm's license.",GetPlayerNameEx(giveplayerid));
-					format(string, sizeof(string), "%s(%d) has taken %s'(%s) firearm's license. reason: %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);
+					format(string, sizeof(string), "%s(%d) has taken %s'(%d) firearm's license. reason: %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);
 					Log("logs/licenses.log", string);
+					++GunLicenseRequest[giveplayerid];
 					PlayerInfo[giveplayerid][pGunLic] = 0;
 					return 1;
 				}

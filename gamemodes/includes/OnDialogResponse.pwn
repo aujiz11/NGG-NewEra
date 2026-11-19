@@ -5096,7 +5096,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				strcat(LicenseString, string, sizeof(LicenseString));
 				format(string, sizeof(string), "-Sailing License: %s.\n", PlayerInfo[giveplayerid][pBoatLic] ? ("Passed"):("Not Passed"));
 				strcat(LicenseString, string, sizeof(LicenseString));
-				format(string, sizeof(string), "-Weapon License: %s.\n", PlayerInfo[giveplayerid][pGunLic] ? ("Passed"):("Not Passed"));
+				format(string, sizeof(string), "-Weapon License: %s.\n", PlayerInfo[giveplayerid][pGunLic] > gettime() ? ("Valid"):("Expired or not acquired"));
 				strcat(LicenseString, string, sizeof(LicenseString));
 				ShowPlayerDialogEx(playerid, MDC_END_ID, DIALOG_STYLE_LIST, "MDC - Logged in | Criminal History", LicenseString, "OK", "Cancel");
 				format(string, sizeof(string), "* %s has ran a license check on %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
