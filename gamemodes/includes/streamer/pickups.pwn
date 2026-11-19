@@ -35,15 +35,12 @@ hook OnGameModeInit() {
 	//CreateDynamicPickup(1240, 23, 195.56, 2120.69, 18.03, -1); //Deliverpt (DeMorgan) floor 
 	//CreateDynamicPickup(1240, 23, -2043.2212,-198.8035,15.0703, -1); // deliverpt doc
 	//CreateDynamicPickup(1240, 23, -2196.9641,-2303.8191,30.6250, -1); // deliverpt angel pine
-	CreateDynamicPickup(1239, 23, 366.54, 159.09, 1008.38, -1); // LICENSES @ CITY HALL
-	CreateDynamicPickup(1239, 23, -1560.963867, 127.491157, 3.554687); //Trucker registration
 	CreateDynamicPickup(371, 23, 1544.2,-1353.4,329.4); //LS towertop
 	//CreateDynamicPickup(1239, 23, -1446.8916,1503.4746,1.7366); //Drug Boatrun
 	CreateDynamicPickup(1239, 23, -1713.961425, 1348.545166, 7.180452, -1); //Pier 69 /getpizza
 	CreateDynamicPickup(1239, 23, 2103.6714,-1785.5222,12.9849, -1); // Idlewood /getpizza
 
 	CreateDynamicPickup(371, 23, 1536.0, -1360.0, 1150.0); //LS towertop
-	CreateDynamicPickup(1242, 23, 1527.5,-12.1,1002.0); //binco armor
 	//CreateDynamicPickup(1240, 23, 279.3000,1853.5619,8.7649); //area51 health
 	CreateDynamicPickup(2485, 23, 2958.2200, -1339.2900, 5.2100, 1);// NGGShop - Car Shop
 	CreateDynamicPickup(1239, 23, 2950.4014, -1283.0776, 4.6875, 1);// NGGShop - Plane Shop
@@ -56,7 +53,6 @@ hook OnGameModeInit() {
 	CreateDynamicPickup(1241, 23, 2946.8672, -1484.9561, 11.0000, 1);// NGGShop - Healthcare
 	CreateDynamicPickup(1239, 23, 2937.2878, -1357.2294, 11.0000, 1);// NGGShop - Gift Reset
 
-	CreateDynamicPickup(1239, 23, 1973.0710, -1298.6427, 25.0172);// Glen Park - Hotdog Stand
 	print("[Streamer] Dynamic Pickups have been loaded.");	
 	return 1;
 }

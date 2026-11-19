@@ -79,10 +79,7 @@ hook OnGameModeInit() {
 	CreateDynamic3DTextLabel("Gift Reset\n/buygiftreset", COLOR_YELLOW, 2937.2878, -1357.2294, 11.0000+0.6, 10.0, .worldid = 1);
 	CreateDynamic3DTextLabel("House Shop\n/houseshop", COLOR_YELLOW, 2938.2734, -1391.0596, 11.0000+0.6, 10.0, .worldid = 1);
 	CreateDynamic3DTextLabel("Misc Shop\n/miscshop", COLOR_YELLOW, 2939.8442, -1411.2906, 11.0000+0.6, 10.0,.worldid = 1);
-	CreateDynamic3DTextLabel("Hot Dogs\n/buyhotdog", COLOR_YELLOW, 2958.0425, -1393.6724, 5.5500+0.6, 10.0, .worldid = 1);
 	CreateDynamic3DTextLabel("HealthCare Shop\n/buyhealthcare", COLOR_YELLOW, 2946.8672, -1484.9561, 11.0000+0.6, 10.0, .worldid = 1);
-	
-	CreateDynamic3DTextLabel("Hot Dogs\n/buyhotdog", COLOR_YELLOW, 1973.0710, -1298.6427, 25.0172+0.6, 10.0);//Glen Park
 	
 	CreateDynamic3DTextLabel("Prisoner Delivery Point\n/deliverinmates", COLOR_YELLOW, -2053.6279,-198.0207,15.0703, 10.0);
 
