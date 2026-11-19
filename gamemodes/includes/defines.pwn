@@ -252,9 +252,9 @@
 
 			/*  ---------------- JOBS ----------------- */
 
-#define 	MAX_JOBNAME_LEN			32
-#define 	MAX_JOBTYPES			JOB_TYPE_COUNT
-#define 	MAX_JOBPOINTS 			100
+#define 		MAX_JOBNAME_LEN				32
+#define 		MAX_JOBTYPES				JOB_TYPE_COUNT
+#define 		MAX_JOBPOINTS 				100
 
 			/*  ---------------- BUSINESSES ----------------- */
                      /* ===[Ignore the tab space]=== */
