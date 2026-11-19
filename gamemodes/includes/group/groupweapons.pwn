@@ -320,7 +320,7 @@ Dialog:deploy_transfer_crate(playerid, response, listitem, inputtext[]) {
 		GetPlayerPos(playerid, pcbPos[0], pcbPos[1], pcbPos[2]);
 		GetXYInFrontOfPlayer(playerid, pcbPos[0], pcbPos[1], 1);
 		for(new c = 0; c < MAX_CRATES; c++) {
-			if(CrateBox[c][cbFacility] == -1 && CrateBox[c][cbGroup] == -1) {
+			if(!CrateBox[c][cbActive] && CrateBox[c][cbFacility] == -1 && CrateBox[c][cbGroup] == -1) {
 				CrateBox[c][cbGroup] = PlayerInfo[playerid][pMember];
 				CrateBox[c][cbPos][0] = pcbPos[0];
 				CrateBox[c][cbPos][1] = pcbPos[1];
@@ -417,6 +417,7 @@ Dialog:crate_tran_amount(playerid, response, listitem, inputtext[]) {
 }
 
 stock DepositCrateContents(playerid, boxid) {
+	if(!IsValidCrate(boxid) || !CrateBox[boxid][cbActive]) return 0;
 	if(!ValidGroup(PlayerInfo[playerid][pMember])) return 1;
 	if(CrateBox[boxid][cbGroup] != -1) {
 		for(new c = 0; c < 16; c++) {
@@ -433,11 +434,27 @@ stock DepositCrateContents(playerid, boxid) {
 		ProxDetector(25.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		DestroyCrate(boxid);
 	} else {
-		if(CrateBox[boxid][cbGroup] == -1 && CrateFacility[CrateBox[boxid][cbFacility]][cfGroup] == PlayerInfo[playerid][pMember] && !CrateBox[boxid][cbPaid]) {
+		new 
+			facility = CrateBox[boxid][cbFacility], 	
+			group = PlayerInfo[playerid][pMember];
+		
+		if(!(0 <= facility < MAX_CRATE_FACILITY)) 
+			return SendClientMessageEx(playerid, COLOR_GREY, "This crate has no valid source facility.");
+		
+		new multiplier = CrateFacility[facility][cfProdMulti];
+		if(multiplier < 1 || CrateBox[boxid][cbMats] < 0 || CrateBox[boxid][cbMats] > cellmax / multiplier) 
+			return SendClientMessageEx(playerid, COLOR_RED, "The crate material amount is invalid.");
+		
+		new materials = CrateBox[boxid][cbMats] * multiplier;
+		if(arrGroupData[group][g_iLockerStock] < 0 || arrGroupData[group][g_iLockerStock] > cellmax - materials) 
+			return SendClientMessageEx(playerid, COLOR_RED, "The locker cannot accept these materials.");
+		
+		if(CrateFacility[facility][cfGroup] == group && !CrateBox[boxid][cbPaid]) {
 			SendClientMessageEx(playerid, COLOR_GRAD2, "You can't deposit this crate as it's unpaid!");
 			SendClientMessageEx(playerid, COLOR_GRAD2, "Please have the group leader order crates if you need to stock up.");
 		} else {
-			arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerStock] += floatround(CrateBox[boxid][cbMats] * CrateFacility[CrateBox[boxid][cbFacility]][cfProdMulti]);
+			arrGroupData[group][g_iLockerStock] += materials;
+			SaveGroup(group);
 			DestroyCrate(boxid);
 			format(szMiscArray, sizeof(szMiscArray), "* %s has unloaded the contents of the crate into the locker.", GetPlayerNameEx(playerid));
 			ProxDetector(25.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

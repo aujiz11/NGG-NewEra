@@ -136,6 +136,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
 hook OnVehicleDeath(vehicleid, killerid) {
 	new carid;
 	if((carid = IsDynamicCrateVehicle(vehicleid)) != -1) {
+		CancelCrateVehicleActions(carid);
 		if(CreateCount(carid) > 0) AnnounceRespawn(CrateVehicle[carid][cvGroupID], "destroyed", carid, CreateCount(carid)), DestroyCratesInVeh(carid);
 		if(CrateVehicle[carid][cvCrate] != -1) DestroyCrate(CrateVehicle[carid][cvCrate]);
 	}
@@ -145,6 +146,7 @@ hook OnVehicleDeath(vehicleid, killerid) {
 hook OnVehicleSpawn(vehicleid) {
 	new carid;
 	if((carid = IsDynamicCrateVehicle(vehicleid)) != -1) {
+		CancelCrateVehicleActions(carid);
 		if(CreateCount(carid) > 0) AnnounceRespawn(CrateVehicle[carid][cvGroupID], "respawned", carid, CreateCount(carid)), DestroyCratesInVeh(carid);
 		if(CrateVehicle[carid][cvCrate] != -1) DestroyCrate(CrateVehicle[carid][cvCrate]);
 		SpawnCrateVeh(carid);
@@ -264,14 +266,17 @@ forward SpawnCrateVeh(vehid);
 public SpawnCrateVeh(vehid) {
 	szMiscArray[0] = 0;
 	if(!(0 <= vehid < MAX_CRATE_VEHCILES)) return 1;
+	CancelCrateVehicleActions(vehid);
     if(!(400 <= CrateVehicle[vehid][cvModel] < 612)) return 1;
 
 	if(CrateVehicle[vehid][cvSpawnID] != INVALID_VEHICLE_ID) {
 		DestroyVehicle(CrateVehicle[vehid][cvSpawnID]);
 		CrateVehicle[vehid][cvSpawnID] = INVALID_VEHICLE_ID;
 	}
-	CrateVehCheck(vehid);
-	if(!CrateVehicle[vehid][cvSpawned] || CrateVehicle[vehid][cvDisabled] || CrateVehicle[vehid][cvImpound]) return 1;
+	
+	if(!CrateVehicle[vehid][cvSpawned] || CrateVehicle[vehid][cvDisabled] || CrateVehicle[vehid][cvImpound]) 
+		return CrateVehCheck(vehid);
+	
 	CrateVehicle[vehid][cvSpawnID] = CreateVehicle(CrateVehicle[vehid][cvModel], CrateVehicle[vehid][cvPos][0], CrateVehicle[vehid][cvPos][1], CrateVehicle[vehid][cvPos][2], CrateVehicle[vehid][cvPos][3], CrateVehicle[vehid][cvColor][0], CrateVehicle[vehid][cvColor][1], -1, 0);
 	if(CrateVehicle[vehid][cvHealth] > CrateVehicle[vehid][cvMaxHealth]) CrateVehicle[vehid][cvHealth] = CrateVehicle[vehid][cvMaxHealth];
 	if(CrateVehicle[vehid][cvHealth] < 350) CrateVehicle[vehid][cvHealth] = 350;
@@ -281,6 +286,7 @@ public SpawnCrateVeh(vehid) {
 	if(CrateVehicle[vehid][cvFuel] > 100) CrateVehicle[vehid][cvFuel] = 100;
 	VehicleFuel[CrateVehicle[vehid][cvSpawnID]] = CrateVehicle[vehid][cvFuel];
 	SetVehicleNumberPlate(CrateVehicle[vehid][cvSpawnID], "Crates v2.0");
+	CrateVehCheck(vehid);
 	return 1;
 }
 
@@ -543,6 +549,7 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 						if(vHealth < 800) return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle is too damaged to be stored.");
 						CrateVehicle[carid][cvHealth] = vHealth;
 						CrateVehicle[carid][cvFuel] = VehicleFuel[veh];
+						CancelCrateVehicleActions(carid);
 						DestroyVehicle(veh);
 						CrateVehicle[carid][cvSpawned] = 0;
 						CrateVehicle[carid][cvSpawnID] = INVALID_VEHICLE_ID;
@@ -610,6 +617,7 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 							CrateVehicle[carid][cvHealth] = vHealth;
 							CrateVehicle[carid][cvFuel] = VehicleFuel[CrateVehicle[carid][cvSpawnID]];
 							if(CreateCount(carid) > 0) AnnounceRespawn(CrateVehicle[carid][cvGroupID], "impounded by an admin", carid, CreateCount(carid));
+							CancelCrateVehicleActions(carid);
 							DestroyVehicle(CrateVehicle[carid][cvSpawnID]);
 							CrateVehicle[carid][cvSpawned] = 0;
 							CrateVehicle[carid][cvSpawnID] = INVALID_VEHICLE_ID;
@@ -684,6 +692,7 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 							CrateVehicle[carid][cvHealth] = vHealth;
 							CrateVehicle[carid][cvFuel] = VehicleFuel[CrateVehicle[carid][cvSpawnID]];
 							if(CreateCount(carid) > 0) AnnounceRespawn(CrateVehicle[carid][cvGroupID], "disabled by an admin", carid, CreateCount(carid));
+							CancelCrateVehicleActions(carid);
 							DestroyVehicle(CrateVehicle[carid][cvSpawnID]);
 							CrateVehicle[carid][cvSpawned] = 0;
 							CrateVehicle[carid][cvSpawnID] = INVALID_VEHICLE_ID;
@@ -788,6 +797,7 @@ stock DeleteCrateVehicle(playerid, veh) {
 	szMiscArray[0] = 0;
 	if(CrateVehicle[veh][cvSpawnID] != INVALID_VEHICLE_ID) {
 		if(CreateCount(veh) > 0) AnnounceRespawn(CrateVehicle[veh][cvGroupID], "deleted by an admin", veh, CreateCount(veh));
+		CancelCrateVehicleActions(veh);
 		DestroyVehicle(CrateVehicle[veh][cvSpawnID]);
 		CrateVehicle[veh][cvSpawned] = 0;
 		CrateVehicle[veh][cvSpawnID] = INVALID_VEHICLE_ID;
@@ -918,6 +928,7 @@ CMD:cvedit(playerid, params[]) {
 					CrateVehicle[cveh][cvHealth] = vHealth;
 					CrateVehicle[cveh][cvFuel] = VehicleFuel[CrateVehicle[cveh][cvSpawnID]];
 					if(CreateCount(cveh) > 0) AnnounceRespawn(CrateVehicle[cveh][cvGroupID], "disabled by an admin", cveh, CreateCount(cveh));
+					CancelCrateVehicleActions(cveh);
 					DestroyVehicle(CrateVehicle[cveh][cvSpawnID]);
 					CrateVehicle[cveh][cvSpawned] = 0;
 					CrateVehicle[cveh][cvSpawnID] = INVALID_VEHICLE_ID;

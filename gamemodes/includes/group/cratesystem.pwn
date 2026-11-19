@@ -42,6 +42,103 @@ new
 	CrateBeingDelivered[MAX_GROUPS],
 	CrateFacilityRaid[MAX_CRATE_FACILITY];
 
+enum E_CRATE_ACTION {
+	caTimer,
+	caToken,
+	caFacility,
+	caBox,
+	caVehicle,
+	caPoint
+};
+
+new CrateAction[MAX_PLAYERS][E_CRATE_ACTION], CrateGeneration[MAX_CRATES];
+
+stock CancelCrateAction(playerid) {
+	if(CrateAction[playerid][caTimer]) KillTimer(CrateAction[playerid][caTimer]);
+	CrateAction[playerid][caTimer] = 0;
+	++CrateAction[playerid][caToken];
+	new facility = CrateAction[playerid][caFacility], box = CrateAction[playerid][caBox];
+	new point = CrateAction[playerid][caPoint], vehicle = CrateAction[playerid][caVehicle];
+	if(0 <= facility < MAX_CRATE_FACILITY && CrateBeingProcessed[facility] == playerid + 1) {
+		CrateBeingProcessed[facility] = 0;
+		if(IsValidCrate(box) && !CrateBox[box][cbActive] && CrateBox[box][cbFacility] == facility) 
+		{
+			CrateBox[box][cbFacility] = -1;
+		}
+	}
+	if(ValidGroup(point) && CrateBeingDelivered[point] == playerid + 1) {
+		CrateBeingDelivered[point] = 0;
+		if(0 <= vehicle < MAX_CRATE_VEHCILES) VehDelivering[vehicle] = 0;
+	}
+	if(GetPVarType(playerid, "LoadForkliftTime") || GetPVarType(playerid, "DeliverCrateTime")) {
+		DeletePVar(playerid, "LoadForkliftTime");
+		DeletePVar(playerid, "DeliverCrateTime");
+		if(IsPlayerConnected(playerid)) TogglePlayerControllable(playerid, true);
+	}
+	CrateAction[playerid][caFacility] = -1;
+	CrateAction[playerid][caBox] = -1;
+	CrateAction[playerid][caVehicle] = -1;
+	CrateAction[playerid][caPoint] = -1;
+	return 1;
+}
+
+stock CancelCrateVehicleActions(vehicle) {
+	foreach(new playerid : Player) {
+		if(CrateAction[playerid][caTimer] && CrateAction[playerid][caVehicle] == vehicle) {
+			CancelCrateAction(playerid);
+		}
+	}
+	return 1;
+}
+
+stock QueueCrateMove(playerid, box, vehicle, action, delay) {
+	if(CrateAction[playerid][caTimer]) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "Please finish your current crate action first.");
+	
+	CancelCrateAction(playerid);
+	CrateAction[playerid][caBox] = box;
+	CrateAction[playerid][caVehicle] = vehicle;
+	CrateAction[playerid][caTimer] = SetTimerEx("FinishCrateMove", delay, false, "iiii", playerid, g_arrQueryHandle[playerid], CrateAction[playerid][caToken], action);
+	return 1;
+}
+
+forward FinishCrateMove(playerid, session, token, action);
+public FinishCrateMove(playerid, session, token, action) {
+	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session || CrateAction[playerid][caToken] != token) return 1;
+	new box = CrateAction[playerid][caBox], vehicle = CrateAction[playerid][caVehicle];
+	CancelCrateAction(playerid);
+	if(!IsValidCrate(box) || !CrateBox[box][cbActive] || PlayerBusy(playerid) || IsPlayerInAnyVehicle(playerid)) return 1;
+	if(action == 0) {
+		if(CarryCrate[playerid] != -1 || BeingMoved[box] != INVALID_PLAYER_ID || CrateBox[box][cbInVeh] != -1 || CrateBox[box][cbOnVeh] != -1) 
+			return 1;
+		
+		if(GetPlayerVirtualWorld(playerid) != CrateBox[box][cbVw] || GetPlayerInterior(playerid) != CrateBox[box][cbInt]) 
+			return 1;
+		
+		if(!IsPlayerInRangeOfPoint(playerid, 2.0, CrateBox[box][cbPos][0], CrateBox[box][cbPos][1], CrateBox[box][cbPos][2])) 
+			return 1;
+	}
+	else if(action == 1 || action == 3) {
+		if(CarryCrate[playerid] != box || BeingMoved[box] != playerid) return 1;
+	}
+	if(action == 2 || action == 3) {
+		if(!(0 <= vehicle < MAX_CRATE_VEHCILES) || !IsValidVehicle(CrateVehicle[vehicle][cvSpawnID]) || VehDelivering[vehicle]) 
+			return 1;
+		
+		if(GetPlayerVirtualWorld(playerid) != GetVehicleVirtualWorld(CrateVehicle[vehicle][cvSpawnID]) || GetPlayerInterior(playerid) != CrateVehicle[vehicle][cvInt]) 
+			return 1;
+		
+		new Float:pos[3], engine, lights, alarm, doors, bonnet, boot, objective;
+		GetPosBehindVehicle(CrateVehicle[vehicle][cvSpawnID], pos[0], pos[1], pos[2], 0.0);
+		if(!IsPlayerInRangeOfPoint(playerid, 2.0, pos[0], pos[1], pos[2]) || IsAPlane(CrateVehicle[vehicle][cvSpawnID])) return 1;
+		GetVehicleParamsEx(CrateVehicle[vehicle][cvSpawnID], engine, lights, alarm, doors, bonnet, boot, objective);
+		if(boot != VEHICLE_PARAMS_ON) return 1;
+		if(action == 2 && (CarryCrate[playerid] != -1 || BeingMoved[box] != INVALID_PLAYER_ID || CrateBox[box][cbInVeh] != vehicle)) return 1;
+		if(action == 3 && (CrateVehicle[vehicle][cvCrateMax] < 1 || CreateCount(vehicle) >= CrateVehicle[vehicle][cvCrateMax])) return 1;
+	}
+	return PlayerCarryCrate(playerid, box, vehicle, action);
+}
+
 hook OnGameModeInit() {
 	for(new i = 0; i < MAX_CRATE_FACILITY; i++) {
 		AdminOpened[i] = 0; // Disable by default.
@@ -51,7 +148,13 @@ hook OnGameModeInit() {
 		CrateFacility[i][cfMapIcon] = -1;
 		CrateFacilityRaid[i] = 0;
 	}
+	for(new g = 0; g < MAX_GROUPS; g++) CrateOrder[g][coFacility] = -1;
+	for(new f = 0; f < MAX_CRATE_FACILITY; f++) CrateFacility[f][cfGroup] = -1;
 	for(new c = 0; c < MAX_CRATES; c++) {
+		CrateBox[c][cbFacility] = -1;
+		CrateBox[c][cbGroup] = -1;
+		CrateBox[c][cbInVeh] = -1;
+		CrateBox[c][cbOnVeh] = -1;
 		BeingMoved[c] = INVALID_PLAYER_ID;
 		CrateBox[c][cbObject] = -1;
 		CrateBox[c][cbTextID] = Text3D: -1;
@@ -61,10 +164,15 @@ hook OnGameModeInit() {
 
 hook OnPlayerConnect(playerid) {
 	CarryCrate[playerid] = -1;
+	CrateAction[playerid][caFacility] = -1;
+	CrateAction[playerid][caBox] = -1;
+	CrateAction[playerid][caVehicle] = -1;
+	CrateAction[playerid][caPoint] = -1;
 	return 1;
 }
 
 hook OnPlayerDisconnect(playerid, reason) {
+	CancelCrateAction(playerid);
 	if(CarryCrate[playerid] != -1) {
 		PlayerCarryCrate(playerid, CarryCrate[playerid], -1, 1);
 	}
@@ -73,17 +181,25 @@ hook OnPlayerDisconnect(playerid, reason) {
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	if(IsKeyJustDown(KEY_FIRE, newkeys, oldkeys)) {
-		if(CarryCrate[playerid] >= 0) {
+		if(CarryCrate[playerid] >= 0 && !CrateAction[playerid][caTimer]) {
 			ApplyAnimation(playerid, "CARRY", "putdwn", 4.1, false, false, false, false, 0, 1);
-			SetTimerEx("PlayerCarryCrate", 1000, false, "iiii", playerid, CarryCrate[playerid], -1, 1);
+			QueueCrateMove(playerid, CarryCrate[playerid], -1, 1, 1000);
 		}
 	}
 	return 1;
 }
 
-hook OnPlayerStateChange(playerid, newstate, oldstate) {
-	if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER) {
-		if(CarryCrate[playerid] >= 0) {
+hook OnPlayerStateChange(playerid, newstate, oldstate) 
+{
+	if(CrateAction[playerid][caTimer] && CrateAction[playerid][caVehicle] != -1 && oldstate == PLAYER_STATE_DRIVER && newstate != PLAYER_STATE_DRIVER) 
+	{
+		CancelCrateAction(playerid);
+	}
+
+	if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER) 
+	{
+		if(CarryCrate[playerid] >= 0) 
+		{
 			SendClientMessageEx(playerid, COLOR_GREY, "You can't be in any vehicles whilst carrying a crate!");
 			return RemovePlayerFromVehicle(playerid);
 		}
@@ -113,23 +229,25 @@ public OnLoadCrateOrders()
 	new i, rows;
 	cache_get_row_count(rows);
 
-	while(i < rows)
+	for(new row = 0; row < rows; row++)
 	{
-		if (!(0 <= i < MAX_GROUPS)) break;
-		cache_get_value_name_int(i, "id", CrateOrder[i][coGroup]);
-		cache_get_value_name_int(i, "Facility", CrateOrder[i][coFacility]);
-		cache_get_value_name_int(i, "Crates", CrateOrder[i][coCrates]);
-		cache_get_value_name_int(i, "PerCrate", CrateOrder[i][coPerCrate]);
-		cache_get_value_name(i,  "OrderBy", CrateOrder[i][coOrderBy], MAX_PLAYER_NAME);
-		cache_get_value_name_int(i, "Delivered", CrateOrder[i][coDelivered]);
-		cache_get_value_name_int(i, "Status", CrateOrder[i][coStatus]);
-		cache_get_value_name_int(i, "Time", CrateOrder[i][coTime]);
-		i++;
+		cache_get_value_name_int(row, "id", i);
+		if(!(1 <= i <= MAX_GROUPS)) continue;
+		--i;
+		cache_get_value_name_int(row, "id", CrateOrder[i][coGroup]);
+		cache_get_value_name_int(row, "Facility", CrateOrder[i][coFacility]);
+		cache_get_value_name_int(row, "Crates", CrateOrder[i][coCrates]);
+		cache_get_value_name_int(row, "PerCrate", CrateOrder[i][coPerCrate]);
+		cache_get_value_name(row,  "OrderBy", CrateOrder[i][coOrderBy], MAX_PLAYER_NAME);
+		cache_get_value_name_int(row, "Delivered", CrateOrder[i][coDelivered]);
+		cache_get_value_name_int(row, "Status", CrateOrder[i][coStatus]);
+		cache_get_value_name_int(row, "Time", CrateOrder[i][coTime]);
 	}
 	return 1;
 }
 
 stock SaveOrder(i) {
+	if(!ValidGroup(i)) return 0;
 	new query[2048];
 
 	format(query, 2048, "UPDATE `crate_orders` SET ");
@@ -153,62 +271,57 @@ stock LoadCrateBoxes()
 forward OnLoadCrateBoxes();
 public OnLoadCrateBoxes()
 {
-	new i, rows, number[16];
+	new i, rows, loaded, number[16];
 	cache_get_row_count(rows);
 
-	while(i < rows)
+	for(new row = 0; row < rows; row++)
 	{
-		cache_get_value_name_int(i, "Facility", CrateBox[i][cbFacility]);
-		cache_get_value_name_int(i, "Group", CrateBox[i][cbGroup]);
-		cache_get_value_name_float(i, "CrateX", CrateBox[i][cbPos][0]);
-		cache_get_value_name_float(i, "CrateY", CrateBox[i][cbPos][1]);
-		cache_get_value_name_float(i, "CrateZ", CrateBox[i][cbPos][2]);
-		cache_get_value_name_int(i, "Int", CrateBox[i][cbInt]);
-		cache_get_value_name_int(i, "InVehicle", CrateBox[i][cbInVeh]);
-		cache_get_value_name_int(i, "OnVehicle", CrateBox[i][cbOnVeh]);
-		cache_get_value_name_int(i, "VW", CrateBox[i][cbVw]);
-		cache_get_value_name_int(i, "Materials", CrateBox[i][cbMats]);
+		cache_get_value_name_int(row, "id", i);
+		if(!(1 <= i <= MAX_CRATES)) continue;
+		--i;
+		cache_get_value_name_int(row, "Facility", CrateBox[i][cbFacility]);
+		cache_get_value_name_int(row, "Group", CrateBox[i][cbGroup]);
+		cache_get_value_name_float(row, "CrateX", CrateBox[i][cbPos][0]);
+		cache_get_value_name_float(row, "CrateY", CrateBox[i][cbPos][1]);
+		cache_get_value_name_float(row, "CrateZ", CrateBox[i][cbPos][2]);
+		cache_get_value_name_int(row, "Int", CrateBox[i][cbInt]);
+		cache_get_value_name_int(row, "InVehicle", CrateBox[i][cbInVeh]);
+		cache_get_value_name_int(row, "OnVehicle", CrateBox[i][cbOnVeh]);
+		cache_get_value_name_int(row, "VW", CrateBox[i][cbVw]);
+		cache_get_value_name_int(row, "Materials", CrateBox[i][cbMats]);
 		for(new w = 0; w < 16; w++) {
 			format(number, sizeof(number), "Gun%d", w+1);
-			cache_get_value_name_int(i, number, CrateBox[i][cbWep][w]);
+			cache_get_value_name_int(row, number, CrateBox[i][cbWep][w]);
 			format(number, sizeof(number), "GunAmount%d", w+1);
-			cache_get_value_name_int(i, number, CrateBox[i][cbWepAmount][w]);
+			cache_get_value_name_int(row, number, CrateBox[i][cbWepAmount][w]);
 		}
-		cache_get_value_name(i,  "PlacedBy", CrateBox[i][cbPlacedBy], MAX_PLAYER_NAME);
-		cache_get_value_name_int(i, "Lifespan", CrateBox[i][cbLifespan]);
-		cache_get_value_name_int(i, "Transfer", CrateBox[i][cbTransfer]);
-		cache_get_value_name_int(i, "DoorID", CrateBox[i][cbDoor]);
-		cache_get_value_name_int(i, "DoorType", CrateBox[i][cbDoorType]);
-		cache_get_value_name_int(i, "Price", CrateBox[i][cbPrice]);
-		cache_get_value_name_int(i, "Paid", CrateBox[i][cbPaid]);
-		cache_get_value_name_int(i, "Active", CrateBox[i][cbActive]);
+		cache_get_value_name(row,  "PlacedBy", CrateBox[i][cbPlacedBy], MAX_PLAYER_NAME);
+		cache_get_value_name_int(row, "Lifespan", CrateBox[i][cbLifespan]);
+		cache_get_value_name_int(row, "Transfer", CrateBox[i][cbTransfer]);
+		cache_get_value_name_int(row, "DoorID", CrateBox[i][cbDoor]);
+		cache_get_value_name_int(row, "DoorType", CrateBox[i][cbDoorType]);
+		cache_get_value_name_int(row, "Price", CrateBox[i][cbPrice]);
+		cache_get_value_name_int(row, "Paid", CrateBox[i][cbPaid]);
+		cache_get_value_name_int(row, "Active", CrateBox[i][cbActive]);
 		UpdateCrateBox(i);
-		i++;
+		++loaded;
 	}
-	if(i > 0) printf("[Dynamic Crate Boxes] %d dynamic Crate Boxes have been loaded.", i);
+	if(loaded > 0) printf("[Dynamic Crate Boxes] %d dynamic Crate Boxes have been loaded.", loaded);
 	else printf("[Dynamic Crate Boxes] There are no dynamic crate boxes to load.");
 	return 1;
 }
 
 stock UpdateCrateBox(id)
 {
+	if(!IsValidCrate(id)) return 0;
 	new string[256];
 	if(IsValidDynamicObject(CrateBox[id][cbObject])) DestroyDynamicObject(CrateBox[id][cbObject]), CrateBox[id][cbObject] = -1;
 	if(IsValidDynamic3DTextLabel(CrateBox[id][cbTextID])) DestroyDynamic3DTextLabel(CrateBox[id][cbTextID]), CrateBox[id][cbTextID] = Text3D: -1;
 
 	if(!CrateBox[id][cbActive] || CrateBox[id][cbInVeh] != -1) return 1;
 
-	/*
-	foreach(new p: Player) {
-		if(CarryCrate[p] == id) return 1;
-	}*/
-	if(BeingMoved[id] != INVALID_PLAYER_ID) return 1;
+	if(BeingMoved[id] != INVALID_PLAYER_ID || CrateBox[id][cbOnVeh] != -1) return 1;
 
-	//if(CrateBox[id][cbOnVeh] != -1) return CrateVehCheck(CrateBox[id][cbOnVeh]);
-
-	if(CrateBox[id][cbOnVeh] != -1) {
-		if(CrateVehicle[CrateBox[id][cbOnVeh]][cvCrate] != id) return DestroyCrate(id);
-	}
 	if(CrateBox[id][cbGroup] != -1 && !ValidGroup(CrateBox[id][cbGroup])) return DestroyCrate(id);
 
 	if(CrateBox[id][cbGroup] == -1) {
@@ -223,6 +336,7 @@ stock UpdateCrateBox(id)
 }
 
 stock SaveCrate(i) {
+	if(!IsValidCrate(i)) return 0;
 	new query[2048], wep[16];
 
 	format(query, 2048, "UPDATE `crates` SET ");
@@ -263,43 +377,47 @@ stock LoadCrateFacilities()
 forward OnLoadCrateFacilities();
 public OnLoadCrateFacilities()
 {
-	new i, rows;
+	new i, rows, loaded;
 	cache_get_row_count(rows);
 
-	while(i < rows)
+	for(new row = 0; row < rows; row++)
 	{
-		cache_get_value_name_int(i, "id", CrateFacility[i][cfId]);
-		cache_get_value_name(i, "Name", CrateFacility[i][cfName], 32);
-		cache_get_value_name_int(i, "Group", CrateFacility[i][cfGroup]);
-		cache_get_value_name_float(i, "Posx", CrateFacility[i][cfPos][0]);
-		cache_get_value_name_float(i, "Posy", CrateFacility[i][cfPos][1]);
-		cache_get_value_name_float(i, "Posz", CrateFacility[i][cfPos][2]);
-		cache_get_value_name_float(i, "Posr", CrateFacility[i][cfPos][3]);
-		cache_get_value_name_int(i, "Int", CrateFacility[i][cfInt]);
-		cache_get_value_name_int(i, "Vw", CrateFacility[i][cfVw]);
-		cache_get_value_name_int(i, "Prodmax", CrateFacility[i][cfProdMax]);
-		cache_get_value_name_int(i, "ProdPrep", CrateFacility[i][cfProdPrep]);
-		cache_get_value_name_int(i, "ProdReady", CrateFacility[i][cfProdReady]);
-		cache_get_value_name_int(i, "ProdTimer", CrateFacility[i][cfProdTimer]);
-		cache_get_value_name_int(i, "ProdStatus", CrateFacility[i][cfProdStatus]);
-		cache_get_value_name_int(i, "ProdCost", CrateFacility[i][cfProdCost]);
-		cache_get_value_name_int(i, "ProdMulti", CrateFacility[i][cfProdMulti]);
-		cache_get_value_name_int(i, "RaidTimer", CrateFacility[i][cfRaidTimer]);
-		cache_get_value_name_int(i, "Cooldown", CrateFacility[i][cfCooldown]);
-		cache_get_value_name_int(i, "Raidable", CrateFacility[i][cfRaidable]);
-		cache_get_value_name_int(i, "Active", CrateFacility[i][cfActive]);
-		cache_get_value_name_int(i, "Timer", CrateFacility[i][cfTimer]);
+		cache_get_value_name_int(row, "id", i);
+		if(!(1 <= i <= MAX_CRATE_FACILITY)) continue;
+		--i;
+		cache_get_value_name_int(row, "id", CrateFacility[i][cfId]);
+		cache_get_value_name(row, "Name", CrateFacility[i][cfName], 32);
+		cache_get_value_name_int(row, "Group", CrateFacility[i][cfGroup]);
+		cache_get_value_name_float(row, "Posx", CrateFacility[i][cfPos][0]);
+		cache_get_value_name_float(row, "Posy", CrateFacility[i][cfPos][1]);
+		cache_get_value_name_float(row, "Posz", CrateFacility[i][cfPos][2]);
+		cache_get_value_name_float(row, "Posr", CrateFacility[i][cfPos][3]);
+		cache_get_value_name_int(row, "Int", CrateFacility[i][cfInt]);
+		cache_get_value_name_int(row, "Vw", CrateFacility[i][cfVw]);
+		cache_get_value_name_int(row, "Prodmax", CrateFacility[i][cfProdMax]);
+		cache_get_value_name_int(row, "ProdPrep", CrateFacility[i][cfProdPrep]);
+		cache_get_value_name_int(row, "ProdReady", CrateFacility[i][cfProdReady]);
+		cache_get_value_name_int(row, "ProdTimer", CrateFacility[i][cfProdTimer]);
+		cache_get_value_name_int(row, "ProdStatus", CrateFacility[i][cfProdStatus]);
+		cache_get_value_name_int(row, "ProdCost", CrateFacility[i][cfProdCost]);
+		cache_get_value_name_int(row, "ProdMulti", CrateFacility[i][cfProdMulti]);
+		cache_get_value_name_int(row, "RaidTimer", CrateFacility[i][cfRaidTimer]);
+		cache_get_value_name_int(row, "Cooldown", CrateFacility[i][cfCooldown]);
+		cache_get_value_name_int(row, "Raidable", CrateFacility[i][cfRaidable]);
+		cache_get_value_name_int(row, "Active", CrateFacility[i][cfActive]);
+		cache_get_value_name_int(row, "Timer", CrateFacility[i][cfTimer]);
 		UpdateFacility(i);
 		if(CrateFacility[i][cfRaidTimer] > 0) TriggerGates(i);
-		i++;
+		++loaded;
 	}
-	if(i > 0) printf("[Dynamic Crate Facility] %d dynamic Crate Facilities have been loaded.", i);
+	if(loaded > 0) printf("[Dynamic Crate Facility] %d dynamic Crate Facilities have been loaded.", loaded);
 	else printf("[Dynamic Crate Facility] No dynamic Crate Facilities have been loaded.");
 	return 1;
 }
 
 stock UpdateFacility(id)
 {
+	if(!(0 <= id < MAX_CRATE_FACILITY)) return 0;
 	new string[256];
 	//964 box | 11 - Map Icon
 	if(IsValidDynamicObject(CrateFacility[id][cfPickupID])) DestroyDynamicObject(CrateFacility[id][cfPickupID]), CrateFacility[id][cfPickupID] = -1;
@@ -313,10 +431,13 @@ stock UpdateFacility(id)
 	CrateFacility[id][cfPickupID] = CreateDynamicObject(964, CrateFacility[id][cfPos][0], CrateFacility[id][cfPos][1], CrateFacility[id][cfPos][2], 0.00000000, 0.00000000, CrateFacility[id][cfPos][3], CrateFacility[id][cfVw], CrateFacility[id][cfInt]);
 	format(string, sizeof(string), "{FFFF00}%s (ID: {1FBDFF}%d{FFFF00})\n{FFFF00}Crates Available: {1FBDFF}%d/%d", CrateFacility[id][cfName], id, CrateFacility[id][cfProdReady], CrateFacility[id][cfProdMax]);
 	CrateFacility[id][cfTextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, CrateFacility[id][cfPos][0], CrateFacility[id][cfPos][1], CrateFacility[id][cfPos][2]+1.5, 20.0, .testlos = 1, .worldid = CrateFacility[id][cfVw], .interiorid = CrateFacility[id][cfInt], .streamdistance = 20.0);
+	FacilityBoxUpdate(id);
 	return 1;
 }
 
 stock SaveFacility(i) {
+	if(!(0 <= i < MAX_CRATE_FACILITY)) return 0;
+	FacilityBoxUpdate(i);
 	new query[2048];
 	format(query, 2048, "UPDATE `crate_facility` SET ");
 	SaveInteger(query, "crate_facility", i+1, "Group", CrateFacility[i][cfGroup]);
@@ -348,6 +469,11 @@ task UpdateFacilityCrates[1000]()
 {
 	for(new i = 0; i < MAX_CRATE_FACILITY; i++)
 	{
+		new 
+			previousTimer = CrateFacility[i][cfTimer], 
+			previousReady = CrateFacility[i][cfProdReady], 
+			previousPrep = CrateFacility[i][cfProdPrep];
+		
 		if(CrateFacility[i][cfId] > 0 && CrateFacility[i][cfActive] == 1) {
 			if(CrateFacility[i][cfProdPrep] > 0 && CrateFacility[i][cfProdStatus] == 1 && CrateFacility[i][cfProdTimer] > 0) {
 				if(CrateFacility[i][cfTimer] > 0) CrateFacility[i][cfTimer]--;
@@ -418,7 +544,8 @@ task UpdateFacilityCrates[1000]()
 		if((CrateFacility[i][cfProdReady] >= CrateFacility[i][cfProdMax]) && CrateFacility[i][cfProdPrep] > 0) {
 			CrateFacility[i][cfProdPrep] = 0;
 		}
-		FacilityBoxUpdate(i);
+		if(previousReady != CrateFacility[i][cfProdReady] || previousPrep != CrateFacility[i][cfProdPrep]) SaveFacility(i);
+		else if(previousTimer != CrateFacility[i][cfTimer]) FacilityBoxUpdate(i);
 	}
 	for(new c = 0; c < MAX_CRATES; c++)
 	{
@@ -427,21 +554,19 @@ task UpdateFacilityCrates[1000]()
 			if(!CrateBox[c][cbLifespan]) {
 				DestroyCrate(c);
 			}
-			CrateBoxUpdate(c);
+			else CrateBoxUpdate(c);
 		}
 	}
 	foreach(new p: Player) {
 		if(CarryCrate[p] >= 0) {
-			if(PlayerHoldingObject[p][8] != 0 || IsPlayerAttachedObjectSlotUsed(p, 8))
-				RemovePlayerAttachedObject(p, 8), PlayerHoldingObject[p][8] = 0;
-			SetPlayerAttachedObject(p, 8, 964, 1, -0.071, 0.536, -0.026999, -2.19999, 87.1999, 0.699999, 0.479999, 0.538999, 0.419999);
+			if(!IsPlayerAttachedObjectSlotUsed(p, 8)) SetPlayerAttachedObject(p, 8, 964, 1, -0.071, 0.536, -0.026999, -2.19999, 87.1999, 0.699999, 0.479999, 0.538999, 0.419999);
 			if(GetPlayerSpecialAction(p) != SPECIAL_ACTION_CARRY) SetPlayerSpecialAction(p, SPECIAL_ACTION_CARRY);
 		}
 		if(CarryCrate[p] >= 0) {
 			if(PlayerInfo[p][pHospital] > 0 || PlayerInfo[p][pJailTime] > 0 || GetPVarType(p, "IsInArena") || GetPVarInt(p, "EventToken") != 0) {
 				PlayerCarryCrate(p, CarryCrate[p], -1, 4);
 			}
-			if(PlayerCuffed[p] != 0 || GetPVarInt(p, "Injured") != 0) {
+			else if(PlayerCuffed[p] != 0 || GetPVarInt(p, "Injured") != 0) {
 				PlayerCarryCrate(p, CarryCrate[p], -1, 5);
 			}
 		}
@@ -450,6 +575,7 @@ task UpdateFacilityCrates[1000]()
 
 forward CrateBoxUpdate(id);
 public CrateBoxUpdate(id) {
+	if(!IsValidCrate(id) || !(0 <= CrateBox[id][cbFacility] < MAX_CRATE_FACILITY)) return 0;
 	new string[256];
 	if(IsValidDynamic3DTextLabel(CrateBox[id][cbTextID])) {
 		format(string, sizeof(string), "{FFFF00}%s (ID: {FF8000}%d{FFFF00})\n{FFFF00}Time Remaining: {FF8000}%s\n{FFFF00}Placed By: {FF8000}%s\n{FFFF00}Materials: {FF8000}%d/50", CrateFacility[CrateBox[id][cbFacility]][cfName], id, TimeConvert(CrateBox[id][cbLifespan]), CrateBox[id][cbPlacedBy], CrateBox[id][cbMats]);
@@ -461,6 +587,7 @@ public CrateBoxUpdate(id) {
 
 forward FacilityBoxUpdate(id);
 public FacilityBoxUpdate(id) {
+	if(!(0 <= id < MAX_CRATE_FACILITY) || !IsValidDynamic3DTextLabel(CrateFacility[id][cfTextID])) return 0;
 	new string[256];
 	if(CrateFacility[id][cfActive] == 1) {
 		if(CrateFacility[id][cfProdStatus] == 1 && CrateFacility[id][cfProdTimer] > 0) {
@@ -485,12 +612,12 @@ stock FetchFacility(playerid, &facility, Float:range)
 	facility = -1;
     for(new f = 0; f < MAX_CRATE_FACILITY; f++)
     {
- 	    if(IsPlayerInRangeOfPoint(playerid,range,CrateFacility[f][cfPos][0], CrateFacility[f][cfPos][1], CrateFacility[f][cfPos][2]))
+		if(CrateFacility[f][cfId] > 0 && CrateFacility[f][cfPos][0] != 0.0 && IsPlayerInRangeOfPoint(playerid,range,CrateFacility[f][cfPos][0], CrateFacility[f][cfPos][1], CrateFacility[f][cfPos][2]))
 		{
 			if(GetPlayerVirtualWorld(playerid) == CrateFacility[f][cfVw] && GetPlayerInterior(playerid) == CrateFacility[f][cfInt]) {
 				facility = f;
+				break;
 			}
-			break;
 	    }
  	}
 }
@@ -505,8 +632,8 @@ stock GetCrateBox(playerid, &box, Float:range)
 			{
 				if(GetPlayerVirtualWorld(playerid) == CrateBox[b][cbVw] && GetPlayerInterior(playerid) == CrateBox[b][cbInt]) {
 					box = b;
+					break;
 				}
-				break;
 		    }
 		}
  	}
@@ -517,7 +644,7 @@ stock GetGroupCrate(playerid, &box) {
 	box = -1;
     for(new b = 0; b < MAX_CRATES; b++)
     {
- 	    if(PlayerInfo[playerid][pMember] == CrateBox[b][cbGroup])
+		if(CrateBox[b][cbActive] && ValidGroup(PlayerInfo[playerid][pMember]) && PlayerInfo[playerid][pMember] == CrateBox[b][cbGroup])
 		{
 			box = b;
 			break;
@@ -525,22 +652,30 @@ stock GetGroupCrate(playerid, &box) {
  	}
 }
 
-forward LoadForklift(playerid, facility, boxid, vehicle);
-public LoadForklift(playerid, facility, boxid, vehicle) {
+forward LoadForklift(playerid, session, token);
+public LoadForklift(playerid, session, token) {
+	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session || CrateAction[playerid][caToken] != token) return 1;
+	new facility = CrateAction[playerid][caFacility], boxid = CrateAction[playerid][caBox], vehicle = CrateAction[playerid][caVehicle];
+	if(!(0 <= facility < MAX_CRATE_FACILITY) || !IsValidCrate(boxid) || !(0 <= vehicle < MAX_CRATE_VEHCILES)) return CancelCrateAction(playerid);
+	if(CrateBeingProcessed[facility] != playerid + 1 || CrateBox[boxid][cbActive] || CrateBox[boxid][cbFacility] != facility) return CancelCrateAction(playerid);
     szMiscArray[0] = 0;
 	new string[128];
 	SetPVarInt(playerid, "LoadForkliftTime", GetPVarInt(playerid, "LoadForkliftTime")-1);
 	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", GetPVarInt(playerid, "LoadForkliftTime"));
 	GameTextForPlayer(playerid, string, 1100, 3);
 
-	if(GetPVarInt(playerid, "LoadForkliftTime") > 0) SetTimerEx("LoadForklift", 1000, false, "iiii", playerid, facility, boxid, vehicle);
+	if(GetPVarInt(playerid, "LoadForkliftTime") > 0) {
+		CrateAction[playerid][caTimer] = SetTimerEx("LoadForklift", 1000, false, "iii", playerid, session, token);
+		return 1;
+	}
 
 	if(GetPVarInt(playerid, "LoadForkliftTime") <= 0)
 	{
-		DeletePVar(playerid, "LoadForkliftTime");
-		CrateBeingProcessed[facility] = 0;
-		CrateBox[boxid][cbFacility] = -1;
-		TogglePlayerControllable(playerid, true);
+		CancelCrateAction(playerid);
+		if(!CrateFacility[facility][cfActive] || CrateFacility[facility][cfProdReady] < 1 || CrateFacility[facility][cfProdCost] < 0) return SendClientMessageEx(playerid, COLOR_GREY, "The facility is no longer available.");
+		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || !IsValidVehicle(CrateVehicle[vehicle][cvSpawnID]) || GetPlayerVehicleID(playerid) != CrateVehicle[vehicle][cvSpawnID] || GetVehicleModel(CrateVehicle[vehicle][cvSpawnID]) != 530 || CrateVehicle[vehicle][cvCrate] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "You must remain in the same empty forklift.");
+		if(PlayerBusy(playerid)) return 1;
+		if(IsACriminal(playerid) && (!CrateFacility[facility][cfRaidable] || (!AdminOpened[facility] && CrateFacility[facility][cfRaidTimer] <= gettime()))) return SendClientMessageEx(playerid, COLOR_GREY, "This facility cannot be raided right now.");
 		if(!ValidGroup(PlayerInfo[playerid][pMember])) {
 			SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to load the crate. You're no longer apart of a group!");
 			return 1;
@@ -557,7 +692,25 @@ public LoadForklift(playerid, facility, boxid, vehicle) {
 	    	SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to load the crate. You were alt-tabbed.");
 	    	return 1;
 	    }
-	    if(IsACriminal(playerid)) CrateBox[boxid][cbPaid] = 1;
+		new owner = CrateFacility[facility][cfGroup], cost = CrateFacility[facility][cfProdCost], group = PlayerInfo[playerid][pMember];
+		if(owner != -1 && !ValidGroup(owner)) 
+			return SendClientMessageEx(playerid, COLOR_GREY, "The facility owner is invalid.");
+		
+		if(!IsACriminal(playerid) && owner != group && cost > 0) {
+			if(GetGroupBudget(group) < cost) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "Your group cannot afford this crate.");
+			
+			new balance = ValidGroup(owner) ? GetGroupBudget(owner) : (arrGroupData[group][g_iAllegiance] == 2 ? TRTax : Tax);
+			if(balance > cellmax - cost) 
+				return SendClientMessageEx(playerid, COLOR_GREY, "The receiving balance cannot accept this payment.");
+		}
+		new object = CreateDynamicObject(964, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+		if(!IsValidDynamicObject(object)) return SendClientMessageEx(playerid, COLOR_GREY, "Unable to create the crate object.");
+		if(!AttachDynamicObjectToVehicle(object, CrateVehicle[vehicle][cvSpawnID], 0.0, 0.9, -0.2, 0.0, 0.0, 0.0)) {
+			DestroyDynamicObject(object);
+			return SendClientMessageEx(playerid, COLOR_GREY, "Unable to load the crate object.");
+		}
+		CrateBox[boxid][cbPaid] = IsACriminal(playerid) || cost == 0;
 		if(!IsACriminal(playerid)) {
 			if(CrateFacility[facility][cfProdCost] > 0) {
 				if(PlayerInfo[playerid][pMember] != CrateFacility[facility][cfGroup]) {
@@ -578,6 +731,7 @@ public LoadForklift(playerid, facility, boxid, vehicle) {
 						}
 					} else {
 						SetGroupBudget(CrateFacility[facility][cfGroup], CrateFacility[facility][cfProdCost]);
+						SaveGroup(CrateFacility[facility][cfGroup]);
 						format(string, sizeof(string), "%s has purchased a crate from your facility adding $%s", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], number_format(CrateFacility[facility][cfProdCost]));
 						GroupPayLog(CrateFacility[facility][cfGroup], string);
 					}
@@ -607,8 +761,7 @@ public LoadForklift(playerid, facility, boxid, vehicle) {
 		CrateBox[boxid][cbPrice] = CrateFacility[facility][cfProdCost];
 		CrateBox[boxid][cbMats] = 50;
 		CrateBox[boxid][cbActive] = 1;
-		CrateVehicle[vehicle][cvForkObject] = CreateDynamicObject(964,-1077.59997559,4274.39990234,3.40000010,0.00000000,0.00000000,0.00000000);
-		AttachDynamicObjectToVehicle(CrateVehicle[vehicle][cvForkObject], CrateVehicle[vehicle][cvSpawnID], 0, 0.9, -0.2, 0, 0, 0);
+		CrateVehicle[vehicle][cvForkObject] = object;
 		CrateVehicle[vehicle][cvCrate] = boxid;
 		--CrateFacility[facility][cfProdReady];
 		SaveCrate(boxid);
@@ -621,6 +774,9 @@ public LoadForklift(playerid, facility, boxid, vehicle) {
 
 forward PlayerCarryCrate(playerid, boxid, vehid, action);
 public PlayerCarryCrate(playerid, boxid, vehid, action) {
+	if(!IsValidCrate(boxid) || !CrateBox[boxid][cbActive]) return 0;
+	if(action != 0 && action != 2 && (CarryCrate[playerid] != boxid || BeingMoved[boxid] != playerid)) return 0;
+	if(action == 4 || action == 5) CancelCrateAction(playerid);
 	/*
 	--- Action ---
 	0 - Pickup from floor
@@ -666,6 +822,7 @@ public PlayerCarryCrate(playerid, boxid, vehid, action) {
 		CrateBox[boxid][cbInVeh] = -1;
 		CarryCrate[playerid] = boxid;
 		BeingMoved[boxid] = playerid;
+		SaveCrate(boxid);
 		format(szMiscArray, sizeof(szMiscArray), "* %s has unloaded a crate from the %s.", GetPlayerNameEx(playerid), GetVehicleName(CrateVehicle[vehid][cvSpawnID]));
 		ProxDetector(25.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	}
@@ -706,35 +863,34 @@ public PlayerCarryCrate(playerid, boxid, vehid, action) {
 	return 1;
 }
 
-stock DestroyCrate(box) {
+stock DestroyCrate(box, bool:saveFacility = true) {
+	if(!IsValidCrate(box)) return 0;
+	++CrateGeneration[box];
+	foreach(new playerid : Player) {
+		if(CrateAction[playerid][caTimer] && CrateAction[playerid][caBox] == box) CancelCrateAction(playerid);
+	}
 	// Is the box on a fork lift?
-	if(CrateBox[box][cbOnVeh] != -1) {
+	if(0 <= CrateBox[box][cbOnVeh] < MAX_CRATE_VEHCILES && CrateVehicle[CrateBox[box][cbOnVeh]][cvCrate] == box) {
 		if(IsValidDynamicObject(CrateVehicle[CrateBox[box][cbOnVeh]][cvForkObject])) DestroyDynamicObject(CrateVehicle[CrateBox[box][cbOnVeh]][cvForkObject]);
+		CrateVehicle[CrateBox[box][cbOnVeh]][cvForkObject] = -1;
 		CrateVehicle[CrateBox[box][cbOnVeh]][cvCrate] = -1;
 		CrateVehicle[CrateBox[box][cbOnVeh]][cvCrateLoad] = 0;
 		SaveCrateVehicle(CrateBox[box][cbOnVeh]);
 		CrateBox[box][cbOnVeh] = -1;
 	}
-	/*
-	foreach(new p: Player) {
-		if(CarryCrate[p] == box) {
-			RemovePlayerAttachedObject(p, 8);
-			PlayerHoldingObject[p][8] = 0;
-			SetPlayerSpecialAction(p, SPECIAL_ACTION_NONE);
-			CarryCrate[p] = -1;
-			BeingMoved[box] = INVALID_PLAYER_ID;
-		}
-	}*/
-	if(BeingMoved[box] != INVALID_PLAYER_ID) {
+	if(0 <= BeingMoved[box] < MAX_PLAYERS && CarryCrate[BeingMoved[box]] == box) {
 		RemovePlayerAttachedObject(BeingMoved[box], 8);
 		PlayerHoldingObject[BeingMoved[box]][8] = 0;
 		SetPlayerSpecialAction(BeingMoved[box], SPECIAL_ACTION_NONE);
 		CarryCrate[BeingMoved[box]] = -1;
 		BeingMoved[box] = INVALID_PLAYER_ID;
 	}
-	if(CrateBox[box][cbFacility] != -1) {
-		++CrateFacility[CrateBox[box][cbFacility]][cfProdPrep];
+	if(CrateBox[box][cbActive] && 0 <= CrateBox[box][cbFacility] < MAX_CRATE_FACILITY) {
+		new facility = CrateBox[box][cbFacility];
+		if(CrateFacility[facility][cfProdPrep] < CrateFacility[facility][cfProdMax]) ++CrateFacility[facility][cfProdPrep];
+		if(saveFacility) SaveFacility(facility);
 	}
+	BeingMoved[box] = INVALID_PLAYER_ID;
 	CrateBox[box][cbFacility] = -1;
 	CrateBox[box][cbGroup] = -1;
 	CrateBox[box][cbPos][0] = 0.00000;
@@ -842,22 +998,20 @@ CMD:facility(playerid, params[]) {
 }
 
 stock SyncFacility(id) {
-	new total = 0;
+	if(!(0 <= id < MAX_CRATE_FACILITY)) return 0;
+	new total;
 	for(new c = 0; c < MAX_CRATES; c++) {
-		if(CrateBox[c][cbFacility] == id) {
-			++total;
-		}
+		if(CrateBox[c][cbActive] && CrateBox[c][cbFacility] == id) ++total;
 	}
-	new ready = ((CrateFacility[id][cfProdReady] + CrateFacility[id][cfProdPrep]) + total);
-	if(ready < 0) ready = CrateFacility[id][cfProdMax];
-	if(CrateFacility[id][cfProdMax] != ready) {
-		CrateFacility[id][cfProdPrep] = (CrateFacility[id][cfProdMax] - ready);
-	}
+	CrateFacility[id][cfProdPrep] = max(0, CrateFacility[id][cfProdMax] - CrateFacility[id][cfProdReady] - total);
 	SaveFacility(id);
 	return 1;
 }
 
 CMD:crate(playerid, params[]) {
+	if(CrateAction[playerid][caTimer]) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "Please finish your current crate action first.");
+	
 	szMiscArray[0] = 0;
 	new string[128], choice[32], box, crate;
 	if(sscanf(params, "s[32]D(-1)", choice, crate))
@@ -874,7 +1028,7 @@ CMD:crate(playerid, params[]) {
 		if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You're not near any crate boxes to pickup!");
 		if(CarryCrate[playerid] != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "you're currently carraying a crate either store or drop it before carrying another!");
 		ApplyAnimation(playerid, "CARRY", "liftup", 4.1, false, false, false, false, 0, 1);
-		SetTimerEx("PlayerCarryCrate", 1000, false, "iiii", playerid, box, -1, 0);
+		QueueCrateMove(playerid, box, -1, 0, 1000);
 		return 1;
 	}
 	else if(strcmp(choice, "contents", true) == 0) {
@@ -900,6 +1054,7 @@ CMD:crate(playerid, params[]) {
 		GetCrateBox(playerid, box, 3.0);
 		if(!ValidGroup(PlayerInfo[playerid][pMember])) return SendClientMessage(playerid, COLOR_GRAD2, " You need to be apart of a group to use this command!");
 		if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be in a vehicle to do this!");
+		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "You must be driving the forklift.");
 		if(GetVehicleModel(vehicleid) != 530) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be in a forklift vehicle to load crates!");
 		if((veh = IsDynamicCrateVehicle(vehicleid)) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in the designated forklift vehicle for this operation!");
 		if(CrateVehicle[veh][cvCrate] != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "There is already a crate loaded on the forklift!");
@@ -918,11 +1073,15 @@ CMD:crate(playerid, params[]) {
 				if(!AdminOpened[facility] && !CrateFacility[facility][cfRaidTimer]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This facility is currently on cooldown from raids.");
 			}
 			for(new c = 0; c < MAX_CRATES; c++) {
-				if(CrateBox[c][cbFacility] == -1) {
-					CrateBeingProcessed[facility] = 1;
+				if(!CrateBox[c][cbActive] && CrateBox[c][cbFacility] == -1 && CrateBox[c][cbGroup] == -1) {
+					CancelCrateAction(playerid);
+					CrateBeingProcessed[facility] = playerid + 1;
 					CrateBox[c][cbFacility] = facility;
+					CrateAction[playerid][caFacility] = facility;
+					CrateAction[playerid][caBox] = c;
+					CrateAction[playerid][caVehicle] = veh;
 					SetPVarInt(playerid, "LoadForkliftTime", 5);
-					SetTimerEx("LoadForklift", 1000, false, "iiii", playerid, facility, c, veh);
+					CrateAction[playerid][caTimer] = SetTimerEx("LoadForklift", 1000, false, "iii", playerid, g_arrQueryHandle[playerid], CrateAction[playerid][caToken]);
 					GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~5 seconds left", 1100, 3);
 					TogglePlayerControllable(playerid, false);
 					break;
@@ -947,7 +1106,7 @@ CMD:crate(playerid, params[]) {
 		new Float:vPos[3], inveh = GetPlayerVehicleID(playerid), engine, lights, alarm, doors, bonnet ,boot, objective, VehFound = -1, boxid;
 		
 		for(new i = 0; i < MAX_CRATE_VEHCILES; i++) {
-			if(CrateVehicle[i][cvSpawnID] != INVALID_VEHICLE_ID) {
+			if(IsValidVehicle(CrateVehicle[i][cvSpawnID]) && GetPlayerVirtualWorld(playerid) == GetVehicleVirtualWorld(CrateVehicle[i][cvSpawnID]) && GetPlayerInterior(playerid) == CrateVehicle[i][cvInt]) {
 				GetPosBehindVehicle(CrateVehicle[i][cvSpawnID], vPos[0], vPos[1], vPos[2], (IsAPlane(CrateVehicle[i][cvSpawnID]) ? -8 : 0));
 				if(IsPlayerInRangeOfPoint(playerid, (IsAPlane(CrateVehicle[i][cvSpawnID]) ? 6 : 2), vPos[0], vPos[1], vPos[2])) {
 					if(CrateVehicle[i][cvSpawnID] != inveh) {
@@ -962,7 +1121,7 @@ CMD:crate(playerid, params[]) {
 		if(CreateCount(VehFound) >= CrateVehicle[VehFound][cvCrateMax]) return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't store anymore crates in this vehicle it's at max capacity!");
 		if(VehDelivering[VehFound]) return SendClientMessageEx(playerid, COLOR_GRAD3, "This vehicle is currently unloading crates - Please Wait!");
 		GetVehicleParamsEx(CrateVehicle[VehFound][cvSpawnID], engine, lights, alarm, doors, bonnet, boot, objective);
-		if(inveh > 0 && GetVehicleModel(inveh) == 530) { // Forklift -> Vehicle
+		if(inveh > 0 && GetVehicleModel(inveh) == 530 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER) { // Forklift -> Vehicle
 			if(IsDynamicCrateVehicle(inveh) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your not in the designated forklift vehicle!");
 			if((boxid = CrateVehicle[IsDynamicCrateVehicle(inveh)][cvCrate]) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "There is no crate loaded on the forklift!");
 			if(GetVehicleModel(CrateVehicle[VehFound][cvSpawnID]) != 592 && GetVehicleModel(CrateVehicle[VehFound][cvSpawnID]) != 553 && IsAPlane(CrateVehicle[VehFound][cvSpawnID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't store crates in this vehicle!");
@@ -985,7 +1144,7 @@ CMD:crate(playerid, params[]) {
 			if(IsAPlane(CrateVehicle[VehFound][cvSpawnID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need a forklift to load them into the plane!");
 			if((boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)) return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't load crates into the vehicle whilst the trunk is closed! - '/car trunk' to open it.");
 			ApplyAnimation(playerid, "CARRY", "putdwn105", 4.1, false, false, false, false, 0, 1);
-			SetTimerEx("PlayerCarryCrate", 700, false, "iiii", playerid, boxid, VehFound, 3);
+			QueueCrateMove(playerid, boxid, VehFound, 3, 700);
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD2, "Your not in possession of any crates that you can store!");
 		return 1;
@@ -995,7 +1154,7 @@ CMD:crate(playerid, params[]) {
 		new Float:vPos[3], inveh = GetPlayerVehicleID(playerid), engine, lights, alarm, doors, bonnet ,boot, objective, VehFound = -1;
 		
 		for(new i = 0; i < MAX_CRATE_VEHCILES; i++) {
-			if(CrateVehicle[i][cvSpawnID] != INVALID_VEHICLE_ID) {
+			if(IsValidVehicle(CrateVehicle[i][cvSpawnID]) && GetPlayerVirtualWorld(playerid) == GetVehicleVirtualWorld(CrateVehicle[i][cvSpawnID]) && GetPlayerInterior(playerid) == CrateVehicle[i][cvInt]) {
 				GetPosBehindVehicle(CrateVehicle[i][cvSpawnID], vPos[0], vPos[1], vPos[2], (IsAPlane(CrateVehicle[i][cvSpawnID]) ? -8 : 0));
 				if(IsPlayerInRangeOfPoint(playerid, (IsAPlane(CrateVehicle[i][cvSpawnID]) ? 6 : 2), vPos[0], vPos[1], vPos[2])) {
 					if(CrateVehicle[i][cvSpawnID] != inveh) {
@@ -1009,16 +1168,16 @@ CMD:crate(playerid, params[]) {
 		if(!CreateCount(VehFound)) return SendClientMessageEx(playerid, COLOR_GRAD3, "There are no crates in the vehicle to take!");
 		if(VehDelivering[VehFound]) return SendClientMessageEx(playerid, COLOR_GRAD3, "This vehicle is currently unloading crates - Please Wait!");
 		GetVehicleParamsEx(CrateVehicle[VehFound][cvSpawnID], engine, lights, alarm, doors, bonnet, boot, objective);
-		if(inveh > 0 && GetVehicleModel(inveh) == 530) { // Vehicle -> Forklift
+		if(inveh > 0 && GetVehicleModel(inveh) == 530 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER) { // Vehicle -> Forklift
 			if(IsDynamicCrateVehicle(inveh) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in the designated forklift vehicle to unload crates with!");
 			if(CrateVehicle[IsDynamicCrateVehicle(inveh)][cvCrate] != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "There is already a crate loaded on the forklift!");
 			if(!IsAPlane(CrateVehicle[VehFound][cvSpawnID])) {
 				if((boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)) return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't unload crates whilst the trunk is closed! - '/car trunk' to open it.");
 			}
 			for(new b = 0; b < MAX_CRATES; b++) {
-				if(CrateBox[b][cbInVeh] == VehFound) {
+				if(CrateBox[b][cbActive] && CrateBox[b][cbInVeh] == VehFound) {
 					CrateBox[b][cbInVeh] = -1;
-					CrateBox[b][cbOnVeh] = b;
+					CrateBox[b][cbOnVeh] = IsDynamicCrateVehicle(inveh);
 					CrateVehicle[IsDynamicCrateVehicle(inveh)][cvCrate] = b;
 					SaveCrateVehicle(IsDynamicCrateVehicle(inveh));
 					SaveCrate(b);
@@ -1035,9 +1194,9 @@ CMD:crate(playerid, params[]) {
 			if(IsAPlane(CrateVehicle[VehFound][cvSpawnID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need a forklift to unload crates from planes!");
 			if((boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)) return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't unload crates whilst the trunk is closed! - '/car trunk' to open it.");
 			for(new b = 0; b < MAX_CRATES; b++) {
-				if(CrateBox[b][cbInVeh] == VehFound) {
+				if(CrateBox[b][cbActive] && CrateBox[b][cbInVeh] == VehFound) {
 					ApplyAnimation(playerid, "CARRY", "liftup105", 4.1, false, false, false, false, 0, 1);
-					SetTimerEx("PlayerCarryCrate", 700, false, "iiii", playerid, b, VehFound, 2);
+					QueueCrateMove(playerid, b, VehFound, 2, 700);
 					break;
 				}
 			}
@@ -1049,6 +1208,7 @@ CMD:crate(playerid, params[]) {
 		new vehicleid = GetPlayerVehicleID(playerid), veh, boxid, area;
 		FetchFacility(playerid, area, 50.0);
 		if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be in a vehicle to do this!");
+		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "You must be driving the forklift.");
 		if(GetVehicleModel(vehicleid) != 530) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be a forklift to drop a crate!");
 		if((veh = IsDynamicCrateVehicle(vehicleid)) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in the designated vehicle for this operation!");
 		if((boxid = CrateVehicle[veh][cvCrate]) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "There is no crate attached to this forklift!");
@@ -1094,7 +1254,7 @@ CMD:crate(playerid, params[]) {
 			if(CrateFacility[crate][cfPos][0] != 0.0 && CrateFacility[crate][cfActive]) {
 				if(CrateFacility[crate][cfProdReady] > 0) {
 					for(new c = 0; c < MAX_CRATES; c++) {
-						if(CrateBox[c][cbFacility] == -1 && CrateBox[c][cbGroup] == -1) {
+						if(!CrateBox[c][cbActive] && CrateBox[c][cbFacility] == -1 && CrateBox[c][cbGroup] == -1) {
 							CrateBox[c][cbLifespan] = 7200;
 							CrateBox[c][cbFacility] = crate;
 							CrateBox[c][cbGroup] = -1;
@@ -1160,9 +1320,10 @@ CMD:crate(playerid, params[]) {
 }
 
 stock CreateCount(veh) {
+	if(!(0 <= veh < MAX_CRATE_VEHCILES)) return 0;
 	new amount = 0;
 	for(new c = 0; c < MAX_CRATES; c++) {
-		if(CrateBox[c][cbInVeh] == veh) {
+		if(CrateBox[c][cbActive] && CrateBox[c][cbInVeh] == veh) {
 			++amount;
 		}
 	}
@@ -1251,6 +1412,11 @@ CMD:cfname(playerid, params[]) {
 		new id, name[50];
 		if(sscanf(params, "is[50]", id, name)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cfname [facility] [name]");
 		if(!(0 <= id < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid facility ID.");
+		foreach(new p : Player) {
+			if(CrateAction[p][caTimer] && CrateAction[p][caFacility] == id) {
+				CancelCrateAction(p);
+			}
+		}
 		if(!(0 < strlen(name) < 50)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Name must be between 1 - 50 character long in length!");
 		format(szMiscArray, sizeof(szMiscArray), "%s has set %d facility name from %s to %s.", GetPlayerNameEx(playerid), id, CrateFacility[id][cfName], name);
 		strcpy(CrateFacility[id][cfName], name, 50);
@@ -1293,7 +1459,7 @@ CMD:cfedit(playerid, params[]) {
 		}
 		else if(strcmp(name, "crates", true) == 0) {
 			if(value < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't set the max production lower than 1!");
-			if(value > GetMaxProduction()) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your unable to set the production to %d as there's only %d slots left!", id, GetMaxProduction());
+			if(value > GetMaxProduction() + CrateFacility[id][cfProdMax]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your unable to set the production to %d as there's only %d slots left!", id, GetMaxProduction());
 			format(szMiscArray, sizeof(szMiscArray), "%s has set %d facility max production from %d to %d.", GetPlayerNameEx(playerid), id, CrateFacility[id][cfProdMax], value);
 			Log("logs/cfedit.log", szMiscArray);
 			CrateFacility[id][cfProdMax] = value;
@@ -1388,7 +1554,7 @@ CMD:cfedit(playerid, params[]) {
 				format(szMiscArray, sizeof(szMiscArray), "%s has removed %s's ownership over %s facility (ID: %d).", GetPlayerNameEx(playerid), arrGroupData[CrateFacility[id][cfGroup]][g_szGroupName], CrateFacility[id][cfName], id);
 				Log("logs/cfedit.log", szMiscArray);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You have removed %s's ownership over %s facility (ID: %d).", arrGroupData[CrateFacility[id][cfGroup]][g_szGroupName], CrateFacility[id][cfName], id);
-				DeleteOrder(id, "The crate facility ownership was removed.");
+				if(!DeleteOrder(id, "The crate facility ownership was removed.")) return SendClientMessageEx(playerid, COLOR_RED, "Unable to settle outstanding crate orders.");
 				CrateFacility[id][cfGroup] = -1;
 			} else {
 				if(!(0 <= value < MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group Id. (0 - %d)", MAX_GROUPS);
@@ -1397,19 +1563,22 @@ CMD:cfedit(playerid, params[]) {
 					format(szMiscArray, sizeof(szMiscArray), "%s was removed from %s facility (ID: %d) to prevent duplicate ownership.", arrGroupData[CrateFacility[fac][cfGroup]][g_szGroupName], CrateFacility[fac][cfName], fac);
 					Log("logs/cfedit.log", szMiscArray);
 					SendClientMessageEx(playerid, COLOR_YELLOW, "%s ownership was removed from %s facility (ID: %d) as they can only own 1 faciltiy at a time!", arrGroupData[CrateFacility[fac][cfGroup]][g_szGroupName], CrateFacility[fac][cfName], fac);
-					DeleteOrder(fac, "The crate facility ownership was removed.");
+					if(!DeleteOrder(fac, "The crate facility ownership was removed.")) return SendClientMessageEx(playerid, COLOR_RED, "Unable to settle outstanding crate orders.");
 					CrateFacility[fac][cfGroup] = -1;
+					SaveFacility(fac);
 				}
+				if(CrateFacility[id][cfGroup] != value && !DeleteOrder(id, "Crate facility ownership has changed.")) return SendClientMessageEx(playerid, COLOR_RED, "Unable to settle outstanding crate orders.");
 				CrateFacility[id][cfGroup] = value;
 				format(szMiscArray, sizeof(szMiscArray), "%s has assigned %s's ownership over %s facility (ID: %d).", GetPlayerNameEx(playerid), arrGroupData[value][g_szGroupName], CrateFacility[id][cfName], id);
 				Log("logs/cfedit.log", szMiscArray);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You have assigned %s ownership over %s facility (ID: %d).", arrGroupData[value][g_szGroupName], CrateFacility[id][cfName], id);
 			}
+			SaveFacility(id);
 			return 1;
 		}
 		else if(strcmp(name, "delete", true) == 0) {
 			if(CrateFacility[id][cfPos][0] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't delete a non-active facility!");
-			DeleteOrder(id, "Crate facility has been deleted.");
+			if(!DeleteOrder(id, "Crate facility has been deleted.")) return SendClientMessageEx(playerid, COLOR_RED, "Unable to settle outstanding crate orders.");
 			for(new c = 0; c < MAX_CRATES; c++) {
 				if(CrateBox[c][cbFacility] == id) {
 					DestroyCrate(c);
@@ -1459,29 +1628,43 @@ CMD:cfedit(playerid, params[]) {
 }
 
 stock DeleteOrder(facility, const reason[]) {
+	if(!(0 <= facility < MAX_CRATE_FACILITY)) return 0;
+	foreach(new playerid : Player) {
+		if(CrateAction[playerid][caTimer] && CrateAction[playerid][caFacility] == facility) CancelCrateAction(playerid);
+	}
 	szMiscArray[0] = 0;
 	for(new g = 0; g < MAX_GROUPS; g++) {
 		if(CrateOrder[g][coFacility] == facility) {
+			if(!CrateOrder[g][coStatus]) {
+				ResetOrder(g);
+				continue;
+			}
+			if(!(1 <= CrateOrder[g][coCrates] <= 50) || !(0 <= CrateOrder[g][coDelivered] <= CrateOrder[g][coCrates]) || CrateOrder[g][coPerCrate] < 1 || CrateOrder[g][coPerCrate] > cellmax / CrateOrder[g][coCrates]) return 0;
 			new refund = ((CrateOrder[g][coCrates] - CrateOrder[g][coDelivered]) * CrateOrder[g][coPerCrate]);
+			new payee = CrateFacility[facility][cfGroup], earnings = CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate];
+			if(payee == g) payee = arrGroupData[g][g_iAllegiance] == 2 ? 8 : 5;
+			if(!ValidGroup(payee) || GetGroupBudget(g) > cellmax - refund || GetGroupBudget(payee) > cellmax - earnings) return 0;
+			if(payee == g && GetGroupBudget(g) > cellmax - refund - earnings) return 0;
 			foreach(new p: Player) {
 				if(PlayerInfo[p][pMember] == CrateFacility[CrateOrder[g][coFacility]][cfGroup]) {
-					SendClientMessageEx(p, COLOR_LIGHTRED, "%s order was auto canceled; %d/%d crates were delivered earning: $%s.", arrGroupData[g][g_szGroupName], CrateOrder[g][coDelivered], CrateOrder[g][coCrates], number_format(CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "%s order was auto canceled, %d/%d crates were delivered earning: $%s.", arrGroupData[g][g_szGroupName], CrateOrder[g][coDelivered], CrateOrder[g][coCrates], number_format(CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]));
 					SendClientMessageEx(p, COLOR_LIGHTRED, "Reason: %s", reason);
 				}
 				if(PlayerInfo[p][pLeader] == g) {
-					SendClientMessageEx(p, COLOR_LIGHTRED, "* Your crate order was auto canceled; %d/%d crates were delivered costing: $%s", CrateOrder[g][coDelivered], CrateOrder[g][coCrates], number_format(CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "* Your crate order was auto canceled, %d/%d crates were delivered costing: $%s", CrateOrder[g][coDelivered], CrateOrder[g][coCrates], number_format(CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]));
 					SendClientMessageEx(p, COLOR_LIGHTRED, "* $%s was refunded back into the vault for undelivered crates.", number_format(refund));
 					SendClientMessageEx(p, COLOR_LIGHTRED, "* Reason: %s", reason);
 				}
 			}
-			format(szMiscArray, sizeof(szMiscArray), "Your crate order was auto canceled ; %d/%d crates were delivered costing: $%s ($%s was refunded)", CrateOrder[g][coDelivered], CrateOrder[g][coCrates], number_format(CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]), number_format(refund));
+			format(szMiscArray, sizeof(szMiscArray), "Your crate order was auto canceled, %d/%d crates were delivered costing: $%s ($%s was refunded)", CrateOrder[g][coDelivered], CrateOrder[g][coCrates], number_format(CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]), number_format(refund));
 			format(szMiscArray, sizeof(szMiscArray), "%sReason: %s", szMiscArray, reason);
 			GroupPayLog(g, szMiscArray);
 			SetGroupBudget(g, refund);
-			format(szMiscArray, sizeof(szMiscArray), "%s order was auto canceled; %d/%d crates were delivered adding: $%s.", arrGroupData[g][g_szGroupName], CrateOrder[g][coDelivered], CrateOrder[g][coCrates], number_format(CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]), number_format(refund));
+			format(szMiscArray, sizeof(szMiscArray), "%s order was auto canceled, %d/%d crates were delivered adding: $%s.", arrGroupData[g][g_szGroupName], CrateOrder[g][coDelivered], CrateOrder[g][coCrates], number_format(CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]), number_format(refund));
 			format(szMiscArray, sizeof(szMiscArray), "%sReason: %s", szMiscArray, reason);
-			GroupPayLog(CrateFacility[CrateOrder[g][coFacility]][cfGroup], szMiscArray);
-			SetGroupBudget(CrateFacility[CrateOrder[g][coFacility]][cfGroup], (CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]));
+			GroupPayLog(payee, szMiscArray);
+			SetGroupBudget(payee, earnings);
+			SaveGroup(payee);
 			ResetOrder(g);
 			SaveGroup(g);
 		}
@@ -1502,7 +1685,7 @@ CMD:ordercrates(playerid, params[]) {
 	if(ValidGroup(group)) {
 		if(!IsGroupLeader(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be a group leader to order crates!");
 		if(IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're unable to order crates from any facility.");
-		//if(CrateOrder[group][coFacility] != -1 && CrateOrder[group][coStatus] > 1 && CrateOrder[group][coTime] > gettime()) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your order is currently being processed; You can cancel it after %s", date(CrateOrder[group][coTime], 1));
+		//if(CrateOrder[group][coFacility] != -1 && CrateOrder[group][coStatus] > 1 && CrateOrder[group][coTime] > gettime()) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your order is currently being processed, You can cancel it after %s", date(CrateOrder[group][coTime], 1));
 		if(!CrateOrder[group][coStatus]) {
 			PrepOrder(playerid, group);
 		} else {
@@ -1517,6 +1700,14 @@ stock CancelOrder(playerid) {
 	szMiscArray[0] = 0;
 	if(!IsGroupLeader(playerid)) return 1;
 	new group = PlayerInfo[playerid][pMember];
+	if(!ValidGroup(group) || !(0 <= CrateOrder[group][coFacility] < MAX_CRATE_FACILITY)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "The crate order has no valid facility.");
+	
+	if(!(1 <= CrateOrder[group][coCrates] <= 50) || !(0 <= CrateOrder[group][coDelivered] <= CrateOrder[group][coCrates]) || CrateOrder[group][coPerCrate] < 1 || CrateOrder[group][coPerCrate] > cellmax / CrateOrder[group][coCrates]) 
+	{
+		return 0;
+	}
+
 	new refund = ((CrateOrder[group][coCrates] - CrateOrder[group][coDelivered]) * CrateOrder[group][coPerCrate]);
 	format(szMiscArray, sizeof(szMiscArray), "Are you sure you want to cancel the order you made at %s?\n", CrateFacility[CrateOrder[group][coFacility]][cfName]);
 	format(szMiscArray, sizeof(szMiscArray), "%sPlease see transaction information below:\n\n", szMiscArray);
@@ -1529,41 +1720,48 @@ Dialog:order_refund(playerid, response, listitem, inputtext[]) {
 	if(!IsGroupLeader(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be a group leader to order crates!");
 	new group = PlayerInfo[playerid][pMember];
 	if(response) {
+		if(!ValidGroup(group) || !(0 <= CrateOrder[group][coFacility] < MAX_CRATE_FACILITY)) return 1;
 		if(!CrateOrder[group][coStatus]) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: You don't have any crate orders pending!");
+		if(!(1 <= CrateOrder[group][coCrates] <= 50) || !(0 <= CrateOrder[group][coDelivered] <= CrateOrder[group][coCrates]) || CrateOrder[group][coPerCrate] < 1 || CrateOrder[group][coPerCrate] > cellmax / CrateOrder[group][coCrates]) return 0;
 		new refund = ((CrateOrder[group][coCrates] - CrateOrder[group][coDelivered]) * CrateOrder[group][coPerCrate]), type = (arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2) ? 8 : 5;
+		new payee = CrateFacility[CrateOrder[group][coFacility]][cfGroup], earnings = CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate];
+		if(payee == group) payee = type;
+		if(!ValidGroup(payee) || GetGroupBudget(group) > cellmax - refund || GetGroupBudget(payee) > cellmax - earnings) return SendClientMessageEx(playerid, COLOR_RED, "The group balances cannot accept this settlement.");
+		if(payee == group && GetGroupBudget(group) > cellmax - refund - earnings) return SendClientMessageEx(playerid, COLOR_RED, "The group budget cannot accept this settlement.");
 		if(CrateFacility[CrateOrder[group][coFacility]][cfGroup] == PlayerInfo[playerid][pMember]) {
 			foreach(new p: Player) {
 				if(PlayerInfo[p][pMember] == type) {
-					SendClientMessageEx(p, COLOR_LIGHTRED, "%s has canceled their own order; %d/%d crates were delivered earning: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "%s has canceled their own order, %d/%d crates were delivered earning: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
 				}
 				if(PlayerInfo[p][pLeader] == group) {
-					SendClientMessageEx(p, COLOR_LIGHTRED, "* %s %s has canceled the crate order; %d/%d crates were delivered costing: $%s", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "* %s %s has canceled the crate order, %d/%d crates were delivered costing: $%s", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
 					SendClientMessageEx(p, COLOR_LIGHTRED, "* $%s was refunded back into the vault for undelivered crates.", number_format(refund));
 				}
 			}
-			format(szMiscArray, sizeof(szMiscArray), "%s %s has canceled the crate order; %d/%d crates were delivered costing: $%s ($%s was refunded)", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
+			format(szMiscArray, sizeof(szMiscArray), "%s %s has canceled the crate order, %d/%d crates were delivered costing: $%s ($%s was refunded)", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
 			GroupPayLog(group, szMiscArray);
 			SetGroupBudget(group, refund);
-			format(szMiscArray, sizeof(szMiscArray), "%s has canceled their crate order; %d/%d crates were delivered adding: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
+			format(szMiscArray, sizeof(szMiscArray), "%s has canceled their crate order, %d/%d crates were delivered adding: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
 			GroupPayLog(type, szMiscArray);
 			SetGroupBudget(type, (CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
 		} else {
 			foreach(new p: Player) {
 				if(PlayerInfo[p][pMember] == CrateFacility[CrateOrder[group][coFacility]][cfGroup]) {
-					SendClientMessageEx(p, COLOR_LIGHTRED, "%s has canceled their order; %d/%d crates were delivered earning: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "%s has canceled their order, %d/%d crates were delivered earning: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
 				}
 				if(PlayerInfo[p][pLeader] == group) {
-					SendClientMessageEx(p, COLOR_LIGHTRED, "* %s %s has canceled the crate order; %d/%d crates were delivered costing: $%s", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "* %s %s has canceled the crate order, %d/%d crates were delivered costing: $%s", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
 					SendClientMessageEx(p, COLOR_LIGHTRED, "* $%s was refunded back into the vault for undelivered crates.", number_format(refund));
 				}
 			}
-			format(szMiscArray, sizeof(szMiscArray), "%s %s has canceled the crate order; %d/%d crates were delivered costing: $%s ($%s was refunded)", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
+			format(szMiscArray, sizeof(szMiscArray), "%s %s has canceled the crate order, %d/%d crates were delivered costing: $%s ($%s was refunded)", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
 			GroupPayLog(group, szMiscArray);
 			SetGroupBudget(group, refund);
-			format(szMiscArray, sizeof(szMiscArray), "%s has canceled their crate order; %d/%d crates were delivered adding: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
+			format(szMiscArray, sizeof(szMiscArray), "%s has canceled their crate order, %d/%d crates were delivered adding: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
 			GroupPayLog(CrateFacility[CrateOrder[group][coFacility]][cfGroup], szMiscArray);
 			SetGroupBudget(CrateFacility[CrateOrder[group][coFacility]][cfGroup], (CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
 		}
+		SaveGroup(CrateFacility[CrateOrder[group][coFacility]][cfGroup] == group ? type : CrateFacility[CrateOrder[group][coFacility]][cfGroup]);
 		ResetOrder(group);
 		SaveGroup(group);
 	}
@@ -1574,7 +1772,7 @@ stock PrepOrder(playerid, group) {
 	if(!IsGroupLeader(playerid)) return 1;
 	new fname[32];
 	szMiscArray[0] = 0;
-	if(CrateOrder[group][coFacility] != -1) {
+	if(0 <= CrateOrder[group][coFacility] < MAX_CRATE_FACILITY) {
 		format(fname, sizeof(fname), "%s", CrateFacility[CrateOrder[group][coFacility]][cfName]);
 	} else {
 		format(fname, sizeof(fname), "Not Selected");
@@ -1593,6 +1791,7 @@ stock PrepOrder(playerid, group) {
 
 Dialog:place_order(playerid, response, listitem, inputtext[]) {
 	if(!IsGroupLeader(playerid)) return 1;
+	if(CrateOrder[PlayerInfo[playerid][pMember]][coStatus]) return SendClientMessageEx(playerid, COLOR_GREY, "Your group already has an active crate order.");
 	if(response) {
 		szMiscArray[0] = 0;
 		new group = PlayerInfo[playerid][pMember];
@@ -1601,7 +1800,7 @@ Dialog:place_order(playerid, response, listitem, inputtext[]) {
 				ListFacility(playerid);
 			}
 			case 1: {
-				if(CrateOrder[group][coFacility] == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must choose a facility to order crates from!"), PrepOrder(playerid, group);
+				if(!(0 <= CrateOrder[group][coFacility] < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must choose a facility to order crates from!"), PrepOrder(playerid, group);
 				format(szMiscArray, sizeof(szMiscArray), "Please specify how many crates you'd like to order.\n\nPrice per crate: $%s", number_format(CrateFacility[CrateOrder[group][coFacility]][cfProdCost]));
 				Dialog_Show(playerid, crate_total, DIALOG_STYLE_INPUT, "How many Crates would you like?", szMiscArray, "Ok", "Go Back");
 			}
@@ -1619,11 +1818,12 @@ Dialog:place_order(playerid, response, listitem, inputtext[]) {
 				Dialog_Show(playerid, how_crates_work, DIALOG_STYLE_MSGBOX, "How crate ordering works", szMiscArray, "Go Back", "");
 			}
 			case 3: {
-				if(CrateOrder[group][coFacility] == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: Facility selection is required!"), PrepOrder(playerid, group);
+				if(!(0 <= CrateOrder[group][coFacility] < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: Facility selection is required!"), PrepOrder(playerid, group);
 				if(CrateOrder[group][coCrates] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: You must select how many crates you'd like!"), PrepOrder(playerid, group);
 				if(!CrateFacility[CrateOrder[group][coFacility]][cfActive] || CrateFacility[CrateOrder[group][coFacility]][cfGroup] == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The selected facility is unaviliable to take orders!"), PrepOrder(playerid, group);
 				if(CrateFacility[CrateOrder[group][coFacility]][cfProdCost] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The facility your trying to select hasn't got a production cost setup!"), PrepOrder(playerid, group);
-				//if(CrateFacility[CrateOrder[group][coFacility]][cfGroup] == group) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't order from your own facility; You can deliver them manually."), PrepOrder(playerid, group);
+				//if(CrateFacility[CrateOrder[group][coFacility]][cfGroup] == group) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't order from your own facility, You can deliver them manually."), PrepOrder(playerid, group);
+				if(!(1 <= CrateOrder[group][coCrates] <= 50) || CrateOrder[group][coPerCrate] < 1 || CrateOrder[group][coPerCrate] > cellmax / CrateOrder[group][coCrates]) return SendClientMessageEx(playerid, COLOR_RED, "The crate order amount is invalid.");
 				new cost = (CrateOrder[group][coCrates] * CrateOrder[group][coPerCrate]);
 				if(GetGroupBudget(group) < cost) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: Your group can't afford that many crates!"), PrepOrder(playerid, group);
 				if(ValidGroup(CrateOrder[group][coFacility])) {
@@ -1664,12 +1864,13 @@ stock ListFacility(playerid) {
 
 Dialog:select_facility(playerid, response, listitem, inputtext[]) {
 	if(!IsGroupLeader(playerid)) return 1;
+	if(CrateOrder[PlayerInfo[playerid][pMember]][coStatus]) return SendClientMessageEx(playerid, COLOR_GREY, "Your group already has an active crate order.");
 	new group = PlayerInfo[playerid][pMember];
 	if(response) {
-		if(!(0 <= listitem < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_RED, "ERROR - Something went wrong; Please try again!"), ListFacility(playerid);
+		if(!(0 <= listitem < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_RED, "ERROR - Something went wrong, Please try again!"), ListFacility(playerid);
 		if(!CrateFacility[listitem][cfActive] || CrateFacility[listitem][cfGroup] == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The facility your trying to select isn't available to take orders!"), ListFacility(playerid);
 		if(CrateFacility[listitem][cfProdCost] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The facility your trying to select hasn't got a production cost setup!"), ListFacility(playerid);
-		//if(CrateFacility[listitem][cfGroup] == group) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't order from your own facility; You can deliver them manually."), ListFacility(playerid);
+		//if(CrateFacility[listitem][cfGroup] == group) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't order from your own facility, You can deliver them manually."), ListFacility(playerid);
 		CrateOrder[group][coFacility] = listitem;
 		CrateOrder[group][coCrates] = 0;
 		CrateOrder[group][coPerCrate] = 0;
@@ -1684,7 +1885,9 @@ Dialog:select_facility(playerid, response, listitem, inputtext[]) {
 
 Dialog:crate_total(playerid, response, listitem, inputtext[]) {
 	if(!IsGroupLeader(playerid)) return 1;
+	if(CrateOrder[PlayerInfo[playerid][pMember]][coStatus]) return SendClientMessageEx(playerid, COLOR_GREY, "Your group already has an active crate order.");
 	new group = PlayerInfo[playerid][pMember];
+	if(!(0 <= CrateOrder[group][coFacility] < MAX_CRATE_FACILITY)) return PrepOrder(playerid, group);
 	szMiscArray[0] = 0;
 	if(response) {
 		new total = strval(inputtext);
@@ -1693,6 +1896,7 @@ Dialog:crate_total(playerid, response, listitem, inputtext[]) {
 			Dialog_Show(playerid, crate_total, DIALOG_STYLE_INPUT, "How many Crates would you like?", szMiscArray, "Ok", "Go Back");
 			return 1;
 		}
+		if(CrateFacility[CrateOrder[group][coFacility]][cfProdCost] < 1 || CrateFacility[CrateOrder[group][coFacility]][cfProdCost] > cellmax / total) return SendClientMessageEx(playerid, COLOR_RED, "The crate price is invalid.");
 		if(GetGroupBudget(group) < (CrateFacility[CrateOrder[group][coFacility]][cfProdCost] * total)) {
 			format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Please specify how many crates you'd like to order.\n\nPrice per crate: $%s\n\n{FF0000}ERROR: Your group can't afford %s crates!\n{FFFFFF}Budget: $%s | Cost Amount: $%s", number_format(CrateFacility[CrateOrder[group][coFacility]][cfProdCost]), number_format(total), number_format(GetGroupBudget(group)), number_format(CrateFacility[CrateOrder[group][coFacility]][cfProdCost] * total));
 			Dialog_Show(playerid, crate_total, DIALOG_STYLE_INPUT, "How many Crates would you like?", szMiscArray, "Ok", "Go Back");
@@ -1718,7 +1922,7 @@ stock GetFacility(group, &fac) {
 	fac = -1;
     for(new f = 0; f < MAX_CRATE_FACILITY; f++)
     {
- 	    if(group == CrateFacility[f][cfGroup])
+		if(ValidGroup(group) && CrateFacility[f][cfId] > 0 && group == CrateFacility[f][cfGroup])
 		{
 			fac = f;
 			break;
@@ -1728,6 +1932,9 @@ stock GetFacility(group, &fac) {
 
 stock ResetOrder(group) {
 	if(!ValidGroup(group)) return 1;
+	foreach(new playerid : Player) {
+		if(CrateAction[playerid][caTimer] && CrateAction[playerid][caPoint] == group) CancelCrateAction(playerid);
+	}
 	CrateOrder[group][coFacility] = -1;
 	CrateOrder[group][coCrates] = 0;
 	CrateOrder[group][coPerCrate] = 0;
@@ -1752,6 +1959,8 @@ stock GetDeliverPoint(playerid, &point, Float:range)
 }
 
 CMD:delivercrate(playerid, params[]) {
+	if(CrateAction[playerid][caTimer]) return SendClientMessageEx(playerid, COLOR_GREY, "Please finish your current crate action first.");
+	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be driving the delivery vehicle.");
 	new fac, veh, crates, point;
 	if(!ValidGroup(PlayerInfo[playerid][pMember])) return SendClientMessage(playerid, COLOR_GRAD2, "You need to be apart of a group to use this command!");
 	GetDeliverPoint(playerid, point, 6);
@@ -1759,8 +1968,9 @@ CMD:delivercrate(playerid, params[]) {
 	if(fac == -1) return SendClientMessage(playerid, COLOR_GRAD2, "You group doesn't own a crate facility, you can't process orders!");
 	if((veh = IsDynamicCrateVehicle(GetPlayerVehicleID(playerid))) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in the designated vehicle for this operation!");
 	if(point == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not near any crate delivery points!");
+	if(VehDelivering[veh]) return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle is already unloading crates.");
 	if(CrateBeingDelivered[point]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Someone else is currently delivering crates! - Please Wait.");
-	if(CrateOrder[point][coFacility] != fac) return SendClientMessageEx(playerid, COLOR_GRAD2, "%s hasn't made any crate orders at your facility.", arrGroupData[point][g_szGroupName]);
+	if(!CrateOrder[point][coStatus] || CrateOrder[point][coFacility] != fac) return SendClientMessageEx(playerid, COLOR_GRAD2, "%s hasn't made any crate orders at your facility.", arrGroupData[point][g_szGroupName]);
 	for(new c = 0; c < MAX_CRATES; c++) {
 		if(CrateBox[c][cbActive]) {
 			if(CrateBox[c][cbFacility] == fac && CrateBox[c][cbInVeh] == veh) {
@@ -1769,30 +1979,39 @@ CMD:delivercrate(playerid, params[]) {
 		}
 	}
 	if(!crates) return SendClientMessageEx(playerid, COLOR_GRAD2, "There are no crates from your facility in this vehicle to deliver!");
-    CrateBeingDelivered[point] = 1;
-    VehDelivering[veh] = 1;
-    SetPVarInt(playerid, "DeliverCrateTime", 8);
-    SetTimerEx("DeliverCrate", 1000, false, "iiiii", playerid, fac, veh, point, crates);
+	CancelCrateAction(playerid);
+	CrateBeingDelivered[point] = playerid + 1;
+	VehDelivering[veh] = 1;
+	CrateAction[playerid][caFacility] = fac;
+	CrateAction[playerid][caVehicle] = veh;
+	CrateAction[playerid][caPoint] = point;
+	SetPVarInt(playerid, "DeliverCrateTime", 8);
+	CrateAction[playerid][caTimer] = SetTimerEx("DeliverCrate", 1000, false, "iii", playerid, g_arrQueryHandle[playerid], CrateAction[playerid][caToken]);
 	GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~8 seconds left", 1100, 3);
 	TogglePlayerControllable(playerid, false);
 	return 1;
 }
 
-forward DeliverCrate(playerid, fac, veh, point, crates);
-public DeliverCrate(playerid, fac, veh, point, crates) {
+forward DeliverCrate(playerid, session, token);
+public DeliverCrate(playerid, session, token) {
+	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session || CrateAction[playerid][caToken] != token) return 1;
+	new fac = CrateAction[playerid][caFacility], veh = CrateAction[playerid][caVehicle], point = CrateAction[playerid][caPoint];
+	if(!(0 <= fac < MAX_CRATE_FACILITY) || !(0 <= veh < MAX_CRATE_VEHCILES) || !ValidGroup(point)) return CancelCrateAction(playerid);
+	if(CrateBeingDelivered[point] != playerid + 1 || !VehDelivering[veh]) return CancelCrateAction(playerid);
     szMiscArray[0] = 0;
 	new string[128];
 	SetPVarInt(playerid, "DeliverCrateTime", GetPVarInt(playerid, "DeliverCrateTime")-1);
 	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", GetPVarInt(playerid, "DeliverCrateTime"));
 	GameTextForPlayer(playerid, string, 1100, 3);
 
-	if(GetPVarInt(playerid, "DeliverCrateTime") > 0) SetTimerEx("DeliverCrate", 1000, false, "iiiii", playerid, fac, veh, point, crates);
+	if(GetPVarInt(playerid, "DeliverCrateTime") > 0) {
+		CrateAction[playerid][caTimer] = SetTimerEx("DeliverCrate", 1000, false, "iii", playerid, session, token);
+		return 1;
+	}
 
 	if(GetPVarInt(playerid, "DeliverCrateTime") < 1) {
-		DeletePVar(playerid, "DeliverCrateTime");
-		TogglePlayerControllable(playerid, true);
-		CrateBeingDelivered[point] = 0;
-		VehDelivering[veh] = 0;
+		CancelCrateAction(playerid);
+		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || PlayerBusy(playerid)) return 1;
 		if(!ValidGroup(PlayerInfo[playerid][pMember])) {
 			SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to deliver any crates. You're no longer apart of a group!");
 			return 1;
@@ -1813,24 +2032,54 @@ public DeliverCrate(playerid, fac, veh, point, crates) {
 	    	SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to deliver any crates, you were alt-tabbed.");
 	    	return 1;
 	    }
-	    if(CrateOrder[point][coFacility] != fac) {
+	    if(!CrateOrder[point][coStatus] || CrateOrder[point][coFacility] != fac) {
 	    	SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to deliver any crates, %s has canceled their order.", arrGroupData[point][g_szGroupName]);
 	    	return 1;
 	    }
-	    CrateOrder[point][coDelivered] += crates;
-	    if(CrateOrder[point][coDelivered] > CrateOrder[point][coCrates]) {
-	    	crates = ((CrateOrder[point][coCrates] + crates) - CrateOrder[point][coDelivered]);
-	    	CrateOrder[point][coDelivered] = CrateOrder[point][coCrates];
-	    }
+		new remaining = CrateOrder[point][coCrates] - CrateOrder[point][coDelivered], crates, materials;
+		new multiplier = CrateFacility[fac][cfProdMulti], payee = CrateFacility[fac][cfGroup];
+		if(!(1 <= CrateOrder[point][coCrates] <= 50) || !(0 <= CrateOrder[point][coDelivered] < CrateOrder[point][coCrates]) || remaining < 1 || CrateOrder[point][coPerCrate] < 1 || CrateOrder[point][coCrates] > cellmax / CrateOrder[point][coPerCrate] || multiplier < 1) 
+			return SendClientMessageEx(playerid, COLOR_RED, "The crate order settings are invalid.");
+
+		for(new c = 0; c < MAX_CRATES && crates < remaining; c++) {
+			if(!CrateBox[c][cbActive] || CrateBox[c][cbFacility] != fac || CrateBox[c][cbInVeh] != veh) 
+				continue;
+			
+			if(CrateBox[c][cbMats] < 0 || CrateBox[c][cbMats] > (cellmax - materials) / multiplier) 
+				return SendClientMessageEx(playerid, COLOR_RED, "The crate material amount is too large.");
+			
+			materials += CrateBox[c][cbMats] * multiplier;
+			++crates;
+		}
+		if(!crates) return SendClientMessageEx(playerid, COLOR_GREY, "There are no matching crates left to deliver.");
+		if(arrGroupData[point][g_iLockerStock] < 0 || arrGroupData[point][g_iLockerStock] > cellmax - materials) 
+			return SendClientMessageEx(playerid, COLOR_RED, "The locker cannot accept these materials.");
+		
+		if(point == payee) payee = arrGroupData[payee][g_iAllegiance] == 2 ? 8 : 5;
+		new payment = CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate];
+		if(crates == remaining && GetGroupBudget(payee) > cellmax - payment) 
+			return SendClientMessageEx(playerid, COLOR_RED, "The facility budget cannot accept this payment.");
+		
+		arrGroupData[point][g_iLockerStock] += materials;
+		CrateOrder[point][coDelivered] += crates;
+		new consumed;
+		for(new c = 0; c < MAX_CRATES && consumed < crates; c++) {
+			if(CrateBox[c][cbActive] && CrateBox[c][cbFacility] == fac && CrateBox[c][cbInVeh] == veh) {
+				DestroyCrate(c, false);
+				++consumed;
+			}
+		}
+		SaveFacility(fac);
+		SaveGroup(point);
 		if(CrateOrder[point][coDelivered] >= CrateOrder[point][coCrates]) {
 			if(point == PlayerInfo[playerid][pMember]) {
 				new type = (arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2) ? 8 : 5; 
 				foreach(new p: Player) {
 					if(PlayerInfo[p][pMember] == type) {
-						SendClientMessageEx(p, COLOR_LIGHTRED, "* %s's own crate order has been completed; %d crates were delivered earning: $%s.", arrGroupData[point][g_szGroupName], CrateOrder[point][coCrates], number_format(CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
+						SendClientMessageEx(p, COLOR_LIGHTRED, "* %s's own crate order has been completed, %d crates were delivered earning: $%s.", arrGroupData[point][g_szGroupName], CrateOrder[point][coCrates], number_format(CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
 					}
 					if(PlayerInfo[p][pLeader] == point) {
-						SendClientMessageEx(p, COLOR_LIGHTRED, "* %s facility has completed your crate order; You can now submit a new order.", CrateFacility[fac][cfName]);
+						SendClientMessageEx(p, COLOR_LIGHTRED, "* %s facility has completed your crate order, You can now submit a new order.", CrateFacility[fac][cfName]);
 					}
 				}
 				SetGroupBudget(type, (CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
@@ -1841,10 +2090,10 @@ public DeliverCrate(playerid, fac, veh, point, crates) {
 			} else {
 				foreach(new p: Player) {
 					if(PlayerInfo[p][pMember] == CrateFacility[CrateOrder[point][coFacility]][cfGroup]) {
-						SendClientMessageEx(p, COLOR_LIGHTRED, "* %s's crate order has been completed; %d crates were delivered earning: $%s.", arrGroupData[point][g_szGroupName], CrateOrder[point][coCrates], number_format(CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
+						SendClientMessageEx(p, COLOR_LIGHTRED, "* %s's crate order has been completed, %d crates were delivered earning: $%s.", arrGroupData[point][g_szGroupName], CrateOrder[point][coCrates], number_format(CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
 					}
 					if(PlayerInfo[p][pLeader] == point) {
-						SendClientMessageEx(p, COLOR_LIGHTRED, "* %s facility has completed your crate order; You can now submit a new order.", CrateFacility[fac][cfName]);
+						SendClientMessageEx(p, COLOR_LIGHTRED, "* %s facility has completed your crate order, You can now submit a new order.", CrateFacility[fac][cfName]);
 					}
 				}
 				SetGroupBudget(CrateFacility[CrateOrder[point][coFacility]][cfGroup], (CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
@@ -1853,25 +2102,16 @@ public DeliverCrate(playerid, fac, veh, point, crates) {
 				format(szMiscArray, sizeof(szMiscArray), "%s facility has successfully delivered all %d crates to your locker.", CrateFacility[fac][cfName], CrateOrder[point][coCrates]);
 				CrateLog(point, szMiscArray);
 			}
-			SaveGroup(CrateFacility[CrateOrder[point][coFacility]][cfGroup]);
+			SaveGroup(payee);
 			ResetOrder(point);
 		} else {
 			format(szMiscArray, sizeof(szMiscArray), "%s has delivered %d crates to %s (Total delivered: %d/%d)", GetPlayerNameEx(playerid), crates, arrGroupData[point][g_szGroupName], CrateOrder[point][coDelivered], CrateOrder[point][coCrates]);
 			CrateLog(CrateFacility[CrateOrder[point][coFacility]][cfGroup], szMiscArray);
-			SendClientMessageEx(playerid, COLOR_LIGHTRED, "* You have delivered %d crates to %s; Total delivered: %d/%d", crates, arrGroupData[point][g_szGroupName], CrateOrder[point][coDelivered], CrateOrder[point][coCrates]);
+			SendClientMessageEx(playerid, COLOR_LIGHTRED, "* You have delivered %d crates to %s, Total delivered: %d/%d", crates, arrGroupData[point][g_szGroupName], CrateOrder[point][coDelivered], CrateOrder[point][coCrates]);
 		}
-		SaveOrder(point);
-	    for(new c = 0; c < MAX_CRATES; c++) {
-	    	if(CrateBox[c][cbFacility] == fac && CrateBox[c][cbInVeh] == veh) {
-	    		if(crates > 0) {
-					arrGroupData[point][g_iLockerStock] += floatround(CrateBox[c][cbMats] * CrateFacility[CrateBox[c][cbFacility]][cfProdMulti]);
-	    			DestroyCrate(c);
-	    			--crates;
-	    		}
-	    	}
-	    }
-	    SaveWeapons(point);
-	    if(CreateCount(veh) > 0) SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have %d crate(s) remaining that wasn't used for the delivery.", CreateCount(veh));
+		if(CrateOrder[point][coStatus]) SaveOrder(point);
+		new left = CreateCount(veh);
+		if(left > 0) SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have %d crate(s) remaining that were not used for the delivery.", left);
 	}
 	return 1;
 }
@@ -1886,11 +2126,14 @@ CMD:cgun(playerid, params[]) {
 	GetCrateBox(playerid, box, 2.0);
 	if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You're not near any crate boxes.");
 	if(CrateBox[box][cbGroup] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "This is a transfer crate use \"/crate contents\" instead!");
+	if(!(0 <= CrateBox[box][cbFacility] < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GREY, "This crate has no valid source facility.");
 	if(IsInRangeOfPoint(CrateFacility[CrateBox[box][cbFacility]][cfPos][0], CrateFacility[CrateBox[box][cbFacility]][cfPos][1], CrateFacility[CrateBox[box][cbFacility]][cfPos][2], CrateBox[box][cbPos][0], CrateBox[box][cbPos][1], CrateBox[box][cbPos][2], 500.0))
 		return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR:  This crate has been sealed shut by the Crate Island's security system!");
 	SetPVarInt(playerid, "Cgunbox", box);
+	SetPVarInt(playerid, "CgunGeneration", CrateGeneration[box]);
+	SetPVarInt(playerid, "CgunGroup", PlayerInfo[playerid][pMember]);
 	format(title, sizeof(title), "Crate Box Withdraw - Mats: %d", CrateBox[box][cbMats]);
-	format(szMiscArray, sizeof(szMiscArray), "Weapon\tCost\n");
+	format(szMiscArray, sizeof(szMiscArray), "Weapon\tCost");
 	for(new i = 0; i != MAX_GROUP_WEAPONS; ++i) {
 		if(arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerGuns][i]) {
 			format(szMiscArray, sizeof szMiscArray, "%s\n%s\t%d", szMiscArray, Weapon_ReturnName(arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerGuns][i]), arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerCost][i]);
@@ -1907,25 +2150,36 @@ Dialog:cgun_take(playerid, response, listitem, inputtext[]) {
 	if(!GetPVarType(playerid, "Cgunbox")) return 1;
 	new group = PlayerInfo[playerid][pMember], box;
 	if(response) {
-		GetCrateBox(playerid, box, 2.0); // Did someone pick it up? or did the player move?
+		if(!(0 <= listitem < MAX_GROUP_WEAPONS) || PlayerInfo[playerid][pAccountRestricted] || PlayerInfo[playerid][pWRestricted] || PlayerBusy(playerid)) return 1;
+		GetCrateBox(playerid, box, 2.0);
 		if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Crate box went out of reach - Please stay close to the crate box.");
 		if(box != GetPVarInt(playerid, "Cgunbox")) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: Box ID differs from accessed crate, please try again.");
+		if(CrateGeneration[box] != GetPVarInt(playerid, "CgunGeneration") || group != GetPVarInt(playerid, "CgunGroup") || CrateBox[box][cbGroup] != -1) return 1;
+		new facility = CrateBox[box][cbFacility];
+		if(!(0 <= facility < MAX_CRATE_FACILITY)) return 1;
+		if(IsInRangeOfPoint(CrateFacility[facility][cfPos][0], CrateFacility[facility][cfPos][1], CrateFacility[facility][cfPos][2], CrateBox[box][cbPos][0], CrateBox[box][cbPos][1], CrateBox[box][cbPos][2], 500.0)) return SendClientMessageEx(playerid, COLOR_GREY, "This crate is sealed near its source facility.");
 		new GunID = arrGroupData[group][g_iLockerGuns][listitem];
+		new slot = GetLoadoutWeaponSlot(GunID), cost = arrGroupData[group][g_iLockerCost][listitem];
+		if(!(0 <= slot < 12) || cost < 0) return 1;
 		if(!GunID) return SendClientMessageEx(playerid, COLOR_WHITE, "Theres no weapon assigned to that slot!");
 		if(CrateBox[box][cbMats] < arrGroupData[group][g_iLockerCost][listitem]) return SendClientMessageEx(playerid, COLOR_GRAD2, "There isn't enough materials in the crate for that weapon!");
-		if(PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(GunID)] != GunID) {
+		if(PlayerInfo[playerid][pGuns][slot] != GunID) {
 			GivePlayerValidWeapon(playerid, GunID);
 			CrateBox[box][cbMats] -= arrGroupData[group][g_iLockerCost][listitem];
 			format(szMiscArray, sizeof(szMiscArray), "* %s reaches into the weapon crate box and takes out a %s.", GetPlayerNameEx(playerid), Weapon_ReturnName(GunID));
 			ProxDetector(25.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-			SaveCrate(box);
-			CrateBoxUpdate(box);
 			if(CrateBox[box][cbMats] < 1) DestroyCrate(box);
+			else {
+				SaveCrate(box);
+				CrateBoxUpdate(box);
+			}
 		} else {
 			SendClientMessageEx(playerid, COLOR_RED, "You already have a %s on you!", Weapon_ReturnName(GunID));
 		}
 	}
 	DeletePVar(playerid, "Cgunbox");
+	DeletePVar(playerid, "CgunGeneration");
+	DeletePVar(playerid, "CgunGroup");
 	return 1;
 }
 

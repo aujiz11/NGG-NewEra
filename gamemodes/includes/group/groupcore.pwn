@@ -6441,7 +6441,7 @@ public IsGroupLeader(playerid) {
 forward SetGroupBudget(groupid, amount);
 public SetGroupBudget(groupid, amount) {
 	if(ValidGroup(groupid)) {
-		arrGroupData[groupid][g_iBudget] += floatround(amount);
+		arrGroupData[groupid][g_iBudget] += amount;
 	}
 	return 1;
 }
