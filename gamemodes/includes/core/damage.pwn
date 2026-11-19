@@ -132,7 +132,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 			}
 			if(iShots < 1) {
 				TazerTimeout[playerid] = 12;
-				SetTimerEx("TazerTimer",1000,false,"d",playerid);
+				SetTimerEx("TazerTimer",1000,false,"ii",playerid,g_arrQueryHandle[playerid]);
 				SendClientMessageEx(playerid, COLOR_WHITE, "Your tazer is recharging!");
 				
 				RemovePlayerLoadoutWeapon(playerid, 23);
@@ -454,7 +454,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				PlayerCuffedTime[damagedid] = 16;
 				SetPVarInt(damagedid, "IsFrozen", 1);
 				TazerTimeout[playerid] = 12;
-				SetTimerEx("TazerTimer",1000,false,"d",playerid);
+				SetTimerEx("TazerTimer",1000,false,"ii",playerid,g_arrQueryHandle[playerid]);
 				PlayerTextDrawShow(damagedid, _vhudFlash[damagedid]);
 				SetTimerEx("TurnOffFlash", 800, false, "i", damagedid);
 				Mechanic_CancelFix(damagedid, false);
@@ -941,11 +941,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 		DeletePVar(GetPVarInt(playerid, "MovingStretcher"), "OnStretcher");
 		DeletePVar(playerid, "MovingStretcher");
 	}
-	if(GetPVarType(playerid, "DraggingPlayer"))
-	{
-		DeletePVar(GetPVarInt(playerid, "DraggingPlayer"), "BeingDragged");
-		DeletePVar(playerid, "DraggingPlayer");
-	}
+	StopDragging(playerid);
+	if(GetPVarType(playerid, "DraggedBy")) StopDragging(GetPVarInt(playerid, "DraggedBy"));
 	if(IsPlayerConnected(Mobile[playerid]))
 	{
 		new

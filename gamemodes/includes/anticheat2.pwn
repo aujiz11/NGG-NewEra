@@ -746,7 +746,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		
 		if(iShots < 1) {
 			TazerTimeout[playerid] = 12;
-			SetTimerEx("TazerTimer",1000,false,"d",playerid);
+			SetTimerEx("TazerTimer",1000,false,"ii",playerid,g_arrQueryHandle[playerid]);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Your tazer is recharging!");
 			
 			RemovePlayerLoadoutWeapon(playerid, 23);

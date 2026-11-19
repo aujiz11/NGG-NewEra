@@ -34,6 +34,106 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#include <YSI_Coding\y_hooks>
+
+new LEADragTimer[MAX_PLAYERS], 
+	LEADragToken[MAX_PLAYERS];
+
+new LEACuffTimer[MAX_PLAYERS], 
+	LEACuffToken[MAX_PLAYERS], 
+	LEATackleGeneration[MAX_PLAYERS];
+
+new LEABackupToken[MAX_PLAYERS];
+
+stock StopDragging(dragger) {
+	if(!(0 <= dragger < MAX_PLAYERS)) return 0;
+	if(LEADragTimer[dragger]) KillTimer(LEADragTimer[dragger]);
+	LEADragTimer[dragger] = 0;
+	++LEADragToken[dragger];
+	if(GetPVarType(dragger, "DraggingPlayer")) {
+		new target = GetPVarInt(dragger, "DraggingPlayer");
+		if(0 <= target < MAX_PLAYERS && IsPlayerConnected(target)
+			&& g_arrQueryHandle[target] == GetPVarInt(dragger, "DragTargetSession")
+			&& GetPVarType(target, "DraggedBy") && GetPVarInt(target, "DraggedBy") == dragger) {
+			DeletePVar(target, "BeingDragged");
+			DeletePVar(target, "DraggedBy");
+		}
+	}
+	DeletePVar(dragger, "DraggingPlayer");
+	DeletePVar(dragger, "DragTargetSession");
+	return 1;
+}
+
+stock StartDragging(playerid, target) {
+	if(!(0 <= target < MAX_PLAYERS) || !IsPlayerConnected(target) || target == playerid) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+	if(!IsACop(playerid) || PlayerBusy(playerid) || PlayerTied[playerid] || PlayerInfo[playerid][pJailTime]) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot drag someone right now.");
+	
+	if(IsPlayerInAnyVehicle(playerid) || IsPlayerInAnyVehicle(target))
+	 	return SendClientMessageEx(playerid, COLOR_GREY, "Both players must be outside vehicles.");
+	
+	if(PlayerCuffed[target] != 2) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "That person is not cuffed.");
+	
+	if(GetPVarType(playerid, "DraggingPlayer") || GetPVarInt(target, "BeingDragged")) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "A player is already involved in another drag.");
+	
+	if(GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(target) || GetPlayerInterior(playerid) != GetPlayerInterior(target) || !ProxDetectorS(5.0, playerid, target)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "That suspect is not near you.");
+	
+	StopDragging(playerid);
+	SetPVarInt(target, "BeingDragged", 1);
+	SetPVarInt(target, "DraggedBy", playerid);
+	SetPVarInt(playerid, "DraggingPlayer", target);
+	SetPVarInt(playerid, "DragTargetSession", g_arrQueryHandle[target]);
+	LEADragTimer[playerid] = SetTimerEx("DragPlayer", 1000, false, "iiiii", playerid, target, g_arrQueryHandle[playerid], g_arrQueryHandle[target], LEADragToken[playerid]);
+	SendClientMessageEx(target, COLOR_WHITE, "* %s is now dragging you.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_WHITE, "* You are now dragging %s. Press FIRE to stop.", GetPlayerNameEx(target));
+	new string[128];
+	format(string, sizeof(string), "* %s grabs ahold of %s and begins to move them.", GetPlayerNameEx(playerid), GetPlayerNameEx(target));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	return 1;
+}
+
+stock BeginCuffTackled(playerid, target) {
+	if(!(0 <= target < MAX_PLAYERS) || !IsPlayerConnected(target) || !GetPVarType(target, "IsTackled")) return 0;
+	if(LEACuffTimer[playerid]) KillTimer(LEACuffTimer[playerid]);
+	++LEACuffToken[playerid];
+	LEACuffTimer[playerid] = SetTimerEx("CuffTackled", 4000, false, "iiiiii", playerid, target, g_arrQueryHandle[playerid], g_arrQueryHandle[target], LEATackleGeneration[target], LEACuffToken[playerid]);
+	return 1;
+}
+
+hook OnPlayerDisconnect(playerid, reason) {
+	StopDragging(playerid);
+	if(GetPVarType(playerid, "DraggedBy")) StopDragging(GetPVarInt(playerid, "DraggedBy"));
+	if(GetPVarType(playerid, "IsTackled")) ClearTackle(playerid);
+	if(GetPVarType(playerid, "Tackling")) {
+		new target = GetPVarInt(playerid, "Tackling");
+		if(0 <= target < MAX_PLAYERS && g_arrQueryHandle[target] == GetPVarInt(playerid, "TackleTargetSession")) ClearTackle(target);
+	}
+	++LEATackleGeneration[playerid];
+	++LEACuffToken[playerid];
+	if(LEACuffTimer[playerid]) KillTimer(LEACuffTimer[playerid]);
+	LEACuffTimer[playerid] = 0;
+	if(BackupClearTimer[playerid]) KillTimer(BackupClearTimer[playerid]);
+	BackupClearTimer[playerid] = 0;
+	++LEABackupToken[playerid];
+	return 1;
+}
+
+forward FinishCopGetUp(playerid, session);
+public FinishCopGetUp(playerid, session) {
+	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session) return 1;
+	return CopGetUp(playerid);
+}
+
+forward ExpireBackup(playerid, session, token);
+public ExpireBackup(playerid, session, token) {
+	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session || LEABackupToken[playerid] != token) return 1;
+	return BackupClear(playerid, 1);
+}
+
 stock ShowBackupActiveForPlayer(playerid)
 {
 	PlayerTextDrawShow(playerid, BackupText[playerid]);
@@ -63,7 +163,8 @@ public SetPlayerFree(playerid,declare,const reason[])
 
 stock IsACopCar(carid)
 {
-	if(DynVeh[carid] != -1)
+	if(!(0 < carid < MAX_VEHICLES) || !IsValidVehicle(carid)) return 0;
+	if(0 <= DynVeh[carid] < MAX_DYNAMIC_VEHICLES)
 	{
 	    new iDvSlotID = DynVeh[carid], iGroupID = DynVehicleInfo[iDvSlotID][gv_igID];
 	    if((0 <= iGroupID < MAX_GROUPS))
@@ -103,12 +204,20 @@ stock CuffTacklee(playerid, giveplayerid)
 
 stock ClearTackle(playerid)
 {
+	if(!(0 <= playerid < MAX_PLAYERS) || !GetPVarType(playerid, "IsTackled")) return 0;
+	++LEATackleGeneration[playerid];
+	new officer = GetPVarInt(playerid, "IsTackled");
+	if(0 <= officer < MAX_PLAYERS && IsPlayerConnected(officer) && g_arrQueryHandle[officer] == GetPVarInt(playerid, "TackleSession")
+		&& GetPVarType(officer, "Tackling") && GetPVarInt(officer, "Tackling") == playerid) {
+		DeletePVar(officer, "Tackling");
+		DeletePVar(officer, "TackleTargetSession");
+	}
+	DeletePVar(playerid, "TackleSession");
     TogglePlayerControllable(playerid, true);
 	//PreloadAnimLib(playerid, "SUNBATHE");
 	//PreloadAnimLib(GetPVarInt(playerid, "IsTackled"), "SUNBATHE");
     ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.1, false, true, true, false, 0, 1);
 	SetPVarInt(playerid, "CantBeTackledCount", 15); // cant be tackled again for 15 seconds
-	DeletePVar(GetPVarInt(playerid, "IsTackled"), "Tackling");
 	DeletePVar(playerid, "IsTackled");
 	DeletePVar(playerid, "TackleCooldown");
 	DeletePVar(playerid, "TackledResisting");
@@ -117,41 +226,43 @@ stock ClearTackle(playerid)
 	return 1;
 }
 
-forward DragPlayer(dragger, dragee);
-public DragPlayer(dragger, dragee)
-{
-	if(!IsPlayerConnected(dragger)) SendClientMessageEx(dragee, COLOR_GRAD2, "The player that was dragging you has disconnected.");
-	if(!IsPlayerConnected(dragee))
-	{
-		DeletePVar(dragger, "DraggingPlayer");
-		SendClientMessageEx(dragger, COLOR_GRAD2, "The player you were dragging has disconnected.");
-	}
-	if(GetPVarType(dragger, "DraggingPlayer") && GetPVarType(dragger, "DraggingPlayer"))
-	{
-		new Float:dX, Float:dY, Float:dZ;
-		GetPlayerPos(dragger, dX, dY, dZ);
-		floatsub(dX, 0.4);
-		floatsub(dY, 0.4);
-
-		SetPVarFloat(dragee, "DragX", dX);
-		SetPVarFloat(dragee, "DragY", dY-1.5);
-		SetPVarFloat(dragee, "DragZ", dZ);
-		SetPVarInt(dragee, "DragWorld", GetPlayerVirtualWorld(dragger));
-		SetPVarInt(dragee, "DragInt", GetPlayerInterior(dragger));
-		Streamer_UpdateEx(dragee, dX, dY-1, dZ);
-		SetPlayerPos(dragee, dX, dY-1, dZ);
-		SetPlayerInterior(dragee, GetPlayerInterior(dragger));
-		SetPlayerVirtualWorld(dragee, GetPlayerVirtualWorld(dragger));
-		ClearAnimationsEx(dragee);
-		ApplyAnimation(dragee, "ped","cower",1,true,false,false,false,0,1);
-        SetTimerEx("DragPlayer", 1000, false, "ii", dragger, dragee);
-	}
+forward DragPlayer(dragger, dragee, draggerSession, targetSession, token);
+public DragPlayer(dragger, dragee, draggerSession, targetSession, token) {
+	if(!IsPlayerConnected(dragger) || g_arrQueryHandle[dragger] != draggerSession || LEADragToken[dragger] != token) return 1;
+	LEADragTimer[dragger] = 0;
+	if(!IsPlayerConnected(dragee) || g_arrQueryHandle[dragee] != targetSession
+		|| !GetPVarType(dragger, "DraggingPlayer") || GetPVarInt(dragger, "DraggingPlayer") != dragee
+		|| !GetPVarType(dragee, "DraggedBy") || GetPVarInt(dragee, "DraggedBy") != dragger || !GetPVarInt(dragee, "BeingDragged")
+		|| !IsACop(dragger) || PlayerBusy(dragger) || PlayerTied[dragger] || PlayerInfo[dragger][pJailTime]
+		|| PlayerCuffed[dragee] != 2 || IsPlayerInAnyVehicle(dragger) || IsPlayerInAnyVehicle(dragee)) return StopDragging(dragger);
+	new Float:x, Float:y, Float:z;
+	GetPlayerPos(dragger, x, y, z);
+	GetXYBehindPlayer(dragger, x, y, 1.0);
+	SetPVarFloat(dragee, "DragX", x);
+	SetPVarFloat(dragee, "DragY", y);
+	SetPVarFloat(dragee, "DragZ", z);
+	SetPVarInt(dragee, "DragWorld", GetPlayerVirtualWorld(dragger));
+	SetPVarInt(dragee, "DragInt", GetPlayerInterior(dragger));
+	SetPlayerInterior(dragee, GetPlayerInterior(dragger));
+	SetPlayerVirtualWorld(dragee, GetPlayerVirtualWorld(dragger));
+	SetPlayerPos(dragee, x, y, z);
+	Streamer_UpdateEx(dragee, x, y, z);
+	ClearAnimationsEx(dragee);
+	ApplyAnimation(dragee, "ped", "cower", 1.0, true, false, false, false, 0, 1);
+	LEADragTimer[dragger] = SetTimerEx("DragPlayer", 1000, false, "iiiii", dragger, dragee, draggerSession, targetSession, token);
 	return 1;
 }
 
-forward CuffTackled(playerid, giveplayerid);
-public CuffTackled(playerid, giveplayerid)
+forward CuffTackled(playerid, giveplayerid, session, targetSession, generation, token);
+public CuffTackled(playerid, giveplayerid, session, targetSession, generation, token)
 {
+	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session || LEACuffToken[playerid] != token) return 1;
+	LEACuffTimer[playerid] = 0;
+	if(!IsPlayerConnected(giveplayerid) || g_arrQueryHandle[giveplayerid] != targetSession || LEATackleGeneration[giveplayerid] != generation) return 1;
+	if(!IsACop(playerid) || PlayerInfo[playerid][pHasCuff] < 1 || PlayerBusy(playerid) || PlayerTied[playerid] || PlayerInfo[playerid][pJailTime]
+		|| PlayerCuffed[giveplayerid] == 2 || GetPVarInt(giveplayerid, "Injured") || IsPlayerInAnyVehicle(playerid) || IsPlayerInAnyVehicle(giveplayerid)
+		|| GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(giveplayerid) || GetPlayerInterior(playerid) != GetPlayerInterior(giveplayerid)
+		|| !ProxDetectorS(8.0, playerid, giveplayerid)) return 1;
 	new string[128];
 	if(!GetPVarType(giveplayerid, "IsTackled"))
 	{
@@ -193,7 +304,7 @@ public CuffTackled(playerid, giveplayerid)
     				ProxDetector(30.0, giveplayerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
                     TogglePlayerControllable(playerid, false);
 					ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, true, true, true, true, 0, 1);
-					SetTimerEx("CopGetUp", 3500, false, "i", playerid);
+					SetTimerEx("FinishCopGetUp", 3500, false, "ii", playerid, g_arrQueryHandle[playerid]);
 				 	ClearTackle(giveplayerid);
 				}
 			}
@@ -203,7 +314,7 @@ public CuffTackled(playerid, giveplayerid)
 	{
 	    ShowPlayerDialogEx(giveplayerid, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
 	    SetPVarInt(giveplayerid, "TackledResisting", 2);
-		CuffTackled(playerid, giveplayerid);
+		CuffTackled(playerid, giveplayerid, session, targetSession, generation, token);
 	}
 	return 1;
 }
@@ -222,6 +333,13 @@ public CopGetUp(playerid)
 
 stock TacklePlayer(playerid, tacklee)
 {
+	if(!(0 <= tacklee < MAX_PLAYERS) || !IsPlayerConnected(tacklee) || tacklee == playerid) return 0;
+	new groupid = PlayerInfo[playerid][pMember];
+	if(!ValidGroup(groupid) || PlayerInfo[playerid][pRank] < arrGroupData[groupid][g_iTackleAccess] || PlayerBusy(playerid) || PlayerTied[playerid] || PlayerInfo[playerid][pJailTime]) return 0;
+	if(GetPVarType(tacklee, "IsTackled") || GetPVarType(playerid, "Tackling") || GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(tacklee) || GetPlayerInterior(playerid) != GetPlayerInterior(tacklee) || !ProxDetectorS(4.0, playerid, tacklee)) return 0;
+	++LEATackleGeneration[tacklee];
+	SetPVarInt(tacklee, "TackleSession", g_arrQueryHandle[playerid]);
+	SetPVarInt(playerid, "TackleTargetSession", g_arrQueryHandle[tacklee]);
 	new string[128], Float: posx, Float: posy, Float: posz, group[GROUP_MAX_NAME_LEN], rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN];
 	//PreloadAnimLib(playerid, "PED");
 	format(string, sizeof(string), "** %s leaps at %s, tackling them.", GetPlayerNameEx(playerid), GetPlayerNameEx(tacklee));
@@ -246,110 +364,53 @@ stock TacklePlayer(playerid, tacklee)
 	return 1;
 }
 
-forward TazerTimer(playerid);
-public TazerTimer(playerid)
+forward TazerTimer(playerid, session);
+public TazerTimer(playerid, session)
 {
+	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session) return 1;
 	if(TazerTimeout[playerid] > 0)
    	{
 		new string[128];
    		format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~r~Tazer reloading... ~w~%d", TazerTimeout[playerid]);
 		GameTextForPlayer(playerid, string,1500, 3);
 		TazerTimeout[playerid] -= 1;
-		SetTimerEx("TazerTimer",1000,false,"d",playerid);
+		SetTimerEx("TazerTimer",1000,false,"ii",playerid,session);
    	}
 	return 1;
 }
 
 forward BackupClear(playerid, calledbytimer);
-public BackupClear(playerid, calledbytimer)
-{
-	if(IsPlayerConnected(playerid))
-	{
-		if(IsACop(playerid) || IsAMedic(playerid) || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TOWING)
-		{
-			if (Backup[playerid] > 0)
-			{
-			    foreach(new i: Player)
-				{
-					if(IsACop(i))
-					{
-						SetPlayerMarkerForPlayer(i, playerid, TEAM_HIT_COLOR);
-					}
-				}	
-				SetPlayerToTeamColor(playerid);
-				new string[128];
-				if (calledbytimer != 1)
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "Your backup request has been cleared.");
-					format(string, sizeof(string), "* %s no longer requires backup.", GetPlayerNameEx(playerid));
-					foreach(new i: Player)
-					{
-						switch(Backup[playerid]) 
-						{
-							case 1, 2:
-							{
-								if(PlayerInfo[playerid][pMember] == PlayerInfo[i][pMember]) {
-									SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
-								}
-							}
-							case 3:
-							{
-								if(IsACop(i) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance]) {
-									SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
-								}
-							}
-							default: if(IsACop(i)) {
-								SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
-							}
-						}	
-					}
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "Your backup request has been cleared automatically.");
-					format(string, sizeof(string), "* %s's backup request has expired.", GetPlayerNameEx(playerid));
-					foreach(new i: Player)
-					{
-						switch(Backup[playerid]) {
-							case 1, 2:
-							{
-								if(PlayerInfo[playerid][pMember] == PlayerInfo[i][pMember]) {
-									SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
-								}
-							}
-							case 3:
-							{
-								if(IsACop(i) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance]) {
-									SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
-	
-							}
-							}
-							default: if(IsACop(i)) {
-								SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
-							}
-						}
-					}	
-				}
-				HideBackupActiveForPlayer(playerid);
-				Backup[playerid] = 0;
-				BackupClearTimer[playerid] = 0;
-			}
-			else
-			{
-				if (calledbytimer != 1)
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have an active backup request!");
-				}
-			}
-		}
-		else
-		{
-			if (calledbytimer != 1)
-			{
-				SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a law enforcement officer!");
-			}
+public BackupClear(playerid, calledbytimer) {
+	if(!(0 <= playerid < MAX_PLAYERS)) return 0;
+	if(BackupClearTimer[playerid]) KillTimer(BackupClearTimer[playerid]);
+	BackupClearTimer[playerid] = 0;
+	++LEABackupToken[playerid];
+	new scope = Backup[playerid], group = GetPVarType(playerid, "BackupGroup") ? GetPVarInt(playerid, "BackupGroup") : PlayerInfo[playerid][pMember];
+	Backup[playerid] = 0;
+	DeletePVar(playerid, "BackupGroup");
+	if(!scope) {
+		if(!calledbytimer) SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have an active backup request!");
+		return 1;
+	}
+	new string[128];
+	if(calledbytimer) {
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Your backup request has been cleared automatically.");
+		format(string, sizeof(string), "* %s's backup request has expired.", GetPlayerNameEx(playerid));
+	} else {
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Your backup request has been cleared.");
+		format(string, sizeof(string), "* %s no longer requires backup.", GetPlayerNameEx(playerid));
+	}
+	foreach(new i : Player) {
+		SetPlayerMarkerForPlayer(i, playerid, TEAM_HIT_COLOR);
+		if(!ValidGroup(group)) continue;
+		switch(scope) {
+			case 1, 2: if(PlayerInfo[i][pMember] == group) SendClientMessageEx(i, arrGroupData[group][g_hRadioColour] * 256 + 255, string);
+			case 3: if(IsACop(i) && arrGroupData[group][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance]) SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
+			case 4: if(IsACop(i)) SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
 		}
 	}
+	SetPlayerToTeamColor(playerid);
+	HideBackupActiveForPlayer(playerid);
 	return 1;
 }
 
@@ -422,7 +483,7 @@ CMD:placekit(playerid, params[]) {
 						return 1;
 					}
 				}
-				if(VehInfo[vehicleid][vCarVestKit] == 2)
+				if(VehInfo[vehicleid][vCarVestKit] >= 2)
 				{
 					return SendClientMessageEx(playerid, COLOR_GRAD1, "This vehicle already has two kits loaded.");
 				}
@@ -567,7 +628,7 @@ CMD:searchcar(playerid, params[])
 	if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a law enforcement officer!");
 	if(GetPVarInt(playerid, "Injured") != 0 || GetPVarInt(playerid, "EventToken") != 0) return SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
 	new closestcar = GetClosestCar(playerid), v, string[128];
-	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 9.0)) return SendClientMessageEx(playerid,COLOR_GREY,"You are not near any vehicles.");
+	if(!(0 < closestcar < MAX_VEHICLES) || !IsValidVehicle(closestcar) || !IsPlayerInRangeOfVehicle(playerid, closestcar, 9.0)) return SendClientMessageEx(playerid,COLOR_GREY,"You are not near any vehicles.");
 	if(IsABike(closestcar) || IsAPlane(closestcar)) return SendClientMessageEx(playerid,COLOR_GREY,"You can't search this type of vehicle!");
 
 	new engine,lights,alarm,doors,bonnet,boot,objective;
@@ -600,8 +661,9 @@ CMD:searchcar(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_WHITE, "* First Aid Kit.");
 				}
 			}
+			else if(VehInfo[closestcar][vCarVestKit] > 0) SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains: %d Kevlar Vest & First Aid Kit(s).", VehInfo[closestcar][vCarVestKit]);
 			else SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains: nothing.");
-			strins(string, "F", 0, sizeof(string));
+			return 1;
 		}
 	}
     if(isnull(string)) {
@@ -625,7 +687,7 @@ CMD:takecarweapons(playerid, params[])
     }
     new carid = GetPlayerVehicleID(playerid);
     new closestcar = GetClosestCar(playerid,carid);
-    if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 9.0))
+    if(!(0 < closestcar < MAX_VEHICLES) || !IsValidVehicle(closestcar) || !IsPlayerInRangeOfVehicle(playerid, closestcar, 9.0))
 	{
         SendClientMessageEx(playerid,COLOR_GREY,"You are not near any vehicles.");
         return 1;
@@ -652,6 +714,7 @@ CMD:takecarweapons(playerid, params[])
 				PlayerVehicleInfo[i][v][pvWeapons][0] = 0;
 				PlayerVehicleInfo[i][v][pvWeapons][1] = 0;
 				PlayerVehicleInfo[i][v][pvWeapons][2] = 0;
+				g_mysql_SaveVehicle(i, v);
 				SendClientMessageEx(playerid, COLOR_WHITE,  "All weapons have been removed from this vehicle.");
 				new string[MAX_PLAYER_NAME + 44];
 				format(string, sizeof(string), "* %s has taken the weapons away from the trunk.", GetPlayerNameEx(playerid));
@@ -753,7 +816,7 @@ CMD:backup(playerid, params[])
 		return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	}
 
-    if(IsACop(playerid) || IsAMedic(playerid) || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TOWING)
+    if(IsACop(playerid) || IsAMedic(playerid) || IsATowman(playerid))
 	{
 	    new code[10],
 		zone[MAX_ZONE_NAME],
@@ -781,9 +844,11 @@ CMD:backup(playerid, params[])
 				KillTimer(BackupClearTimer[playerid]);
 				BackupClearTimer[playerid] = 0;
 			}
-			BackupClearTimer[playerid] = SetTimerEx("BackupClear", 300000, false, "ii", playerid, 1);
+			SetPVarInt(playerid, "BackupGroup", PlayerInfo[playerid][pMember]);
+			++LEABackupToken[playerid];
+			BackupClearTimer[playerid] = SetTimerEx("ExpireBackup", 300000, false, "iii", playerid, g_arrQueryHandle[playerid], LEABackupToken[playerid]);
 		}
-		else if(strcmp(code, "code2", true) == 0 && (Backup[playerid] == 0 || Backup[playerid] == 1))
+		else if((strcmp(code, "code2", true) == 0 || (!code[0] && Backup[playerid] == 1)) && (Backup[playerid] == 0 || Backup[playerid] == 1))
 		{
 			format(string, sizeof(string), "* %s requests backup over their radio.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -806,7 +871,9 @@ CMD:backup(playerid, params[])
 				KillTimer(BackupClearTimer[playerid]);
 				BackupClearTimer[playerid] = 0;
 			}
-			BackupClearTimer[playerid] = SetTimerEx("BackupClear", 300000, false, "ii", playerid, 1);
+			SetPVarInt(playerid, "BackupGroup", PlayerInfo[playerid][pMember]);
+			++LEABackupToken[playerid];
+			BackupClearTimer[playerid] = SetTimerEx("ExpireBackup", 300000, false, "iii", playerid, g_arrQueryHandle[playerid], LEABackupToken[playerid]);
 		}
 		else if(code[0] && !(strcmp(code, "code2", true) == 0))
 		{
@@ -858,7 +925,9 @@ CMD:backupall(playerid, params[])
 				KillTimer(BackupClearTimer[playerid]);
 				BackupClearTimer[playerid] = 0;
 			}
-			BackupClearTimer[playerid] = SetTimerEx("BackupClear", 300000, false, "ii", playerid, 1);
+			SetPVarInt(playerid, "BackupGroup", PlayerInfo[playerid][pMember]);
+			++LEABackupToken[playerid];
+			BackupClearTimer[playerid] = SetTimerEx("ExpireBackup", 300000, false, "iii", playerid, g_arrQueryHandle[playerid], LEABackupToken[playerid]);
 		}
 		else
 		{
@@ -874,6 +943,7 @@ CMD:backupall(playerid, params[])
 
 CMD:backupint(playerid, params[])
 {
+	if(PlayerTied[playerid] || PlayerCuffed[playerid] || PlayerBusy(playerid) || PlayerInfo[playerid][pJailTime]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) {
 		
 		return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
@@ -905,7 +975,9 @@ CMD:backupint(playerid, params[])
 				KillTimer(BackupClearTimer[playerid]);
 				BackupClearTimer[playerid] = 0;
 			}
-			BackupClearTimer[playerid] = SetTimerEx("BackupClear", 300000, false, "ii", playerid, 1);
+			SetPVarInt(playerid, "BackupGroup", PlayerInfo[playerid][pMember]);
+			++LEABackupToken[playerid];
+			BackupClearTimer[playerid] = SetTimerEx("ExpireBackup", 300000, false, "iii", playerid, g_arrQueryHandle[playerid], LEABackupToken[playerid]);
 		}
 		else
 		{
@@ -963,23 +1035,28 @@ CMD:vticket(playerid, params[])
 		if(PlayerInfo[playerid][pTicketTime] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait within a minute in order to use this command again!");
 		if(amount > 50000) return SendClientMessageEx(playerid, COLOR_GREY, "The maximum vehicle ticket amount is $50,000.");
 		if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You can't ticket any vehicle below $1.");
+		if(!(0 < vehid < MAX_VEHICLES) || !IsValidVehicle(vehid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid vehicle registration.");
+		if(PlayerBusy(playerid) || PlayerTied[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this right now.");
 		new string[128], Float: x, Float: y, Float: z, veh = -1;
 		GetVehiclePos(vehid, x, y, z);
-		if(IsPlayerInRangeOfPoint(playerid, 5.0, x, y, z)) {
+		if(GetVehicleVirtualWorld(vehid) == GetPlayerVirtualWorld(playerid) && GetVehicleInterior(vehid) == GetPlayerInterior(playerid) && IsPlayerInRangeOfPoint(playerid, 5.0, x, y, z)) {
 			foreach(new i: Player) {
 				if((veh = GetPlayerVehicle(i, vehid)) != -1) {
+					if(PlayerVehicleInfo[i][veh][pvTicket] < 0 || PlayerVehicleInfo[i][veh][pvTicket] > cellmax - amount) return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle cannot accept another ticket.");
 					PlayerVehicleInfo[i][veh][pvTicket] += amount;
+					g_mysql_SaveVehicle(i, veh);
 					PlayerInfo[playerid][pTicketTime] = 60;
 					SendClientMessageEx(playerid, COLOR_WHITE, "You have issued a $%s ticket on %s's %s.", number_format(amount), GetPlayerNameEx(i), GetVehicleName(PlayerVehicleInfo[i][veh][pvId]));
 					format(string, sizeof(string), "[VTICKET] Officer %s has ticketed %s's %s (%d) for $%s.", GetPlayerNameEx(playerid), GetPlayerNameEx(i), GetVehicleName(PlayerVehicleInfo[i][veh][pvId]), PlayerVehicleInfo[i][veh][pvSlotId], number_format(amount));
 					GroupLog(PlayerInfo[playerid][pMember], string);
-					break;
+					return 1;
 				}
 			}
 			if((veh = IsDynamicCrateVehicle(vehid)) != -1) {
 				if(ValidGroup(CrateVehicle[veh][cvGroupID])) {
 					new vehicleName[18];
 					if(PlayerInfo[playerid][pMember] == CrateVehicle[veh][cvGroupID]) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your group owns this vehicle you can't put a ticket on it!");
+					if(CrateVehicle[veh][cvTickets] < 0 || CrateVehicle[veh][cvTickets] > cellmax - amount) return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle cannot accept another ticket.");
 					CrateVehicle[veh][cvTickets] += amount;
 					PlayerInfo[playerid][pTicketTime] = 60;
 					strunpack(vehicleName, VehicleName[CrateVehicle[veh][cvModel] - 400], sizeof(vehicleName));
@@ -1004,7 +1081,8 @@ CMD:vlookup(playerid, params[]) {
 	if(IsACop(playerid) || IsATowman(playerid) || IsAHitman(playerid) || PlayerInfo[playerid][pAdmin] >= 2)
 	{
         if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vlookup [vehicle registration]");
-        new carid = strval(params);
+        new carid;
+		if(sscanf(params, "i", carid) || !(0 < carid < MAX_VEHICLES) || !IsValidVehicle(carid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid vehicle registration.");
         new dynveh = DynVeh[carid];
         new cveh = IsDynamicCrateVehicle(carid);
 		foreach(new i: Player)
@@ -1017,14 +1095,14 @@ CMD:vlookup(playerid, params[]) {
 				return 1;
 			}
 		}	
-        if(dynveh != -1)
+        if(0 <= dynveh < MAX_DYNAMIC_VEHICLES)
 		{
-		    if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
+		    if(ValidGroup(DynVehicleInfo[dynveh][gv_igID]) && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
 		    {
                 SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT", carid, GetVehicleName(carid), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
                 return 1;
 			}
-			else if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
+			else if(ValidGroup(DynVehicleInfo[dynveh][gv_igID]) && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 			{
 				SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s", carid, GetVehicleName(carid), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
 				return 1;
@@ -1047,9 +1125,10 @@ CMD:vcheck(playerid, params[])
 	{
         new carid = GetPlayerVehicleID(playerid);
         new closestcar = GetClosestCar(playerid, carid);
-        if(IsTrailerAttachedToVehicle(carid))
+        if(IsValidVehicle(carid) && IsTrailerAttachedToVehicle(carid))
 		{
             new carbeingtowed = GetVehicleTrailer(carid);
+            if(!(0 < carbeingtowed < MAX_VEHICLES) || !IsValidVehicle(carbeingtowed)) return SendClientMessageEx(playerid, COLOR_GREY, "The towed vehicle is no longer available.");
             new dynveh = DynVeh[carbeingtowed];
             new cveh = IsDynamicCrateVehicle(carbeingtowed);
 			foreach(new i: Player)
@@ -1062,28 +1141,28 @@ CMD:vcheck(playerid, params[])
 					return 1;
 				}
 			}	
-            if(dynveh != -1)
+            if(0 <= dynveh < MAX_DYNAMIC_VEHICLES)
 			{
-			    if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
+			    if(ValidGroup(DynVehicleInfo[dynveh][gv_igID]) && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
 			    {
                     SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT", carbeingtowed, GetVehicleName(carbeingtowed), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
                     return 1;
 				}
-				else if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
+				else if(ValidGroup(DynVehicleInfo[dynveh][gv_igID]) && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s", carbeingtowed, GetVehicleName(carbeingtowed), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
 					return 1;
 				}
             }
             if(cveh != -1) {
             	if(ValidGroup(CrateVehicle[cveh][cvGroupID])) {
-            		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%s", closestcar, GetVehicleName(closestcar), arrGroupData[CrateVehicle[cveh][cvGroupID]][g_szGroupName], number_format(CrateVehicle[cveh][cvTickets]));
+					SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%s", carbeingtowed, GetVehicleName(carbeingtowed), arrGroupData[CrateVehicle[cveh][cvGroupID]][g_szGroupName], number_format(CrateVehicle[cveh][cvTickets]));
         			return 1;
         		}
             }
             SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle is not owned by anyone!");
         }
-        else if(IsPlayerInRangeOfVehicle(playerid, closestcar, 9.0) && !IsTrailerAttachedToVehicle(carid) && (GetVehicleVirtualWorld(closestcar) == GetPlayerVirtualWorld(playerid)))
+        else if(0 < closestcar < MAX_VEHICLES && IsValidVehicle(closestcar) && IsPlayerInRangeOfVehicle(playerid, closestcar, 9.0) && !IsTrailerAttachedToVehicle(carid) && (GetVehicleVirtualWorld(closestcar) == GetPlayerVirtualWorld(playerid)))
 		{
 		    new dynveh = DynVeh[closestcar], szClamp[16], cveh = IsDynamicCrateVehicle(closestcar);
 		    if(WheelClamp{closestcar}) {
@@ -1099,14 +1178,14 @@ CMD:vcheck(playerid, params[])
 					return 1;
 				}
 			}	
-            if(dynveh != -1)
+            if(0 <= dynveh < MAX_DYNAMIC_VEHICLES)
 			{
-			    if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
+			    if(ValidGroup(DynVehicleInfo[dynveh][gv_igID]) && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
 			    {
                     SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName], szClamp);
                     return 1;
 				}
-				else if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
+				else if(ValidGroup(DynVehicleInfo[dynveh][gv_igID]) && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 			    {
                     SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName], szClamp);
                     return 1;
@@ -1234,6 +1313,9 @@ CMD:take(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Weapons, Pot, Crack, Meth, Ecstasy, Materials, Radio, Heroin, Rawopium, Syringes, PotSeeds, OpiumSeeds, DrugCrates");
 			return 1;
 		}
+		if(!(0 <= giveplayerid < MAX_PLAYERS) || !IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+		if(PlayerBusy(playerid) || PlayerTied[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this right now.");
+		if(GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(giveplayerid) || GetPlayerInterior(playerid) != GetPlayerInterior(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That person is not near you.");
 		if(PlayerInfo[playerid][pAdmin] < 2 && (PlayerInfo[giveplayerid][pJailTime] && strfind(PlayerInfo[giveplayerid][pPrisonReason], "[OOC]", true) != -1)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot take items from a OOC Prisoner.");
 		if (playerid == giveplayerid)
 		{
@@ -1825,7 +1907,7 @@ CMD:cuff(playerid, params[])
 {
 	if(IsACop(playerid))
 	{
-		if(GetPVarInt(playerid, "Injured") == 1 || PlayerCuffed[ playerid ] >= 1 || PlayerInfo[ playerid ][ pJailTime ] > 0 || PlayerInfo[playerid][pHospital] > 0)
+		if(PlayerTied[playerid] || GetPVarInt(playerid, "Injured") == 1 || PlayerCuffed[ playerid ] >= 1 || PlayerInfo[ playerid ][ pJailTime ] > 0 || PlayerInfo[playerid][pHospital] > 0)
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now.");
 			return 1;
@@ -1841,9 +1923,10 @@ CMD:cuff(playerid, params[])
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cuff [player]");
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if (ProxDetectorS(8.0, playerid, giveplayerid))
+			if (GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(giveplayerid) && GetPlayerInterior(playerid) == GetPlayerInterior(giveplayerid) && ProxDetectorS(8.0, playerid, giveplayerid))
 			{
 				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot cuff yourself!"); return 1; }
+				if(PlayerCuffed[giveplayerid] == 2) return SendClientMessageEx(playerid, COLOR_GREY, "That person is already cuffed.");
 				if(GetPVarInt(giveplayerid, "Injured") == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot cuff someone in a injured state.");
 				if(PlayerCuffed[giveplayerid] == 1 || GetPlayerSpecialAction(giveplayerid) == SPECIAL_ACTION_HANDSUP || GetPVarInt(giveplayerid, "pBagged") >= 1)
 				{
@@ -1852,6 +1935,7 @@ CMD:cuff(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You handcuffed %s, till uncuff.", GetPlayerNameEx(giveplayerid));
 					format(string, sizeof(string), "* %s handcuffs %s, tightening the cuffs securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					if(GetPVarType(giveplayerid, "IsTackled")) ClearTackle(giveplayerid);
 					GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
 					TogglePlayerControllable(giveplayerid, false);
 					ClearAnimationsEx(giveplayerid);
@@ -1872,7 +1956,7 @@ CMD:cuff(playerid, params[])
 				{
 				    format(string, sizeof(string), "* %s removes a set of cuffs from his belt and attempts to cuff %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					SetTimerEx("CuffTackled", 4000, false, "ii", playerid, giveplayerid);
+					BeginCuffTackled(playerid, giveplayerid);
 				}
 				else
 				{
@@ -1903,13 +1987,13 @@ CMD:uncuff(playerid, params[])
 {
 	if(IsACop(playerid))
 	{
-		if(PlayerCuffed[playerid] == 2) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot uncuff others while being cuffed yourself!");
+		if(PlayerTied[playerid] || PlayerBusy(playerid) || PlayerInfo[playerid][pJailTime]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot uncuff others right now!");
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /uncuff [player]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if (ProxDetectorS(8.0, playerid, giveplayerid))
+			if (GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(giveplayerid) && GetPlayerInterior(playerid) == GetPlayerInterior(giveplayerid) && ProxDetectorS(8.0, playerid, giveplayerid))
 			{
 				/*if(PlayerInfo[giveplayerid][pJailTime] >= 1)
 				{
@@ -1928,6 +2012,9 @@ CMD:uncuff(playerid, params[])
 					TogglePlayerControllable(giveplayerid, true);
 					ClearAnimationsEx(giveplayerid);
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
+					if(GetPVarType(giveplayerid, "DraggedBy")) {
+						StopDragging(GetPVarInt(giveplayerid, "DraggedBy"));
+					}
 					PlayerCuffed[giveplayerid] = 0;
                     PlayerCuffedTime[giveplayerid] = 0;
                     SetHealth(giveplayerid, GetPVarFloat(giveplayerid, "cuffhealth"));
@@ -1977,6 +2064,9 @@ CMD:detain(playerid, params[])
 {
 	if(IsACop(playerid))
 	{
+		if(PlayerBusy(playerid) || PlayerTied[playerid] || PlayerInfo[playerid][pJailTime]) 
+			return SendClientMessageEx(playerid, COLOR_GREY, "You cannot detain someone right now.");
+		
 		if(IsPlayerInAnyVehicle(playerid))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "You can't do this while you're in a vehicle.");
@@ -2009,15 +2099,15 @@ CMD:detain(playerid, params[])
 				if(PlayerCuffed[giveplayerid] == 2)
 				{
 					new carid = gLastCar[playerid];
+					if(!(0 < carid < MAX_VEHICLES) || !IsValidVehicle(carid) || GetVehicleVirtualWorld(carid) != GetPlayerVirtualWorld(playerid) || GetVehicleInterior(carid) != GetPlayerInterior(playerid)
+						|| GetPlayerVirtualWorld(giveplayerid) != GetPlayerVirtualWorld(playerid) || GetPlayerInterior(giveplayerid) != GetPlayerInterior(playerid)
+						|| !IsPlayerInRangeOfVehicle(playerid, carid, 10.0) || !IsPlayerInRangeOfVehicle(giveplayerid, carid, 10.0)) 
+					{
+						return SendClientMessageEx(playerid, COLOR_GREY, "You and the suspect must be near the same vehicle.");
+					}
+
 					if(IsSeatAvailable(carid, seat))
 					{
-						new Float:pos[6];
-						GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
-						GetPlayerPos(giveplayerid, pos[3], pos[4], pos[5]);
-						GetVehiclePos( carid, pos[0], pos[1], pos[2]);
-						if (floatcmp(floatabs(floatsub(pos[0], pos[3])), 10.0) != -1 &&
-								floatcmp(floatabs(floatsub(pos[1], pos[4])), 10.0) != -1 &&
-								floatcmp(floatabs(floatsub(pos[2], pos[5])), 10.0) != -1) return false;
 						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You were detained by %s .", GetPlayerNameEx(playerid));
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You detained %s.", GetPlayerNameEx(giveplayerid));
 						format(string, sizeof(string), "* %s throws %s in the vehicle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -2025,6 +2115,7 @@ CMD:detain(playerid, params[])
 						GameTextForPlayer(giveplayerid, "~r~Detained", 2500, 3);
 						ClearAnimationsEx(giveplayerid);
 						TogglePlayerControllable(giveplayerid, false);
+						if(GetPVarType(giveplayerid, "DraggedBy")) StopDragging(GetPVarInt(giveplayerid, "DraggedBy"));
 						IsPlayerEntering{giveplayerid} = true;
 						PutPlayerInVehicle(giveplayerid, carid, seat);
 					}
@@ -2059,55 +2150,12 @@ CMD:detain(playerid, params[])
 	return 1;
 }
 
-CMD:drag(playerid, params[])
-{
-	if(IsACop(playerid))
-	{
-		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /drag [playerid]");
-
-		if(IsPlayerConnected(giveplayerid))
-		{
-			if(giveplayerid == playerid) {
-				SendClientMessageEx(playerid, COLOR_WHITE, " You try to grab yourself, but nothing happens.");
-				return 1;
-			}
-			if(GetPVarInt(giveplayerid, "PlayerCuffed") == 2)
-			{
-				if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, " You must be out of the vehicle to use this command.");
-				if(GetPVarInt(giveplayerid, "BeingDragged") == 1)
-				{
-					SendClientMessageEx(playerid, COLOR_WHITE, " That person is already being dragged. ");
-					return 1;
-				}
-                new Float:dX, Float:dY, Float:dZ;
-				GetPlayerPos(giveplayerid, dX, dY, dZ);
-				if(!IsPlayerInRangeOfPoint(playerid, 5.0, dX, dY, dZ))
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, " That suspect is not near you.");
-					return 1;
-				}
-				SendClientMessageEx(giveplayerid, COLOR_WHITE, "* %s is now dragging you.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(playerid, COLOR_WHITE, "* You are now dragging %s, you may move them now.", GetPlayerNameEx(giveplayerid));
-				format(string, sizeof(string), "* %s grabs ahold of %s and begins to move them.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You are now dragging the suspect, press the '{AA3333}FIRE{FFFFFF}' button to stop.");
-				SetPVarInt(giveplayerid, "BeingDragged", 1);
-				SetPVarInt(playerid, "DraggingPlayer", giveplayerid);
-				SetTimerEx("DragPlayer", 1000, false, "ii", playerid, giveplayerid);
-			}
-			else
-			{
-				SendClientMessageEx(playerid, COLOR_WHITE, " The specified person is not cuffed !");
-			}
-		}
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You are not a Law Enforcement Official!");
-		return 1;
-	}
-	return 1;
+CMD:drag(playerid, params[]) {
+	new target;
+	if(sscanf(params, "u", target)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /drag [player]");
+	
+	return StartDragging(playerid, target);
 }
 
 CMD:wanted(playerid, params[])
@@ -2159,7 +2207,17 @@ CMD:ticket(playerid, params[])
 	{
 
 		new string[128], giveplayerid, moneys, reason[64];
-		if(sscanf(params, "uds[64]", giveplayerid, moneys, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ticket [player] [price] [reason]");
+		if(sscanf(params, "uds[64]", giveplayerid, moneys, reason)) 
+			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ticket [player] [price] [reason]");
+		
+		if(!(0 <= giveplayerid < MAX_PLAYERS) || !IsPlayerConnected(giveplayerid)) 
+			return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+		
+		if(PlayerBusy(playerid) || PlayerTied[playerid]) 
+			return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this right now.");
+		
+		if(GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(giveplayerid) || GetPlayerInterior(playerid) != GetPlayerInterior(giveplayerid)) 
+			return SendClientMessageEx(playerid, COLOR_GREY, "That person is not near you.");
 
 		if(giveplayerid == playerid)
 		{
@@ -2185,7 +2243,7 @@ CMD:ticket(playerid, params[])
 					TicketOffer[giveplayerid] = playerid;
 					SetPVarInt(giveplayerid, "TicketOfferSession", g_arrQueryHandle[playerid]);
 					TicketMoney[giveplayerid] = moneys;
-					SetPVarString(playerid, "ticketreason", reason);
+					SetPVarString(giveplayerid, "ticketreason", reason);
 					return 1;
 				}
 				else
@@ -2206,7 +2264,7 @@ CMD:ticket(playerid, params[])
 
 CMD:wheelclamp(playerid, params[])
 {
-	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iWheelClamps]) {
+	if(ValidGroup(PlayerInfo[playerid][pMember]) && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iWheelClamps]) {
 		new vehicleid = GetClosestCar(playerid, INVALID_VEHICLE_ID, 5.0),
 			szMessage[24 + 51 + MAX_PLAYER_NAME];
 		if(vehicleid != INVALID_VEHICLE_ID && GetDistanceToCar(playerid, vehicleid) < 5 && !IsPlayerInAnyVehicle(playerid)) {
@@ -2214,14 +2272,14 @@ CMD:wheelclamp(playerid, params[])
 				return SendClientMessageEx(playerid,COLOR_GREY,"(( You can't place wheel clamps on this vehicle. ))");
 			if(WheelClamp{vehicleid}) {
 				WheelClamp{vehicleid} = 0;
-				format(szMessage, sizeof(szMessage), "* %s has removed a Wheel Clamp from the %s's front tire.", GetPlayerNameEx(playerid), GetVehicleName(vehicleid), vehicleid);
+				format(szMessage, sizeof(szMessage), "* %s has removed a Wheel Clamp from the %s's front tire.", GetPlayerNameEx(playerid), GetVehicleName(vehicleid));
 				ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				SendClientMessageEx(playerid, COLOR_PURPLE, "(( You have removed the Wheel Clamp from this vehicle's front tire. ))");
 			}
 			else {
 				SetPVarInt(playerid, "wheelclampvehicle", vehicleid);
 				SetPVarInt(playerid, "wheelclampcountdown", 10);
-				format(szMessage, sizeof(szMessage), "* %s is attempting to place a Wheel Clamp in the %s's front tire.", GetPlayerNameEx(playerid), GetVehicleName(vehicleid), vehicleid);
+				format(szMessage, sizeof(szMessage), "* %s is attempting to place a Wheel Clamp in the %s's front tire.", GetPlayerNameEx(playerid), GetVehicleName(vehicleid));
 				ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				SendClientMessageEx(playerid, COLOR_PURPLE, "(( You're now placing a Wheel Clamp in the vehicle's front tire, please wait. ))");
 			}

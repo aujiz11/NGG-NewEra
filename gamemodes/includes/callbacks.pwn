@@ -1937,10 +1937,7 @@ public OnPlayerDisconnect(playerid, reason)
 		if(GetPVarType(playerid, "pTable")) {
 		    DestroyPokerTable(GetPVarInt(playerid, "pTable"));
 		}
-		if(GetPVarType(playerid, "DraggingPlayer"))
-		{
-            DeletePVar(GetPVarInt(playerid, "DraggingPlayer"), "BeingDragged");
-		}
+		StopDragging(playerid);
 		if(pTazer{playerid} == 1) GivePlayerValidWeapon(playerid,pTazerReplace{playerid});
 		if(GetPVarInt(playerid, "SpeedRadar") == 1) GivePlayerValidWeapon(playerid, GetPVarInt(playerid, "RadarReplacement"));
 
@@ -3726,7 +3723,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						format(string, sizeof(string), "** %s leaps at %s attempting to tackle them but is not able.", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPlayerTargetPlayer(playerid)));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						TogglePlayerControllable(playerid, false);
-						SetTimerEx("CopGetUp", 2500, false, "i", playerid);
+						SetTimerEx("FinishCopGetUp", 2500, false, "ii", playerid, g_arrQueryHandle[playerid]);
 						ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, true, true, true, true, 0, 1);
 					}
 	            }
@@ -4068,28 +4065,9 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		    MoveEMS(playerid);
 			return 1;
  	    }
-		if(GetPVarType(playerid, "DraggingPlayer"))
-		{
-			new Float:dX, Float:dY, Float:dZ, string[128];
-    		GetPlayerPos(playerid, dX, dY, dZ);
-			floatsub(dX, 0.4);
-			floatsub(dY, 0.4);
-
-    		SetPVarFloat(GetPVarInt(playerid, "DraggingPlayer"), "DragX", dX);
-			SetPVarFloat(GetPVarInt(playerid, "DraggingPlayer"), "DragY", dY);
-			SetPVarFloat(GetPVarInt(playerid, "DraggingPlayer"), "DragZ", dZ);
-			SetPVarInt(GetPVarInt(playerid, "DraggingPlayer"), "DragWorld", GetPlayerVirtualWorld(playerid));
-			SetPVarInt(GetPVarInt(playerid, "DraggingPlayer"), "DragInt", GetPlayerInterior(playerid));
-			Streamer_UpdateEx(GetPVarInt(playerid, "DraggingPlayer"), dX, dY, dZ);
-			SetPlayerPos(GetPVarInt(playerid, "DraggingPlayer"), dX, dY, dZ);
-			SetPlayerInterior(GetPVarInt(playerid, "DraggingPlayer"), GetPlayerInterior(playerid));
-			SetPlayerVirtualWorld(GetPVarInt(playerid, "DraggingPlayer"), GetPlayerVirtualWorld(playerid));
-			ClearAnimationsEx(GetPVarInt(playerid, "DraggingPlayer"));
-			ApplyAnimation(GetPVarInt(playerid, "DraggingPlayer"), "ped","cower",1,true,false,false,false,0,1);
-            DeletePVar(GetPVarInt(playerid, "DraggingPlayer"), "BeingDragged");
-            format(string, sizeof(string), "* You have stopped dragging %s.", GetPlayerNameEx(GetPVarInt(playerid, "DraggingPlayer")));
-			DeletePVar(playerid, "DraggingPlayer");
-            SendClientMessage(playerid, COLOR_GRAD2, string);
+		if(GetPVarType(playerid, "DraggingPlayer")) {
+			StopDragging(playerid);
+			SendClientMessageEx(playerid, COLOR_GRAD2, "You have stopped dragging the suspect.");
 		}
 	}
 	else if((newkeys & KEY_SPRINT) && GetPlayerState(playerid) == 2)// Pressing the gas, detonates the bomb.

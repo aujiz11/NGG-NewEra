@@ -1443,7 +1443,7 @@ stock GetClosestCar(iPlayer, iException = INVALID_VEHICLE_ID, Float: fRange = Fl
 		iReturnID = INVALID_VEHICLE_ID,
 		Float: fVehiclePos[4];
 
-	for(new i = 1; i <= MAX_VEHICLES; ++i) if(GetVehicleModel(i) && i != iException) {
+	for(new i = 1; i < MAX_VEHICLES; ++i) if(i != iException && GetVehicleModel(i) && GetVehicleVirtualWorld(i) == GetPlayerVirtualWorld(iPlayer) && GetVehicleInterior(i) == GetPlayerInterior(iPlayer)) {
 		GetVehiclePos(i, fVehiclePos[0], fVehiclePos[1], fVehiclePos[2]);
 		if((fVehiclePos[3] = GetPlayerDistanceFromPoint(iPlayer, fVehiclePos[0], fVehiclePos[1], fVehiclePos[2])) < fRange) {
 			fRange = fVehiclePos[3];

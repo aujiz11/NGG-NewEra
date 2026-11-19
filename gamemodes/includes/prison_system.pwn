@@ -1670,7 +1670,7 @@ CMD:jailcuff(playerid, params[])
 				{
 				    format(string, sizeof(string), "* %s removes a set of cuffs from his belt and attempts to cuff %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					SetTimerEx("CuffTackled", 4000, false, "ii", playerid, giveplayerid);
+					BeginCuffTackled(playerid, giveplayerid);
 				}
 				else
 				{

@@ -797,80 +797,17 @@ Interact_PayPlayer(playerid, giveplayerid, amount = -1) {
 }
 
 Interact_CuffPlayer(playerid, giveplayerid) {
-	if(GetPVarInt(playerid, "Injured") == 1 || PlayerCuffed[ playerid ] >= 1 || PlayerInfo[ playerid ][ pJailTime ] > 0 || PlayerInfo[playerid][pHospital] > 0)
-		return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now.");
-
-	if(PlayerInfo[playerid][pHasCuff] < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have any pair of cuffs on you!");
-
-	new Float:health, Float:armor;
-	if(!IsPlayerConnected(giveplayerid))
-	if (!ProxDetectorS(8.0, playerid, giveplayerid))
-	if(GetPVarInt(giveplayerid, "Injured") == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot cuff someone in a injured state.");
-	if(PlayerCuffed[giveplayerid] != 1 && GetPlayerSpecialAction(giveplayerid) != SPECIAL_ACTION_HANDSUP) return SendClientMessage(playerid, COLOR_WHITE, "That player is not restrained");
-
-	if(PlayerInfo[giveplayerid][pConnectHours] < 32) SendClientMessageEx(giveplayerid, COLOR_WHITE, "If you logout now you will automatically be prisoned for 2+ hours!");
-
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You handcuffed %s, till uncuff.", GetPlayerNameEx(giveplayerid));
-	format(szMiscArray, sizeof(szMiscArray), "* %s handcuffs %s, tightening the cuffs securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
-	TogglePlayerControllable(giveplayerid, false);
-	ClearAnimationsEx(giveplayerid);
-	GetHealth(giveplayerid, health);
-	GetArmour(giveplayerid, armor);
-	SetPVarFloat(giveplayerid, "cuffhealth",health);
-	SetPVarFloat(giveplayerid, "cuffarmor",armor);
-	SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_CUFFED);
-	ApplyAnimation(giveplayerid,"ped","cower",1,true,false,false,false,0,1);
-	PlayerCuffed[giveplayerid] = 2;
-	SetPVarInt(giveplayerid, "PlayerCuffed", 2);
-	SetPVarInt(giveplayerid, "IsFrozen", 1);
-	//Frozen[giveplayerid] = 1;
-	PlayerCuffedTime[giveplayerid] = 60;
-
-	if(GetPVarType(giveplayerid, "IsTackled")) {
-	    format(szMiscArray, sizeof(szMiscArray), "* %s removes a set of cuffs from his belt and attempts to cuff %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		SetTimerEx("CuffTackled", 4000, false, "ii", playerid, giveplayerid);
-	}
-	return 1;
+	if(!(0 <= giveplayerid < MAX_PLAYERS) || !IsPlayerConnected(giveplayerid)) return 1;
+	new target[12];
+	format(target, sizeof(target), "%d", giveplayerid);
+	return pc_cmd_cuff(playerid, target);
 }
 
 Interact_UncuffPlayer(playerid, giveplayerid) {
-
-	if (!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not near you.");
-	if(PlayerCuffed[giveplayerid]>1) {
-
-		DeletePVar(giveplayerid, "IsFrozen");
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been uncuffed by %s.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You uncuffed %s.", GetPlayerNameEx(giveplayerid));
-		format(szMiscArray, sizeof(szMiscArray), "* %s has uncuffed %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		GameTextForPlayer(giveplayerid, "~g~Uncuffed", 2500, 3);
-		TogglePlayerControllable(giveplayerid, true);
-		ClearAnimationsEx(giveplayerid);
-		SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
-		PlayerCuffed[giveplayerid] = 0;
-        PlayerCuffedTime[giveplayerid] = 0;
-        SetHealth(giveplayerid, GetPVarFloat(giveplayerid, "cuffhealth"));
-        SetArmour(giveplayerid, GetPVarFloat(giveplayerid, "cuffarmor"));
-        DeletePVar(giveplayerid, "cuffhealth");
-		DeletePVar(giveplayerid, "PlayerCuffed");
-		DeletePVar(giveplayerid, "jailcuffs");
-	}
-	else if(GetPVarInt(giveplayerid, "jailcuffs") == 1) {
-		DeletePVar(giveplayerid, "IsFrozen");
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been uncuffed by %s.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You uncuffed %s.", GetPlayerNameEx(giveplayerid));
-		format(szMiscArray, sizeof(szMiscArray), "* %s has uncuffed %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		GameTextForPlayer(giveplayerid, "~g~Uncuffed", 2500, 3);
-		ClearAnimationsEx(giveplayerid);
-		SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
-		DeletePVar(giveplayerid, "jailcuffs");
-	}
-	return 1;
+	if(!(0 <= giveplayerid < MAX_PLAYERS) || !IsPlayerConnected(giveplayerid)) return 1;
+	new target[12];
+	format(target, sizeof(target), "%d", giveplayerid);
+	return pc_cmd_uncuff(playerid, target);
 }
 
 /*Interact_DrugTest(playerid, giveplayerid) {
@@ -999,32 +936,7 @@ Interact_FriskPlayer(playerid, giveplayerid) {
 }
 
 Interact_DragPlayer(playerid, giveplayerid) {
-
-	if(GetPVarInt(giveplayerid, "PlayerCuffed") != 2) return SendClientMessageEx(playerid, COLOR_WHITE, " The specified person is not cuffed !");
-
-	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, " You must be out of the vehicle to use this command.");
-	if(GetPVarInt(giveplayerid, "BeingDragged") == 1) return SendClientMessageEx(playerid, COLOR_WHITE, " That person is already being dragged. ");
-
-    new
-    	Float:TempPos[3];
-
-	GetPlayerPos(giveplayerid, TempPos[0], TempPos[1], TempPos[2]);
-	if(!IsPlayerInRangeOfPoint(playerid, 5.0, TempPos[0], TempPos[1], TempPos[2])) return SendClientMessageEx(playerid, COLOR_GRAD2, " That suspect is not near you.");
-
-	SendClientMessageEx(giveplayerid, COLOR_WHITE, "* %s is now dragging you.", GetPlayerNameEx(playerid));
-
-	SendClientMessageEx(playerid, COLOR_WHITE, "* You are now dragging %s, you may move them now.", GetPlayerNameEx(giveplayerid));
-
-	format(szMiscArray, sizeof(szMiscArray), "* %s grabs ahold of %s and begins to move them.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-
-	SendClientMessageEx(playerid, COLOR_WHITE, "You are now dragging the suspect, press the '{AA3333}FIRE{FFFFFF}' button to stop.");
-
-	SetPVarInt(giveplayerid, "BeingDragged", 1);
-	SetPVarInt(playerid, "DraggingPlayer", giveplayerid);
-	SetTimerEx("DragPlayer", 1000, false, "ii", playerid, giveplayerid);
-
-	return 1;
+	return StartDragging(playerid, giveplayerid);
 }
 
 Interact_DetainPlayer(playerid, giveplayerid, seatid = -1) {
@@ -1034,34 +946,11 @@ Interact_DetainPlayer(playerid, giveplayerid, seatid = -1) {
 		return ShowPlayerDialogEx(playerid, DETAIN_SEAT, DIALOG_STYLE_INPUT, "Detain Player", szMiscArray, "Detain", "");
 	}
 	else {
-		if(IsPlayerInAnyVehicle(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That person is in a car - get them out first.");
-		if (!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not in range of that player!");
-		if(PlayerCuffed[giveplayerid] != 2) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not cuffed");
-
-		new carid = gLastCar[playerid];
-		if(!IsSeatAvailable(carid, seatid)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "That seatid is taken!");
-			return Interact_DetainPlayer(playerid, giveplayerid);
-		}
-
-		new Float:pos[6];
-		GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
-		GetPlayerPos(giveplayerid, pos[3], pos[4], pos[5]);
-		GetVehiclePos( carid, pos[0], pos[1], pos[2]);
-		if (floatcmp(floatabs(floatsub(pos[0], pos[3])), 10.0) != -1 &&
-				floatcmp(floatabs(floatsub(pos[1], pos[4])), 10.0) != -1 &&
-				floatcmp(floatabs(floatsub(pos[2], pos[5])), 10.0) != -1) return false;
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You were detained by %s .", GetPlayerNameEx(playerid));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You detained %s.", GetPlayerNameEx(giveplayerid));
-		format(szMiscArray, sizeof(szMiscArray), "* %s throws %s in the vehicle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		GameTextForPlayer(giveplayerid, "~r~Detained", 2500, 3);
-		ClearAnimationsEx(giveplayerid);
-		TogglePlayerControllable(giveplayerid, false);
-		IsPlayerEntering{giveplayerid} = true;
-		PutPlayerInVehicle(giveplayerid, carid, seatid);
+		if(!(0 <= giveplayerid < MAX_PLAYERS) || !IsPlayerConnected(giveplayerid)) return 1;
+		new params[24];
+		format(params, sizeof(params), "%d %d", giveplayerid, seatid);
+		return pc_cmd_detain(playerid, params);
 	}
-	return 1;
 }
 
 Interact_GiveTicket(playerid, giveplayerid, const reason[], amount = -1) {
@@ -1074,18 +963,11 @@ Interact_GiveTicket(playerid, giveplayerid, const reason[], amount = -1) {
 		return ShowPlayerDialogEx(playerid, TICKET_REASON, DIALOG_STYLE_INPUT, "Ticket Player", szMiscArray, "Issue", "");
 	}
 	else {
-		if(!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in range of that player");
-
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You gave %s a ticket costing $%d, reason: %s", GetPlayerNameEx(giveplayerid), amount, reason);
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Officer %s has given you a ticket costing $%d, reason: %s", GetPlayerNameEx(playerid), amount, reason);
-		format(szMiscArray, sizeof(szMiscArray), "* Officer %s writes up a ticket and gives it to %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Type /accept ticket, to accept it.");
-		TicketOffer[giveplayerid] = playerid;
-		SetPVarInt(giveplayerid, "TicketOfferSession", g_arrQueryHandle[playerid]);
-		TicketMoney[giveplayerid] = amount;
+		if(!(0 <= giveplayerid < MAX_PLAYERS) || !IsPlayerConnected(giveplayerid)) return 1;
+		new params[96];
+		format(params, sizeof(params), "%d %d %s", giveplayerid, amount, reason);
+		return pc_cmd_ticket(playerid, params);
 	}
-	return 1;
 }
 
 Interact_LoadPatient(playerid, giveplayerid, seatid = -1) {

@@ -2138,12 +2138,15 @@ ptask PlayerUpdate[1000](i) {
 					copcount++;
 				}
 			}
-			if(copcount == 0 || !ProxDetectorS(5.0, i, GetPVarInt(i, "IsTackled")))
+			new officer = GetPVarInt(i, "IsTackled");
+			if(!(0 <= officer < MAX_PLAYERS) || !IsPlayerConnected(officer) || g_arrQueryHandle[officer] != GetPVarInt(i, "TackleSession") || copcount == 0
+				|| !GetPVarType(officer, "Tackling") || GetPVarInt(officer, "Tackling") != i || GetPVarInt(officer, "TackleTargetSession") != g_arrQueryHandle[i]
+				|| GetPlayerVirtualWorld(i) != GetPlayerVirtualWorld(officer) || GetPlayerInterior(i) != GetPlayerInterior(officer) || !ProxDetectorS(5.0, i, officer))
 			{
 				SendClientMessageEx(i, COLOR_GREEN, "You're able to escape due to the cops leaving you unrestrained.");
 				ClearTackle(i);
 			}
-			if(GetPVarInt(i, "TackleCooldown") > 0)
+			else if(GetPVarInt(i, "TackleCooldown") > 0)
 			{
 				if(IsPlayerConnected(GetPVarInt(i, "IsTackled")) && GetPVarInt(GetPVarInt(i, "IsTackled"), "Tackling") == i)
 				{
@@ -2163,7 +2166,7 @@ ptask PlayerUpdate[1000](i) {
 								ProxDetector(30.0, i, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 								TogglePlayerControllable(GetPVarInt(i, "IsTackled"), false);
 								ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, true, true, true, true, 0, 1);
-								SetTimerEx("CopGetUp", 2500, false, "i", GetPVarInt(i, "IsTackled"));
+								SetTimerEx("FinishCopGetUp", 2500, false, "ii", GetPVarInt(i, "IsTackled"), g_arrQueryHandle[GetPVarInt(i, "IsTackled")]);
 								ClearTackle(i);
 							}
 						}
@@ -2181,7 +2184,7 @@ ptask PlayerUpdate[1000](i) {
 								ProxDetector(30.0, i, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 								TogglePlayerControllable(GetPVarInt(i, "IsTackled"), false);
 								ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, true, true, true, true, 0, 1);
-								SetTimerEx("CopGetUp", 2500, false, "i", GetPVarInt(i, "IsTackled"));
+								SetTimerEx("FinishCopGetUp", 2500, false, "ii", GetPVarInt(i, "IsTackled"), g_arrQueryHandle[GetPVarInt(i, "IsTackled")]);
 								ClearTackle(i);
 							}
 						}
