@@ -529,9 +529,9 @@ CMD:goindoor(playerid, params[])
 		new doornum;
 		if(sscanf(params, "d", doornum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /goindoor [doornumber]");
 
-		if(doornum <= 0 || doornum >= MAX_DDOORS)
+		if(doornum < 0 || doornum >= MAX_DDOORS)
 		{
-			return SendClientMessageEx(playerid, COLOR_GREY, "Door ID must be between 1 and %d.", MAX_DDOORS - 1);
+			return SendClientMessageEx(playerid, COLOR_GREY, "Door ID must be between 0 and %d.", MAX_DDOORS - 1);
 		}
 
 		SetPlayerInterior(playerid,DDoorsInfo[doornum][ddInteriorInt]);
@@ -552,9 +552,9 @@ CMD:gotodoor(playerid, params[])
 		new doornum;
 		if(sscanf(params, "d", doornum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotodoor [doornumber]");
 
-		if(doornum <= 0 || doornum >= MAX_DDOORS)
+		if(doornum < 0 || doornum >= MAX_DDOORS)
 		{
-			return SendClientMessageEx(playerid, COLOR_GREY, "Door ID must be between 1 and %d.", MAX_DDOORS - 1);
+			return SendClientMessageEx(playerid, COLOR_GREY, "Door ID must be between 0 and %d.", MAX_DDOORS - 1);
 		}
 
 		SetPlayerInterior(playerid,DDoorsInfo[doornum][ddExteriorInt]);
