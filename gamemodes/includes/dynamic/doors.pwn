@@ -36,41 +36,150 @@
 */
 
 #include <YSI_Coding\y_hooks>
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+new DynamicDoorRevision[MAX_DDOORS];
+new DynamicDoorLoadRequest;
 
-	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
-	if(dialogid == DOORLOCK)
+stock bool:IsDynamicDoorLoaded(doorid)
+{
+	return 0 <= doorid < MAX_DDOORS && DDoorsInfo[doorid][ddSQLId] == doorid + 1;
+}
+
+stock bool:IsDynamicDoorActive(doorid)
+{
+	return IsDynamicDoorLoaded(doorid) && (DDoorsInfo[doorid][ddExteriorX] != 0.0
+		|| DDoorsInfo[doorid][ddExteriorY] != 0.0 || DDoorsInfo[doorid][ddExteriorZ] != 0.0);
+}
+
+stock Float:GetPlayerDynamicDoorDistance(playerid, doorid)
+{
+	if(!IsDynamicDoorActive(doorid)) return -1.0;
+	new 
+		world = GetPlayerVirtualWorld(playerid), 
+		interior = GetPlayerInterior(playerid),
+		Float:distance = -1.0;
+
+	if(world == DDoorsInfo[doorid][ddExteriorVW] && interior == DDoorsInfo[doorid][ddExteriorInt])
 	{
-		if(response)
+		distance = GetPlayerDistanceFromPoint(playerid, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]);
+	}
+	
+	if(world == DDoorsInfo[doorid][ddInteriorVW] && interior == DDoorsInfo[doorid][ddInteriorInt]
+		&& (DDoorsInfo[doorid][ddInteriorX] != 0.0 || DDoorsInfo[doorid][ddInteriorY] != 0.0 || DDoorsInfo[doorid][ddInteriorZ] != 0.0))
+	{
+		new Float:inside = GetPlayerDistanceFromPoint(playerid, DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ]);
+		if(distance < 0.0 || inside < distance) distance = inside;
+	}
+	return distance;
+}
+
+stock bool:CalculateDoorMoveFine(playerid, percent, minimum, &fine)
+{
+	fine = 0;
+	if(!(0 <= percent <= 100) || minimum < 0) return false;
+	if(percent == 0) return true;
+
+	new parts[5];
+	parts[0] = PlayerInfo[playerid][pAccount];
+	parts[1] = GetPlayerCash(playerid);
+
+	new houses[3];
+	houses[0] = PlayerInfo[playerid][pPhousekey];
+	houses[1] = PlayerInfo[playerid][pPhousekey2];
+	houses[2] = PlayerInfo[playerid][pPhousekey3];
+
+	for(new i; i < sizeof(houses); ++i)
+	{
+		if(0 <= houses[i] < MAX_HOUSES && HouseInfo[houses[i]][hOwnerID] == GetPlayerSQLId(playerid))
 		{
-			new i = GetPVarInt(playerid, "Door");
-			if(isnull(inputtext)) return SendClientMessage(playerid, COLOR_GREY, "You did not enter anything" );
-			if(strlen(inputtext) > 24) return SendClientMessageEx(playerid, COLOR_GREY, "The password can not be greater than 24 characters.");
-			if(strcmp(inputtext, DDoorsInfo[i][ddPass], true) == 0)
-			{
-				if(DDoorsInfo[i][ddLocked] == 0)
-				{
-					DDoorsInfo[i][ddLocked] = 1;
-					SendClientMessageEx(playerid, COLOR_WHITE, "Password accepted, doors locked.");
-				}
-				else
-				{
-					DDoorsInfo[i][ddLocked] = 0;
-					SendClientMessageEx(playerid, COLOR_WHITE, "Password accepted, doors unlocked.");
-				}
-				SaveDynamicDoor(i);
-			}
-			else SendClientMessageEx(playerid, COLOR_WHITE, "Password declined.");
+			parts[i + 2] = HouseInfo[houses[i]][hSafeMoney];
 		}
 	}
-	return 0;
+
+	new quotient, remainder;
+	for(new i; i < sizeof(parts); ++i)
+	{
+		quotient += parts[i] / 10000;
+		remainder += parts[i] % 10000;
+	}
+	
+	quotient += remainder / 10000;
+	remainder %= 10000;
+	if(remainder < 0)
+	{
+		--quotient;
+		remainder += 10000;
+	}
+	if(quotient >= 0)
+	{
+		new discount = 100;
+		if(PlayerInfo[playerid][pDonateRank] == 3) discount = 95;
+		else if(PlayerInfo[playerid][pDonateRank] >= 4) discount = 85;
+		new rate = percent * discount, tail = remainder * rate / 10000;
+		if(quotient > (cellmax - tail) / rate) return false;
+		fine = quotient * rate + tail;
+	}
+	if(fine < minimum) fine = minimum;
+	return GetPlayerCash(playerid) >= cellmin + fine;
+}
+
+stock GetClosestDynamicDoor(playerid)
+{
+	new areas[128], data[2], Float:x, Float:y, Float:z;
+	GetPlayerPos(playerid, x, y, z);
+	new count = Streamer_GetNearbyItems(x, y, z, STREAMER_TYPE_AREA, areas, sizeof(areas), 3.0, GetPlayerVirtualWorld(playerid));
+	if(count > sizeof(areas)) count = sizeof(areas);
+
+	new closest = -1, Float:nearest = 3.0;
+	for(new n; n < count; ++n)
+	{
+		if(Streamer_GetArrayDataLength(STREAMER_TYPE_AREA, areas[n], E_STREAMER_EXTRA_ID) != sizeof(data)) continue;
+		Streamer_GetArrayData(STREAMER_TYPE_AREA, areas[n], E_STREAMER_EXTRA_ID, data, sizeof(data));
+		if(data[0] != STREAMER_AREATYPE_DOOR || !IsDynamicDoorActive(data[1])) continue;
+		new doorid = data[1];
+		if(areas[n] != DDoorsInfo[doorid][ddAreaID] && areas[n] != DDoorsInfo[doorid][ddAreaID_int]) continue;
+		new Float:distance = GetPlayerDynamicDoorDistance(playerid, doorid);
+		if(distance < 0.0 || distance > nearest) continue;
+		if(distance == nearest && closest != -1 && doorid > closest) continue;
+		closest = doorid;
+		nearest = distance;
+	}
+	return closest;
+}
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
+	if(dialogid != DOORLOCK) return 0;
+	
+	new doorid = GetPVarInt(playerid, "Door"), revision = GetPVarInt(playerid, "DoorRevision");
+	DeletePVar(playerid, "Door");
+	DeletePVar(playerid, "DoorRevision");
+	
+	if(!response) return 1;
+	if(!gPlayerLogged{playerid} || !IsDynamicDoorActive(doorid) || revision != DynamicDoorRevision[doorid])
+		return SendClientMessageEx(playerid, COLOR_GREY, "This door has changed. Please use /doorpass again.");
+	
+	new Float:distance = GetPlayerDynamicDoorDistance(playerid, doorid);
+	if(!(0.0 <= distance <= 3.0)) return SendClientMessageEx(playerid, COLOR_GREY, "You must remain within 3 meters of this door.");
+	if(isnull(inputtext) || strlen(inputtext) > 23) return SendClientMessageEx(playerid, COLOR_GREY, "Enter a password of 1 to 23 characters.");
+	if(!DDoorsInfo[doorid][ddPass][0] || !strcmp(DDoorsInfo[doorid][ddPass], "None", true)
+		|| strcmp(inputtext, DDoorsInfo[doorid][ddPass], true))
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Password declined.");
+	
+	DDoorsInfo[doorid][ddLocked] = !DDoorsInfo[doorid][ddLocked];
+	SaveDynamicDoor(doorid);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Password accepted, door %s.", DDoorsInfo[doorid][ddLocked] ? ("locked") : ("unlocked"));
+	return 1;
 }
 
 stock CreateDynamicDoor(doorid)
 {
+	if(!(0 <= doorid < MAX_DDOORS)) return 0;
+	++DynamicDoorRevision[doorid];
 	if(IsValidDynamicPickup(DDoorsInfo[doorid][ddPickupID])) DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
 	if(IsValidDynamicPickup(DDoorsInfo[doorid][ddPickupID_int])) DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID_int]);
 	if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
+
 	if(IsValidDynamicArea(DDoorsInfo[doorid][ddAreaID])) DestroyDynamicArea(DDoorsInfo[doorid][ddAreaID]);
 	if(IsValidDynamicArea(DDoorsInfo[doorid][ddAreaID_int])) DestroyDynamicArea(DDoorsInfo[doorid][ddAreaID_int]);
 	DDoorsInfo[doorid][ddPickupID] = INVALID_STREAMER_ID;
@@ -78,81 +187,48 @@ stock CreateDynamicDoor(doorid)
 	DDoorsInfo[doorid][ddTextID] = Text3D:INVALID_STREAMER_ID;
 	DDoorsInfo[doorid][ddAreaID] = INVALID_STREAMER_ID;
 	DDoorsInfo[doorid][ddAreaID_int] = INVALID_STREAMER_ID;
-	if(DDoorsInfo[doorid][ddExteriorX] == 0.0) return 1;
-	new string[128];
+	if(!IsDynamicDoorActive(doorid)) return 1;
+	new string[192];
 	if(DDoorsInfo[doorid][ddType] != 0) format(string, sizeof(string), "%s | Owner: %s\nID: %d", DDoorsInfo[doorid][ddDescription], StripUnderscore(DDoorsInfo[doorid][ddOwnerName]), doorid);
 	else format(string, sizeof(string), "%s\nID: %d", DDoorsInfo[doorid][ddDescription], doorid);
-
-	switch(DDoorsInfo[doorid][ddColor])
+	new const colors[] = {COLOR_YELLOW, COLOR_TWWHITE, COLOR_TWPINK, COLOR_TWRED, COLOR_TWBROWN, COLOR_TWGRAY, COLOR_TWOLIVE, COLOR_TWPURPLE, COLOR_TWORANGE, COLOR_TWAZURE, COLOR_TWGREEN, COLOR_TWBLUE, COLOR_TWBLACK};
+	if(DDoorsInfo[doorid][ddColor] != -1)
 	{
-	    case -1:{ /* Disable 3d Textdraw */ }
-	    case 1:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWWHITE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 2:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWPINK, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 3:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWRED, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 4:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWBROWN, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 5:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWGRAY, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 6:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWOLIVE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 7:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWPURPLE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 8:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWORANGE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 9:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWAZURE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 10:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWGREEN, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 11:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWBLUE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 12:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWBLACK, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-		default:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
+		new color = DDoorsInfo[doorid][ddColor];
+		if(!(0 <= color < sizeof(colors))) color = 0;
+		DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, colors[color], DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ] + 1.0,
+			10.0, .testlos = true, .worldid = DDoorsInfo[doorid][ddExteriorVW], .interiorid = DDoorsInfo[doorid][ddExteriorInt]);
 	}
-
-	switch(DDoorsInfo[doorid][ddPickupModel])
+	new const models[] = {1318, 1210, 1212, 1239, 1240, 1241, 1242, 1247, 1248, 1252, 1253, 1254, 1313, 1272, 1273, 1274, 1275, 1276, 1277, 1279, 1314, 1316, 1317, 1559, 1582, 2894};
+	if(DDoorsInfo[doorid][ddPickupModel] != -1)
 	{
-	    case -1: { /* Disable Pickup */ }
-		case 1:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1210, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 2:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1212, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 3:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1239, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 4:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1240, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 5:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1241, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 6:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1242, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 7:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1247, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 8:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1248, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 9:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1252, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 10:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1253, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 11:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1254, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 12:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1313, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 13:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1272, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 14:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1273, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 15:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1274, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 16:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1275, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 17:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1276, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 18:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1277, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 19:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1279, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 20:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1314, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 21:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1316, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 22:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1317, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 23:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1559, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 24:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1582, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 25:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(2894, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-	    default:
-	    {
-			DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1318, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);
-	    }
+		new model = DDoorsInfo[doorid][ddPickupModel];
+		if(!(0 <= model < sizeof(models))) model = 0;
+		DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(models[model], 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ],
+			DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt]);
 	}
-
-	DDoorsInfo[doorid][ddPickupID_int] = CreateDynamicPickup(1559, 23, DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ], DDoorsInfo[doorid][ddInteriorVW]);
-	DDoorsInfo[doorid][ddAreaID] = CreateDynamicSphere(DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], 2.0, .worldid = DDoorsInfo[doorid][ddExteriorVW], .interiorid = DDoorsInfo[doorid][ddExteriorInt]);
-	DDoorsInfo[doorid][ddAreaID_int] = CreateDynamicSphere(DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ], 2.0, .worldid = DDoorsInfo[doorid][ddInteriorVW], .interiorid = DDoorsInfo[doorid][ddInteriorInt]);
-
+	DDoorsInfo[doorid][ddAreaID] = CreateDynamicSphere(DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], 2.0,
+		.worldid = DDoorsInfo[doorid][ddExteriorVW], .interiorid = DDoorsInfo[doorid][ddExteriorInt]);
+	if(DDoorsInfo[doorid][ddInteriorX] != 0.0 || DDoorsInfo[doorid][ddInteriorY] != 0.0 || DDoorsInfo[doorid][ddInteriorZ] != 0.0)
+	{
+		DDoorsInfo[doorid][ddPickupID_int] = CreateDynamicPickup(1559, 23, DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ],
+			DDoorsInfo[doorid][ddInteriorVW], DDoorsInfo[doorid][ddInteriorInt]);
+		DDoorsInfo[doorid][ddAreaID_int] = CreateDynamicSphere(DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ], 2.0,
+			.worldid = DDoorsInfo[doorid][ddInteriorVW], .interiorid = DDoorsInfo[doorid][ddInteriorInt]);
+	}
 	new areaData[2];
 	areaData[0] = STREAMER_AREATYPE_DOOR;
 	areaData[1] = doorid;
 	Streamer_SetArrayData(STREAMER_TYPE_AREA, DDoorsInfo[doorid][ddAreaID], E_STREAMER_EXTRA_ID, areaData, sizeof(areaData));
-	Streamer_SetArrayData(STREAMER_TYPE_AREA, DDoorsInfo[doorid][ddAreaID_int], E_STREAMER_EXTRA_ID, areaData, sizeof(areaData));
-
-	format(szMiscArray, sizeof(szMiscArray), "[DDoor] Created Door: %d | Exterior Area ID: %d | Interior Area ID: %d", doorid, DDoorsInfo[doorid][ddAreaID], DDoorsInfo[doorid][ddAreaID_int]);
-	Log("debug/door_ddoor.log", szMiscArray);
+	if(IsValidDynamicArea(DDoorsInfo[doorid][ddAreaID_int]))
+		Streamer_SetArrayData(STREAMER_TYPE_AREA, DDoorsInfo[doorid][ddAreaID_int], E_STREAMER_EXTRA_ID, areaData, sizeof(areaData));
 	return 1;
 }
 
 stock SaveDynamicDoor(doorid)
 {
-	new string[1024];
+	if(!IsDynamicDoorLoaded(doorid)) return 0;
+	new string[2048];
 
 	mysql_format(MainPipeline, string, sizeof(string), "UPDATE `ddoors` SET \
 		`Description`='%e', \
@@ -237,289 +313,213 @@ stock SaveDynamicDoor(doorid)
 		doorid+1
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
 
-	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
+	return mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 stock LoadDynamicDoor(doorid)
 {
-	new string[128];
-	mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `ddoors` WHERE `id`=%d", doorid+1); // Array starts at zero, MySQL starts at 1.
-	mysql_tquery(MainPipeline, string, "OnLoadDynamicDoor", "i", doorid);
+	if(!(0 <= doorid < MAX_DDOORS)) return 0;
+	DDoorsInfo[doorid][ddSQLId] = -1;
+	new revision = ++DynamicDoorRevision[doorid], query[96];
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT * FROM `ddoors` WHERE `id`=%d", doorid + 1);
+	return mysql_tquery(MainPipeline, query, "OnLoadDynamicDoor", "ii", doorid, revision);
 }
 
 stock LoadDynamicDoors()
 {
-	printf("[LoadDynamicDoors] Loading data from database...");
-	mysql_tquery(MainPipeline, "SELECT * FROM `ddoors`", "OnLoadDynamicDoors", "");
+	for(new i; i < MAX_DDOORS; ++i)
+	{
+		DDoorsInfo[i][ddSQLId] = -1;
+		++DynamicDoorRevision[i];
+	}
+	return mysql_tquery(MainPipeline, "SELECT * FROM `ddoors`", "OnLoadDynamicDoors", "i", ++DynamicDoorLoadRequest);
 }
 
-forward OnLoadDynamicDoor(index);
-public OnLoadDynamicDoor(index)
+stock LoadDynamicDoorData(row, index)
 {
-	new rows;
-	cache_get_row_count(rows);
-
-	for(new row; row < rows; row++)
-	{
-		cache_get_value_name_int(row, "id", DDoorsInfo[index][ddSQLId]);
-		cache_get_value_name(row, "Description", DDoorsInfo[index][ddDescription], 128);
-	 	cache_get_value_name_int(row, "Owner", DDoorsInfo[index][ddOwner]);
-		cache_get_value_name(row, "OwnerName", DDoorsInfo[index][ddOwnerName], 42);
-		cache_get_value_name_int(row, "CustomExterior", DDoorsInfo[index][ddCustomExterior]);
-		cache_get_value_name_int(row, "CustomInterior", DDoorsInfo[index][ddCustomInterior]);
-		cache_get_value_name_int(row, "ExteriorVW", DDoorsInfo[index][ddExteriorVW]); 
-		cache_get_value_name_int(row, "ExteriorInt", DDoorsInfo[index][ddExteriorInt]); 
-		cache_get_value_name_int(row, "InteriorVW", DDoorsInfo[index][ddInteriorVW]); 
-		cache_get_value_name_int(row, "InteriorInt", DDoorsInfo[index][ddInteriorInt]);
-		cache_get_value_name_float(row, "ExteriorX", DDoorsInfo[index][ddExteriorX]);
-		cache_get_value_name_float(row, "ExteriorY", DDoorsInfo[index][ddExteriorY]);
-		cache_get_value_name_float(row, "ExteriorZ", DDoorsInfo[index][ddExteriorZ]);
-		cache_get_value_name_float(row, "ExteriorA", DDoorsInfo[index][ddExteriorA]);
-		cache_get_value_name_float(row, "InteriorX", DDoorsInfo[index][ddInteriorX]);
-		cache_get_value_name_float(row, "InteriorY", DDoorsInfo[index][ddInteriorY]);
-		cache_get_value_name_float(row, "InteriorZ", DDoorsInfo[index][ddInteriorZ]);
-		cache_get_value_name_float(row, "InteriorA", DDoorsInfo[index][ddInteriorA]);
-		cache_get_value_name_int(row, "Type", DDoorsInfo[index][ddType]); 
-		cache_get_value_name_int(row, "Rank", DDoorsInfo[index][ddRank]); 
-		cache_get_value_name_int(row, "VIP", DDoorsInfo[index][ddVIP]); 
-		cache_get_value_name_int(row, "Famed", DDoorsInfo[index][ddFamed]); 
-		cache_get_value_name_int(row, "DPC", DDoorsInfo[index][ddDPC]); 
-		cache_get_value_name_int(row, "Allegiance", DDoorsInfo[index][ddAllegiance]);
-		cache_get_value_name_int(row, "GroupType", DDoorsInfo[index][ddGroupType]); 
-		cache_get_value_name_int(row, "Faction", DDoorsInfo[index][ddFaction]); 
-		cache_get_value_name_int(row, "Admin", DDoorsInfo[index][ddAdmin]); 
-		cache_get_value_name_int(row, "Wanted", DDoorsInfo[index][ddWanted]); 
-		cache_get_value_name_int(row, "VehicleAble", DDoorsInfo[index][ddVehicleAble]); 
-		cache_get_value_name_int(row, "Color", DDoorsInfo[index][ddColor]); 
-		cache_get_value_name_int(row, "PickupModel", DDoorsInfo[index][ddPickupModel]); 
-		cache_get_value_name(row, "Pass", DDoorsInfo[index][ddPass], 24);
-		cache_get_value_name_int(row, "Locked", DDoorsInfo[index][ddLocked]); 
-		cache_get_value_name_int(row, "LastLogin", DDoorsInfo[index][ddLastLogin]);
-		cache_get_value_name_int(row, "Expire", DDoorsInfo[index][ddExpire]);
-		cache_get_value_name_int(row, "Inactive", DDoorsInfo[index][ddInactive]);
-		cache_get_value_name_int(row, "Ignore", DDoorsInfo[index][ddIgnore]);
-		cache_get_value_name_int(row, "Counter", DDoorsInfo[index][ddCounter]);
-		if(DDoorsInfo[index][ddExteriorX] != 0.0 || DDoorsInfo[index][ddAreaID] != INVALID_STREAMER_ID || DDoorsInfo[index][ddAreaID_int] != INVALID_STREAMER_ID) {
-			CreateDynamicDoor(index);
-		}
-	}
+	cache_get_value_name_int(row, "id", DDoorsInfo[index][ddSQLId]);
+	cache_get_value_name(row, "Description", DDoorsInfo[index][ddDescription], 128);
+	cache_get_value_name_int(row, "Owner", DDoorsInfo[index][ddOwner]);
+	cache_get_value_name(row, "OwnerName", DDoorsInfo[index][ddOwnerName], 42);
+	cache_get_value_name_int(row, "CustomExterior", DDoorsInfo[index][ddCustomExterior]);
+	cache_get_value_name_int(row, "CustomInterior", DDoorsInfo[index][ddCustomInterior]);
+	cache_get_value_name_int(row, "ExteriorVW", DDoorsInfo[index][ddExteriorVW]);
+	cache_get_value_name_int(row, "ExteriorInt", DDoorsInfo[index][ddExteriorInt]);
+	cache_get_value_name_int(row, "InteriorVW", DDoorsInfo[index][ddInteriorVW]);
+	cache_get_value_name_int(row, "InteriorInt", DDoorsInfo[index][ddInteriorInt]);
+	cache_get_value_name_float(row, "ExteriorX", DDoorsInfo[index][ddExteriorX]);
+	cache_get_value_name_float(row, "ExteriorY", DDoorsInfo[index][ddExteriorY]);
+	cache_get_value_name_float(row, "ExteriorZ", DDoorsInfo[index][ddExteriorZ]);
+	cache_get_value_name_float(row, "ExteriorA", DDoorsInfo[index][ddExteriorA]);
+	cache_get_value_name_float(row, "InteriorX", DDoorsInfo[index][ddInteriorX]);
+	cache_get_value_name_float(row, "InteriorY", DDoorsInfo[index][ddInteriorY]);
+	cache_get_value_name_float(row, "InteriorZ", DDoorsInfo[index][ddInteriorZ]);
+	cache_get_value_name_float(row, "InteriorA", DDoorsInfo[index][ddInteriorA]);
+	cache_get_value_name_int(row, "Type", DDoorsInfo[index][ddType]);
+	cache_get_value_name_int(row, "Rank", DDoorsInfo[index][ddRank]);
+	cache_get_value_name_int(row, "VIP", DDoorsInfo[index][ddVIP]);
+	cache_get_value_name_int(row, "Famed", DDoorsInfo[index][ddFamed]);
+	cache_get_value_name_int(row, "DPC", DDoorsInfo[index][ddDPC]);
+	cache_get_value_name_int(row, "Allegiance", DDoorsInfo[index][ddAllegiance]);
+	cache_get_value_name_int(row, "GroupType", DDoorsInfo[index][ddGroupType]);
+	cache_get_value_name_int(row, "Faction", DDoorsInfo[index][ddFaction]);
+	cache_get_value_name_int(row, "Admin", DDoorsInfo[index][ddAdmin]);
+	cache_get_value_name_int(row, "Wanted", DDoorsInfo[index][ddWanted]);
+	cache_get_value_name_int(row, "VehicleAble", DDoorsInfo[index][ddVehicleAble]);
+	cache_get_value_name_int(row, "Color", DDoorsInfo[index][ddColor]);
+	cache_get_value_name_int(row, "PickupModel", DDoorsInfo[index][ddPickupModel]);
+	cache_get_value_name(row, "Pass", DDoorsInfo[index][ddPass], 24);
+	cache_get_value_name_int(row, "Locked", DDoorsInfo[index][ddLocked]);
+	cache_get_value_name_int(row, "LastLogin", DDoorsInfo[index][ddLastLogin]);
+	cache_get_value_name_int(row, "Expire", DDoorsInfo[index][ddExpire]);
+	cache_get_value_name_int(row, "Inactive", DDoorsInfo[index][ddInactive]);
+	cache_get_value_name_int(row, "Ignore", DDoorsInfo[index][ddIgnore]);
+	cache_get_value_name_int(row, "Counter", DDoorsInfo[index][ddCounter]);
+	CreateDynamicDoor(index);
 	return 1;
 }
 
-
-forward OnLoadDynamicDoors();
-public OnLoadDynamicDoors()
+forward OnLoadDynamicDoor(index, revision);
+public OnLoadDynamicDoor(index, revision)
 {
-	new i, rows;
+	if(!(0 <= index < MAX_DDOORS) || DynamicDoorRevision[index] != revision) return 1;
+	new rows, id;
 	cache_get_row_count(rows);
-
-	while(i < rows)
+	if(rows)
 	{
-		/*DDoorsInfo[i][ddSQLId] = cache_get_field_content_int(i, "id", MainPipeline); 
-		cache_get_field_content(i, "Description", DDoorsInfo[i][ddDescription], MainPipeline, 128);
-		DDoorsInfo[i][ddOwner] = cache_get_field_content_int(i, "Owner", MainPipeline); 
-		cache_get_field_content(i, "OwnerName", DDoorsInfo[i][ddOwnerName], MainPipeline, 42);
-		DDoorsInfo[i][ddCustomExterior] = cache_get_field_content_int(i, "CustomExterior", MainPipeline); 
-		DDoorsInfo[i][ddCustomInterior] = cache_get_field_content_int(i, "CustomInterior", MainPipeline); 
-		DDoorsInfo[i][ddExteriorVW] = cache_get_field_content_int(i, "ExteriorVW", MainPipeline); 
-		DDoorsInfo[i][ddExteriorInt] = cache_get_field_content_int(i, "ExteriorInt", MainPipeline); 
-		DDoorsInfo[i][ddInteriorVW] = cache_get_field_content_int(i, "InteriorVW", MainPipeline); 
-		DDoorsInfo[i][ddInteriorInt] = cache_get_field_content_int(i, "InteriorInt", MainPipeline); 
-		DDoorsInfo[i][ddExteriorX] = cache_get_field_content_float(i, "ExteriorX", MainPipeline);
-		DDoorsInfo[i][ddExteriorY] = cache_get_field_content_float(i, "ExteriorY", MainPipeline);
-		DDoorsInfo[i][ddExteriorZ] = cache_get_field_content_float(i, "ExteriorZ", MainPipeline);
-		DDoorsInfo[i][ddExteriorA] = cache_get_field_content_float(i, "ExteriorA", MainPipeline);
-		DDoorsInfo[i][ddInteriorX] = cache_get_field_content_float(i, "InteriorX", MainPipeline);
-		DDoorsInfo[i][ddInteriorY] = cache_get_field_content_float(i, "InteriorY", MainPipeline);
-		DDoorsInfo[i][ddInteriorZ] = cache_get_field_content_float(i, "InteriorZ", MainPipeline);
-		DDoorsInfo[i][ddInteriorA] = cache_get_field_content_float(i, "InteriorA", MainPipeline);
-		DDoorsInfo[i][ddType] = cache_get_field_content_int(i, "Type",MainPipeline); 
-		DDoorsInfo[i][ddRank] = cache_get_field_content_int(i, "Rank", MainPipeline); 
-		DDoorsInfo[i][ddVIP] = cache_get_field_content_int(i, "VIP", MainPipeline); 
-		DDoorsInfo[i][ddFamed] = cache_get_field_content_int(i, "Famed", MainPipeline); 
-		DDoorsInfo[i][ddDPC] = cache_get_field_content_int(i, "DPC", MainPipeline); 
-		DDoorsInfo[i][ddAllegiance] = cache_get_field_content_int(i, "Allegiance", MainPipeline); 
-		DDoorsInfo[i][ddGroupType] = cache_get_field_content_int(i, "GroupType", MainPipeline); 
-		DDoorsInfo[i][ddFaction] = cache_get_field_content_int(i, "Faction", MainPipeline); 
-		DDoorsInfo[i][ddAdmin] = cache_get_field_content_int(i, "Admin", MainPipeline);
-		DDoorsInfo[i][ddWanted] = cache_get_field_content_int(i, "Wanted", MainPipeline); 
-		DDoorsInfo[i][ddVehicleAble] = cache_get_field_content_int(i, "VehicleAble", MainPipeline); 
-		DDoorsInfo[i][ddColor] = cache_get_field_content_int(i, "Color", MainPipeline);
-		DDoorsInfo[i][ddPickupModel] = cache_get_field_content_int(i, "PickupModel", MainPipeline); 
-		cache_get_field_content(i, "Pass", DDoorsInfo[i][ddPass], MainPipeline, 24);
-		DDoorsInfo[i][ddLocked] = cache_get_field_content_int(i, "Locked", MainPipeline); 
-		DDoorsInfo[i][ddLastLogin] = cache_get_field_content_int(i, "LastLogin", MainPipeline);
-		DDoorsInfo[i][ddExpire] = cache_get_field_content_int(i, "Expire", MainPipeline);
-		DDoorsInfo[i][ddInactive] = cache_get_field_content_int(i, "Inactive", MainPipeline);
-		DDoorsInfo[i][ddIgnore] = cache_get_field_content_int(i, "Ignore", MainPipeline);
-		DDoorsInfo[i][ddCounter] = cache_get_field_content_int(i, "Counter", MainPipeline);
-		if(DDoorsInfo[i][ddExteriorX] != 0.0) CreateDynamicDoor(i);*/
-		LoadDynamicDoor(i);
-		i++;
+		cache_get_value_name_int(0, "id", id);
+		if(id == index + 1) return LoadDynamicDoorData(0, index);
 	}
-	if(i > 0) printf("[LoadDynamicDoors] %d doors rehashed/loaded.", i);
-	else printf("[LoadDynamicDoors] Failed to load any doors.");
+	CreateDynamicDoor(index);
+	return 1;
+}
+
+forward OnLoadDynamicDoors(request);
+public OnLoadDynamicDoors(request)
+{
+	if(request != DynamicDoorLoadRequest) return 1;
+	new rows, loaded;
+	cache_get_row_count(rows);
+	for(new row; row < rows; ++row)
+	{
+		new id;
+		cache_get_value_name_int(row, "id", id);
+		if(!(1 <= id <= MAX_DDOORS)) continue;
+		LoadDynamicDoorData(row, id - 1);
+		++loaded;
+	}
+	for(new i; i < MAX_DDOORS; ++i)
+		if(!IsDynamicDoorLoaded(i)) CreateDynamicDoor(i);
+	printf("[LoadDynamicDoors] Loaded %d backing rows from one query.", loaded);
 	return 1;
 }
 
 stock SaveDynamicDoors()
 {
-	for(new i = 0; i < MAX_DDOORS; i++)
-	{
-		SaveDynamicDoor(i);
-	}
+	for(new i; i < MAX_DDOORS; ++i) SaveDynamicDoor(i);
 	return 1;
 }
 
 stock RehashDynamicDoor(doorid)
 {
-	DDoorsInfo[doorid][ddSQLId] = -1;
-	DDoorsInfo[doorid][ddOwner] = -1;
-	DDoorsInfo[doorid][ddCustomInterior] = 0;
-	DDoorsInfo[doorid][ddExteriorVW] = 0;
-	DDoorsInfo[doorid][ddExteriorInt] = 0;
-	DDoorsInfo[doorid][ddInteriorVW] = 0;
-	DDoorsInfo[doorid][ddInteriorInt] = 0;
-	DDoorsInfo[doorid][ddExteriorX] = 0.0;
-	DDoorsInfo[doorid][ddExteriorY] = 0.0;
-	DDoorsInfo[doorid][ddExteriorZ] = 0.0;
-	DDoorsInfo[doorid][ddExteriorA] = 0.0;
-	DDoorsInfo[doorid][ddInteriorX] = 0.0;
-	DDoorsInfo[doorid][ddInteriorY] = 0.0;
-	DDoorsInfo[doorid][ddInteriorZ] = 0.0;
-	DDoorsInfo[doorid][ddInteriorA] = 0.0;
-	DDoorsInfo[doorid][ddCustomExterior] = 0;
-	DDoorsInfo[doorid][ddType] = 0;
-	DDoorsInfo[doorid][ddRank] = 0;
-	DDoorsInfo[doorid][ddVIP] = 0;
-	DDoorsInfo[doorid][ddAllegiance] = 0;
-	DDoorsInfo[doorid][ddGroupType] = 0;
-	DDoorsInfo[doorid][ddFaction] = 0;
-	DDoorsInfo[doorid][ddAdmin] = 0;
-	DDoorsInfo[doorid][ddWanted] = 0;
-	DDoorsInfo[doorid][ddVehicleAble] = 0;
-	DDoorsInfo[doorid][ddColor] = 0;
-	DDoorsInfo[doorid][ddPickupModel] = 0;
-	DDoorsInfo[doorid][ddLocked] = 0;
-	CreateDynamicDoor(doorid);
-	LoadDynamicDoor(doorid);
+	return LoadDynamicDoor(doorid);
 }
 
 stock RehashDynamicDoors()
 {
-	printf("[RehashDynamicDoors] Deleting dynamic doors from server...");
-	for(new i = 0; i < MAX_DDOORS; i++)
-	{
-		RehashDynamicDoor(i);
-	}
-	//LoadDynamicDoors();
+	return LoadDynamicDoors();
 }
 
-forward OnSetDDOwner(playerid, doorid);
-public OnSetDDOwner(playerid, doorid)
+forward OnSetDDOwner(playerid, session, doorid, revision, owner);
+public OnSetDDOwner(playerid, session, doorid, revision, owner)
 {
-	if(IsPlayerConnected(playerid))
+	if(!(0 <= playerid < MAX_PLAYERS) || !IsPlayerConnected(playerid) || !gPlayerLogged{playerid} || g_arrQueryHandle[playerid] != session) 
 	{
-	    new rows;
-	    new string[128], playername[MAX_PLAYER_NAME];
-    	cache_get_row_count(rows);
-
-    	if(rows)
-    	{
-			cache_get_value_name_int(0, "id", DDoorsInfo[doorid][ddOwner]);
-			cache_get_value_name(0, "Username", playername, MAX_PLAYER_NAME);
-			strcat((DDoorsInfo[doorid][ddOwnerName][0] = 0, DDoorsInfo[doorid][ddOwnerName]), playername, MAX_PLAYER_NAME);
-
-			SendClientMessageEx(playerid, COLOR_WHITE, "Successfully set the owner to %s.", playername);
-
-			DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-			if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
-			CreateDynamicDoor(doorid);
-			SaveDynamicDoor(doorid);
-			format(string, sizeof(string), "%s has edited door ID %d's owner to %s (SQL ID: %d).", GetPlayerNameEx(playerid), doorid, playername, DDoorsInfo[doorid][ddOwner]);
-			Log("logs/ddedit.log", string);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "That account name does not appear to exist.");
+		return 1;
 	}
+
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pFactionModerator] < 2 && PlayerInfo[playerid][pShopTech] < 1) 
+	{
+		return 1;
+	}
+	if(!IsDynamicDoorActive(doorid) || DDoorsInfo[doorid][ddType] != 1 || DynamicDoorRevision[doorid] != revision || DDoorsInfo[doorid][ddOwner] != owner)
+		return SendClientMessageEx(playerid, COLOR_GREY, "This door has changed. Please use /ddowner again.");
+	
+	new rows, account, level, admin, name[MAX_PLAYER_NAME], message[160];
+	cache_get_row_count(rows);
+	if(!rows) {
+		return SendClientMessageEx(playerid, COLOR_GREY, "That account name does not appear to exist.");
+	}
+	
+	cache_get_value_name_int(0, "id", account);
+	cache_get_value_name_int(0, "Level", level);
+	cache_get_value_name_int(0, "AdminLevel", admin);
+	cache_get_value_name(0, "Username", name, sizeof(name));
+	if(level == 1 && admin < 2) {
+		return SendClientMessageEx(playerid, COLOR_RED, "You can't use /ddowner on level 1 players.");
+	}
+
+	DDoorsInfo[doorid][ddOwner] = account;
+	format(DDoorsInfo[doorid][ddOwnerName], 42, "%s", name);
+	CreateDynamicDoor(doorid);
+	SaveDynamicDoor(doorid);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Successfully set the owner to %s.", name);
+	format(message, sizeof(message), "%s has edited door ID %d's owner to %s (SQL ID: %d).", GetPlayerNameEx(playerid), doorid, name, account);
+	Log("logs/ddedit.log", message);
 	return 1;
 }
 
 CMD:changedoorpass(playerid, params[])
 {
-    for(new i = 0; i < sizeof(DDoorsInfo); i++) {
-        if (IsPlayerInRangeOfPoint(playerid,3.0,DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]) && PlayerInfo[playerid][pVW] == DDoorsInfo[i][ddExteriorVW] || IsPlayerInRangeOfPoint(playerid,3.0,DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]) && PlayerInfo[playerid][pVW] == DDoorsInfo[i][ddInteriorVW])
-		{
-			new doorpass[24];
-			if(sscanf(params, "s[24]", doorpass)) { SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /changedoorpass [pass]"); SendClientMessageEx(playerid, COLOR_WHITE, "To remove the password on the door set the password to 'none'."); return 1; }
-        	if(DDoorsInfo[i][ddType] == 2 && DDoorsInfo[i][ddFaction] != INVALID_GROUP_ID && PlayerInfo[playerid][pLeader] == DDoorsInfo[i][ddFaction])
-			{
-				format(DDoorsInfo[i][ddPass], 24, "%s", doorpass);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the password of this door.");
-				SaveDynamicDoor(i);
-			}
-			else if(DDoorsInfo[i][ddType] == 1 && DDoorsInfo[i][ddOwner] == GetPlayerSQLId(playerid))
-			{
-				format(DDoorsInfo[i][ddPass], 24, "%s", doorpass);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the password of this door.");
-				SaveDynamicDoor(i);
-			}
-			else SendClientMessageEx(playerid, COLOR_GREY, "You cannot change the password on this lock.");
-		}
+	new doorid = GetClosestDynamicDoor(playerid), password[24];
+	if(doorid == -1) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a dynamic door.");
+	
+	if(!((DDoorsInfo[doorid][ddType] == 2 && 0 <= DDoorsInfo[doorid][ddFaction] < MAX_GROUPS && PlayerInfo[playerid][pLeader] == DDoorsInfo[doorid][ddFaction])
+		|| (DDoorsInfo[doorid][ddType] == 1 && DDoorsInfo[doorid][ddOwner] == GetPlayerSQLId(playerid))))
+	{
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot change the password on this lock.");
 	}
-	return 1;
+
+	if(strlen(params) > 23 || sscanf(params, "s[24]", password))
+		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /changedoorpass [1-23 characters, or none to remove]");
+	
+	if(!strcmp(password, "none", true)) password[0] = 0;
+	format(DDoorsInfo[doorid][ddPass], 24, "%s", password);
+	++DynamicDoorRevision[doorid];
+	SaveDynamicDoor(doorid);
+	return SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the password of this door.");
 }
 
 CMD:lockdoor(playerid, params[])
 {
-    for(new i = 0; i < sizeof(DDoorsInfo); i++) {
-        if (IsPlayerInRangeOfPoint(playerid,3.0,DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]) && PlayerInfo[playerid][pVW] == DDoorsInfo[i][ddExteriorVW] || IsPlayerInRangeOfPoint(playerid,3.0,DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]) && PlayerInfo[playerid][pVW] == DDoorsInfo[i][ddInteriorVW])
-		{
-        	if(DDoorsInfo[i][ddType] == 2 && DDoorsInfo[i][ddFaction] != INVALID_GROUP_ID && PlayerInfo[playerid][pLeader] == DDoorsInfo[i][ddFaction])
-			{
-				if(DDoorsInfo[i][ddLocked] == 0) {
-					
-					DDoorsInfo[i][ddLocked] = 1;
-					SendClientMessageEx(playerid, COLOR_WHITE, "This door has been locked.");
-				}
-				else if(DDoorsInfo[i][ddLocked] == 1)
-				{
-					DDoorsInfo[i][ddLocked] = 0;
-					SendClientMessageEx(playerid, COLOR_GREY, "This door has been unlocked.");
-				}
-			}
-			else if(DDoorsInfo[i][ddType] == 1 && DDoorsInfo[i][ddOwner] == GetPlayerSQLId(playerid))
-			{
-				if(DDoorsInfo[i][ddLocked] == 0)
-				{
-					DDoorsInfo[i][ddLocked] = 1;
-					SendClientMessageEx(playerid, COLOR_WHITE, "This door has been locked.");
-				}
-				else if(DDoorsInfo[i][ddLocked] == 1)
-				{
-					DDoorsInfo[i][ddLocked] = 0;
-					SendClientMessageEx(playerid, COLOR_GREY, "This door has been unlocked.");
-				}
-			}
-			else SendClientMessageEx(playerid, COLOR_GREY, "You cannot lock this door.");
-		}
+	new doorid = GetClosestDynamicDoor(playerid);
+	if(doorid == -1) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a dynamic door.");
+	
+	if(!((DDoorsInfo[doorid][ddType] == 2 && 0 <= DDoorsInfo[doorid][ddFaction] < MAX_GROUPS && PlayerInfo[playerid][pLeader] == DDoorsInfo[doorid][ddFaction])
+		|| (DDoorsInfo[doorid][ddType] == 1 && DDoorsInfo[doorid][ddOwner] == GetPlayerSQLId(playerid))))
+	{
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot lock this door.");
 	}
-	return 1;
+
+	DDoorsInfo[doorid][ddLocked] = !DDoorsInfo[doorid][ddLocked];
+	SaveDynamicDoor(doorid);
+	return SendClientMessageEx(playerid, COLOR_WHITE, "This door has been %s.", DDoorsInfo[doorid][ddLocked] ? ("locked") : ("unlocked"));
 }
 
 CMD:doorpass(playerid, params[])
 {
-    for(new i = 0; i < sizeof(DDoorsInfo); i++) {
-        if (IsPlayerInRangeOfPoint(playerid,3.0,DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]) && PlayerInfo[playerid][pVW] == DDoorsInfo[i][ddExteriorVW] || IsPlayerInRangeOfPoint(playerid,3.0,DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]) && PlayerInfo[playerid][pVW] == DDoorsInfo[i][ddInteriorVW]) {
-        	if(DDoorsInfo[i][ddPass] < 1)
-                return SendClientMessageEx(playerid, COLOR_GREY, "This door isn't allowed to be locked");
-         	if(strcmp(DDoorsInfo[i][ddPass], "None", true) == 0)
-                return SendClientMessageEx(playerid, COLOR_GREY, "This door isn't allowed to be locked");
-
-			ShowPlayerDialogEx(playerid, DOORLOCK, DIALOG_STYLE_INPUT, "Door Security","Enter the password for this door","Login","Cancel");
-			SetPVarInt(playerid, "Door", i);
-		}
-	}
-	return 1;
+	new doorid = GetClosestDynamicDoor(playerid);
+	if(doorid == -1) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a dynamic door.");
+	
+	if(!DDoorsInfo[doorid][ddPass][0] || !strcmp(DDoorsInfo[doorid][ddPass], "None", true))
+		return SendClientMessageEx(playerid, COLOR_GREY, "This door does not have a password lock.");
+	
+	SetPVarInt(playerid, "Door", doorid);
+	SetPVarInt(playerid, "DoorRevision", DynamicDoorRevision[doorid]);
+	return ShowPlayerDialogEx(playerid, DOORLOCK, DIALOG_STYLE_PASSWORD, "Door Security", "Enter the password for this door.", "Confirm", "Cancel");
 }
 
 CMD:goindoor(playerid, params[])
@@ -533,6 +533,9 @@ CMD:goindoor(playerid, params[])
 		{
 			return SendClientMessageEx(playerid, COLOR_GREY, "Door ID must be between 0 and %d.", MAX_DDOORS - 1);
 		}
+
+		if(!IsDynamicDoorActive(doornum)) 
+			return SendClientMessageEx(playerid, COLOR_GREY, "That door has not been configured.");
 
 		SetPlayerInterior(playerid,DDoorsInfo[doornum][ddInteriorInt]);
 		SetPlayerPos(playerid,DDoorsInfo[doornum][ddInteriorX],DDoorsInfo[doornum][ddInteriorY],DDoorsInfo[doornum][ddInteriorZ]);
@@ -557,6 +560,9 @@ CMD:gotodoor(playerid, params[])
 			return SendClientMessageEx(playerid, COLOR_GREY, "Door ID must be between 0 and %d.", MAX_DDOORS - 1);
 		}
 
+		if(!IsDynamicDoorActive(doornum)) 
+			return SendClientMessageEx(playerid, COLOR_GREY, "That door has not been configured.");
+
 		SetPlayerInterior(playerid,DDoorsInfo[doornum][ddExteriorInt]);
 		SetPlayerPos(playerid,DDoorsInfo[doornum][ddExteriorX],DDoorsInfo[doornum][ddExteriorY],DDoorsInfo[doornum][ddExteriorZ]);
 		SetPlayerFacingAngle(playerid,DDoorsInfo[doornum][ddExteriorA]);
@@ -570,109 +576,79 @@ CMD:gotodoor(playerid, params[])
 
 CMD:ddstatus(playerid, params[])
 {
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1)
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	
 	new doorid;
-	if(sscanf(params, "i", doorid))
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ddstatus [doorid]");
-		return 1;
-	}
-	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
-	{
-		SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Door Status (ID: %d · Name: %s) ___________|", doorid, DDoorsInfo[doorid][ddDescription]);
-		SendClientMessageEx(playerid, COLOR_WHITE, "(Ext) X: %f | Y: %f | Z: %f | (Int) X: %f | Y: %f | Z: %f", DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ]);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Pickup ID: %d | Custom Int: %d | Custom Ext: %d | Exterior VW: %d | Exterior Int: %d | Interior VW: %d | Interior Int: %d", DDoorsInfo[doorid][ddPickupID], DDoorsInfo[doorid][ddCustomInterior], DDoorsInfo[doorid][ddCustomExterior], DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], DDoorsInfo[doorid][ddInteriorVW], DDoorsInfo[doorid][ddInteriorInt]);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Type: %d | Rank: %d | VIP: %d | Allegiance: %d | Group Type: %d | Faction: %d | Admin: %d | Wanted: %d", DDoorsInfo[doorid][ddType], DDoorsInfo[doorid][ddRank], DDoorsInfo[doorid][ddVIP], DDoorsInfo[doorid][ddAllegiance], DDoorsInfo[doorid][ddGroupType], DDoorsInfo[doorid][ddFaction], DDoorsInfo[doorid][ddAdmin], DDoorsInfo[doorid][ddWanted]);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Vehiclable: %d | Locked: %d | Password: %s", DDoorsInfo[doorid][ddVehicleAble], DDoorsInfo[doorid][ddLocked], DDoorsInfo[doorid][ddPass]);
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
-	}
+	if(sscanf(params, "d", doorid)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ddstatus [doorid]");
+	
+	if(!IsDynamicDoorLoaded(doorid)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid or unloaded door ID.");
+	
+	SendClientMessageEx(playerid, COLOR_GREEN, "Door #%d: %.90s", doorid, DDoorsInfo[doorid][ddDescription]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Exterior: %.2f, %.2f, %.2f | VW: %d | Interior: %d", DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Interior: %.2f, %.2f, %.2f | VW: %d | Interior: %d", DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ], DDoorsInfo[doorid][ddInteriorVW], DDoorsInfo[doorid][ddInteriorInt]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Owner: %s | Account ID: %d | Type: %d | Rank: %d", DDoorsInfo[doorid][ddOwnerName], DDoorsInfo[doorid][ddOwner], DDoorsInfo[doorid][ddType], DDoorsInfo[doorid][ddRank]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "VIP: %d | Famed: %d | DPC: %d | Allegiance: %d | Group Type: %d | Faction: %d", DDoorsInfo[doorid][ddVIP], DDoorsInfo[doorid][ddFamed], DDoorsInfo[doorid][ddDPC], DDoorsInfo[doorid][ddAllegiance], DDoorsInfo[doorid][ddGroupType], DDoorsInfo[doorid][ddFaction]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Admin: %d | Wanted: %d | Vehicles: %d | Locked: %d | Password: %s", DDoorsInfo[doorid][ddAdmin], DDoorsInfo[doorid][ddWanted], DDoorsInfo[doorid][ddVehicleAble], DDoorsInfo[doorid][ddLocked], DDoorsInfo[doorid][ddPass][0] && strcmp(DDoorsInfo[doorid][ddPass], "None", true) ? ("Set") : ("Not set"));
+	SendClientMessageEx(playerid, COLOR_WHITE, "Pickup: %d | Color: %d | Custom interior: %d | Custom exterior: %d", DDoorsInfo[doorid][ddPickupModel], DDoorsInfo[doorid][ddColor], DDoorsInfo[doorid][ddCustomInterior], DDoorsInfo[doorid][ddCustomExterior]);
 	return 1;
 }
 
 CMD:ddnear(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1)
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	
+	new world = GetPlayerVirtualWorld(playerid), interior = GetPlayerInterior(playerid), count;
+	if(params[0] && sscanf(params, "d", world)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ddnear [world, -1 for all worlds]");
+	
+	if(world < -1) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid virtual world.");
+	
+	SendClientMessageEx(playerid, COLOR_RED, "Dynamic doors within 30 m, world %d (-1 = all worlds), interior %d:", world, interior);
+	for(new i; i < MAX_DDOORS; ++i)
 	{
-		new option;
-		if(!sscanf(params, "d", option)) 
+		if(!IsDynamicDoorActive(i)) continue;
+		if((world == -1 || DDoorsInfo[i][ddInteriorVW] == world) && DDoorsInfo[i][ddInteriorInt] == interior)
 		{
-			SendClientMessageEx(playerid, COLOR_RED, "* Listing all dynamic doors within 30 meters of you in VW %d...", option);
-			for(new i, szMessage[128]; i < MAX_DDOORS; i++)
+			new Float:distance = GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]);
+			if(distance <= 30.0)
 			{
-				if(strcmp(DDoorsInfo[i][ddDescription], "None", true) != 0)
-				{
-					if(option == -1)
-					{
-						if(IsPlayerInRangeOfPoint(playerid, 30, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]))
-						{
-							format(szMessage, sizeof(szMessage), "(Interior) DDoor ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]), DDoorsInfo[i][ddInteriorInt]);
-							SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-						}
-						if(IsPlayerInRangeOfPoint(playerid, 30, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]))
-						{
-							format(szMessage, sizeof(szMessage), "(Exterior) DDoor ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]), DDoorsInfo[i][ddExteriorInt]);
-							SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-						}
-					}
-					else
-					{
-						if(IsPlayerInRangeOfPoint(playerid, 30, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]) && DDoorsInfo[i][ddInteriorVW] == option)
-						{
-							format(szMessage, sizeof(szMessage), "(Interior) DDoor ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]), DDoorsInfo[i][ddInteriorInt]);
-							SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-						}
-						if(IsPlayerInRangeOfPoint(playerid, 30, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]) && DDoorsInfo[i][ddExteriorVW] == option)
-						{
-							format(szMessage, sizeof(szMessage), "(Exterior) DDoor ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]), DDoorsInfo[i][ddExteriorInt]);
-							SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-						}
-					}
-				}
+				SendClientMessageEx(playerid, COLOR_WHITE, "Interior | Door #%d | %.1f m | VW: %d | Interior: %d", i, distance, DDoorsInfo[i][ddInteriorVW], DDoorsInfo[i][ddInteriorInt]);
+				++count;
 			}
 		}
-		else
+		if((world == -1 || DDoorsInfo[i][ddExteriorVW] == world) && DDoorsInfo[i][ddExteriorInt] == interior)
 		{
-			SendClientMessageEx(playerid, COLOR_RED, "* Listing all dynamic doors within 30 meters of you...");
-			for(new i, szMessage[128]; i < MAX_DDOORS; i++)
+			new Float:distance = GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]);
+			if(distance <= 30.0)
 			{
-				if(strcmp(DDoorsInfo[i][ddDescription], "None", true) != 0)
-				{
-					if(IsPlayerInRangeOfPoint(playerid, 30, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]) && DDoorsInfo[i][ddInteriorVW] == GetPlayerVirtualWorld(playerid))
-					{
-						format(szMessage, sizeof(szMessage), "(Interior) DDoor ID %d | %f from you | Virtual World: %d | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]), DDoorsInfo[i][ddInteriorVW], DDoorsInfo[i][ddInteriorInt]);
-						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-					}
-					if(IsPlayerInRangeOfPoint(playerid, 30, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]) && DDoorsInfo[i][ddExteriorVW] == GetPlayerVirtualWorld(playerid))
-					{
-						format(szMessage, sizeof(szMessage), "(Exterior) DDoor ID %d | %f from you | Virtual World: %d | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]), DDoorsInfo[i][ddExteriorVW], DDoorsInfo[i][ddExteriorInt]);
-						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-					}
-				}
+				SendClientMessageEx(playerid, COLOR_WHITE, "Exterior | Door #%d | %.1f m | VW: %d | Interior: %d", i, distance, DDoorsInfo[i][ddExteriorVW], DDoorsInfo[i][ddExteriorInt]);
+				++count;
 			}
 		}
 	}
-	else
-	{
-	    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
-	}
+	if(!count) SendClientMessageEx(playerid, COLOR_GREY, "No nearby doors were found.");
 	return 1;
 }
 
 CMD:ddnext(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available dynamic door...");
 		for(new x;x<MAX_DDOORS;x++)
 		{
-		    if(DDoorsInfo[x][ddExteriorX] == 0.0) // If the door is at blueberry!
+		    if(IsDynamicDoorLoaded(x) && !IsDynamicDoorActive(x))
 		    {
 		        SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", x);
-		        break;
+		        return 1;
 			}
 		}
+		SendClientMessageEx(playerid, COLOR_GREY, "No empty, loaded door slots are available.");
 	}
 	else
 	{
@@ -686,13 +662,15 @@ CMD:ddname(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new
-			szName[128],
+			szName[129],
+			message[224],
 			iDoorID;
 
-		if(sscanf(params, "ds[128]", iDoorID, szName)) {
+		if(sscanf(params, "ds[129]", iDoorID, szName)) {
 			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ddname [doorid] [name]");
 		}
-		else if(!(0 <= iDoorID <= MAX_DDOORS)) {
+		else if(strlen(szName) > 127) return SendClientMessageEx(playerid, COLOR_GREY, "Door names are limited to 127 characters.");
+		else if(!IsDynamicDoorLoaded(iDoorID)) {
 			return SendClientMessageEx(playerid, COLOR_GREY, "Invalid door specified.");
 		}
 		else if(strfind(szName, "\r") != -1 || strfind(szName, "\n") != -1) {
@@ -702,13 +680,11 @@ CMD:ddname(playerid, params[]) {
 		strcat((DDoorsInfo[iDoorID][ddDescription][0] = 0, DDoorsInfo[iDoorID][ddDescription]), szName, 128);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully changed the name of this door.");
 
-		DestroyDynamicPickup(DDoorsInfo[iDoorID][ddPickupID]);
-		if(IsValidDynamic3DTextLabel(DDoorsInfo[iDoorID][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[iDoorID][ddTextID]);
 		CreateDynamicDoor(iDoorID);
 		SaveDynamicDoor(iDoorID);
 
-		format(szName, sizeof(szName), "%s has edited door ID %d's name to %s.", GetPlayerNameEx(playerid), iDoorID, DDoorsInfo[iDoorID][ddDescription]);
-		Log("logs/ddedit.log", szName);
+		format(message, sizeof(message), "%s has edited door ID %d's name to %s.", GetPlayerNameEx(playerid), iDoorID, DDoorsInfo[iDoorID][ddDescription]);
+		Log("logs/ddedit.log", message);
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 	return 1;
@@ -721,17 +697,17 @@ CMD:ddowner(playerid, params[])
 		new playername[MAX_PLAYER_NAME], doorid, szName[128];
 		if(sscanf(params, "ds[24]", doorid, playername)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ddowner [door] [player name]");
 
+		if(!IsDynamicDoorActive(doorid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid or unconfigured door ID.");
 		if(DDoorsInfo[doorid][ddType] != 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This door is not owned by a player!");
 		new giveplayerid = ReturnUser(playername);
-		if(PlayerInfo[giveplayerid][pLevel] == 1 && PlayerInfo[giveplayerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_RED, "You can't use /ddowner on level 1's");
 		if(IsPlayerConnected(giveplayerid))
 		{
+			if(!gPlayerLogged{giveplayerid}) return SendClientMessageEx(playerid, COLOR_GREY, "That player has not logged in.");
+			if(PlayerInfo[giveplayerid][pLevel] == 1 && PlayerInfo[giveplayerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_RED, "You can't use /ddowner on level 1's");
 			strcat((DDoorsInfo[doorid][ddOwnerName][0] = 0, DDoorsInfo[doorid][ddOwnerName]), GetPlayerNameEx(giveplayerid), 24);
 			DDoorsInfo[doorid][ddOwner] = GetPlayerSQLId(giveplayerid);
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully changed the owner of this door.");
 
-			DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-			if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
 			CreateDynamicDoor(doorid);
 			SaveDynamicDoor(doorid);
 			
@@ -740,11 +716,9 @@ CMD:ddowner(playerid, params[])
 		}
 		else
 		{
-			new query[128], tmpName[24];
-
-			mysql_escape_string(playername, tmpName);
-			mysql_format(MainPipeline, query,sizeof(query), "SELECT `id`, `Username` FROM `accounts` WHERE `Username` = '%s'", tmpName);
-			mysql_tquery(MainPipeline, query, "OnSetDDOwner", "ii", playerid, doorid);
+			new query[192];
+			mysql_format(MainPipeline, query, sizeof(query), "SELECT `id`, `Username`, `Level`, `AdminLevel` FROM `accounts` WHERE `Username`='%e'", playername);
+			mysql_tquery(MainPipeline, query, "OnSetDDOwner", "iiiii", playerid, g_arrQueryHandle[playerid], doorid, DynamicDoorRevision[doorid], DDoorsInfo[doorid][ddOwner]);
 		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
@@ -757,13 +731,27 @@ CMD:ddpass(playerid, params[])
 
 	new string[128],
 		doorid,
-		doorpass[24];
+		doorpass[25];
 
-	if(sscanf(params, "ds[24]", doorid, doorpass)) { SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ddPass [doorid] [pass]"); SendClientMessageEx(playerid, COLOR_WHITE, "To remove the password on the door set the password to 'none' "); return 1; }
+	if(sscanf(params, "ds[25]", doorid, doorpass)) { 
+		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ddpass [doorid] [pass]"); 
+		SendClientMessageEx(playerid, COLOR_WHITE, "To remove the password on the door set the password to 'none' "); 
+		return 1; 
+	}
+
+	if(strlen(doorpass) > 23) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "Door passwords are limited to 23 characters.");
+	
+	if(!IsDynamicDoorLoaded(doorid)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid or unloaded door ID.");
+	
+	if(!strcmp(doorpass, "none", true)) doorpass[0] = 0;
+	
+	++DynamicDoorRevision[doorid];
 	format(DDoorsInfo[doorid][ddPass], 24, "%s", doorpass);
 	SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the password of that door.");
 	SaveDynamicDoor(doorid);
-	format(string, sizeof(string), "%s has edited DoorID %d's password to %s.", GetPlayerNameEx(playerid), doorid, doorpass);
+	format(string, sizeof(string), "%s has edited DoorID %d's password.", GetPlayerNameEx(playerid), doorid);
 	Log("logs/ddedit.log", string);
 	return 1;
 }
@@ -773,7 +761,7 @@ CMD:ddedit(playerid, params[])
  	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new string[128], choice[32], doorid, amount;
-		if(sscanf(params, "s[32]dD", choice, doorid, amount))
+		if(sscanf(params, "s[32]dD(0)", choice, doorid, amount))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ddedit [name] [doorid] [amount]");
 			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Exterior, Interior, CustomInterior, CustomExterior, Type, Rank, VIP, Famed");
@@ -781,10 +769,28 @@ CMD:ddedit(playerid, params[])
 			return 1;
 		}
 
-		if(doorid >= MAX_DDOORS)
+		if(!IsDynamicDoorLoaded(doorid))
 		{
 			SendClientMessageEx( playerid, COLOR_WHITE, "Invalid Door ID!");
 			return 1;
+		}
+
+		if(strcmp(choice, "interior", true) && strcmp(choice, "exterior", true) && strcmp(choice, "custominterior", true)
+			&& strcmp(choice, "customexterior", true) && strcmp(choice, "dpc", true) && strcmp(choice, "delete", true))
+		{
+			if(sscanf(params, "{s[32]d}d", amount)) return SendClientMessageEx(playerid, COLOR_GREY, "This option requires a numeric value.");
+			if((!strcmp(choice, "type", true) && !(0 <= amount <= 2))
+				|| (!strcmp(choice, "rank", true) && !(-1 <= amount < MAX_GROUP_RANKS))
+				|| (!strcmp(choice, "faction", true) && !(0 <= amount <= MAX_GROUPS))
+				|| (!strcmp(choice, "grouptype", true) && !(0 <= amount < MAX_GROUP_TYPES))
+				|| (!strcmp(choice, "allegiance", true) && !(0 <= amount < MAX_GROUP_ALLEGIANCES))
+				|| ((!strcmp(choice, "vehicleable", true) || !strcmp(choice, "wanted", true)) && !(0 <= amount <= 1))
+				|| (!strcmp(choice, "color", true) && !(-1 <= amount <= 12))
+				|| (!strcmp(choice, "pickupmodel", true) && !(-1 <= amount <= 25))
+				|| ((!strcmp(choice, "vip", true) || !strcmp(choice, "famed", true) || !strcmp(choice, "admin", true)) && amount < 0))
+			{
+				return SendClientMessageEx(playerid, COLOR_GREY, "That value is outside the allowed range for this option.");
+			}
 		}
 
 		if(strcmp(choice, "interior", true) == 0)
@@ -848,8 +854,7 @@ CMD:ddedit(playerid, params[])
 			DDoorsInfo[doorid][ddExteriorVW] = GetPlayerVirtualWorld(playerid);
 			DDoorsInfo[doorid][ddExteriorInt] = GetPlayerInterior(playerid);
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the exterior!");
-			DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-			if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
+
 			SaveDynamicDoor(doorid);
 			CreateDynamicDoor(doorid);
 		}
@@ -862,29 +867,27 @@ CMD:ddedit(playerid, params[])
 			{
 				case 1:
 				{
-					if(DDoorsInfo[doorid][ddOwner] != -1 && strcmp(DDoorsInfo[doorid][ddOwnerName], "Nobody", false) != 0)
+					if(DDoorsInfo[doorid][ddOwner] == -1)
 					{
-						DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-						if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
+						format(DDoorsInfo[doorid][ddOwnerName], 42, "Nobody");
+						SendClientMessageEx(playerid, COLOR_GREY, "Use /ddowner to set the owner of this door.");
 					}
-					else SendClientMessageEx(playerid, COLOR_GREY, "Use /ddowner to update the owner of this door.");
 				}
 				case 2:
 				{
-					if(DDoorsInfo[doorid][ddFaction] != INVALID_GROUP_ID)
+					DDoorsInfo[doorid][ddOwner] = -1;
+					if(0 <= DDoorsInfo[doorid][ddFaction] < MAX_GROUPS)
+						format(DDoorsInfo[doorid][ddOwnerName], 42, "%s", arrGroupData[DDoorsInfo[doorid][ddFaction]][g_szGroupName]);
+					else
 					{
-						DDoorsInfo[doorid][ddOwner] = -1;
-						strcat((DDoorsInfo[doorid][ddOwnerName][0] = 0, DDoorsInfo[doorid][ddOwnerName]), arrGroupData[DDoorsInfo[doorid][ddFaction]][g_szGroupName], 42);
-						DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-						if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
+						format(DDoorsInfo[doorid][ddOwnerName], 42, "Nobody");
+						SendClientMessageEx(playerid, COLOR_GREY, "Use /ddedit faction to set the group for this door.");
 					}
-					else SendClientMessageEx(playerid, COLOR_GREY, "Use /ddedit faction to update the owner of this door.");
 				}
 				default:
 				{
-					strcat((DDoorsInfo[doorid][ddOwnerName][0] = 0, DDoorsInfo[doorid][ddOwnerName]), "Nobody", 42);
-					DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-					if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
+					DDoorsInfo[doorid][ddOwner] = -1;
+					format(DDoorsInfo[doorid][ddOwnerName], 42, "Nobody");
 				}
 			}
 			SaveDynamicDoor(doorid);
@@ -974,9 +977,14 @@ CMD:ddedit(playerid, params[])
 
 			if(DDoorsInfo[doorid][ddType] == 2)
 			{
-				strcat((DDoorsInfo[doorid][ddOwnerName][0] = 0, DDoorsInfo[doorid][ddOwnerName]), arrGroupData[DDoorsInfo[doorid][ddFaction]][g_szGroupName], 42);
-				DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-				if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
+				DDoorsInfo[doorid][ddOwner] = -1;
+				if(DDoorsInfo[doorid][ddFaction] == INVALID_GROUP_ID) {
+					format(DDoorsInfo[doorid][ddOwnerName], 42, "Nobody");
+				}
+				else {
+					strcat((DDoorsInfo[doorid][ddOwnerName][0] = 0, DDoorsInfo[doorid][ddOwnerName]), arrGroupData[DDoorsInfo[doorid][ddFaction]][g_szGroupName], 42);
+				}
+
 				CreateDynamicDoor(doorid);
 			}
 			else
@@ -1028,9 +1036,6 @@ CMD:ddedit(playerid, params[])
 
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Color to %d.", amount);
 
-			DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-			if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
-
 			SaveDynamicDoor(doorid);
 			CreateDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's Color.", GetPlayerNameEx(playerid), doorid);
@@ -1043,9 +1048,6 @@ CMD:ddedit(playerid, params[])
 
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the PickupModel to %d.", amount);
 
-			DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-			if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
-
 			SaveDynamicDoor(doorid);
 			CreateDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's PickupModel.", GetPlayerNameEx(playerid), doorid);
@@ -1054,46 +1056,11 @@ CMD:ddedit(playerid, params[])
 		}
 		else if(strcmp(choice, "delete", true) == 0)
 		{
-			if(strcmp(DDoorsInfo[doorid][ddDescription], "None", true) == 0) {
-				SendClientMessageEx(playerid, COLOR_WHITE, "DoorID %d does not exist.", doorid);
-				return 1;
-			}
-			DDoorsInfo[doorid][ddDescription] = 0;
-			DDoorsInfo[doorid][ddCustomInterior] = 0;
-			DDoorsInfo[doorid][ddExteriorVW] = 0;
-			DDoorsInfo[doorid][ddExteriorInt] = 0;
-			DDoorsInfo[doorid][ddInteriorVW] = 0;
-			DDoorsInfo[doorid][ddInteriorInt] = 0;
-			DDoorsInfo[doorid][ddExteriorX] = 0;
-			DDoorsInfo[doorid][ddExteriorY] = 0;
-			DDoorsInfo[doorid][ddExteriorZ] = 0;
-			DDoorsInfo[doorid][ddExteriorA] = 0;
-			DDoorsInfo[doorid][ddInteriorX] = 0;
-			DDoorsInfo[doorid][ddInteriorY] = 0;
-			DDoorsInfo[doorid][ddInteriorZ] = 0;
-			DDoorsInfo[doorid][ddInteriorA] = 0;
-			DDoorsInfo[doorid][ddCustomExterior] = 0;
-			DDoorsInfo[doorid][ddType] = 0;
-			DDoorsInfo[doorid][ddRank] = 0;
-			DDoorsInfo[doorid][ddVIP] = 0;
-			DDoorsInfo[doorid][ddFamed] = 0;
-			DDoorsInfo[doorid][ddDPC] = 0;
-			DDoorsInfo[doorid][ddAllegiance] = 0;
-			DDoorsInfo[doorid][ddGroupType] = 0;
-			DDoorsInfo[doorid][ddFaction] = 0;
-			DDoorsInfo[doorid][ddAdmin] = 0;
-			DDoorsInfo[doorid][ddWanted] = 0;
-			DDoorsInfo[doorid][ddVehicleAble] = 0;
-			DDoorsInfo[doorid][ddColor] = 0;
-			DDoorsInfo[doorid][ddPass] = 0;
-			DDoorsInfo[doorid][ddLocked] = 0;
-			CreateDynamicDoor(doorid);
-			SaveDynamicDoor(doorid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted DoorID %d.", doorid);
-			format(string, sizeof(string), "%s has deleted DoorID %d.", GetPlayerNameEx(playerid), doorid);
-			Log("logs/ddedit.log", string);
-			return 1;
+			if(!IsDynamicDoorActive(doorid)) return SendClientMessageEx(playerid, COLOR_GREY, "That door is already empty.");
+			DeleteDynamicDoor(doorid, playerid);
+			return SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted DoorID %d.", doorid);
 		}
+		else return SendClientMessageEx(playerid, COLOR_GREY, "Unknown door option. Use /ddedit for available options.");
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 	return 1;
@@ -1101,97 +1068,66 @@ CMD:ddedit(playerid, params[])
 
 CMD:ddmove(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
-	new doorid, giveplayerid, fee, minfee, choice[16];
-	if(sscanf(params, "s[16]dudd", choice, doorid, giveplayerid, fee, minfee))
-	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ddmove <Choice> <DoorID> <playerid> <Fine (Percent)> <min. fine>");
-		SendClientMessageEx(playerid, COLOR_GREY, "Choice: Exterior | Interior");
-		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Set fine as 0 if you don't want to fine this player.");
-		return 1;
-	}
-	if(doorid >= MAX_DDOORS) return SendClientMessageEx( playerid, COLOR_WHITE, "Invalid Door ID!");
-	new string[128];
-	new totalwealth = PlayerInfo[giveplayerid][pAccount] + GetPlayerCash(giveplayerid);
-	if(PlayerInfo[giveplayerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey]][hSafeMoney];
-	if(PlayerInfo[giveplayerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey2]][hSafeMoney];
-	if(PlayerInfo[giveplayerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey3]][hSafeMoney];
-	if(fee > 0)
-	{
-		fee = totalwealth / 100 * fee;
-		if(PlayerInfo[giveplayerid][pDonateRank] == 3)
-		{
-			fee = fee / 100 * 95;
-		}
-		if(PlayerInfo[giveplayerid][pDonateRank] >= 4)
-		{
-			fee = fee / 100 * 85;
-		}
-	}
-	if(strcmp(choice, "interior", true) == 0)
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	
+	new doorid, target, percent, minimum, fine, choice[16];
+	if(sscanf(params, "s[16]dudd", choice, doorid, target, percent, minimum))
+		return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ddmove [interior/exterior] [doorid] [playerid] [fine percent 0-100, 0 = free] [minimum fine]");
+	
+	if(!IsDynamicDoorActive(doorid)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid or unconfigured door ID.");
+	
+	if(!(0 <= target < MAX_PLAYERS) || !IsPlayerConnected(target) || !gPlayerLogged{target})
+		return SendClientMessageEx(playerid, COLOR_GREY, "That player is not logged in.");
+	
+	if(strcmp(choice, "interior", true) && strcmp(choice, "exterior", true))
+		return SendClientMessageEx(playerid, COLOR_GREY, "Choose interior or exterior.");
+	
+	if(GetPVarInt(target, "FurniturePurchaseUncertain"))
+		return SendClientMessageEx(playerid, COLOR_GREY, "That player's account is awaiting a furniture purchase result.");
+	
+	if(!CalculateDoorMoveFine(target, percent, minimum, fine))
+		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid fee or the calculated fine exceeds the supported money range.");
+	
+	if(!strcmp(choice, "interior", true))
 	{
 		GetPlayerPos(playerid, DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ]);
 		GetPlayerFacingAngle(playerid, DDoorsInfo[doorid][ddInteriorA]);
 		DDoorsInfo[doorid][ddInteriorInt] = GetPlayerInterior(playerid);
 		DDoorsInfo[doorid][ddInteriorVW] = GetPlayerVirtualWorld(playerid);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the interior!");
-		SaveDynamicDoor(doorid);
-		format(string, sizeof(string), "%s has edited DoorID %d's Interior.", GetPlayerNameEx(playerid), doorid);
-		Log("logs/ddedit.log", string);
-		if(minfee > fee && minfee > 0)
-		{
-			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
-			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			
-		}
-		else if(fee > 0)
-		{
-			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
-			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-		}
 	}
-	else if(strcmp(choice, "exterior", true) == 0)
+	else
 	{
 		GetPlayerPos(playerid, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]);
 		GetPlayerFacingAngle(playerid, DDoorsInfo[doorid][ddExteriorA]);
 		DDoorsInfo[doorid][ddExteriorVW] = GetPlayerVirtualWorld(playerid);
 		DDoorsInfo[doorid][ddExteriorInt] = GetPlayerInterior(playerid);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the exterior!");
-		DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-		if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
-		SaveDynamicDoor(doorid);
-		format(string, sizeof(string), "%s has edited DoorID %d's Exterior.", GetPlayerNameEx(playerid), doorid);
-		Log("logs/ddedit.log", string);
-		if(minfee > fee && minfee > 0)
-		{
-			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
-			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-		}
-		else if(fee > 0)
-		{
-			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
-			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-		}
 	}
+	
 	CreateDynamicDoor(doorid);
-
+	SaveDynamicDoor(doorid);
+	new message[192];
+	format(message, sizeof(message), "%s has edited DoorID %d's %s.", GetPlayerNameEx(playerid), doorid, choice);
+	Log("logs/ddedit.log", message);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the door's %s.", choice);
+	if(fine > 0)
+	{
+		GivePlayerCashEx(target, TYPE_ONHAND, -fine);
+		format(message, sizeof(message), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(target), GetPlayerSQLId(target), number_format(fine), GetPlayerNameEx(playerid));
+		Log("logs/admin.log", message);
+		SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(target), number_format(fine), GetPlayerNameEx(playerid));
+	}
 	return 1;
 }
 
 forward DeleteDynamicDoor(doorid, adminid);
 public DeleteDynamicDoor(doorid, adminid)
 {
+	if(!IsDynamicDoorLoaded(doorid)) return 0;
 	format(DDoorsInfo[doorid][ddDescription], 128, "None");
 	DDoorsInfo[doorid][ddOwner] = -1;
-	format(DDoorsInfo[doorid][ddOwnerName], MAX_PLAYER_NAME, "Nobody");
+	format(DDoorsInfo[doorid][ddOwnerName], 42, "Nobody");
 	DDoorsInfo[doorid][ddCustomInterior] = 0;
 	DDoorsInfo[doorid][ddExteriorVW] = 0;
 	DDoorsInfo[doorid][ddExteriorInt] = 0;
@@ -1213,7 +1149,7 @@ public DeleteDynamicDoor(doorid, adminid)
 	DDoorsInfo[doorid][ddDPC] = 0;
 	DDoorsInfo[doorid][ddAllegiance] = 0;
 	DDoorsInfo[doorid][ddGroupType] = 0;
-	DDoorsInfo[doorid][ddFaction] = 0;
+	DDoorsInfo[doorid][ddFaction] = INVALID_GROUP_ID;
 	DDoorsInfo[doorid][ddAdmin] = 0;
 	DDoorsInfo[doorid][ddWanted] = 0;
 	DDoorsInfo[doorid][ddVehicleAble] = 0;
