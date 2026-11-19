@@ -208,7 +208,7 @@ task TurfWarsUpdate[1000]()
 {
 	for(new i = 0; i < MAX_TURFS; i++)
 	{
-	    if(TurfWars[i][twActive] == 1)
+	    if(TurfWars[i][twLoaded] && TurfWars[i][twActive] == 1)
 	    {
 	        if(TurfWars[i][twTimeLeft] > 0)
 	        {
@@ -216,7 +216,7 @@ task TurfWarsUpdate[1000]()
 	        }
 	        else
 	        {
-	        	if(TurfWars[i][twAttemptId] != -1)
+				if(TurfWars[i][twAttemptId] == -2 || ValidGroup(TurfWars[i][twAttemptId]))
 	            {
 					CaptureTurfWarsZone(TurfWars[i][twAttemptId],i);
 	            }
@@ -508,26 +508,31 @@ task SyncTime[60000]()
 
 		for(new i = 0; i < MAX_TURFS; i++)
 		{
+			if(!TurfWars[i][twLoaded]) continue;
 			if(TurfWars[i][twVulnerable] > 0)
 			{
 			    TurfWars[i][twVulnerable]--;
 
 			    if(TurfWars[i][twVulnerable] == 0)
 			    {
-			    	if(TurfWars[i][twOwnerId] != -1)
+					if(ValidGroup(TurfWars[i][twOwnerId]))
 			    	{
 			        	format(szMiscArray,sizeof(szMiscArray),"%s that you currently own is vulnerable for capture!",TurfWars[i][twName]);
 			        	foreach(new x: Player) if(PlayerInfo[x][pMember] == TurfWars[i][twOwnerId]) SendClientMessageEx(x, COLOR_YELLOW, szMiscArray);
 			    	}
 				}
 			}
-			if(TurfWars[i][twOwnerId] != INVALID_GROUP_ID && TurfWars[i][twSpecial] == 2)
+			if(ValidGroup(TurfWars[i][twOwnerId]) && TurfWars[i][twSpecial] == 2 && IsValidDynamicArea(TurfWars[i][twAreaId]))
 			{
-				arrGroupData[TurfWars[i][twOwnerId]][g_iDrugs][0] += 20;
-			    arrGroupData[TurfWars[i][twOwnerId]][g_iDrugs][1] += 20;
-			    arrGroupData[TurfWars[i][twOwnerId]][g_iDrugs][2] += 10;
-			    arrGroupData[TurfWars[i][twOwnerId]][g_iDrugs][3] += 10;
-			    arrGroupData[TurfWars[i][twOwnerId]][g_iDrugs][4] += 5;
+				new ownerid = TurfWars[i][twOwnerId], bonus[5] = {20, 20, 10, 10, 5}, bool:canReceive = true;
+				for(new drug; drug < sizeof(bonus); ++drug) {
+					if(arrGroupData[ownerid][g_iDrugs][drug] < 0 || arrGroupData[ownerid][g_iDrugs][drug] > cellmax - bonus[drug]) canReceive = false;
+				}
+				if(!canReceive) {
+					printf("[Turf Wars] Skipping drug reward for turf %d, group inventory is out of range.", i);
+					continue;
+				}
+				for(new drug; drug < sizeof(bonus); ++drug) arrGroupData[ownerid][g_iDrugs][drug] += bonus[drug];
 
 			    foreach(new x: Player) if(PlayerInfo[x][pMember] == TurfWars[i][twOwnerId]) SendClientMessageEx(x, COLOR_LIGHTBLUE, "Your family has recieved drugs for owning a drug turf.");
 			}

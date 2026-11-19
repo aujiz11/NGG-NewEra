@@ -811,6 +811,7 @@ enum PaintBallArenaEnum
 
 enum TurfWarsEnum
 {
+	bool:twLoaded,
 	twName[64],
 	twOwnerId,
 	twLocked,
