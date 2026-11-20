@@ -1331,6 +1331,10 @@ public OnQueryError(errorid, const error[], const callback[], const query[], MyS
 		GangTag_QueryFailed(callback, query);
 		PayPhone_QueryFailed(callback, query);
 		Shop_QueryFailed(query);
+		if(!strcmp(callback, "OnCountVotes")) {
+			DeleteGVar("ElectionCounting");
+			print("[Elections] Vote count failed. Voting is closed and stored votes are preserved.");
+		}
 	}
 
 	new bool:credential = strfind(query, "`Key`", true) != -1 || strfind(query, "`Pin`", true) != -1 || strfind(query, "`Salt`", true) != -1
