@@ -3329,7 +3329,17 @@ public OnPlayerEnterCheckpoint(playerid)
 	}
 	else if(EMSCallTime[playerid] > 0 && EMSAccepted[playerid] != INVALID_PLAYER_ID)
 	{
-	    if(GetPVarInt(EMSAccepted[playerid], "Injured") == 1)
+	    if(!IsPlayerConnected(EMSAccepted[playerid])) {
+			EMSAccepted[playerid] = INVALID_PLAYER_ID;
+			EMSCallTime[playerid] = 0;
+			DisablePlayerCheckpoint(playerid);
+			return 1;
+		}
+		if(PlayerBusy(playerid) || (!IsAMedic(playerid) && !IsFirstAid(playerid))) return 1;
+		new target = EMSAccepted[playerid], Float:x, Float:y, Float:z;
+		GetPlayerPos(target, x, y, z);
+		if(GetPlayerInterior(playerid) != GetPlayerInterior(target) || GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(target) || !IsPlayerInRangeOfPoint(playerid, 5.0, x, y, z)) return 1;
+	    if(GetPVarInt(target, "Injured") == 1)
 	    {
 	    	SendEMSQueue(EMSAccepted[playerid],2);
 	    	EMSAccepted[playerid] = INVALID_PLAYER_ID;
@@ -4062,7 +4072,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
  	    if(GetPVarType(playerid, "MovingStretcher"))
  	    {
  	        KillTimer(GetPVarInt(playerid, "TickEMSMove"));
-		    MoveEMS(playerid);
+		    MoveEMS(playerid, g_arrQueryHandle[playerid], GetPVarInt(playerid, "StretcherSession"));
 			return 1;
  	    }
 		if(GetPVarType(playerid, "DraggingPlayer")) {

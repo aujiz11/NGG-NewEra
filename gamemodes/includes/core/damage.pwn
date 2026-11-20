@@ -935,12 +935,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 	InsidePlane[playerid] = INVALID_VEHICLE_ID;
 	DeletePVar(playerid, "SpeedRadar");
 	DeletePVar(playerid, "UsingSprunk");
-	if(GetPVarType(playerid, "MovingStretcher"))
-	{
-		KillTimer(GetPVarInt(playerid, "TickEMSMove"));
-		DeletePVar(GetPVarInt(playerid, "MovingStretcher"), "OnStretcher");
-		DeletePVar(playerid, "MovingStretcher");
-	}
+	Medic_CancelStretcher(playerid);
 	StopDragging(playerid);
 	if(GetPVarType(playerid, "DraggedBy")) StopDragging(GetPVarInt(playerid, "DraggedBy"));
 	if(IsPlayerConnected(Mobile[playerid]))

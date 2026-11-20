@@ -439,8 +439,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			new seatid = strval(inputtext);
 
-			if(!(0 < seatid <= 3)) {
-				SendClientMessageEx(playerid, COLOR_GRAD2, "Seat id must be between 1, 2 or 3.");
+			if(!(2 <= seatid <= 3)) {
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Seat id must be 2 or 3.");
 				return Interact_DetainPlayer(playerid, giveplayerid);
 			}
 
@@ -484,8 +484,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			new seatid = strval(inputtext);
 
-			if(!(0 < seatid <= 3)) {
-				SendClientMessageEx(playerid, COLOR_GRAD2, "Seat id must be between 1, 2 or 3.");
+			if(!(2 <= seatid <= 3)) {
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Seat id must be 2 or 3.");
 				return Interact_LoadPatient(playerid, giveplayerid);
 			}
 
@@ -971,111 +971,35 @@ Interact_GiveTicket(playerid, giveplayerid, const reason[], amount = -1) {
 }
 
 Interact_LoadPatient(playerid, giveplayerid, seatid = -1) {
-
+	if(!IsPlayerConnected(giveplayerid) || !GetPVarType(playerid, "Interact_TargetSession") || GetPVarInt(playerid, "Interact_TargetSession") != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Please open the interaction menu again.");
 	if(seatid == -1) {
-		format(szMiscArray, sizeof(szMiscArray), "Please enter a seat id (1-3) to load %s into.", GetPlayerNameEx(giveplayerid));
-		return ShowPlayerDialogEx(playerid, PATIENT_SEAT, DIALOG_STYLE_INPUT, "Load Patient", szMiscArray, "Load", "");
+		format(szMiscArray, sizeof(szMiscArray), "Please enter a seat id (2-3) to load %s into.", GetPlayerNameEx(giveplayerid));
+		return ShowPlayerDialogEx(playerid, PATIENT_SEAT, DIALOG_STYLE_INPUT, "Load Patient", szMiscArray, "Load", "Cancel");
 	}
-	else {
-		if(GetPVarInt(giveplayerid, "Injured") != 1) return SendClientMessageEx(playerid, COLOR_GREY, "That patient not injured - you can't load them.");
-        if(IsPlayerInAnyVehicle(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That patient is inside a car - you can't load them.");
-        if (!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near that player.");
-
-        new carid = gLastCar[playerid];
-        if(!IsAnAmbulance(carid)) return SendClientMessageEx(playerid, COLOR_GREY, "Your last vehicle was not an ambulance.");
-        if(IsVehicleSeatOccupied(carid, seatid)) return SendClientMessageEx(playerid, COLOR_GREY, "That seat is occupied.");
-		if(!IsPlayerInRangeOfVehicle(giveplayerid, carid, 10.0) || !IsPlayerInRangeOfVehicle(playerid, carid, 10.0)) return SendClientMessageEx(playerid, COLOR_GREY, "Both you and your patient must be near the ambulance.");
-
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You were loaded by paramedic %s.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You loaded patient %s.", GetPlayerNameEx(giveplayerid));
-		format(szMiscArray, sizeof(szMiscArray), "* %s loads %s in the %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetVehicleName(carid));
-		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		SetPVarInt(giveplayerid, "EMSAttempt", 3);
-		ClearAnimationsEx(giveplayerid);
-		IsPlayerEntering{giveplayerid} = true;
-		PutPlayerInVehicle(giveplayerid,carid,seatid);
-		TogglePlayerControllable(giveplayerid, false);
-	}
-	return 1;
+	new params[24];
+	format(params, sizeof(params), "%d %d", giveplayerid, seatid);
+	return pc_cmd_loadpt(playerid, params);
 }
 
 Interact_Triage(playerid, giveplayerid) {
-	if(PlayerInfo[playerid][pTriageTime] != 0)	return SendClientMessageEx(playerid, COLOR_GREY, "You must wait for 2 minutes to use this command.");
-	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-    if(!ProxDetectorS(5.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player isn't near you!");
-
-    new Float: health;
-    GetHealth(giveplayerid, health);
-    if(health >= 85) SetHealth(giveplayerid, 100);
-	else SetHealth(giveplayerid, health+15.0);
-    format(szMiscArray, sizeof(szMiscArray), "* %s has given %s 15 health.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-    ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	PlayerInfo[playerid][pTriageTime] = 120;
-	return 1;
+	if(!IsPlayerConnected(giveplayerid) || !GetPVarType(playerid, "Interact_TargetSession") || GetPVarInt(playerid, "Interact_TargetSession") != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Please open the interaction menu again.");
+	new params[12];
+	format(params, sizeof(params), "%d", giveplayerid);
+	return pc_cmd_triage(playerid, params);
 }
 
-Interact_Heal(playerid, giveplayerid, healprice = -1) {
-
-	if(healprice == -1) {
-		format(szMiscArray, sizeof(szMiscArray), "Please enter a price that you wish to heal %d for.", GetPlayerNameEx(giveplayerid));
-		return ShowPlayerDialogEx(playerid, HEAL_PLAYER, DIALOG_STYLE_INPUT, "Heal Player", szMiscArray, "Heal", "");
-	}
-	else {
-		new Float:X, Float:Y, Float:Z;
-		GetPlayerPos(giveplayerid, X, Y, Z);
-
-		if(!IsPlayerInRangeOfPoint(playerid, 10, X, Y, Z)) return SendClientMessageEx(playerid, TEAM_GREEN_COLOR,"You are not near them!");
-
-		new Float:tempheal;
-		GetHealth(giveplayerid,tempheal);
-		if(tempheal >= 100.0) return SendClientMessageEx(playerid, TEAM_GREEN_COLOR,"That person is fully healed.");
-
-		SendClientMessageEx(playerid, COLOR_PINK, "You healed %s for $%d.", GetPlayerNameEx(giveplayerid),healprice);
-		GivePlayerCash(playerid, healprice / 2);
-
-		//Tax += healprice / 2;
-
-		GivePlayerCash(giveplayerid, -healprice);
-		SetHealth(giveplayerid, 100);
-
-		PlayerPlaySound(playerid, 1150, 0.0, 0.0, 0.0);
-		PlayerPlaySound(giveplayerid, 1150, 0.0, 0.0, 0.0);
-
-		SendClientMessageEx(giveplayerid, TEAM_GREEN_COLOR,"You have been healed to 100 health for $%d by %s.",healprice, GetPlayerNameEx(playerid));
-
-		if(GetPVarType(giveplayerid, "STD")){
-			DeletePVar(giveplayerid, "STD");
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You are no longer infected with a STD because of the medic's help.");
-		}
-	}
-	return 1;
+Interact_Heal(playerid, giveplayerid) {
+	if(!IsPlayerConnected(giveplayerid) || !GetPVarType(playerid, "Interact_TargetSession") || GetPVarInt(playerid, "Interact_TargetSession") != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Please open the interaction menu again.");
+	new params[12];
+	format(params, sizeof(params), "%d", giveplayerid);
+	return pc_cmd_heal(playerid, params);
 }
 
 Interact_MovePatient(playerid, giveplayerid) {
-
-	if(GetPVarInt(giveplayerid,"Injured") != 1) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is not injured");
-
-	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command while in a vehicle.");
-	if(PlayerInfo[giveplayerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command on jailed players.");
-	if(GetPVarInt(giveplayerid, "OnStretcher") == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The person is already on a stretcher, you can't do this right now!");
-
-	new Float:mX, Float:mY, Float:mZ;
-	GetPlayerPos(giveplayerid, mX, mY, mZ);
-	if(!IsPlayerInRangeOfPoint(playerid, 5.0, mX, mY, mZ)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have to be close to the patient to be able to move them!");
-
-	SendClientMessageEx(playerid, COLOR_GRAD2, "You have 30 seconds to move to another location or you can either press the '{AA3333}FIRE{BFC0C2}' button.");
-
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been put on a stretcher by %s.", GetPlayerNameEx(playerid));
-
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have put %s on a stretcher, you may move them now.", GetPlayerNameEx(giveplayerid));
-	format(szMiscArray, sizeof(szMiscArray), "* %s puts %s on a stretcher, tightening the belts securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-
-	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-
-	SetPVarInt(giveplayerid, "OnStretcher", 1);
-	SetPVarInt(playerid, "TickEMSMove", SetTimerEx("MoveEMS", 30000, false, "d", playerid));
-	SetPVarInt(playerid, "MovingStretcher", giveplayerid);
-	return 1;
+	if(!IsPlayerConnected(giveplayerid) || !GetPVarType(playerid, "Interact_TargetSession") || GetPVarInt(playerid, "Interact_TargetSession") != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Please open the interaction menu again.");
+	new params[12];
+	format(params, sizeof(params), "%d", giveplayerid);
+	return pc_cmd_movept(playerid, params);
 }
 
 Interact_Prescribe(playerid, stage = 0) {

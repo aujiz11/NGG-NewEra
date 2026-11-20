@@ -13210,7 +13210,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 	}
 	if(dialogid == DIALOG_MEDIC_LIST) {
-		if(response) Medic_GetPatient(playerid, ListItemTrackId[playerid][listitem]);
+		if(response && 0 <= listitem < GetPVarInt(playerid, "EMSListCount") && listitem < sizeof(ListItemTrackId[])) {
+			new target = ListItemTrackId[playerid][listitem], key[32], params[12];
+			format(key, sizeof(key), "EMSListSession%d", listitem);
+			if(!IsPlayerConnected(target) || GetPVarInt(playerid, key) != g_arrQueryHandle[target]) return SendClientMessageEx(playerid, COLOR_GREY, "That call is no longer available. Please reopen /emslist.");
+			format(params, sizeof(params), "%d", target);
+			Medic_GetPatient(playerid, params);
+		}
 	}
 	return 0;
 }
