@@ -1,14 +1,20 @@
 # NGG-NewEra
 
-An independent, community-driven modernization project based on the legacy Next Generation Gaming SA-MP gamemode.
+An independent modernization of the legacy Next Generation Gaming SA-MP gamemode for open.mp.
 
-The project focuses on code architecture, maintainability, Pawn development practices, performance, security, and compatibility with open.mp.
+Original code belongs to its respective authors. This unofficial project is not affiliated with Next Generation Gaming, LLC. See the [original source](https://github.com/NextGenerationGamingLLC/SA-MP-Development) for attribution and applicable notices.
 
-**Disclaimer:** This is an unofficial community project. It is not affiliated with, endorsed by, or an official continuation of Next Generation Gaming, LLC.
+## Why this project exists
 
-**Original source:** https://github.com/NextGenerationGamingLLC/SA-MP-Development
+NGG-NewEra maintains and improves a gamemode that stopped receiving updates in 2017. Development focuses on:
 
-Original authorship and applicable copyright notices are acknowledged. The redistribution and licensing terms of the original source must be clarified before any public release of modified code.
+- Supporting open.mp and updated libraries through a sampctl-managed environment.
+- Fixing longstanding gameplay, command, loading and saving bugs.
+- Improving performance and resource cleanup across timers, jobs and world entities.
+- Protecting account credentials, player transactions and ownership transfers.
+- Simplifying legacy code and organizing systems for easier maintenance.
+
+The goal is to resolve nearly all identified legacy issues while preserving core gameplay and existing data. Completed fixes and improvements are documented in the [changelog](CHANGES.md).
 
 ## Requirements
 
