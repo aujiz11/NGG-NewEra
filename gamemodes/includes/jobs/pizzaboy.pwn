@@ -82,7 +82,7 @@ Pizza_Update(playerid, bool:deliver = false)
 	if(!(0 <= houseid < MAX_HOUSES) || !Pizza_CanWork(playerid) || !Pizza_HasCheckpoint(playerid))
 	{
 		Pizza_StopDelivery(playerid);
-		return SendClientMessageEx(playerid, COLOR_GREY, "Your pizza delivery has been cancelled.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Chuyen giao pizza da bi huy.");
 	}
 	if(!HouseInfo[houseid][hOwned] || HouseInfo[houseid][hExtIW] != 0 || HouseInfo[houseid][hExtVW] != 0
 		|| HouseInfo[houseid][hExteriorX] != PizzaDelivery[playerid][pizzaX]
@@ -90,66 +90,66 @@ Pizza_Update(playerid, bool:deliver = false)
 		|| HouseInfo[houseid][hExteriorZ] != PizzaDelivery[playerid][pizzaZ])
 	{
 		Pizza_StopDelivery(playerid);
-		return SendClientMessageEx(playerid, COLOR_GREY, "The pizza delivery destination is no longer available.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Diem giao pizza khong con hop le.");
 	}
 	new now = gettime(), remaining = PizzaDelivery[playerid][pizzaDeadline] - now;
 	if(remaining <= 0)
 	{
 		Pizza_StopDelivery(playerid);
-		return SendClientMessageEx(playerid, COLOR_WHITE, "You failed to deliver the pizza to the house before it got cold!");
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong giao kip pizza truoc khi nguoi!");
 	}
 	if(!deliver)
 	{
 		new message[96];
-		format(message, sizeof(message), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", remaining);
+		format(message, sizeof(message), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~Con %d giay", remaining);
 		GameTextForPlayer(playerid, message, 1100, 3);
 		return 1;
 	}
 	if(!IsPlayerInRangeOfPoint(playerid, 5.0, PizzaDelivery[playerid][pizzaX], PizzaDelivery[playerid][pizzaY], PizzaDelivery[playerid][pizzaZ])) return 1;
 	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT
 		&& (GetPlayerState(playerid) != PLAYER_STATE_DRIVER || !IsAPizzaCar(GetPlayerVehicleID(playerid))))
-		return SendClientMessageEx(playerid, COLOR_GREY, "Deliver the pizza on foot or while driving a Pizzaboy.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Giao pizza khi di bo hoac lai Pizzaboy.");
 	if(remaining > cellmax / 70 || GetPlayerCash(playerid) > cellmax - remaining * 70)
-		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot carry the pizza delivery payment.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the nhan tien giao pizza.");
 
 	if(now < PizzaDelivery[playerid][pizzaEarliest])
 	{
 		new message[128];
-		format(message, sizeof(message), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport pizzarunning.", GetPlayerNameEx(playerid), playerid);
+		format(message, sizeof(message), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) co dau hieu teleport de giao pizza.", GetPlayerNameEx(playerid), playerid);
 		ABroadCast(COLOR_YELLOW, message, 2);
 	}
 	new payment = remaining * 70;
 	Pizza_StopDelivery(playerid);
 	GivePlayerCash(playerid, payment);
-	SendClientMessageEx(playerid, COLOR_WHITE, "You have delivered the pizza to the destination! You have made $%d.", payment);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Da giao pizza den noi! Ban nhan $%d.", payment);
 	return 1;
 }
 
 CMD:getpizza(playerid, params[])
 {
 	if(!Job_HasJob(playerid, JOB_PIZZA))
-		return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Pizza Boy!");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai Pizza Boy!");
 	
 	if(GetPVarType(playerid, "Pizza")) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You are already delivering pizzas!");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban dang giao pizza!");
 	
 	if(GetPlayerSkin(playerid) != 155) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You need to be in the Pizza Stack uniform!");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Can mac dong phuc Pizza Stack!");
 	
 	if(!Pizza_CanWork(playerid)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot collect a pizza right now.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the nhan pizza.");
 	
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || !IsAPizzaCar(GetPlayerVehicleID(playerid)))
-		return SendClientMessageEx(playerid, COLOR_GREY, "You need to be driving a Pizzaboy found at the side of the Pizza Stack!");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Can lai Pizzaboy o ben hong Pizza Stack!");
 	
 	if(CheckPointCheck(playerid) || IsPlayerCheckpointActive(playerid))
-		return SendClientMessageEx(playerid, COLOR_GREY, "Finish or cancel your current checkpoint before collecting a pizza.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Xong hoac huy checkpoint truoc khi nhan pizza.");
 
 	new bool:sanFierro = IsPlayerInRangeOfPoint(playerid, 5.0, -1713.961425, 1348.545166, 7.180452);
 	if(!sanFierro && !IsPlayerInRangeOfPoint(playerid, 5.0, 2103.6714, -1785.5222, 12.9849))
-		return SendClientMessageEx(playerid, COLOR_GREY, "You are not at a Pizza Stack pickup!");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o diem nhan Pizza Stack!");
 	new now = gettime(), remaining = GetPVarInt(playerid, "PizzaCoolDown") - now;
-	if(remaining > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Please wait %d seconds before getting another pizza!", remaining);
+	if(remaining > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Cho %d giay de nhan pizza tiep!", remaining);
 
 	new houseid = random(MAX_HOUSES), distance, bool:found;
 	for(new checked; checked < MAX_HOUSES; ++checked)
@@ -172,7 +172,7 @@ CMD:getpizza(playerid, params[])
 		}
 		if(++houseid == MAX_HOUSES) houseid = 0;
 	}
-	if(!found) return SendClientMessageEx(playerid, COLOR_GREY, "No suitable houses are available for pizza deliveries in this city.");
+	if(!found) return SendClientMessageEx(playerid, COLOR_GREY, "Khong co nha hop le de giao pizza trong thanh pho.");
 
 	PizzaDelivery[playerid][pizzaX] = HouseInfo[houseid][hExteriorX];
 	PizzaDelivery[playerid][pizzaY] = HouseInfo[houseid][hExteriorY];
@@ -183,6 +183,6 @@ CMD:getpizza(playerid, params[])
 	SetPVarInt(playerid, "PizzaCoolDown", now + 60);
 	gPlayerCheckpointStatus[playerid] = CHECKPOINT_PIZZA;
 	SetPlayerCheckpoint(playerid, PizzaDelivery[playerid][pizzaX], PizzaDelivery[playerid][pizzaY], PizzaDelivery[playerid][pizzaZ], 5.0);
-	SendClientMessageEx(playerid, COLOR_WHITE, "You have picked up a pizza for %s. You have %d seconds to deliver it!", StripUnderscore(HouseInfo[houseid][hOwnerName]), distance / 10);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Ban nhan pizza cho %s. Co %d giay de giao!", StripUnderscore(HouseInfo[houseid][hOwnerName]), distance / 10);
 	return 1;
 }

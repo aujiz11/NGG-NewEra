@@ -380,22 +380,22 @@ new CountDown = 0;
 // Main Menu Random Tooltips
 new Tooltips[][] =
 {
-	!"Next Generation Gaming Staff will never ask you for your password.",
-	!"Bored? Have a round of Paintball at the ~r~Paintball Arena~w~!",
-	!"Remember! We log everything, and have auto-detection for the majority of hacks.",
-	!"Don't have a voip server? No Problem! Use our ~b~TeamSpeak~w~ at ~y~ts.ng-gaming.net:9987~w~.",
-	!"We are not just a sa-mp community, don't forget to check our other projects at ~y~ng-gaming.net~w~!",
-	!"Don't forget to check out our E-store at ~y~shop.ng-gaming.net~w~, Helps keep this server up and running~w~!",
-	!"We have a full Advisors staff waiting to help you! Use ~g~/requesthelp~w~ to communicate with them!",
-	!"Found a bug? Don't report it to our staff, please goto our bug forums at ~y~ng-gaming.net~w~.",
-	!"Remember to read the ~r~rules~w~, failure to do so may lead toward punishment or even a ban.",
-	!"Wait at least 5 minutes inbetween ~g~/reports~w~, We work hard to get to everyone who reports.",
-	!"Want to make a suggestion? Our suggestions box is on our forums, submit away!",
-	!"If you get lost, be sure to take a look at the ~r~map~w~, in the Pause Menu.",
-	!"Dying to join a gang or faction? Be sure to roleplay with their leaders, or apply on the forums!",
-	!"Abusing newbie channel will result in mutes, frequent abuse will be punished with a ban.",
-	!"It's not nice to DM, it can also lead you to punishment or ban.",
-	!"Caught a player breaking the rules? Make a complaint on the forums, or simply ~g~/report ~w~it!"
+	!"Next Generation Gaming Staff se khong bao gio hoi mat khau cua ban.",
+	!"Buon chan? Hay choi Paintball tai ~r~Paintball Arena~w~!",
+	!"Luu y! Moi hoat dong deu duoc ghi lai, he thong tu phat hien phan lon cac loai hack.",
+	!"Can may chu voip? Hay dung ~b~TeamSpeak~w~ cua chung toi tai ~y~ts.ng-gaming.net:9987~w~.",
+	!"Ngoai cong dong sa-mp, hay xem cac du an khac cua chung toi tai ~y~ng-gaming.net~w~!",
+	!"Hay ghe E-store tai ~y~shop.ng-gaming.net~w~ de ung ho may chu tiep tuc hoat dong~w~!",
+	!"Doi ngu Advisors luon san sang giup ban! Dung ~g~/requesthelp~w~ de lien he!",
+	!"Gap loi? Hay bao tai dien dan loi ~y~ng-gaming.net~w~ thay vi bao truc tiep cho staff.",
+	!"Hay doc ~r~noi quy~w~, vi pham co the bi phat hoac cam.",
+	!"Cho it nhat 5 phut giua cac ~g~/reports~w~, staff dang co gang ho tro moi nguoi.",
+	!"Co de xuat? Hay gui vao muc gop y tren dien dan!",
+	!"Neu lac duong, hay xem ~r~ban do~w~ trong Pause Menu.",
+	!"Muon gia nhap gang hoac faction? Hay roleplay voi lanh dao hoac nop don tren dien dan!",
+	!"Lam dung kenh newbie se bi cam chat, tai pham nhieu lan se bi cam choi.",
+	!"DM la vi pham, ban co the bi phat hoac cam.",
+	!"Thay nguoi choi vi pham? Hay khieu nai tren dien dan hoac dung ~g~/report ~w~!"
 };
 
 new Float:HiddenTreasure[23][4] = {

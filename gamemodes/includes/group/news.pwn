@@ -68,16 +68,16 @@ CMD:liveban(playerid, params[])
 	    new giveplayerid,
 	        string[128];
 
-	    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /liveban [player]");
-		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected.");
+	    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /liveban [player]");
+		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do chua ket noi.");
 	    if(PlayerInfo[giveplayerid][pLiveBanned] == 0)
 	    {
 	        PlayerInfo[giveplayerid][pLiveBanned] = 1;
-	        format(string, sizeof(string), "%s has interview banned %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+	        format(string, sizeof(string), "%s cam %s len phong van", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	        SendGroupMessage(GROUP_TYPE_NEWS, RADIO, string);
 	        return 1;
 	    }
-	    else SendClientMessageEx(playerid, COLOR_WHITE, "That player is already live banned.");
+	    else SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi choi do da bi cam phong van.");
 	}
 	return 1;
 }
@@ -89,17 +89,17 @@ CMD:liveunban(playerid, params[])
 		
 	if(IsAReporter(playerid) && PlayerInfo[playerid][pRank] >= 7)
 	{
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /liveban [player]");
-		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected.");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /liveban [player]");
+		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do chua ket noi.");
 		if(PlayerInfo[giveplayerid][pLiveBanned] == 1)
 		{
 			PlayerInfo[giveplayerid][pLiveBanned] = 0;
-			format(string, sizeof(string), "%s has unbanned %s from interviews", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			format(string, sizeof(string), "%s da go cam phong van cho %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			SendGroupMessage(GROUP_TYPE_NEWS, RADIO, string);
 		}
-		else SendClientMessageEx(playerid, COLOR_WHITE, "That player is currently not live banned");
+		else SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi choi do khong bi cam phong van");
 	}
-	else SendClientMessageEx(playerid, COLOR_WHITE, "You must be at least Rank 7 to use this command");
+	else SendClientMessageEx(playerid, COLOR_WHITE, "Can it nhat Rank 7 de dung lenh nay");
 	
 	return 1;
 }
@@ -109,11 +109,11 @@ CMD:live(playerid, params[])
 {
 	if(IsAReporter(playerid) && PlayerInfo[playerid][pRank] > 0)
 	{
-	    if(shutdown == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "The news system is currently shut down." );
+	    if(shutdown == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "He thong tin tuc da tam dung." );
 		if(TalkingLive[playerid] != INVALID_PLAYER_ID)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Live conversation ended.");
-			SendClientMessageEx(TalkingLive[playerid], COLOR_LIGHTBLUE, "* Live conversation ended.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Cuoc tro chuyen truc tiep da ket thuc.");
+			SendClientMessageEx(TalkingLive[playerid], COLOR_LIGHTBLUE, "* Cuoc tro chuyen truc tiep da ket thuc.");
 			TogglePlayerControllable(playerid, true);
 			TogglePlayerControllable(TalkingLive[playerid], true);
 			DeletePVar(playerid, "IsLive");
@@ -124,42 +124,42 @@ CMD:live(playerid, params[])
 		}
 
 		new giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /live [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /live [player]");
 
 		if (IsPlayerConnected(giveplayerid))
 		{
 			if (ProxDetectorS(5.0, playerid, giveplayerid))
 			{
-			    if(PlayerInfo[giveplayerid][pLiveBanned] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "That person is interview banned.");
+			    if(PlayerInfo[giveplayerid][pLiveBanned] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do bi cam phong van.");
 				if(PlayerCuffed[giveplayerid] >= 1 || PlayerCuffed[playerid] >= 1)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "You are unable to do this right now.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua the lam viec nay.");
 				}
 				else
 				{
-					if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot talk live with yourself!"); return 1; }
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to have a live conversation.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s offered you to have a live conversation, type /accept live to accept.", GetPlayerNameEx(playerid));
+					if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "Khong the phong van chinh minh!"); return 1; }
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban moi %s tro chuyen truc tiep.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s moi ban tro chuyen truc tiep, dung /accept live de dong y.", GetPlayerNameEx(playerid));
 					LiveOffer[giveplayerid] = playerid;
 					SetPVarInt(giveplayerid, "LiveOfferSession", g_arrQueryHandle[playerid]);
 				}
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 				return 1;
 			}
 
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 			return 1;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "   You are not a News Reporter!");
+		SendClientMessageEx(playerid, COLOR_GREY, "   Ban khong phai News Reporter!");
 	}
 	return 1;
 }

@@ -157,18 +157,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	
 	if(!response) return 1;
 	if(!gPlayerLogged{playerid} || !IsDynamicDoorActive(doorid) || revision != DynamicDoorRevision[doorid])
-		return SendClientMessageEx(playerid, COLOR_GREY, "This door has changed. Please use /doorpass again.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Cua nay da thay doi. Hay dung lai /doorpass.");
 	
 	new Float:distance = GetPlayerDynamicDoorDistance(playerid, doorid);
-	if(!(0.0 <= distance <= 3.0)) return SendClientMessageEx(playerid, COLOR_GREY, "You must remain within 3 meters of this door.");
-	if(isnull(inputtext) || strlen(inputtext) > 23) return SendClientMessageEx(playerid, COLOR_GREY, "Enter a password of 1 to 23 characters.");
+	if(!(0.0 <= distance <= 3.0)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai o trong ban kinh 3 met tu cua nay.");
+	if(isnull(inputtext) || strlen(inputtext) > 23) return SendClientMessageEx(playerid, COLOR_GREY, "Nhap mat khau tu 1 den 23 ky tu.");
 	if(!DDoorsInfo[doorid][ddPass][0] || !strcmp(DDoorsInfo[doorid][ddPass], "None", true)
 		|| strcmp(inputtext, DDoorsInfo[doorid][ddPass], true))
-		return SendClientMessageEx(playerid, COLOR_WHITE, "Password declined.");
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Mat khau sai.");
 	
 	DDoorsInfo[doorid][ddLocked] = !DDoorsInfo[doorid][ddLocked];
 	SaveDynamicDoor(doorid);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Password accepted, door %s.", DDoorsInfo[doorid][ddLocked] ? ("locked") : ("unlocked"));
+	SendClientMessageEx(playerid, COLOR_WHITE, "Mat khau dung, cua %s.", DDoorsInfo[doorid][ddLocked] ? ("da khoa") : ("da mo khoa"));
 	return 1;
 }
 
@@ -189,7 +189,7 @@ stock CreateDynamicDoor(doorid)
 	DDoorsInfo[doorid][ddAreaID_int] = INVALID_STREAMER_ID;
 	if(!IsDynamicDoorActive(doorid)) return 1;
 	new string[192];
-	if(DDoorsInfo[doorid][ddType] != 0) format(string, sizeof(string), "%s | Owner: %s\nID: %d", DDoorsInfo[doorid][ddDescription], StripUnderscore(DDoorsInfo[doorid][ddOwnerName]), doorid);
+	if(DDoorsInfo[doorid][ddType] != 0) format(string, sizeof(string), "%s | Chu: %s\nID: %d", DDoorsInfo[doorid][ddDescription], StripUnderscore(DDoorsInfo[doorid][ddOwnerName]), doorid);
 	else format(string, sizeof(string), "%s\nID: %d", DDoorsInfo[doorid][ddDescription], doorid);
 	new const colors[] = {COLOR_YELLOW, COLOR_TWWHITE, COLOR_TWPINK, COLOR_TWRED, COLOR_TWBROWN, COLOR_TWGRAY, COLOR_TWOLIVE, COLOR_TWPURPLE, COLOR_TWORANGE, COLOR_TWAZURE, COLOR_TWGREEN, COLOR_TWBLUE, COLOR_TWBLACK};
 	if(DDoorsInfo[doorid][ddColor] != -1)
@@ -443,12 +443,12 @@ public OnSetDDOwner(playerid, session, doorid, revision, owner)
 		return 1;
 	}
 	if(!IsDynamicDoorActive(doorid) || DDoorsInfo[doorid][ddType] != 1 || DynamicDoorRevision[doorid] != revision || DDoorsInfo[doorid][ddOwner] != owner)
-		return SendClientMessageEx(playerid, COLOR_GREY, "This door has changed. Please use /ddowner again.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Cua nay da thay doi. Hay dung lai /ddowner.");
 	
 	new rows, account, level, admin, name[MAX_PLAYER_NAME], message[160];
 	cache_get_row_count(rows);
 	if(!rows) {
-		return SendClientMessageEx(playerid, COLOR_GREY, "That account name does not appear to exist.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Tai khoan do khong ton tai.");
 	}
 	
 	cache_get_value_name_int(0, "id", account);
@@ -456,14 +456,14 @@ public OnSetDDOwner(playerid, session, doorid, revision, owner)
 	cache_get_value_name_int(0, "AdminLevel", admin);
 	cache_get_value_name(0, "Username", name, sizeof(name));
 	if(level == 1 && admin < 2) {
-		return SendClientMessageEx(playerid, COLOR_RED, "You can't use /ddowner on level 1 players.");
+		return SendClientMessageEx(playerid, COLOR_RED, "Khong the dung /ddowner voi nguoi choi cap 1.");
 	}
 
 	DDoorsInfo[doorid][ddOwner] = account;
 	format(DDoorsInfo[doorid][ddOwnerName], 42, "%s", name);
 	CreateDynamicDoor(doorid);
 	SaveDynamicDoor(doorid);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Successfully set the owner to %s.", name);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Da dat chu so huu la %s.", name);
 	format(message, sizeof(message), "%s has edited door ID %d's owner to %s (SQL ID: %d).", GetPlayerNameEx(playerid), doorid, name, account);
 	Log("logs/ddedit.log", message);
 	return 1;
@@ -473,53 +473,53 @@ CMD:changedoorpass(playerid, params[])
 {
 	new doorid = GetClosestDynamicDoor(playerid), password[24];
 	if(doorid == -1) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a dynamic door.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan cua dong.");
 	
 	if(!((DDoorsInfo[doorid][ddType] == 2 && 0 <= DDoorsInfo[doorid][ddFaction] < MAX_GROUPS && PlayerInfo[playerid][pLeader] == DDoorsInfo[doorid][ddFaction])
 		|| (DDoorsInfo[doorid][ddType] == 1 && DDoorsInfo[doorid][ddOwner] == GetPlayerSQLId(playerid))))
 	{
-		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot change the password on this lock.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the doi mat khau o khoa nay.");
 	}
 
 	if(strlen(params) > 23 || sscanf(params, "s[24]", password))
-		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /changedoorpass [1-23 characters, or none to remove]");
+		return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /changedoorpass [1-23 characters, or none to remove]");
 	
 	if(!strcmp(password, "none", true)) password[0] = 0;
 	format(DDoorsInfo[doorid][ddPass], 24, "%s", password);
 	++DynamicDoorRevision[doorid];
 	SaveDynamicDoor(doorid);
-	return SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the password of this door.");
+	return SendClientMessageEx(playerid, COLOR_WHITE, "Da doi mat khau cua nay.");
 }
 
 CMD:lockdoor(playerid, params[])
 {
 	new doorid = GetClosestDynamicDoor(playerid);
 	if(doorid == -1) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a dynamic door.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan cua dong.");
 	
 	if(!((DDoorsInfo[doorid][ddType] == 2 && 0 <= DDoorsInfo[doorid][ddFaction] < MAX_GROUPS && PlayerInfo[playerid][pLeader] == DDoorsInfo[doorid][ddFaction])
 		|| (DDoorsInfo[doorid][ddType] == 1 && DDoorsInfo[doorid][ddOwner] == GetPlayerSQLId(playerid))))
 	{
-		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot lock this door.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the khoa cua nay.");
 	}
 
 	DDoorsInfo[doorid][ddLocked] = !DDoorsInfo[doorid][ddLocked];
 	SaveDynamicDoor(doorid);
-	return SendClientMessageEx(playerid, COLOR_WHITE, "This door has been %s.", DDoorsInfo[doorid][ddLocked] ? ("locked") : ("unlocked"));
+	return SendClientMessageEx(playerid, COLOR_WHITE, "Cua nay %s.", DDoorsInfo[doorid][ddLocked] ? ("da khoa") : ("da mo khoa"));
 }
 
 CMD:doorpass(playerid, params[])
 {
 	new doorid = GetClosestDynamicDoor(playerid);
 	if(doorid == -1) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a dynamic door.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan cua dong.");
 	
 	if(!DDoorsInfo[doorid][ddPass][0] || !strcmp(DDoorsInfo[doorid][ddPass], "None", true))
-		return SendClientMessageEx(playerid, COLOR_GREY, "This door does not have a password lock.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Cua nay khong co khoa mat khau.");
 	
 	SetPVarInt(playerid, "Door", doorid);
 	SetPVarInt(playerid, "DoorRevision", DynamicDoorRevision[doorid]);
-	return ShowPlayerDialogEx(playerid, DOORLOCK, DIALOG_STYLE_PASSWORD, "Door Security", "Enter the password for this door.", "Confirm", "Cancel");
+	return ShowPlayerDialogEx(playerid, DOORLOCK, DIALOG_STYLE_PASSWORD, "Bao mat cua", "Nhap mat khau cua nay.", "Xac nhan", "Huy");
 }
 
 CMD:goindoor(playerid, params[])
@@ -527,15 +527,15 @@ CMD:goindoor(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new doornum;
-		if(sscanf(params, "d", doornum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /goindoor [doornumber]");
+		if(sscanf(params, "d", doornum)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /goindoor [doornumber]");
 
 		if(doornum < 0 || doornum >= MAX_DDOORS)
 		{
-			return SendClientMessageEx(playerid, COLOR_GREY, "Door ID must be between 0 and %d.", MAX_DDOORS - 1);
+			return SendClientMessageEx(playerid, COLOR_GREY, "ID cua phai tu 0 den %d.", MAX_DDOORS - 1);
 		}
 
 		if(!IsDynamicDoorActive(doornum)) 
-			return SendClientMessageEx(playerid, COLOR_GREY, "That door has not been configured.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Cua do chua duoc cau hinh.");
 
 		SetPlayerInterior(playerid,DDoorsInfo[doornum][ddInteriorInt]);
 		SetPlayerPos(playerid,DDoorsInfo[doornum][ddInteriorX],DDoorsInfo[doornum][ddInteriorY],DDoorsInfo[doornum][ddInteriorZ]);
@@ -553,15 +553,15 @@ CMD:gotodoor(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new doornum;
-		if(sscanf(params, "d", doornum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotodoor [doornumber]");
+		if(sscanf(params, "d", doornum)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gotodoor [doornumber]");
 
 		if(doornum < 0 || doornum >= MAX_DDOORS)
 		{
-			return SendClientMessageEx(playerid, COLOR_GREY, "Door ID must be between 0 and %d.", MAX_DDOORS - 1);
+			return SendClientMessageEx(playerid, COLOR_GREY, "ID cua phai tu 0 den %d.", MAX_DDOORS - 1);
 		}
 
 		if(!IsDynamicDoorActive(doornum)) 
-			return SendClientMessageEx(playerid, COLOR_GREY, "That door has not been configured.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Cua do chua duoc cau hinh.");
 
 		SetPlayerInterior(playerid,DDoorsInfo[doornum][ddExteriorInt]);
 		SetPlayerPos(playerid,DDoorsInfo[doornum][ddExteriorX],DDoorsInfo[doornum][ddExteriorY],DDoorsInfo[doornum][ddExteriorZ]);
@@ -577,38 +577,38 @@ CMD:gotodoor(playerid, params[])
 CMD:ddstatus(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1)
-		return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	
 	new doorid;
 	if(sscanf(params, "d", doorid)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ddstatus [doorid]");
+		return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /ddstatus [doorid]");
 	
 	if(!IsDynamicDoorLoaded(doorid)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid or unloaded door ID.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "ID cua khong hop le hoac chua tai.");
 	
-	SendClientMessageEx(playerid, COLOR_GREEN, "Door #%d: %.90s", doorid, DDoorsInfo[doorid][ddDescription]);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Exterior: %.2f, %.2f, %.2f | VW: %d | Interior: %d", DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt]);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Interior: %.2f, %.2f, %.2f | VW: %d | Interior: %d", DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ], DDoorsInfo[doorid][ddInteriorVW], DDoorsInfo[doorid][ddInteriorInt]);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Owner: %s | Account ID: %d | Type: %d | Rank: %d", DDoorsInfo[doorid][ddOwnerName], DDoorsInfo[doorid][ddOwner], DDoorsInfo[doorid][ddType], DDoorsInfo[doorid][ddRank]);
-	SendClientMessageEx(playerid, COLOR_WHITE, "VIP: %d | Famed: %d | DPC: %d | Allegiance: %d | Group Type: %d | Faction: %d", DDoorsInfo[doorid][ddVIP], DDoorsInfo[doorid][ddFamed], DDoorsInfo[doorid][ddDPC], DDoorsInfo[doorid][ddAllegiance], DDoorsInfo[doorid][ddGroupType], DDoorsInfo[doorid][ddFaction]);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Admin: %d | Wanted: %d | Vehicles: %d | Locked: %d | Password: %s", DDoorsInfo[doorid][ddAdmin], DDoorsInfo[doorid][ddWanted], DDoorsInfo[doorid][ddVehicleAble], DDoorsInfo[doorid][ddLocked], DDoorsInfo[doorid][ddPass][0] && strcmp(DDoorsInfo[doorid][ddPass], "None", true) ? ("Set") : ("Not set"));
-	SendClientMessageEx(playerid, COLOR_WHITE, "Pickup: %d | Color: %d | Custom interior: %d | Custom exterior: %d", DDoorsInfo[doorid][ddPickupModel], DDoorsInfo[doorid][ddColor], DDoorsInfo[doorid][ddCustomInterior], DDoorsInfo[doorid][ddCustomExterior]);
+	SendClientMessageEx(playerid, COLOR_GREEN, "Cua #%d: %.90s", doorid, DDoorsInfo[doorid][ddDescription]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Ngoai: %.2f, %.2f, %.2f | VW: %d | Interior: %d", DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Trong: %.2f, %.2f, %.2f | VW: %d | Interior: %d", DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ], DDoorsInfo[doorid][ddInteriorVW], DDoorsInfo[doorid][ddInteriorInt]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Chu: %s | ID tai khoan: %d | Loai: %d | Hang: %d", DDoorsInfo[doorid][ddOwnerName], DDoorsInfo[doorid][ddOwner], DDoorsInfo[doorid][ddType], DDoorsInfo[doorid][ddRank]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "VIP: %d | Famed: %d | DPC: %d | Phe: %d | Loai to chuc: %d | To chuc: %d", DDoorsInfo[doorid][ddVIP], DDoorsInfo[doorid][ddFamed], DDoorsInfo[doorid][ddDPC], DDoorsInfo[doorid][ddAllegiance], DDoorsInfo[doorid][ddGroupType], DDoorsInfo[doorid][ddFaction]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Admin: %d | Truy na: %d | Xe: %d | Khoa: %d | Mat khau: %s", DDoorsInfo[doorid][ddAdmin], DDoorsInfo[doorid][ddWanted], DDoorsInfo[doorid][ddVehicleAble], DDoorsInfo[doorid][ddLocked], DDoorsInfo[doorid][ddPass][0] && strcmp(DDoorsInfo[doorid][ddPass], "None", true) ? ("Da dat") : ("Chua dat"));
+	SendClientMessageEx(playerid, COLOR_WHITE, "Pickup: %d | Mau: %d | Noi that tu tao: %d | Ben ngoai tu tao: %d", DDoorsInfo[doorid][ddPickupModel], DDoorsInfo[doorid][ddColor], DDoorsInfo[doorid][ddCustomInterior], DDoorsInfo[doorid][ddCustomExterior]);
 	return 1;
 }
 
 CMD:ddnear(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1)
-		return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	
 	new world = GetPlayerVirtualWorld(playerid), interior = GetPlayerInterior(playerid), count;
 	if(params[0] && sscanf(params, "d", world)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ddnear [world, -1 for all worlds]");
+		return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /ddnear [world, -1 for all worlds]");
 	
 	if(world < -1) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid virtual world.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Virtual world khong hop le.");
 	
-	SendClientMessageEx(playerid, COLOR_RED, "Dynamic doors within 30 m, world %d (-1 = all worlds), interior %d:", world, interior);
+	SendClientMessageEx(playerid, COLOR_RED, "Cua dong trong 30 m, world %d (-1 = moi world), interior %d:", world, interior);
 	for(new i; i < MAX_DDOORS; ++i)
 	{
 		if(!IsDynamicDoorActive(i)) continue;
@@ -617,7 +617,7 @@ CMD:ddnear(playerid, params[])
 			new Float:distance = GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]);
 			if(distance <= 30.0)
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "Interior | Door #%d | %.1f m | VW: %d | Interior: %d", i, distance, DDoorsInfo[i][ddInteriorVW], DDoorsInfo[i][ddInteriorInt]);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ben trong | Cua #%d | %.1f m | VW: %d | Interior: %d", i, distance, DDoorsInfo[i][ddInteriorVW], DDoorsInfo[i][ddInteriorInt]);
 				++count;
 			}
 		}
@@ -626,12 +626,12 @@ CMD:ddnear(playerid, params[])
 			new Float:distance = GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]);
 			if(distance <= 30.0)
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "Exterior | Door #%d | %.1f m | VW: %d | Interior: %d", i, distance, DDoorsInfo[i][ddExteriorVW], DDoorsInfo[i][ddExteriorInt]);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ben ngoai | Cua #%d | %.1f m | VW: %d | Interior: %d", i, distance, DDoorsInfo[i][ddExteriorVW], DDoorsInfo[i][ddExteriorInt]);
 				++count;
 			}
 		}
 	}
-	if(!count) SendClientMessageEx(playerid, COLOR_GREY, "No nearby doors were found.");
+	if(!count) SendClientMessageEx(playerid, COLOR_GREY, "Khong tim thay cua gan day.");
 	return 1;
 }
 
@@ -639,20 +639,20 @@ CMD:ddnext(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available dynamic door...");
+		SendClientMessageEx(playerid, COLOR_RED, "* Dang tim cua dong trong tiep theo...");
 		for(new x;x<MAX_DDOORS;x++)
 		{
 		    if(IsDynamicDoorLoaded(x) && !IsDynamicDoorActive(x))
 		    {
-		        SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", x);
+		        SendClientMessageEx(playerid, COLOR_WHITE, "%d co the su dung.", x);
 		        return 1;
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "No empty, loaded door slots are available.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Khong con o cua trong da tai.");
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	    SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 	return 1;
@@ -667,18 +667,18 @@ CMD:ddname(playerid, params[]) {
 			iDoorID;
 
 		if(sscanf(params, "ds[129]", iDoorID, szName)) {
-			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ddname [doorid] [name]");
+			return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /ddname [doorid] [name]");
 		}
-		else if(strlen(szName) > 127) return SendClientMessageEx(playerid, COLOR_GREY, "Door names are limited to 127 characters.");
+		else if(strlen(szName) > 127) return SendClientMessageEx(playerid, COLOR_GREY, "Ten cua chi duoc toi da 127 ky tu.");
 		else if(!IsDynamicDoorLoaded(iDoorID)) {
-			return SendClientMessageEx(playerid, COLOR_GREY, "Invalid door specified.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Cua duoc chon khong hop le.");
 		}
 		else if(strfind(szName, "\r") != -1 || strfind(szName, "\n") != -1) {
-			return SendClientMessageEx(playerid, COLOR_GREY, "Newline characters are forbidden.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Khong duoc dung ky tu xuong dong.");
 		}
 
 		strcat((DDoorsInfo[iDoorID][ddDescription][0] = 0, DDoorsInfo[iDoorID][ddDescription]), szName, 128);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully changed the name of this door.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi ten cua nay.");
 
 		CreateDynamicDoor(iDoorID);
 		SaveDynamicDoor(iDoorID);
@@ -686,7 +686,7 @@ CMD:ddname(playerid, params[]) {
 		format(message, sizeof(message), "%s has edited door ID %d's name to %s.", GetPlayerNameEx(playerid), iDoorID, DDoorsInfo[iDoorID][ddDescription]);
 		Log("logs/ddedit.log", message);
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -695,18 +695,18 @@ CMD:ddowner(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new playername[MAX_PLAYER_NAME], doorid, szName[128];
-		if(sscanf(params, "ds[24]", doorid, playername)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ddowner [door] [player name]");
+		if(sscanf(params, "ds[24]", doorid, playername)) return SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /ddowner [door] [player name]");
 
-		if(!IsDynamicDoorActive(doorid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid or unconfigured door ID.");
-		if(DDoorsInfo[doorid][ddType] != 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This door is not owned by a player!");
+		if(!IsDynamicDoorActive(doorid)) return SendClientMessageEx(playerid, COLOR_GREY, "ID cua khong hop le hoac chua cau hinh.");
+		if(DDoorsInfo[doorid][ddType] != 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Cua nay khong thuoc nguoi choi!");
 		new giveplayerid = ReturnUser(playername);
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if(!gPlayerLogged{giveplayerid}) return SendClientMessageEx(playerid, COLOR_GREY, "That player has not logged in.");
-			if(PlayerInfo[giveplayerid][pLevel] == 1 && PlayerInfo[giveplayerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_RED, "You can't use /ddowner on level 1's");
+			if(!gPlayerLogged{giveplayerid}) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi do chua dang nhap.");
+			if(PlayerInfo[giveplayerid][pLevel] == 1 && PlayerInfo[giveplayerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_RED, "Khong the dung /ddowner voi nguoi choi cap 1");
 			strcat((DDoorsInfo[doorid][ddOwnerName][0] = 0, DDoorsInfo[doorid][ddOwnerName]), GetPlayerNameEx(giveplayerid), 24);
 			DDoorsInfo[doorid][ddOwner] = GetPlayerSQLId(giveplayerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully changed the owner of this door.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi chu so huu cua nay.");
 
 			CreateDynamicDoor(doorid);
 			SaveDynamicDoor(doorid);
@@ -721,35 +721,35 @@ CMD:ddowner(playerid, params[])
 			mysql_tquery(MainPipeline, query, "OnSetDDOwner", "iiiii", playerid, g_arrQueryHandle[playerid], doorid, DynamicDoorRevision[doorid], DDoorsInfo[doorid][ddOwner]);
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	return 1;
 }
 
 CMD:ddpass(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 
 	new string[128],
 		doorid,
 		doorpass[25];
 
 	if(sscanf(params, "ds[25]", doorid, doorpass)) { 
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ddpass [doorid] [pass]"); 
-		SendClientMessageEx(playerid, COLOR_WHITE, "To remove the password on the door set the password to 'none' "); 
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /ddpass [doorid] [pass]"); 
+		SendClientMessageEx(playerid, COLOR_WHITE, "De xoa mat khau cua, dat mat khau la 'none'"); 
 		return 1; 
 	}
 
 	if(strlen(doorpass) > 23) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "Door passwords are limited to 23 characters.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Mat khau cua chi duoc toi da 23 ky tu.");
 	
 	if(!IsDynamicDoorLoaded(doorid)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid or unloaded door ID.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "ID cua khong hop le hoac chua tai.");
 	
 	if(!strcmp(doorpass, "none", true)) doorpass[0] = 0;
 	
 	++DynamicDoorRevision[doorid];
 	format(DDoorsInfo[doorid][ddPass], 24, "%s", doorpass);
-	SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the password of that door.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Da doi mat khau cua do.");
 	SaveDynamicDoor(doorid);
 	format(string, sizeof(string), "%s has edited DoorID %d's password.", GetPlayerNameEx(playerid), doorid);
 	Log("logs/ddedit.log", string);
@@ -763,22 +763,22 @@ CMD:ddedit(playerid, params[])
 		new string[128], choice[32], doorid, amount;
 		if(sscanf(params, "s[32]dD(0)", choice, doorid, amount))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ddedit [name] [doorid] [amount]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Exterior, Interior, CustomInterior, CustomExterior, Type, Rank, VIP, Famed");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /ddedit [name] [doorid] [amount]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: Exterior, Interior, CustomInterior, CustomExterior, Type, Rank, VIP, Famed");
 			SendClientMessageEx(playerid, COLOR_GREY, "Allegiance, GroupType, Faction, Wanted, Admin, VehicleAble, Color, PickupModel, Delete");
 			return 1;
 		}
 
 		if(!IsDynamicDoorLoaded(doorid))
 		{
-			SendClientMessageEx( playerid, COLOR_WHITE, "Invalid Door ID!");
+			SendClientMessageEx( playerid, COLOR_WHITE, "ID cua khong hop le!");
 			return 1;
 		}
 
 		if(strcmp(choice, "interior", true) && strcmp(choice, "exterior", true) && strcmp(choice, "custominterior", true)
 			&& strcmp(choice, "customexterior", true) && strcmp(choice, "dpc", true) && strcmp(choice, "delete", true))
 		{
-			if(sscanf(params, "{s[32]d}d", amount)) return SendClientMessageEx(playerid, COLOR_GREY, "This option requires a numeric value.");
+			if(sscanf(params, "{s[32]d}d", amount)) return SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon nay can gia tri so.");
 			if((!strcmp(choice, "type", true) && !(0 <= amount <= 2))
 				|| (!strcmp(choice, "rank", true) && !(-1 <= amount < MAX_GROUP_RANKS))
 				|| (!strcmp(choice, "faction", true) && !(0 <= amount <= MAX_GROUPS))
@@ -789,7 +789,7 @@ CMD:ddedit(playerid, params[])
 				|| (!strcmp(choice, "pickupmodel", true) && !(-1 <= amount <= 25))
 				|| ((!strcmp(choice, "vip", true) || !strcmp(choice, "famed", true) || !strcmp(choice, "admin", true)) && amount < 0))
 			{
-				return SendClientMessageEx(playerid, COLOR_GREY, "That value is outside the allowed range for this option.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "Gia tri vuot gioi han cho phep cua tuy chon nay.");
 			}
 		}
 
@@ -803,7 +803,7 @@ CMD:ddedit(playerid, params[])
 			GetPlayerFacingAngle(playerid, DDoorsInfo[doorid][ddInteriorA]);
 			DDoorsInfo[doorid][ddInteriorInt] = GetPlayerInterior(playerid);
 			DDoorsInfo[doorid][ddInteriorVW] = GetPlayerVirtualWorld(playerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the interior!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da doi noi that!");
 			SaveDynamicDoor(doorid);
 			CreateDynamicDoor(doorid);
 			return 1;
@@ -813,12 +813,12 @@ CMD:ddedit(playerid, params[])
 			if(DDoorsInfo[doorid][ddCustomInterior] == 0)
 			{
 				DDoorsInfo[doorid][ddCustomInterior] = 1;
-				SendClientMessageEx(playerid, COLOR_WHITE, "Door set to custom interior!");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da dat cua dung noi that tu tao!");
 			}
 			else
 			{
 				DDoorsInfo[doorid][ddCustomInterior] = 0;
-				SendClientMessageEx(playerid, COLOR_WHITE, "Door set to normal (not custom) interior!");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da dat cua dung noi that thuong!");
 			}
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's CustomInterior.", GetPlayerNameEx(playerid), doorid);
@@ -830,12 +830,12 @@ CMD:ddedit(playerid, params[])
 			if(DDoorsInfo[doorid][ddCustomExterior] == 0)
 			{
 				DDoorsInfo[doorid][ddCustomExterior] = 1;
-				SendClientMessageEx(playerid, COLOR_WHITE, "Door set to custom exterior!");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da dat cua dung ben ngoai tu tao!");
 			}
 			else
 			{
 				DDoorsInfo[doorid][ddCustomExterior] = 0;
-				SendClientMessageEx(playerid, COLOR_WHITE, "Door set to normal (not custom) exterior!");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da dat cua dung ben ngoai thuong!");
 			}
 			SaveDynamicDoor(doorid);
 			CreateDynamicDoor(doorid);
@@ -853,7 +853,7 @@ CMD:ddedit(playerid, params[])
 			GetPlayerFacingAngle(playerid, DDoorsInfo[doorid][ddExteriorA]);
 			DDoorsInfo[doorid][ddExteriorVW] = GetPlayerVirtualWorld(playerid);
 			DDoorsInfo[doorid][ddExteriorInt] = GetPlayerInterior(playerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the exterior!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da doi vi tri ben ngoai!");
 
 			SaveDynamicDoor(doorid);
 			CreateDynamicDoor(doorid);
@@ -862,7 +862,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddType] = amount;
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the type to %d.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi loai thanh %d.", amount);
 			switch(DDoorsInfo[doorid][ddType])
 			{
 				case 1:
@@ -870,7 +870,7 @@ CMD:ddedit(playerid, params[])
 					if(DDoorsInfo[doorid][ddOwner] == -1)
 					{
 						format(DDoorsInfo[doorid][ddOwnerName], 42, "Nobody");
-						SendClientMessageEx(playerid, COLOR_GREY, "Use /ddowner to set the owner of this door.");
+						SendClientMessageEx(playerid, COLOR_GREY, "Dung /ddowner de dat chu so huu cua nay.");
 					}
 				}
 				case 2:
@@ -881,7 +881,7 @@ CMD:ddedit(playerid, params[])
 					else
 					{
 						format(DDoorsInfo[doorid][ddOwnerName], 42, "Nobody");
-						SendClientMessageEx(playerid, COLOR_GREY, "Use /ddedit faction to set the group for this door.");
+						SendClientMessageEx(playerid, COLOR_GREY, "Dung /ddedit faction de dat to chuc cho cua nay.");
 					}
 				}
 				default:
@@ -901,7 +901,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddRank] = amount;
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the rank to %d.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi hang thanh %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's rank.", GetPlayerNameEx(playerid), doorid);
@@ -912,7 +912,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddVIP] = amount;
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the VIP Level to %d.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi cap VIP thanh %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's VIP Level.", GetPlayerNameEx(playerid), doorid);
@@ -923,7 +923,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddFamed] = amount;
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Famed Level to %d.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi cap Famed thanh %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's Famed Level.", GetPlayerNameEx(playerid), doorid);
@@ -935,12 +935,12 @@ CMD:ddedit(playerid, params[])
 			if(DDoorsInfo[doorid][ddDPC] == 0)
 			{
 				DDoorsInfo[doorid][ddDPC] = 1;
-				SendClientMessageEx(playerid, COLOR_WHITE, "Door set to DPC!");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da dat cua thanh DPC!");
 			}
 			else
 			{
 				DDoorsInfo[doorid][ddDPC] = 0;
-				SendClientMessageEx(playerid, COLOR_WHITE, "Door set to normal (no longer DPC)!");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da dat cua thanh thuong (khong con DPC)!");
 			}
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has set DoorID %d's DPC value.", GetPlayerNameEx(playerid), doorid);
@@ -951,7 +951,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddAllegiance] = amount;
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Allegiance to %d.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi phe thanh %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's Allegiance to %d.", GetPlayerNameEx(playerid), doorid, amount);
@@ -962,7 +962,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddGroupType] = amount;
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Group Type to %d.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi loai to chuc thanh %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's Group Type to %d.", GetPlayerNameEx(playerid), doorid, amount);
@@ -973,7 +973,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddFaction] = amount-1;
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Faction to %d.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi to chuc thanh %d.", amount);
 
 			if(DDoorsInfo[doorid][ddType] == 2)
 			{
@@ -989,7 +989,7 @@ CMD:ddedit(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "Use '/ddedit type %d 2' to update the owner of this door.", doorid);
+				SendClientMessageEx(playerid, COLOR_GREY, "Dung '/ddedit type %d 2' de cap nhat chu so huu cua nay.", doorid);
 			}
 
 			SaveDynamicDoor(doorid);
@@ -1001,7 +1001,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddAdmin] = amount;
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Admin Level to %d.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi cap Admin thanh %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's Admin Level.", GetPlayerNameEx(playerid), doorid);
@@ -1012,7 +1012,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddWanted] = amount;
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Wanted to %d.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi muc truy na thanh %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's Wanted.", GetPlayerNameEx(playerid), doorid);
@@ -1023,7 +1023,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddVehicleAble] = amount;
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the VehicleAble to %d.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi VehicleAble thanh %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's VehicleAble.", GetPlayerNameEx(playerid), doorid);
@@ -1034,7 +1034,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddColor] = amount;
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Color to %d.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi mau thanh %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			CreateDynamicDoor(doorid);
@@ -1046,7 +1046,7 @@ CMD:ddedit(playerid, params[])
 		{
 			DDoorsInfo[doorid][ddPickupModel] = amount;
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the PickupModel to %d.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi model pickup thanh %d.", amount);
 
 			SaveDynamicDoor(doorid);
 			CreateDynamicDoor(doorid);
@@ -1056,39 +1056,39 @@ CMD:ddedit(playerid, params[])
 		}
 		else if(strcmp(choice, "delete", true) == 0)
 		{
-			if(!IsDynamicDoorActive(doorid)) return SendClientMessageEx(playerid, COLOR_GREY, "That door is already empty.");
+			if(!IsDynamicDoorActive(doorid)) return SendClientMessageEx(playerid, COLOR_GREY, "Cua do da trong.");
 			DeleteDynamicDoor(doorid, playerid);
-			return SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted DoorID %d.", doorid);
+			return SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa cua ID %d.", doorid);
 		}
-		else return SendClientMessageEx(playerid, COLOR_GREY, "Unknown door option. Use /ddedit for available options.");
+		else return SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon cua khong ro. Dung /ddedit de xem tuy chon.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
 CMD:ddmove(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
-		return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	
 	new doorid, target, percent, minimum, fine, choice[16];
 	if(sscanf(params, "s[16]dudd", choice, doorid, target, percent, minimum))
-		return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ddmove [interior/exterior] [doorid] [playerid] [fine percent 0-100, 0 = free] [minimum fine]");
+		return SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /ddmove [interior/exterior] [doorid] [playerid] [fine percent 0-100, 0 = free] [minimum fine]");
 	
 	if(!IsDynamicDoorActive(doorid)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid or unconfigured door ID.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "ID cua khong hop le hoac chua cau hinh.");
 	
 	if(!(0 <= target < MAX_PLAYERS) || !IsPlayerConnected(target) || !gPlayerLogged{target})
-		return SendClientMessageEx(playerid, COLOR_GREY, "That player is not logged in.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi do chua dang nhap.");
 	
 	if(strcmp(choice, "interior", true) && strcmp(choice, "exterior", true))
-		return SendClientMessageEx(playerid, COLOR_GREY, "Choose interior or exterior.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Chon interior hoac exterior.");
 	
 	if(GetPVarInt(target, "FurniturePurchaseUncertain"))
-		return SendClientMessageEx(playerid, COLOR_GREY, "That player's account is awaiting a furniture purchase result.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Tai khoan do dang cho ket qua mua noi that.");
 	
 	if(!CalculatePropertyMoveFine(target, percent, minimum, fine))
-		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid fee or the calculated fine exceeds the supported money range.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Phi khong hop le hoac tien phat vuot gioi han ho tro.");
 	
 	if(!strcmp(choice, "interior", true))
 	{
@@ -1110,13 +1110,13 @@ CMD:ddmove(playerid, params[])
 	new message[192];
 	format(message, sizeof(message), "%s has edited DoorID %d's %s.", GetPlayerNameEx(playerid), doorid, choice);
 	Log("logs/ddedit.log", message);
-	SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the door's %s.", choice);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Da doi %s cua cua.", choice);
 	if(fine > 0)
 	{
 		GivePlayerCashEx(target, TYPE_ONHAND, -fine);
 		format(message, sizeof(message), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(target), GetPlayerSQLId(target), number_format(fine), GetPlayerNameEx(playerid));
 		Log("logs/admin.log", message);
-		SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(target), number_format(fine), GetPlayerNameEx(playerid));
+		SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s bi phat $%s boi %s, ly do: Doi vi tri cua dong", GetPlayerNameEx(target), number_format(fine), GetPlayerNameEx(playerid));
 	}
 	return 1;
 }

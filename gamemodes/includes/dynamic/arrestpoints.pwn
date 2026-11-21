@@ -70,25 +70,25 @@ public OnLoadArrestPoint(index)
 			{
 				case 0:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "/arrest\nArrest Point #%d", index);
+					format(szMiscArray, sizeof(szMiscArray), "/arrest\nDiem bat giu #%d", index);
 					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
 					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
 				}
 				case 2:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "/docarrest\nArrest Point #%d", index);
+					format(szMiscArray, sizeof(szMiscArray), "/docarrest\nDiem bat giu #%d", index);
 					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
 					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
 				}
 				case 3:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "/warrantarrest\nArrest Point #%d", index);
+					format(szMiscArray, sizeof(szMiscArray), "/warrantarrest\nDiem bat giu #%d", index);
 					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
 					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
 				}
 				case 4:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "/jarrest\nArrest Point #%d", index);
+					format(szMiscArray, sizeof(szMiscArray), "/jarrest\nDiem bat giu #%d", index);
 					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
 					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
 				}
@@ -288,14 +288,14 @@ CMD:arrestedit(playerid, params[])
 		new string[128], choice[32], id, amount;
 		if(sscanf(params, "s[32]dD", choice, id, amount))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /arrestedit [name] [id] [amount]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Position, Type, jailpos1, jailpos2, Delete");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /arrestedit [name] [id] [amount]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: Position, Type, jailpos1, jailpos2, Delete");
 			return 1;
 		}
 
 		if(id >= MAX_ARRESTPOINTS)
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "Invalid Arrest Points ID!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "ID diem bat giu khong hop le!");
 			return 1;
 		}
 
@@ -304,32 +304,32 @@ CMD:arrestedit(playerid, params[])
 			GetPlayerPos(playerid, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]);
 			ArrestPoints[id][arrestInt] = GetPlayerInterior(playerid);
 			ArrestPoints[id][arrestVW] = GetPlayerVirtualWorld(playerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the position on Arrest Point #%d.", id);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri diem bat giu #%d.", id);
 			DestroyDynamic3DTextLabel(ArrestPoints[id][arrestTextID]);
 			DestroyDynamicPickup(ArrestPoints[id][arrestPickupID]);
 			switch(ArrestPoints[id][arrestType])
 			{
 				case 0:
 				{
-					format(string, sizeof(string), "/arrest\nArrest Point #%d", id);
+					format(string, sizeof(string), "/arrest\nDiem bat giu #%d", id);
 					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
 					ArrestPoints[id][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW]);
 				}
 				case 2:
 				{
-					format(string, sizeof(string), "/docarrest\nArrest Point #%d", id);
+					format(string, sizeof(string), "/docarrest\nDiem bat giu #%d", id);
 					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
 					ArrestPoints[id][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW]);
 				}
 				case 3:
 				{
-					format(string, sizeof(string), "/warrantarrest\nArrest Point #%d", id);
+					format(string, sizeof(string), "/warrantarrest\nDiem bat giu #%d", id);
 					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
 					ArrestPoints[id][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW]);
 				}
 				case 4:
 				{
-					format(string, sizeof(string), "/jarrest\nArrest Point #%d", id);
+					format(string, sizeof(string), "/jarrest\nDiem bat giu #%d", id);
 					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
 					ArrestPoints[id][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW]);
 				}
@@ -343,36 +343,36 @@ CMD:arrestedit(playerid, params[])
 		{
 			if(ArrestPoints[id][arrestPosX] == 0)
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "Arrest Point #%d does not exist.", id);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Diem bat giu #%d khong ton tai.", id);
 				return 1;
 			}
 			ArrestPoints[id][arrestType] = amount;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the type for Arrest Point #%d to %d.", id, amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi loai diem bat giu #%d thanh %d.", id, amount);
 			DestroyDynamic3DTextLabel(ArrestPoints[id][arrestTextID]);
 			DestroyDynamicPickup(ArrestPoints[id][arrestPickupID]);
 			switch(ArrestPoints[id][arrestType])
 			{
 				case 0:
 				{
-					format(string, sizeof(string), "/arrest\nArrest Point #%d", id);
+					format(string, sizeof(string), "/arrest\nDiem bat giu #%d", id);
 					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
 					ArrestPoints[id][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW]);
 				}
 				case 2:
 				{
-					format(string, sizeof(string), "/docarrest\nArrest Point #%d", id);
+					format(string, sizeof(string), "/docarrest\nDiem bat giu #%d", id);
 					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
 					ArrestPoints[id][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW]);
 				}
 				case 3:
 				{
-					format(string, sizeof(string), "/warrantarrest\nArrest Point #%d", id);
+					format(string, sizeof(string), "/warrantarrest\nDiem bat giu #%d", id);
 					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
 					ArrestPoints[id][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW]);
 				}
 				case 4:
 				{
-					format(string, sizeof(string), "/jarrest\nArrest Point #%d", id);
+					format(string, sizeof(string), "/jarrest\nDiem bat giu #%d", id);
 					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
 					ArrestPoints[id][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW]);
 				}
@@ -386,13 +386,13 @@ CMD:arrestedit(playerid, params[])
 		{
 			if(ArrestPoints[id][arrestPosX] == 0)
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "Arrest Point #%d does not exist.", id);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Diem bat giu #%d khong ton tai.", id);
 				return 1;
 			}
 			GetPlayerPos(playerid, ArrestPoints[id][JailPos1][0], ArrestPoints[id][JailPos1][1], ArrestPoints[id][JailPos1][2]);
 			ArrestPoints[id][jailVW] = GetPlayerVirtualWorld(playerid);
 			ArrestPoints[id][jailInt] = GetPlayerInterior(playerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the jail cell position 1 on Arrest Point #%d.", id);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri buong giam 1 tai diem bat giu #%d.", id);
 			SaveArrestPoint(id);
 			format(string, sizeof(string), "%s has changed the jail cell position 1 on Arrest Point ID %d.", GetPlayerNameEx(playerid), id);
 			Log("logs/arrestedit.log", string);
@@ -401,13 +401,13 @@ CMD:arrestedit(playerid, params[])
 		{
 			if(ArrestPoints[id][arrestPosX] == 0)
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "Arrest Point #%d does not exist.", id);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Diem bat giu #%d khong ton tai.", id);
 				return 1;
 			}
 			GetPlayerPos(playerid, ArrestPoints[id][JailPos2][0], ArrestPoints[id][JailPos2][1], ArrestPoints[id][JailPos2][2]);
 			ArrestPoints[id][jailVW] = GetPlayerVirtualWorld(playerid);
 			ArrestPoints[id][jailInt] = GetPlayerInterior(playerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the jail cell position 2 on Arrest Point #%d.", id);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri buong giam 2 tai diem bat giu #%d.", id);
 			SaveArrestPoint(id);
 			format(string, sizeof(string), "%s has changed the jail cell position 2 on Arrest Point ID %d.", GetPlayerNameEx(playerid), id);
 			Log("logs/arrestedit.log", string);
@@ -416,7 +416,7 @@ CMD:arrestedit(playerid, params[])
 		{
 			if(ArrestPoints[id][arrestPosX] == 0)
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "Arrest Point #%d does not exist.", id);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Diem bat giu #%d khong ton tai.", id);
 				return 1;
 			}
 			DestroyDynamic3DTextLabel(ArrestPoints[id][arrestTextID]);
@@ -428,13 +428,13 @@ CMD:arrestedit(playerid, params[])
 			ArrestPoints[id][arrestInt] = 0;
 			ArrestPoints[id][arrestType] = 0;
 			SaveArrestPoint(id);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted Arrest Point #%d.", id);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa diem bat giu #%d.", id);
 			format(string, sizeof(string), "%s has deleted Arrest Point ID %d.", GetPlayerNameEx(playerid), id);
 			Log("logs/arrestedit.log", string);
 			return 1;
 		}
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -443,19 +443,19 @@ CMD:arreststatus(playerid, params[])
 	new id;
 	if(sscanf(params, "i", id))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /arreststatus [id]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /arreststatus [id]");
 		return 1;
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Arrest Point Status (ID: %d) ___________|", id);
+		SendClientMessageEx(playerid, COLOR_GREEN, "|_____ Trang thai diem bat giu (ID: %d) _____|", id);
 		SendClientMessageEx(playerid, COLOR_WHITE, "[Position] X: %f | Y: %f | Z: %f | VW: %d | Int: %d | Type: %d", ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], ArrestPoints[id][arrestType]);
 		SendClientMessageEx(playerid, COLOR_WHITE, "[JailPos 1] X: %f | Y: %f | Z: %f | VW: %d | Int: %d", ArrestPoints[id][JailPos1][0], ArrestPoints[id][JailPos1][1], ArrestPoints[id][JailPos1][2], ArrestPoints[id][jailVW], ArrestPoints[id][jailInt]);
 		SendClientMessageEx(playerid, COLOR_WHITE, "[JailPos 2] X: %f | Y: %f | Z: %f", ArrestPoints[id][JailPos2][0], ArrestPoints[id][JailPos2][1], ArrestPoints[id][JailPos2][2]);
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -464,19 +464,19 @@ CMD:arrestnext(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available Arrest Point...");
+		SendClientMessageEx(playerid, COLOR_RED, "* Dang tim diem bat giu trong tiep theo...");
 		for(new x = 0; x < MAX_ARRESTPOINTS; x++)
 		{
 			if(ArrestPoints[x][arrestPosX] == 0)
 		    {
-		        SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", x);
+		        SendClientMessageEx(playerid, COLOR_WHITE, "%d co the su dung.", x);
 		        break;
 			}
 		}
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	    SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 	return 1;
@@ -487,7 +487,7 @@ CMD:gotoarrestpoint(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
 		new id;
-		if(sscanf(params, "d", id)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotoarrestpoint [id]");
+		if(sscanf(params, "d", id)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gotoarrestpoint [id]");
 
 		SetPlayerPos(playerid, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]);
 		SetPlayerInterior(playerid, ArrestPoints[id][arrestInt]);

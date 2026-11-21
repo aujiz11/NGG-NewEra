@@ -79,7 +79,7 @@ public WateringStation(playerid)
 			    DisablePlayerCheckpoint(playerid);
 			    SetPlayerCheckpoint(playerid, EventRCPX[RCPIdCurrent[playerid]], EventRCPY[RCPIdCurrent[playerid]], EventRCPZ[RCPIdCurrent[playerid]], EventRCPS[RCPIdCurrent[playerid]]);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, "You are now fully rehydrated you can continue to your next checkpoint.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da uong du nuoc, co the tiep tuc den checkpoint ke tiep.");
 		}
 	} else {
         KillTimer(GetPVarInt(playerid, "WSRCPTimerId"));
@@ -140,63 +140,63 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 // Relay For Life
 CMD:setlapcount(playerid, params[]) 
 {
-    if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+    if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	new totallaps;
-	if(sscanf(params, "i", totallaps)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setlapcount [totallaps]");
+	if(sscanf(params, "i", totallaps)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /setlapcount [totallaps]");
    	RaceTotalLaps = totallaps;
-	SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the Total Laps Completed to: %d", RaceTotalLaps);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Da doi tong so vong hoan thanh thanh: %d", RaceTotalLaps);
 	return 1;
 }
 
 CMD:eventstats(playerid, params[]) 
 {
-    if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
-	SendClientMessageEx(playerid, COLOR_WHITE, "Total Laps Completed: %d | Total Players: %d", RaceTotalLaps, TotalJoinsRace);
+    if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Vong hoan thanh: %d | Nguoi choi: %d", RaceTotalLaps, TotalJoinsRace);
 	return 1;
 }
 
 CMD:rfltoggle(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	if(rflstatus > 0) {
 		rflstatus = 0;
-		SendClientMessageEx(playerid, COLOR_GREY, "You have disabled relay for life.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Da tat Relay For Life.");
 		Misc_Save();
 	}
 	else {
 		rflstatus = 1;
-		SendClientMessageEx(playerid, COLOR_GREY, "You have enabled relay for life.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Da bat Relay For Life.");
 		Misc_Save();
 	}	
 	return 1;
 }
 
 CMD:toglapcount(playerid, params[]) {
-    if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+    if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	if(toglapcount == 0) {
    		toglapcount = 1;
-		SendClientMessageEx(playerid, COLOR_WHITE, "Lap counting has been turned off, new laps completed by players will not be counted.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da tat dem vong, cac vong moi se khong duoc tinh.");
 	} else {
 	    toglapcount = 0;
-		SendClientMessageEx(playerid, COLOR_WHITE, "Lap counting has been turned on, new laps completed by players will now be counted.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da bat dem vong, cac vong moi se duoc tinh.");
 	}
 	return 1;
 }
 
 CMD:rflscore(playerid, params[])
 {
-	ShowPlayerDialogEx(playerid, DIALOG_RFL_SEL, DIALOG_STYLE_LIST, "Relay For Life Scoreboard", "Team Scores\nPlayer Top 25", "Choose", "Close");
+	ShowPlayerDialogEx(playerid, DIALOG_RFL_SEL, DIALOG_STYLE_LIST, "Bang diem Relay For Life", "Diem doi\nTop 25 nguoi choi", "Chon", "Dong");
 	return 1;
 }
 
 CMD:buyrflteam(playerid, params[])
 {
-	if(rflstatus < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life is currently not enabled.");
-	if(PlayerInfo[playerid][pRFLTeam] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are already part of a team.");
-	if(GetPlayerCash(playerid) < 100000) return SendClientMessageEx(playerid, COLOR_GREY, "You need $100000 to buy a team.");
+	if(rflstatus < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life hien chua bat.");
+	if(PlayerInfo[playerid][pRFLTeam] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da thuoc mot doi.");
+	if(GetPlayerCash(playerid) < 100000) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can $100000 de mua doi.");
 	for(new i = 0; i < MAX_RFLTEAMS; i++) {
 		if(RFLInfo[i][RFLmembers] < 1) {
-			format(RFLInfo[i][RFLname], 25, "Team %s", GetPlayerNameEx(playerid));
+			format(RFLInfo[i][RFLname], 25, "Doi %s", GetPlayerNameEx(playerid));
 			format(RFLInfo[i][RFLleader], 25, "%s", GetPlayerNameEx(playerid));
 			RFLInfo[i][RFLused] = 1;
 			RFLInfo[i][RFLmembers] = 1;
@@ -204,13 +204,13 @@ CMD:buyrflteam(playerid, params[])
 			PlayerInfo[playerid][pRFLTeam] = i;
 			PlayerInfo[playerid][pRFLTeamL] = i;
 			GivePlayerCash(playerid, -100000);
-			SendClientMessageEx(playerid, COLOR_GREY, "You have bought a team for $100000. You may now use /rflhelp.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban da mua doi voi gia $100000. Dung /rflhelp de xem huong dan.");
 			if( GetPVarInt( playerid, "EventToken" ) == 1 ) {
 				if( EventKernel[ EventStatus ] == 1 || EventKernel[ EventStatus ] == 2 ) {
 					if(EventKernel[EventType] == 3) {
 						new Float:X, Float:Y, Float:Z, string[64];
 						GetPlayerPos( playerid, X, Y, Z );
-						format(string, sizeof(string), "Team: %s", RFLInfo[i][RFLname]);
+						format(string, sizeof(string), "Doi: %s", RFLInfo[i][RFLname]);
 						RFLTeamN3D[playerid] = CreateDynamic3DTextLabel(string,0x008080FF,X,Y,Z,10.0,.attachedplayer = playerid, .worldid = GetPlayerVirtualWorld(playerid));
 					}
 				}
@@ -220,14 +220,14 @@ CMD:buyrflteam(playerid, params[])
 			return 1;
 		}
 	}
-	SendClientMessageEx(playerid, COLOR_GREY, "All team slots have been used.");
+	SendClientMessageEx(playerid, COLOR_GREY, "Da het o doi trong.");
 	return 1;
 }
 
 CMD:leaverflteam(playerid, params[])
 {
-	if(rflstatus < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life is currently not enabled.");
-	if(PlayerInfo[playerid][pRFLTeam] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a team.");
+	if(rflstatus < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life hien chua bat.");
+	if(PlayerInfo[playerid][pRFLTeam] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua thuoc doi nao.");
 	new team = PlayerInfo[playerid][pRFLTeam];
 	if(PlayerInfo[playerid][pRFLTeamL] == team)
 	{
@@ -243,7 +243,7 @@ CMD:leaverflteam(playerid, params[])
 			DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
 			RFLTeamN3D[playerid] = Text3D:-1;
 		}
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your team has been deleted due to you being the leader.");
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Doi bi xoa vi ban la doi truong.");
 		foreach(new i: Player)
 		{
 			if(PlayerInfo[i][pRFLTeam] == team) {
@@ -253,7 +253,7 @@ CMD:leaverflteam(playerid, params[])
 					DestroyDynamic3DTextLabel(RFLTeamN3D[i]);
 					RFLTeamN3D[playerid] = Text3D:-1;
 				}
-				SendClientMessageEx(i, COLOR_LIGHTBLUE, "You have been removed from your team due to it being removed.");
+				SendClientMessageEx(i, COLOR_LIGHTBLUE, "Ban da roi doi vi doi bi xoa.");
 				OnPlayerStatsUpdate(i);
 			}
 		}	
@@ -266,7 +266,7 @@ CMD:leaverflteam(playerid, params[])
 		RFLInfo[team][RFLmembers] -= 1;
 		PlayerInfo[playerid][pRFLTeam] = -1;
 		PlayerInfo[playerid][pRFLTeamL] = -1;
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have left the team.");
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da roi doi.");
 		OnPlayerStatsUpdate(playerid);
 	}
 	SaveRelayForLifeTeam(team);
@@ -275,38 +275,38 @@ CMD:leaverflteam(playerid, params[])
 
 CMD:rflinvite(playerid, params[])
 {
-	if(rflstatus < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life is currently not enabled.");
-	if(PlayerInfo[playerid][pRFLTeam] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a team.");
-	if(PlayerInfo[playerid][pRFLTeamL] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not the leader of this team.");
-	if(RFLInfo[PlayerInfo[playerid][pRFLTeam]][RFLmembers] >= 20) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot invite more than 19 members.");
+	if(rflstatus < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life hien chua bat.");
+	if(PlayerInfo[playerid][pRFLTeam] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua thuoc doi nao.");
+	if(PlayerInfo[playerid][pRFLTeamL] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai doi truong.");
+	if(RFLInfo[PlayerInfo[playerid][pRFLTeam]][RFLmembers] >= 20) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the moi qua 19 thanh vien.");
 	new giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /rflinvite [playerid/PlayerName]");
-	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-	if(PlayerInfo[giveplayerid][pRFLTeam] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is already part of a team.");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /rflinvite [playerid/PlayerName]");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
+	if(PlayerInfo[giveplayerid][pRFLTeam] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi nay da thuoc mot doi.");
 	SetPVarInt(giveplayerid, "RFLTeam_Invite", 1);
 	SetPVarInt(giveplayerid, "RFLTeam_Team", PlayerInfo[playerid][pRFLTeam]);
 	SetPVarInt(giveplayerid, "RFLTeam_Inviter", playerid);
 	SetPVarInt(giveplayerid, "RFLInviteSession", g_arrQueryHandle[playerid]);
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have offered %s to join your team.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s has offered you to join his team. Use /accept rflteam to accept it.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da moi %s vao doi.", GetPlayerNameEx(giveplayerid));
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s moi ban vao doi. Dung /accept rflteam de dong y.", GetPlayerNameEx(playerid));
 	return 1;
 }
 
 CMD:rflkick(playerid, params[])
 {
-	if(rflstatus < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life is currently not enabled.");
-	if(PlayerInfo[playerid][pRFLTeam] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a team.");
-	if(PlayerInfo[playerid][pRFLTeamL] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not the leader of this team.");
+	if(rflstatus < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life hien chua bat.");
+	if(PlayerInfo[playerid][pRFLTeam] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua thuoc doi nao.");
+	if(PlayerInfo[playerid][pRFLTeamL] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai doi truong.");
 	new giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /rflkick [playerid/PlayerName]");
-	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-	if(PlayerInfo[giveplayerid][pRFLTeam] != PlayerInfo[playerid][pRFLTeam]) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not part of your team.");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /rflkick [playerid/PlayerName]");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
+	if(PlayerInfo[giveplayerid][pRFLTeam] != PlayerInfo[playerid][pRFLTeam]) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi nay khong thuoc doi ban.");
 	new team = PlayerInfo[playerid][pRFLTeam];
 	PlayerInfo[giveplayerid][pRFLTeam] = -1;
 	PlayerInfo[giveplayerid][pRFLTeamL] = -1;
 	RFLInfo[team][RFLmembers] -=1;
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have kicked %s out of your team.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s has kicked you out of his team.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da duoi %s khoi doi.", GetPlayerNameEx(giveplayerid));
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s da duoi ban khoi doi.", GetPlayerNameEx(playerid));
 	if(IsValidDynamic3DTextLabel(RFLTeamN3D[giveplayerid])) {
 		DestroyDynamic3DTextLabel(RFLTeamN3D[giveplayerid]);
 	}	
@@ -317,9 +317,9 @@ CMD:rflkick(playerid, params[])
 
 CMD:rflmembers(playerid, params[])
 {
-	if(rflstatus < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life is currently not enabled.");
-	if(PlayerInfo[playerid][pRFLTeam] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a team.");
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Listing all team members online:");
+	if(rflstatus < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life hien chua bat.");
+	if(PlayerInfo[playerid][pRFLTeam] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua thuoc doi nao.");
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Cac thanh vien dang online:");
 	foreach(new i: Player)
 	{
 		if(PlayerInfo[i][pRFLTeam] == PlayerInfo[playerid][pRFLTeam]) {
@@ -336,40 +336,40 @@ CMD:rflmembers(playerid, params[])
 
 CMD:rflchangename(playerid, params[])
 {
-	if(rflstatus < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life is currently not enabled.");
-	if(PlayerInfo[playerid][pRFLTeam] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a team.");
-	if(PlayerInfo[playerid][pRFLTeamL] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not the leader of this team.");
+	if(rflstatus < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life hien chua bat.");
+	if(PlayerInfo[playerid][pRFLTeam] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua thuoc doi nao.");
+	if(PlayerInfo[playerid][pRFLTeamL] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai doi truong.");
 	new name[25];
-	if(sscanf(params, "s[25]", name)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /rflchangename <teamname>");
+	if(sscanf(params, "s[25]", name)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /rflchangename <teamname>");
 	if(GetPVarType(playerid, "HasReport")) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
+		SendClientMessageEx(playerid, COLOR_GREY, "Chi duoc gui 1 bao cao cung luc. (/cancelreport)");
 		return 1;
 	}
 	if(strfind(name, "'", true) != -1) {
-		SendClientMessageEx(playerid, COLOR_GREY, "Please do not use ' inside of your teamname.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Khong duoc dung ' trong ten doi.");
 		return 1;
 	}	
 	SetPVarInt(playerid, "RFLNameRequest", 1);
 	SetPVarString(playerid, "NewRFLName", name);
-	SendClientMessageEx( playerid, COLOR_YELLOW, "You have requested to change your team name to %s, please wait for an admin to approve it.", name );
-	SendReportToQue(playerid, "Team Name Request", 2, 4);
+	SendClientMessageEx( playerid, COLOR_YELLOW, "Ban de nghi doi ten doi thanh %s, hay cho Admin duyet.", name );
+	SendReportToQue(playerid, "Yeu cau doi ten doi", 2, 4);
 	return 1;
 }
 
 
 CMD:rflhelp(playerid, params[])
 {
-	if(rflstatus < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life is currently not enabled.");
-	SendClientMessageEx(playerid, COLOR_WHITE, "Relay For Life Commands");
+	if(rflstatus < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life hien chua bat.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Lenh Relay For Life");
 	SendClientMessageEx(playerid, COLOR_GREEN, "_____________________________________________________________________________________________________");
-	SendClientMessageEx(playerid, COLOR_GREY, "GENERAL: /rflscore /buyrflteam(100k) /leaverflteam");
+	SendClientMessageEx(playerid, COLOR_GREY, "CHUNG: /rflscore /buyrflteam(100k) /leaverflteam");
 	if(PlayerInfo[playerid][pRFLTeam] != -1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "MEMBER: /rflmembers");
+		SendClientMessageEx(playerid, COLOR_GREY, "THANH VIEN: /rflmembers");
 	}
 	if(PlayerInfo[playerid][pRFLTeamL] != -1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "TEAMOWNER: /rflinvite (20 Members Max.) /rflkick /rflchangename");
+		SendClientMessageEx(playerid, COLOR_GREY, "CHU DOI: /rflinvite (Toi da 20 thanh vien) /rflkick /rflchangename");
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{

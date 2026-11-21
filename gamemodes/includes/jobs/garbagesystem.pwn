@@ -188,7 +188,7 @@ stock Garbage_ClearVehicleWork(playerid, vehicleid)
 	if(GetPVarInt(playerid, "pGarbageRun") && GetPVarInt(playerid, "pGarbageVehicle") == vehicleid)
 	{
 		Garbage_CancelRun(playerid);
-		SendClientMessageEx(playerid, COLOR_GREY, "Your garbage run was cancelled because the truck is no longer available.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Chuyen rac da huy vi xe khong con hop le.");
 	}
 	return 1;
 }
@@ -227,7 +227,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 	new vehicleid = GetPVarInt(playerid, "pGarbageVehicle");
 	if(!Garbage_IsDriver(playerid, vehicleid))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You must drive your original garbage truck to continue this run.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Phai lai dung xe rac ban dau de tiep tuc.");
 		return ~1;
 	}
 	new stage = GetPVarInt(playerid, "pGarbageStage");
@@ -238,13 +238,13 @@ hook OnPlayerEnterCheckpoint(playerid)
 		if(!timer) return ~1;
 		SetPVarInt(playerid, "GarbageLoadTimer", timer);
 		TogglePlayerControllable(playerid, false);
-		GameTextForPlayer(playerid, "~W~LOADING...", 4000, 4);
+		GameTextForPlayer(playerid, "~W~DANG TAI...", 4000, 4);
 		return ~1;
 	}
 	new value = Random(10000, 20000), gained = PlayerInfo[playerid][pDoubleEXP] > 0 ? 2 : 1;
 	if(GetPlayerCash(playerid) > cellmax - value)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You cannot carry the garbage run payment. Free some cash and return to the depot.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong nhan duoc tien chuyen rac. Bot tien mat roi ve bai rac.");
 		return ~1;
 	}
 	if(PlayerInfo[playerid][pGarbageSkill] > cellmax - gained) gained = cellmax - PlayerInfo[playerid][pGarbageSkill];
@@ -252,29 +252,29 @@ hook OnPlayerEnterCheckpoint(playerid)
 	GivePlayerCash(playerid, value);
 	PlayerInfo[playerid][pGarbageSkill] += gained;
 	SetVehicleToRespawn(vehicleid);
-	SendClientMessageEx(playerid, COLOR_WHITE, "You have completed your garbage run and earned $%s.", number_format(value));
+	SendClientMessageEx(playerid, COLOR_WHITE, "Ban da xong chuyen rac va nhan $%s.", number_format(value));
 	if(PlayerInfo[playerid][pDoubleEXP] > 0)
-		SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained %d garbage skill points. You have %d hours left on the Double EXP token.", gained, PlayerInfo[playerid][pDoubleEXP]);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Ban nhan %d diem garbage. Token Double EXP con %d gio.", gained, PlayerInfo[playerid][pDoubleEXP]);
 	return ~1;
 }
 
 CMD:garbagerun(playerid, params[])
 {
 	if(!Job_HasJob(playerid, JOB_GARBAGE))
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not a garbage man!");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong phai garbage man!");
 	if(GetPVarInt(playerid, "pGarbageRun"))
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are already on a garbage run!");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban dang trong chuyen rac!");
 	new vehicleid = GetPlayerVehicleID(playerid);
 	if(!Garbage_IsDriver(playerid, vehicleid) || !IsPlayerControllable(playerid))
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be driving an available garbage truck in the normal world.");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Can lai xe rac san sang o world thuong.");
 	if(CheckPointCheck(playerid) || IsPlayerCheckpointActive(playerid))
-		return SendClientMessageEx(playerid, COLOR_GREY, "Finish or cancel your current checkpoint before starting a garbage run.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Xong hoac huy checkpoint truoc khi nhan chuyen rac.");
 	SetPVarInt(playerid, "pGarbageRun", 1);
 	SetPVarInt(playerid, "pGarbageStage", 0);
 	SetPVarInt(playerid, "pGarbageVehicle", vehicleid);
 	SetPVarInt(playerid, "pGarbagePath", random(sizeof(GarbageRoutes)));
 	AdvanceGarbageJob(playerid);
-	SendClientMessageEx(playerid, COLOR_YELLOW, "You have started a garbage run, make your way to your first destination.");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Da bat dau chuyen rac, hay den diem dau tien.");
 	return 1;
 }
 
@@ -303,7 +303,7 @@ public GarbageJobLoad(playerid, session, serial, vehicleid, stage)
 	SetPVarInt(playerid, "pGarbageStage", stage + 1);
 	AdvanceGarbageJob(playerid);
 	SendClientMessageEx(playerid, COLOR_WHITE, stage == 4
-		? ("Your garbage truck is full, make your way back to headquarters.")
-		: ("Garbage loaded, make your way to the next checkpoint."));
+		? ("Xe rac da day, hay quay ve tru so.")
+		: ("Da thu gom rac, hay den checkpoint tiep theo."));
 	return 1;
 }

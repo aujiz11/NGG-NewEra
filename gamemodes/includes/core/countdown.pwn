@@ -16,7 +16,7 @@ public Countdown(playerid)
 		    SetTimerEx("Countdown", 1000, false, "i", playerid);
 		} else if(CountDown == 3) {
 		    CountDown = 0;
-		    SendClientMessageToAll(COLOR_LIGHTBLUE, "** Go Go Go!");
+		    SendClientMessageToAll(COLOR_LIGHTBLUE, "** Xuat phat!");
 		}
 	}
 	else if(IsARacer(playerid)){
@@ -34,7 +34,7 @@ public Countdown(playerid)
 		    SetTimerEx("Countdown", 1000, false, "i", playerid);
 		} else if(CountDown == 3) {
 		    CountDown = 0;
-		    ProxDetector(30.0, playerid, "** [Racer Countdown] Go Go Go! **", 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000);
+		    ProxDetector(30.0, playerid, "** [Racer Countdown] Xuat phat! **", 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000);
 		}
 	}
 	else if(IsARacer(playerid) && PlayerInfo[playerid][pTogReports] == 1) {
@@ -52,7 +52,7 @@ public Countdown(playerid)
 		    SetTimerEx("Countdown", 1000, false, "i", playerid);
 		} else if(CountDown == 3) {
 		    CountDown = 0;
-		    ProxDetector(30.0, playerid, "** [Racer Countdown] Go Go Go! **", 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000);
+		    ProxDetector(30.0, playerid, "** [Racer Countdown] Xuat phat! **", 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000);
 		}
 	}
 	return 1;

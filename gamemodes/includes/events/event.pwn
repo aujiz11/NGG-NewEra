@@ -44,25 +44,25 @@ public ERequested()
 
 CMD:joinevent(playerid, params[]) {
 	if( EventKernel[ EventStatus ] == 0 ) {
-		SendClientMessageEx( playerid, COLOR_WHITE, "There are currently no active events." );
+		SendClientMessageEx( playerid, COLOR_WHITE, "Hien khong co su kien dang chay." );
 	}
 	else if( GetPVarInt( playerid, "EventToken" ) == 1 ) {
-		SendClientMessageEx( playerid, COLOR_WHITE, "You are already in the event." );
+		SendClientMessageEx( playerid, COLOR_WHITE, "Ban da o trong su kien." );
 	}
 	else if(GetPVarType(playerid, "IsInArena")) {
-		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay khi dang o dau truong!");
 	}
 	else if( PlayerCuffed[ playerid ] >= 1 || PlayerInfo[ playerid ][ pJailTime ] > 0 || PlayerInfo[playerid][pHospital] > 0 || GetPVarInt(playerid, "Injured")) {
-		SendClientMessageEx( playerid, COLOR_WHITE, "You can't do this right now." );
+		SendClientMessageEx( playerid, COLOR_WHITE, "Ban chua the lam viec nay." );
 	}
 	else if(PlayerInfo[playerid][pAccountRestricted] != 0) {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this while your account is restricted!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the lam viec nay khi tai khoan bi han che!");
 	}
 	else if(EventKernel[VipOnly] == 1 && PlayerInfo[playerid][pDonateRank] < 1) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "This event is restricted to VIP's only.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Su kien nay chi danh cho VIP.");
 	}
 	else if(EventKernel[EventPlayers] >= EventKernel[EventLimit] && EventKernel[EventTime] == 0) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "This event has reached the max players limit.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Su kien da du nguoi choi.");
 	}
 	else if( EventKernel[ EventStatus ] == 2 || (EventKernel[ EventStatus ] == 1 && PlayerInfo[playerid][pDonateRank] >= 3)) {
 		if(EventKernel[EventType] == 3)
@@ -72,14 +72,14 @@ CMD:joinevent(playerid, params[]) {
 				DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
 				RFLTeamN3D[playerid] = Text3D:-1;
 			}
-			format(string, sizeof(string), "%s has joined the race event!", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "%s da tham gia su kien dua!", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
 			SendClientMessageEx( playerid, COLOR_WHITE, EventKernel[ EventInfo ] );
 		    if(EventKernel[EventFootRace]) {
-		    	SendClientMessageEx( playerid, COLOR_YELLOW, "You have joined an onfoot race event, you have been teleported to a random checkpoint." );
+		    	SendClientMessageEx( playerid, COLOR_YELLOW, "Ban da tham gia dua di bo va duoc dich chuyen den checkpoint ngau nhien." );
 			}
 			else {
-			    SendClientMessageEx( playerid, COLOR_YELLOW, "You have joined a vehicle race event, you have been teleported to a random checkpoint." );
+			    SendClientMessageEx( playerid, COLOR_YELLOW, "Ban da tham gia dua xe va duoc dich chuyen den checkpoint ngau nhien." );
 			}
 			SetPVarInt( playerid, "EventToken", 1 );
 			TotalJoinsRace++;
@@ -105,7 +105,7 @@ CMD:joinevent(playerid, params[]) {
 			if(PlayerInfo[playerid][pRFLTeam] != -1) {
 				new Float:X, Float:Y, Float:Z;
 				GetPlayerPos( playerid, X, Y, Z );
-				format(string, sizeof(string), "Team: %s", RFLInfo[PlayerInfo[playerid][pRFLTeam]][RFLname]);
+				format(string, sizeof(string), "Doi: %s", RFLInfo[PlayerInfo[playerid][pRFLTeam]][RFLname]);
 				RFLTeamN3D[playerid] = CreateDynamic3DTextLabel(string,0x008080FF,X,Y,Z,10.0,.attachedplayer = playerid, .worldid = GetPlayerVirtualWorld(playerid));
 			}
 		    if(EventRCPT[randrcp] != 1)
@@ -122,7 +122,7 @@ CMD:joinevent(playerid, params[]) {
 		else
 		{
 			if(IsPlayerInAnyVehicle(playerid)) {
-				return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't join while in a vehicle.");
+				return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the tham gia khi o trong xe.");
 			}
 
 			SetPVarInt( playerid, "EventToken", 1 );
@@ -203,17 +203,17 @@ CMD:joinevent(playerid, params[]) {
 		EventKernel[EventPlayers] ++;
 		if(EventKernel[EventPlayers] == EventKernel[EventLimit] && EventKernel[EventTime] == 0)
 		{
-			ABroadCastText(COLOR_YELLOW, "The event has now reached the max players limit, you can now start it.", 2);
+			ABroadCastText(COLOR_YELLOW, "Su kien da du nguoi choi, ban co the bat dau.", 2);
 		}
 	}
 
 	else if( EventKernel[ EventStatus ] == 3 )
 	{
-		SendClientMessageEx( playerid, COLOR_WHITE, "The event is already locked. You are unable to join." );
+		SendClientMessageEx( playerid, COLOR_WHITE, "Su kien da khoa, ban khong the tham gia." );
 	}
 	else if( EventKernel[ EventStatus ] == 4 )
 	{
-		SendClientMessageEx( playerid, COLOR_WHITE, "The event is already started. You are unable to join." );
+		SendClientMessageEx( playerid, COLOR_WHITE, "Su kien da bat dau, ban khong the tham gia." );
 	}
 
 	return 1;
@@ -224,7 +224,7 @@ CMD:eventstaff(playerid, params[])
 	new Float:health, Float:armor;
     if( PlayerInfo[ playerid ][ pAdmin ] >= 1 || PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pSEC] >= 1) {
 		if(GetPVarType(playerid, "pGodMode"))
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "Please disable your god mode before joining the event staff (/god)");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Hay tat bat tu truoc khi vao nhom dieu hanh su kien (/god)");
         if(EventKernel[EventJoinStaff] == 1) {
 			if(GetPVarInt(playerid, "eventStaff") == 0) {
 				for(new i; i < sizeof(EventKernel[EventStaff]); i++) if(EventKernel[EventStaff][i] == INVALID_PLAYER_ID) {
@@ -246,9 +246,9 @@ CMD:eventstaff(playerid, params[])
 					SetHealth(playerid, 0x7FB00000);
 					SetArmour(playerid, 0x7FB00000);
 					SetPVarInt(playerid, "eventStaff", 1);
-					return SendClientMessageEx( playerid, COLOR_WHITE, "You have joined the event staff." );
+					return SendClientMessageEx( playerid, COLOR_WHITE, "Ban da vao nhom dieu hanh su kien." );
 				}
-				SendClientMessageEx(playerid, COLOR_GRAD2, "Unable to join the event staff, max is 5.");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the vao nhom dieu hanh su kien, toi da 5 nguoi.");
 			}	
         }
     }
@@ -279,7 +279,7 @@ CMD:quitevent(playerid, params[])
        		}
        		EventLastVW[playerid] = 0;
        		EventLastInt[playerid] = 0;
-       		SendClientMessageEx( playerid, COLOR_LIGHTBLUE, "* You have quit the event as event staff." );
+       		SendClientMessageEx( playerid, COLOR_LIGHTBLUE, "* Ban da roi nhom dieu hanh su kien." );
        		return 1;
 		}
       	ResetPlayerWeapons( playerid );
@@ -310,7 +310,7 @@ CMD:quitevent(playerid, params[])
 		DeletePVar(playerid, "pPreGodHealth");
 		DeletePVar(playerid, "pPreGodArmor");
 		DeletePVar(playerid, "eventStaff");
-        return SendClientMessageEx( playerid, COLOR_LIGHTBLUE, "* You have quit the event as event staff." );
+        return SendClientMessageEx( playerid, COLOR_LIGHTBLUE, "* Ban da roi nhom dieu hanh su kien." );
 	}	
     else if( GetPVarInt( playerid, "EventToken" ) == 1 ) {
         if( EventKernel[ EventStatus ] == 1 || EventKernel[ EventStatus ] == 2 ) {
@@ -341,7 +341,7 @@ CMD:quitevent(playerid, params[])
        		}
        		EventLastVW[playerid] = 0;
        		EventLastInt[playerid] = 0;
-       		SendClientMessageEx( playerid, COLOR_LIGHTBLUE, "* You have quit the event." );
+       		SendClientMessageEx( playerid, COLOR_LIGHTBLUE, "* Ban da roi su kien." );
        		return 1;
 		}
       	ResetPlayerWeapons( playerid );
@@ -379,7 +379,7 @@ CMD:quitevent(playerid, params[])
 		}	
 		DeletePVar(playerid, "pPreGodHealth");
 		DeletePVar(playerid, "pPreGodArmor");
-        SendClientMessageEx( playerid, COLOR_LIGHTBLUE, "* You have quit the event." );
+        SendClientMessageEx( playerid, COLOR_LIGHTBLUE, "* Ban da roi su kien." );
     }
     return 1;
 }
@@ -391,11 +391,11 @@ CMD:eventreset(playerid, params[])
         if( EventKernel[EventAdvisor] >= 1 ) {
             EventKernel[EventAdvisor] = 0;
             KillTimer( EventTimerHandle );
-            format( string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has reset the event timer.", GetPlayerNameEx( playerid ) );
+            format( string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s da dat lai hen gio su kien.", GetPlayerNameEx( playerid ) );
             ABroadCast( COLOR_YELLOW, string, 4 );
         }
         else {
-            SendClientMessageEx( playerid, COLOR_GREY, "The timeout expired before you attempted to use this command. You can set-up an event." );
+            SendClientMessageEx( playerid, COLOR_GREY, "Thoi gian cho da het truoc khi ban dung lenh. Ban co the tao su kien." );
         }
     }
     return 1;
@@ -407,24 +407,24 @@ CMD:requestevent(playerid, params[])
         new string[128];
         if( EventKernel[ EventStatus ] == 0 ) {
             if(EventKernel[EventRequest] != INVALID_PLAYER_ID || EventKernel[EventCreator] != INVALID_PLAYER_ID) {
-                SendClientMessageEx(playerid, COLOR_GRAD2, "There's already someone requesting/making an event.");
+                SendClientMessageEx(playerid, COLOR_GRAD2, "Da co nguoi de nghi/tao su kien.");
                 return 1;
             }
             if(EventKernel[EventAdvisor] == 1) {
-                SendClientMessageEx(playerid, COLOR_GRAD2, "Another admin/advisor/coordinator already requested/made an event within the last three hours, please try again later!");
+                SendClientMessageEx(playerid, COLOR_GRAD2, "Admin/advisor/coordinator khac da de nghi/tao su kien trong ba gio qua, hay thu lai sau!");
                 return 1;
             }
             if(PlayerInfo[ playerid ][ pAdmin ] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pDonateRank] >= 4 || PlayerInfo[playerid][pSEC] >= 2) {
                 EventKernel[ EventRequest ] = playerid;
-                SendClientMessageEx( playerid, COLOR_GRAD2, "You have requested to set up an event, please wait until a Senior Admin approves it." );
-                format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s would like to set up an event, do you approve? /acceptevent or /denyevent.", GetPlayerNameEx(playerid) );
+                SendClientMessageEx( playerid, COLOR_GRAD2, "Ban da de nghi tao su kien, hay cho Senior Admin duyet." );
+                format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s muon tao su kien, ban dong y? /acceptevent hoac /denyevent.", GetPlayerNameEx(playerid) );
                 ABroadCast( COLOR_YELLOW, string, 4 );
                 EventKernel[EventAdvisor] = 1;
                 EventTimerHandle = SetTimer("ERequested", 9600000, false);
             }
         }
         else {
-            SendClientMessageEx( playerid, COLOR_WHITE, "There is already an active event (use /endevent)." );
+            SendClientMessageEx( playerid, COLOR_WHITE, "Da co su kien dang chay (dung /endevent)." );
         }
     }
     return 1;
@@ -439,18 +439,18 @@ CMD:vipparty(playerid, params[])
 		{
             if(EventKernel[EventRequest] != INVALID_PLAYER_ID || EventKernel[EventCreator] != INVALID_PLAYER_ID)
 			{
-                SendClientMessageEx(playerid, COLOR_GRAD2, "There's already someone requesting/making an event.");
+                SendClientMessageEx(playerid, COLOR_GRAD2, "Da co nguoi de nghi/tao su kien.");
                 return 1;
             }
             if(EventKernel[EventAdvisor] == 1)
 			{
-                SendClientMessageEx(playerid, COLOR_GRAD2, "Another admin/advisor already requested/made an event within the last three hours, please try again later!");
+                SendClientMessageEx(playerid, COLOR_GRAD2, "Admin/advisor khac da de nghi/tao su kien trong ba gio qua, hay thu lai sau!");
                 return 1;
             }
             if(PlayerInfo[ playerid ][ pAdmin ] >= 4 || PlayerInfo[playerid][pVIPMod]) {
                 EventKernel[ EventRequest ] = playerid;
-                SendClientMessageEx( playerid, COLOR_GRAD2, "You have requested to set up an event, please wait until a Senior Admin approves it." );
-                format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: VIP Mod %s would like to set up a VIP event - /acceptevent or /denyevent", GetPlayerNameEx(playerid) );
+                SendClientMessageEx( playerid, COLOR_GRAD2, "Ban da de nghi tao su kien, hay cho Senior Admin duyet." );
+                format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: VIP Mod %s muon tao su kien VIP - /acceptevent hoac /denyevent", GetPlayerNameEx(playerid) );
                 ABroadCast( COLOR_YELLOW, string, 4 );
                 EventKernel[EventAdvisor] = 1;
                 EventKernel[VipOnly] = 1;
@@ -459,7 +459,7 @@ CMD:vipparty(playerid, params[])
         }
         else
 		{
-            SendClientMessageEx( playerid, COLOR_WHITE, "There is already an active event (use /endevent)." );
+            SendClientMessageEx( playerid, COLOR_WHITE, "Da co su kien dang chay (dung /endevent)." );
         }
     }
     return 1;
@@ -469,10 +469,10 @@ CMD:denyevent(playerid, params[])
 {
     if( PlayerInfo[ playerid ][ pAdmin ] >= 4 ) {
         new string[128];
-        SendClientMessageEx( EventKernel[EventRequest], COLOR_GRAD2, "Your request was denied." );
+        SendClientMessageEx( EventKernel[EventRequest], COLOR_GRAD2, "Yeu cau cua ban bi tu choi." );
         EventKernel[EventRequest] = INVALID_PLAYER_ID;
         EventKernel[EventCreator] = INVALID_PLAYER_ID;
-        format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s has denied the event request.", GetPlayerNameEx(playerid) );
+        format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s da tu choi yeu cau tao su kien.", GetPlayerNameEx(playerid) );
         ABroadCast( COLOR_YELLOW, string, 4 );
         for(new i; i < sizeof(EventKernel[EventStaff]); i++) {
             if(EventKernel[EventStaff][i] != INVALID_PLAYER_ID) {
@@ -520,18 +520,18 @@ CMD:acceptevent(playerid, params[])
             if(EventKernel[EventRequest] != INVALID_PLAYER_ID) {
                 if(IsPlayerConnected(EventKernel[EventRequest])) {
                     if(EventKernel[EventCreator] != INVALID_PLAYER_ID) {
-                        SendClientMessageEx(playerid, COLOR_GRAD2, "There's already someone making an event.");
+                        SendClientMessageEx(playerid, COLOR_GRAD2, "Da co nguoi tao su kien.");
                         return 1;
                     }
                     new string[128];
                     EventKernel[EventCreator] = EventKernel[EventRequest];
                     EventKernel[EventRequest] = INVALID_PLAYER_ID;
                     SetPVarInt( EventKernel[EventCreator], "EventToken", 1 );
-                    SendClientMessageEx( EventKernel[EventCreator], COLOR_GRAD2, "Your event request has been accepted, use /seteventpos to change the event position, once you do it people will be able to /eventstaff." );
+                    SendClientMessageEx( EventKernel[EventCreator], COLOR_GRAD2, "Yeu cau su kien da duoc duyet, dung /seteventpos de dat vi tri, sau do moi nguoi co the /eventstaff." );
                     if(PlayerInfo[EventKernel[EventCreator]][pHelper] >= 2) {
-                        SendClientMessageEx( EventKernel[EventCreator], COLOR_GRAD2, "You now have temporary access to (/o)oc and /goto." );
+                        SendClientMessageEx( EventKernel[EventCreator], COLOR_GRAD2, "Ban tam thoi duoc dung (/o)oc va /goto." );
                     }
-                    format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s has approved the event request from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(EventKernel[EventCreator]) );
+                    format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s da duyet yeu cau tao su kien cua %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(EventKernel[EventCreator]) );
                     ABroadCast( COLOR_YELLOW, string, 4 );
                     return 1;
                 }
@@ -548,13 +548,13 @@ CMD:approveevent(playerid, params[])
             new string[128];
             EventKernel[ EventStatus ] = 1;
             EventKernel[EventStartRequest] = 0;
-            SendClientMessageEx( EventKernel[EventCreator], COLOR_GRAD2, "Your event start request has been accepted, you can now use /announceevent to announce it to the server." );
-            format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s has approved the event start request from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(EventKernel[EventCreator]) );
+            SendClientMessageEx( EventKernel[EventCreator], COLOR_GRAD2, "Yeu cau bat dau su kien da duoc duyet, dung /announceevent de thong bao toan may chu." );
+            format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s da duyet yeu cau bat dau su kien cua %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(EventKernel[EventCreator]) );
             ABroadCast( COLOR_YELLOW, string, 4 );
             foreach(new i: Player)
 			{
 				if(PlayerInfo[i][pDonateRank] >= 3) {
-					SendClientMessageEx(i, COLOR_YELLOW, "* Gold+ VIP Feature: An event has been started! /joinevent to join early");
+					SendClientMessageEx(i, COLOR_YELLOW, "* Tinh nang Gold+ VIP: Su kien da mo! /joinevent de vao som");
 				}
 			}	
             return 1;
@@ -568,8 +568,8 @@ CMD:eventhelp(playerid, params[])
 	if (EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 	    SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-		SendClientMessageEx(playerid, COLOR_GRAD4,"*** EVENT HELP *** type a command for more information");
-		SendClientMessageEx(playerid, COLOR_WHITE,"*** EVENT HELP *** /event /seteventpos /seteventinfo /startevent /lockevent /endevent /announceevent /beginevent /quitevent");
+		SendClientMessageEx(playerid, COLOR_GRAD4,"*** TRO GIUP SU KIEN *** Nhap lenh de xem chi tiet");
+		SendClientMessageEx(playerid, COLOR_WHITE,"*** TRO GIUP SU KIEN *** /event /seteventpos /seteventinfo /startevent /lockevent /endevent /announceevent /beginevent /quitevent");
 		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	}
 	return 1;
@@ -586,16 +586,16 @@ CMD:seteventpos(playerid, params[])
 			GetPlayerPos(playerid, EventKernel[EventPositionX], EventKernel[EventPositionY], EventKernel[EventPositionZ]);
 			EventKernel[EventInterior] = GetPlayerInterior(playerid);
 			EventKernel[EventWorld] = GetPlayerVirtualWorld(playerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event position, type /seteventinfo to change the event properties.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dat vi tri su kien, dung /seteventinfo de doi thuoc tinh su kien.");
 			EventKernel[EventJoinStaff] = 1;
-			format(string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s has started an event, type /eventstaff if you want to be in the event staff.", GetPlayerNameEx(playerid) );
+			format(string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s da tao su kien, dung /eventstaff de vao nhom dieu hanh.", GetPlayerNameEx(playerid) );
 			ABroadCast(COLOR_YELLOW, string, 1);
 			CBroadCast(COLOR_YELLOW, string, 2);
 			foreach(new i: Player) if(PlayerInfo[i][pSEC] >= 1) SendClientMessageEx(i, COLOR_YELLOW, string);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD2, "You are not making an event, or you're not the correct admin level.");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong tao su kien hoac chua du cap Admin.");
 		}
 	}
 	return 1;
@@ -609,35 +609,35 @@ CMD:seteventtype(playerid, params[])
 		{
 			if(isnull(params))
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /seteventtype [type]");
-				SendClientMessageEx(playerid, COLOR_GREY, "Available names: DM, TDM, Infection");
+				SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /seteventtype [type]");
+				SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: DM, TDM, Infection");
 				return 1;
 			}
 
 			if(strcmp(params,"dm",true) == 0)
 			{
 				EventKernel[ EventType ] = 1;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to DM.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi loai su kien thanh DM.");
 			}
 			else if(strcmp(params,"tdm",true) == 0)
 			{
 				EventKernel[ EventType ] = 2;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to TDM.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi loai su kien thanh TDM.");
 			}
 			else if(strcmp(params,"race",true) == 0)
 			{
 				EventKernel[ EventType ] = 3;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to Race.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi loai su kien thanh Race.");
 			}
 			else if(strcmp(params,"infection",true) == 0)
 			{
 				EventKernel[ EventType ] = 4;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to infection.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi loai su kien thanh infection.");
 			}
 			else if(strcmp(params,"none",true) == 0)
 			{
 				EventKernel[ EventType ] = 0;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to None.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi loai su kien thanh None.");
 			}
 		}
 	}
@@ -655,8 +655,8 @@ CMD:editevent(playerid, params[])
 			{
 			    if(sscanf(params, "s[32]S[64]", choice, opstring))
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent [name]");
-					SendClientMessageEx(playerid, COLOR_GREY, "Available names: Jointext, Limit, Health, Armor, Gun1, Gun2, Gun3, Gun4, Gun5");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent [name]");
+					SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: Jointext, Limit, Health, Armor, Gun1, Gun2, Gun3, Gun4, Gun5");
 					return 1;
 				}
 			}
@@ -664,8 +664,8 @@ CMD:editevent(playerid, params[])
 			{
 			    if(sscanf(params, "s[32]S[64]", choice, opstring))
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent [name]");
-					SendClientMessageEx(playerid, COLOR_GREY, "Available names: Jointext, Limit, CustomInterior, Team1Skin, Team2Skin, Team1Color, Team2Color");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent [name]");
+					SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: Jointext, Limit, CustomInterior, Team1Skin, Team2Skin, Team1Color, Team2Color");
 					SendClientMessageEx(playerid, COLOR_GREY, "Team1Spawn, Team2Spawn, Health, Armor, Gun1, Gun2, Gun3, Gun4, Gun5");
 					return 1;
 				}
@@ -674,10 +674,10 @@ CMD:editevent(playerid, params[])
 			{
 			    if(sscanf(params, "s[32]S("")[64]", choice, opstring))
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent [name]");
-					SendClientMessageEx(playerid, COLOR_GREY, "Available names: Jointext, Limit, Health, Hours, CheckPoints, RaceType(Future Development), OnFoot(0/1)");
-					SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life Note: Set hours to something between 1-5 and don't touch the limit!");
-					SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life Note: Enable OnFoot!");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent [name]");
+					SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: Jointext, Limit, Health, Hours, CheckPoints, RaceType(Chua hoan thien), OnFoot(0/1)");
+					SendClientMessageEx(playerid, COLOR_GREY, "Luu y Relay For Life: Dat hours tu 1-5 va khong doi limit!");
+					SendClientMessageEx(playerid, COLOR_GREY, "Luu y Relay For Life: Bat OnFoot!");
 					return 1;
 				}
 			}
@@ -685,14 +685,14 @@ CMD:editevent(playerid, params[])
 			{
 			    if(sscanf(params, "s[32]S[64]", choice, opstring))
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent [name]");
-					SendClientMessageEx(playerid, COLOR_GREY, "Available names: Jointext, Limit, Health, Armor, Gun1, Gun2, Gun3, Gun4, Gun5");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent [name]");
+					SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: Jointext, Limit, Health, Armor, Gun1, Gun2, Gun3, Gun4, Gun5");
 					return 1;
 				}
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "You need to set the event type first!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Ban can dat loai su kien truoc!");
 				return 1;
 			}
 
@@ -700,187 +700,187 @@ CMD:editevent(playerid, params[])
 			{
 				if(!opstring[0])
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent jointext [text]");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent jointext [text]");
 					return 1;
 				}
 				strmid(EventKernel[EventInfo], opstring, 0, strlen(opstring), 64);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event join text.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi noi dung moi tham gia su kien.");
 			}
 			else if(strcmp(choice, "health", true) == 0)
 			{
 				if(EventKernel[EventType] != 1 && EventKernel[EventType] != 2 && EventKernel[EventType] != 3 && EventKernel[EventType] != 4)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ten nay khong dung duoc cho loai su kien nay.");
 					return 1;
 				}
 
 				if(!opstring[0])
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent health [health]");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent health [health]");
 					return 1;
 				}
 				new Float: health;
 				health = floatstr(opstring);
 				EventKernel[EventHealth] = health;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event health.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi mau su kien.");
 			}
 			else if(strcmp(choice, "armor", true) == 0)
 			{
 				if(EventKernel[EventType] != 1 && EventKernel[EventType] != 2 && EventKernel[EventType] != 4)
 				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "This name is not available for this event type.");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Ten nay khong dung duoc cho loai su kien nay.");
 					return 1;
 				}
 
 				if(!opstring[0])
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent armor [armor]");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent armor [armor]");
 					return 1;
 				}
 				new Float: armor;
 				armor = floatstr(opstring);
 				if(armor == 100) armor = 99;
 				EventKernel[EventArmor] = armor;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event armor.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi giap su kien.");
 			}
 			else if(strcmp(choice, "team1skin", true) == 0)
 			{
 				if(EventKernel[EventType] != 2)
 				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "This name is not available for this event type.");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Ten nay khong dung duoc cho loai su kien nay.");
 					return 1;
 				}
 
 				if(!opstring[0])
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent team1skin [skinid]");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent team1skin [skinid]");
 					return 1;
 				}
 
 				new skin;
 				skin = strval(opstring);
 				EventKernel[EventTeamSkin][0] = skin;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event team 1 skin.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi skin doi 1 cua su kien.");
 			}
 			else if(strcmp(choice, "team2skin", true) == 0)
 			{
 				if(EventKernel[EventType] != 2)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ten nay khong dung duoc cho loai su kien nay.");
 					return 1;
 				}
 
 				if(!opstring[0])
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent team2skin [skinid]");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent team2skin [skinid]");
 					return 1;
 				}
 
 				new skin;
 				skin = strval(opstring);
 				EventKernel[EventTeamSkin][1] = skin;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event team 2 skin.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi skin doi 2 cua su kien.");
 			}
 			else if(strcmp(choice, "team1color", true) == 0)
 			{
 				if(EventKernel[EventType] != 2)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ten nay khong dung duoc cho loai su kien nay.");
 					return 1;
 				}
 
 				if(!strlen(opstring))
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent team1color [color]");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent team1color [color]");
 					SendClientMessageEx(playerid, COLOR_GREY, "black | white | blue | red | green | purple | yellow | lightblue |");
 					SendClientMessageEx(playerid, COLOR_GREY, "darkgreen | darkblue | darkgrey | brown | darkbrown | darkred | pink ");
 					return 1;
 				}
 				EventKernel[EventTeamColor][0] = GetColorCode(opstring);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event team 1 color.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi mau sac doi 1 cua su kien.");
 			}
 			else if(strcmp(choice, "team2color", true) == 0)
 			{
 				if(EventKernel[EventType] != 2)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ten nay khong dung duoc cho loai su kien nay.");
 					return 1;
 				}
 
 				if(!strlen(opstring))
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent team2color [color]");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent team2color [color]");
 					SendClientMessageEx(playerid, COLOR_GREY, "black | white | blue | red | green | purple | yellow | lightblue |");
 					SendClientMessageEx(playerid, COLOR_GREY, "darkgreen | darkblue | darkgrey | brown | darkbrown | darkred | pink ");
 					return 1;
 				}
 				EventKernel[EventTeamColor][1] = GetColorCode(opstring);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event team 2 color.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi mau sac doi 2 cua su kien.");
 			}
 			else if(strcmp(choice, "team1spawn", true) == 0)
 			{
 				if(EventKernel[EventType] != 2)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ten nay khong dung duoc cho loai su kien nay.");
 					return 1;
 				}
 				GetPlayerPos(playerid, EventKernel[ EventTeamPosX1 ], EventKernel[ EventTeamPosY1 ], EventKernel[ EventTeamPosZ1 ] );
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted team 1's spawn position.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi diem xuat hien doi 1.");
 			}
 			else if(strcmp(choice, "team2spawn", true) == 0)
 			{
 				if(EventKernel[EventType] != 2)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "This feature is not available for this event type.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Tinh nang nay khong dung duoc voi loai su kien nay.");
 					return 1;
 				}
 				GetPlayerPos(playerid, EventKernel[ EventTeamPosX2 ], EventKernel[ EventTeamPosY2 ], EventKernel[ EventTeamPosZ2 ]);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted team 2's spawn position.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi diem xuat hien doi 2.");
 			}
 			else if(strcmp(choice, "limit", true) == 0)
 			{
 			    if(EventKernel[EventTime] != 0)
-			        return SendClientMessageEx(playerid, COLOR_GRAD2, "This feature is not available for this event, everyone is free to join. If you want to enable this please set the hours to 0.");
+			        return SendClientMessageEx(playerid, COLOR_GRAD2, "Tinh nang nay khong dung duoc voi su kien nay, moi nguoi deu duoc vao. Dat hours la 0 de bat gioi han.");
 				if(!opstring[0])
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent limit [limit 0-60]");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent limit [limit 0-60]");
 					return 1;
 				}
 
 				new limit;
 				limit = strval(opstring);
-				if(limit < 0 || limit > 120) return SendClientMessageEx(playerid, COLOR_RED, "You cannot adjust the event limit higher than 120 or below 0");
+				if(limit < 0 || limit > 120) return SendClientMessageEx(playerid, COLOR_RED, "Gioi han su kien khong duoc tren 120 hoac duoi 0");
 				EventKernel[EventLimit] = limit;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the players in event limit.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi gioi han nguoi choi trong su kien.");
 			}
 			else if(strcmp(choice, "hours", true) == 0)
 			{
 			    if(EventKernel[EventType] != 3)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "This feature is not available for this event type.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Tinh nang nay khong dung duoc voi loai su kien nay.");
 					return 1;
 				}
 				if(!opstring[0])
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent hours [hours 0-5]");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent hours [hours 0-5]");
 					return 1;
 				}
 
 				new hours, seconds;
 				hours = strval(opstring);
-				if(hours < 0 || hours > 5) return SendClientMessageEx(playerid, COLOR_RED, "You cannot adjust the event hours higher than 5 or below 0");
+				if(hours < 0 || hours > 5) return SendClientMessageEx(playerid, COLOR_RED, "So gio su kien khong duoc tren 5 hoac duoi 0");
 				seconds = hours*3600;
 				EventKernel[EventTime] = seconds;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event hours that the event will be active for, timer will start once you fully start the event.");
-                SendClientMessageEx(playerid, COLOR_GREY, "NOTE: If you set the event hours to 0 the event will finish once the last racer goes into the last checkpoint.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi so gio su kien hoat dong, hen gio se chay khi su kien chinh thuc bat dau.");
+                SendClientMessageEx(playerid, COLOR_GREY, "LUU Y: Neu dat so gio la 0, su kien ket thuc khi tay dua cuoi cung den checkpoint cuoi.");
 				if(hours != 0)
-					SendClientMessageEx(playerid, COLOR_YELLOW, "The feature players in event limit(/editevent limit) is now disabled since you changed the hours more than 0.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Gioi han nguoi choi(/editevent limit) da tat vi ban dat so gio lon hon 0.");
 			}
    			else if(strcmp(choice, "checkpoints", true) == 0)
 			{
 				if(EventKernel[EventType] != 3)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "This feature is not available for this event type.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Tinh nang nay khong dung duoc voi loai su kien nay.");
 					return 1;
 				}
 				ConfigEventCPs[playerid][0] = 1;
@@ -888,128 +888,128 @@ CMD:editevent(playerid, params[])
 				ConfigEventCPs[playerid][2] = 0;
 				ConfigEventCPId[playerid] = 0;
 				new string[279];
-				format(string,sizeof(string),"Welcome to the race checkpoint configuration system!\nThis is a quick guide on the steps you need to follow to successfully get the race checkpoints done.\nFirst and most important you need to remember to make the checkpoints in order, from the start line to the end line.");
-				ShowPlayerDialogEx(playerid,RCPINTRO,DIALOG_STYLE_MSGBOX,"Race Checkpoints Introduction",string,"Next","Skip");
+				format(string,sizeof(string),"Chao mung den phan cau hinh checkpoint dua!\nHuong dan nay giup ban thiet lap cac checkpoint cho duong dua.\nCan tao checkpoint dung thu tu, tu vach xuat phat den vach dich.");
+				ShowPlayerDialogEx(playerid,RCPINTRO,DIALOG_STYLE_MSGBOX,"Huong dan checkpoint dua",string,"Tiep","Bo qua");
 			}
 			else if(strcmp(choice, "onfoot", true) == 0)
 			{
 				if(EventKernel[EventFootRace])
 				{
 				    EventKernel[EventFootRace] = 0;
-					SendClientMessageEx(playerid, COLOR_GRAD2, "You have toggled off the onfoot feature, people can use vehicles(Future development, please don't use not working proprely)");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Da tat che do di bo, nguoi choi duoc dung xe(Chua hoan thien, chua on dinh, khong nen dung)");
 				}
 				else {
 				    EventKernel[EventFootRace] = 1;
-					SendClientMessageEx(playerid, COLOR_GRAD2, "You have toggled on the onfoot feature, people cannot use vehicles.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Da bat che do di bo, nguoi choi khong duoc dung xe.");
 				}
 			}
 			else if(strcmp(choice, "gun1", true) == 0)
 			{
 				if(EventKernel[EventType] != 1 && EventKernel[EventType] != 2 && EventKernel[EventType] != 4)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ten nay khong dung duoc cho loai su kien nay.");
 					return 1;
 				}
 
 				if(!opstring[0])
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent gun1 [weaponid]");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent gun1 [weaponid]");
 					return 1;
 				}
 
 				new weapon;
 				weapon = strval(opstring);
-				if(weapon == 16 || weapon == 18 || weapon == 35 || weapon == 37 || weapon == 38 || weapon == 39) return SendClientMessageEx(playerid, COLOR_WHITE, "This weapon cannot be set as an event weapon!");
+				if(weapon == 16 || weapon == 18 || weapon == 35 || weapon == 37 || weapon == 38 || weapon == 39) return SendClientMessageEx(playerid, COLOR_WHITE, "Vu khi nay khong dung duoc cho su kien!");
 				EventKernel[EventWeapons][0] = weapon;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event gun 1.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vu khi 1 cua su kien.");
 			}
 			else if(strcmp(choice, "gun2", true) == 0)
 			{
 				if(EventKernel[EventType] != 1 && EventKernel[EventType] != 2 && EventKernel[EventType] != 4)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ten nay khong dung duoc cho loai su kien nay.");
 					return 1;
 				}
 
 				if(!opstring[0])
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent gun1 [weaponid]");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent gun1 [weaponid]");
 					return 1;
 				}
 
 				new weapon;
 				weapon = strval(opstring);
-				if(weapon == 16 || weapon == 18 || weapon == 35 || weapon == 37 || weapon == 38 || weapon == 39) return SendClientMessageEx(playerid, COLOR_WHITE, "This weapon cannot be set as an event weapon!");
+				if(weapon == 16 || weapon == 18 || weapon == 35 || weapon == 37 || weapon == 38 || weapon == 39) return SendClientMessageEx(playerid, COLOR_WHITE, "Vu khi nay khong dung duoc cho su kien!");
 				EventKernel[EventWeapons][1] = weapon;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event gun 2.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vu khi 2 cua su kien.");
 			}
 			else if(strcmp(choice, "gun3", true) == 0)
 			{
 				if(EventKernel[EventType] != 1 && EventKernel[EventType] != 2 && EventKernel[EventType] != 4)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ten nay khong dung duoc cho loai su kien nay.");
 					return 1;
 				}
 
 				if(!opstring[0])
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent gun1 [weaponid]");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent gun1 [weaponid]");
 					return 1;
 				}
 
 				new weapon;
 				weapon = strval(opstring);
-				if(weapon == 16 || weapon == 18 || weapon == 35 || weapon == 37 || weapon == 38 || weapon == 39) return SendClientMessageEx(playerid, COLOR_WHITE, "This weapon cannot be set as an event weapon!");
+				if(weapon == 16 || weapon == 18 || weapon == 35 || weapon == 37 || weapon == 38 || weapon == 39) return SendClientMessageEx(playerid, COLOR_WHITE, "Vu khi nay khong dung duoc cho su kien!");
 				EventKernel[EventWeapons][2] = weapon;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event gun 3.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vu khi 3 cua su kien.");
 			}
 			else if(strcmp(choice, "gun4", true) == 0)
 			{
 				if(EventKernel[EventType] != 1 && EventKernel[EventType] != 2 && EventKernel[EventType] != 4)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ten nay khong dung duoc cho loai su kien nay.");
 					return 1;
 				}
 
 				if(!opstring[0])
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent gun1 [weaponid]");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent gun1 [weaponid]");
 					return 1;
 				}
 
 				new weapon;
 				weapon = strval(opstring);
-				if(weapon == 35 || weapon == 37 || weapon == 38) return SendClientMessageEx(playerid, COLOR_WHITE, "This weapon cannot be set as an event weapon!");
+				if(weapon == 35 || weapon == 37 || weapon == 38) return SendClientMessageEx(playerid, COLOR_WHITE, "Vu khi nay khong dung duoc cho su kien!");
 				EventKernel[EventWeapons][3] = weapon;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event gun 4.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vu khi 4 cua su kien.");
 			}
 			else if(strcmp(choice, "gun5", true) == 0)
 			{
 				if(EventKernel[EventType] != 1 && EventKernel[EventType] != 2 && EventKernel[EventType] != 4)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ten nay khong dung duoc cho loai su kien nay.");
 					return 1;
 				}
 
 				if(!opstring[0])
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent gun1 [weaponid]");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent gun1 [weaponid]");
 					return 1;
 				}
 
 				new weapon;
 				weapon = strval(opstring);
-				if(weapon == 35 || weapon == 37 || weapon == 38) return SendClientMessageEx(playerid, COLOR_WHITE, "This weapon cannot be set as an event weapon!");
+				if(weapon == 35 || weapon == 37 || weapon == 38) return SendClientMessageEx(playerid, COLOR_WHITE, "Vu khi nay khong dung duoc cho su kien!");
 				EventKernel[EventWeapons][4] = weapon;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event gun 5.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vu khi 5 cua su kien.");
 			}
 			else if(strcmp(choice, "custominterior", true) == 0)
 			{
-				if(!opstring[0]) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent custominterior [0/1]");
+				if(!opstring[0]) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editevent custominterior [0/1]");
 				
 				EventKernel[EventCustomInterior] = strval(opstring);
 				
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have set the Custom Interior Value to %d.", strval(opstring));
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da dat gia tri Custom Interior la %d.", strval(opstring));
 			}
 		}
 	}
@@ -1022,23 +1022,23 @@ CMD:seteventviponly(playerid, params[])
 	{
 		if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 		{
-			if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /seteventviponly [0/1]");
+			if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /seteventviponly [0/1]");
 
 			if(PlayerInfo[playerid][pVIPMod] && PlayerInfo[playerid][pAdmin] == 0)
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "Error: You're not allowed to change this value!");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Loi: Ban khong duoc doi gia tri nay!");
 				return 1;
 			}
 
 			if(strcmp(params,"0",true) == 0)
 			{
 				EventKernel[ VipOnly ] = 0;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to not VIP Only.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da bo han che chi VIP cho su kien.");
 			}
 			else if(strcmp(params,"1",true) == 0)
 			{
 				EventKernel[ VipOnly ] = 1;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to VIP Only.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da dat su kien chi danh cho VIP.");
 			}
 
 		}
@@ -1052,7 +1052,7 @@ CMD:seteventinfo(playerid, params[])
 	{
 		if( EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /seteventtype /editevent /seteventviponly (once ready, type /startevent)");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /seteventtype /editevent /seteventviponly (khi san sang, dung /startevent)");
 			return 1;
 		}
 	}
@@ -1102,7 +1102,7 @@ CMD:endevent(playerid, params[])
 					DeletePVar(i, "pPreGodHealth");
 					DeletePVar(i, "pPreGodArmor");
 					SetPVarInt(i, "eventStaff", 0);
-					SendClientMessageEx( i, COLOR_YELLOW, "You have been removed from the event as it has been terminated by an administrator." );
+					SendClientMessageEx( i, COLOR_YELLOW, "Ban da roi su kien vi Admin da ket thuc su kien." );
 				}	
 				else if( GetPVarInt( i, "EventToken" ) == 1 )
 				{
@@ -1137,7 +1137,7 @@ CMD:endevent(playerid, params[])
 					EventLastVW[i] = 0;
 					EventLastInt[i] = 0;
 					DeletePVar(i, "EventToken");
-					SendClientMessageEx( i, COLOR_YELLOW, "You have been removed from the event as it has been terminated by an administrator." );
+					SendClientMessageEx( i, COLOR_YELLOW, "Ban da roi su kien vi Admin da ket thuc su kien." );
 				}
 			}	
 			EventKernel[ EventPositionX ] = 0;
@@ -1176,11 +1176,11 @@ CMD:endevent(playerid, params[])
 				EventKernel[EventStaff][i] = INVALID_PLAYER_ID;
 			}	
 			EventKernel[EventCustomInterior] = 0;
-			SendClientMessageToAllEx( COLOR_LIGHTBLUE, "* The event has been finished by an Administrator." );
+			SendClientMessageToAllEx( COLOR_LIGHTBLUE, "* Admin da ket thuc su kien." );
 		}
 		else
 		{
-			SendClientMessageEx( playerid, COLOR_WHITE, "There isn't an active event at the moment." );
+			SendClientMessageEx( playerid, COLOR_WHITE, "Hien khong co su kien dang chay." );
 		}
 	}
 	return 1;
@@ -1198,22 +1198,22 @@ CMD:startevent(playerid, params[])
 			{
 				if(EventKernel[ EventHealth ] == 0)
 				{
-					SendClientMessageEx( playerid, COLOR_GRAD2, "You did not set the event health!" );
+					SendClientMessageEx( playerid, COLOR_GRAD2, "Ban chua dat mau cho su kien!" );
 					return 1;
 				}
 				if((EventKernel[ EventPositionX ] == 0 || EventKernel[ EventPositionY ] == 0 || EventKernel[ EventPositionZ ] == 0) && EventKernel[EventType] != 3)
 				{
-					SendClientMessageEx( playerid, COLOR_GRAD2, "You did not set the event position!" );
+					SendClientMessageEx( playerid, COLOR_GRAD2, "Ban chua dat vi tri su kien!" );
 					return 1;
 				}
 				if( (EventKernel[ EventTeamPosX1 ] == 0 || EventKernel[ EventTeamPosY1 ] == 0 || EventKernel[ EventTeamPosZ1 ] == 0) && EventKernel[ EventType ] == 2)
 				{
-					SendClientMessageEx( playerid, COLOR_GRAD2, "You did not set team 1's spawn position!" );
+					SendClientMessageEx( playerid, COLOR_GRAD2, "Ban chua dat diem xuat hien doi 1!" );
 					return 1;
 				}
 				if( (EventKernel[ EventTeamPosX2 ] == 0 || EventKernel[ EventTeamPosY2 ] == 0 || EventKernel[ EventTeamPosZ2 ] == 0) && EventKernel[ EventType ] == 2)
 				{
-					SendClientMessageEx( playerid, COLOR_GRAD2, "You did not set team 2's spawn position!" );
+					SendClientMessageEx( playerid, COLOR_GRAD2, "Ban chua dat diem xuat hien doi 2!" );
 					return 1;
 				}
 				if(EventKernel[ EventLimit ] == 0)
@@ -1221,12 +1221,12 @@ CMD:startevent(playerid, params[])
 					EventKernel[ EventLimit ] = 60;
 				}
 				EventKernel[ EventStatus ] = 1;
-				SendClientMessageEx( playerid, COLOR_GRAD2, "You have started an event, use /announceevent to announce the event to the whole server." );
+				SendClientMessageEx( playerid, COLOR_GRAD2, "Ban da tao su kien, dung /announceevent de thong bao toan may chu." );
 				foreach(new i: Player)
 				{
 					if(PlayerInfo[i][pDonateRank] >= 3)
 					{
-						SendClientMessageEx(i, COLOR_YELLOW, "* Gold+ VIP feature: An event has been started! /joinevent to join early");
+						SendClientMessageEx(i, COLOR_YELLOW, "* Tinh nang Gold+ VIP: Su kien da mo! /joinevent de vao som");
 					}
 				}	
 				return 1;
@@ -1235,12 +1235,12 @@ CMD:startevent(playerid, params[])
 			{
 				if(EventKernel[ EventHealth ] == 0)
 				{
-					SendClientMessageEx( playerid, COLOR_GRAD2, "You did not set the event health!" );
+					SendClientMessageEx( playerid, COLOR_GRAD2, "Ban chua dat mau cho su kien!" );
 					return 1;
 				}
 				if((EventKernel[ EventPositionX ] == 0 || EventKernel[ EventPositionY ] == 0 || EventKernel[ EventPositionZ ] == 0) && EventKernel[EventType] != 3)
 				{
-					SendClientMessageEx( playerid, COLOR_GRAD2, "You did not set the event position!" );
+					SendClientMessageEx( playerid, COLOR_GRAD2, "Ban chua dat vi tri su kien!" );
 					return 1;
 				}
 				if(EventKernel[ EventLimit ] == 0)
@@ -1248,66 +1248,66 @@ CMD:startevent(playerid, params[])
 					EventKernel[ EventLimit ] = 60;
 				}
 				EventKernel[ EventStartRequest ] = 1;
-				SendClientMessageEx( playerid, COLOR_GRAD2, "You have requested the event to start, please wait until a Senior Admin approves it." );
+				SendClientMessageEx( playerid, COLOR_GRAD2, "Ban de nghi bat dau su kien, hay cho Senior Admin duyet." );
 				if(EventKernel[EventType] != 3)
 				{
-					format( string, sizeof( string ), "Event Position: x:%f y:%f z:%f.", EventKernel[EventPositionX], EventKernel[EventPositionY], EventKernel[EventPositionZ] );
+					format( string, sizeof( string ), "Vi tri su kien: x:%f y:%f z:%f.", EventKernel[EventPositionX], EventKernel[EventPositionY], EventKernel[EventPositionZ] );
 					ABroadCast( COLOR_GRAD2, string, 4 );
-					format( string, sizeof( string ), "Event Jointext: %s EventLimit: %d.", EventKernel[EventInfo], EventKernel[EventLimit] );
+					format( string, sizeof( string ), "Loi moi su kien: %s Gioi han: %d.", EventKernel[EventInfo], EventKernel[EventLimit] );
 					ABroadCast( COLOR_GRAD2, string, 4 );
-					format( string, sizeof( string ), "Event Health: %f Event Armor: %f.", EventKernel[EventHealth], EventKernel[EventArmor] );
+					format( string, sizeof( string ), "Mau su kien: %f Giap su kien: %f.", EventKernel[EventHealth], EventKernel[EventArmor] );
 					ABroadCast( COLOR_GRAD2, string, 4 );
 					if(EventKernel[EventWeapons][0] != 0)
 					{
-						format( string, sizeof( string ), "Event Gun1: %d.", EventKernel[EventWeapons][0] );
+						format( string, sizeof( string ), "Vu khi 1: %d.", EventKernel[EventWeapons][0] );
 						ABroadCast( COLOR_GRAD2, string, 4 );
 					}
 					if(EventKernel[EventWeapons][1] != 0)
 					{
-						format( string, sizeof( string ), "Event Gun2: %d.", EventKernel[EventWeapons][1] );
+						format( string, sizeof( string ), "Vu khi 2: %d.", EventKernel[EventWeapons][1] );
 						ABroadCast( COLOR_GRAD2, string, 4 );
 					}
 					if(EventKernel[EventWeapons][2] != 0)
 					{
-						format( string, sizeof( string ), "Event Gun3: %d.", EventKernel[EventWeapons][2] );
+						format( string, sizeof( string ), "Vu khi 3: %d.", EventKernel[EventWeapons][2] );
 						ABroadCast( COLOR_GRAD2, string, 4 );
 					}
 					if(EventKernel[EventWeapons][3] != 0)
 					{
-						format( string, sizeof( string ), "Event Gun4: %d.", EventKernel[EventWeapons][3] );
+						format( string, sizeof( string ), "Vu khi 4: %d.", EventKernel[EventWeapons][3] );
 						ABroadCast( COLOR_GRAD2, string, 4 );
 					}
 					if(EventKernel[EventWeapons][4] != 0)
 					{
-      					format( string, sizeof( string ), "Event Gun5: %d.", EventKernel[EventWeapons][4] );
+      					format( string, sizeof( string ), "Vu khi 5: %d.", EventKernel[EventWeapons][4] );
 						ABroadCast( COLOR_GRAD2, string, 4 );
 					}
 					if(EventKernel[EventType] == 2)
 					{
-						format( string, sizeof( string ), "Event Team 1 Color: %d Event Team 1 Skin: %d.", EventKernel[EventTeamColor][0], EventKernel[EventTeamSkin][0] );
+						format( string, sizeof( string ), "Mau doi su kien 1: %d Skin doi su kien 1: %d.", EventKernel[EventTeamColor][0], EventKernel[EventTeamSkin][0] );
 						ABroadCast( COLOR_GRAD2, string, 4 );
-						format( string, sizeof( string ), "Event Team 2 Color: %d Event Team 2 Skin: %d.", EventKernel[EventTeamColor][1], EventKernel[EventTeamSkin][1] );
+						format( string, sizeof( string ), "Mau doi su kien 2: %d Skin doi su kien 2: %d.", EventKernel[EventTeamColor][1], EventKernel[EventTeamSkin][1] );
 						ABroadCast( COLOR_GRAD2, string, 4 );
 					}
 				}
 				else {
 				    if(EventKernel[EventTime] != 0) {
-				    	format( string, sizeof( string ), "Event Jointext: %s EventTimeLimit: %d.", EventKernel[EventInfo], EventKernel[EventTime] );
+				    	format( string, sizeof( string ), "Loi moi su kien: %s Gioi han gio: %d.", EventKernel[EventInfo], EventKernel[EventTime] );
 						ABroadCast( COLOR_GRAD2, string, 4 );
 					}
 					else {
-						format( string, sizeof( string ), "Event Jointext: %s EventLimit: %d.", EventKernel[EventInfo], EventKernel[EventLimit] );
+						format( string, sizeof( string ), "Loi moi su kien: %s Gioi han: %d.", EventKernel[EventInfo], EventKernel[EventLimit] );
 						ABroadCast( COLOR_GRAD2, string, 4 );
 					}
-					ABroadCastText( COLOR_GRAD2, "This is a race type event, to view the race checkpoints use /edit checkpoints", 4 );
+					ABroadCastText( COLOR_GRAD2, "Day la su kien dua, dung /edit checkpoints de xem cac checkpoint", 4 );
 				}
-				format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s would like to start the event, do you approve? /approveevent or /denyevent.", GetPlayerNameEx(playerid) );
+				format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s muon bat dau su kien, ban dong y? /approveevent hoac /denyevent.", GetPlayerNameEx(playerid) );
 				ABroadCast( COLOR_YELLOW, string, 4 );
 			}
 		}
 		else
 		{
-			SendClientMessageEx( playerid, COLOR_WHITE, "There is already an active event (use /endevent)." );
+			SendClientMessageEx( playerid, COLOR_WHITE, "Da co su kien dang chay (dung /endevent)." );
 		}
 	}
 
@@ -1320,7 +1320,7 @@ CMD:beginevent(playerid, params[])
 	{
 		if( EventKernel[ EventStatus ] == 3 )
 		{
-		    if(EventKernel[EventType] == 3 && EventKernel[EventTime] != 0) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: This feature is not available with the configuration setup for this event.");
+		    if(EventKernel[EventType] == 3 && EventKernel[EventTime] != 0) return SendClientMessageEx(playerid, COLOR_RED, "LOI: Tinh nang nay khong dung duoc voi cau hinh su kien nay.");
 			EventKernel[ EventStatus ] = 4;
    			new zombiemade;
 			foreach(new i: Player)
@@ -1330,7 +1330,7 @@ CMD:beginevent(playerid, params[])
 					if( EventKernel[ EventType ] == 1 )
 					{
 						//GivePlayerEventWeapons( i );
-						SendClientMessageEx( i, COLOR_LIGHTBLUE, "GO! The Event has started." );
+						SendClientMessageEx( i, COLOR_LIGHTBLUE, "BAT DAU! Su kien da bat dau." );
 						if(GetPVarInt(i, "eventStaff") < 1) {
 							SetHealth( i, EventKernel[ EventHealth ] );
 						}	
@@ -1342,7 +1342,7 @@ CMD:beginevent(playerid, params[])
 					else if( EventKernel[ EventType ] == 2 )
 					{
 						//GivePlayerEventWeapons( i );
-						SendClientMessageEx( i, COLOR_LIGHTBLUE, "GO! The Event has started." );
+						SendClientMessageEx( i, COLOR_LIGHTBLUE, "BAT DAU! Su kien da bat dau." );
 						if(GetPVarInt(i, "eventStaff") < 1) {
 							SetHealth( i, EventKernel[ EventHealth ] );
 						}
@@ -1355,7 +1355,7 @@ CMD:beginevent(playerid, params[])
 					{
 						if(zombiemade == 0)
 						{
-							SendClientMessageEx(playerid, COLOR_WHITE, "You are a zombie! Use /bite to infect others");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Ban la zombie! Dung /bite de lay nhiem nguoi khac");
 							SetHealth(playerid, 30);
 							RemoveArmor(playerid);
 							SetPlayerSkin(playerid, 134);
@@ -1367,7 +1367,7 @@ CMD:beginevent(playerid, params[])
 						else
 						{
 							//GivePlayerEventWeapons( i );
-							SendClientMessageEx( i, COLOR_LIGHTBLUE, "The Event has started, kill the zombies (green names!)" );
+							SendClientMessageEx( i, COLOR_LIGHTBLUE, "Su kien da bat dau, hay diet zombie (ten mau xanh!)" );
 							if(GetPVarInt(i, "eventStaff") < 1) {
 								SetHealth( i, EventKernel[ EventHealth ] );
 							}	
@@ -1380,13 +1380,13 @@ CMD:beginevent(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx( i, COLOR_WHITE, "The event has now started. If you wish to join next time, please use /joinevent." );
+					SendClientMessageEx( i, COLOR_WHITE, "Su kien da bat dau. Dung /joinevent de tham gia lan sau." );
 				}
 			}	
 		}
 		else
 		{
-			SendClientMessageEx( playerid, COLOR_WHITE, "There is already an active event (use /endevent)." );
+			SendClientMessageEx( playerid, COLOR_WHITE, "Da co su kien dang chay (dung /endevent)." );
 		}
 	}
 	return 1;
@@ -1399,13 +1399,13 @@ CMD:announceevent(playerid, params[])
 		if( EventKernel[ EventStatus ] == 1)
 		{
 			EventKernel[ EventStatus ] = 2;
-			SendClientMessageEx(playerid, COLOR_GRAD2, "To lock the event use /lockevent");
-			if(EventKernel[VipOnly] == 1) SendClientMessageToAllEx( COLOR_LIGHTBLUE, "* A VIP only event has been started by an Administrator, VIP's type /joinevent to participate." );
-			else SendClientMessageToAllEx( COLOR_LIGHTBLUE, "* An event has been started by an Administrator, type /joinevent to participate." );
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Dung /lockevent de khoa su kien");
+			if(EventKernel[VipOnly] == 1) SendClientMessageToAllEx( COLOR_LIGHTBLUE, "* Admin da mo su kien chi danh cho VIP, VIP dung /joinevent de tham gia." );
+			else SendClientMessageToAllEx( COLOR_LIGHTBLUE, "* Admin da mo su kien, dung /joinevent de tham gia." );
 		}
 		else
 		{
-			SendClientMessageEx( playerid, COLOR_WHITE, "There is already an active event (use /endevent)." );
+			SendClientMessageEx( playerid, COLOR_WHITE, "Da co su kien dang chay (dung /endevent)." );
 		}
 	}
 	return 1;
@@ -1417,14 +1417,14 @@ CMD:lockevent(playerid, params[])
 	{
 		if( EventKernel[ EventStatus ] == 2 )
 		{
-		    if(EventKernel[EventType] == 3 && EventKernel[EventTime] != 0) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: This feature is not available with the configuration setup for this event.");
+		    if(EventKernel[EventType] == 3 && EventKernel[EventTime] != 0) return SendClientMessageEx(playerid, COLOR_RED, "LOI: Tinh nang nay khong dung duoc voi cau hinh su kien nay.");
 			EventKernel[ EventStatus ] = 3;
-			SendClientMessageEx( playerid, COLOR_GRAD2, "You have locked an event, use /beginevent to officially start the event." );
-			SendClientMessageToAllEx( COLOR_LIGHTBLUE, "* The event has been locked by an Administrator." );
+			SendClientMessageEx( playerid, COLOR_GRAD2, "Da khoa su kien, dung /beginevent de chinh thuc bat dau." );
+			SendClientMessageToAllEx( COLOR_LIGHTBLUE, "* Admin da khoa su kien." );
 		}
 		else
 		{
-			SendClientMessageEx( playerid, COLOR_WHITE, "There is already an active event (use /endevent)." );
+			SendClientMessageEx( playerid, COLOR_WHITE, "Da co su kien dang chay (dung /endevent)." );
 		}
 	}
 	return 1;
@@ -1434,7 +1434,7 @@ CMD:event(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || EventKernel[EventCreator] == playerid)
 	{
-		if(EventKernel[ EventStatus ] == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "There are currently no active events.");
+		if(EventKernel[ EventStatus ] == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Hien khong co su kien dang chay.");
 		new string[128];
 		format(string, sizeof(string), "[Event] %s: %s", GetPlayerNameEx(playerid), params);
 		foreach(new i: Player)

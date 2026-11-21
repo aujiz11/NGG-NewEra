@@ -37,13 +37,13 @@
 
 CMD:resetupgrades(playerid, params[]) {
 	if(gPlayerLogged{playerid} == 0) {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You're not logged in.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban chua dang nhap.");
 	}
 	else if (GetPlayerCash(playerid) < 100000) {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You need $100,000 to reset your upgrade points.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Can $100,000 de dat lai diem nang cap.");
 	}
 	else if (PlayerInfo[playerid][pLevel] < 2) {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You must be at least level 2.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Can dat cap 2.");
 	}
 	else {
 		PlayerInfo[playerid][gPupgrade] = (PlayerInfo[playerid][pLevel]-1)*2;
@@ -70,7 +70,7 @@ CMD:resetupgrades(playerid, params[]) {
 		PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 
 
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You have reset your upgrades - you now have %i unspent upgrade points.", PlayerInfo[playerid][gPupgrade]);
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Da dat lai nang cap, ban co %i diem chua dung.", PlayerInfo[playerid][gPupgrade]);
 	}
 	return 1;
 }
@@ -99,19 +99,19 @@ LevelCheck(playerid)
 					nxtlevel = PlayerInfo[playerid][pLevel]+1;
 					expamount = nxtlevel*4;
 				}
-				SendClientMessageEx(playerid, COLOR_WHITE, "You had an excess amount of respect points, hence your level was adjusted to %d.", PlayerInfo[playerid][pLevel]);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Diem kinh nghiem du thua, cap cua ban duoc dieu chinh thanh %d.", PlayerInfo[playerid][pLevel]);
 				return 1;
 			}
 			else
 			{
 				new string[92];
-				format(string, sizeof(string), "~g~LEVEL UP~n~~w~You Are Now Level %d", nxtlevel);
+				format(string, sizeof(string), "~g~LEN CAP~n~~w~Ban Da Dat Cap %d", nxtlevel);
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 				PlayerInfo[playerid][pLevel]++;
 				PlayerInfo[playerid][pExp] = PlayerInfo[playerid][pExp]-expamount;
 				PlayerInfo[playerid][gPupgrade] = PlayerInfo[playerid][gPupgrade]+2;
 				GameTextForPlayer(playerid, string, 5000, 1);
-				SendClientMessageEx(playerid, COLOR_GRAD1, "You have leveled up to %d, and gained %i upgrade points! /upgrade to use them.", nxtlevel, PlayerInfo[playerid][gPupgrade]);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Ban dat cap %d va nhan %i diem nang cap! Dung /upgrade de phan bo.", nxtlevel, PlayerInfo[playerid][gPupgrade]);
 				SetPlayerScore(playerid, PlayerInfo[playerid][pLevel]);
 				if(PlayerInfo[playerid][pLevel] == 3)
 				{
@@ -131,7 +131,7 @@ LevelCheck(playerid)
 								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL);
 								Log("logs/referral.log", szString);
-						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 100 credits.", GetPlayerNameEx(playerid));
+						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Ban '%s' do ban gioi thieu da dat cap 3. Ban nhan duoc 100 credits.", GetPlayerNameEx(playerid));
 						    }
 					        else if(PlayerInfo[szReferrer][pRefers] == 5)
 					        {
@@ -141,7 +141,7 @@ LevelCheck(playerid)
 								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL*5);
 								Log("logs/referral.log", szString);
-						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 500 credits.", GetPlayerNameEx(playerid));
+						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Ban '%s' do ban gioi thieu da dat cap 3. Ban nhan duoc 500 credits.", GetPlayerNameEx(playerid));
 							}
 							else if(PlayerInfo[szReferrer][pRefers] < 10 && PlayerInfo[szReferrer][pRefers] > 5)
 					        {
@@ -151,7 +151,7 @@ LevelCheck(playerid)
 								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL);
 								Log("logs/referral.log", szString);
-						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 100 credits.", GetPlayerNameEx(playerid));
+						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Ban '%s' do ban gioi thieu da dat cap 3. Ban nhan duoc 100 credits.", GetPlayerNameEx(playerid));
 						    }
 							else if(PlayerInfo[szReferrer][pRefers] == 10)
 							{
@@ -161,7 +161,7 @@ LevelCheck(playerid)
 								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL*10);
 								Log("logs/referral.log", szString);
-						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 1000 credits.", GetPlayerNameEx(playerid));
+						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Ban '%s' do ban gioi thieu da dat cap 3. Ban nhan duoc 1000 credits.", GetPlayerNameEx(playerid));
 							}
 							else if(PlayerInfo[szReferrer][pRefers] < 15 && PlayerInfo[szReferrer][pRefers] > 10)
 					        {
@@ -171,7 +171,7 @@ LevelCheck(playerid)
 								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL);
 								Log("logs/referral.log", szString);
-						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 100 credits.", GetPlayerNameEx(playerid));
+						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Ban '%s' do ban gioi thieu da dat cap 3. Ban nhan duoc 100 credits.", GetPlayerNameEx(playerid));
 						    }
 							else if(PlayerInfo[szReferrer][pRefers] == 15)
 							{
@@ -181,7 +181,7 @@ LevelCheck(playerid)
 								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL*15);
 								Log("logs/referral.log", szString);
-						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 1500 credits.", GetPlayerNameEx(playerid));
+						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Ban '%s' do ban gioi thieu da dat cap 3. Ban nhan duoc 1500 credits.", GetPlayerNameEx(playerid));
 							}
 							else if(PlayerInfo[szReferrer][pRefers] < 20 && PlayerInfo[szReferrer][pRefers] > 15)
 					        {
@@ -191,7 +191,7 @@ LevelCheck(playerid)
 								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL);
 								Log("logs/referral.log", szString);
-						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 100 credits.", GetPlayerNameEx(playerid));
+						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Ban '%s' do ban gioi thieu da dat cap 3. Ban nhan duoc 100 credits.", GetPlayerNameEx(playerid));
 						    }
 							else if(PlayerInfo[szReferrer][pRefers] == 20)
 							{
@@ -201,7 +201,7 @@ LevelCheck(playerid)
 								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL*20);
 								Log("logs/referral.log", szString);
-						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 2000 credits.", GetPlayerNameEx(playerid));
+						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Ban '%s' do ban gioi thieu da dat cap 3. Ban nhan duoc 2000 credits.", GetPlayerNameEx(playerid));
 							}
 							else if(PlayerInfo[szReferrer][pRefers] < 25 && PlayerInfo[szReferrer][pRefers] > 20)
 					        {
@@ -211,7 +211,7 @@ LevelCheck(playerid)
 								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL);
 								Log("logs/referral.log", szString);
-						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 100 credits.", GetPlayerNameEx(playerid));
+						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Ban '%s' do ban gioi thieu da dat cap 3. Ban nhan duoc 100 credits.", GetPlayerNameEx(playerid));
 						    }
 							else if(PlayerInfo[szReferrer][pRefers] >= 25)
 							{
@@ -221,7 +221,7 @@ LevelCheck(playerid)
 								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL*25);
 								Log("logs/referral.log", szString);
-						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 2500 credits.", GetPlayerNameEx(playerid));
+						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, "Ban '%s' do ban gioi thieu da dat cap 3. Ban nhan duoc 2500 credits.", GetPlayerNameEx(playerid));
 							}
 					    }
 					    else {
@@ -232,7 +232,7 @@ LevelCheck(playerid)
 				}
 				if(PlayerInfo[playerid][pLevel] == 6)
 				{
-				    SendClientMessageEx(playerid, COLOR_WHITE, "Newbie chat will now be automatically togged off on login.");
+				    SendClientMessageEx(playerid, COLOR_WHITE, "Kenh Newbie se tu dong tat khi dang nhap.");
 				}
 			}
 		}
@@ -240,7 +240,7 @@ LevelCheck(playerid)
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You're not logged in.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban chua dang nhap.");
 	}
 	return 1;
 }

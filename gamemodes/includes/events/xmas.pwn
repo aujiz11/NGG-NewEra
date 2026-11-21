@@ -72,7 +72,7 @@ CMD:carol(playerid, params[]) // Christmas Event
 							default: cstring = "Deck the Halls";
 						}
 
-						format(string, sizeof(string), "* %s begins to sing the Christmas Carol %s.",GetPlayerNameEx(playerid), cstring);
+						format(string, sizeof(string), "* %s bat dau hat bai Christmas Carol %s.",GetPlayerNameEx(playerid), cstring);
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
 						return 1;
 					}
@@ -80,28 +80,28 @@ CMD:carol(playerid, params[]) // Christmas Event
 					{
 						if(GetPVarInt(playerid, "PinConfirmed"))
 						{
-							format(string, sizeof(string),"Item: Reset Caroling Timer\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(20), number_format(PlayerInfo[playerid][pCredits]-20));
-							ShowPlayerDialogEx( playerid, DIALOG_SHOPTOTRESET, DIALOG_STYLE_MSGBOX, "Reset Timer", string, "Purchase", "Exit" );
-							SendClientMessageEx(playerid, COLOR_GRAD2, "You have already sang in the last few hours!");
+							format(string, sizeof(string),"Vat pham: Reset Caroling Timer\nCredits: %s\nGia: {FFD700}%s{A9C4E4}\nCredits con: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(20), number_format(PlayerInfo[playerid][pCredits]-20));
+							ShowPlayerDialogEx( playerid, DIALOG_SHOPTOTRESET, DIALOG_STYLE_MSGBOX, "Dat lai gio", string, "Mua", "Thoat" );
+							SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da hat trong vai gio qua!");
 							return 1;
 						}
 						else
 						{
 							PinLogin(playerid);
-							SendClientMessageEx(playerid, COLOR_GRAD2, "You have already sang in the last few hours!");
+							SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da hat trong vai gio qua!");
 							return 1;
 						}
 					}
 				}
 			}
-			SendClientMessageEx(playerid, COLOR_GREY, "You are not at a house. (green house icon)");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o nha. (bieu tuong nha mau xanh)");
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You have not played 2 hours.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban chua choi du 2 gio.");
 		}
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "It isn't Christmas Eve!");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Chua den Christmas Eve!");
 	return 1;
 }
 
@@ -112,15 +112,15 @@ CMD:xmas(playerid, params[])
     	if(XMASGifts == 0)
      	{
      		XMASGifts = 1;
-			SendClientMessageToAllEx(COLOR_LIGHTGREEN, "%s would like for you to come to Pershing Square for free gifts and great times", GetPlayerNameEx(playerid));
+			SendClientMessageToAllEx(COLOR_LIGHTGREEN, "%s moi ban den Pershing Square de nhan qua mien phi va vui choi", GetPlayerNameEx(playerid));
 		}
 		else
 		{
   			XMASGifts = 0;
 			new string[128];
-   			format( string, sizeof( string ), "AdmCmd: %s has disabled the /getgift command", GetPlayerNameEx(playerid));
+   			format( string, sizeof( string ), "AdmCmd: %s da tat lenh /getgift", GetPlayerNameEx(playerid));
 			ABroadCast( COLOR_LIGHTRED, string, 1337 );
-			SendClientMessageToAllEx(COLOR_LIGHTGREEN, "Pershing Square is no longer giving away free gifts. Thanks for coming!", VIPGiftsName, VIPGiftsTimeLeft);
+			SendClientMessageToAllEx(COLOR_LIGHTGREEN, "Pershing Square da ngung phat qua mien phi. Cam on ban da den!", VIPGiftsName, VIPGiftsTimeLeft);
 		}
 	}
 	return 1;
@@ -141,9 +141,9 @@ CMD:christmasshop(playerid, params[]) {
 			Xmas Tree\t(150)"
 		);
 
-		ShowPlayerDialogEx(playerid, XMAS_SHOP, DIALOG_STYLE_LIST, "Xmas Shop", szMiscArray, "Select", "Cancel");
+		ShowPlayerDialogEx(playerid, XMAS_SHOP, DIALOG_STYLE_LIST, "Xmas Shop", szMiscArray, "Chon", "Huy");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "Humbug! No presents available yet!");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Chua co qua de nhan!");
 
 	return 1;
 }
@@ -166,37 +166,37 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			strmid(szCreditCost, inputtext, iLocate[0]+1, iLocate[1]);
 			iExtCredCost = strval(szCreditCost);
 
-			if(PlayerInfo[playerid][pCredits] < iExtCredCost) return SendClientMessageEx(playerid, COLOR_RED, "You do not have enough credits.");
+			if(PlayerInfo[playerid][pCredits] < iExtCredCost) return SendClientMessageEx(playerid, COLOR_RED, "Ban khong du credits.");
 
 			// extracting the item name
 			if(strcmp(inputtext, "Ornament 1", false, iLocate[0]-1) == 0) {
 				iToyID = 19059;
-				SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased Ornament 1 (19059) for 100 credits.");
+				SendClientMessageEx(playerid, COLOR_CYAN, "Ban da mua Ornament 1 (19059) voi gia 100 credits.");
 				format(szMiscArray, sizeof(szMiscArray), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Ornament 1] [Price: %s]",GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(iExtCredCost));
 			}
 			else if(strcmp(inputtext, "Ornament 2", false, iLocate[0]-1) == 0) {
 				iToyID = 19060;
-				SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased Ornament 2 (19060) for 100 credits.");
+				SendClientMessageEx(playerid, COLOR_CYAN, "Ban da mua Ornament 2 (19060) voi gia 100 credits.");
 				format(szMiscArray, sizeof(szMiscArray), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Ornament 2] [Price: %s]",GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(iExtCredCost));
 			}
 			else if(strcmp(inputtext, "Ornament 3", false, iLocate[0]-1) == 0) {
 				iToyID = 19061;
-				SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased Ornament 3 (19061) for 100 credits.");
+				SendClientMessageEx(playerid, COLOR_CYAN, "Ban da mua Ornament 3 (19061) voi gia 100 credits.");
 				format(szMiscArray, sizeof(szMiscArray), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Ornament 3] [Price: %s]",GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(iExtCredCost));
 			}
 			else if(strcmp(inputtext, "Ornament 4", false, iLocate[0]-1) == 0) {
 				iToyID = 19062;
-				SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased Ornament 4 (19062) for 100 credits.");
+				SendClientMessageEx(playerid, COLOR_CYAN, "Ban da mua Ornament 4 (19062) voi gia 100 credits.");
 				format(szMiscArray, sizeof(szMiscArray), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Ornament 4] [Price: %s]",GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(iExtCredCost));
 			}
 			else if(strcmp(inputtext, "Ornament 5", false, iLocate[0]-1) == 0) {
 				iToyID = 19063;
-				SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased Ornament 5 (19063) for 100 credits.");
+				SendClientMessageEx(playerid, COLOR_CYAN, "Ban da mua Ornament 5 (19063) voi gia 100 credits.");
 				format(szMiscArray, sizeof(szMiscArray), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Ornament 5] [Price: %s]",GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(iExtCredCost));
 			}
 			else if(strcmp(inputtext, "Xmas Tree", false, iLocate[0]-1) == 0) {
 				iToyID = 19076;
-				SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased an Xmas Tree (19076) for 150 credits.");
+				SendClientMessageEx(playerid, COLOR_CYAN, "Ban da mua Xmas Tree (19076) voi gia 150 credits.");
 				format(szMiscArray, sizeof(szMiscArray), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Xmas Tree] [Price: %s]",GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(iExtCredCost));
 			}
 
@@ -247,8 +247,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 					g_mysql_NewToy(playerid, i);
 
-					SendClientMessageEx(playerid, COLOR_GRAD1, "Due to you not having any available slots, we've temporarily given you an additional slot to use/sell/trade your toy.");
-					SendClientMessageEx(playerid, COLOR_RED, "Note: Please take note that after selling the toy, the temporarily additional toy slot will be removed.");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Vi khong con o trong, ban duoc tam cap them mot o de dung/ban/trao doi toy.");
+					SendClientMessageEx(playerid, COLOR_RED, "Luu y: O toy tam thoi se bi xoa sau khi ban toy.");
 					break;
 				}
 			}

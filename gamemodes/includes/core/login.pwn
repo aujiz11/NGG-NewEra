@@ -97,30 +97,28 @@ stock ShowMainMenuDialog(playerid, frame)
 	{
 		case 1:
 		{
-			format(titlestring, sizeof(titlestring), "{3399FF}Login - %s", GetPlayerNameEx(playerid));
-			format(string, sizeof(string), "{FFFFFF}Welcome to Next Generation Roleplay, %s.\n\nThe name that you are using is registered, please enter a password to login:", GetPlayerNameEx(playerid));
-			ShowPlayerDialogEx(playerid,MAINMENU,DIALOG_STYLE_PASSWORD,titlestring,string,"Login","Exit");
+			format(titlestring, sizeof(titlestring), "{3399FF}Dang nhap - %s", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "{FFFFFF}Chao mung den Next Generation Roleplay, %s.\n\nTen nay da duoc dang ky, hay nhap mat khau de dang nhap:", GetPlayerNameEx(playerid));
+			ShowPlayerDialogEx(playerid,MAINMENU,DIALOG_STYLE_PASSWORD,titlestring,string,"Dang nhap","Thoat");
 		}
 		case 2:
 		{
-			format(titlestring, sizeof(titlestring), "{3399FF}Register - %s", GetPlayerNameEx(playerid));
-			format(string, sizeof(string), "{FFFFFF}Welcome to Next Generation Roleplay, %s.\n\n{FFFFFF}You may {AA3333}register {FFFFFF}an account by entering a desired password here:", GetPlayerNameEx(playerid));
-			if(PassComplexCheck) strcat(string, "\n\n- You can't select a password that's below 8 or above 64 characters\n\
-			- Your password must contain a combination of letters, numbers and special characters.\n\
-			- Invalid Character: %");
-			ShowPlayerDialogEx(playerid,MAINMENU2,DIALOG_STYLE_PASSWORD,titlestring,string,"Register","Exit");
+			format(titlestring, sizeof(titlestring), "{3399FF}Dang ky - %s", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "{FFFFFF}Chao mung den Next Generation Roleplay, %s.\n\n{FFFFFF}Ban co the {AA3333}dang ky {FFFFFF}tai khoan bang cach nhap mat khau mong muon tai day:", GetPlayerNameEx(playerid));
+			if(PassComplexCheck) strcat(string, "\n\n- Mat khau phai co tu 8 den 64 ky tu\n- Mat khau phai ket hop chu cai, chu so va ky tu dac biet.\n- Ky tu khong hop le: %");
+			ShowPlayerDialogEx(playerid,MAINMENU2,DIALOG_STYLE_PASSWORD,titlestring,string,"Dang ky","Thoat");
 		}
 		case 3:
 		{
-			format(titlestring, sizeof(titlestring), "{3399FF}Login - %s", GetPlayerNameEx(playerid));
-			format(string, sizeof(string), "{FFFFFF}Invalid Password!\n\nWelcome to Next Generation Roleplay, %s.\n\nThe name that you are using is registered, please enter a password to login:", GetPlayerNameEx(playerid));
-			ShowPlayerDialogEx(playerid,MAINMENU,DIALOG_STYLE_PASSWORD,titlestring,string,"Login","Exit");
+			format(titlestring, sizeof(titlestring), "{3399FF}Dang nhap - %s", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "{FFFFFF}Sai mat khau!\n\nChao mung den Next Generation Roleplay, %s.\n\nTen nay da duoc dang ky, hay nhap mat khau de dang nhap:", GetPlayerNameEx(playerid));
+			ShowPlayerDialogEx(playerid,MAINMENU,DIALOG_STYLE_PASSWORD,titlestring,string,"Dang nhap","Thoat");
 		}
 		case 4:
 		{
-			format(titlestring, sizeof(titlestring), "{3399FF}Account Locked - %s", GetPlayerNameEx(playerid));
-			format(string, sizeof(string), "{FFFFFF}Our database indicates that %s is currently logged in, if this is a mistake please contact a tech administrator.", GetPlayerNameEx(playerid));
-			ShowPlayerDialogEx(playerid,MAINMENU3,DIALOG_STYLE_MSGBOX,titlestring,string,"Exit","");
+			format(titlestring, sizeof(titlestring), "{3399FF}Tai khoan bi khoa - %s", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "{FFFFFF}Du lieu cho thay %s dang dang nhap, neu co nham lan hay lien he Admin ky thuat.", GetPlayerNameEx(playerid));
+			ShowPlayerDialogEx(playerid,MAINMENU3,DIALOG_STYLE_MSGBOX,titlestring,string,"Thoat","");
 		}
 	}
 	return 1;
@@ -150,8 +148,8 @@ stock SafeLogin(playerid, type)
 			}
 			else
 			{
-				new dialogInfo[] = "You're unable to create an account on this server!\n\nThis server is for the Beta Team only.\n\nIf you are a beta tester go to http://cp.ng-gaming.net and create an account.";
-				Dialog_Show(playerid, -1, DIALOG_STYLE_MSGBOX, "ERROR: You were kicked!", dialogInfo, "Close", "");
+				new dialogInfo[] = "Ban khong the tao tai khoan tren may chu nay!\n\nMay chu nay chi danh cho Beta Team.\n\nNeu la thanh vien thu nghiem, hay vao http://cp.ng-gaming.net de tao tai khoan.";
+				Dialog_Show(playerid, -1, DIALOG_STYLE_MSGBOX, "LOI: Ban da bi kick!", dialogInfo, "Dong", "");
 				SetTimerEx("KickEx", 3000, false, "i", playerid);
 			}
 		}
@@ -175,7 +173,7 @@ stock InvalidNameCheck(playerid) {
 	new i = 0;
 	while(i < sizeof(arrForbiddenNames)) if(strcmp(arrForbiddenNames[i++], GetPlayerNameExt(playerid), true) == 0) {
 		SetPlayerName(playerid, "InvalidNick");
-		SendClientMessage(playerid, COLOR_RED, "You have been kicked & logged for using a forbidden username.");
+		SendClientMessage(playerid, COLOR_RED, "Ban da bi kick va ghi log vi su dung ten bi cam.");
 		SetTimerEx("KickEx", 1000, false, "i", playerid);
 		return 0;
 
@@ -250,7 +248,7 @@ public LoginCheck(playerid)
 		new string[128];
 		format(string, sizeof(string), "%s(%d) [%s] has timed out of the login screen.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
 		Log("logs/security.log", string);
-		SendClientMessage(playerid, COLOR_WHITE, "SERVER: Login timeout - you must login within 60 seconds!");
+		SendClientMessage(playerid, COLOR_WHITE, "MAY CHU: Het thoi gian, ban phai dang nhap trong 60 giay!");
 		ShowPlayerDialogEx(playerid, -1, DIALOG_STYLE_MSGBOX, "", "", "", "");
 		SetTimerEx("KickEx", 1000, false, "i", playerid);
 	}
@@ -264,22 +262,19 @@ stock ShowLoginDialogs(playerid, index)
 	{
 		case 0:
 		{
-			ShowPlayerDialogEx(playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_INPUT, "Password Change Required!", "Please enter a new password for your account.", "Change", "Exit" );
-			if(PassComplexCheck) ShowPlayerDialogEx(playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_INPUT, "Password Change Required!", "Please enter a new password for your account.\n\n\
-			- You can't select a password that's below 8 or above 64 characters\n\
-			- Your password must contain a combination of letters, numbers and special characters.\n\
-			- Invalid Character: %", "Change", "Exit" );
+			ShowPlayerDialogEx(playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_INPUT, "Yeu cau doi mat khau!", "Hay nhap mat khau moi cho tai khoan.", "Doi", "Thoat" );
+			if(PassComplexCheck) ShowPlayerDialogEx(playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_INPUT, "Yeu cau doi mat khau!", "Hay nhap mat khau moi cho tai khoan.\n\n- Mat khau phai co tu 8 den 64 ky tu\n- Mat khau phai ket hop chu cai, chu so va ky tu dac biet.\n- Ky tu khong hop le: %", "Doi", "Thoat" );
 		}
 		case 1: 
 		{
 			// ShowPlayerDialogEx(playerid, REGISTERMONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Submit", "");
 			AdvanceTutorial(playerid);
 		}
-		case 4: ShowPlayerDialogEx(playerid, PMOTDNOTICE, DIALOG_STYLE_MSGBOX, "Notice", pMOTD, "Dismiss", "");
+		case 4: ShowPlayerDialogEx(playerid, PMOTDNOTICE, DIALOG_STYLE_MSGBOX, "Thong bao", pMOTD, "Dong", "");
 		case 5:
 		{
-			format(string, sizeof(string), "You have recieved {FFD700}%s{A9C4E4} credits! Use /shophelp for more information.", number_format(PlayerInfo[playerid][pReceivedCredits]));
-			ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Credits Received!", string, "Close", "");
+			format(string, sizeof(string), "Ban da nhan {FFD700}%s{A9C4E4} credits! Dung /shophelp de xem them.", number_format(PlayerInfo[playerid][pReceivedCredits]));
+			ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Da nhan credits!", string, "Dong", "");
 
 			new szLog[128];
 			format(szLog, sizeof(szLog), "[ISSUED] [User: %s(%i)] [IP: %s] [Credits: %s]", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pReceivedCredits]));

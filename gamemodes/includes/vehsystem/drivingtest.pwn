@@ -104,7 +104,7 @@ DrivingTestFinish(playerid)
 	DeletePVar(playerid, "pTestMarker");
 	DisablePlayerCheckpoint(playerid);
 	PlayerInfo[playerid][pCarLic] = gettime() + (86400*80);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Driving Instructor: You have successfully completed driving school and earned your license!");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Driving Instructor: Ban da hoan thanh khoa hoc lai xe va nhan bang lai!");
 	return 1;
 }
 
@@ -137,7 +137,7 @@ DrivingSchoolSpeedMeter(playerid, Float:speed)
 	}
 
 	if(speed > (maxspeed + 5) && GetPVarInt(playerid, "pDTest") != 2) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You have exceeded the max speed limit of %d MPH.", maxspeed);
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban da vuot qua gioi han toc do %d MPH.", maxspeed);
 		SetPlayerCheckpoint(playerid, 814.0655,-600.5410,16.0355, 4.0);
 		SetPVarInt(playerid, "pDTest", 2);
 	}
@@ -159,7 +159,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		if(oldstate == PLAYER_STATE_DRIVER && newstate == PLAYER_STATE_ONFOOT)
 		{
 			pDriveTimer[playerid] = SetTimerEx("checkTestVehicle", 60000, false, "i", playerid);
-			SendClientMessageEx(playerid, COLOR_YELLOW, "You have 60 seconds to get back in your vehicle or it will be taken back.");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Ban co 60 giay de quay lai xe truoc khi xe bi thu hoi.");
 		}
 		else if(oldstate == PLAYER_STATE_ONFOOT && newstate == PLAYER_STATE_DRIVER && GetPlayerVehicleID(playerid) == pTestVeh)
 		{
@@ -170,7 +170,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	{
 		if(PlayerInfo[playerid][pCarLic] < gettime())
 		{
-			SendClientMessageEx(playerid, COLOR_YELLOW, "Warning: Your drivers license has expired. Head to the DMV to renew it.");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Canh bao: Bang lai cua ban da het han. Hay den DMV de gia han.");
 		}
 	}
 	return 1;
@@ -187,7 +187,7 @@ public checkTestVehicle(playerid)
 		DeletePVar(playerid, "pDTest");
 		DeletePVar(playerid, "pTestMarker");
 		DisablePlayerCheckpoint(playerid);
-		SendClientMessageEx(playerid, COLOR_YELLOW, "SMS: You have failed your driving test. , Sender: Driving Instructor (555)");
+		SendClientMessageEx(playerid, COLOR_YELLOW, "SMS: Ban da truot ky thi lai xe. , Nguoi gui: Driving Instructor (555)");
 	}
 	return 1;
 }
@@ -208,7 +208,7 @@ hook OnPlayerEnterCheckpoint(playerid){
 	{
 		pFindDrive[playerid] = 0;
 		DisablePlayerCheckpoint(playerid);
-		SendClientMessageEx(playerid, COLOR_GREY, "You have arrived at the driving school!");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban da den truong day lai xe!");
 	}
 	else if(gPlayerCheckpointStatus[playerid] == CHECKPOINT_DRIVINGSCHOOL)
 	{
@@ -246,12 +246,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				ShowPlayerDialogEx(playerid, 
 				DIALOG_DSVEH_RULES,
 				DIALOG_STYLE_MSGBOX,
-				"Driving Rules", 
-				"The rules of the road are as follows..\n1. You must drive on the right side of the road.\n2. You must follow speed limits at all times.\n3. Your seatbelt must be on at all times.\n4. Your vehicle lights must be on at night.\n5. If you get in an accident, you must report it.\n6. You must park correctly at all times.",
-				"Next",
-				"Cancel");
+				"Luat giao thong", 
+				"Luat giao thong nhu sau..\n1. Phai di ben phai duong.\n2. Luon tuan thu gioi han toc do.\n3. Luon that day an toan.\n4. Phai bat den xe vao ban dem.\n5. Phai bao cao khi xay ra tai nan.\n6. Luon do xe dung quy dinh.",
+				"Tiep",
+				"Huy");
 			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "You have cancelled the driving test.");
+			else return SendClientMessageEx(playerid, COLOR_GREY, "Ban da huy thi lai xe.");
 		}
 		case DIALOG_DSVEH_RULES:
 		{
@@ -260,8 +260,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				ShowPlayerDialogEx(playerid, 
 				DIALOG_DSVEH_TESTBASE,
 				DIALOG_STYLE_LIST,
-				"{FF0000}If you crash into a vehicle, you must...",
-				"Run away\nDrive away\nReport the accident to your insurance and police.", "Choose", "Cancel");
+				"{FF0000}Neu dam vao xe khac, ban phai...",
+				"Bo chay\nLai xe bo di\nBao cao tai nan cho bao hiem va canh sat.", "Chon", "Huy");
 			}
 		}
 		case DIALOG_DSVEH_TESTBASE:
@@ -273,12 +273,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					ShowPlayerDialogEx(playerid, 
 					DIALOG_DSVEH_TESTBASE+1,
 					DIALOG_STYLE_LIST,
-					"{FF0000}You must drive on the LEFT side of the road..",
-					"True\nFalse", "Choose", "Cancel");
+					"{FF0000}Ban phai di ben TRAI duong..",
+					"Dung\nSai", "Chon", "Huy");
 				}
 				else
 				{
-					return SendClientMessageEx(playerid, COLOR_GREY, "You have failed the test. Incorrect answer.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Ban da truot ky thi. Tra loi sai.");
 				}
 			}
 		}
@@ -291,12 +291,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					ShowPlayerDialogEx(playerid, 
 					DIALOG_DSVEH_TESTBASE+2,
 					DIALOG_STYLE_LIST,
-					"{FF0000}If the speed limit is 50mph, you must go..",
-					"650mph\n120mph\n100mph\n50mph\n300mph\n430mph", "Choose", "Cancel");
+					"{FF0000}Neu gioi han toc do la 50mph, ban phai di..",
+					"650mph\n120mph\n100mph\n50mph\n300mph\n430mph", "Chon", "Huy");
 				}
 				else
 				{
-					return SendClientMessageEx(playerid, COLOR_GREY, "You have failed the test. Incorrect answer.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Ban da truot ky thi. Tra loi sai.");
 				}
 			}
 		}
@@ -309,12 +309,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					ShowPlayerDialogEx(playerid, 
 					DIALOG_DSVEH_TESTBASE+3,
 					DIALOG_STYLE_LIST,
-					"{FF0000}Your seatbelt must always be on.",
-					"True\nFalse", "Choose", "Cancel");
+					"{FF0000}Ban phai luon that day an toan.",
+					"Dung\nSai", "Chon", "Huy");
 				}
 				else
 				{
-					return SendClientMessageEx(playerid, COLOR_GREY, "You have failed the test. Incorrect answer.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Ban da truot ky thi. Tra loi sai.");
 				}
 			}
 		}
@@ -329,10 +329,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPVarInt(playerid, "PTestVeh", CreateVehicle(404, 814.0655,-600.5410,16.0355, 90.0, 3, 3, -1));
 					new pTestVeh = GetPVarInt(playerid, "PTestVeh");
 					PutPlayerInVehicle(playerid, pTestVeh, 0);
-					SendClientMessageEx(playerid, COLOR_WHITE, "Driving Instructor: Please make sure you go a max of 50mph in the residential areas. You may now begin.");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Driving Instructor: Khong vuot qua 50mph trong khu dan cu. Ban co the bat dau.");
 					if(!PlayerInfo[playerid][pSpeedo])
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "Your speedometer has been enabled for you.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Dong ho toc do da duoc bat cho ban.");
 						PlayerInfo[playerid][pSpeedo] = 1;
 						ShowVehicleHUDForPlayer(playerid);
 					}
@@ -344,7 +344,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				else
 				{
-					return SendClientMessageEx(playerid, COLOR_GREY, "You have failed the test. Incorrect answer.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Ban da truot ky thi. Tra loi sai.");
 				}
 			}
 		}

@@ -42,15 +42,15 @@ CMD:prison(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new giveplayerid, minutes, reason[64];
-		if(sscanf(params, "uds[64]", giveplayerid, minutes, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /prison [player] [minutes] [reason]");
+		if(sscanf(params, "uds[64]", giveplayerid, minutes, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /prison [player] [minutes] [reason]");
 
 		if(giveplayerid != INVALID_PLAYER_ID)
 		{
-			if((PlayerInfo[giveplayerid][pAdmin] && PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) || (PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[giveplayerid][pWatchdog] >= 2)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
+			if((PlayerInfo[giveplayerid][pAdmin] && PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) || (PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[giveplayerid][pWatchdog] >= 2)) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay voi Admin ngang hoac cao cap hon.");
 			if(PrisonPlayer(playerid, giveplayerid, reason, minutes, .custom=1) == 0) return 1;
 		}
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -59,16 +59,16 @@ CMD:reverse(playerid, params[])
 	new string[128], reason[24], giveplayerid;
 	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
 		if(!sscanf(params, "us[24]", giveplayerid, reason)) {
-			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player.");
+			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 			if(GetPlayerSQLId(playerid) != PlayerInfo[giveplayerid][pJailedInfo][0] && PlayerInfo[playerid][pAdmin] < 3 && PlayerInfo[playerid][pASM] < 1)
-				return SendClientMessageEx(playerid, COLOR_WHITE, "You have not acted against this person, therefor you can not reverse any actions for them.");
-			if(PlayerInfo[giveplayerid][pJailTime] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this to someone not currently prisoned.");
+				return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong xu phat nguoi nay nen khong the huy hinh phat cua ho.");
+			if(PlayerInfo[giveplayerid][pJailTime] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi choi khong bi giam, khong the thuc hien.");
 			if(PlayerInfo[playerid][pAdmin] == 1 || PlayerInfo[playerid][pHelper] >= 2 || (PlayerInfo[playerid][pWatchdog] >= 2 && PlayerInfo[playerid][pAdmin] < 3)) {
 				SetPVarInt(playerid, "ReverseReport", 1);
 				SetPVarInt(playerid, "ReverseID", giveplayerid);
 				SetPVarString(playerid, "ReverseReason", reason);
 				SendReportToQue(playerid, "Reverse Report", 2, 4);
-				SendClientMessageEx(playerid, COLOR_WHITE, "Please wait for an administrator to review your request.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Vui long cho Admin xem xet yeu cau cua ban.");
 				return 1;
 			}
 
@@ -77,7 +77,7 @@ CMD:reverse(playerid, params[])
 			if(PlayerInfo[giveplayerid][pJailedInfo][4] > 0) PlayerInfo[giveplayerid][pWRestricted] = 0;
 			format(string, 128, "AdmCmd: %s(%d) has been released from prison (/reverse) by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
-			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s has been released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s da duoc %s tha tu, ly do: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 
 			PhoneOnline[giveplayerid] = 0;
 			//PlayerInfo[giveplayerid][pWantedLevel] = 0;
@@ -97,11 +97,11 @@ CMD:reverse(playerid, params[])
 			for(new x = 0; x < 12; x++) GivePlayerValidWeapon(giveplayerid, PlayerInfo[giveplayerid][pJailedWeapons][x]);
 			for(new y = 0; y < 5; y++) PlayerInfo[giveplayerid][pJailedInfo][y] = 0;
 			for(new z = 0; z < 12; z++) PlayerInfo[giveplayerid][pJailedWeapons][z] = 0;
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Your punishment has been reversed by the administrator who jailed you.");
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Admin da giam ban vua huy hinh phat cua ban.");
 		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /reverse [playerid] [reason]");
+		else SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /reverse [playerid] [reason]");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -111,13 +111,13 @@ CMD:dprison(playerid, params[])
 	PlayerInfo[playerid][pBM] > 0)) || PlayerInfo[playerid][pAdmin] >= 1337) {
 		new giveplayerid, mintues;
 		if(!sscanf(params, "ud", giveplayerid, mintues)) {
-			if(PlayerInfo[giveplayerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pWatchdog] >= 2) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this on admins or watchdogs!");
-			if(mintues > 120) return SendClientMessageEx(playerid, COLOR_WHITE, "Time cannot be above 120 minutes.");
+			if(PlayerInfo[giveplayerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pWatchdog] >= 2) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the dung voi Admin hoac Watchdog!");
+			if(mintues > 120) return SendClientMessageEx(playerid, COLOR_WHITE, "Thoi gian khong duoc qua 120 phut.");
 			if(PrisonPlayer(playerid, giveplayerid, "Violation of DGA Policies", .time=mintues, .custom=1) == 0) return 1;
 		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dprison [playerid] [time]");
+		else SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /dprison [playerid] [time]");
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command!");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	return 1;
 }
 
@@ -338,8 +338,8 @@ PrisonPlayer(playerid, giveplayerid, const reason[], time=0, silent=0, custom=0)
 	}
 
 	if(GetPVarType(giveplayerid, "IsInArena")) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
-	if(silent) format(string, 128, "AdmCmd: %s has been prisoned by an admin, reason: %s", GetPlayerNameEx(giveplayerid), reason);
-	else format(string, 128, "AdmCmd: %s has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+	if(silent) format(string, 128, "AdmCmd: %s da bi Admin giam, ly do: %s", GetPlayerNameEx(giveplayerid), reason);
+	else format(string, 128, "AdmCmd: %s da bi %s giam, ly do: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 	SendClientMessageToAllEx(COLOR_LIGHTRED, string);
 	StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
 	//PlayerInfo[giveplayerid][pWantedLevel] = 0;
@@ -359,16 +359,16 @@ PrisonPlayer(playerid, giveplayerid, const reason[], time=0, silent=0, custom=0)
 	SetPlayerColor(giveplayerid, TEAM_APRISON_COLOR);
 	Player_StreamPrep(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2], FREEZE_TIME);
 
-	if(silent) format(string, 128, "You have been prisoned by an admin for %d minutes, reason: %s.", jailtime, reason);
-	else format(string, 128, "You have been prisoned by %s for %d minutes, reason: %s.", GetPlayerNameEx(playerid), jailtime, reason);
+	if(silent) format(string, 128, "Ban bi Admin giam %d phut, ly do: %s.", jailtime, reason);
+	else format(string, 128, "Ban bi %s giam %d phut, ly do: %s.", GetPlayerNameEx(playerid), jailtime, reason);
 	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 
 	if(fine > 0) {
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been fined a total of $%s for this action", number_format(fine));
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "Ban bi phat tong cong $%s vi hanh vi nay", number_format(fine));
 	}
 
 	if(twarn) {
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "WARNING: As your hours, not level, progress, the punishments increase. Please mind the rules.");
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "CANH BAO: Hinh phat tang theo so gio choi, khong phai cap do. Hay tuan thu noi quy.");
 	}
 
 	format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s(%d) has been prisoned by %s, reason: %s (F:%s|W:%d|WR:%d|NonRP:%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason, number_format(fine), warn, PlayerInfo[giveplayerid][pWRestricted], nonrp);
@@ -392,7 +392,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(PlayerInfo[releasedID][pJailedInfo][3] == 1) PlayerInfo[releasedID][pWarns]--;
 			format(string, 128, "AdmCmd: %s(%d) has been released from prison (/reverse) by %s, reason: Reversed (%s)", GetPlayerNameEx(releasedID), GetPlayerSQLId(releasedID), GetPlayerNameEx(playerid), GetPlayerNameEx(rPlayerID));
 			Log("logs/admin.log", string);
-			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s has been released from prison by %s, reason: Reversed (%s)", GetPlayerNameEx(releasedID), GetPlayerNameEx(playerid), GetPlayerNameEx(rPlayerID));
+			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s da duoc %s tha tu, ly do: Huy phat (%s)", GetPlayerNameEx(releasedID), GetPlayerNameEx(playerid), GetPlayerNameEx(rPlayerID));
 			//PlayerInfo[releasedID][pWantedLevel] = 0;
 			Lawyer_ClearAppeal(releasedID);
 			PlayerInfo[releasedID][pBeingSentenced] = 0;
@@ -410,10 +410,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			for(new x = 0; x < 12; x++) GivePlayerValidWeapon(releasedID, PlayerInfo[releasedID][pJailedWeapons][x]);
 			for(new y = 0; y < 5; y++) PlayerInfo[releasedID][pJailedInfo][y] = 0;
 			for(new z = 0; z < 12; z++) PlayerInfo[releasedID][pJailedWeapons][z] = 0;
-			SendClientMessageEx(releasedID, COLOR_LIGHTBLUE, "Your punishment has been reversed by the administrator who jailed you.");
+			SendClientMessageEx(releasedID, COLOR_LIGHTBLUE, "Admin da giam ban vua huy hinh phat cua ban.");
 		}
 		else {
-			SendClientMessageEx(rPlayerID, COLOR_RED, "Administrator %s has denied your request to reverse your action.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(rPlayerID, COLOR_RED, "Admin %s da tu choi yeu cau huy hinh phat cua ban.", GetPlayerNameEx(playerid));
 		}
 		DeletePVar(playerid, "ReverseFromID");
 		DeletePVar(rPlayerID, "ReverseReason");

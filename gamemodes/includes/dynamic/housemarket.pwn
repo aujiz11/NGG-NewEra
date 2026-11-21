@@ -17,7 +17,7 @@ hook OnPlayerDisconnect(playerid, reason)
 	{
 		if(DDSaleTarget[i] == playerid && i != playerid)
 		{
-			SendClientMessageEx(i, COLOR_GREY, "The person purchasing your dynamic doors has disconnected.");
+			SendClientMessageEx(i, COLOR_GREY, "Nguoi mua cua dong cua ban da ngat ket noi.");
 			ClearDoorSaleVariables(i);
 			break;
 		}
@@ -45,40 +45,40 @@ ShowListingInformation(playerid, houseid, dialogid)
 {
 	new count[3];
 	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "General Information:\n\n  � House ID: %d\n  � Price: $%s\n  � Seller: %s", houseid, number_format(HouseInfo[houseid][ListingPrice]), StripUnderscore(HouseInfo[houseid][hOwnerName]));
-	if(strcmp("N/A", HouseInfo[houseid][ListingDescription], true) != 0) format(szMiscArray, sizeof(szMiscArray), "%s\n  � Description: %s", szMiscArray, HouseInfo[houseid][ListingDescription]);
-	format(szMiscArray, sizeof(szMiscArray), "%s\n  � Expiry: %s", szMiscArray, date(HouseInfo[houseid][ListedTimeStamp], 4));
-	strcat(szMiscArray, "\n\nLinked Dynamic Doors:\n");
+	format(szMiscArray, sizeof(szMiscArray), "Thong tin chung:\n\n  * ID nha: %d\n  * Gia: $%s\n  * Nguoi ban: %s", houseid, number_format(HouseInfo[houseid][ListingPrice]), StripUnderscore(HouseInfo[houseid][hOwnerName]));
+	if(strcmp("N/A", HouseInfo[houseid][ListingDescription], true) != 0) format(szMiscArray, sizeof(szMiscArray), "%s\n  * Mo ta: %s", szMiscArray, HouseInfo[houseid][ListingDescription]);
+	format(szMiscArray, sizeof(szMiscArray), "%s\n  * Het han: %s", szMiscArray, date(HouseInfo[houseid][ListedTimeStamp], 4));
+	strcat(szMiscArray, "\n\nCua dong lien ket:\n");
 	for(new i = 0; i < 5; i ++)
 	{
 		if(HouseInfo[houseid][LinkedDoor][i] != 0 && DDoorsInfo[HouseInfo[houseid][LinkedDoor][i]][ddOwner] == HouseInfo[houseid][hOwnerID]) 
 		{
-			format(szMiscArray, sizeof(szMiscArray), "%s\n  � Door ID: %d (%s)", szMiscArray, HouseInfo[houseid][LinkedDoor][i], DDoorsInfo[HouseInfo[houseid][LinkedDoor][i]][ddDescription]);
+			format(szMiscArray, sizeof(szMiscArray), "%s\n  * ID cua: %d (%s)", szMiscArray, HouseInfo[houseid][LinkedDoor][i], DDoorsInfo[HouseInfo[houseid][LinkedDoor][i]][ddDescription]);
 			count[0] ++;
 		}
 	}
-	if(count[0] == 0) strcat(szMiscArray, "\n  � None");
-	strcat(szMiscArray, "\n\nLinked Dynamic Gates:\n");
+	if(count[0] == 0) strcat(szMiscArray, "\n  * Khong co");
+	strcat(szMiscArray, "\n\nCong dong lien ket:\n");
 	for(new i = 0; i < sizeof(GateInfo); i ++)
 	{
 		if(GateInfo[i][gHID] == houseid) 
 		{
-			format(szMiscArray, sizeof(szMiscArray), "%s\n  � Gate ID: %d", szMiscArray, i);
+			format(szMiscArray, sizeof(szMiscArray), "%s\n  * ID cong: %d", szMiscArray, i);
 			count[1] ++;
 		}
 	}
-	if(count[1] == 0) strcat(szMiscArray, "\n  � None");
-	strcat(szMiscArray, "\n\nLinked Garages:\n");
+	if(count[1] == 0) strcat(szMiscArray, "\n  * Khong co");
+	strcat(szMiscArray, "\n\nGarage lien ket:\n");
 	for(new i = 0; i < 2; i ++)
 	{
 		if(HouseInfo[houseid][LinkedGarage][i] != 0 && GarageInfo[HouseInfo[houseid][LinkedGarage][i]][gar_Owner] == HouseInfo[houseid][hOwnerID]) 
 		{
-			format(szMiscArray, sizeof(szMiscArray), "%s\n  � Garage ID: %d", szMiscArray, HouseInfo[houseid][LinkedGarage][i]);
+			format(szMiscArray, sizeof(szMiscArray), "%s\n  * ID garage: %d", szMiscArray, HouseInfo[houseid][LinkedGarage][i]);
 			count[2] ++;
 		}
 	}
-	if(count[2] == 0) strcat(szMiscArray, "\n  � None");
-	ShowPlayerDialogEx(playerid, dialogid, DIALOG_STYLE_MSGBOX, "House Listing Information", szMiscArray, "Okay", "Cancel");
+	if(count[2] == 0) strcat(szMiscArray, "\n  * Khong co");
+	ShowPlayerDialogEx(playerid, dialogid, DIALOG_STYLE_MSGBOX, "Thong tin tin ban nha", szMiscArray, "Dong y", "Huy");
 	return 1;
 }
 
@@ -94,12 +94,12 @@ ShowMainListingDialog(playerid)
 	szMiscArray[0] = 0;
 	houseid = GetNearestOwnedHouse(playerid);
 	if(houseid == -1) return 1;
-	format(szMiscArray, sizeof(szMiscArray), "Setting\tValue\nPrice\t$%s\nLinked Door 1\t%s\nLinked Door 2\t%s\nLinked Door 3\t%s\nLinked Door 4\t%s\nLinked Door 5\t%s\nLinked Garage 1\t%s\nLinked Garage 2\t%s\nDescription\t%s\nFinalize And Submit",
+	format(szMiscArray, sizeof(szMiscArray), "Cai dat\tGia tri\nGia\t$%s\nCua lien ket 1\t%s\nCua lien ket 2\t%s\nCua lien ket 3\t%s\nCua lien ket 4\t%s\nCua lien ket 5\t%s\nGarage lien ket 1\t%s\nGarage lien ket 2\t%s\nMo ta\t%s\nHoan tat va gui",
 	number_format(HouseInfo[houseid][ListingPrice]), ReturnDoorLineDetails(playerid, HouseInfo[houseid][LinkedDoor][0]),
 	ReturnDoorLineDetails(playerid, HouseInfo[houseid][LinkedDoor][1]), ReturnDoorLineDetails(playerid, HouseInfo[houseid][LinkedDoor][2]),
 	ReturnDoorLineDetails(playerid, HouseInfo[houseid][LinkedDoor][3]), ReturnDoorLineDetails(playerid, HouseInfo[houseid][LinkedDoor][4]), 
 	ReturnGarageLineDetails(playerid, HouseInfo[houseid][LinkedGarage][0]), ReturnGarageLineDetails(playerid, HouseInfo[houseid][LinkedGarage][1]), HouseInfo[houseid][ListingDescription]);
-	ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEMAIN, DIALOG_STYLE_TABLIST_HEADERS, "House Market", szMiscArray, "Okay", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEMAIN, DIALOG_STYLE_TABLIST_HEADERS, "Cho nha", szMiscArray, "Dong y", "Huy");
 	return 1;
 }
 
@@ -127,7 +127,7 @@ task HouseMarket[60000]()
 						{
 							if(gPlayerLogged{p} == 1 && HouseInfo[i][hOwnerID] == GetPlayerSQLId(p))
 							{
-								SendClientMessageEx(p, COLOR_GREY, "Your house listing has expired and has been removed from the market.");
+								SendClientMessageEx(p, COLOR_GREY, "Tin ban nha cua ban da het han va bi go khoi cho nha.");
 								break;
 							}
 						}
@@ -137,7 +137,7 @@ task HouseMarket[60000]()
 				{
 					if(notification == false)
 					{
-						ABroadCastText(COLOR_LIGHTRED, "One or more house listing(s) are pending review.", 4, true);
+						ABroadCastText(COLOR_LIGHTRED, "Co tin ban nha dang cho duyet.", 4, true);
 						notification = true;
 					}
 				}
@@ -152,20 +152,20 @@ task HouseMarket[60000]()
 
 CMD:houselistinghelp(playerid, params[])
 {
-	SendClientMessageEx(playerid, COLOR_WHITE, "** HOUSE LISTING COMMANDS **");
-	SendClientMessageEx(playerid, COLOR_GREY, "� /listhouse - Allows you to place a house listing ($500,000).");
-	SendClientMessageEx(playerid, COLOR_GREY, "� /renewlisting - Allows you to renew an active house listing ($100,000).");
-	SendClientMessageEx(playerid, COLOR_GREY, "� /listingdate - Allows you to view the date your house listing will expire on.");
-	SendClientMessageEx(playerid, COLOR_GREY, "� /deletelisting - Allows you to delete a house listing you placed previously.");
-	SendClientMessageEx(playerid, COLOR_GREY, "� /houselistings - Allows you to view a list of active house listings.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "** LENH DANG BAN NHA **");
+	SendClientMessageEx(playerid, COLOR_GREY, "* /listhouse - Dang tin ban nha ($500,000).");
+	SendClientMessageEx(playerid, COLOR_GREY, "* /renewlisting - Gia han tin ban nha ($100,000).");
+	SendClientMessageEx(playerid, COLOR_GREY, "* /listingdate - Xem ngay het han tin ban nha.");
+	SendClientMessageEx(playerid, COLOR_GREY, "* /deletelisting - Xoa tin ban nha da dang.");
+	SendClientMessageEx(playerid, COLOR_GREY, "* /houselistings - Xem danh sach tin ban nha.");
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "� {EE9A4D}SENIOR ADMIN{D8D8D8} /pendinglistings - Allows you to view a list of active house listings pending administrative approval.");
-		SendClientMessageEx(playerid, COLOR_GREY, "� {EE9A4D}SENIOR ADMIN{D8D8D8} /listingdetails [House ID] - Allows you view the details of a specified and pending house listing.");
-		SendClientMessageEx(playerid, COLOR_GREY, "� {EE9A4D}SENIOR ADMIN{D8D8D8} /(a)pprove(l)isting [House ID] - Allows you to approve the specified pending house listing.");
-		SendClientMessageEx(playerid, COLOR_GREY, "� {EE9A4D}SENIOR ADMIN{D8D8D8} /(d)eny(li)sting [House ID] - Allows you to deny the specified pending house listing.");
-		SendClientMessageEx(playerid, COLOR_GREY, "� {EE9A4D}SENIOR ADMIN{D8D8D8} /adeletelisting [House ID] - Allows you to delete the specified pending house listing.");
-		SendClientMessageEx(playerid, COLOR_GREY, "* NOTICE: Using the (/admute) command will deny players the ability to post housing listings. *");
+		SendClientMessageEx(playerid, COLOR_GREY, "* {EE9A4D}SENIOR ADMIN{D8D8D8} /pendinglistings - Xem tin ban nha dang cho Admin duyet.");
+		SendClientMessageEx(playerid, COLOR_GREY, "* {EE9A4D}SENIOR ADMIN{D8D8D8} /listingdetails [House ID] - Xem chi tiet tin ban nha dang cho duyet.");
+		SendClientMessageEx(playerid, COLOR_GREY, "* {EE9A4D}SENIOR ADMIN{D8D8D8} /(a)pprove(l)isting [House ID] - Duyet tin ban nha.");
+		SendClientMessageEx(playerid, COLOR_GREY, "* {EE9A4D}SENIOR ADMIN{D8D8D8} /(d)eny(li)sting [House ID] - Tu choi tin ban nha.");
+		SendClientMessageEx(playerid, COLOR_GREY, "* {EE9A4D}SENIOR ADMIN{D8D8D8} /adeletelisting [House ID] - Xoa tin ban nha.");
+		SendClientMessageEx(playerid, COLOR_GREY, "* CHU Y: Lenh (/admute) se cam nguoi choi dang tin ban nha. *");
 	}
 	return 1;
 }
@@ -173,30 +173,31 @@ CMD:houselistinghelp(playerid, params[])
 alias:denylisting("dli")
 CMD:denylisting(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	new houseid, reason[64], string[128];
 	if(sscanf(params, "ds[64]", houseid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /denylisting [House ID] [Reason]");
 	if(houseid < 1 || houseid >= MAX_HOUSES)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "The specified house ID must be between 1 and %d.", MAX_HOUSES - 1);
+		SendClientMessageEx(playerid, COLOR_GREY, "ID nha phai tu 1 den %d.", MAX_HOUSES - 1);
 		return 1;
 	}
-	if(strlen(reason) < 3 || strlen(reason) > 60) return SendClientMessageEx(playerid, COLOR_GREY, "The specified reason cannot be under 3 characters or over 60 characters.");
-	if(HouseInfo[houseid][hOwned] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently owned.");
-	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently pending approval to be listed.");
+	if(strlen(reason) < 3 || strlen(reason) > 60) return SendClientMessageEx(playerid, COLOR_GREY, "Ly do khong duoc duoi 3 ky tu hoac qua 60 ky tu.");
+	if(HouseInfo[houseid][hOwned] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay chua co chu.");
+	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay khong dang cho duyet tin ban.");
 	ClearHouseSaleVariables(houseid);
-	SendClientMessageEx(playerid, COLOR_YELLOW, "You have denied house ID %d's house listing request (owner: %s), reason: %s.", houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]), reason);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Da tu choi tin ban nha ID %d (chu: %s), ly do: %s.", houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]), reason);
 	foreach(new i: Player) 
 	{
 		if(gPlayerLogged{i} == 1 && HouseInfo[houseid][hOwnerID] == GetPlayerSQLId(i))
 		{
-			SendClientMessageEx(i, COLOR_LIGHTRED, "%s denied your house listing request (house ID %d), reason: %s.", GetPlayerNameEx(playerid), houseid, reason);
+			SendClientMessageEx(i, COLOR_LIGHTRED, "%s da tu choi tin ban nha cua ban (ID nha %d), ly do: %s.", GetPlayerNameEx(playerid), houseid, reason);
 			break;
 		}
 	}
 	PlayerInfo[playerid][pTrashReport] ++;
-	format(string, sizeof(string), "AdmCmd: %s denied house ID %d's house listing request (owner: %s), reason: %s.", GetPlayerNameEx(playerid), houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]), reason);
+	format(string, sizeof(string), "AdmCmd: %s tu choi tin ban nha ID %d (chu: %s), ly do: %s.", GetPlayerNameEx(playerid), houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]), reason);
 	ABroadCast(COLOR_LIGHTRED, string, 4);
+	format(string, sizeof(string), "AdmCmd: %s denied house ID %d's house listing request (owner: %s), reason: %s.", GetPlayerNameEx(playerid), houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]), reason);
 	Log("logs/admin.log", string);
 	return 1;
 }
@@ -204,16 +205,16 @@ CMD:denylisting(playerid, params[])
 alias:approvelisting("al")
 CMD:approvelisting(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	new houseid, seller, string[128];
 	if(sscanf(params, "d", houseid)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /approvelisting [House ID]");
 	if(houseid < 1 || houseid >= MAX_HOUSES)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "The specified house ID must be between 1 and %d.", MAX_HOUSES - 1);
+		SendClientMessageEx(playerid, COLOR_GREY, "ID nha phai tu 1 den %d.", MAX_HOUSES - 1);
 		return 1;
 	}
-	if(HouseInfo[houseid][hOwned] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently owned.");
-	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently pending approval to be listed.");
+	if(HouseInfo[houseid][hOwned] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay chua co chu.");
+	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay khong dang cho duyet tin ban.");
 	seller = INVALID_PLAYER_ID;
 	foreach(new i: Player) 
 	{
@@ -230,7 +231,7 @@ CMD:approvelisting(playerid, params[])
 			PlayerInfo[playerid][pAcceptReport] ++;
 			ReportCount[playerid] ++;
 			ReportHourCount[playerid] ++;
-			SendClientMessageEx(playerid, COLOR_YELLOW, "House ID %d's listing is currently bugged, the listing has been removed.", houseid);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Tin ban nha ID %d bi loi nen da bi go.", houseid);
 			return 1;
 		}
 		default:
@@ -238,14 +239,15 @@ CMD:approvelisting(playerid, params[])
 			if(GetPlayerCash(seller) < 500000)
 			{
 				ClearHouseSaleVariables(houseid);
-				SendClientMessageEx(seller, COLOR_GREY, "Your house listing has been approved by an administrator, however you no longer have $500,000.");
-				SendClientMessageEx(seller, COLOR_GREY, "Your house listing has not been placed on the market as you could not afford the initial posting fee.");
+				SendClientMessageEx(seller, COLOR_GREY, "Admin da duyet tin ban nha, nhung ban khong con du $500,000.");
+				SendClientMessageEx(seller, COLOR_GREY, "Tin chua duoc dang len cho nha vi ban khong du tien tra phi dang tin.");
 				PlayerInfo[playerid][pAcceptReport] ++;
 				ReportCount[playerid] ++;
 				ReportHourCount[playerid] ++;
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You have approved house ID %d's house listing request (insufficient funds - owner: %s).", houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
-				format(string, sizeof(string), "AdmCmd: %s approved house ID %d's house listing request (insufficient funds - owner: %s).", GetPlayerNameEx(playerid), houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Da duyet tin ban nha ID %d (khong du tien - chu: %s).", houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
+				format(string, sizeof(string), "AdmCmd: %s duyet tin ban nha ID %d (khong du tien - chu: %s).", GetPlayerNameEx(playerid), houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
 				ABroadCast(COLOR_LIGHTRED, string, 4);
+				format(string, sizeof(string), "AdmCmd: %s approved house ID %d's house listing request (insufficient funds - owner: %s).", GetPlayerNameEx(playerid), houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
 				Log("logs/admin.log", string);
 				return 1;
 			}
@@ -255,13 +257,14 @@ CMD:approvelisting(playerid, params[])
 				HouseInfo[houseid][PendingApproval] = 0;
 				HouseInfo[houseid][ListedTimeStamp] = gettime() + 259200;
 				SaveHouse(houseid);
-				SendClientMessageEx(seller, COLOR_GREEN, "Your house listing has been approved by an administrator, you have been charged $500,000.");
+				SendClientMessageEx(seller, COLOR_GREEN, "Admin da duyet tin ban nha cua ban, ban bi tru $500,000.");
 				PlayerInfo[playerid][pAcceptReport] ++;
 				ReportCount[playerid] ++;
 				ReportHourCount[playerid] ++;
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You have approved house ID %d's house listing request (owner: %s).", houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
-				format(string, sizeof(string), "AdmCmd: %s approved house ID %d's house listing request (owner: %s).", GetPlayerNameEx(playerid), houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Da duyet tin ban nha ID %d (chu: %s).", houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
+				format(string, sizeof(string), "AdmCmd: %s duyet tin ban nha ID %d (chu: %s).", GetPlayerNameEx(playerid), houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
 				ABroadCast(COLOR_LIGHTRED, string, 4);
+				format(string, sizeof(string), "AdmCmd: %s approved house ID %d's house listing request (owner: %s).", GetPlayerNameEx(playerid), houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
 				Log("logs/admin.log", string);
 				return 1;
 			}
@@ -273,72 +276,73 @@ CMD:approvelisting(playerid, params[])
 
 CMD:adeletelisting(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	new houseid, string[128];
 	if(sscanf(params, "d", houseid)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /adeletelisting [House ID]");
 	if(houseid < 1 || houseid >= MAX_HOUSES)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "The specified house ID must be between 1 and %d.", MAX_HOUSES - 1);
+		SendClientMessageEx(playerid, COLOR_GREY, "ID nha phai tu 1 den %d.", MAX_HOUSES - 1);
 		return 1;
 	}
-	if(HouseInfo[houseid][hOwned] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently owned.");
-	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently listed.");
+	if(HouseInfo[houseid][hOwned] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay chua co chu.");
+	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay chua duoc dang ban.");
 	ClearHouseSaleVariables(houseid);
-	SendClientMessageEx(playerid, COLOR_YELLOW, "You have deleted house ID %d's listing (owner: %s).", houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
-	format(string, sizeof(string), "AdmCmd: %s deleted house ID %d's house listing (owner: %s).", GetPlayerNameEx(playerid), houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Da xoa tin ban nha ID %d (chu: %s).", houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
+	format(string, sizeof(string), "AdmCmd: %s xoa tin ban nha ID %d (chu: %s).", GetPlayerNameEx(playerid), houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
 	ABroadCast(COLOR_LIGHTRED, string, 4);
+	format(string, sizeof(string), "AdmCmd: %s deleted house ID %d's house listing (owner: %s).", GetPlayerNameEx(playerid), houseid, StripUnderscore(HouseInfo[houseid][hOwnerName]));
 	Log("logs/admin.log", string);
 	return 1;
 }
 
 CMD:listingdetails(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	new houseid;
 	if(sscanf(params, "d", houseid)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /listingdetails [House ID]");
 	szMiscArray[0] = 0;
 	if(houseid < 1 || houseid >= MAX_HOUSES)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "The specified house ID must be between 1 and %d.", MAX_HOUSES - 1);
+		SendClientMessageEx(playerid, COLOR_GREY, "ID nha phai tu 1 den %d.", MAX_HOUSES - 1);
 		return 1;
 	}
-	if(HouseInfo[houseid][hOwned] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently owned.");
-	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently pending approval to be listed.");
+	if(HouseInfo[houseid][hOwned] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay chua co chu.");
+	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay khong dang cho duyet tin ban.");
 	ShowListingInformation(playerid, houseid, DIALOG_LISTINGINFORMATION);
 	return 1;
 }
 
 CMD:pendinglistings(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	new count;
-	SendClientMessageEx(playerid, COLOR_WHITE, "** HOUSE LISTINGS PENDING APPROVAL: **");
+	SendClientMessageEx(playerid, COLOR_WHITE, "** TIN BAN NHA CHO DUYET: **");
 	for(new i = 0; i < sizeof(HouseInfo); i ++)
 	{
 		if(HouseInfo[i][hOwned] == 1 && HouseInfo[i][Listed] == 1 && HouseInfo[i][PendingApproval] == 1)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "(House ID: %d) Owner: %s", i, StripUnderscore(HouseInfo[i][hOwnerName]));
+			SendClientMessageEx(playerid, COLOR_GREY, "(ID nha: %d) Chu: %s", i, StripUnderscore(HouseInfo[i][hOwnerName]));
 			count ++;
 		}
 	}
-	if(count == 0) return SendClientMessageEx(playerid, COLOR_GREY, "There are not currently any house listings pending approval.");
+	if(count == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Hien khong co tin ban nha cho duyet.");
 	return 1;
 }
 
 CMD:listhouse(playerid, params[])
 {
-	if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
-	if(PlayerInfo[playerid][pADMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are muted from advertisements.");
-	if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while injured.");
-	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings right now.");
-	if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while in jail.");
-	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 3 to access house listings.");
-	if(GetPlayerCash(playerid) < 500000) return SendClientMessageEx(playerid, COLOR_GREY, "You must have at least $500,000 to place a house listing.");
+	if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
+	if(PlayerInfo[playerid][pADMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban bi cam dang quang cao.");
+	if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung cho nha khi bi thuong.");
+	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the dung danh sach ban nha.");
+	if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the xem danh sach ban nha khi o tu.");
+	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat cap 3 de xem danh sach ban nha.");
+	if(GetPlayerCash(playerid) < 500000) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat $500,000 de dang ban nha.");
 	new houseid;
-	if(servernumber == 2) return SendClientMessage(playerid, COLOR_WHITE, "This command is disabled!");
+	if(servernumber == 2) return SendClientMessage(playerid, COLOR_WHITE, "Lenh nay da bi tat!");
 	houseid = GetNearestOwnedHouse(playerid);
-	if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a house that you own.");
-	if(HouseInfo[houseid][Listed] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This house is already listed on the house market.");
+	if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan nha cua minh.");
+	if(HouseInfo[houseid][Listed] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay da duoc dang ban tren cho nha.");
 	HouseInfo[houseid][ListingPrice] = 0;
 	HouseInfo[houseid][PendingApproval] = 0;
 	HouseInfo[houseid][ListedTimeStamp] = 0;
@@ -355,64 +359,64 @@ CMD:listhouse(playerid, params[])
 
 CMD:listingdate(playerid, params[])
 {
-	if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
-	if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while injured.");
-	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings right now.");
-	if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while in jail.");
-	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 3 to access house listings.");
+	if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
+	if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung cho nha khi bi thuong.");
+	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the dung danh sach ban nha.");
+	if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the xem danh sach ban nha khi o tu.");
+	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat cap 3 de xem danh sach ban nha.");
 	new houseid;
-	if(servernumber == 2) return SendClientMessage(playerid, COLOR_WHITE, "This command is disabled!");
+	if(servernumber == 2) return SendClientMessage(playerid, COLOR_WHITE, "Lenh nay da bi tat!");
 	houseid = GetNearestOwnedHouse(playerid);
-	if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a house that you own.");
-	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This house is not currently listed on the house market.");
-	SendClientMessageEx(playerid, COLOR_WHITE, "Your house listing will expire on %s.", date(HouseInfo[houseid][ListedTimeStamp], 4));
+	if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan nha cua minh.");
+	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay chua duoc dang tren cho nha.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Tin ban nha se het han vao %s.", date(HouseInfo[houseid][ListedTimeStamp], 4));
     return 1;
 }
 
 CMD:renewlisting(playerid, params[])
 {
-	if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
-	if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while injured.");
-	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings right now.");
-	if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while in jail.");
-	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 3 to access house listings.");
-	if(GetPlayerCash(playerid) < 100000) return SendClientMessageEx(playerid, COLOR_GREY, "You must have at least $100,000 to renew your house listing.");
+	if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
+	if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung cho nha khi bi thuong.");
+	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the dung danh sach ban nha.");
+	if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the xem danh sach ban nha khi o tu.");
+	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat cap 3 de xem danh sach ban nha.");
+	if(GetPlayerCash(playerid) < 100000) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat $100,000 de gia han tin ban nha.");
 	new houseid;
-	if(servernumber == 2) return SendClientMessage(playerid, COLOR_WHITE, "This command is disabled!");
+	if(servernumber == 2) return SendClientMessage(playerid, COLOR_WHITE, "Lenh nay da bi tat!");
 	houseid = GetNearestOwnedHouse(playerid);
-	if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a house that you own.");
-	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This house is not currently listed on the house market.");
+	if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan nha cua minh.");
+	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay chua duoc dang tren cho nha.");
 	HouseInfo[houseid][ListedTimeStamp] += 86400;
 	SaveHouse(houseid);
-	SendClientMessageEx(playerid, COLOR_GREEN, "You have renewed your house listing by a day, it will expire on %s.", date(HouseInfo[houseid][ListedTimeStamp], 4));
+	SendClientMessageEx(playerid, COLOR_GREEN, "Da gia han tin ban nha them mot ngay, het han vao %s.", date(HouseInfo[houseid][ListedTimeStamp], 4));
 	GivePlayerCashEx(playerid, TYPE_ONHAND, -100000);
     return 1;
 }
 
 CMD:deletelisting(playerid, params[])
 {
-	if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
-	if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while injured.");
-	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings right now.");
-	if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while in jail.");
-	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 3 to access house listings.");
+	if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
+	if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung cho nha khi bi thuong.");
+	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the dung danh sach ban nha.");
+	if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the xem danh sach ban nha khi o tu.");
+	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat cap 3 de xem danh sach ban nha.");
 	new houseid;
-	if(servernumber == 2) return SendClientMessage(playerid, COLOR_WHITE, "This command is disabled!");
+	if(servernumber == 2) return SendClientMessage(playerid, COLOR_WHITE, "Lenh nay da bi tat!");
 	houseid = GetNearestOwnedHouse(playerid);
-	if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a house that you own.");
-	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This house is not currently listed on the house market.");
+	if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan nha cua minh.");
+	if(HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay chua duoc dang tren cho nha.");
 	ClearHouseSaleVariables(houseid);
-	SendClientMessageEx(playerid, COLOR_GREY, "You have taken your house listing off of the market.");
+	SendClientMessageEx(playerid, COLOR_GREY, "Ban da go tin ban nha khoi cho nha.");
     return 1;
 }
 
 CMD:houselistings(playerid, const params[])
 {
-	if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
-	if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while injured.");
-	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings right now.");
-	if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while in jail.");
-	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 3 to access house listings.");
+	if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
+	if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung cho nha khi bi thuong.");
+	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the dung danh sach ban nha.");
+	if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the xem danh sach ban nha khi o tu.");
+	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat cap 3 de xem danh sach ban nha.");
 	new count[4], location[MAX_ZONE_NAME];
 	szMiscArray[0] = 0;
 	for(new i = 0; i < sizeof(HouseInfo); i ++)
@@ -434,9 +438,9 @@ CMD:houselistings(playerid, const params[])
 		}
 		if(count[0] == MAX_LISTINGS_PER_PAGE) break;
 	}
-	if(count[0] == 0) return SendClientMessage(playerid, COLOR_GREY, "There are no active advertisements at this time.");
-	if(count[0] == MAX_LISTINGS_PER_PAGE) format(szMiscArray, sizeof(szMiscArray), "%s\n[Next Page...]", szMiscArray);
-	ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSELISTINGS, DIALOG_STYLE_LIST, "House Listings", szMiscArray, "Okay", "Cancel");
+	if(count[0] == 0) return SendClientMessage(playerid, COLOR_GREY, "Hien khong co tin ban nha nao.");
+	if(count[0] == MAX_LISTINGS_PER_PAGE) format(szMiscArray, sizeof(szMiscArray), "%s\n[Trang sau...]", szMiscArray);
+	ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSELISTINGS, DIALOG_STYLE_LIST, "Danh sach ban nha", szMiscArray, "Dong y", "Huy");
 	return 1;
 }
 
@@ -455,36 +459,36 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				case false: if(houseid != -1)  return ClearHouseSaleVariables(houseid);
 				case true:
 				{
-					if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
-					if(PlayerInfo[playerid][pADMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are muted from advertisements.");
-					if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while injured.");
-					if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings right now.");
-					if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while in jail.");
-					if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 3 to access house listings.");
-					if(GetPlayerCash(playerid) < 500000) return SendClientMessageEx(playerid, COLOR_GREY, "You must have at least $500,000 to place a house listing.");
-					if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a house that you own.");
-					if(HouseInfo[houseid][Listed] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This house is already listed on the house market.");
+					if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
+					if(PlayerInfo[playerid][pADMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban bi cam dang quang cao.");
+					if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung cho nha khi bi thuong.");
+					if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the dung danh sach ban nha.");
+					if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the xem danh sach ban nha khi o tu.");
+					if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat cap 3 de xem danh sach ban nha.");
+					if(GetPlayerCash(playerid) < 500000) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat $500,000 de dang ban nha.");
+					if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan nha cua minh.");
+					if(HouseInfo[houseid][Listed] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay da duoc dang ban tren cho nha.");
 					switch(listitem)
 					{
-						case 0: return ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "House Listings", "Input the price of your listing below.", "Okay", "Cancel");
+						case 0: return ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap gia ban nha ben duoi.", "Dong y", "Huy");
 						case 1..5:
 						{
 							HouseMarketTracking[playerid] = listitem - 1;
-							ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap ID cua de lien ket voi tin ban nha. Nhap \"0\" de go cua dong.", "Dong y", "Huy");
 							return 1;
 						}
 						case 6, 7:
 						{
 							HouseMarketTracking[playerid] = listitem - 6;
-							ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap ID garage de lien ket voi tin ban nha. Nhap \"0\" de go garage.", "Dong y", "Huy");
 							return 1;
 						}
-						case 8: return ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDESCRIPTION, DIALOG_STYLE_INPUT, "House Listings", "Input the description of your listing below.", "Okay", "Cancel");
+						case 8: return ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDESCRIPTION, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap mo ta tin ban nha ben duoi.", "Dong y", "Huy");
 						case 9:
 						{
 							if(HouseInfo[houseid][ListingPrice] == 0)
 							{
-								SendClientMessageEx(playerid, COLOR_GREY, "You must specify a price before submitting your listing.");
+								SendClientMessageEx(playerid, COLOR_GREY, "Ban phai dat gia truoc khi gui tin ban nha.");
 								ShowMainListingDialog(playerid);
 								return 1;
 							}
@@ -496,8 +500,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							HouseInfo[houseid][Listed] = 1;
 							HouseInfo[houseid][PendingApproval] = 1;
 							SaveHouse(houseid);
-							SendClientMessageEx(playerid, COLOR_GREEN, "Your housing listing has been submitted for review by server administration.");
-							format(string, sizeof(string), "[New House Listing Request]: House ID %d, Owner: %s.", houseid, GetPlayerNameEx(playerid));
+							SendClientMessageEx(playerid, COLOR_GREEN, "Tin ban nha da duoc gui cho Admin xet duyet.");
+							format(string, sizeof(string), "[New House Listing Request]: ID nha %d, Chu: %s.", houseid, GetPlayerNameEx(playerid));
 							ABroadCast(COLOR_LIGHTRED, string, 4);
 							return 1;
 						}
@@ -514,38 +518,38 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				case false: return ShowMainListingDialog(playerid);
 				case true:
 				{
-					if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
-					if(PlayerInfo[playerid][pADMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are muted from advertisements.");
-					if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while injured.");
-					if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings right now.");
-					if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while in jail.");
-					if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 3 to access house listings.");
-					if(GetPlayerCash(playerid) < 500000) return SendClientMessageEx(playerid, COLOR_GREY, "You must have at least $500,000 to place a house listing.");
+					if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
+					if(PlayerInfo[playerid][pADMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban bi cam dang quang cao.");
+					if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung cho nha khi bi thuong.");
+					if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the dung danh sach ban nha.");
+					if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the xem danh sach ban nha khi o tu.");
+					if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat cap 3 de xem danh sach ban nha.");
+					if(GetPlayerCash(playerid) < 500000) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat $500,000 de dang ban nha.");
 					new houseid, price;
 					houseid = GetNearestOwnedHouse(playerid);
-					if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a house that you own.");
-					if(HouseInfo[houseid][Listed] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This house is already listed on the house market.");
+					if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan nha cua minh.");
+					if(HouseInfo[houseid][Listed] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay da duoc dang ban tren cho nha.");
 					if(sscanf(inputtext, "d", price))
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "The specified price must be numerical.");
-						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "House Listings", "Input the price of your listing below.", "Okay", "Cancel");
+						SendClientMessageEx(playerid, COLOR_GREY, "Gia phai la so.");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap gia ban nha ben duoi.", "Dong y", "Huy");
 						return 1;
 					}
 					if(price < 100000 || price > 500000000)
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "The specified price cannot be under $100,000 or over $500,000,000.");
-						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "House Listings", "Input the price of your listing below.", "Okay", "Cancel");
+						SendClientMessageEx(playerid, COLOR_GREY, "Gia khong duoc duoi $100,000 hoac tren $500,000,000.");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap gia ban nha ben duoi.", "Dong y", "Huy");
 						return 1;
 					}
 					if(price == HouseInfo[houseid][ListingPrice])
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "Your listing price is already set to $%s.", number_format(price));
-						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "House Listings", "Input the price of your listing below.", "Okay", "Cancel");
+						SendClientMessageEx(playerid, COLOR_GREY, "Gia tin ban nha da la $%s.", number_format(price));
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap gia ban nha ben duoi.", "Dong y", "Huy");
 						return 1;
 					}
 					HouseInfo[houseid][ListingPrice] = price;
 					SaveHouse(houseid);
-					SendClientMessageEx(playerid, COLOR_WHITE, "You have updated your listing price.");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Da doi gia tin ban nha.");
 					ShowMainListingDialog(playerid);
 					return 1;
 				}
@@ -559,27 +563,27 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				case false: return ShowMainListingDialog(playerid);
 				case true:
 				{
-					if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
-					if(PlayerInfo[playerid][pADMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are muted from advertisements.");
-					if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while injured.");
-					if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings right now.");
-					if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while in jail.");
-					if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 3 to access house listings.");
-					if(GetPlayerCash(playerid) < 500000) return SendClientMessageEx(playerid, COLOR_GREY, "You must have at least $500,000 to place a house listing.");
+					if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
+					if(PlayerInfo[playerid][pADMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban bi cam dang quang cao.");
+					if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung cho nha khi bi thuong.");
+					if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the dung danh sach ban nha.");
+					if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the xem danh sach ban nha khi o tu.");
+					if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat cap 3 de xem danh sach ban nha.");
+					if(GetPlayerCash(playerid) < 500000) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat $500,000 de dang ban nha.");
 					new houseid;
 					houseid = GetNearestOwnedHouse(playerid);
-					if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a house that you own.");
-					if(HouseInfo[houseid][Listed] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This house is already listed on the house market.");
+					if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan nha cua minh.");
+					if(HouseInfo[houseid][Listed] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay da duoc dang ban tren cho nha.");
 					if(strlen(inputtext) < 1 || strlen(inputtext) > 128)
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "The listing description cannot be under 1 character or over 128 characters.");
-						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDESCRIPTION, DIALOG_STYLE_INPUT, "House Listings", "Input the description of your listing below.", "Okay", "Cancel");
+						SendClientMessageEx(playerid, COLOR_GREY, "Mo ta khong duoc duoi 1 ky tu hoac qua 128 ky tu.");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDESCRIPTION, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap mo ta tin ban nha ben duoi.", "Dong y", "Huy");
 						return 1;
 					}
 					if(strcmp(inputtext, HouseInfo[houseid][ListingDescription], false) == 0)
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "The description you have specified is already set the set description.");
-						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDESCRIPTION, DIALOG_STYLE_INPUT, "House Listings", "Input the description of your listing below.", "Okay", "Cancel");
+						SendClientMessageEx(playerid, COLOR_GREY, "Mo ta nay trung voi mo ta da dat.");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDESCRIPTION, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap mo ta tin ban nha ben duoi.", "Dong y", "Huy");
 						return 1;
 					}
 					for(new i = 0; i < strlen(inputtext) - 7; i ++)
@@ -596,7 +600,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					strcpy(HouseInfo[houseid][ListingDescription], inputtext, 128);
 					SaveHouse(houseid);
-					SendClientMessageEx(playerid, COLOR_WHITE, "You have updated your listing description.");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Da doi mo ta tin ban nha.");
 					ShowMainListingDialog(playerid);
 					return 1;
 				}
@@ -610,35 +614,35 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				case false: return ShowMainListingDialog(playerid);
 				case true:
 				{
-					if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
-					if(PlayerInfo[playerid][pADMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are muted from advertisements.");
-					if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while injured.");
-					if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings right now.");
-					if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while in jail.");
-					if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 3 to access house listings.");
-					if(GetPlayerCash(playerid) < 500000) return SendClientMessageEx(playerid, COLOR_GREY, "You must have at least $500,000 to place a house listing.");
+					if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
+					if(PlayerInfo[playerid][pADMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban bi cam dang quang cao.");
+					if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung cho nha khi bi thuong.");
+					if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the dung danh sach ban nha.");
+					if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the xem danh sach ban nha khi o tu.");
+					if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat cap 3 de xem danh sach ban nha.");
+					if(GetPlayerCash(playerid) < 500000) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat $500,000 de dang ban nha.");
 					new houseid, doorid;
 					houseid = GetNearestOwnedHouse(playerid);
-					if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a house that you own.");
-					if(HouseInfo[houseid][Listed] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This house is already listed on the house market.");
+					if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan nha cua minh.");
+					if(HouseInfo[houseid][Listed] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay da duoc dang ban tren cho nha.");
 					if(sscanf(inputtext, "d", doorid))
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "The specified door ID must be numerical.");
-						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+						SendClientMessageEx(playerid, COLOR_GREY, "ID cua phai la so.");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap ID cua de lien ket voi tin ban nha. Nhap \"0\" de go cua dong.", "Dong y", "Huy");
 						return 1;
 					}
 					if(doorid < 0 || doorid >= MAX_DDOORS)
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "Invalid door ID specified.");
-						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+						SendClientMessageEx(playerid, COLOR_GREY, "ID cua khong hop le.");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap ID cua de lien ket voi tin ban nha. Nhap \"0\" de go cua dong.", "Dong y", "Huy");
 						return 1;
 					}
 					for(new i = 0; i < 5; i ++)
 					{
 						if(HouseInfo[houseid][LinkedDoor][i] == doorid && doorid != 0)
 						{
-							SendClientMessageEx(playerid, COLOR_GREY, "The specified dynamic door is already linked to your listing.");
-							ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+							SendClientMessageEx(playerid, COLOR_GREY, "Cua dong nay da lien ket voi tin ban nha.");
+							ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap ID cua de lien ket voi tin ban nha. Nhap \"0\" de go cua dong.", "Dong y", "Huy");
 							return 1;
 						}
 					}
@@ -648,13 +652,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						{
 							if(HouseInfo[houseid][LinkedDoor][HouseMarketTracking[playerid]] == 0)
 							{
-								SendClientMessageEx(playerid, COLOR_GREY, "You do not currently have a linked dynamic door in the specified slot.");
-								ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+								SendClientMessageEx(playerid, COLOR_GREY, "O nay chua co cua dong lien ket.");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap ID cua de lien ket voi tin ban nha. Nhap \"0\" de go cua dong.", "Dong y", "Huy");
 								return 1;
 							}
 							HouseInfo[houseid][LinkedDoor][HouseMarketTracking[playerid]] = 0;
 							SaveHouse(houseid);
-							SendClientMessageEx(playerid, COLOR_WHITE, "You have updated/removed the dynamic door(s) linked to your listing.");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Da cap nhat/go cua dong lien ket voi tin ban nha.");
 							ShowMainListingDialog(playerid);
 							return 1;
 						}
@@ -662,19 +666,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						{
 							if(DDoorsInfo[doorid][ddOwner] != GetPlayerSQLId(playerid))
 							{
-								SendClientMessageEx(playerid, COLOR_GREY, "You do not own the specified dynamic door.");
-								ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+								SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu cua dong nay.");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap ID cua de lien ket voi tin ban nha. Nhap \"0\" de go cua dong.", "Dong y", "Huy");
 								return 1;
 							}
 							if(HouseInfo[houseid][hIntIW] != DDoorsInfo[doorid][ddInteriorInt] || HouseInfo[houseid][hIntVW] != DDoorsInfo[doorid][ddInteriorVW])
 							{
-								SendClientMessageEx(playerid, COLOR_GREY, "The specified dynamic door is not linked to your house.");
-								ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+								SendClientMessageEx(playerid, COLOR_GREY, "Cua dong nay khong lien ket voi nha ban.");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap ID cua de lien ket voi tin ban nha. Nhap \"0\" de go cua dong.", "Dong y", "Huy");
 								return 1;
 							}
 							HouseInfo[houseid][LinkedDoor][HouseMarketTracking[playerid]] = doorid;
 							SaveHouse(houseid);
-							SendClientMessageEx(playerid, COLOR_WHITE, "You have updated the dynamic door(s) linked to your listing.");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Da cap nhat cua dong lien ket voi tin ban nha.");
 							ShowMainListingDialog(playerid);
 							return 1;
 						}
@@ -691,35 +695,35 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				case false: return ShowMainListingDialog(playerid);
 				case true:
 				{
-					if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
-					if(PlayerInfo[playerid][pADMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are muted from advertisements.");
-					if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while injured.");
-					if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings right now.");
-					if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while in jail.");
-					if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 3 to access house listings.");
-					if(GetPlayerCash(playerid) < 500000) return SendClientMessageEx(playerid, COLOR_GREY, "You must have at least $500,000 to place a house listing.");
+					if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
+					if(PlayerInfo[playerid][pADMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban bi cam dang quang cao.");
+					if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung cho nha khi bi thuong.");
+					if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the dung danh sach ban nha.");
+					if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the xem danh sach ban nha khi o tu.");
+					if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat cap 3 de xem danh sach ban nha.");
+					if(GetPlayerCash(playerid) < 500000) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat $500,000 de dang ban nha.");
 					new houseid, garageid;
 					houseid = GetNearestOwnedHouse(playerid);
-					if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a house that you own.");
-					if(HouseInfo[houseid][Listed] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This house is already listed on the house market.");
+					if(houseid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan nha cua minh.");
+					if(HouseInfo[houseid][Listed] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay da duoc dang ban tren cho nha.");
 					if(sscanf(inputtext, "d", garageid))
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "The specified garage ID must be numerical.");
-						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
+						SendClientMessageEx(playerid, COLOR_GREY, "ID garage phai la so.");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap ID garage de lien ket voi tin ban nha. Nhap \"0\" de go garage.", "Dong y", "Huy");
 						return 1;
 					}
 					if(garageid < 0 || garageid >= MAX_GARAGES)
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "Invalid garage ID specified.");
-						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
+						SendClientMessageEx(playerid, COLOR_GREY, "ID garage khong hop le.");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap ID garage de lien ket voi tin ban nha. Nhap \"0\" de go garage.", "Dong y", "Huy");
 						return 1;
 					}
 					for(new i = 0; i < 2; i ++)
 					{
 						if(HouseInfo[houseid][LinkedGarage][i] == garageid && garageid != 0)
 						{
-							SendClientMessageEx(playerid, COLOR_GREY, "The specified garage is already linked to your listing.");
-							ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
+							SendClientMessageEx(playerid, COLOR_GREY, "Garage nay da lien ket voi tin ban nha.");
+							ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap ID garage de lien ket voi tin ban nha. Nhap \"0\" de go garage.", "Dong y", "Huy");
 							return 1;
 						}
 					}
@@ -729,13 +733,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						{
 							if(HouseInfo[houseid][LinkedGarage][HouseMarketTracking[playerid]] == 0)
 							{
-								SendClientMessageEx(playerid, COLOR_GREY, "You do not currently have a linked garage in the specified slot.");
-								ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
+								SendClientMessageEx(playerid, COLOR_GREY, "O nay chua co garage lien ket.");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap ID garage de lien ket voi tin ban nha. Nhap \"0\" de go garage.", "Dong y", "Huy");
 								return 1;
 							}
 							HouseInfo[houseid][LinkedGarage][HouseMarketTracking[playerid]] = 0;
 							SaveHouse(houseid);
-							SendClientMessageEx(playerid, COLOR_WHITE, "You have updated/removed the gate(s) linked to your listing.");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Da cap nhat/go garage lien ket voi tin ban nha.");
 							ShowMainListingDialog(playerid);
 							return 1;
 						}
@@ -743,13 +747,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						{
 							if(DDoorsInfo[garageid][ddOwner] != GetPlayerSQLId(playerid))
 							{
-								SendClientMessageEx(playerid, COLOR_GREY, "You do not own the specified garage.");
-								ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
+								SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu garage nay.");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "Danh sach ban nha", "Nhap ID garage de lien ket voi tin ban nha. Nhap \"0\" de go garage.", "Dong y", "Huy");
 								return 1;
 							}
 							HouseInfo[houseid][LinkedGarage][HouseMarketTracking[playerid]] = garageid;
 							SaveHouse(houseid);
-							SendClientMessageEx(playerid, COLOR_WHITE, "You have updated the garage(s) linked to your listing.");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Da cap nhat garage lien ket voi tin ban nha.");
 							ShowMainListingDialog(playerid);
 							return 1;
 						}
@@ -763,14 +767,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(response)
 			{
-				if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
-				if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while injured.");
-				if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings right now.");
-				if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while in jail.");
-				if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 3 to access house listings.");
+				if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
+				if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung cho nha khi bi thuong.");
+				if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the dung danh sach ban nha.");
+				if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the xem danh sach ban nha khi o tu.");
+				if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat cap 3 de xem danh sach ban nha.");
 				szMiscArray[0] = 0;
 				new houseid, position[2], count[4], location[MAX_ZONE_NAME];
-				if(strcmp(inputtext, "[Next Page...]", true) == 0)
+				if(strcmp(inputtext, "[Trang sau...]", true) == 0)
 				{
 					for(new i = AdTracking[playerid] + 1; i < sizeof(HouseInfo); i ++)
 					{
@@ -791,9 +795,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						}
 						if(count[0] == MAX_LISTINGS_PER_PAGE) break;
 					}
-					if(count[0] == 0) return SendClientMessage(playerid, COLOR_GREY, "There are no active advertisements at this time.");
-					if(count[0] == MAX_LISTINGS_PER_PAGE && AdditionalAdvertisements(AdTracking[playerid] + 1)) strcat(szMiscArray, "\n[Next Page...]");
-					ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSELISTINGS, DIALOG_STYLE_LIST, "House Listings", szMiscArray, "Okay", "Cancel");
+					if(count[0] == 0) return SendClientMessage(playerid, COLOR_GREY, "Hien khong co tin ban nha nao.");
+					if(count[0] == MAX_LISTINGS_PER_PAGE && AdditionalAdvertisements(AdTracking[playerid] + 1)) strcat(szMiscArray, "\n[Trang sau...]");
+					ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSELISTINGS, DIALOG_STYLE_LIST, "Danh sach ban nha", szMiscArray, "Dong y", "Huy");
 					return 1;
 				}
 				position[0] = strfind(inputtext, "(");
@@ -802,7 +806,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				houseid = strval(string);
 				if(HouseInfo[houseid][hOwned] == 0 || HouseInfo[houseid][Listed] == 0 || HouseInfo[houseid][PendingApproval] == 1)
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently for sale.");
+					SendClientMessageEx(playerid, COLOR_GREY, "Nha nay hien khong duoc ban.");
 					pc_cmd_houselistings(playerid, "");
 					return 1;
 				}
@@ -813,11 +817,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		case DIALOG_SELECTEDLISTING:
 		{
-			if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
-			if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while injured.");
-			if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings right now.");
-			if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while in jail.");
-			if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 3 to access house listings.");
+			if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
+			if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung cho nha khi bi thuong.");
+			if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the dung danh sach ban nha.");
+			if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the xem danh sach ban nha khi o tu.");
+			if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat cap 3 de xem danh sach ban nha.");
 			switch(response)
 			{
 				case false: return pc_cmd_houselistings(playerid, "");
@@ -825,11 +829,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(HouseInfo[HouseMarketTracking[playerid]][hOwned] == 0 || HouseInfo[HouseMarketTracking[playerid]][Listed] == 0 || HouseInfo[HouseMarketTracking[playerid]][PendingApproval] == 1)
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently for sale.");
+						SendClientMessageEx(playerid, COLOR_GREY, "Nha nay hien khong duoc ban.");
 						pc_cmd_houselistings(playerid, "");
 						return 1;
 					}
-					ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "Danh sach ban nha", "Den xem nha\nMua nha", "Dong y", "Huy");
 					return 1;
 				}
 			}
@@ -837,14 +841,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		case DIALOG_LISTINGOPTIONS:
 		{
-			if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
-			if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while injured.");
-			if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings right now.");
-			if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use house listings while in jail.");
-			if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 3 to access house listings.");
+			if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
+			if(GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung cho nha khi bi thuong.");
+			if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the dung danh sach ban nha.");
+			if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the xem danh sach ban nha khi o tu.");
+			if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat cap 3 de xem danh sach ban nha.");
 			if(HouseInfo[HouseMarketTracking[playerid]][hOwned] == 0 || HouseInfo[HouseMarketTracking[playerid]][Listed] == 0 || HouseInfo[HouseMarketTracking[playerid]][PendingApproval] == 1)
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "The specified house is not currently for sale.");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nha nay hien khong duoc ban.");
 				pc_cmd_houselistings(playerid, "");
 				return 1;
 			}
@@ -859,41 +863,41 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						{
 							if(GetPlayerSQLId(playerid) == HouseInfo[HouseMarketTracking[playerid]][hOwnerID])
 							{
-								SendClientMessageEx(playerid, COLOR_GREY, "You cannot visit your own house through house listings, use (/home).");
-								ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
+								SendClientMessageEx(playerid, COLOR_GREY, "Khong the den nha minh qua cho nha, dung (/home).");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "Danh sach ban nha", "Den xem nha\nMua nha", "Dong y", "Huy");
 								return 1;
 							}
 							if(HouseInfo[HouseMarketTracking[playerid]][hExtIW] != 0 || HouseInfo[HouseMarketTracking[playerid]][hExtVW] != 0)
 							{
-								SendClientMessageEx(playerid, COLOR_GREY, "The specified house's entry point is not outside. Contact the owner to visit it.");
-								ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
+								SendClientMessageEx(playerid, COLOR_GREY, "Loi vao nha nay khong o ngoai troi. Hay lien he chu nha de den xem.");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "Danh sach ban nha", "Den xem nha\nMua nha", "Dong y", "Huy");
 								return 1;
 							}
 							DisablePlayerCheckpoint(playerid);
 							SetPlayerCheckpoint(playerid, HouseInfo[HouseMarketTracking[playerid]][hExteriorX], HouseInfo[HouseMarketTracking[playerid]][hExteriorY], HouseInfo[HouseMarketTracking[playerid]][hExteriorZ], 4.0);
 							gPlayerCheckpointStatus[playerid] = CHECKPOINT_HOME;
 							hInviteHouse[playerid] = HouseMarketTracking[playerid];
-							SendClientMessageEx(playerid, COLOR_WHITE, "A checkpoint has been set to the specified house.");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Da dat checkpoint den nha nay.");
 							return 1;
 						}
 						case 1:
 						{
 							if(GetPlayerSQLId(playerid) == HouseInfo[HouseMarketTracking[playerid]][hOwnerID])
 							{
-								SendClientMessageEx(playerid, COLOR_GREY, "You cannot purchase your own house.");
-								ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
+								SendClientMessageEx(playerid, COLOR_GREY, "Khong the mua nha cua chinh minh.");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "Danh sach ban nha", "Den xem nha\nMua nha", "Dong y", "Huy");
 								return 1;
 							}
 							if(Homes[playerid] >= MAX_OWNABLE_HOUSES)
 							{
-								SendClientMessageEx(playerid, COLOR_GREY, "You cannot own any more houses.");
-								ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
+								SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the so huu them nha.");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "Danh sach ban nha", "Den xem nha\nMua nha", "Dong y", "Huy");
 								return 1;
 							}
 							if(GetPlayerCash(playerid) < HouseInfo[HouseMarketTracking[playerid]][ListingPrice])
 							{
-								SendClientMessageEx(playerid, COLOR_GREY, "You cannot afford this $%s house.", number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
-								ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
+								SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du $%s de mua nha nay.", number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
+								ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "Danh sach ban nha", "Den xem nha\nMua nha", "Dong y", "Huy");
 								return 1;
 							}
 							new name[24], bool:online;
@@ -902,7 +906,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								if(gPlayerLogged{i} == 1 && HouseInfo[HouseMarketTracking[playerid]][hOwnerID] == GetPlayerSQLId(i))
 								{
 									GivePlayerCashEx(i, TYPE_BANK, HouseInfo[HouseMarketTracking[playerid]][ListingPrice]);
-									SendClientMessageEx(i, COLOR_GREEN, "%s purchased your house (house ID: %d) for $%s.", GetPlayerNameEx(playerid), HouseMarketTracking[playerid], number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
+									SendClientMessageEx(i, COLOR_GREEN, "%s da mua nha cua ban (ID nha: %d) voi gia $%s.", GetPlayerNameEx(playerid), HouseMarketTracking[playerid], number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
 									online = true;
 									break;
 								}
@@ -913,12 +917,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								mysql_escape_string(HouseInfo[HouseMarketTracking[playerid]][hOwnerName], name);
 								mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `Bank`=`Bank`+%d WHERE `Username`='%s'", HouseInfo[HouseMarketTracking[playerid]][ListingPrice], name);
 								mysql_tquery(MainPipeline, szMiscArray, "", "i", playerid);
-								format(string, sizeof(string), "I purchased your house (ID: %d) for $%s.", HouseMarketTracking[playerid], number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
+								format(string, sizeof(string), "Toi mua nha cua ban (ID: %d) gia $%s.", HouseMarketTracking[playerid], number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
 								mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `letters` (`Sender_Id`, `Receiver_Id`, `Date`, `Message`, `Delivery_Min`, `Notify`) VALUES (%d, %d, NOW(), '%e', 0, 1)", GetPlayerSQLId(playerid), HouseInfo[HouseMarketTracking[playerid]][hOwnerID], string);
 								mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								
 							}
-							SendClientMessageEx(playerid, COLOR_GREEN, "You have purchased house ID %d for $%s.", HouseMarketTracking[playerid], number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
+							SendClientMessageEx(playerid, COLOR_GREEN, "Ban da mua nha ID %d voi gia $%s.", HouseMarketTracking[playerid], number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
 							Homes[playerid] ++;
 							GivePlayerCashEx(playerid, TYPE_ONHAND, -HouseInfo[HouseMarketTracking[playerid]][ListingPrice]);
 							for(new i = 0; i < 5; i ++)

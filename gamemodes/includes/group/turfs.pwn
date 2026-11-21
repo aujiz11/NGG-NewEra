@@ -234,7 +234,7 @@ ShutdownTurfWarsZone(zone)
 	foreach(new i: Player)
 	{
 		if(IsPlayerInDynamicArea(i, TurfWars[zone][twAreaId])) {
-			SendClientMessageEx(i,COLOR_YELLOW,"Law Enforcement has attempted to shutdown this turf!");
+			SendClientMessageEx(i,COLOR_YELLOW,"Law Enforcement dang co dong cua lanh tho nay!");
 		}
 	}	
 
@@ -261,7 +261,7 @@ TakeoverTurfWarsZone(iGroupID, zone)
 	foreach(new i: Player)
 	{
 		if(IsPlayerInDynamicArea(i, TurfWars[zone][twAreaId])) {
-			SendClientMessageEx(i,COLOR_YELLOW,"%s has attempted to takeover this turf for their own!",arrGroupData[iGroupID][g_szGroupName]);
+			SendClientMessageEx(i,COLOR_YELLOW,"%s dang co chiem lanh tho nay!",arrGroupData[iGroupID][g_szGroupName]);
 		}
 	}	
 
@@ -296,19 +296,19 @@ CaptureTurfWarsZone(iGroupID, zone)
 		}
 		if(IsPlayerInDynamicArea(i, TurfWars[zone][twAreaId])) {
 		    if((0 <= iGroupID < MAX_GROUPS)) {
-				SendClientMessageEx(i,COLOR_RED,"%s has successfully claimed this turf for their own!",arrGroupData[iGroupID][g_szGroupName]);
+				SendClientMessageEx(i,COLOR_RED,"%s da chiem duoc lanh tho nay!",arrGroupData[iGroupID][g_szGroupName]);
 				//SendAudioToPlayer(i, 62, 100);
 			}
 			else {
-				SendClientMessageEx(i,COLOR_RED,"Law Enforcement has successfully shut down this turf!");
+				SendClientMessageEx(i,COLOR_RED,"Law Enforcement da dong cua lanh tho nay!");
 			}
 		}
 		if(PlayerInfo[i][pGangModerator] >= 1) {
 		    if((0 <= iGroupID < MAX_GROUPS)) {
-				SendClientMessageEx(i,COLOR_RED,"%s has successfully claimed turf %d",arrGroupData[iGroupID][g_szGroupName], zone);
+				SendClientMessageEx(i,COLOR_RED,"%s da chiem turf %d",arrGroupData[iGroupID][g_szGroupName], zone);
 			}
 			else {
-				SendClientMessageEx(i,COLOR_RED,"Law Enforcement has successfully shut down turf %d", zone);
+				SendClientMessageEx(i,COLOR_RED,"Law Enforcement da dong cua turf %d", zone);
 			}
 		}	
 	}
@@ -332,18 +332,18 @@ ExtortionTurfsWarsZone(playerid, type, money)
 	if(GetPlayerCash(playerid) < tax || arrGroupData[ownerid][g_iBudget] > cellmax - tax) return 0;
 	new szItemName[32];
 	switch(type) {
-		case 1: szItemName = "drugs";
-		case 2: szItemName = "vests";
-		case 3: szItemName = "weapons";
-		case 4: szItemName = "yourself";
-		case 5: szItemName = "fireworks";
-		case 6: szItemName = "sex";
-		case 7: szItemName = "items";
+		case 1: szItemName = "ma tuy";
+		case 2: szItemName = "ao giap";
+		case 3: szItemName = "vu khi";
+		case 4: szItemName = "ban than";
+		case 5: szItemName = "phao hoa";
+		case 6: szItemName = "tinh duc";
+		case 7: szItemName = "vat pham";
 		default: return 0;
 	}
 	arrGroupData[ownerid][g_iBudget] += tax;
 	GivePlayerCash(playerid, -tax);
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have been taxed $%d for selling %s on %s's turf.", tax, szItemName, arrGroupData[ownerid][g_szGroupName]);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban bi thu $%d thue vi ban %s tren lanh tho cua %s.", tax, szItemName, arrGroupData[ownerid][g_szGroupName]);
 	return 1;
 }
 
@@ -406,7 +406,7 @@ TurfWarsEditTurfsSelection(playerid)
 	for(new i = 0; i < MAX_TURFS; i++)
 	{
 		if(!TurfWars[i][twLoaded]) {
-			format(szMiscArray, sizeof(szMiscArray), "%s%d) (Unavailable row)\n", szMiscArray, i);
+			format(szMiscArray, sizeof(szMiscArray), "%s%d) (Row loi)\n", szMiscArray, i);
 		}
 		else if(TurfWars[i][twOwnerId] == -2) {
 			format(szMiscArray, sizeof(szMiscArray), "%s%d) (Law Enforcement)\n", szMiscArray, i);
@@ -415,7 +415,7 @@ TurfWarsEditTurfsSelection(playerid)
 		{
 			if(TurfWars[i][twOwnerId] < 0 || TurfWars[i][twOwnerId] >= MAX_GROUPS)
 			{
-				format(szMiscArray,sizeof(szMiscArray),"%s%d) (Invalid Group)\n",szMiscArray,i/*,TurfWars[i][twName]*/);
+				format(szMiscArray,sizeof(szMiscArray),"%s%d) (Sai to chuc)\n",szMiscArray,i/*,TurfWars[i][twName]*/);
 			}
 			else
 			{
@@ -424,10 +424,10 @@ TurfWarsEditTurfsSelection(playerid)
 		}
 		else
 		{
-			format(szMiscArray,sizeof(szMiscArray),"%s%d) (%s)\n",szMiscArray,i,/*TurfWars[i][twName],*/"Vacant");
+			format(szMiscArray,sizeof(szMiscArray),"%s%d) (%s)\n",szMiscArray,i,/*TurfWars[i][twName],*/"Trong");
 		}
 	}
-	ShowPlayerDialogEx(playerid,TWEDITTURFSSELECTION,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Selection Menu:",szMiscArray,"Select","Back");
+	ShowPlayerDialogEx(playerid,TWEDITTURFSSELECTION,DIALOG_STYLE_LIST,"Turf Wars - Chon lanh tho de sua:",szMiscArray,"Chon","Quay lai");
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
@@ -470,11 +470,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(!response) return 1;
 			if(!(0 <= listitem < MAX_TURFS) || !TurfWars[listitem][twLoaded])
-				return SendClientMessageEx(playerid, COLOR_GRAD2, "This turf row is unavailable. Check the database and loading log.");
+				return SendClientMessageEx(playerid, COLOR_GRAD2, "Row lanh tho khong kha dung. Kiem tra co so du lieu va log tai.");
 			
 			DeletePVar(playerid, "EditingTurfsStage");
 			SetPVarInt(playerid, "EditingTurfs", listitem);
-			ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+			ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Menu sua lanh tho:","Sua kich thuoc...\nSua chu...\nSua gio cho chiem...\nSua khoa...\nSua dac quyen...\nDat lai chien tranh...\nXoa lanh tho","Chon","Quay lai");
 		}
 		case TWEDITTURFSMENU:
 		{
@@ -486,23 +486,23 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					case 0: // Edit Dim
 					{
 						SetPVarInt(playerid, "EditingTurfsStage", 1);
-						SendClientMessageEx(playerid, COLOR_WHITE, "Goto a location and type (/savetwpos) to edit the West Wall.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Den vi tri va dung (/savetwpos) de sua bien Tay.");
 					}
 					case 1: // Edit Owner
 					{
-						ShowPlayerDialogEx(playerid,TWEDITTURFSOWNER,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Owner Menu:","Please enter a group ID that you wish to assign to this turf:\n\nHint: Enter -1 if you wish to vacant the turf.","Change","Back");
+						ShowPlayerDialogEx(playerid,TWEDITTURFSOWNER,DIALOG_STYLE_INPUT,"Turf Wars - Sua chu lanh tho:","Nhap ID to chuc muon gan lanh tho:\n\nGoi y: Nhap -1 de de trong lanh tho.","Doi","Quay lai");
 					}
 					case 2: // Edit Vulnerablity
 					{
-						ShowPlayerDialogEx(playerid,TWEDITTURFSVUL,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Vulnerable Menu:","Please enter a Vulnerable countdown time for the turf:","Change","Back");
+						ShowPlayerDialogEx(playerid,TWEDITTURFSVUL,DIALOG_STYLE_INPUT,"Turf Wars - Sua gio cho chiem:","Nhap so gio dem nguoc truoc khi lanh tho cho phep chiem:","Doi","Quay lai");
 					}
 					case 3: // Edit Locks
 					{
-						ShowPlayerDialogEx(playerid,TWEDITTURFSLOCKED,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Locked Menu:","Lock\nUnlock","Change","Back");
+						ShowPlayerDialogEx(playerid,TWEDITTURFSLOCKED,DIALOG_STYLE_LIST,"Turf Wars - Sua khoa lanh tho:","Khoa\nMo khoa","Doi","Quay lai");
 					}
 					case 4: // Edit Perks
 					{
-						ShowPlayerDialogEx(playerid,TWEDITTURFSPERKS,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Perks Menu:","None\nExtortion\nDrugs","Change","Back");
+						ShowPlayerDialogEx(playerid,TWEDITTURFSPERKS,DIALOG_STYLE_LIST,"Turf Wars - Sua dac quyen lanh tho:","Khong\nExtortion\nDrugs","Doi","Quay lai");
 					}
 					case 5: // Reset War
 					{
@@ -528,20 +528,20 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new tw = GetPVarInt(playerid, "EditingTurfs");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialogEx(playerid,TWEDITTURFSOWNER,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Owner Menu:","Please enter a group ID that you wish to assign to this turf:\n\nHint: Enter -1 if you wish to vacant the turf.","Change","Back");
+					ShowPlayerDialogEx(playerid,TWEDITTURFSOWNER,DIALOG_STYLE_INPUT,"Turf Wars - Sua chu lanh tho:","Nhap ID to chuc muon gan lanh tho:\n\nGoi y: Nhap -1 de de trong lanh tho.","Doi","Quay lai");
 					return 1;
 				}
 				if((strcmp(inputtext, "-1") != 0 && !IsNumericString(inputtext)) || strlen(inputtext) > 2 || strval(inputtext) < -1 || strval(inputtext) >= MAX_GROUPS)
 				{
-					ShowPlayerDialogEx(playerid,TWEDITTURFSOWNER,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Owner Menu:","Please enter a group ID that you wish to assign to this turf:\n\nHint: Enter -1 if you wish to vacant the turf.","Change","Back");
+					ShowPlayerDialogEx(playerid,TWEDITTURFSOWNER,DIALOG_STYLE_INPUT,"Turf Wars - Sua chu lanh tho:","Nhap ID to chuc muon gan lanh tho:\n\nGoi y: Nhap -1 de de trong lanh tho.","Doi","Quay lai");
 					return 1;
 				}
 				SetOwnerTurfWarsZone(1, tw, strval(inputtext));
-				ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+				ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Menu sua lanh tho:","Sua kich thuoc...\nSua chu...\nSua gio cho chiem...\nSua khoa...\nSua dac quyen...\nDat lai chien tranh...\nXoa lanh tho","Chon","Quay lai");
 			}
 			else
 			{
-				ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+				ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Menu sua lanh tho:","Sua kich thuoc...\nSua chu...\nSua gio cho chiem...\nSua khoa...\nSua dac quyen...\nDat lai chien tranh...\nXoa lanh tho","Chon","Quay lai");
 			}
 		}
 		case TWEDITTURFSVUL:
@@ -551,21 +551,21 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new tw = GetPVarInt(playerid, "EditingTurfs");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialogEx(playerid,TWEDITTURFSVUL,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Vulnerable Menu:","Please enter a Vulnerable countdown time for the turf:","Change","Back");
+					ShowPlayerDialogEx(playerid,TWEDITTURFSVUL,DIALOG_STYLE_INPUT,"Turf Wars - Sua gio cho chiem:","Nhap so gio dem nguoc truoc khi lanh tho cho phep chiem:","Doi","Quay lai");
 					return 1;
 				}
 				if(!IsNumericString(inputtext) || strlen(inputtext) > 10 || (strlen(inputtext) == 10 && strcmp(inputtext, "2147483647") > 0))
 				{
-					ShowPlayerDialogEx(playerid,TWEDITTURFSVUL,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Vulnerable Menu:","Please enter a Vulnerable countdown time for the turf:","Change","Back");
+					ShowPlayerDialogEx(playerid,TWEDITTURFSVUL,DIALOG_STYLE_INPUT,"Turf Wars - Sua gio cho chiem:","Nhap so gio dem nguoc truoc khi lanh tho cho phep chiem:","Doi","Quay lai");
 					return 1;
 				}
 				TurfWars[tw][twVulnerable] = strval(inputtext);
 				SaveTurfWar(tw);
-				ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+				ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Menu sua lanh tho:","Sua kich thuoc...\nSua chu...\nSua gio cho chiem...\nSua khoa...\nSua dac quyen...\nDat lai chien tranh...\nXoa lanh tho","Chon","Quay lai");
 			}
 			else
 			{
-				ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+				ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Menu sua lanh tho:","Sua kich thuoc...\nSua chu...\nSua gio cho chiem...\nSua khoa...\nSua dac quyen...\nDat lai chien tranh...\nXoa lanh tho","Chon","Quay lai");
 			}
 		}
 		case TWEDITTURFSLOCKED:
@@ -579,19 +579,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					{
 						TurfWars[tw][twLocked] = 1;
 						SaveTurfWar(tw);
-						ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+						ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Menu sua lanh tho:","Sua kich thuoc...\nSua chu...\nSua gio cho chiem...\nSua khoa...\nSua dac quyen...\nDat lai chien tranh...\nXoa lanh tho","Chon","Quay lai");
 					}
 					case 1: // Unlock
 					{
 						TurfWars[tw][twLocked] = 0;
 						SaveTurfWar(tw);
-						ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+						ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Menu sua lanh tho:","Sua kich thuoc...\nSua chu...\nSua gio cho chiem...\nSua khoa...\nSua dac quyen...\nDat lai chien tranh...\nXoa lanh tho","Chon","Quay lai");
 					}
 				}
 			}
 			else
 			{
-				ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+				ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Menu sua lanh tho:","Sua kich thuoc...\nSua chu...\nSua gio cho chiem...\nSua khoa...\nSua dac quyen...\nDat lai chien tranh...\nXoa lanh tho","Chon","Quay lai");
 			}
 		}
 		case TWEDITTURFSPERKS:
@@ -602,11 +602,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(!(0 <= listitem <= 2)) return 1;
 				TurfWars[tw][twSpecial] = listitem;
 				SaveTurfWar(tw);
-				ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+				ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Menu sua lanh tho:","Sua kich thuoc...\nSua chu...\nSua gio cho chiem...\nSua khoa...\nSua dac quyen...\nDat lai chien tranh...\nXoa lanh tho","Chon","Quay lai");
 			}
 			else
 			{
-				ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+				ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Menu sua lanh tho:","Sua kich thuoc...\nSua chu...\nSua gio cho chiem...\nSua khoa...\nSua dac quyen...\nDat lai chien tranh...\nXoa lanh tho","Chon","Quay lai");
 			}
 		}
 	}
@@ -620,45 +620,45 @@ CMD:turfinfo(playerid, params[])
         new string[128];
         SendClientMessageEx(playerid, COLOR_GREEN, "|___________ (ID: %d) %s ___________|",tw,TurfWars[tw][twName]);
         if(TurfWars[tw][twOwnerId] == -1) {
-            format(string,sizeof(string),"Owner: Vacant.");
+            format(string,sizeof(string),"Chu: Trong.");
         }
         else if(TurfWars[tw][twOwnerId] == -2) {
-            format(string,sizeof(string),"Owner: Law Enforcement.");
+            format(string,sizeof(string),"Chu: Law Enforcement.");
         }
         else if(ValidGroup(TurfWars[tw][twOwnerId])) {
-            format(string,sizeof(string),"Owner: %s.",arrGroupData[TurfWars[tw][twOwnerId]][g_szGroupName]);
+            format(string,sizeof(string),"Chu: %s.",arrGroupData[TurfWars[tw][twOwnerId]][g_szGroupName]);
         }
         SendClientMessageEx(playerid, COLOR_WHITE, string);
-        SendClientMessageEx(playerid, COLOR_WHITE, "Vulnerable: %d Hours.",TurfWars[tw][twVulnerable]);
-        SendClientMessageEx(playerid, COLOR_WHITE, "Locked: %d.",TurfWars[tw][twLocked]);
-        SendClientMessageEx(playerid, COLOR_WHITE, "Active: %d.",TurfWars[tw][twActive]);
+        SendClientMessageEx(playerid, COLOR_WHITE, "Cho chiem: %d Gio.",TurfWars[tw][twVulnerable]);
+        SendClientMessageEx(playerid, COLOR_WHITE, "Khoa: %d.",TurfWars[tw][twLocked]);
+        SendClientMessageEx(playerid, COLOR_WHITE, "Bat: %d.",TurfWars[tw][twActive]);
         if(TurfWars[tw][twActive] != 0) {
-            SendClientMessageEx(playerid, COLOR_WHITE, "Time Left: %d Secs.",TurfWars[tw][twTimeLeft]);
+            SendClientMessageEx(playerid, COLOR_WHITE, "Con lai: %d Giay.",TurfWars[tw][twTimeLeft]);
             if(TurfWars[tw][twAttemptId] == -2) {
-                SendClientMessageEx(playerid, COLOR_WHITE, "Takeover Faction: Law Enforcement.");
+                SendClientMessageEx(playerid, COLOR_WHITE, "To chuc chiem: Law Enforcement.");
             }
             else if(ValidGroup(TurfWars[tw][twAttemptId])) {
-                SendClientMessageEx(playerid, COLOR_WHITE, "Takeover Family: %s.",arrGroupData[TurfWars[tw][twAttemptId]][g_szGroupName]);
+                SendClientMessageEx(playerid, COLOR_WHITE, "Family chiem: %s.",arrGroupData[TurfWars[tw][twAttemptId]][g_szGroupName]);
             }
         }
         switch(TurfWars[tw][twSpecial]) {
             case 1:
             {
-                format(string,sizeof(string),"Special Perks: Extortion.");
+                format(string,sizeof(string),"Dac quyen: Extortion.");
             }
             case 2:
             {
-            	format(string,sizeof(string),"Special Perks: Drugs.");
+            	format(string,sizeof(string),"Dac quyen: Drugs.");
             }
             default:
             {
-                format(string,sizeof(string),"Special Perks: None.");
+                format(string,sizeof(string),"Dac quyen: Khong.");
             }
         }
         SendClientMessageEx(playerid, COLOR_WHITE, string);
     }
     else {
-        SendClientMessageEx(playerid, COLOR_WHITE, "You are not in a turf!");
+        SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong o trong lanh tho!");
     }
     return 1;
 }
@@ -673,7 +673,7 @@ CMD:savetwpos(playerid, params[])
         new Float:tminx, Float: tminy, Float: tmaxx, Float: tmaxy;
         GetPlayerPos(playerid, x, y, z);
         if(!GetPVarType(playerid, "EditingTurfs") || !(0 <= tw < MAX_TURFS) || !TurfWars[tw][twLoaded] || !(1 <= stage <= 4)) {
-            SendClientMessageEx(playerid, COLOR_GRAD2, "You are not editing any Turf Dimensions right now!");
+            SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong dang sua kich thuoc lanh tho!");
             return 1;
         }
         else {
@@ -682,27 +682,27 @@ CMD:savetwpos(playerid, params[])
                 {
                     SetPVarFloat(playerid, "EditingTurfsMinX", x);
                     format(string,sizeof(string),"X=%f, Y=%f, Z=%f",x,y,z);
-                    SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Turf West Wall.");
+                    SendClientMessageEx(playerid, COLOR_WHITE, "Da doi bien Tay lanh tho.");
                     SendClientMessageEx(playerid, COLOR_GRAD2, string);
-                    SendClientMessageEx(playerid, COLOR_WHITE, "Goto a location and type (/savetwpos) to edit the South Wall.");
+                    SendClientMessageEx(playerid, COLOR_WHITE, "Den vi tri va dung (/savetwpos) de sua bien Nam.");
                     SetPVarInt(playerid, "EditingTurfsStage", 2);
                 }
                 case 2:
                 {
                     SetPVarFloat(playerid, "EditingTurfsMinY", y);
                     format(string,sizeof(string),"X=%f, Y=%f, Z=%f",x,y,z);
-                    SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Turf South Wall.");
+                    SendClientMessageEx(playerid, COLOR_WHITE, "Da doi bien Nam lanh tho.");
                     SendClientMessageEx(playerid, COLOR_GRAD2, string);
-                    SendClientMessageEx(playerid, COLOR_WHITE, "Goto a location and type (/savetwpos) to edit the East Wall.");
+                    SendClientMessageEx(playerid, COLOR_WHITE, "Den vi tri va dung (/savetwpos) de sua bien Dong.");
                     SetPVarInt(playerid, "EditingTurfsStage", 3);
                 }
                 case 3:
                 {
                     SetPVarFloat(playerid, "EditingTurfsMaxX", x);
                     format(string,sizeof(string),"X=%f, Y=%f, Z=%f",x,y,z);
-                    SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Turf East Wall.");
+                    SendClientMessageEx(playerid, COLOR_WHITE, "Da doi bien Dong lanh tho.");
                     SendClientMessageEx(playerid, COLOR_GRAD2, string);
-                    SendClientMessageEx(playerid, COLOR_WHITE, "Goto a location and type (/savetwpos) to edit the North Wall.");
+                    SendClientMessageEx(playerid, COLOR_WHITE, "Den vi tri va dung (/savetwpos) de sua bien Bac.");
                     SetPVarInt(playerid, "EditingTurfsStage", 4);
                 }
                 case 4:
@@ -713,7 +713,7 @@ CMD:savetwpos(playerid, params[])
                     tmaxx = GetPVarFloat(playerid, "EditingTurfsMaxX");
                     tmaxy = GetPVarFloat(playerid, "EditingTurfsMaxY");
                     if(!(tminx < tmaxx && tminy < tmaxy))
-                        return SendClientMessageEx(playerid, COLOR_GRAD2, "The west wall must be west of the east wall, and the south wall south of the north wall. Restart dimension editing.");
+                        return SendClientMessageEx(playerid, COLOR_GRAD2, "Bien Tay phai nam phia tay bien Dong, bien Nam phai nam phia nam bien Bac. Hay sua kich thuoc lai.");
                     
 					new Float:oldPos[4];
                     oldPos[0] = TurfWars[tw][twMinX];
@@ -729,7 +729,7 @@ CMD:savetwpos(playerid, params[])
                         TurfWars[tw][twMinY] = oldPos[1];
                         TurfWars[tw][twMaxX] = oldPos[2];
                         TurfWars[tw][twMaxY] = oldPos[3];
-                        return SendClientMessageEx(playerid, COLOR_GRAD2, "Unable to create the turf area. The existing turf was preserved.");
+                        return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the tao khu vuc lanh tho. Lanh tho cu duoc giu nguyen.");
                     }
                     SaveTurfWar(tw);
                     DeletePVar(playerid, "EditingTurfsStage");
@@ -737,14 +737,14 @@ CMD:savetwpos(playerid, params[])
                     DeletePVar(playerid, "EditingTurfsMinY");
                     DeletePVar(playerid, "EditingTurfsMaxX");
                     DeletePVar(playerid, "EditingTurfsMaxY");
-                    SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully re-created turf %d, %s.", tw, TurfWars[tw][twName]);
-                    ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+                    SendClientMessageEx(playerid, COLOR_WHITE, "Da tao lai lanh tho %d, %s.", tw, TurfWars[tw][twName]);
+                    ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Menu sua lanh tho:","Sua kich thuoc...\nSua chu...\nSua gio cho chiem...\nSua khoa...\nSua dac quyen...\nDat lai chien tranh...\nXoa lanh tho","Chon","Quay lai");
                 }
             }
         }
     }
     else {
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command!");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay!");
     }
     return 1;
 }
@@ -753,11 +753,11 @@ CMD:twmenu(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pGangModerator] >= 1)
 	{
-        ShowPlayerDialogEx(playerid,TWADMINMENU,DIALOG_STYLE_LIST,"Turf Wars - Admin Menu:","Edit Turfs...","Select","Exit");
+        ShowPlayerDialogEx(playerid,TWADMINMENU,DIALOG_STYLE_LIST,"Turf Wars - Menu Admin:","Sua lanh tho...","Chon","Thoat");
     }
     else
 	{
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command!");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay!");
     }
     return 1;
 }
@@ -765,11 +765,11 @@ CMD:twmenu(playerid, params[])
 CMD:turfs(playerid, params[])
 {
     if(turfWarsRadar[playerid] == 0) {
-        SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled the Turf Minimap Radar.");
+        SendClientMessageEx(playerid, COLOR_WHITE, "Da bat radar lanh tho tren minimap.");
         ShowTurfWarsRadar(playerid);
     }
     else {
-        SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the Turf Minimap Radar.");
+        SendClientMessageEx(playerid, COLOR_WHITE, "Da tat radar lanh tho tren minimap.");
         HideTurfWarsRadar(playerid);
     }
     return 1;
@@ -781,22 +781,22 @@ CMD:shutdown(playerid, params[])
         new tw = GetPlayerTurfWarsZone(playerid);
         new rank = PlayerInfo[playerid][pRank];
         if(rank < arrGroupData[PlayerInfo[playerid][pMember]][g_iTurfCapRank]) {
-            SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot shutdown turfs because of your rank!");
+            SendClientMessageEx(playerid, COLOR_GRAD2, "Rank cua ban khong du de dong cua lanh tho!");
             return 1;
         }
         if(tw != -1) {
             if(TurfWars[tw][twLocked] == 1) {
-                SendClientMessageEx(playerid, COLOR_GRAD2, "The turf is currently locked by a admin, you can not shutdown the turf!");
+                SendClientMessageEx(playerid, COLOR_GRAD2, "Admin da khoa lanh tho, ban khong the dong cua!");
                 return 1;
             }
             if(TurfWars[tw][twVulnerable] == 0) {
                 if(TurfWars[tw][twActive] == 0) {
-                    SendClientMessageEx(playerid, COLOR_GRAD2, "The turf isn't in a active turf war, you have no reason to shutdown the turf!");
+                    SendClientMessageEx(playerid, COLOR_GRAD2, "Lanh tho khong co chien tranh, khong co ly do dong cua!");
                 }
                 else {
                     new count = 0; 
                     if(TurfWars[tw][twAttemptId] == -2) {
-                        SendClientMessageEx(playerid, COLOR_GRAD2, "The LEO Factions are already attempting to shutdown the turf war!");
+                        SendClientMessageEx(playerid, COLOR_GRAD2, "Cac LEO Factions dang co ket thuc chien tranh lanh tho!");
                         return 1;
                     }
 
@@ -809,7 +809,7 @@ CMD:shutdown(playerid, params[])
 						}
 					}	
                     if(count != 0) {
-                        SendClientMessageEx(playerid, COLOR_GRAD2, "There is still %d Attacking Members on the Turf, you must get rid of them before shuting down!",count);
+                        SendClientMessageEx(playerid, COLOR_GRAD2, "Con %d thanh vien tan cong trong lanh tho, phai loai bo ho truoc khi dong cua!",count);
                     }
                     else {
                         ShutdownTurfWarsZone(tw);
@@ -817,23 +817,23 @@ CMD:shutdown(playerid, params[])
                 }
             }
             else {
-                SendClientMessageEx(playerid, COLOR_GRAD2, "This turf is currently not vulnerable, you are unable to shutdown!");
-                SendClientMessageEx(playerid, COLOR_GRAD1, "If you are in FBI, You must contact a admin to lock down the turf with a IC Casefile.");
+                SendClientMessageEx(playerid, COLOR_GRAD2, "Lanh tho chua cho phep chiem, khong the dong cua!");
+                SendClientMessageEx(playerid, COLOR_GRAD1, "Neu thuoc FBI, hay lien he Admin de khoa lanh tho bang ho so vu an IC.");
             }
         }
         else {
-            SendClientMessageEx(playerid, COLOR_GRAD2, "You have to be in a turf to be able to shutdown turfs!");
+            SendClientMessageEx(playerid, COLOR_GRAD2, "Ban phai o trong lanh tho de dong cua!");
         }
     }
     else {
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in a LEO Faction, you can not shutdown turfs!");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong thuoc LEO Faction, khong the dong cua lanh tho!");
     }
 	return 1;
 }
 
 CMD:claim(playerid, params[])
 {
-	SendClientMessageEx(playerid, COLOR_GRAD2, "Command has been changed to /claimturf");
+	SendClientMessageEx(playerid, COLOR_GRAD2, "Lenh da doi thanh /claimturf");
 	return 1;
 }
 
@@ -841,29 +841,29 @@ CMD:claimturf(playerid, params[])
 {
 	if(servernumber == 2)
 	{
-	    SendClientMessage(playerid, COLOR_WHITE, "This command is disabled!");
+	    SendClientMessage(playerid, COLOR_WHITE, "Lenh nay da bi tat!");
 	    return 1;
 	}
     new tw = GetPlayerTurfWarsZone(playerid);
     new family = PlayerInfo[playerid][pMember];
     new rank = PlayerInfo[playerid][pRank];
     if(family == INVALID_GROUP_ID || !IsACriminal(playerid)) {
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in a family/gang, you can not claim turfs!");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong thuoc family/gang, khong the chiem lanh tho!");
         return 1;
     }
     if(rank < arrGroupData[family][g_iTurfCapRank]) {
-    	SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot claim turfs due to your rank!");
+    	SendClientMessageEx(playerid, COLOR_GRAD2, "Rank cua ban khong du de chiem lanh tho!");
         return 1;
     }
     if(tw != -1) {
         if(TurfWars[tw][twLocked] == 1) {
-            SendClientMessageEx(playerid, COLOR_GRAD2, "The turf is currently locked by a admin, you can not claim it!");
+            SendClientMessageEx(playerid, COLOR_GRAD2, "Admin da khoa lanh tho, khong the chiem!");
             return 1;
         }
         if(TurfWars[tw][twVulnerable] == 0) {
             if(TurfWars[tw][twActive] == 0) {
                 if(TurfWars[tw][twOwnerId] == family) {
-                    SendClientMessageEx(playerid, COLOR_GRAD2, "Your family/gang already owns this turf, you are unable to claim it!");
+                    SendClientMessageEx(playerid, COLOR_GRAD2, "Family/gang cua ban da so huu lanh tho nay!");
                     return 1;
                 }
                 new count = 0;
@@ -880,14 +880,14 @@ CMD:claimturf(playerid, params[])
                     TakeoverTurfWarsZone(family, tw);
                 }
                 else {
-                    SendClientMessageEx(playerid, COLOR_GRAD2, "You need at least 3 of your family/gang members on the turf, to be able to claim it!");
+                    SendClientMessageEx(playerid, COLOR_GRAD2, "Can it nhat 3 thanh vien family/gang tren lanh tho de chiem!");
                 }
             }
             else {
                 new count = 0;
                 new leocount = 0;
                 if(TurfWars[tw][twAttemptId] == family) {
-                    SendClientMessageEx(playerid, COLOR_GRAD2, "You are already attempting to capture this turf!");
+                    SendClientMessageEx(playerid, COLOR_GRAD2, "Ban dang co chiem lanh tho nay!");
                     return 1;
                 }
 
@@ -913,27 +913,27 @@ CMD:claimturf(playerid, params[])
                     foreach(new i: Player)
 					{
 						if(PlayerInfo[i][pGangModerator] >= 1) {
-							SendClientMessageEx(i,COLOR_YELLOW,"%s has attempted to takeover turf %d for family %s",GetPlayerNameEx(playerid),tw,arrGroupData[family][g_szGroupName]);
+							SendClientMessageEx(i,COLOR_YELLOW,"%s da thu chiem turf %d cho family %s",GetPlayerNameEx(playerid),tw,arrGroupData[family][g_szGroupName]);
 						}	
                     }
                     TakeoverTurfWarsZone(family, tw);
                 }
                 else {
                     if(leocount == 0) {
-                        SendClientMessageEx(playerid, COLOR_GRAD2, "There is still %d Attacking Members on the Turf, you must get rid of them before reclaiming!",count);
+                        SendClientMessageEx(playerid, COLOR_GRAD2, "Con %d thanh vien tan cong trong lanh tho, phai loai bo ho truoc khi tai chiem!",count);
                     }
                     else {
-                        SendClientMessageEx(playerid, COLOR_GRAD2, "There is still %d Officers on the Turf, you must get rid of them before reclaiming!",leocount);
+                        SendClientMessageEx(playerid, COLOR_GRAD2, "Con %d Officers trong lanh tho, phai loai bo ho truoc khi tai chiem!",leocount);
                     }
                 }
             }
         }
         else {
-            SendClientMessageEx(playerid, COLOR_GRAD2, "This turf is currently not vulnerable, you are unable to claim it!");
+            SendClientMessageEx(playerid, COLOR_GRAD2, "Lanh tho chua cho phep chiem, khong the chiem!");
         }
     }
     else {
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You have to be in a turf to be able to claim turfs!");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Ban phai o trong lanh tho de chiem!");
     }
 
     if(turfWarsRadar[playerid] == 0) {

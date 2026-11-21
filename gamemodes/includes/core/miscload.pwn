@@ -6,7 +6,7 @@
 
 hook OnGameModeInit() {
 
-	TD_ServerError = TextDrawCreate(321.000000, 428.000000, "SERVER: Unknown command");
+	TD_ServerError = TextDrawCreate(321.000000, 428.000000, "MAY CHU: Lenh khong ton tai");
 	TextDrawAlignment(TD_ServerError, 2);
 	TextDrawBackgroundColor(TD_ServerError, 255);
 	TextDrawFont(TD_ServerError, 2);
@@ -241,12 +241,12 @@ stock Misc_Load() {
 	}
 	if(iRewardBox) {
 		iRewardObj = CreateDynamicObject(19055, fObjectPos[0], fObjectPos[1], fObjectPos[2], 0.0, 0.0, 0.0, .streamdistance = 100.0);
-		tRewardText = CreateDynamic3DTextLabel("Gold Reward Gift Box\n{FFFFFF}/getrewardgift{F3FF02} to claim your gift!", COLOR_YELLOW, fObjectPos[0], fObjectPos[1], fObjectPos[2], 10.0, .testlos = 1, .streamdistance = 50.0);
+		tRewardText = CreateDynamic3DTextLabel("Gold Reward Gift Box\n{FFFFFF}/getrewardgift{F3FF02} de nhan qua!", COLOR_YELLOW, fObjectPos[0], fObjectPos[1], fObjectPos[2], 10.0, .testlos = 1, .streamdistance = 50.0);
 	}
 	if(FIFEnabled == 1)
 	{
 		FIFPickup = CreateDynamicPickup(1239, 23, FIFGamble[0], FIFGamble[1], FIFGamble[2], 0);
-		FIFText = CreateDynamic3DTextLabel("Chance Gambler\n/gamblechances to risk all of your chances or double them", COLOR_RED, FIFGamble[0], FIFGamble[1], FIFGamble[2]+0.5,10.0);  
+		FIFText = CreateDynamic3DTextLabel("Chance Gambler\n/gamblechances de cuoc tat ca luot, co the mat het hoac nhan doi", COLOR_RED, FIFGamble[0], FIFGamble[1], FIFGamble[2]+0.5,10.0);  
 	}
 	fclose(iFileHandle);
 	printf("[MiscLoad] Misc Loaded");

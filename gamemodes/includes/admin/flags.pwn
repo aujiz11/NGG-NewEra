@@ -40,24 +40,24 @@ CMD:viewflags(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 
-		SendClientMessageEx(playerid, COLOR_YELLOW, "Player Flag Count List (/viewflag [player] to view):");
+		SendClientMessageEx(playerid, COLOR_YELLOW, "So flag cua nguoi choi (xem bang /viewflag [player]):");
 		new fCounter;
 		foreach(new i: Player)
 		{
 			if(PlayerInfo[i][pFlagged] > 0)
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "%s(%d) Flag Count: %d.",GetPlayerNameEx(i),i,PlayerInfo[i][pFlagged]);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "%s(%d) So flag: %d.",GetPlayerNameEx(i),i,PlayerInfo[i][pFlagged]);
 				fCounter += 1;
 			}
 		}	
 		if(fCounter <= 0)
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "None.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Khong co.");
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -67,7 +67,7 @@ CMD:viewflag(playerid, params[])
     if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new giveplayerid;
-	    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /viewflag [player]");
+	    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /viewflag [player]");
 	    if(IsPlayerConnected(giveplayerid))
 	    {
 			DisplayFlags(playerid, giveplayerid);
@@ -75,7 +75,7 @@ CMD:viewflag(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -85,15 +85,15 @@ CMD:oflag(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], query[256], name[MAX_PLAYER_NAME], reason[64], month, day, year;
-		if(sscanf(params, "s[24]s[64]", name, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /oflag [player name] [reason]");
+		if(sscanf(params, "s[24]s[64]", name, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /oflag [player name] [reason]");
 		getdate(year,month,day);
 
     	new giveplayerid = ReturnUser(name);
         if(IsPlayerConnected(giveplayerid))
 		{
 			AddFlag(giveplayerid, playerid, reason);
-			SendClientMessage(playerid, COLOR_WHITE, "The person is online and has been flagged!");
-			format(string, sizeof(string), "AdmCmd: %s was flagged by %s, reason: %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+			SendClientMessage(playerid, COLOR_WHITE, "Nguoi choi dang online, da them flag!");
+			format(string, sizeof(string), "AdmCmd: %s duoc %s them flag, ly do: %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			ABroadCast(COLOR_LIGHTRED, string, 2);
 
 			format(string, sizeof(string), "%s was flagged by %s (%s).", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
@@ -110,7 +110,7 @@ CMD:oflag(playerid, params[])
 			mysql_format(MainPipeline, query, sizeof(query), "SELECT id FROM `accounts` WHERE `Username`='%s'", tmpName);
 			mysql_tquery(MainPipeline, query, "FlagQueryFinish", "iii", playerid, INVALID_PLAYER_ID, Flag_Query_Offline);
 
-			SendClientMessageEx(playerid, COLOR_YELLOW, "Attempting to append %s's flag...", tmpName);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Dang them flag cho %s...", tmpName);
 		}
 		return 1;
 	}
@@ -124,12 +124,12 @@ CMD:flag(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], giveplayerid, reason[64];
-		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /flag [player] [reason]");
+		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /flag [player] [reason]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
 			AddFlag(giveplayerid, playerid, reason);
-			format(string, sizeof(string), "AdmCmd: %s was flagged by %s, reason: %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s duoc %s them flag, ly do: %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			ABroadCast(COLOR_LIGHTRED, string, 2);
 
 			format(string, sizeof(string), "%s was flagged by %s (%s).", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
@@ -137,7 +137,7 @@ CMD:flag(playerid, params[])
 			return 1;
 		}
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 	return 1;
 }
 
@@ -145,10 +145,10 @@ CMD:transferflag(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 2) return 1;
 	new to, from, flagid;
-	if(sscanf(params, "iuu", flagid, to, from)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /transferflag [flag] [to] [from]");
-	if(!IsPlayerConnected(to)) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: That player is not connected (to)");
-	if(!IsPlayerConnected(from)) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: That player is not connected (from)");
-	if(to == from) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: You cannot transfer to the same person");
+	if(sscanf(params, "iuu", flagid, to, from)) return SendClientMessageEx(playerid, COLOR_GRAD2, "CACH DUNG: /transferflag [flag] [to] [from]");
+	if(!IsPlayerConnected(to)) return SendClientMessageEx(playerid, COLOR_GRAD2, "LOI: Nguoi nhan da ngat ket noi (to)");
+	if(!IsPlayerConnected(from)) return SendClientMessageEx(playerid, COLOR_GRAD2, "LOI: Nguoi gui da ngat ket noi (from)");
+	if(to == from) return SendClientMessageEx(playerid, COLOR_GRAD2, "LOI: Khong the chuyen cho cung mot nguoi");
 	new query[128];
 	mysql_format(MainPipeline, query, sizeof(query), "SELECT id, flag, issuer, time, type FROM `flags` WHERE `fid` = %i", flagid);
 	mysql_tquery(MainPipeline, query, "OnRequestTransferFlag", "iiii", playerid, flagid, to, from);
@@ -157,22 +157,22 @@ CMD:transferflag(playerid, params[])
 
 CMD:aviewflag(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	new giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /aviewflag [player]");
-	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Error: Player is not connected!");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /aviewflag [player]");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Loi: Nguoi choi da ngat ket noi!");
 	return DisplayFlags(playerid, giveplayerid, 2);
 }
 
 CMD:aflag(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	new giveplayerid, reason[64];
-	if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /aflag [player] [reason]");
-	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+	if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /aflag [player] [reason]");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 	AddFlag(giveplayerid, playerid, reason, 2);
 	new string[128];
-	format(string, sizeof(string), "AdmCmd: %s was admin flagged by %s, reason: %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+	format(string, sizeof(string), "AdmCmd: %s duoc %s them admin flag, ly do: %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 	ABroadCast(COLOR_LIGHTRED, string, 2);
 	format(string, sizeof(string), "[AFLAG] %s was admin flagged by %s (%s).", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 	Log("logs/flags.log", string);
@@ -181,6 +181,6 @@ CMD:aflag(playerid, params[])
 
 CMD:deleteflag(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
-	return ShowPlayerDialogEx(playerid, FLAG_DELETE, DIALOG_STYLE_INPUT, "FLAG DELETION", "Which flag would you like to delete?", "Delete Flag", "Close");
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
+	return ShowPlayerDialogEx(playerid, FLAG_DELETE, DIALOG_STYLE_INPUT, "XOA FLAG", "Nhap ID flag can xoa.", "Xoa Flag", "Dong");
 }

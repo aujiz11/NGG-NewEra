@@ -149,8 +149,8 @@ AdvanceTutorial(playerid)
 		{
 			if(IsSpawned[playerid] == 0) return 1;
 			SendClientMessageEx(playerid, COLOR_GREY, "-----------------------------");
-			SendClientMessageEx(playerid, COLOR_WHITE, "Objective: Purchase a vehicle.");
-			SendClientMessageEx(playerid, COLOR_WHITE, "Head the checkpoint on your map to purchase a vehicle.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Muc tieu: Mua xe.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Den checkpoint tren ban do de mua xe.");
 			SendClientMessageEx(playerid, COLOR_GREY, "-----------------------------");
 
 			SetPlayerCheckpoint(playerid, 1645.9091,-1897.6914,13.5521, 5.0);
@@ -160,8 +160,8 @@ AdvanceTutorial(playerid)
 		{
 			if(IsSpawned[playerid] == 0) return 1;
 			SendClientMessageEx(playerid, COLOR_GREY, "-----------------------------");
-			SendClientMessageEx(playerid, COLOR_WHITE, "Objective: Withdraw money from the bank.");
-			SendClientMessageEx(playerid, COLOR_WHITE, "Head the checkpoint on your map to withdraw money.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Muc tieu: Rut tien tu ngan hang.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Den checkpoint tren ban do de rut tien.");
 			SendClientMessageEx(playerid, COLOR_GREY, "-----------------------------");
 			SetPlayerCheckpoint(playerid, 1457.0022,-1011.3710,26.8438, 5.0);
 		}
@@ -169,8 +169,8 @@ AdvanceTutorial(playerid)
 		{
 			if(IsSpawned[playerid] == 0) return 1;
 			SendClientMessageEx(playerid, COLOR_GREY, "-----------------------------");
-			SendClientMessageEx(playerid, COLOR_WHITE, "Objective: Buy a phone.");
-			SendClientMessageEx(playerid, COLOR_WHITE, "Head the checkpoint on your map to purchase a phone.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Muc tieu: Mua dien thoai.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Den checkpoint tren ban do de mua dien thoai.");
 			SendClientMessageEx(playerid, COLOR_GREY, "-----------------------------");
 
 			SetPlayerCheckpoint(playerid, 999.6548,-919.9871,42.3281, 5.0);
@@ -179,7 +179,7 @@ AdvanceTutorial(playerid)
 		{
 			if(IsSpawned[playerid] == 0) return 1;
 			SendClientMessageEx(playerid, COLOR_GREY, "-----------------------------");
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have completed the objectives tutorial. Welcome to Next Generation Gaming!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da hoan tat huong dan muc tieu. Chao mung den Next Generation Gaming!");
 			SendClientMessageEx(playerid, COLOR_GREY, "-----------------------------");
 
 			PlayerInfo[playerid][pTut] = -1;
@@ -199,25 +199,25 @@ CharacterCreation(playerid)
 
 			switch(PlayerInfo[playerid][pSex])
 			{
-				case 1: genderstring = "Male";
-				case 2: genderstring = "Female";
-				default: genderstring = "Unspecified";
+				case 1: genderstring = "Nam";
+				case 2: genderstring = "Nu";
+				default: genderstring = "Chua chon";
 			}
 
-			format(szMiscArray, sizeof(szMiscArray), "Name:\t%s\n\
-				Gender:\t%s\n\
-				Date of Birth\t%s\n\
-				Nation\t%s\n\
-				Accent:\t%s\n\
+			format(szMiscArray, sizeof(szMiscArray), "Ten:\t%s\n\
+				Gioi tinh:\t%s\n\
+				Ngay sinh\t%s\n\
+				Quoc gia\t%s\n\
+				Giong noi:\t%s\n\
 				Skin ID:\t%i\n\
-				Complete",
+				Hoan tat",
 				GetPlayerNameEx(playerid),
 				genderstring,
 				PlayerInfo[playerid][pBirthDate],
 				GetPlayerNation(playerid),
 				GetPlayerAccent(playerid),
 				PlayerInfo[playerid][pModel]);
-			return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_CREATION, DIALOG_STYLE_TABLIST, "NG:RP | Character Creation", szMiscArray, "Select", "");
+			return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_CREATION, DIALOG_STYLE_TABLIST, "NG:RP | Tao nhan vat", szMiscArray, "Chon", "");
 		}
 		case 14: {
 
@@ -231,7 +231,7 @@ CharacterCreation(playerid)
 			SetHealth(playerid, 100);
 			ClearChatbox(playerid);
 
-			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Tutorial - Welcome", "Would you like to have the server provide you with objectives to guide you around the server?", "Yes, please!", "No, thanks.");
+			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Huong dan - Chao mung", "Ban muon may chu giao muc tieu de huong dan kham pha khong?", "Co!", "Khong, cam on.");
 		}
 	}
 	return 1;
@@ -241,7 +241,7 @@ ShowTutorialDialog(playerid, stage)
 {
 	new countstring[10];
 
-	if(GetPVarInt(playerid, "pTutorialTimer") == 0) { format(countstring, 10, "Continue"); }
+	if(GetPVarInt(playerid, "pTutorialTimer") == 0) { format(countstring, 10, "Tiep tuc"); }
 	else valstr(countstring, GetPVarInt(playerid, "pTutorialTimer"));
 
 	switch(stage)
@@ -250,115 +250,115 @@ ShowTutorialDialog(playerid, stage)
 		{
 			if(betaserver == 0) {
 				szMiscArray = "{FFFFFF}_______________________________________________________________________________________________________________________________________________________\n\n\n";
-				strcat(szMiscArray, "{7091B8}Welcome to Next Generation Gaming!{FFFFFF}\n\n");
-				strcat(szMiscArray, "We are an english speaking community. At NG:RP, we specialize in Roleplay, the act of taking on the role of a character and acting as that character\n");
-				strcat(szMiscArray, "as you would in real life. Along the way your character learns new information and allows them to develop.\n\n");
-				strcat(szMiscArray, "As a community, we've been around since 2010 and have grown significantly since then.\n\n");
-				strcat(szMiscArray, "{FF0000}NG:RP Related Services{FFFFFF}:\n");
-				strcat(szMiscArray, "\t{F69500}Website{FFFFFF}: ng-gaming.net - Sign up on our forums and interact with the community!\n");
-				strcat(szMiscArray, "\t{F69500}User Control Panel{FFFFFF}: cp.ng-gaming.net - Control your account and take measures to ensure your account's security!\n");
-				strcat(szMiscArray, "\t{F69500}Shop{FFFFFF}: shop.ng-gaming.net - Purchase credits from the shop and purchase items in game!\n");
-				strcat(szMiscArray, "\t{F69500}TeamSpeak{FFFFFF}: ts.ng-gaming.net - Connect and speak to different members of the community!\n");
-				strcat(szMiscArray, "\t{F69500}Image Sharing{FFFFFF}: ngg.up - Share your favourite images with your friends, with the press of a button.\n\n");
-				strcat(szMiscArray, "Please make sure you read this tutorial as you will be asked questions at the end.");
+				strcat(szMiscArray, "{7091B8}Chao mung den Next Generation Gaming!{FFFFFF}\n\n");
+				strcat(szMiscArray, "Chung toi la cong dong noi tieng Anh. NG:RP tap trung vao Roleplay, ban dong vai mot nhan vat va hanh dong\n");
+				strcat(szMiscArray, "nhu ngoai doi thuc. Nhan vat se hoc hoi thong tin moi va phat trien trong qua trinh choi.\n\n");
+				strcat(szMiscArray, "Cong dong hinh thanh tu 2010 va da phat trien dang ke.\n\n");
+				strcat(szMiscArray, "{FF0000}Dich vu lien quan NG:RP{FFFFFF}:\n");
+				strcat(szMiscArray, "\t{F69500}Website{FFFFFF}: ng-gaming.net - Dang ky dien dan va giao luu cung cong dong!\n");
+				strcat(szMiscArray, "\t{F69500}User Control Panel{FFFFFF}: cp.ng-gaming.net - Quan ly va bao ve tai khoan cua ban!\n");
+				strcat(szMiscArray, "\t{F69500}Shop{FFFFFF}: shop.ng-gaming.net - Mua credits de mua vat pham trong game!\n");
+				strcat(szMiscArray, "\t{F69500}TeamSpeak{FFFFFF}: ts.ng-gaming.net - Ket noi va tro chuyen voi cong dong!\n");
+				strcat(szMiscArray, "\t{F69500}Chia se anh{FFFFFF}: ngg.up - Chia se anh yeu thich voi ban be chi bang mot nut bam.\n\n");
+				strcat(szMiscArray, "Hay doc ky, cuoi huong dan se co cau hoi.");
 				strcat(szMiscArray, "\n\n\n{FFFFFF}_______________________________________________________________________________________________________________________________________________________");
-				ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Tutorial - Welcome", szMiscArray, countstring, "");
+				ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Huong dan - Chao mung", szMiscArray, countstring, "");
 			}
 			else {
 				szMiscArray = "{FFFFFF}___________________________________________________________________________________________\n\n\n";
-				strcat(szMiscArray, "{7091B8}Welcome to Next Generation Gaming Beta Server!{FFFFFF}\n\n");
-				strcat(szMiscArray, "You are not required to sit through the tutorial, please just press \"Got it\" at the bottom.\n");
-				strcat(szMiscArray, "You'll be taken stright to the character creation screen.\n\n");
+				strcat(szMiscArray, "{7091B8}Chao mung den Next Generation Gaming Beta Server!{FFFFFF}\n\n");
+				strcat(szMiscArray, "Ban khong can xem het huong dan, chi can nhan \"Da hieu\" ben duoi.\n");
+				strcat(szMiscArray, "Ban se duoc dua thang den man hinh tao nhan vat.\n\n");
 				strcat(szMiscArray, "\n\n\n{FFFFFF}_______________________________________________________________________________");
-				ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Beta Server - Welcome", szMiscArray, "Got It", "");
+				ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Beta Server - Chao mung", szMiscArray, "Da hieu", "");
 			}
 		}
 		case 1:
 		{
 			szMiscArray = "{FFFFFF}_______________________________________________________________________________________________________________________________________________________\n\n\n";
 			strcat(szMiscArray, "{F69500}Roleplay{FFFFFF}\n\n");
-			strcat(szMiscArray, "In order to roleplay, you should create a character. Every character should have a story, every character needs a story! Who are they? Where do\n");
-			strcat(szMiscArray, "they come from? Why are they in San Andreas? That's all up to you!\n\n");
-			strcat(szMiscArray, "But first you should get to know some of the terminology we use at Next Generation Gaming.\n\n");
-			strcat(szMiscArray, "\t{FF0000}In Character (IC){FFFFFF}: Anything that constitutes your character, or involves them. This is accomponied by the in-game text chat, radio's, cell phones, etc.\n");
-			strcat(szMiscArray, "\t\tExample: Your character is talking to another character. You might say \"Hi, what's your name?\" This conversation is in character.\n\n");
-			strcat(szMiscArray, "\t{FF0000}Out Of Character (OOC){FFFFFF}: This is you speaking, not your character! Anything that has to do with you personally is considered out of character. Out of\n");
-			strcat(szMiscArray, "\tCharacter should always be present with 'OOC Brackets', in other words: (( This chat is now OOC because of the double parenthesis )).\n");
-			strcat(szMiscArray, "\t\tExample: You are talking to your friend about the football game last night. You might say, \"(( Did you see that amazing catch? ))\". This\n");
-			strcat(szMiscArray, "\t\tis considered out of character because of the use of 'OOC Brackets'.\n\n");
-			strcat(szMiscArray, "You should also learn the two most commonly used commands to perform roleplay.\n\n");
-			strcat(szMiscArray, "\t{FF0000}/me [action]{FFFFFF} - This allows your character to perform an action or statement, it will broadcast a local message to other players around you.\n");
-			strcat(szMiscArray, "\t\tExample: /me picks up a stick from the ground.\n");
-			strcat(szMiscArray, "\t{FF0000}/do [action]{FFFFFF} - This command describes an action or statement, it's also used to gain information in character'ly about other characters.\n");
-			strcat(szMiscArray, "\t\tExample: /do The stick is brown.\n\n");
-			strcat(szMiscArray, "Please read these definitions carefully as you will be quizzed on them afterwards.");
+			strcat(szMiscArray, "De roleplay, hay tao nhan vat co cau chuyen rieng. Ho la ai? Ho den tu\n");
+			strcat(szMiscArray, "dau? Vi sao ho o San Andreas? Ban tu quyet dinh!\n\n");
+			strcat(szMiscArray, "Truoc tien, hay lam quen cac thuat ngu tai Next Generation Gaming.\n\n");
+			strcat(szMiscArray, "\t{FF0000}In Character (IC){FFFFFF}: Moi thu thuoc ve nhan vat, qua chat trong game, radio, dien thoai, v.v.\n");
+			strcat(szMiscArray, "\t\tVi du: Nhan vat noi voi nhan vat khac \"Chao, ban ten gi?\". Day la hoi thoai IC.\n\n");
+			strcat(szMiscArray, "\t{FF0000}Out Of Character (OOC){FFFFFF}: Loi cua ban, khong phai nhan vat. Moi viec lien quan ca nhan ban nam ngoai nhan vat.\n");
+			strcat(szMiscArray, "\tOOC phai dat trong 'OOC Brackets', vi du: (( Day la chat OOC vi co hai dau ngoac )).\n");
+			strcat(szMiscArray, "\t\tVi du: Noi voi ban be ve tran bong toi qua, \"(( Ban thay pha bat bong do chu? ))\". Day\n");
+			strcat(szMiscArray, "\t\tla loi ngoai nhan vat vi duoc dat trong 'OOC Brackets'.\n\n");
+			strcat(szMiscArray, "Hay hoc hai lenh thuong dung de roleplay.\n\n");
+			strcat(szMiscArray, "\t{FF0000}/me [action]{FFFFFF} - Thuc hien hanh dong hay loi dien giai, gui thong bao den nguoi choi xung quanh.\n");
+			strcat(szMiscArray, "\t\tVi du: /me nhat mot canh cay duoi dat.\n");
+			strcat(szMiscArray, "\t{FF0000}/do [action]{FFFFFF} - Mo ta hanh dong, tinh huong hoac hoi thong tin IC ve nhan vat khac.\n");
+			strcat(szMiscArray, "\t\tVi du: /do Canh cay mau nau.\n\n");
+			strcat(szMiscArray, "Hay doc ky cac dinh nghia, ban se phai tra loi cau hoi.");
 			strcat(szMiscArray, "\n\n\n{FFFFFF}_______________________________________________________________________________________________________________________________________________________");
-			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Tutorial - Roleplay", szMiscArray, countstring, "");
+			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Huong dan - Roleplay", szMiscArray, countstring, "");
 		}
 		case 2:
 		{
 			szMiscArray = "{FFFFFF}_______________________________________________________________________________________________________________________________________________________\n\n\n";
-			strcat(szMiscArray, "{F69500}Rules{FFFFFF}\n\n");
-			strcat(szMiscArray, "Next, you should learn some common roleplay rules that are vital in ensuring you have the best possible experience on NG:RP.\n\n");
-			strcat(szMiscArray, "\t{FF0000}Metagaming (MG){FFFFFF}: Mixing IC information with OOC information, or vice versa.\n");
-			strcat(szMiscArray, "\t\tExample: John_Doe doesn't know Jane_Doe, but he reports a crime she's commited to the police and tells the officer her name is Jane_Doe.\n");
-			strcat(szMiscArray, "\t\tExample: John_Doe is really upset, so he decides to put a frowny face in the in character chat.\n\n");
-			strcat(szMiscArray, "\t{FF0000}Powergaming (PG){FFFFFF}: Forcing another player into roleplay, or roleplaying the impossible.\n");
-			strcat(szMiscArray, "\t\tExample: John_Doe uses the command /tie on Jane_Doe, without roleplaying it first, or giving her sufficient time to respond.\n\n");
-			strcat(szMiscArray, "\t{FF0000}Deathmatching (DM){FFFFFF}: Attempting to kill another player without a sufficient roleplay reason.\n");
-			strcat(szMiscArray, "\t\tExample: John_Doe goes up to Jane_Doe and begins to shoot at her even though they've never met.\n\n");
-			strcat(szMiscArray, "\t{FF0000}Killing On Sight (KoS){FFFFFF}: Attempting to kill another player without sufficient roleplay done beforehand.\n");
-			strcat(szMiscArray, "\t\tExample: John_Doe goes up to Jane_Doe and begins to shoot at her after she stole his car without roleplaying it first.\n\n");
-			strcat(szMiscArray, "\t{FF0000}Revenge Killing (RK){FFFFFF}: Returning to the last place you died or engaging roleplay with the person(s) who were responsible for your death.\n");
-			strcat(szMiscArray, "\t\tExample: Jane_Doe kills John_Doe, John_Doe goes back up to Jane_Doe and roleplays killing her.\n\n");
-			strcat(szMiscArray, "Please read these rules carefully as you will be quizzed on them afterwards, and you may be punished if you break one!");
+			strcat(szMiscArray, "{F69500}Quy tac{FFFFFF}\n\n");
+			strcat(szMiscArray, "Tiep theo la cac quy tac roleplay quan trong de trai nghiem NG:RP tot hon.\n\n");
+			strcat(szMiscArray, "\t{FF0000}Metagaming (MG){FFFFFF}: Tron thong tin IC voi OOC hoac nguoc lai.\n");
+			strcat(szMiscArray, "\t\tVi du: John_Doe khong biet Jane_Doe nhung bao canh sat toi cua co ay va noi ro ten Jane_Doe.\n");
+			strcat(szMiscArray, "\t\tVi du: John_Doe buc minh nen gui bieu tuong mat buon trong chat IC.\n\n");
+			strcat(szMiscArray, "\t{FF0000}Powergaming (PG){FFFFFF}: Ep nguoi khac roleplay hoac nhap vai viec bat kha thi.\n");
+			strcat(szMiscArray, "\t\tVi du: John_Doe dung /tie voi Jane_Doe ma khong roleplay truoc hay cho co ay thoi gian phan hoi.\n\n");
+			strcat(szMiscArray, "\t{FF0000}Deathmatching (DM){FFFFFF}: Tim giet nguoi khac khi khong co ly do roleplay hop ly.\n");
+			strcat(szMiscArray, "\t\tVi du: John_Doe den ban Jane_Doe du hai nguoi chua tung gap nhau.\n\n");
+			strcat(szMiscArray, "\t{FF0000}Killing On Sight (KoS){FFFFFF}: Tim giet nguoi khac khi chua roleplay du truoc do.\n");
+			strcat(szMiscArray, "\t\tVi du: John_Doe ban Jane_Doe vi co ay trom xe minh ma khong roleplay truoc.\n\n");
+			strcat(szMiscArray, "\t{FF0000}Revenge Killing (RK){FFFFFF}: Quay lai noi minh chet hoac roleplay voi nguoi gay ra cai chet cua minh.\n");
+			strcat(szMiscArray, "\t\tVi du: Jane_Doe giet John_Doe, John_Doe quay lai va roleplay giet Jane_Doe.\n\n");
+			strcat(szMiscArray, "Hay doc ky, ban se phai tra loi cau hoi va co the bi phat neu vi pham!");
 			strcat(szMiscArray, "\n\n\n{FFFFFF}_______________________________________________________________________________________________________________________________________________________");
-			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Tutorial - Rules", szMiscArray, countstring, "");
+			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Huong dan - Quy tac", szMiscArray, countstring, "");
 		}
 		case 3:
 		{
 			szMiscArray = "{FFFFFF}_______________________________________________________________________________________________________________________________________________________\n\n\n";
-			strcat(szMiscArray, "{F69500}Groups{FFFFFF}\n\n");
-			strcat(szMiscArray, "It's fun to be a civilian, but it's more fun to join a group.\n\n");
-			strcat(szMiscArray, "\tAt Next Generation Gaming, we offer more of a diverse selection of groups that players can join. There are many different types of groups:\n");
-			strcat(szMiscArray, "\t{FF0000}Government (GOV){FFFFFF}: The government imposes new laws and manages the budget of San Andreas.\n");
-			strcat(szMiscArray, "\t{FF0000}Judicial (JUD){FFFFFF}: They manage the constitution of San Andreas and manage court cases against people and agencies.\n");
-			strcat(szMiscArray, "\t{FF0000}Law Enforcement Agency (LEA){FFFFFF}: They enfroce the laws written by the government and arrest violators of the law.\n");
-			strcat(szMiscArray, "\t{FF0000}Medic (MED){FFFFFF}: The medics respond to distress calls of those in need and bring them to the hospital.\n");
-			strcat(szMiscArray, "\t{FF0000}News Agency{FFFFFF}: News reporters will broadcast live news to the whole server regarding different incidents daily.\n");
-			strcat(szMiscArray, "\t{FF0000}Towing & Reposession{FFFFFF}: They go around San Andreas towing illegally parked cars or ones with outstanding tickets, impounding them.\n");
-			strcat(szMiscArray, "\t{FF0000}Transportation{FFFFFF}: They taxi around individuals who service them in exchange for a small fee.\n");
-			strcat(szMiscArray, "\t{FF0000}Contract Agency{FFFFFF}: They perform illegal contract hits on those who have them.\n");
-			strcat(szMiscArray, "\t{FF0000}Criminal{FFFFFF}: A group of criminals who do illegal things.\n\n");
-			strcat(szMiscArray, "Some groups allow you to apply to join them once you meet certain requirements! Check out all the groups at ng-gaming.net.");
+			strcat(szMiscArray, "{F69500}To chuc{FFFFFF}\n\n");
+			strcat(szMiscArray, "Lam dan thuong rat vui, tham gia to chuc con thu vi hon.\n\n");
+			strcat(szMiscArray, "\t Next Generation Gaming co nhieu loai to chuc de gia nhap:\n");
+			strcat(szMiscArray, "\t{FF0000}Government (GOV){FFFFFF}: Ban hanh luat va quan ly ngan sach San Andreas.\n");
+			strcat(szMiscArray, "\t{FF0000}Judicial (JUD){FFFFFF}: Quan ly hien phap San Andreas va cac vu kien ca nhan, co quan.\n");
+			strcat(szMiscArray, "\t{FF0000}Law Enforcement Agency (LEA){FFFFFF}: Thi hanh luat cua chinh phu va bat nguoi vi pham.\n");
+			strcat(szMiscArray, "\t{FF0000}Medic (MED){FFFFFF}: Nhan cuoc goi cap cuu va dua nguoi can giup den benh vien.\n");
+			strcat(szMiscArray, "\t{FF0000}News Agency{FFFFFF}: Phat tin truc tiep ve su viec hang ngay den toan may chu.\n");
+			strcat(szMiscArray, "\t{FF0000}Towing & Reposession{FFFFFF}: Keo xe dau sai phep hoac no ve phat ve bai giam tai San Andreas.\n");
+			strcat(szMiscArray, "\t{FF0000}Transportation{FFFFFF}: Cho khach co nhu cau va thu mot khoan phi nho.\n");
+			strcat(szMiscArray, "\t{FF0000}Contract Agency{FFFFFF}: Thuc hien hop dong am sat bat hop phap.\n");
+			strcat(szMiscArray, "\t{FF0000}Criminal{FFFFFF}: To chuc toi pham thuc hien hanh vi bat hop phap.\n\n");
+			strcat(szMiscArray, "Mot so to chuc nhan don gia nhap khi ban du dieu kien! Xem cac to chuc tai ng-gaming.net.");
 			strcat(szMiscArray, "\n\n\n{FFFFFF}_______________________________________________________________________________________________________________________________________________________");
-			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Tutorial - Groups", szMiscArray, countstring, "");
+			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Huong dan - To chuc", szMiscArray, countstring, "");
 		}
 		case 4:
 		{
 			szMiscArray = "{FFFFFF}_______________________________________________________________________________________________________________________________________________________\n\n\n";
-			strcat(szMiscArray, "{F69500}Property{FFFFFF}\n\n");
-			strcat(szMiscArray, "Players can own different property around the server, some cost more than others. Properties are meant to enhance your roleplay experience.\n\n");
-			strcat(szMiscArray, "\tThere are several different types of properties:\n");
-			strcat(szMiscArray, "\t{FF0000}Housing{FFFFFF}: Represented by a green icon, houses are everywhere around the server.\n");
-			strcat(szMiscArray, "\t{FF0000}Businesses{FFFFFF}: These are represented by a variety of different icons depending upon their type, but these allow you to purchase different things.\n");
-			strcat(szMiscArray, "\t{FF0000}Doors{FFFFFF}: Used for any purpose, they have an exterior and an interior and are typically marked by a floating downwards arrow but can have different icons.\n");
-			strcat(szMiscArray, "\t{FF0000}Garages{FFFFFF}: These are used for entering and exiting with a vehicle and are represented by a text label marked \"Garage\".\n");
-			strcat(szMiscArray, "\t{FF0000}Vehicles{FFFFFF}: Players may purchase vehicles from dealerships at any time, and use them when they wish.\n\n");
-			strcat(szMiscArray, "You can enter and exit property by pressing 'N' on your keyboard when near the icon.");
+			strcat(szMiscArray, "{F69500}Tai san{FFFFFF}\n\n");
+			strcat(szMiscArray, "Ban co the so huu nhieu loai tai san, voi gia khac nhau, de tang trai nghiem roleplay.\n\n");
+			strcat(szMiscArray, "\tCo cac loai tai san sau:\n");
+			strcat(szMiscArray, "\t{FF0000}Nha{FFFFFF}: Bieu tuong mau xanh la, co khap may chu.\n");
+			strcat(szMiscArray, "\t{FF0000}Doanh nghiep{FFFFFF}: Co nhieu bieu tuong tuy loai, cho phep mua nhieu vat pham.\n");
+			strcat(szMiscArray, "\t{FF0000}Cua{FFFFFF}: Co loi vao, noi that va nhieu cong dung, thuong co mui ten chi xuong hoac bieu tuong khac.\n");
+			strcat(szMiscArray, "\t{FF0000}Garage{FFFFFF}: Loi vao/ra cho xe, hien nhan \"Garage\".\n");
+			strcat(szMiscArray, "\t{FF0000}Xe{FFFFFF}: Co the mua xe tai dai ly va su dung khi muon.\n\n");
+			strcat(szMiscArray, "Nhan 'N' khi o gan bieu tuong de vao hoac ra.");
 			strcat(szMiscArray, "\n\n\n{FFFFFF}_______________________________________________________________________________________________________________________________________________________");
-			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Tutorial - Groups", szMiscArray, countstring, "");
+			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Huong dan - To chuc", szMiscArray, countstring, "");
 		}
 		case 5:
 		{
 			szMiscArray = "{FFFFFF}_______________________________________________________________________________________________________________________________________________________\n\n\n";
-			strcat(szMiscArray, "{F69500}Finished{FFFFFF}\n\n");
-			strcat(szMiscArray, "We are now finished with the tutorial. You will now be quizzed on many of the aspects covered in the tutorial.\n\n");
-			strcat(szMiscArray, "\tIf you feel you are not ready to take the quiz, you make repeat the tutorial by pressing \"Repeat\". Otherwise, hit \"Continue\".\n");
-			strcat(szMiscArray, "\tIf you get any question wrong, you will be forced to retake the tutorial and will be quizzed again afterwards.\n\n");
-			strcat(szMiscArray, "{FF0000}What would you like to do?{FFFFFF}");
+			strcat(szMiscArray, "{F69500}Hoan tat{FFFFFF}\n\n");
+			strcat(szMiscArray, "Huong dan da ket thuc. Bay gio ban se tra loi cau hoi ve cac noi dung vua hoc.\n\n");
+			strcat(szMiscArray, "\tNeu chua san sang, nhan \"Lap lai\" de xem lai. Neu da san sang, nhan \"Tiep tuc\".\n");
+			strcat(szMiscArray, "\tTra loi sai bat ky cau nao, ban se phai hoc va thi lai.\n\n");
+			strcat(szMiscArray, "{FF0000}Ban muon lam gi?{FFFFFF}");
 			strcat(szMiscArray, "\n\n\n{FFFFFF}_______________________________________________________________________________________________________________________________________________________");
-			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Tutorial - Groups", szMiscArray, "Continue", "Repeat");
+			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Huong dan - To chuc", szMiscArray, "Tiep tuc", "Lap lai");
 		}
 		case 6:
 		{
@@ -366,32 +366,32 @@ ShowTutorialDialog(playerid, stage)
 			SetPlayerCameraLookAt(playerid, -2026.5365, -116.2688, 1035.9733);
 			SetPlayerInterior(playerid, 3);
 
-			SendClientMessage(playerid, -1, "You are now in the tutorial. Read the questions & answers carefully. If you miss one question, you will be forced to repeat the tutorial!");
+			SendClientMessage(playerid, -1, "Hay doc ky cau hoi va dap an. Sai mot cau se phai hoc lai huong dan!");
 
-			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_LIST, "What is the correct way to write an out of character statement?", "Writing it in the chat box.\n\"Putting quotes around it\".\n(( Using double parenthesis. ))", "Continue", "");
+			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_LIST, "Cach viet mot cau OOC dung la gi?", "Viet thang vao khung chat.\n\"Dat trong dau ngoac kep\".\n(( Dung hai dau ngoac don. ))", "Tiep tuc", "");
 		}
-		case 7: ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_LIST, "What is the definition of {FF0000}Metagaming?", "Mixing IC information with OOC information.\nPlaying more than one game at one time.\nForcing another player into a roleplay situation.", "Continue", "");
-		case 8: ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_LIST, "What is the definition of {FF0000}Powergaming?", "Logging in with one or more account at the same time.\nPlaying more than one game at one time.\nForcing another player into a roleplay situation.", "Continue", "");
-		case 9: ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_LIST, "What is the definition of {FF0000}Deathmatching?", "Killing yourself to avoid a situation.\nWhen you run away from the police.\nKilling a person without proper roleplay reason.", "Continue", "");
-		case 10: ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_LIST, "What is the definition of {FF0000}Killing on Sight?", "Killing yourself to avoid a situation.\nKilling someone without proper roleplay done prior.\nKilling a police officer.", "Continue", "");
+		case 7: ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_LIST, "{FF0000}Metagaming la gi?", "Tron thong tin IC voi OOC.\nChoi nhieu game cung luc.\nEp nguoi khac vao tinh huong roleplay.", "Tiep tuc", "");
+		case 8: ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_LIST, "{FF0000}Powergaming la gi?", "Dang nhap nhieu tai khoan cung luc.\nChoi nhieu game cung luc.\nEp nguoi khac vao tinh huong roleplay.", "Tiep tuc", "");
+		case 9: ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_LIST, "{FF0000}Deathmatching la gi?", "Tu sat de tranh tinh huong.\nChay tron canh sat.\nGiet nguoi khi khong co ly do roleplay hop ly.", "Tiep tuc", "");
+		case 10: ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_LIST, "{FF0000}Killing on Sight la gi?", "Tu sat de tranh tinh huong.\nGiet nguoi khi chua roleplay du truoc do.\nGiet canh sat.", "Tiep tuc", "");
 		case 11:
 		{
 			szMiscArray = "{FFFFFF}_______________________________________________________________________________________________________________________________________________________\n\n\n";
-			strcat(szMiscArray, "{F69500}Useful Commands{FFFFFF}\n\n");
-			strcat(szMiscArray, "At Next Generation Gaming, we have a lot of commands you can use to enhance your experience. You may use /help to refer to some of these.\n\n");
-			strcat(szMiscArray, "\t{FF0000}/newb(ie){FFFFFF} - Ask a question, and one of our Advisors will answer it!\n");
-			strcat(szMiscArray, "\t{FF0000}/(cancel)report{FFFFFF} - Contact an administrator if you need one or report another player for breaking the rules.\n");
-			strcat(szMiscArray, "\t{FF0000}/stats{FFFFFF} - View various information attached to your account.\n");
-			strcat(szMiscArray, "\t{FF0000}/inv(entory){FFFFFF} - Find out how much of each item you have in your inventory.\n");
-			strcat(szMiscArray, "\t{FF0000}/interact{FFFFFF} - Interact with another player by giving/selling items, etc. (You may also use RMB+Y over a player to perform this)\n");
-			strcat(szMiscArray, "\t{FF0000}/pay{FFFFFF} - Pay another player a certain amount of money.\n");
+			strcat(szMiscArray, "{F69500}Lenh huu ich{FFFFFF}\n\n");
+			strcat(szMiscArray, "Next Generation Gaming co nhieu lenh ho tro trai nghiem. Dung /help de xem cac lenh.\n\n");
+			strcat(szMiscArray, "\t{FF0000}/newb(ie){FFFFFF} - Dat cau hoi de Advisor tra loi!\n");
+			strcat(szMiscArray, "\t{FF0000}/(cancel)report{FFFFFF} - Lien he Admin hoac bao cao nguoi vi pham.\n");
+			strcat(szMiscArray, "\t{FF0000}/stats{FFFFFF} - Xem thong tin tai khoan.\n");
+			strcat(szMiscArray, "\t{FF0000}/inv(entory){FFFFFF} - Xem so luong tung vat pham trong tui.\n");
+			strcat(szMiscArray, "\t{FF0000}/interact{FFFFFF} - Dua/ban vat pham va tuong tac voi nguoi khac. (Co the ngam RMB+Y vao nguoi do)\n");
+			strcat(szMiscArray, "\t{FF0000}/pay{FFFFFF} - Tra mot so tien cho nguoi choi khac.\n");
 			strcat(szMiscArray, "\n\n\n{FFFFFF}_______________________________________________________________________________________________________________________________________________________");
-			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Tutorial - Commands", szMiscArray, "Continue", "");
+			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Huong dan - Lenh", szMiscArray, "Tiep tuc", "");
 		}
 		case 12:
 		{
 			szMiscArray = "{FFFFFF}_______________________________________________________________________________________________________________________________________________________\n\n\n";
-			strcat(szMiscArray, "You are now completely finished with the tutorial. Press the next button to be taken to the character creation menu.\n\n");
+			strcat(szMiscArray, "Ban da hoan tat huong dan. Nhan nut tiep theo de den menu tao nhan vat.\n\n");
 			strcat(szMiscArray, "\t{F69521}Developers\n");
 			strcat(szMiscArray, "\t\t{F69521}Director of Development{FFFFFF}:\n\t\t\tShane\n\n");
 			strcat(szMiscArray, "\t\t{F69521}Developers{FFFFFF}:\n\
@@ -410,7 +410,7 @@ ShowTutorialDialog(playerid, stage)
 				\t\t\tJingles\tBehemoth\tWesten\n\
 				\t\t\tConnolly\n");
 			strcat(szMiscArray, "\n\n{FFFFFF}_______________________________________________________________________________________________________________________________________________________");
-			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP - Developers", szMiscArray, "Continue", "");
+			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP - Developers", szMiscArray, "Tiep tuc", "");
 		}
 	}
 	return 1;
@@ -446,7 +446,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						PlayerInfo[playerid][pTut] = 0;
 						AdvanceTutorial(playerid);
 
-						SendClientMessage(playerid, -1, "You have decided to repeat the tutorial. Please make sure to read everything carefully before moving on!");
+						SendClientMessage(playerid, -1, "Ban chon hoc lai huong dan. Hay doc ky truoc khi tiep tuc!");
 					}
 					else
 					{
@@ -464,7 +464,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							PlayerInfo[playerid][pTut] = 0;
 							AdvanceTutorial(playerid);
 
-							SendClientMessage(playerid, -1, "That's the wrong answer! You now have to retake the tutorial. Please pay more attention this time!");
+							SendClientMessage(playerid, -1, "Sai dap an! Ban phai hoc lai huong dan. Hay chu y hon!");
 						}
 						default:
 						{
@@ -483,7 +483,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							PlayerInfo[playerid][pTut] = 0;
 							AdvanceTutorial(playerid);
 
-							SendClientMessage(playerid, -1, "That's the wrong answer! You now have to retake the tutorial. Please pay more attention this time!");
+							SendClientMessage(playerid, -1, "Sai dap an! Ban phai hoc lai huong dan. Hay chu y hon!");
 						}
 						default:
 						{
@@ -502,7 +502,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							PlayerInfo[playerid][pTut] = 0;
 							AdvanceTutorial(playerid);
 
-							SendClientMessage(playerid, -1, "That's the wrong answer! You now have to retake the tutorial. Please pay more attention this time!");
+							SendClientMessage(playerid, -1, "Sai dap an! Ban phai hoc lai huong dan. Hay chu y hon!");
 						}
 						default:
 						{
@@ -521,7 +521,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							PlayerInfo[playerid][pTut] = 0;
 							AdvanceTutorial(playerid);
 
-							SendClientMessage(playerid, -1, "That's the wrong answer! You now have to retake the tutorial. Please pay more attention this time!");
+							SendClientMessage(playerid, -1, "Sai dap an! Ban phai hoc lai huong dan. Hay chu y hon!");
 						}
 						default:
 						{
@@ -540,7 +540,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							PlayerInfo[playerid][pTut] = 0;
 							AdvanceTutorial(playerid);
 
-							SendClientMessage(playerid, -1, "That's the wrong answer! You now have to retake the tutorial. Please pay more attention this time!");
+							SendClientMessage(playerid, -1, "Sai dap an! Ban phai hoc lai huong dan. Hay chu y hon!");
 						}
 						default:
 						{
@@ -561,13 +561,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					{
 						PlayerInfo[playerid][pTut] = -1;
 						DisablePlayerCheckpoint(playerid);
-						return SendClientMessageEx(playerid, -1, "Welcome to Next Generation Gaming! Remember to use /help if you need a refresher on commands or /newb(ie) to ask for help!");
+						return SendClientMessageEx(playerid, -1, "Chao mung den Next Generation Gaming! Dung /help de xem lai lenh hoac /newb(ie) de hoi!");
 					}
 					else
 					{
 						PlayerInfo[playerid][pTut]++;
 						AdvanceTutorial(playerid);
-						SendClientMessageEx(playerid, COLOR_WHITE, "You have chosen the objectives. Please type \"/cancel objectives\" at any time to cancel.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Ban da chon muc tieu. Dung \"/cancel objectives\" bat cu luc nao de huy.");
 					}
 				}
 			}
@@ -578,9 +578,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			switch(listitem)
 			{
 				case 0: return CharacterCreation(playerid);
-				case 1: return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Character Creation | Select Gender", "Male\nFemale", "Select", "<<");
-				case 2: return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_MONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Select", "<<");
-				case 3: return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_NATION, DIALOG_STYLE_LIST, "NG:RP Character Creation | Nation", "San Andreas\nNew Robada", "Select", "<<");
+				case 1: return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Tao nhan vat | Gioi tinh", "Nam\nNu", "Chon", "<<");
+				case 2: return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_MONTH, DIALOG_STYLE_LIST, "{FF0000}Nhan vat sinh thang nao?", "Thang mot\nThang hai\nThang ba\nThang tu\nThang nam\nThang sau\nThang bay\nThang tam\nThang chin\nThang muoi\nThang muoi mot\nThang muoi hai", "Chon", "<<");
+				case 3: return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_NATION, DIALOG_STYLE_LIST, "NG:RP Tao nhan vat | Quoc gia", "San Andreas\nNew Robada", "Chon", "<<");
 				case 4:
 				{
 					szMiscArray[0] = 0;
@@ -612,35 +612,35 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					French accent\n\
 					Korean accent\n\
 					Thai accent";
-					return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_ACCENT, DIALOG_STYLE_LIST, "NG:RP Character Creation | Accent", szMiscArray, "Select", "<<");
+					return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_ACCENT, DIALOG_STYLE_LIST, "NG:RP Tao nhan vat | Giong noi", szMiscArray, "Chon", "<<");
 				}
 				case 5:
 				{
 					if(PlayerInfo[playerid][pSex] == 0) { 
-						SendClientMessage(playerid, COLOR_YELLOW, "Please select your gender first.");
-						return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Character Creation | Skin Model", "Male\nFemale", "Select", "<<");
+						SendClientMessage(playerid, COLOR_YELLOW, "Hay chon gioi tinh truoc.");
+						return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Tao nhan vat | Model skin", "Nam\nNu", "Chon", "<<");
 					}
 
-               		ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SKIN, DIALOG_STYLE_INPUT, "NG:RP Character Creation | Skin Model", "Please enter a skin ID for your character.", "Select", "<<");
+               		ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SKIN, DIALOG_STYLE_INPUT, "NG:RP Tao nhan vat | Model skin", "Nhap skin ID cho nhan vat.", "Chon", "<<");
                	}
 				
 				case 6:
 				{
 					if(PlayerInfo[playerid][pSex] == 0)
 					{
-						SendClientMessage(playerid, COLOR_YELLOW, "Please pick a gender.");
-						return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Character Creation | Skin Model", "Male\nFemale", "Select", "<<");
+						SendClientMessage(playerid, COLOR_YELLOW, "Hay chon gioi tinh.");
+						return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Tao nhan vat | Model skin", "Nam\nNu", "Chon", "<<");
 
 					}
 					if(strcmp(PlayerInfo[playerid][pBirthDate], "0000-00-00") == 0)
 					{
-						SendClientMessage(playerid, COLOR_YELLOW, "Please specify your birthdate.");
-						return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_MONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Select", "<<");
+						SendClientMessage(playerid, COLOR_YELLOW, "Hay chon ngay sinh.");
+						return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_MONTH, DIALOG_STYLE_LIST, "{FF0000}Nhan vat sinh thang nao?", "Thang mot\nThang hai\nThang ba\nThang tu\nThang nam\nThang sau\nThang bay\nThang tam\nThang chin\nThang muoi\nThang muoi mot\nThang muoi hai", "Chon", "<<");
 					}
 
-					if(PlayerInfo[playerid][pNation] != 0 && PlayerInfo[playerid][pNation] != 1) return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_NATION, DIALOG_STYLE_LIST, "NG:RP Character Creation | Nation", "San Andreas\nNew Robada", "Select", "<<");
+					if(PlayerInfo[playerid][pNation] != 0 && PlayerInfo[playerid][pNation] != 1) return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_NATION, DIALOG_STYLE_LIST, "NG:RP Tao nhan vat | Quoc gia", "San Andreas\nNew Robada", "Chon", "<<");
 
-					ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Referral System", "Have you been referred to our server by one of our players?\nIf so, please enter the player name below.\n\nIf you haven't been referred by anyone, you may press the skip button.\n\n{FF0000}Note: You must enter the player name with a underscore (Example: FirstName_LastName)", "Enter", "Skip");
+					ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}He thong gioi thieu", "Co nguoi choi nao gioi thieu ban den may chu khong?\nNeu co, nhap ten ho ben duoi.\n\nNeu khong, nhan nut Bo qua.\n\n{FF0000}Luu y: Ten phai co dau gach duoi (Vi du: FirstName_LastName)", "Nhap", "Bo qua");
 					return 1;
 				}
 			}
@@ -662,18 +662,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					PlayerInfo[playerid][pSex] = 1;
 					PlayerInfo[playerid][pModel] = 2;
 					AdjustActor(playerid, 2);
-					SendClientMessage(playerid, COLOR_YELLOW2, "Alright, so you're a male!");
+					SendClientMessage(playerid, COLOR_YELLOW2, "Da chon nhan vat nam!");
 					CharacterCreation(playerid);
 				}
 				else if(listitem == 1) {
 					PlayerInfo[playerid][pSex] = 2;
 					PlayerInfo[playerid][pModel] = 91;
 					AdjustActor(playerid, 91);
-					SendClientMessage(playerid, COLOR_YELLOW2, "Alright, so you're a female!");
+					SendClientMessage(playerid, COLOR_YELLOW2, "Da chon nhan vat nu!");
 					CharacterCreation(playerid);
 				}
 			}
-			else ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "{FF0000}Is your character male or female?", "Male\nFemale", "Submit", "");
+			else ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "{FF0000}Nhan vat cua ban la nam hay nu?", "Nam\nNu", "Gui", "");
 		}
 		case DIALOG_REGISTER_NATION: 
 		{
@@ -682,8 +682,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				PlayerInfo[playerid][pNation] = listitem;
 				switch(listitem) 
 				{
-					case 0: SendClientMessageEx(playerid, COLOR_GRAD1, "You are now a citizen of San Andreas.");
-					case 1: SendClientMessageEx(playerid, COLOR_GRAD1, "You are now a citizen of New Robada.");
+					case 0: SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da la cong dan San Andreas.");
+					case 1: SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da la cong dan New Robada.");
 				}
 			}
 			CharacterCreation(playerid);
@@ -704,7 +704,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					format(szMiscArray, sizeof(szMiscArray), "%s%d\n", szMiscArray, x);
 				}
-				ShowPlayerDialogEx(playerid, DIALOG_REGISTER_DAY, DIALOG_STYLE_LIST, "{FF0000}Which day was your character born?", szMiscArray, "Submit", "");
+				ShowPlayerDialogEx(playerid, DIALOG_REGISTER_DAY, DIALOG_STYLE_LIST, "{FF0000}Nhan vat sinh ngay nao?", szMiscArray, "Gui", "");
 			}
 			else return CharacterCreation(playerid);
 		}
@@ -723,9 +723,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					format(szMiscArray, sizeof(szMiscArray), "%s%d\n", szMiscArray, x);
 				}
-				ShowPlayerDialogEx(playerid, DIALOG_REGISTER_YEAR, DIALOG_STYLE_LIST, "{FF0000}Which year was your character born?", szMiscArray, "Submit", "");
+				ShowPlayerDialogEx(playerid, DIALOG_REGISTER_YEAR, DIALOG_STYLE_LIST, "{FF0000}Nhan vat sinh nam nao?", szMiscArray, "Gui", "");
 			}
-			else ShowPlayerDialogEx(playerid, DIALOG_REGISTER_MONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Submit", "");
+			else ShowPlayerDialogEx(playerid, DIALOG_REGISTER_MONTH, DIALOG_STYLE_LIST, "{FF0000}Nhan vat sinh thang nao?", "Thang mot\nThang hai\nThang ba\nThang tu\nThang nam\nThang sau\nThang bay\nThang tam\nThang chin\nThang muoi\nThang muoi mot\nThang muoi hai", "Gui", "");
 		}
 		case DIALOG_REGISTER_YEAR:
 	    {
@@ -739,7 +739,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				format(PlayerInfo[playerid][pBirthDate], 11, "%d-%02d-%02d", setyear, GetPVarInt(playerid, "RegisterMonth"), GetPVarInt(playerid, "RegisterDay"));
 				DeletePVar(playerid, "RegisterMonth");
 				DeletePVar(playerid, "RegisterDay");
-				SendClientMessage(playerid, COLOR_LIGHTRED, "Your birthdate has been successfully set.");
+				SendClientMessage(playerid, COLOR_LIGHTRED, "Da dat ngay sinh.");
 				return CharacterCreation(playerid);
 			}
 			else
@@ -748,7 +748,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					format(szMiscArray, sizeof(szMiscArray), "%s%d\n", szMiscArray, x);
 				}
-				ShowPlayerDialogEx(playerid, DIALOG_REGISTER_YEAR, DIALOG_STYLE_LIST, "{FF0000}Which year was your character born?", szMiscArray, "Submit", "");
+				ShowPlayerDialogEx(playerid, DIALOG_REGISTER_YEAR, DIALOG_STYLE_LIST, "{FF0000}Nhan vat sinh nam nao?", szMiscArray, "Gui", "");
 			}
 		}
 		case DIALOG_REGISTER_ACCENT:
@@ -766,29 +766,29 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		    {
 		        if(IsNumericString(inputtext))
 		        {
-		            ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
+		            ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Loi - Ten Roleplay khong hop le", "Ten khong dung roleplay\nHay nhap ten roleplay hop le.\n\nVi du: FirstName_LastName", "Nhap", "Bo qua");
 		            return 1;
 				}
 				if(strfind(inputtext, "_", true) == -1)
 				{
-				    ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
+				    ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Loi - Ten Roleplay khong hop le", "Ten khong dung roleplay\nHay nhap ten roleplay hop le.\n\nVi du: FirstName_LastName", "Nhap", "Bo qua");
 		            return 1;
 		        }
 		        if(strlen(inputtext) > 20)
 		        {
-		            ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That name is too long\nPlease shorten the name.\n\nExample: FirstName_LastName (20 Characters Max)", "Enter", "Skip");
+		            ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Loi - Ten Roleplay khong hop le", "Ten qua dai\nHay rut ngan ten.\n\nVi du: FirstName_LastName (Toi da 20 ky tu)", "Nhap", "Bo qua");
 		            return 1;
 		        }
 		        if(strcmp(inputtext, GetPlayerNameExt(playerid), true) == 0)
 		        {
-		            ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error", "You can't add yourself as a referrer.\nPlease enter the referrer name or press 'Skip'.\n\nExample: FirstName_LastName (20 Characters Max)", "Enter", "Skip");
+		            ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Loi", "Khong the tu gioi thieu minh.\nNhap ten nguoi gioi thieu hoac nhan 'Bo qua'.\n\nVi du: FirstName_LastName (Toi da 20 ky tu)", "Nhap", "Bo qua");
 		            return 1;
 		        }
 				for(new sz = 0; sz < strlen(inputtext); sz++)
 				{
 				    if(inputtext[sz] == ' ')
 				    {
-					    ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
+					    ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Loi - Ten Roleplay khong hop le", "Ten khong dung roleplay\nHay nhap ten roleplay hop le.\n\nVi du: FirstName_LastName", "Nhap", "Bo qua");
 			            return 1;
 			        }
 			    }
@@ -803,7 +803,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				strmid(PlayerInfo[playerid][pReferredBy], szMiscArray, 0, strlen(szMiscArray), MAX_PLAYER_NAME);
 				PlayerInfo[playerid][pTut] = 14;
 				AdvanceTutorial(playerid);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Thanks for filling in all the information!");
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Cam on ban da dien du thong tin!");
 			}
 		}
 	}
@@ -819,17 +819,17 @@ hook OnPlayerEnterCheckpoint(playerid)
 			case 15:
 			{
 				DisablePlayerCheckpoint(playerid);
-				SendClientMessage(playerid, COLOR_WHITE, "Enter any vehicle you can afford to purchase it!");
+				SendClientMessage(playerid, COLOR_WHITE, "Vao xe ban du tien de mua!");
 			}
 			case 16:
 			{
 				DisablePlayerCheckpoint(playerid);
-				SendClientMessage(playerid, COLOR_WHITE, "Enter the building, press right mouse button to aim over the bank teller and press Y to interact with them!");
+				SendClientMessage(playerid, COLOR_WHITE, "Vao toa nha, nhan chuot phai ngam nhan vien ngan hang va nhan Y de tuong tac!");
 			}
 			case 17:
 			{
 				DisablePlayerCheckpoint(playerid);
-				SendClientMessage(playerid, COLOR_WHITE, "Enter the building and type /buy to purchase a phone.");
+				SendClientMessage(playerid, COLOR_WHITE, "Vao toa nha va dung /buy de mua dien thoai.");
 			}
 		}
 	}
@@ -911,7 +911,7 @@ CMD:forcetutorial(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 3)
 	{
 		new id;
-		if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_WHITE, "SYNTAX: /forcetutorial [playerid]");
+		if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_WHITE, "CU PHAP: /forcetutorial [playerid]");
 
 		if(IsPlayerConnected(id))
 		{
@@ -923,27 +923,27 @@ CMD:forcetutorial(playerid, params[])
 					PlayerInfo[id][pTut] = 13;
 					AdvanceTutorial(id);
 
-					format(szMiscArray, 128, "You have sent %s to the Character Creation Menu.", GetPlayerNameEx(id));
+					format(szMiscArray, 128, "Da dua %s den menu tao nhan vat.", GetPlayerNameEx(id));
 					SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
-					format(szMiscArray, 128, "Administrator %s has sent you to the Character Creation Menu.", GetPlayerNameEx(playerid));
+					format(szMiscArray, 128, "Admin %s dua ban den menu tao nhan vat.", GetPlayerNameEx(playerid));
 					SendClientMessage(id, COLOR_WHITE, szMiscArray);
 				}
-				case 13: return SendClientMessage(playerid, COLOR_WHITE, "This player is currently in the character creation menu, please wait.");
+				case 13: return SendClientMessage(playerid, COLOR_WHITE, "Nguoi nay dang trong menu tao nhan vat, hay cho.");
 				case 14 .. 18:
 				{
 					PlayerInfo[id][pTut] = -1;
 					AdvanceTutorial(id);
 
-					format(szMiscArray, 128, "You have forced %s out of the tutorial.", GetPlayerNameEx(id));
+					format(szMiscArray, 128, "Da buoc %s roi huong dan.", GetPlayerNameEx(id));
 					SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
-					format(szMiscArray, 128, "Administrator %s has forced you out of the tutorial.", GetPlayerNameEx(playerid));
+					format(szMiscArray, 128, "Admin %s buoc ban roi huong dan.", GetPlayerNameEx(playerid));
 					SendClientMessage(id, COLOR_WHITE, szMiscArray);
 				}
-				default: return SendClientMessage(playerid, COLOR_WHITE, "This player is not in the tutorial.");
+				default: return SendClientMessage(playerid, COLOR_WHITE, "Nguoi nay khong o trong huong dan.");
 			}
 		}
-		else return SendClientMessage(playerid, COLOR_WHITE, "This player is not connected!");
+		else return SendClientMessage(playerid, COLOR_WHITE, "Nguoi nay chua ket noi!");
 	}
-	else SendClientMessage(playerid, COLOR_WHITE, "You are not authorized to perform this command!");
+	else SendClientMessage(playerid, COLOR_WHITE, "Ban khong co quyen dung lenh nay!");
 	return 1;
 }

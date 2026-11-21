@@ -260,7 +260,7 @@ stock Job_ShowMenu(playerid, bool:shop = false, bool:boost = false)
 	if(shop) SetPVarInt(playerid, "m_Item", boost ? 1 : 0);
 	else DeletePVar(playerid, "m_Item");
 	Job_BuildMenu(szMiscArray, sizeof(szMiscArray), boost);
-	return ShowPlayerDialogEx(playerid, 7484, DIALOG_STYLE_LIST, boost ? "Micro Shop: Job Boost" : "Job Center", szMiscArray, "Proceed", "Cancel");
+	return ShowPlayerDialogEx(playerid, 7484, DIALOG_STYLE_LIST, boost ? "Micro Shop: Job Boost" : "Trung tam viec lam", szMiscArray, "Tiep tuc", "Huy");
 }
 
 stock Job_GetSkill(job)
@@ -307,7 +307,7 @@ CMD:join(playerid, params[])
 {
 	new point = Job_FindPoint(playerid);
 	if(point == -1) {
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be near a job point. Press Y there or use /join to apply.");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Phai o gan diem cong viec. Nhan Y hoac dung /join de xin viec.");
 	}
 	return Job_GetJob(playerid, point);
 }
@@ -318,11 +318,11 @@ CMD:quitjob(playerid, params[])
 	if(!isnull(params) || PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0)
 	{
 		if(sscanf(params, "d", slot) || !(1 <= slot <= 3))
-			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /quitjob [slot 1, 2 or 3]");
+			return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /quitjob [slot 1, 2 or 3]");
 	}
 	
 	new job = Job_GetSlot(playerid, slot);
-	if(job == JOB_NONE) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have a job in that slot.");
-	if(!Job_SetPlayerSlot(playerid, slot, JOB_NONE)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot leave this job until you can receive the outstanding fare payment.");
-	return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have left %s in job slot %d.", GetJobName(job), slot);
+	if(job == JOB_NONE) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co cong viec trong o do.");
+	if(!Job_SetPlayerSlot(playerid, slot, JOB_NONE)) return SendClientMessageEx(playerid, COLOR_GREY, "Chua the nghi cong viec khi chua nhan duoc tien cuoc con no.");
+	return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da nghi %s tai o cong viec %d.", GetJobName(job), slot);
 }

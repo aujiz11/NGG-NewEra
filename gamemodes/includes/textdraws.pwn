@@ -506,7 +506,7 @@ CreatePokerGUI(playerid)
 	PlayerTextDrawTextSize(playerid, PlayerPokerUI[playerid][40], 10.000000, 26.000000);
 	PlayerTextDrawSetSelectable(playerid, PlayerPokerUI[playerid][40], true);
 
-	PlayerPokerUI[playerid][41] = CreatePlayerTextDraw(playerid, 318.000000, 120.000000, "LEAVE");
+	PlayerPokerUI[playerid][41] = CreatePlayerTextDraw(playerid, 318.000000, 120.000000, "ROI DI");
 	PlayerTextDrawAlignment(playerid, PlayerPokerUI[playerid][41], 2);
 	PlayerTextDrawBackgroundColor(playerid, PlayerPokerUI[playerid][41], 255);
 	PlayerTextDrawFont(playerid, PlayerPokerUI[playerid][41], 2);
@@ -750,7 +750,7 @@ public LoadTextDraws() {
 	TextDrawSetShadow(MainMenuTxtdraw[9], 0);
 	textdrawscount++;
 
-	MainMenuTxtdraw[10] = TextDrawCreate(319.000000, 81.000000, "This server may contain explicit content and may be considered only for adults.");
+	MainMenuTxtdraw[10] = TextDrawCreate(319.000000, 81.000000, "May chu co noi dung danh cho nguoi truong thanh.");
 	TextDrawAlignment(MainMenuTxtdraw[10], 2);
 	TextDrawBackgroundColor(MainMenuTxtdraw[10], 255);
 	TextDrawFont(MainMenuTxtdraw[10], 0);
@@ -787,7 +787,7 @@ public LoadTextDraws() {
 	TextDrawBoxColor(NoticeTxtdraw[0], 100);
 	TextDrawTextSize(NoticeTxtdraw[0], 454.000000, 18.000000);
 
-	NoticeTxtdraw[1] = TextDrawCreate(313.000000, 193.000000, "Loading...");
+	NoticeTxtdraw[1] = TextDrawCreate(313.000000, 193.000000, "Dang tai");
 	TextDrawAlignment(NoticeTxtdraw[1], 2);
 	TextDrawBackgroundColor(NoticeTxtdraw[1], 255);
 	TextDrawFont(NoticeTxtdraw[1], 2);
@@ -796,7 +796,7 @@ public LoadTextDraws() {
 	TextDrawSetOutline(NoticeTxtdraw[1], 1);
 	TextDrawSetProportional(NoticeTxtdraw[1], true);
 
-	NoticeTxtdraw[2] = TextDrawCreate(309.000000, 222.000000, "Looking up your account, Please Wait!");
+	NoticeTxtdraw[2] = TextDrawCreate(309.000000, 222.000000, "Dang tim tai khoan, vui long cho!");
 	TextDrawAlignment(NoticeTxtdraw[2], 2);
 	TextDrawBackgroundColor(NoticeTxtdraw[2], 255);
 	TextDrawFont(NoticeTxtdraw[2], 2);
@@ -805,7 +805,7 @@ public LoadTextDraws() {
 	TextDrawSetOutline(NoticeTxtdraw[2], 1);
 	TextDrawSetProportional(NoticeTxtdraw[2], true);
 
-	NoticeTxtdraw[3] = TextDrawCreate(309.000000, 222.000000, "Comparing passwords with database, Please Wait!");
+	NoticeTxtdraw[3] = TextDrawCreate(309.000000, 222.000000, "Dang kiem tra mat khau, vui long cho!");
 	TextDrawAlignment(NoticeTxtdraw[3], 2);
 	TextDrawBackgroundColor(NoticeTxtdraw[3], 255);
 	TextDrawFont(NoticeTxtdraw[3], 2);
@@ -814,7 +814,7 @@ public LoadTextDraws() {
 	TextDrawSetOutline(NoticeTxtdraw[3], 1);
 	TextDrawSetProportional(NoticeTxtdraw[3], true);
 
-	NoticeTxtdraw[4] = TextDrawCreate(309.000000, 222.000000, "Fetching & Loading your account, Please Wait!");
+	NoticeTxtdraw[4] = TextDrawCreate(309.000000, 222.000000, "Dang tai tai khoan, vui long cho!");
 	TextDrawAlignment(NoticeTxtdraw[4], 2);
 	TextDrawBackgroundColor(NoticeTxtdraw[4], 255);
 	TextDrawFont(NoticeTxtdraw[4], 2);
@@ -823,7 +823,7 @@ public LoadTextDraws() {
 	TextDrawSetOutline(NoticeTxtdraw[4], 1);
 	TextDrawSetProportional(NoticeTxtdraw[4], true);
 
-	NoticeTxtdraw[5] = TextDrawCreate(309.000000, 222.000000, "Streaming Objects within area, Please Wait!");
+	NoticeTxtdraw[5] = TextDrawCreate(309.000000, 222.000000, "Dang tai vat the, vui long cho!");
 	TextDrawAlignment(NoticeTxtdraw[5], 2);
 	TextDrawBackgroundColor(NoticeTxtdraw[5], 255);
 	TextDrawFont(NoticeTxtdraw[5], 2);
@@ -832,7 +832,7 @@ public LoadTextDraws() {
 	TextDrawSetOutline(NoticeTxtdraw[5], 1);
 	TextDrawSetProportional(NoticeTxtdraw[5], true);
 
-	NoticeTxtdraw[6] = TextDrawCreate(309.000000, 222.000000, "MySQL server is currently busy, Please Wait!");
+	NoticeTxtdraw[6] = TextDrawCreate(309.000000, 222.000000, "MySQL dang ban, vui long cho!");
 	TextDrawAlignment(NoticeTxtdraw[6], 2);
 	TextDrawBackgroundColor(NoticeTxtdraw[6], 255);
 	TextDrawFont(NoticeTxtdraw[6], 2);
@@ -841,7 +841,7 @@ public LoadTextDraws() {
 	TextDrawSetOutline(NoticeTxtdraw[6], 1);
 	TextDrawSetProportional(NoticeTxtdraw[6], true);
 
-	NoticeTxtdraw[7] = TextDrawCreate(309.000000, 222.000000, "Loading, Please Wait!");
+	NoticeTxtdraw[7] = TextDrawCreate(309.000000, 222.000000, "Dang tai, xin cho!");
 	TextDrawAlignment(NoticeTxtdraw[7], 2);
 	TextDrawBackgroundColor(NoticeTxtdraw[7], 255);
 	TextDrawFont(NoticeTxtdraw[7], 2);
@@ -917,7 +917,7 @@ stock PrepTradeToysGUI(playerid, sellerid, price, object)
 	PlayerTextDrawSetSelectable(playerid, ttObjectInfo[playerid], false);
 	
 	// Logo
-	ttLogo[playerid] = CreatePlayerTextDraw(playerid, 264.000000, 121.000000, "Trade a Toy");
+	ttLogo[playerid] = CreatePlayerTextDraw(playerid, 264.000000, 121.000000, "Giao dich Toy");
 	PlayerTextDrawBackgroundColor(playerid, ttLogo[playerid], 255);
 	PlayerTextDrawFont(playerid, ttLogo[playerid], 2);
 	PlayerTextDrawLetterSize(playerid, ttLogo[playerid], 0.379999, 1.500000);
@@ -928,7 +928,7 @@ stock PrepTradeToysGUI(playerid, sellerid, price, object)
 	PlayerTextDrawSetSelectable(playerid, ttLogo[playerid], false);
 	
 	// Purchase
-	ttPurchase[playerid] = CreatePlayerTextDraw(playerid, 91.000000, 295.000000, "Purchase");
+	ttPurchase[playerid] = CreatePlayerTextDraw(playerid, 91.000000, 295.000000, "Mua");
 	PlayerTextDrawBackgroundColor(playerid, ttPurchase[playerid], 255);
 	PlayerTextDrawFont(playerid, ttPurchase[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, ttPurchase[playerid], 0.500000, 1.700000);
@@ -941,7 +941,7 @@ stock PrepTradeToysGUI(playerid, sellerid, price, object)
 	PlayerTextDrawSetSelectable(playerid, ttPurchase[playerid], true);
 	
 	// Decline
-	ttDecline[playerid] = CreatePlayerTextDraw(playerid, 254.000000, 295.000000, "Decline");
+	ttDecline[playerid] = CreatePlayerTextDraw(playerid, 254.000000, 295.000000, "Tu choi");
 	PlayerTextDrawBackgroundColor(playerid, ttDecline[playerid], 255);
 	PlayerTextDrawFont(playerid, ttDecline[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, ttDecline[playerid], 0.500000, 1.799999);
@@ -955,7 +955,7 @@ stock PrepTradeToysGUI(playerid, sellerid, price, object)
 	PlayerTextDrawSetSelectable(playerid, ttDecline[playerid], false);
 	
 	// Offer
-	format(string, sizeof(string), "%s has offered to sell you this toy for $%s", GetPlayerNameEx(sellerid), number_format(price));
+	format(string, sizeof(string), "%s chao ban toy nay voi gia $%s", GetPlayerNameEx(sellerid), number_format(price));
 	ttOffer[playerid] = CreatePlayerTextDraw(playerid, 71.000000, 174.000000, string);
 	PlayerTextDrawBackgroundColor(playerid, ttOffer[playerid], 255);
 	PlayerTextDrawFont(playerid, ttOffer[playerid], 1);
@@ -967,7 +967,7 @@ stock PrepTradeToysGUI(playerid, sellerid, price, object)
 	PlayerTextDrawSetSelectable(playerid, ttOffer[playerid], false);
 	
 	// Note
-	ttNote[playerid] = CreatePlayerTextDraw(playerid, 74.000000, 221.000000, "If you would like to purchase this toy, press 'Y' on your keyboard, otherwise, press 'N' on your keyboard.");
+	ttNote[playerid] = CreatePlayerTextDraw(playerid, 74.000000, 221.000000, "Nhan 'Y' de mua toy nay, hoac nhan 'N' de tu choi.");
 	PlayerTextDrawBackgroundColor(playerid, ttNote[playerid], 255);
 	PlayerTextDrawFont(playerid, ttNote[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, ttNote[playerid], 0.150000, 1.000000);
@@ -1033,7 +1033,7 @@ stock CreateHungerGamesTextdraw(playerid)
 	new string[128];
 	
 	// Create the Player Count Textdraw
-	format(string, sizeof(string), "Players in event: %d", hgPlayerCount);
+	format(string, sizeof(string), "So nguoi tham gia: %d", hgPlayerCount);
 	HungerPlayerInfo[playerid][hgPlayerText] = CreatePlayerTextDraw(playerid, 41.000000, 433.000000, string);
 	PlayerTextDrawBackgroundColor(playerid, HungerPlayerInfo[playerid][hgPlayerText], 255);
 	PlayerTextDrawFont(playerid, HungerPlayerInfo[playerid][hgPlayerText], 1);
@@ -1044,7 +1044,7 @@ stock CreateHungerGamesTextdraw(playerid)
 	PlayerTextDrawSetSelectable(playerid, HungerPlayerInfo[playerid][hgPlayerText], false);
 	
 	// Create the loading textdraw
-	HungerPlayerInfo[playerid][hgLoadingText] = CreatePlayerTextDraw(playerid, 549.000000, 423.000000, "The Hunger Games is loading...");
+	HungerPlayerInfo[playerid][hgLoadingText] = CreatePlayerTextDraw(playerid, 549.000000, 423.000000, "The Hunger Games dang tai...");
 	PlayerTextDrawBackgroundColor(playerid, HungerPlayerInfo[playerid][hgLoadingText], 255);
 	PlayerTextDrawFont(playerid, HungerPlayerInfo[playerid][hgLoadingText], 1);
 	PlayerTextDrawLetterSize(playerid, HungerPlayerInfo[playerid][hgLoadingText], 0.160000, 0.699999);
@@ -1054,7 +1054,7 @@ stock CreateHungerGamesTextdraw(playerid)
 	PlayerTextDrawSetSelectable(playerid, HungerPlayerInfo[playerid][hgLoadingText], false);
 
 	// Create the time left textdraw
-	format(string, sizeof(string), "Time left until start: %d", hgCountdown);
+	format(string, sizeof(string), "Con %d de bat dau", hgCountdown);
 	HungerPlayerInfo[playerid][hgTimeLeftText] = CreatePlayerTextDraw(playerid, 549.000000, 432.000000, string);
 	PlayerTextDrawBackgroundColor(playerid, HungerPlayerInfo[playerid][hgTimeLeftText], 255);
 	PlayerTextDrawFont(playerid, HungerPlayerInfo[playerid][hgTimeLeftText], 1);
@@ -1154,7 +1154,7 @@ stock CreatePlayerTextDraws(playerid)
 	PlayerTextDrawSetSelectable(playerid,MicroNotice[playerid], false);
 
 	//LEO Textdraws
-	BackupText[playerid] = CreatePlayerTextDraw(playerid, 505 ,179 , "~r~Backup call active");
+	BackupText[playerid] = CreatePlayerTextDraw(playerid, 505 ,179 , "~r~Dang goi ho tro");
 	PlayerTextDrawFont(playerid,BackupText[playerid] , 1);
 	PlayerTextDrawLetterSize(playerid,BackupText[playerid] , 0.270000, 2.000000);
 	PlayerTextDrawColor(playerid,BackupText[playerid] , -1);
@@ -1176,7 +1176,7 @@ stock CreatePlayerTextDraws(playerid)
     PlayerTextDrawSetProportional(playerid,_vhudFlash[playerid], true);
     PlayerTextDrawSetShadow(playerid, _vhudFlash[playerid], 1);
 
-	_vhudTextFuel[playerid] = CreatePlayerTextDraw(playerid, 495.000000, 133.000000, "~b~Fuel: N/A");
+	_vhudTextFuel[playerid] = CreatePlayerTextDraw(playerid, 495.000000, 133.000000, "~b~Xang: N/A");
 	PlayerTextDrawBackgroundColor(playerid, _vhudTextFuel[playerid], 255);
 	PlayerTextDrawFont(playerid, _vhudTextFuel[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, _vhudTextFuel[playerid], 0.270000, 2.000000);
@@ -1192,7 +1192,7 @@ stock CreatePlayerTextDraws(playerid)
 	PlayerTextDrawSetOutline(playerid, _vhudTextSpeed[playerid], 1);
 	PlayerTextDrawSetProportional(playerid, _vhudTextSpeed[playerid], true);
 
-	_vhudSeatBelt[playerid] = CreatePlayerTextDraw(playerid, 555.000000, 150.000000, "~b~SB: ~r~OFF");
+	_vhudSeatBelt[playerid] = CreatePlayerTextDraw(playerid, 555.000000, 150.000000, "~b~SB: ~r~TAT");
 	PlayerTextDrawBackgroundColor(playerid, _vhudSeatBelt[playerid], 255);
 	PlayerTextDrawFont(playerid, _vhudSeatBelt[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, _vhudSeatBelt[playerid], 0.270000, 2.000000);
@@ -1200,7 +1200,7 @@ stock CreatePlayerTextDraws(playerid)
 	PlayerTextDrawSetOutline(playerid, _vhudSeatBelt[playerid], 1);
 	PlayerTextDrawSetProportional(playerid, _vhudSeatBelt[playerid], true);
 
-	_vhudLights[playerid] = CreatePlayerTextDraw(playerid, 495.000000, 150.000000, "~b~Lights: ~r~OFF");
+	_vhudLights[playerid] = CreatePlayerTextDraw(playerid, 495.000000, 150.000000, "~b~Den: ~r~TAT");
 	PlayerTextDrawBackgroundColor(playerid, _vhudLights[playerid], 255);
 	PlayerTextDrawFont(playerid, _vhudLights[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, _vhudLights[playerid], 0.270000, 2.000000);
@@ -1208,7 +1208,7 @@ stock CreatePlayerTextDraws(playerid)
 	PlayerTextDrawSetOutline(playerid, _vhudLights[playerid], 1);
 	PlayerTextDrawSetProportional(playerid, _vhudLights[playerid], true);
 	
-	_crTextTarget[playerid] = CreatePlayerTextDraw(playerid, 320.000000, 388.000000, "Target Vehicle: ~r~N/A");
+	_crTextTarget[playerid] = CreatePlayerTextDraw(playerid, 320.000000, 388.000000, "Xe muc tieu: ~r~N/A");
 	PlayerTextDrawAlignment(playerid, _crTextTarget[playerid], 2);
 	PlayerTextDrawBackgroundColor(playerid, _crTextTarget[playerid], 255);
 	PlayerTextDrawFont(playerid, _crTextTarget[playerid], 1);
@@ -1217,7 +1217,7 @@ stock CreatePlayerTextDraws(playerid)
 	PlayerTextDrawSetOutline(playerid, _crTextTarget[playerid], 1);
 	PlayerTextDrawSetProportional(playerid, _crTextTarget[playerid], true);
 
-	_crTextSpeed[playerid] = CreatePlayerTextDraw(playerid, 190.000000, 410.000000, "Speed: ~r~N/A");
+	_crTextSpeed[playerid] = CreatePlayerTextDraw(playerid, 190.000000, 410.000000, "Toc do: ~r~N/A");
 	PlayerTextDrawAlignment(playerid, _crTextSpeed[playerid], 1);
 	PlayerTextDrawBackgroundColor(playerid, _crTextSpeed[playerid], 255);
 	PlayerTextDrawFont(playerid, _crTextSpeed[playerid], 1);
@@ -1226,7 +1226,7 @@ stock CreatePlayerTextDraws(playerid)
 	PlayerTextDrawSetOutline(playerid, _crTextSpeed[playerid], 1);
 	PlayerTextDrawSetProportional(playerid, _crTextSpeed[playerid], true);
 	
-	_crTickets[playerid] = CreatePlayerTextDraw(playerid, 340.000000, 410.000000, "Tickets: ~r~N/A");
+	_crTickets[playerid] = CreatePlayerTextDraw(playerid, 340.000000, 410.000000, "Phat: ~r~N/A");
 	PlayerTextDrawAlignment(playerid, _crTickets[playerid], 1);
 	PlayerTextDrawBackgroundColor(playerid, _crTickets[playerid], 255);
 	PlayerTextDrawFont(playerid, _crTickets[playerid], 1);
@@ -1237,7 +1237,7 @@ stock CreatePlayerTextDraws(playerid)
 	
 	_vhudVisible[playerid] = 0;
 
-	HospTime[playerid] = CreatePlayerTextDraw(playerid,250.000000, 430.000000, "Time Left: ~r~60 ~w~seconds");
+	HospTime[playerid] = CreatePlayerTextDraw(playerid,250.000000, 430.000000, "Con lai: ~r~60 ~w~giay");
 	PlayerTextDrawBackgroundColor(playerid, HospTime[playerid], 255);
 	PlayerTextDrawFont(playerid, HospTime[playerid], 1);
 	PlayerTextDrawLetterSize(playerid, HospTime[playerid], 0.380000, 1.000000);
@@ -1265,7 +1265,7 @@ stock CreateAccountRestTextdraw(playerid)
 	PlayerTextDrawTextSize(playerid,AccountRestriction[playerid], 0.000000, 0.000000);
 	PlayerTextDrawSetSelectable(playerid,AccountRestriction[playerid], false);
 
-	AccountRestrictionEx[playerid] = CreatePlayerTextDraw(playerid,39.000000, 428.000000, "Your account is restricted, please contact a member of the RP Improvement Team.");
+	AccountRestrictionEx[playerid] = CreatePlayerTextDraw(playerid,39.000000, 428.000000, "Tai khoan cua ban bi han che, hay lien he thanh vien RP Improvement Team.");
 	PlayerTextDrawBackgroundColor(playerid,AccountRestrictionEx[playerid], 255);
 	PlayerTextDrawFont(playerid,AccountRestrictionEx[playerid], 2);
 	PlayerTextDrawLetterSize(playerid,AccountRestrictionEx[playerid], 0.300000, 2.000000);

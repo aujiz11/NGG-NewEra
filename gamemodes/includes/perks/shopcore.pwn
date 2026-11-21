@@ -42,7 +42,7 @@ CreateHouseSaleSign(houseid)
 	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hSignText])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hSignText]);
 	new string[64];
 	HouseInfo[houseid][hSignObj] = CreateDynamicObject(19471, HouseInfo[houseid][hSign][0], HouseInfo[houseid][hSign][1], HouseInfo[houseid][hSign][2], 0, 0, HouseInfo[houseid][hSign][3], HouseInfo[houseid][hExtVW], HouseInfo[houseid][hExtIW]);
-	format(string,sizeof(string),"ID: %d\nType /readsign to read the Owners Message.", houseid);
+	format(string,sizeof(string),"ID: %d\nDung /readsign de doc loi nhan cua chu nha.", houseid);
 	HouseInfo[houseid][hSignText] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, HouseInfo[houseid][hSign][0], HouseInfo[houseid][hSign][1], HouseInfo[houseid][hSign][2] + 0.5, 10.0, .worldid = HouseInfo[houseid][hExtVW], .streamdistance = 25.0);
 	return 1;
 }
@@ -79,9 +79,9 @@ public FuelCan(playerid, vehicleid, amount)
 	}
 	VehicleFuel[vehicleid] += float(amount);
 	if(VehicleFuel[vehicleid] > 100) VehicleFuel[vehicleid] = 100.0;
-	format(string, sizeof(string), "%s has used a fuel can to refill their vehicle.", GetPlayerNameEx(playerid));
+	format(string, sizeof(string), "%s dung Fuel Can de do xang cho xe.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	SendClientMessageEx(playerid, COLOR_WHITE, "You have used a fuel can to refill your vehicle.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Ban da dung Fuel Can de do xang cho xe.");
 	PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
 	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, false, false, false, false, 0, 1);
 	DeletePVar(playerid, "fuelcan");
@@ -103,9 +103,9 @@ public JumpStart(playerid, vehicleid)
 	GetVehicleParamsEx(vehicleid, engine,lights,alarm,doors,bonnet,boot,objective);
 	SetVehicleParamsEx(vehicleid, engine,lights,alarm,doors,VEHICLE_PARAMS_ON,boot,objective);
 	new string[128];
-	format(string, sizeof(string), "%s has jump started their vehicle.", GetPlayerNameEx(playerid));
+	format(string, sizeof(string), "%s da kich no xe.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	SendClientMessage(playerid, COLOR_WHITE, "Your vehicle has been Jump Started!");
+	SendClientMessage(playerid, COLOR_WHITE, "Xe cua ban da duoc kich no!");
 	PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
 	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, false, false, false, false, 0, 1);
 	format(string, sizeof(string), "[JUMPSTART] %s(%d) used a jump start. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][8]);
@@ -120,8 +120,8 @@ public EatBar(playerid)
 	PlayerInfo[playerid][mInventory][4]--;
 	PlayerInfo[playerid][mCooldown][4] = 60;
 	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, false, false, false, false, 0, 1);
-	SendClientMessageEx(playerid, -1, "You have consumed a energy bar, effects will last for 1 hour.");
-	SendClientMessageEx(playerid, -1, "Your health will decrease slower when in a injured state.");
+	SendClientMessageEx(playerid, -1, "Ban da dung Energy Bar, tac dung keo dai 1 gio.");
+	SendClientMessageEx(playerid, -1, "Mau cua ban se giam cham hon khi bi thuong.");
 	new string[128];
 	format(string, sizeof(string), "[ENERGYBAR] %s(%d) used a energy bar. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][4]);
 	Log("logs/micro.log", string);
@@ -165,11 +165,11 @@ forward TeleportToShop(playerid);
 public TeleportToShop(playerid)
 {
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "EventToken") == 1 || GetPVarInt(playerid, "IsInArena") || !GetPVarInt(playerid, "ShopTP"))
-		return DeletePVar(playerid, "ShopTP"), SendClientMessage(playerid, COLOR_GRAD2, "SERVER: Shop Teleportation has been cancelled.");
+		return DeletePVar(playerid, "ShopTP"), SendClientMessage(playerid, COLOR_GRAD2, "SERVER: Da huy dich chuyen den shop.");
 	if(gettime() - LastShot[playerid] < 30) {
 		TogglePlayerControllable(playerid, true);
 		DeletePVar(playerid, "ShopTP");
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You have been injured within the last 30 seconds, you will not be teleported to the shop.");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban bi thuong trong 30 giay qua, khong the dich chuyen den shop.");
 	}
 	if(GetPVarInt(playerid, "ShopTP") == 1)
 	{
@@ -177,8 +177,8 @@ public TeleportToShop(playerid)
 		SetPlayerInterior(playerid, 0);
 		SetPlayerVirtualWorld(playerid, 1);
 		TogglePlayerControllable(playerid, true);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "If you wish to leave the shop, type /leaveshop to return to your previous location.");
-		SendClientMessageEx(playerid, COLOR_ORANGE, "Note{ffffff}: You will {ff0000}not{ffffff} be able to return to your previous location upon purchasing a vehicle.");
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Dung /leaveshop de roi shop va quay ve vi tri cu.");
+		SendClientMessageEx(playerid, COLOR_ORANGE, "Chu y{ffffff}: Ban se {ff0000}khong{ffffff} the ve vi tri cu sau khi mua xe.");
 	}
 	return 1;
 }
@@ -190,9 +190,9 @@ CMD:shopplate(playerid, params[])
 		new iVehType, iVehIndex, iTargetOwner, carid, orderid, plate[32];
         if(sscanf(params, "dds[32]", carid, orderid, plate))
 		{
-		    SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shopplate [carid] [orderid] [plate/remove]");
-		    SendClientMessageEx(playerid, COLOR_GREY, "COLORS: (black/white/blue/red/green/purple/yellow/lightblue/navy/beige/darkgreen/darkblue/darkgrey/gold/brown/darkbrown/darkred");
-			SendClientMessageEx(playerid, COLOR_GREY, "/pink) USAGE: (red)Hi(white)how are you? NOTE: Each color counts for 8 characters");
+		    SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /shopplate [carid] [orderid] [plate/remove]");
+		    SendClientMessageEx(playerid, COLOR_GREY, "MAU: (black/white/blue/red/green/purple/yellow/lightblue/navy/beige/darkgreen/darkblue/darkgrey/gold/brown/darkbrown/darkred");
+			SendClientMessageEx(playerid, COLOR_GREY, "/pink) CACH DUNG: (red)Chao(white)ban! CHU Y: Moi mau chiem 8 ky tu");
 			return 1;
 		}
 
@@ -241,21 +241,21 @@ CMD:shopplate(playerid, params[])
 			SetVehiclePos(carid, X, Y, Z);
 			g_mysql_SaveVehicle(iTargetOwner, iVehIndex);
 
-			format(string, sizeof(string), "Plate set on %s (ID: %d) %s (ID: %d)", GetPlayerNameEx(iTargetOwner), iTargetOwner, GetVehicleName(carid), carid);
+			format(string, sizeof(string), "Da dat bien cho %s (ID: %d) %s (ID: %d)", GetPlayerNameEx(iTargetOwner), iTargetOwner, GetVehicleName(carid), carid);
 			SendClientMessage(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "(OrderID: %d) Plate: %s", orderid, plate);
+			format(string, sizeof(string), "(OrderID: %d) Bien so: %s", orderid, plate);
 			SendClientMessage(playerid, COLOR_WHITE, string);
 			format(string, sizeof(string), "%s set %s(%d) %s (Slot %d) plate to %s (order %d)", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetOwner), GetPlayerSQLId(iTargetOwner), GetVehicleName(carid), iVehIndex, plate, orderid);
 			Log("logs/shoplog.log", string);
 		}
 		else
 		{
-		    SendClientMessageEx(playerid, COLOR_GRAD1, "This is not a person owned vehicle, you cannot give it a custom plate.");
+		    SendClientMessageEx(playerid, COLOR_GRAD1, "Day khong phai xe ca nhan, khong the cap bien so rieng.");
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -267,17 +267,17 @@ CMD:shopcredits(playerid, params[])
 		new szMessage[128], player, amount, invid;
 
 		if(sscanf(params, "udd", player, amount, invid))
-			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givecredits [player] [amount] [invoiceid]");
+			return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /givecredits [player] [amount] [invoiceid]");
 
 		if(!IsPlayerConnected(player))
-		    return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+		    return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 
-		if(!(1 < amount < 2401)) return SendClientMessageEx(playerid, COLOR_GREY, "You can only go low as 1 and maximum is 2400 credits!");
-		if(PlayerInfo[player][pAdmin] > 2) return SendClientMessageEx(playerid, COLOR_GREY, "You can only issue Credits onto roleplay accounts only!");
+		if(!(1 < amount < 2401)) return SendClientMessageEx(playerid, COLOR_GREY, "Chi duoc cap tu 1 den 2400 credits!");
+		if(PlayerInfo[player][pAdmin] > 2) return SendClientMessageEx(playerid, COLOR_GREY, "Chi duoc cap Credits cho tai khoan roleplay!");
 
 		if(amount > 999)
 		{
-			format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s issued %s %s credits. (Invoice ID: %d)", GetPlayerNameEx(playerid), GetPlayerNameEx(player), invid);
+			format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s cap %s %s credits. (Invoice ID: %d)", GetPlayerNameEx(playerid), GetPlayerNameEx(player), invid);
 			ABroadCast(COLOR_YELLOW, szMessage, 2);
 		}
 
@@ -287,14 +287,14 @@ CMD:shopcredits(playerid, params[])
 		mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "ii", SENDDATA_THREAD, player);
 		print(szMessage);
 
-        SendClientMessageEx(player, COLOR_LIGHTBLUE, "* %s has given you %s credits (New total: %s)", GetPlayerNameEx(playerid), number_format(amount), number_format(PlayerInfo[player][pCredits]));
+        SendClientMessageEx(player, COLOR_LIGHTBLUE, "* %s cap cho ban %s credits (Tong moi: %s)", GetPlayerNameEx(playerid), number_format(amount), number_format(PlayerInfo[player][pCredits]));
 
 		format(szMessage, sizeof(szMessage), "%s has given %s %s credits. [TC: %s] (Invoice ID: %d)", GetPlayerNameEx(playerid), GetPlayerNameEx(player), number_format(amount), number_format(PlayerInfo[player][pCredits]), invid);
 		Log("logs/shoplog.log", szMessage), print(szMessage);
 
-		SendClientMessageEx(playerid, COLOR_CYAN, "You have given %s %s credits. (Invoice ID: %d)", GetPlayerNameEx(player), number_format(amount), invid);
+		SendClientMessageEx(playerid, COLOR_CYAN, "Da cap cho %s %s credits. (Invoice ID: %d)", GetPlayerNameEx(player), number_format(amount), invid);
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, " You are not allowed to use this command."); 
+	else SendClientMessageEx(playerid, COLOR_GREY, " Ban khong co quyen dung lenh nay."); 
 	return 1;
 }
 
@@ -308,25 +308,25 @@ CMD:shopcar(playerid, params[]) {
 			iModelID;
 
 		if(sscanf(params, "uiiis[32]", iTargetID, iModelID, iColors[0], iColors[1], szInvoice)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shopcar [player] [model] [color 1] [color 2] [invoice #]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /shopcar [player] [model] [color 1] [color 2] [invoice #]");
 		}
 		else if(!(400 <= iModelID <= 611)) {
-			SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid model specified (model IDs start at 400, and end at 611).");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Model khong hop le (ID tu 400 den 611).");
 		}
 		else if(IsATrain(iModelID)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "Trains cannot be spawned during runtime.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Khong the tao tau khi may chu dang chay.");
 		}
 		else if(IsRestrictedVehicle(iModelID)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "You cannot issue restricted vehicles!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Khong the cap xe bi han che!");
 		}
 		else if(!(0 <= iColors[0] <= 255 && 0 <= iColors[1] <= 255)) {
-			SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Mau khong hop le (ID tu 0 den 255).");
 		}
 		else if(!vehicleCountCheck(iTargetID)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "That person can't have more vehicles - they own too many.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co qua nhieu xe, khong the nhan them.");
 		}
 		else if(!vehicleSpawnCountCheck(iTargetID)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "That person has too many vehicles spawned - they must store one first.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da tao qua nhieu xe, phai cat bot truoc.");
 		}
 		else {
 			new vehicleName[18];
@@ -340,13 +340,13 @@ CMD:shopcar(playerid, params[]) {
 			CreatePlayerVehicle(iTargetID, GetPlayerFreeVehicleId(iTargetID), iModelID, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2], arr_fPlayerPos[3], iColors[0], iColors[1], 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 
 			strunpack(vehicleName, VehicleName[iModelID - 400], sizeof(vehicleName));
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully created a %s for %s (invoice %s).", vehicleName, GetPlayerNameEx(iTargetID), szInvoice);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da tao %s cho %s (invoice %s).", vehicleName, GetPlayerNameEx(iTargetID), szInvoice);
 
 			format(szMessage, sizeof(szMessage), "%s created a %s (%i) for %s(%d) (invoice %s).", GetPlayerNameEx(playerid), vehicleName, iModelID, GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), szInvoice);
 			Log("logs/shoplog.log", szMessage);
 		}
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, " You are not allowed to use this command.");
+	else SendClientMessageEx(playerid, COLOR_GREY, " Ban khong co quyen dung lenh nay.");
     return 1;
 }
 
@@ -355,18 +355,18 @@ CMD:shopcardel(playerid, params[])
 	if(PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new string[128], invoicenum[32], giveplayerid, vehicleid;
-		if(sscanf(params, "uds[32]", giveplayerid, vehicleid, invoicenum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shopcardel [player] [vehicleid] [invoice #]");
+		if(sscanf(params, "uds[32]", giveplayerid, vehicleid, invoicenum)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /shopcardel [player] [vehicleid] [invoice #]");
 
 		new playervehicleid = GetPlayerVehicle(giveplayerid, vehicleid);
-		if(playervehicleid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "ERROR: That person doesn't own that vehicle.");
+		if(playervehicleid == -1) return SendClientMessageEx(playerid, COLOR_GREY, "LOI: Nguoi do khong so huu xe nay.");
 
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted %s's %s (vehicle ID %d).", GetPlayerNameEx(giveplayerid), GetVehicleName(vehicleid), vehicleid);
-		SendClientMessageEx(giveplayerid, COLOR_GREY, "An Administrator has deleted your %s.", GetVehicleName(vehicleid));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa xe cua %s: %s (ID xe %d).", GetPlayerNameEx(giveplayerid), GetVehicleName(vehicleid), vehicleid);
+		SendClientMessageEx(giveplayerid, COLOR_GREY, "Administrator da xoa %s cua ban.", GetVehicleName(vehicleid));
 		format(string, sizeof(string), "[SHOPCARDEL] %s deleted vehicle ID %d - Invoice %s for %s(%d)", GetPlayerNameEx(playerid), playervehicleid, invoicenum, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 		Log("logs/shoplog.log", string);
 		DestroyPlayerVehicle(giveplayerid, playervehicleid);
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You are not allowed to use this command.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Ban khong duoc dung lenh nay.");
 	return 1;
 }
 
@@ -377,14 +377,14 @@ CMD:setstpay(playerid, params[])
 	    new string[128];
 		if(sscanf(params, "f", ShopTechPay))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Usage: /setstpay [value]");
-			SendClientMessageEx(playerid, COLOR_WHITE, "Current Pay: $%.2f", ShopTechPay);
+			SendClientMessageEx(playerid, COLOR_GREY, "Cach dung: /setstpay [value]");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Luong hien tai: $%.2f", ShopTechPay);
 			return 1;
 		}
 		mysql_format(MainPipeline, string, sizeof(string), "UPDATE `misc` SET `ShopTechPay` = '%.2f'", ShopTechPay);
 		mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-        SendClientMessageEx(playerid, COLOR_WHITE, "Shop Tech Pay set to $%.2f", ShopTechPay);
+        SendClientMessageEx(playerid, COLOR_WHITE, "Da dat luong Shop Tech thanh $%.2f", ShopTechPay);
 	}
 	return 1;
 }
@@ -396,14 +396,14 @@ CMD:resetstpay(playerid, params[])
 	    if(GetPVarInt(playerid, "resetstpay"))
 	    {
 	        mysql_tquery(MainPipeline, "UPDATE `shoptech` SET `total` = 0, dtotal = 0", "OnQueryFinish", "i", SENDDATA_THREAD);
-            SendClientMessage(playerid, COLOR_WHITE, "Shop Tech Payments Reset");
+            SendClientMessage(playerid, COLOR_WHITE, "Da dat lai thanh toan Shop Tech");
 	        DeletePVar(playerid, "resetstpay");
 		}
 		else
 		{
-		    SendClientMessage(playerid, COLOR_WHITE, "WARNING: This command will reset the shop tech payment counters");
-		    SendClientMessage(playerid, COLOR_WHITE, "This action cannot be undone, ARE YOU SURE YOU WISH TO CONTINUE?");
-		    SendClientMessage(playerid, COLOR_WHITE, "Type this command again to proceed");
+		    SendClientMessage(playerid, COLOR_WHITE, "CANH BAO: Lenh nay dat lai bo dem thanh toan Shop Tech");
+		    SendClientMessage(playerid, COLOR_WHITE, "Khong the hoan tac, BAN CHAC MUON TIEP TUC?");
+		    SendClientMessage(playerid, COLOR_WHITE, "Nhap lai lenh nay de tiep tuc");
 		    SetPVarInt(playerid, "resetstpay", 1);
 		}
 	}
@@ -413,33 +413,33 @@ CMD:resetstpay(playerid, params[])
 CMD:changeuserpin(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pShopTech] < 2)
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	new name[MAX_PLAYER_NAME], pin[64];
-	if(sscanf(params, "s[24]s[64]", name, pin)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /changeuserpin [player name] [new pin]");
-	if(isnull(pin) || strlen(pin) > 4 || !IsNumericString(pin)) return SendClientMessageEx(playerid, COLOR_GREY, "The pin must be numbers, and must have 4 digits.");
+	if(sscanf(params, "s[24]s[64]", name, pin)) return SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /changeuserpin [player name] [new pin]");
+	if(isnull(pin) || strlen(pin) > 4 || !IsNumericString(pin)) return SendClientMessageEx(playerid, COLOR_GREY, "PIN phai la so va co 4 chu so.");
 	new request = Password_Begin(playerid);
 	if(!request) return 0;
 	SetPVarString(playerid, "OnChangeUserPassword", name);
 	if(!bcrypt_hash(playerid, "OnAdminCredentialHashed", pin, BCRYPT_COST, "iiii", g_arrQueryHandle[playerid], request, GetPlayerSQLId(playerid), 1)) {
 		gPasswordPending[playerid] = false;
-		return SendClientMessageEx(playerid, COLOR_RED, "Unable to process your PIN reset."), 0;
+		return SendClientMessageEx(playerid, COLOR_RED, "Khong the dat lai PIN cua ban."), 0;
 	}
-	return SendClientMessageEx(playerid, COLOR_YELLOW, "Processing the PIN reset...");
+	return SendClientMessageEx(playerid, COLOR_YELLOW, "Dang dat lai PIN...");
 }
 
 CMD:changeuserpassword(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	new name[MAX_PLAYER_NAME], password[65];
-	if(sscanf(params, "s[24]s[65]", name, password)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /changeuserpassword [player name] [new password]");
+	if(sscanf(params, "s[24]s[65]", name, password)) return SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /changeuserpassword [player name] [new password]");
 	new request = Password_Begin(playerid);
 	if(!request) return 0;
 	SetPVarString(playerid, "OnChangeUserPassword", name);
 	if(!bcrypt_hash(playerid, "OnAdminCredentialHashed", password, BCRYPT_COST, "iiii", g_arrQueryHandle[playerid], request, GetPlayerSQLId(playerid), 0)) {
 		gPasswordPending[playerid] = false;
-		return SendClientMessageEx(playerid, COLOR_RED, "Unable to process your password reset."), 0;
+		return SendClientMessageEx(playerid, COLOR_RED, "Khong the dat lai mat khau cua ban."), 0;
 	}
-	return SendClientMessageEx(playerid, COLOR_YELLOW, "Processing the password reset...");
+	return SendClientMessageEx(playerid, COLOR_YELLOW, "Dang dat lai mat khau...");
 }
 
 CMD:orders(playerid, params[])
@@ -447,7 +447,7 @@ CMD:orders(playerid, params[])
 	if(PlayerInfo[playerid][pShopTech] > 0 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
  		new string[128];
-        SendClientMessageEx(playerid, COLOR_GREEN, "____________________ SHOP ORDERS _____________________");
+        SendClientMessageEx(playerid, COLOR_GREEN, "____________________ DON HANG SHOP _____________________");
 		foreach(new i: Player)
 		{
 			if(PlayerInfo[i][pOrder] > 0 && OrderAssignedTo[i] == INVALID_PLAYER_ID)
@@ -458,9 +458,9 @@ CMD:orders(playerid, params[])
 				new orderid = PlayerInfo[i][pOrder];
 
 				if(PlayerInfo[i][pOrderConfirmed]) {
-					format(string, sizeof(string), "%s(%d) | Order ID: %d (Confirmed) | IP: %s | Assigned to: Nobody", GetPlayerNameEx(i), i, orderid, playerip);
+					format(string, sizeof(string), "%s(%d) | Order ID: %d (Hop le) | IP: %s | Giao: Chua co", GetPlayerNameEx(i), i, orderid, playerip);
 				} else {
-					format(string, sizeof(string), "%s(%d) | Order ID: %d (Invalid) | IP: %s | Assigned to: Nobody", GetPlayerNameEx(i), i, orderid, playerip);
+					format(string, sizeof(string), "%s(%d) | Order ID: %d (Loi) | IP: %s | Giao: Chua co", GetPlayerNameEx(i), i, orderid, playerip);
 				}
 				SendClientMessageEx(playerid, COLOR_SHOP, string);
 			}
@@ -472,17 +472,17 @@ CMD:orders(playerid, params[])
 				new orderid = PlayerInfo[i][pOrder];
 
 				if(PlayerInfo[i][pOrderConfirmed]) {
-					format(string, sizeof(string), "%s(%d) | Order ID: %d (Confirmed) | IP: %s | Assigned to: %s", GetPlayerNameEx(i), i, orderid, playerip, GetPlayerNameEx(OrderAssignedTo[i]));
+					format(string, sizeof(string), "%s(%d) | Order ID: %d (Da xac nhan) | IP: %s | Phan cong: %s", GetPlayerNameEx(i), i, orderid, playerip, GetPlayerNameEx(OrderAssignedTo[i]));
 				} else {
-					format(string, sizeof(string), "%s(%d) | Order ID: %d (Invalid) | IP: %s | Assigned to: %s", GetPlayerNameEx(i), i, orderid, playerip, GetPlayerNameEx(OrderAssignedTo[i]));
+					format(string, sizeof(string), "%s(%d) | Order ID: %d (Loi) | IP: %s | Giao: %s", GetPlayerNameEx(i), i, orderid, playerip, GetPlayerNameEx(OrderAssignedTo[i]));
 				}
 				SendClientMessageEx(playerid, COLOR_SHOP, string);
 			}
 		}	
-  		SendClientMessageEx(playerid, COLOR_WHITE, "Use /givemeorder /processorder /denyorder");
+  		SendClientMessageEx(playerid, COLOR_WHITE, "Dung /givemeorder /processorder /denyorder");
         SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________________");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -493,7 +493,7 @@ CMD:givemeorder(playerid, params[])
 		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givemeorder [player]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /givemeorder [player]");
 			return 1;
 		}
 
@@ -509,27 +509,27 @@ CMD:givemeorder(playerid, params[])
 			        }
 			        else
 			        {
-					    SendClientMessageEx(playerid, COLOR_WHITE, "That order ID has already been assigned to another admin!");
-					    SendClientMessageEx(playerid, COLOR_WHITE, "If you are sure you wish to take the order anyway, type this command again.");
+					    SendClientMessageEx(playerid, COLOR_WHITE, "Don do da duoc phan cho admin khac!");
+					    SendClientMessageEx(playerid, COLOR_WHITE, "Neu van muon nhan don, hay nhap lai lenh nay.");
 					    SetPVarInt(playerid, "OrderAssignedTo", giveplayerid);
 				        return 1;
 					}
 			    }
 		    	new string[128];
 		    	new orderid = PlayerInfo[giveplayerid][pOrder];
-				format(string, sizeof(string), "AdmCmd: %s assigned himself to shop order ID %d from %s (ID: %d).", GetPlayerNameEx(playerid), orderid, GetPlayerNameEx(giveplayerid), giveplayerid);
+				format(string, sizeof(string), "AdmCmd: %s tu nhan don shop ID %d cua %s (ID: %d).", GetPlayerNameEx(playerid), orderid, GetPlayerNameEx(giveplayerid), giveplayerid);
 				ShopTechBroadCast(COLOR_ORANGE, string);
 
-				SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s is now reviewing your shop order ID %d.", GetPlayerNameEx(playerid), orderid);
+				SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s dang xem xet don shop ID %d cua ban.", GetPlayerNameEx(playerid), orderid);
 
 				OrderAssignedTo[giveplayerid] = playerid;
 			}
-			else SendClientMessageEx(playerid, COLOR_GREY, "That person does not have any shop orders pending!");
+			else SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong co don shop cho xu ly!");
 		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+		else SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -556,7 +556,7 @@ CMD:processorder(playerid, params[])
 		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /processorder [player]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /processorder [player]");
 			return 1;
 		}
 
@@ -564,17 +564,17 @@ CMD:processorder(playerid, params[])
 		{
 			if(OrderAssignedTo[giveplayerid] != playerid)
 		    {
-		        SendClientMessageEx(playerid, COLOR_WHITE, "You must be assigned to that order ID to process it, use /givemeorder");
+		        SendClientMessageEx(playerid, COLOR_WHITE, "Phai duoc phan don de xu ly, dung /givemeorder");
 		        return 1;
 		    }
 			if(PlayerInfo[giveplayerid][pOrder] > 0)
 			{
 		    	new string[128];
 		    	new orderid = PlayerInfo[giveplayerid][pOrder];
-				format(string, sizeof(string), "AdmCmd: %s has processed shop order ID %d from %s (ID: %d).", GetPlayerNameEx(playerid), orderid, GetPlayerNameEx(giveplayerid), giveplayerid);
+				format(string, sizeof(string), "AdmCmd: %s da xu ly don shop ID %d cua %s (ID: %d).", GetPlayerNameEx(playerid), orderid, GetPlayerNameEx(giveplayerid), giveplayerid);
 				ShopTechBroadCast(COLOR_ORANGE, string);
 
-				format(string, sizeof(string), "%s has processed your shop order ID %d.", GetPlayerNameEx(playerid), orderid);
+				format(string, sizeof(string), "%s da xu ly don shop ID %d cua ban.", GetPlayerNameEx(playerid), orderid);
 				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
 
 				new playerip[32], giveplayerip[32];
@@ -597,12 +597,12 @@ CMD:processorder(playerid, params[])
 				PlayerInfo[giveplayerid][pOrderConfirmed] = 0;
 				OrderAssignedTo[giveplayerid] = INVALID_PLAYER_ID;
 			}
-			else SendClientMessageEx(playerid, COLOR_GREY, "That person does not have any shop orders pending!");
+			else SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong co don shop cho xu ly!");
 		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+		else SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -613,7 +613,7 @@ CMD:denyorder(playerid, params[])
 		new giveplayerid, reason[64];
 		if(sscanf(params, "us[64]", giveplayerid, reason))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /denyorder [player] [reason]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /denyorder [player] [reason]");
 			return 1;
 		}
 
@@ -621,17 +621,17 @@ CMD:denyorder(playerid, params[])
 		{
 			if(OrderAssignedTo[giveplayerid] != playerid)
 		    {
-		        SendClientMessageEx(playerid, COLOR_WHITE, "You must be assigned to that order ID to deny it, use /givemeorder");
+		        SendClientMessageEx(playerid, COLOR_WHITE, "Phai duoc phan don de tu choi, dung /givemeorder");
 		        return 1;
 		    }
 			if(PlayerInfo[giveplayerid][pOrder] > 0)
 			{
 		    	new string[128];
 		    	new orderid = PlayerInfo[giveplayerid][pOrder];
-				format(string, sizeof(string), "AdmCmd: %s has denied shop order ID %d from %s (ID: %d), reason: %s", GetPlayerNameEx(playerid), orderid, GetPlayerNameEx(giveplayerid), giveplayerid, reason);
+				format(string, sizeof(string), "AdmCmd: %s da tu choi don shop ID %d cua %s (ID: %d), ly do: %s", GetPlayerNameEx(playerid), orderid, GetPlayerNameEx(giveplayerid), giveplayerid, reason);
 				ShopTechBroadCast(COLOR_ORANGE, string);
 
-				SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has denied your shop order ID %d, reason: %s", GetPlayerNameEx(playerid), orderid, reason);
+				SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s da tu choi don shop ID %d cua ban, ly do: %s", GetPlayerNameEx(playerid), orderid, reason);
 
 				new playerip[32], giveplayerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
@@ -643,11 +643,11 @@ CMD:denyorder(playerid, params[])
 				PlayerInfo[giveplayerid][pOrder] = 0;
 				OrderAssignedTo[giveplayerid] = INVALID_PLAYER_ID;
 			}
-			else SendClientMessageEx(playerid, COLOR_GREY, "That person does not have any shop orders pending!");
+			else SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong co don shop cho xu ly!");
 		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+		else SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -656,15 +656,15 @@ CMD:shoporder(playerid, params[])
 	if(PlayerInfo[playerid][pOrder] != 0)
 	{
 	    new orderid = PlayerInfo[playerid][pOrder];
-		SendClientMessageEx(playerid, COLOR_WHITE, "You already have shop order ID %d pending, if you wish to cancel that type /cancelorder", orderid);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban dang cho don shop ID %d, dung /cancelorder neu muon huy", orderid);
 	    return 1;
 	}
 	if (GetPVarInt(playerid, "ShopOrderTimer") > 0)
 	{
-		SendClientMessageEx(playerid,COLOR_GREY, "You must wait %d seconds before submitting another shop order.", GetPVarInt(playerid, "ShopOrderTimer"));
+		SendClientMessageEx(playerid,COLOR_GREY, "Hay cho %d giay de gui don shop tiep.", GetPVarInt(playerid, "ShopOrderTimer"));
 		return 1;
 	}
-	ShowPlayerDialogEx(playerid, DIALOG_SHOPORDER, DIALOG_STYLE_INPUT, "Shop Order", "This is for shop orders from http://shop.ng-gaming.net\n\nIf you do not have a shop order then please cancel this dialog box now.\n\nWarning: Abuse of this feature may result to an indefinite block from this command.\n\nPlease enter your shop order ID (if you do not know it put 1):", "Submit", "Cancel" );
+	ShowPlayerDialogEx(playerid, DIALOG_SHOPORDER, DIALOG_STYLE_INPUT, "Don hang cua hang", "Danh cho don hang tu http://shop.ng-gaming.net\n\nNeu khong co don hang, hay huy hop thoai nay.\n\nCanh bao: Lam dung co the bi cam dung lenh vo thoi han.\n\nNhap ID don shop (neu khong biet, nhap 1):", "Gui", "Huy" );
 	return 1;
 }
 
@@ -679,13 +679,13 @@ CMD:cancelorder(playerid, params[])
 		format(string, sizeof(string), "%s(%d) (IP: %s) canceled their shop order (ID %i).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, orderid);
 		Log("logs/shoporders.log", string);
 
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have canceled your shop order (ID %i). If you wish to submit another order, type /shoporder.", orderid);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da huy don shop (ID %i). Dung /shoporder de gui don moi.", orderid);
 		PlayerInfo[playerid][pOrder] = 0;
 		OrderAssignedTo[playerid] = INVALID_PLAYER_ID;
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_WHITE, "You do not have any shop orders pending!");
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong co don shop cho xu ly!");
 	}
 	return 1;
 }
@@ -694,12 +694,12 @@ CMD:useexp(playerid, params[])
 {
     if (PlayerInfo[playerid][pEXPToken] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, " You do not have any Double EXP tokens!");
+		SendClientMessageEx(playerid, COLOR_GREY, " Ban khong co Double EXP tokens!");
 		return 1;
 	}
     PlayerInfo[playerid][pDoubleEXP] += 8;
     PlayerInfo[playerid][pEXPToken]--;
-	SendClientMessageEx(playerid, COLOR_YELLOW, "You have used a Double EXP Token! You now have a total of %d of Double EXP hours!", PlayerInfo[playerid][pDoubleEXP]);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Ban da dung Double EXP Token! Hien co tong %d gio Double EXP!", PlayerInfo[playerid][pDoubleEXP]);
     return 1;
 }
 
@@ -707,16 +707,16 @@ CMD:shopexp(playerid, params[])
 {
 	if (PlayerInfo[playerid][pShopTech] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, " You are not allowed to use this command.");
+		SendClientMessageEx(playerid, COLOR_GREY, " Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new string[128], giveplayerid, amount, invoice[32];
-	if(sscanf(params, "uds[32]", giveplayerid, amount, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shopexp [player] [tokens] [invoice #]");
+	if(sscanf(params, "uds[32]", giveplayerid, amount, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /shopexp [player] [tokens] [invoice #]");
 
 	PlayerInfo[giveplayerid][pEXPToken] += amount;
 
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have received %d Double EXP Token(s) from Shop Tech %s.", amount, GetPlayerNameEx(playerid));
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Ban nhan %d Double EXP Token(s) tu Shop Tech %s.", amount, GetPlayerNameEx(playerid));
 	format(string, sizeof(string), "[SHOPEXP] %s given %s(%d), %d Double EXP Token(s) - Invoice %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount, invoice);
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	Log("logs/shoplog.log", string);
@@ -727,16 +727,16 @@ CMD:shoptokens(playerid, params[])
 {
 	if (PlayerInfo[playerid][pShopTech] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, " You are not allowed to use this command.");
+		SendClientMessageEx(playerid, COLOR_GREY, " Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new string[128], giveplayerid, amount, invoice[32];
-	if(sscanf(params, "uds[32]", giveplayerid, amount, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shoptokens [player] [amount] [invoice #]");
+	if(sscanf(params, "uds[32]", giveplayerid, amount, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /shoptokens [player] [amount] [invoice #]");
 
 	PlayerInfo[giveplayerid][pPaintTokens] += amount;
 
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have received %d Paintball Tokens from Shop Tech %s.", amount, GetPlayerNameEx(playerid));
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Ban nhan %d Paintball Tokens tu Shop Tech %s.", amount, GetPlayerNameEx(playerid));
 	format(string, sizeof(string), "[SHOPTOKENS] %s given %s(%d), %d Paintball Tokens - Invoice %s for %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount, invoice, GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	Log("logs/shoplog.log", string);
@@ -747,16 +747,16 @@ CMD:shopviptokens(playerid, params[])
 {
 	if (PlayerInfo[playerid][pShopTech] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, " You are not allowed to use this command.");
+		SendClientMessageEx(playerid, COLOR_GREY, " Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new string[128], giveplayerid, amount, invoice[32];
-	if(sscanf(params, "uds[32]", giveplayerid, amount, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shopviptokens [player] [amount] [invoice #]");
+	if(sscanf(params, "uds[32]", giveplayerid, amount, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /shopviptokens [player] [amount] [invoice #]");
 
 	PlayerInfo[giveplayerid][pTokens] += amount;
 
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have received %d VIP Tokens from Shop Tech %s.", amount, GetPlayerNameEx(playerid));
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Ban nhan %d VIP Tokens tu Shop Tech %s.", amount, GetPlayerNameEx(playerid));
 	format(string, sizeof(string), "[SHOPTOKENS] %s given %s(%d), %d VIP Tokens - Invoice %s for %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount, invoice, GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	Log("logs/shoplog.log", string);
@@ -767,16 +767,16 @@ CMD:shopfirework(playerid, params[])
 {
 	if (PlayerInfo[playerid][pShopTech] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, " You are not allowed to use this command.");
+		SendClientMessageEx(playerid, COLOR_GREY, " Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new string[128], giveplayerid, amount, invoice[32];
-	if(sscanf(params, "uds[32]", giveplayerid, amount, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shopfirework [player] [amount] [invoice #]");
+	if(sscanf(params, "uds[32]", giveplayerid, amount, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /shopfirework [player] [amount] [invoice #]");
 
 	PlayerInfo[giveplayerid][pFirework] += amount;
 
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have received %d Fireworks from Shop Tech %s. ", amount, GetPlayerNameEx(playerid));
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Ban nhan %d Fireworks tu Shop Tech %s. ", amount, GetPlayerNameEx(playerid));
 	format(string, sizeof(string), "[SHOPFIREWORK] %s given %s(%d) %d Firework(s) - Invoice %s for %s. ", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount, invoice, GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	Log("logs/shoplog.log", string);
@@ -786,7 +786,7 @@ CMD:shopfirework(playerid, params[])
 CMD:miscshop(playerid, params[])
 {
     if(ShopClosed == 1)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "The shop is currently closed.");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Cua hang hien da dong.");
 
 	if (IsAt247(playerid) || IsPlayerInRangeOfPoint(playerid, 4.0, 2939.8442, -1411.2906, 11.0000) && GetPlayerVirtualWorld(playerid) == 1)
 	{
@@ -796,9 +796,9 @@ CMD:miscshop(playerid, params[])
 			format(szDialog, sizeof(szDialog), "Poker Table (Credits: {FFD700}%s{A9C4E4})\nBoombox (Credits: {FFD700}%s{A9C4E4})\n100 Paintball Tokens (Credits: {FFD700}%s{A9C4E4})\nEXP Token (Credits: {FFD700}%s{A9C4E4})\nFireworks x5 (Credits: {FFD700}%s{A9C4E4})\nCustom License Plate (Credits: {FFD700}%s{A9C4E4})",
 			number_format(ShopItems[6][sItemPrice]), number_format(ShopItems[7][sItemPrice]), number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[9][sItemPrice]), 
 			number_format(ShopItems[10][sItemPrice]), number_format(ShopItems[22][sItemPrice]));
-			format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (NEW) (Credits: {FFD700}%s{A9C4E4})\nRestricted Last Name (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (NEW) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})\nBackpacks\nDeluxe Car Alarm (Credits: {FFD700}%s{A9C4E4})", 
+			format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (MOI) (Credits: {FFD700}%s{A9C4E4})\nRestricted Last Name (DOI) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (MOI) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (DOI) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})\nBackpacks\nDeluxe Car Alarm (Credits: {FFD700}%s{A9C4E4})", 
 			szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]), number_format(ShopItems[35][sItemPrice]), number_format(ShopItems[39][sItemPrice]));
-			ShowPlayerDialogEx(playerid, DIALOG_MISCSHOP, DIALOG_STYLE_LIST, "Misc Shop", szDialog, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_MISCSHOP, DIALOG_STYLE_LIST, "Misc Shop", szDialog, "Chon", "Huy");
 		}
 		else
 		{
@@ -808,7 +808,7 @@ CMD:miscshop(playerid, params[])
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GREY, "You aren't at a 24/7.");
+	    SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o tai 24/7.");
 	}
 	return 1;
 }
@@ -823,7 +823,7 @@ CMD:credits(playerid, params[])
 	{
 	    new Player;
 	    if(sscanf(params, "u", Player))
-			return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /credits [Player]");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Cach dung: /credits [Player]");
 
 
 		SendClientMessageEx(playerid, COLOR_CYAN, "%s - Credits: {FFD700}%s",GetPlayerNameEx(Player), number_format(PlayerInfo[Player][pCredits]));
@@ -841,19 +841,19 @@ CMD:shopstats(playerid, params[])
 }
  
 CMD:shophelp(playerid, params[]) {
-    return ShowPlayerDialogEx(playerid, DIALOG_SHOPHELPMENU, DIALOG_STYLE_LIST, "Which shop do you want to learn more about?","VIP Shop\nHouse Shop\nBusiness Shop\nToy Shop\nMiscellaneous Shop\nCar Shop\nPlane Shop\nBoat Shop", "Select", "Exit");
+    return ShowPlayerDialogEx(playerid, DIALOG_SHOPHELPMENU, DIALOG_STYLE_LIST, "Ban muon tim hieu shop nao?","VIP Shop\nHouse Shop\nBusiness Shop\nToy Shop\nMiscellaneous Shop\nCar Shop\nPlane Shop\nBoat Shop", "Chon", "Thoat");
 }
 
 CMD:nggshop(playerid, params[]) {
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "EventToken") == 1 || GetPVarInt(playerid, "IsInArena"))
-		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do this at this time!");
-	if(PlayerInfo[playerid][pWantedLevel] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently wanted, you cannot use this commmand.");
-	if(gettime() - LastShot[playerid] < 60) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have been shot within the last 60 seconds, you cannot use this command.");
-	if(IsPlayerInDynamicArea(playerid, NGGShop)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are already at NGG's Shop");
-	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this while being inside a vehicle.");
-	if(GetPVarInt(playerid, "ShopTP") == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have already requested a Teleport to the NGG Shop.");
+		return SendClientMessage(playerid, COLOR_GRAD2, "Ban chua the lam vay!");
+	if(PlayerInfo[playerid][pWantedLevel] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban dang bi truy na, khong the dung lenh nay.");
+	if(gettime() - LastShot[playerid] < 60) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban bi ban trong 60 giay qua, khong the dung lenh nay.");
+	if(IsPlayerInDynamicArea(playerid, NGGShop)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da o NGG's Shop");
+	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the lam vay khi dang trong xe.");
+	if(GetPVarInt(playerid, "ShopTP") == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da yeu cau dich chuyen den NGG Shop.");
 	
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have requested a Teleport to the NGG Shop, please wait 30 seconds..");
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da yeu cau dich chuyen den NGG Shop, hay cho 30 giay..");
 	SetTimerEx("TeleportToShop", 30000, false, "i", playerid);
 	TogglePlayerControllable(playerid, false);
 	SetPVarInt(playerid, "ShopTP", 1);
@@ -873,8 +873,8 @@ CMD:leaveshop(playerid, params[]) {
 	{
 		DeletePVar(playerid, "ShopTP");
 		if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0 || IsPlayerInAnyVehicle(playerid))
-			return SendClientMessage(playerid, COLOR_GRAD2, "You can't do this at this time!.");
-		if(gettime() - LastShot[playerid] < 60) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have been injured within the last 60 seconds, you will not be teleported to your previous location.");
+			return SendClientMessage(playerid, COLOR_GRAD2, "Ban chua the lam vay!.");
+		if(gettime() - LastShot[playerid] < 60) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban bi thuong trong 60 giay qua, khong the quay ve vi tri cu.");
 		Player_StreamPrep(playerid, GetPVarFloat(playerid, "tmpX"), GetPVarFloat(playerid, "tmpY"), GetPVarFloat(playerid, "tmpZ"), 2500);
 		PlayerInfo[playerid][pVW] = GetPVarInt(playerid, "tmpVW");
 		SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pVW]);
@@ -888,16 +888,16 @@ CMD:buygiftreset(playerid, params[]) {
 	if(IsPlayerInRangeOfPoint(playerid, 4.0, 2937.2878, -1357.2294, 10.8503))
 	{
 		new string[128];
-		format(string, sizeof(string),"Item: Reset Gift Timer\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[17][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[17][sItemPrice]));
-		return ShowPlayerDialogEx( playerid, DIALOG_SHOPGIFTRESET, DIALOG_STYLE_MSGBOX, "Reset Gift Timer", string, "Purchase", "Exit" );
+		format(string, sizeof(string),"Vat pham: Reset Gift Timer\nCredits: %s\nGia: {FFD700}%s{A9C4E4}\nCon lai: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[17][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[17][sItemPrice]));
+		return ShowPlayerDialogEx( playerid, DIALOG_SHOPGIFTRESET, DIALOG_STYLE_MSGBOX, "Dat lai thoi gian qua", string, "Mua", "Thoat" );
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't at the gift reset purchase location.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o diem mua dat lai thoi gian qua.");
 }
 
 CMD:buyhealthcare(playerid, params[]) {
 	if(IsPlayerInRangeOfPoint(playerid, 4.0, 2946.8672, -1484.9561, 11.0000))
 	{
-		return ShowPlayerDialogEx(playerid, DIALOG_HEALTHCARE, DIALOG_STYLE_LIST, "Health Care Purchase", "Advanced Health Care\nSuper Advanced Health Care", "Select", "Exit");
+		return ShowPlayerDialogEx(playerid, DIALOG_HEALTHCARE, DIALOG_STYLE_LIST, "Mua Health Care", "Advanced Health Care\nSuper Advanced Health Care", "Chon", "Thoat");
 	}
 	return 1;
 }
@@ -908,15 +908,15 @@ CMD:togshopnotices(playerid, params[]) {
 		if(ShopReminder == 0)
 		{
 			ShopReminder = 1;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled Shop Notifications.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da bat thong bao Shop.");
 		}
 		else
 		{
 			ShopReminder = 0;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled Shop Notifications.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da tat thong bao Shop.");
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -925,7 +925,7 @@ CMD:stoprentacar(playerid, params[])
     if(GetPVarType(playerid, "RentedVehicle"))
 	{
 	    new string[128];
-        SendClientMessageEx(playerid, COLOR_CYAN, "You have stopped renting your vehicle.");
+        SendClientMessageEx(playerid, COLOR_CYAN, "Ban da dung thue xe.");
 		DestroyVehicle(GetPVarInt(playerid, "RentedVehicle"));
 
 		mysql_format(MainPipeline, string, sizeof(string), "DELETE FROM `rentedcars` WHERE `sqlid`= '%d'", GetPlayerSQLId(playerid));
@@ -934,14 +934,14 @@ CMD:stoprentacar(playerid, params[])
 		DeletePVar(playerid, "RentedHours");
 		DeletePVar(playerid, "RentedVehicle");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You are not currently renting a vehicle.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Ban hien khong thue xe.");
 	return 1;
 }
 
 CMD:rentacar(playerid, params[])
 {
     if(ShopClosed == 1)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "The shop is currently closed.");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Cua hang hien da dong.");
 
     if(IsPlayerInRangeOfPoint(playerid, 4, 1102.8999, -1440.1669, 15.7969) || IsPlayerInRangeOfPoint(playerid, 4, 1796.0620, -1588.5571, 13.4951))
 	{
@@ -950,9 +950,9 @@ CMD:rentacar(playerid, params[])
 		    if(!GetPVarType(playerid, "RentedVehicle"))
 			{
 		    	SetPVarInt(playerid, "RentaCar", 1);
-				ShowModelSelectionMenu(playerid, CarList2, "Rent a Car!");
+				ShowModelSelectionMenu(playerid, CarList2, "Thue xe!");
 			}
-			else SendClientMessageEx(playerid, COLOR_GREY, "You already are renting a vehicle.");
+			else SendClientMessageEx(playerid, COLOR_GREY, "Ban dang thue mot xe.");
 		}
 		else
 		{
@@ -962,7 +962,7 @@ CMD:rentacar(playerid, params[])
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GREY, "You aren't at a rent a car location.");
+	    SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o diem thue xe.");
 	}
 	return 1;
 }
@@ -970,7 +970,7 @@ CMD:rentacar(playerid, params[])
 CMD:boatshop(playerid, params[])
 {
     if(ShopClosed == 1)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "The shop is currently closed.");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Cua hang hien da dong.");
 
 	if(IsPlayerInRangeOfPoint(playerid, 4, -2214.1636, 2422.4763, 2.4961) || IsPlayerInRangeOfPoint(playerid, 4,-2975.8950, 505.1325, 2.4297) || IsPlayerInRangeOfPoint(playerid, 4, 723.1553, -1494.4547, 1.9343) || IsPlayerInRangeOfPoint(playerid, 4, 2974.7520, -1462.9265, 2.8184))
 	{
@@ -986,7 +986,7 @@ CMD:boatshop(playerid, params[])
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GREY, "You aren't at the boat shop location.");
+	    SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o tai Boat Shop.");
 	}
 	return 1;
 }
@@ -994,7 +994,7 @@ CMD:boatshop(playerid, params[])
 CMD:planeshop(playerid, params[])
 {
     if(ShopClosed == 1)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "The shop is currently closed.");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Cua hang hien da dong.");
 
 	if(IsPlayerInRangeOfPoint(playerid, 5, 1891.9105, -2279.6174, 13.5469) || IsPlayerInRangeOfPoint(playerid, 5, 1632.0836, 1551.7365, 10.8061) || IsPlayerInRangeOfPoint(playerid, 5, 2950.4014,-1283.0776,4.6875))
 	{
@@ -1010,7 +1010,7 @@ CMD:planeshop(playerid, params[])
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GREY, "You aren't at the plane shop location.");
+	    SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o tai Plane Shop.");
 	}
 	return 1;
 }
@@ -1018,7 +1018,7 @@ CMD:planeshop(playerid, params[])
 CMD:carshop(playerid, params[])
 {
     if(ShopClosed == 1)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "The shop is currently closed.");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Cua hang hien da dong.");
 
 	if(IsPlayerInRangeOfPoint(playerid, 4, 2280.5720, -2325.2490, 13.5469) || IsPlayerInRangeOfPoint(playerid, 4,-1731.1923, 127.4794, 3.2976) || IsPlayerInRangeOfPoint(playerid, 4, 1663.9569, 1628.5106, 10.8203) ||
 	IsPlayerInRangeOfPoint(playerid, 4, 2958.2200, -1339.2900, 5.2100))
@@ -1035,7 +1035,7 @@ CMD:carshop(playerid, params[])
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GREY, "You aren't at the car shop location.");
+	    SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o tai Car Shop.");
 	}
 	return 1;
 }
@@ -1045,7 +1045,7 @@ CMD:changepin(playerid, params[])
     if(GetPVarInt(playerid, "PinConfirmed"))
 	{
 	    SetPVarInt(playerid, "ChangePin", 1);
-	    ShowPlayerDialogEx(playerid, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Change Pin Number", "Enter a new pin number to change your current one.", "Change", "Cancel");
+	    ShowPlayerDialogEx(playerid, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Doi ma PIN", "Nhap PIN moi de thay PIN hien tai.", "Doi", "Huy");
 	}
 	else
 	{
@@ -1056,12 +1056,12 @@ CMD:changepin(playerid, params[])
 
 CMD:houseshop(playerid, params[])
 {
-	if(ShopClosed == 1) return SendClientMessageEx(playerid, COLOR_GREY, "The shop is currently closed.");
+	if(ShopClosed == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Cua hang hien da dong.");
 	if(IsPlayerInRangeOfPoint(playerid, 4.0, 2938.2734, -1391.0596, 11.0000) && GetPlayerVirtualWorld(playerid) == 1)
 	{
 		if(GetPVarInt(playerid, "PinConfirmed"))
 		{
-			ShowPlayerDialogEx( playerid, DIALOG_HOUSESHOP, DIALOG_STYLE_LIST, "House Shop", "Purchase House\nHouse Interior Change\nHouse Move\nGarage - Small\nGarage - Medium\nGarage - Large\nGarage - Extra Large","Select", "Exit" );
+			ShowPlayerDialogEx( playerid, DIALOG_HOUSESHOP, DIALOG_STYLE_LIST, "House Shop", "Mua nha\nDoi noi that nha\nChuyen nha\nGarage - Small\nGarage - Medium\nGarage - Large\nGarage - Extra Large","Chon", "Thoat" );
 		}
 		else
 		{
@@ -1069,47 +1069,47 @@ CMD:houseshop(playerid, params[])
 			PinLogin(playerid);
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't at the house shop location.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o tai House Shop.");
 	return 1;
 }
 
 CMD:sellcredits(playerid, params[])
 {
-	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
+	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Giao dich da tam dung de khoi dong lai may chu bao tri.");
 	new
 		Player,
 		Credits,
 		Amount;
 
 	if(SellClosed == 1)
-		return SendClientMessageEx(playerid, COLOR_GREY, "Selling of credits is currently disabled.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Hien da tat ban credits.");
 
 	if(PlayerInfo[playerid][pDonateRank] < 2 && !nonvipcredits)
-		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot initiate trades unless you are SVIP+!");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Can SVIP+ de bat dau giao dich!");
 
 	if(sscanf(params, "udd", Player, Credits, Amount))
-		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellcredits [Player] [Credits] [Amount]");
+		return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /sellcredits [Player] [Credits] [Amount]");
 
 	else if(!IsPlayerConnected(Player))
-		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 
 	else if(Credits < 0 || Amount < 0)
-		return SendClientMessageEx(playerid, COLOR_GREY, "Amount/Price can't be below zero.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "So luong/Gia khong duoc duoi zero.");
 
 	else if(Player == playerid)
-		return SendClientMessageEx(playerid, COLOR_GREY, "You can't sell credits to yourself.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Khong the tu ban credits cho minh.");
 
 	else if(Credits > PlayerInfo[playerid][pCredits])
-		return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many credits.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co du credits.");
 
 	else if(Credits < 51)
-		return SendClientMessageEx(playerid, COLOR_GREY, "You need to trade at least 51 credits.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Phai giao dich it nhat 51 credits.");
 
 	else if (!ProxDetectorS(10.0, playerid, Player))
-		return SendClientMessageEx(playerid, COLOR_GREY, "That player isn't near you.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 
 	else if(GetPVarType(Player, "CreditsAmount"))
-		return SendClientMessageEx(playerid, COLOR_GREY, "That player already has been offered.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da nhan de nghi khac.");
 
 	else if(!GetPVarInt(playerid, "PinConfirmed"))
 		PinLogin(playerid);
@@ -1150,10 +1150,10 @@ CMD:sellcredits(playerid, params[])
 		SetPVarInt(Player, "CreditsSeller", playerid);
 		SetPVarInt(playerid, "CreditsSeller", Player);
 
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have offered %s {FFD700}%s{FFFFFF} credits for $%s. (Transaction Fee: %s)", GetPlayerNameEx(Player), number_format(Credits+TransactionFee), number_format(Amount), number_format(TransactionFee));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban chao %s {FFD700}%s{FFFFFF} credits gia $%s. (Phi giao dich: %s)", GetPlayerNameEx(Player), number_format(Credits+TransactionFee), number_format(Amount), number_format(TransactionFee));
 
-		format(szMessage, 200, "Seller: %s(%d)\nPrice: $%s\nCredits: {FFD700}%s{A9C4E4}\nTransaction Fee: {FFD700}%s{A9C4E4}\nCredits you will recieve: {FFD700}%s{A9C4E4}", GetPlayerNameEx(playerid), playerid, number_format(Amount), number_format(Credits+TransactionFee), number_format(TransactionFee), number_format(Credits));
-		ShowPlayerDialogEx(Player, DIALOG_SELLCREDITS, DIALOG_STYLE_MSGBOX, "Purchase Credits", szMessage, "Purchase", "Decline");
+		format(szMessage, 200, "Nguoi ban: %s(%d)\nGia: $%s\nCredits: {FFD700}%s{A9C4E4}\nPhi giao dich: {FFD700}%s{A9C4E4}\nCredits se nhan: {FFD700}%s{A9C4E4}", GetPlayerNameEx(playerid), playerid, number_format(Amount), number_format(Credits+TransactionFee), number_format(TransactionFee), number_format(Credits));
+		ShowPlayerDialogEx(Player, DIALOG_SELLCREDITS, DIALOG_STYLE_MSGBOX, "Mua Credits", szMessage, "Mua", "Tu choi");
 	}
 	return 1;
 }
@@ -1162,12 +1162,12 @@ CMD:togglehealthcare(playerid, params[])
 {
 	if(PlayerInfo[playerid][pHealthCare] == 0)
 	{
-		ShowPlayerDialogEx(playerid, DIALOG_HEALTHCARE, DIALOG_STYLE_LIST, "Health Care", "Advanced Health Care\nSuper Advanced Health Care", "Select", "Exit");
+		ShowPlayerDialogEx(playerid, DIALOG_HEALTHCARE, DIALOG_STYLE_LIST, "Health Care", "Advanced Health Care\nSuper Advanced Health Care", "Chon", "Thoat");
 	}
 	else
 	{
 	    PlayerInfo[playerid][pHealthCare] = 0;
-	    SendClientMessageEx(playerid, COLOR_CYAN, "You have disabled health care.");
+	    SendClientMessageEx(playerid, COLOR_CYAN, "Ban da tat Health Care.");
 	}
 	return 1;
 }
@@ -1175,14 +1175,14 @@ CMD:togglehealthcare(playerid, params[])
 CMD:vipshop(playerid, params[])
 {
 	if(ShopClosed == 1)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "The shop is currently closed.");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Cua hang hien da dong.");
 
 	if(IsPlayerInRangeOfPoint(playerid, 4, -2443.6013, 499.7480, 30.0906) || IsPlayerInRangeOfPoint(playerid, 4, 1934.1083, 1364.5004, 9.2578) || IsPlayerInRangeOfPoint(playerid, 4, 1811.3344, -1569.4244, 13.4811)
 		|| IsPlayerInRangeOfPoint(playerid, 4, 2939.0134, -1401.2946, 11.0000))
 	{
  		if(GetPVarInt(playerid, "PinConfirmed"))
    		{
-			ShowPlayerDialogEx( playerid, DIALOG_VIPSHOP, DIALOG_STYLE_LIST, "VIP Shop", "Purchase VIP\nRenew Gold VIP","Continue", "Exit" );
+			ShowPlayerDialogEx( playerid, DIALOG_VIPSHOP, DIALOG_STYLE_LIST, "VIP Shop", "Mua VIP\nGia han Gold VIP","Tiep tuc", "Thoat" );
 		}
 		else
 		{
@@ -1192,7 +1192,7 @@ CMD:vipshop(playerid, params[])
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GREY, "You aren't at the vip shop location.");
+	    SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o tai VIP Shop.");
 	}
 	return 1;
 }
@@ -1203,7 +1203,7 @@ CMD:reloadstats(playerid, params[])
 	    return 0;
 
     mysql_tquery(MainPipeline, "SELECT * FROM `sales` WHERE `Month` > NOW() - INTERVAL 1 MONTH", "OnQueryFinish", "iii", LOADSALEDATA_THREAD, INVALID_PLAYER_ID, -1);
-    SendClientMessageEx(playerid, COLOR_WHITE, "Reloading sale stats.");
+    SendClientMessageEx(playerid, COLOR_WHITE, "Dang tai lai thong ke ban hang.");
 	return 1;
 }
 
@@ -1215,12 +1215,12 @@ CMD:closesellcredits(playerid, params[])
 	if(SellClosed == 0)
 	{
 	    SellClosed = 1;
-	    SendClientMessageEx(playerid, COLOR_WHITE, "The shop is now closed.");
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Shop da dong cua.");
 	}
 	else
 	{
 	    SellClosed = 0;
-	    SendClientMessageEx(playerid, COLOR_WHITE, "The shop is now opened.");
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Shop da mo cua.");
 	}
 	return 1;
 }
@@ -1233,12 +1233,12 @@ CMD:closeshop(playerid, params[])
 	if(ShopClosed == 0)
 	{
 	    ShopClosed = 1;
-	    SendClientMessageEx(playerid, COLOR_WHITE, "The shop is now closed.");
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Shop da dong cua.");
 	}
 	else
 	{
 	    ShopClosed = 0;
-	    SendClientMessageEx(playerid, COLOR_WHITE, "The shop is now opened.");
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Shop da mo cua.");
 	}
 	g_mysql_SaveMOTD();
 	return 1;
@@ -1250,27 +1250,27 @@ CMD:editshop(playerid, params[])
 	    return 0;
 
     if (isnull(params)) {
-		SendClientMessageEx(playerid, COLOR_WHITE, "Usage: /editshop <code>");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Cach dung: /editshop <code>");
 		return 1;
 	}
 
 	if (strcmp(params, SecurityCode) == 0)
 	{
-		ShowPlayerDialogEx(playerid, DIALOG_EDITSHOPMENU, DIALOG_STYLE_LIST, "Edit Shop", "Edit Shop Prices\nEdit Business Shop\nEdit Micro Shop", "Select", "Exit");
+		ShowPlayerDialogEx(playerid, DIALOG_EDITSHOPMENU, DIALOG_STYLE_LIST, "Sua Shop", "Sua gia Shop\nSua Business Shop\nSua Micro Shop", "Chon", "Thoat");
 	    if(GetPVarType(playerid, "CodeAttempts")) DeletePVar(playerid, "CodeAttempts");
 	}
 	else
 	{
 	    if(GetPVarInt(playerid, "CodeAttempts") != 3) {
-	        SendClientMessageEx(playerid, COLOR_GREY, "Password entered is invalid.");
+	        SendClientMessageEx(playerid, COLOR_GREY, "Mat khau khong hop le.");
 			SetPVarInt(playerid, "CodeAttempts", GetPVarInt(playerid, "CodeAttempts")+1);
 	    }
 	    else
 	    {
 	        new string[128];
-	        format(string, sizeof(string), "AdmCmd: %s has been auto-banned, reason: To many failed attempts.", GetPlayerNameEx(playerid)), ABroadCast(COLOR_YELLOW,string,2);
+	        format(string, sizeof(string), "AdmCmd: %s bi cam tu dong, ly do: Sai qua nhieu lan.", GetPlayerNameEx(playerid)), ABroadCast(COLOR_YELLOW,string,2);
 			PlayerInfo[playerid][pBanned] = 1;
-			SystemBan(playerid, "[System] (To many failed attempts)");
+			SystemBan(playerid, "[System] (Sai qua nhieu lan)");
 			Kick(playerid);
 	    }
 	}
@@ -1280,11 +1280,11 @@ CMD:editshop(playerid, params[])
 CMD:businessshop(playerid, params[])
 {
     if(ShopClosed == 1)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "The shop is currently closed.");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Cua hang hien da dong.");
 
 	if(GetPVarInt(playerid, "PinConfirmed"))
 	{
-		ShowPlayerDialogEx(playerid, DIALOG_SHOPBUSINESS, DIALOG_STYLE_LIST, "Businesses Shop", "Purchase Business\nRenew Business", "Select", "Exit");
+		ShowPlayerDialogEx(playerid, DIALOG_SHOPBUSINESS, DIALOG_STYLE_LIST, "Businesses Shop", "Mua Business\nGia han Business", "Chon", "Thoat");
 	}
 	else
 	{
@@ -1297,7 +1297,7 @@ CMD:businessshop(playerid, params[])
 CMD:toyshop(playerid, params[])
 {
     if(ShopClosed == 1)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "The shop is currently closed.");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Cua hang hien da dong.");
 
 	if (IsAtClothingStore(playerid) || IsPlayerInRangeOfPoint(playerid, 4.0, 2927.5244, -1549.1826, 11.0469))
 	{
@@ -1312,7 +1312,7 @@ CMD:toyshop(playerid, params[])
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GREY, "You aren't at a clothes shop.");
+	    SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o tai cua hang quan ao.");
 	}
 	return 1;
 }
@@ -1320,15 +1320,15 @@ CMD:toyshop(playerid, params[])
 CMD:thanksgivingshop(playerid, params[])
 {
     if(HalloweenShop == 1)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "The shop is currently closed.");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Cua hang hien da dong.");
 
 	if (IsAtClothingStore(playerid))
 	{
  		if(GetPVarInt(playerid, "PinConfirmed"))
    		{
 			new string[150];
-			format(string, sizeof(string), "Straw Hat (Cost: 150 Credits | Stock: %d)\nCluckin Bell Hat (Cost: 150 Credits | Stock: %d)", PumpkinStock, PumpkinStock);//\nSpiked Club Toy (Cost: 60 Credits)", PumpkinStock);
-			ShowPlayerDialogEx(playerid, DIALOG_HALLOWEENSHOP, DIALOG_STYLE_LIST, "Halloween Shop", string, "Select", "Exit");
+			format(string, sizeof(string), "Straw Hat (Gia: 150 Credits | Ton: %d)\nCluckin Bell Hat (Gia: 150 Credits | Ton: %d)", PumpkinStock, PumpkinStock);//\nSpiked Club Toy (Cost: 60 Credits)", PumpkinStock);
+			ShowPlayerDialogEx(playerid, DIALOG_HALLOWEENSHOP, DIALOG_STYLE_LIST, "Halloween Shop", string, "Chon", "Thoat");
 			return 1;
 		}
 		else
@@ -1338,7 +1338,7 @@ CMD:thanksgivingshop(playerid, params[])
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GREY, "You aren't at a clothes shop.");
+	    SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o tai cua hang quan ao.");
 	}
 	return 1;
 }
@@ -1346,30 +1346,30 @@ CMD:thanksgivingshop(playerid, params[])
 CMD:chargeplayer(playerid, params[])
 {
 	new string[128], giveplayerid, amount, reason[64];
-	if(sscanf(params, "uds[64]", giveplayerid, amount, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /chargeplayer [player] [amount] [reason]");
+	if(sscanf(params, "uds[64]", giveplayerid, amount, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /chargeplayer [player] [amount] [reason]");
 
 	if (PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pShopTech] == 2)
 	{
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if (amount < 1)
-				return SendClientMessageEx(playerid, COLOR_GREY, "Amount must be greater than 0");
+				return SendClientMessageEx(playerid, COLOR_GREY, "So luong phai lon hon 0");
 
 			if(PlayerInfo[giveplayerid][pCredits] < amount)
-			    return SendClientMessageEx(playerid, COLOR_GREY, "That player doesn't have that many credits.");
+			    return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong co du credits.");
 
-			SendClientMessageEx(playerid, COLOR_CYAN, "You have offered %s a charge of %s credits for %s.",  GetPlayerNameEx(giveplayerid), number_format(amount), reason);
+			SendClientMessageEx(playerid, COLOR_CYAN, "Ban de nghi thu cua %s so tien %s credits cho %s.",  GetPlayerNameEx(giveplayerid), number_format(amount), reason);
 
 			SetPVarInt(giveplayerid, "FineAmount", amount), SetPVarInt(giveplayerid, "FineBy", playerid), SetPVarString(giveplayerid, "FineReason", reason);
-			format(string, sizeof(string), "Admin: %s\nReason: %s\nCredits Available: %s\nFine Amount: %s", GetPlayerNameEx(playerid), reason, number_format(PlayerInfo[giveplayerid][pCredits]), number_format(amount));
-			ShowPlayerDialogEx(giveplayerid, DIALOG_CHARGEPLAYER, DIALOG_STYLE_MSGBOX, "Credit Fine", string, "Accept", "Decline");
+			format(string, sizeof(string), "Admin: %s\nLy do: %s\nCredits hien co: %s\nTien phat: %s", GetPlayerNameEx(playerid), reason, number_format(PlayerInfo[giveplayerid][pCredits]), number_format(amount));
+			ShowPlayerDialogEx(giveplayerid, DIALOG_CHARGEPLAYER, DIALOG_STYLE_MSGBOX, "Phat Credit", string, "Dong y", "Tu choi");
 			return 1;
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You're not a level three admin.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong phai Admin cap ba.");
 	}
 	return 1;
 }
@@ -1382,10 +1382,10 @@ CMD:givecredits(playerid, params[])
 	new szMessage[128], Player, Amount;
 
 	if(sscanf(params, "ud", Player, Amount))
-		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givecredits [Player] [Amount]");
+		return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /givecredits [Player] [Amount]");
 
 	if(!IsPlayerConnected(Player))
-	    return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 
 	PlayerInfo[Player][pCredits] += Amount;
 
@@ -1396,7 +1396,7 @@ CMD:givecredits(playerid, params[])
 	format(szMessage, sizeof(szMessage), "[SETCREDITS] [Amount: %d] [User: %s(%i)] [IP: %s] [Credits: %s] [Admin: %s] [IP: %s]",Amount,GetPlayerNameEx(Player), GetPlayerSQLId(Player), GetPlayerIpEx(Player), number_format(PlayerInfo[Player][pCredits]), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
 	Log("logs/credits.log", szMessage), print(szMessage);
 
-	SendClientMessageEx(playerid, COLOR_CYAN, "You have given %s %s credits.", GetPlayerNameEx(Player), number_format(Amount));
+	SendClientMessageEx(playerid, COLOR_CYAN, "Ban da cap %s %s credits.", GetPlayerNameEx(Player), number_format(Amount));
 	return 1;
 }
 
@@ -1408,10 +1408,10 @@ CMD:setcredits(playerid, params[])
 	new szMessage[128], Player, Amount;
 
 	if(sscanf(params, "ud", Player, Amount))
-		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setcredits [Player] [Amount]");
+		return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /setcredits [Player] [Amount]");
 
 	if(!IsPlayerConnected(Player))
-	    return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 
 	PlayerInfo[Player][pCredits] = Amount;
 
@@ -1422,7 +1422,7 @@ CMD:setcredits(playerid, params[])
 	format(szMessage, sizeof(szMessage), "[SETCREDITS] [Amount: %d] [User: %s(%i)] [IP: %s] [Credits: %s] [Admin: %s] [IP: %s]",Amount,GetPlayerNameEx(Player), GetPlayerSQLId(Player), GetPlayerIpEx(Player), number_format(PlayerInfo[Player][pCredits]), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
 	Log("logs/credits.log", szMessage), print(szMessage);
 
-	SendClientMessageEx(playerid, COLOR_CYAN, "You have set %s's credits to %s.", GetPlayerNameEx(Player), number_format(PlayerInfo[Player][pCredits]));
+	SendClientMessageEx(playerid, COLOR_CYAN, "Ban da dat credits cua %s thanh %s.", GetPlayerNameEx(Player), number_format(PlayerInfo[Player][pCredits]));
 	return 1;
 }
 
@@ -1434,10 +1434,10 @@ CMD:settotalcredits(playerid, params[])
 	new szMessage[128], Player, Amount;
 
 	if(sscanf(params, "ud", Player, Amount))
-		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /settotalcredits [Player] [Amount]");
+		return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /settotalcredits [Player] [Amount]");
 
 	if(!IsPlayerConnected(Player))
-	    return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 
 	PlayerInfo[Player][pTotalCredits] = Amount;
 
@@ -1447,7 +1447,7 @@ CMD:settotalcredits(playerid, params[])
 	format(szMessage, sizeof(szMessage), "[SETTOTALCREDITS][Amount: %d] [User: %s(%i)] [IP: %s] [Admin: %s] [IP: %s]",Amount, GetPlayerNameEx(Player), GetPlayerSQLId(Player), GetPlayerIpEx(Player), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
 	Log("logs/credits.log", szMessage), print(szMessage);
 
-	SendClientMessageEx(playerid, COLOR_CYAN, "You have set %s's total credits to %s.", GetPlayerNameEx(Player), number_format(PlayerInfo[Player][pTotalCredits]));
+	SendClientMessageEx(playerid, COLOR_CYAN, "Ban da dat tong credits cua %s thanh %s.", GetPlayerNameEx(Player), number_format(PlayerInfo[Player][pTotalCredits]));
 	return 1;
 }
 
@@ -1459,14 +1459,14 @@ CMD:toghalloweenshop(playerid, params[])
 		if(HalloweenShop)
 		{
 			HalloweenShop = 0;
-			SendClientMessageEx(playerid, COLOR_RED, "You have toggled the halloween shop on.  It will now be available to players.");
+			SendClientMessageEx(playerid, COLOR_RED, "Da bat Halloween Shop, nguoi choi co the su dung.");
 			g_mysql_SaveMOTD();
 			format(string, sizeof(string), "Admin %s(%i) has toggled the halloween toy shop on.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid) );
 			Log("logs/zombiecure.log", string);
 		}
 		else{
 			HalloweenShop = 1;
-			SendClientMessageEx(playerid, COLOR_RED, "You have toggled the halloween shop off.  It will not be available to players.");
+			SendClientMessageEx(playerid, COLOR_RED, "Da tat Halloween Shop, nguoi choi khong the su dung.");
 			g_mysql_SaveMOTD();
 			format(string, sizeof(string), "Admin %s(%i) has toggled the halloween toy shop off.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid) );
 			Log("logs/zombiecure.log", string);
@@ -1480,8 +1480,8 @@ CMD:setpumpkinstock(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] > 1337 || PlayerInfo[playerid][pPR] == 2 || PlayerInfo[playerid][pShopTech] == 3)
 	{
 		new string[128], pumpkins;
-		if(sscanf(params, "d", pumpkins)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setpumpkinstock [stock]");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You have set the pumpkin stock to %d.", pumpkins);
+		if(sscanf(params, "d", pumpkins)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /setpumpkinstock [stock]");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Da dat ton kho pumpkin thanh %d.", pumpkins);
 		format(string, sizeof(string), "Admin %s(%i) has set the pumpkin stock to %d from %d.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), pumpkins, PumpkinStock );
 		Log("logs/zombiecure.log", string);
 		PumpkinStock = pumpkins;
@@ -1494,32 +1494,32 @@ stock Microshop_ChangePhoneNumber(playerid, number, price, oldnumber)
 {
 	if(!(0 <= playerid < MAX_PLAYERS) || !IsPlayerConnected(playerid) || !gPlayerLogged{playerid} || !GetPVarInt(playerid, "PinConfirmed")) return 0;
 	if(!(100000 <= number <= 999999) || number == oldnumber || oldnumber == 0 || oldnumber != PlayerInfo[playerid][pPnumber])
-		return SendClientMessageEx(playerid, COLOR_GREY, "Your phone number changed or the requested number is invalid. Please select again."), 0;
+		return SendClientMessageEx(playerid, COLOR_GREY, "So cu hoac so yeu cau khong hop le. Hay chon lai."), 0;
 	
 	if(TempNumber[playerid] || GetPVarType(playerid, "WantedPh") || GetPVarType(playerid, "tempnum"))
-		return SendClientMessageEx(playerid, COLOR_GREY, "Finish or cancel your other phone-number change first."), 0;
+		return SendClientMessageEx(playerid, COLOR_GREY, "Hay xong hoac huy lan doi so dien thoai khac truoc."), 0;
 	
 	if(Mobile[playerid] != INVALID_PLAYER_ID || GetPVarType(playerid, "PayPhone") || GetPVarType(playerid, "CallingPayPhone"))
-		return SendClientMessageEx(playerid, COLOR_GREY, "End your phone call before changing your number."), 0;
+		return SendClientMessageEx(playerid, COLOR_GREY, "Hay ket thuc cuoc goi truoc khi doi so."), 0;
 	
 	if(price <= 0 || price != MicroItems[11] || PlayerInfo[playerid][pCredits] < price || PlayerInfo[playerid][pTotalCredits] < 0 || PlayerInfo[playerid][pTotalCredits] > cellmax - price)
-		return SendClientMessageEx(playerid, COLOR_GREY, "The price changed or you cannot afford this purchase. Please select again."), 0;
+		return SendClientMessageEx(playerid, COLOR_GREY, "Gia da doi hoac ban khong du tien. Hay chon lai."), 0;
 	
 	if(restarting || gPayPhonesLoading || !gAccountsInnoDB || GetPlayerSQLId(playerid) <= 0 || mysql_unprocessed_queries(MainPipeline) != 0)
-		return SendClientMessageEx(playerid, COLOR_GREY, "The shop is busy. Please try again in a moment."), 0;
+		return SendClientMessageEx(playerid, COLOR_GREY, "Shop dang ban. Hay thu lai sau."), 0;
 	
 	foreach(new other : Player)
 	{
 		if(other == playerid || !gPlayerLogged{other}) continue;
 		if(PlayerInfo[other][pPnumber] == number || GetPVarInt(other, "WantedPh") == number || GetPVarInt(other, "tempnum") == number ||
 			(TempNumber[other] && GetPVarInt(other, "oldnum") == number))
-			return SendClientMessageEx(playerid, COLOR_GREY, "That phone number is already in use or reserved by another player."), 0;
+			return SendClientMessageEx(playerid, COLOR_GREY, "So dien thoai da duoc dung hoac nguoi khac giu cho."), 0;
 	}
 	
 	for(new phone; phone < MAX_PAYPHONES; phone++)
 	{
 		if(arrPayPhoneData[phone][pp_iNumber] == number)
-			return SendClientMessageEx(playerid, COLOR_GREY, "That phone number belongs to a payphone."), 0;
+			return SendClientMessageEx(playerid, COLOR_GREY, "So dien thoai thuoc dien thoai cong cong."), 0;
 	}
 	
 	new query[512], credits = PlayerInfo[playerid][pCredits] - price, spent = PlayerInfo[playerid][pTotalCredits] + price;
@@ -1533,11 +1533,11 @@ stock Microshop_ChangePhoneNumber(playerid, number, price, oldnumber)
 		cache_delete(result);
 	}
 	if(affected != 1)
-		return SendClientMessageEx(playerid, COLOR_GREY, "Unable to confirm this number change. Please try again later."), 0;
+		return SendClientMessageEx(playerid, COLOR_GREY, "Khong xac nhan duoc doi so. Hay thu lai sau."), 0;
 	PlayerInfo[playerid][pPnumber] = number;
 	PlayerInfo[playerid][pCredits] = credits;
 	PlayerInfo[playerid][pTotalCredits] = spent;
-	SendClientMessageEx(playerid, COLOR_CYAN, "Your phone number has changed from %d to %d.", oldnumber, number);
+	SendClientMessageEx(playerid, COLOR_CYAN, "So dien thoai da doi tu %d thanh %d.", oldnumber, number);
 	return 1;
 }
 
@@ -1549,18 +1549,18 @@ CMD:microshop(playerid, const params[])
 	DeletePVar(playerid, "m_PhoneNumber");
 	DeletePVar(playerid, "m_PhonePrice");
 	DeletePVar(playerid, "m_PhoneOld");
-	if(GetPVarInt(playerid, "PinConfirmed")) ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP, DIALOG_STYLE_LIST, "Microtransaction Shop", "Job & Experience\nVIP\nFood\nHouse\nVehicle\nMiscellaneous\nEvents", "Select", "Exit");
+	if(GetPVarInt(playerid, "PinConfirmed")) ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP, DIALOG_STYLE_LIST, "Microtransaction Shop", "Cong viec va kinh nghiem\nVIP\nThuc an\nNha\nXe\nKhac\nSu kien", "Chon", "Thoat");
 	else SetPVarInt(playerid, "OpenShop", 11), PinLogin(playerid);
 	return 1;
 }
 
 CMD:placesign(playerid, params[])
 {
-	if(!PlayerInfo[playerid][mInventory][6]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any house sale signs in your inventory, visit /microshop to purchase");
+	if(!PlayerInfo[playerid][mInventory][6]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co House Sale Sign, dung /microshop de mua");
 	new h = InRangeOfWhichHouse(playerid, 10);
-	if(h == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at a 10 meter radius from your house to place it down.");
-	if(HouseInfo[h][hSignExpire]) return SendClientMessageEx(playerid, COLOR_GREY, "This house already has a house sale sign attached to it, type /editsign to adjust its position or text.");
-	if(GetPVarType(playerid, "signID")) return SendClientMessageEx(playerid, COLOR_GREY, "Please complete placing down your current house sale sign before attempting to place another.");
+	if(h == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GREY, "Phai cach nha khong qua 10 meter de dat bien.");
+	if(HouseInfo[h][hSignExpire]) return SendClientMessageEx(playerid, COLOR_GREY, "Nha da co bien rao ban, dung /editsign de doi vi tri hoac noi dung.");
+	if(GetPVarType(playerid, "signID")) return SendClientMessageEx(playerid, COLOR_GREY, "Hay dat xong bien rao ban hien tai truoc khi dat bien khac.");
 	ClearCheckpoint(playerid);
 	new Float:pos[4];
 	GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
@@ -1569,9 +1569,9 @@ CMD:placesign(playerid, params[])
 	SetPVarInt(playerid, "editingsign", 1);
 	SetPVarInt(playerid, "signID", CreateDynamicObject(19471, pos[0]+1, pos[1], pos[2], 0, 0, pos[3], GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid)));
 	EditDynamicObject(playerid, GetPVarInt(playerid, "signID"));
-	SendClientMessageEx(playerid, 0xFFFFAAAA, "HINT: Hold {8000FF}~k~~PED_SPRINT~ {FFFFAA}to move your camera, press escape to cancel");
+	SendClientMessageEx(playerid, 0xFFFFAAAA, "GOI Y: Giu {8000FF}~k~~PED_SPRINT~ {FFFFAA}de doi camera, nhan escape de huy");
 	SetPlayerCheckpoint(playerid, HouseInfo[h][hExteriorX], HouseInfo[h][hExteriorY], HouseInfo[h][hExteriorZ], 20);
-	SendClientMessageEx(playerid, COLOR_GREY, "Keep the object within the checkpoint to place successfully.");
+	SendClientMessageEx(playerid, COLOR_GREY, "Giu object trong checkpoint de dat thanh cong.");
 	return 1;
 }
 
@@ -1580,11 +1580,11 @@ CMD:editsign(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new h, option[10], desc[64];
-		if(sscanf(params, "ds[10]S()[64]", h, option, desc)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editsign [houseid] [option]"), SendClientMessageEx(playerid, COLOR_GREY, "Available options: text, position");
-		if(HouseInfo[h][hSignExpire] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "This house doesn't have a House Sale Sign attached, /placesign to place one down.");
+		if(sscanf(params, "ds[10]S()[64]", h, option, desc)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editsign [houseid] [option]"), SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: text, position");
+		if(HouseInfo[h][hSignExpire] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Nha chua co House Sale Sign, dung /placesign de dat.");
 		if(!strcmp(option, "text", true))
 		{
-			if(!(1 <= strlen(desc) <= 64)) return SendClientMessageEx(playerid, COLOR_GREY, "Description text cannot be empty and no longer than 64 characters.");
+			if(!(1 <= strlen(desc) <= 64)) return SendClientMessageEx(playerid, COLOR_GREY, "Noi dung khong duoc trong hoac dai hon 64 ky tu.");
 			new string[128], escapeDesc[64];
 			mysql_escape_string(desc, escapeDesc);
 			format(HouseInfo[h][hSignDesc], sizeof(escapeDesc), "%s", escapeDesc);
@@ -1599,28 +1599,28 @@ CMD:editsign(playerid, params[])
 			SetPVarInt(playerid, "editingsign", 3);
 			SetPVarInt(playerid, "signID", HouseInfo[h][hSignObj]);
 			EditDynamicObject(playerid, GetPVarInt(playerid, "signID"));
-			SendClientMessageEx(playerid, 0xFFFFAAAA, "HINT: Hold {8000FF}~k~~PED_SPRINT~ {FFFFAA}to move your camera, press escape to cancel");
+			SendClientMessageEx(playerid, 0xFFFFAAAA, "GOI Y: Giu {8000FF}~k~~PED_SPRINT~ {FFFFAA}de doi camera, nhan escape de huy");
 			SetPlayerCheckpoint(playerid, HouseInfo[h][hExteriorX], HouseInfo[h][hExteriorY], HouseInfo[h][hExteriorZ], 20);
-			SendClientMessageEx(playerid, COLOR_GREY, "Keep the object within the checkpoint to place successfully.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Giu object trong checkpoint de dat thanh cong.");
 		}
 		return 1;
 	}
-	if(GetPVarType(playerid, "editingsign")) return SendClientMessageEx(playerid, COLOR_GREY, "You are already editing your house sign.");
+	if(GetPVarType(playerid, "editingsign")) return SendClientMessageEx(playerid, COLOR_GREY, "Ban dang sua bien rao ban nha.");
 	new h = InRangeOfWhichHouse(playerid, 10);
-	if(h == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at a 10 meter radius from your house to edit your house sign.");
-	if(HouseInfo[h][hSignExpire] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "This house doesn't have a House Sale Sign attached, /placesign to place one down.");
+	if(h == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GREY, "Phai cach nha khong qua 10 meter de sua bien.");
+	if(HouseInfo[h][hSignExpire] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Nha chua co House Sale Sign, dung /placesign de dat.");
 	new option[10], desc[64];
-	if(sscanf(params, "s[10]S()[64]", option, desc)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editsign [option]"), SendClientMessageEx(playerid, COLOR_GREY, "Available options: text, position");
+	if(sscanf(params, "s[10]S()[64]", option, desc)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editsign [option]"), SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: text, position");
 	if(!strcmp(option, "text", true))
 	{
-		if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
-		if(isnull(desc)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editsign text [decription]");
-		if(!(1 <= strlen(desc) <= 64)) return SendClientMessageEx(playerid, COLOR_GREY, "Description text cannot be empty and no longer than 64 characters.");
+		if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "Chi duoc co 1 bao cao dang mo. (/cancelreport)");
+		if(isnull(desc)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /editsign text [decription]");
+		if(!(1 <= strlen(desc) <= 64)) return SendClientMessageEx(playerid, COLOR_GREY, "Noi dung khong duoc trong hoac dai hon 64 ky tu.");
 		new string[128];
 		SetPVarInt(playerid, "hSignRequest", h);
 		SetPVarString(playerid, "hSignRequestText", desc);
-		SendClientMessageEx(playerid, COLOR_YELLOW, "You have requested a House Sale Sign Text Change for house ID: %d, please wait until a General Admin approves it.", h);
-		format(string, sizeof(string), "House Sale Sign Text Change (HID: %d)", h);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Da yeu cau doi noi dung House Sale Sign cho nha ID: %d, hay cho General Admin duyet.", h);
+		format(string, sizeof(string), "Doi noi dung House Sale Sign (HID: %d)", h);
 		SendReportToQue(playerid, string, 2, 4);
 	}
 	if(!strcmp(option, "position", true))
@@ -1630,9 +1630,9 @@ CMD:editsign(playerid, params[])
 		SetPVarInt(playerid, "editingsign", 2);
 		SetPVarInt(playerid, "signID", HouseInfo[h][hSignObj]);
 		EditDynamicObject(playerid, GetPVarInt(playerid, "signID"));
-		SendClientMessageEx(playerid, 0xFFFFAAAA, "HINT: Hold {8000FF}~k~~PED_SPRINT~ {FFFFAA}to move your camera, press escape to cancel");
+		SendClientMessageEx(playerid, 0xFFFFAAAA, "GOI Y: Giu {8000FF}~k~~PED_SPRINT~ {FFFFAA}de doi camera, nhan escape de huy");
 		SetPlayerCheckpoint(playerid, HouseInfo[h][hExteriorX], HouseInfo[h][hExteriorY], HouseInfo[h][hExteriorZ], 20);
-		SendClientMessageEx(playerid, COLOR_GREY, "Keep the object within the checkpoint to place successfully.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Giu object trong checkpoint de dat thanh cong.");
 	}
 	return 1;
 }
@@ -1645,64 +1645,64 @@ CMD:readsign(playerid, params[])
 		if(IsPlayerInRangeOfPoint(playerid, 5, HouseInfo[i][hSign][0], HouseInfo[i][hSign][1], HouseInfo[i][hSign][2]))
 		{
 			if(isnull(HouseInfo[i][hSignDesc])) format(HouseInfo[i][hSignDesc], 64, "None");
-			return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "House Sale Sign", HouseInfo[i][hSignDesc], "Close", "");
+			return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "House Sale Sign", HouseInfo[i][hSignDesc], "Dong", "");
 		}
 	}
-	SendClientMessageEx(playerid, COLOR_GREY, "You are not in range of any house sale sign.");
+	SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan bien rao ban nha nao.");
 	return 1;
 }
 
 CMD:fuelcan(playerid, params[])
 {
-	if(!PlayerInfo[playerid][mInventory][7]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Fuel Cans in your inventory, visit /microshop to purchase.");
+	if(!PlayerInfo[playerid][mInventory][7]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co Fuel Cans, dung /microshop de mua.");
 	if(GetPVarInt(playerid, "fuelcan") == 1) return 1;
-	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not use your fuel can while inside the vehicle.");
-	if(GetPVarInt(playerid, "EventToken")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
-	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung Fuel Can khi dang trong xe.");
+	if(GetPVarInt(playerid, "EventToken")) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung trong su kien.");
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "Ban chua the lam vay!");
 	new closestcar = GetClosestCar(playerid);
-	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not close enough to any vehicle.");
+	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o du gan xe nao.");
 	new string[72];
-	format(string, sizeof(string), "%s begins refilling their vehicle with a fuel can.", GetPlayerNameEx(playerid));
+	format(string, sizeof(string), "%s bat dau do xang cho xe bang Fuel Can.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	ApplyAnimation(playerid, "SCRATCHING", "scdldlp", 4.0, true, false, false, false, 0, 1);
 	SetTimerEx("FuelCan", 10000, false, "iii", playerid, closestcar, 100);
 	SetPVarInt(playerid, "fuelcan", 1);
-	GameTextForPlayer(playerid, "~w~Refueling...", 10000, 3);
+	GameTextForPlayer(playerid, "~w~Dang bom xang...", 10000, 3);
 	return 1;
 }
 
 CMD:jumpstart(playerid, params[])
 {
-	if(!PlayerInfo[playerid][mInventory][8]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Jump Start's in your inventory, visit /microshop to purchase.");
+	if(!PlayerInfo[playerid][mInventory][8]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co Jump Start, dung /microshop de mua.");
 	if(GetPVarInt(playerid, "jumpstarting") == 1) return 1;
-	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not jump start while inside the vehicle.");
-	if(GetPVarInt(playerid, "EventToken")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
-	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the kich no khi dang trong xe.");
+	if(GetPVarInt(playerid, "EventToken")) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung trong su kien.");
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "Ban chua the lam vay!");
 	new closestcar = GetClosestCar(playerid);
-	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not close enough to any vehicle.");
+	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o du gan xe nao.");
 	if(!IsABike(closestcar) && !IsAPlane(closestcar))
 	{
 		new engine,lights,alarm,doors,bonnet,boot,objective;
 		GetVehicleParamsEx(closestcar,engine,lights,alarm,doors,bonnet,boot,objective);
-		if(bonnet == VEHICLE_PARAMS_OFF || bonnet == VEHICLE_PARAMS_UNSET) return SendClientMessageEx(playerid, COLOR_GRAD1, "The vehicle hood must be opened in order to jump start it.");
+		if(bonnet == VEHICLE_PARAMS_OFF || bonnet == VEHICLE_PARAMS_UNSET) return SendClientMessageEx(playerid, COLOR_GRAD1, "Phai mo nap capo de kich no xe.");
 	}
 	new string[61];
-	format(string, sizeof(string), "%s begins to jump start their vehicle.", GetPlayerNameEx(playerid));
+	format(string, sizeof(string), "%s bat dau kich no xe.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	ApplyAnimation(playerid, "MISC", "Plunger_01", 4.1, true, true, true, true, 1, 1);
 	SetTimerEx("JumpStart", 10000, false, "ii", playerid, closestcar);
 	SetPVarInt(playerid, "jumpstarting", 1);
-	GameTextForPlayer(playerid, "~w~Jump Starting...", 10000, 3);
+	GameTextForPlayer(playerid, "~w~Dang kich no...", 10000, 3);
 	return 1;
 }
 
 CMD:rcarcolor(playerid, params[])
 {
-	if(!PlayerInfo[playerid][mInventory][9]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Restricted Car Colors in your inventory, visit /microshop to purchase.");
-	if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in a vehicle.");
+	if(!PlayerInfo[playerid][mInventory][9]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co Restricted Car Colors, dung /microshop de mua.");
+	if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o trong xe.");
 	new iColors[2];
-	if(sscanf(params, "dd", iColors[0], iColors[1])) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /rcarcolor [color1] [color2]. Colors must be an ID.");
-	if(!(128 <= iColors[0] <= 255 && 0 <= iColors[1] <= 255)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (Restricted color IDs start at 128, and end at 255).");
+	if(sscanf(params, "dd", iColors[0], iColors[1])) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /rcarcolor [color1] [color2]. Mau phai la ID.");
+	if(!(128 <= iColors[0] <= 255 && 0 <= iColors[1] <= 255)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Mau sai (Restricted color IDs tu 128 den 255).");
 	new szMessage[128];
 	for(new i = 0; i < MAX_PLAYERVEHICLES; i++)
 	{
@@ -1714,24 +1714,24 @@ CMD:rcarcolor(playerid, params[])
 			g_mysql_SaveVehicle(playerid, i);
 			format(szMessage, sizeof(szMessage), "[RCARCOLOR] %s(%d) used a restricted car color. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][9]);
 			Log("logs/micro.log", szMessage);
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have changed the colors of your vehicle to ID %d, %d.", iColors[0], iColors[1]);
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Da doi mau xe thanh ID %d, %d.", iColors[0], iColors[1]);
 		}
 	}
-	SendClientMessageEx(playerid, COLOR_GREY, "You need to be inside a vehicle that you own.");
+	SendClientMessageEx(playerid, COLOR_GREY, "Ban can o trong xe cua minh.");
 	return 1;
 }
 
 CMD:eatbar(playerid, params[])
 {
-	if(!PlayerInfo[playerid][mInventory][4]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Energy Bars in your inventory, visit /microshop to purchase.");
+	if(!PlayerInfo[playerid][mInventory][4]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co Energy Bars, dung /microshop de mua.");
 	if(GetPVarInt(playerid, "eatingbar") == 1) return 1;
 	new string[128];
 	if(PlayerInfo[playerid][mCooldown][4]) 
 	{
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You currently have a active Energy Bar, please wait for it to expire in %d minute(s) to consume again.", PlayerInfo[playerid][mCooldown][4]);
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Energy Bar dang hoat dong, hay cho het han sau %d phut de dung tiep.", PlayerInfo[playerid][mCooldown][4]);
 	}
 	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 3.0, true, false, false, false, 0, 1);
-	format(string, sizeof(string), "%s chews on a energy bar", GetPlayerNameEx(playerid));
+	format(string, sizeof(string), "%s nhai Energy Bar", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	SetPVarInt(playerid, "eatingbar", 1);
 	SetTimerEx("EatBar", 2000, false, "i", playerid);
@@ -1741,10 +1741,10 @@ CMD:eatbar(playerid, params[])
 CMD:activeitems(playerid, params[])
 {
 	new string[128];
-	if(PlayerInfo[playerid][mPurchaseCount][1] && PlayerInfo[playerid][mCooldown][1]) format(string, sizeof(string), "You currently have an active Job Boost for the %s job for another %d minute(s).", GetJobName(PlayerInfo[playerid][mBoost][0]), PlayerInfo[playerid][mCooldown][1]), SendClientMessageEx(playerid, -1, string);
-	if(PlayerInfo[playerid][mCooldown][4]) format(string, sizeof(string), "You currently have an active Energy Bar for another %d minute(s).", PlayerInfo[playerid][mCooldown][4]), SendClientMessageEx(playerid, -1, string);
-	if(PlayerInfo[playerid][mPurchaseCount][12] && PlayerInfo[playerid][mCooldown][12]) format(string, sizeof(string), "You currently have a Quick Bank Access for another %d minute(s).", PlayerInfo[playerid][mCooldown][12]), SendClientMessageEx(playerid, -1, string);
-	if(zombieevent) format(string, sizeof(string), "You currently have a antibiotic flowing through your bloodstream protecting you from %d zombie bite(s).", PlayerInfo[playerid][mInventory][18]), SendClientMessageEx(playerid, -1, string);
+	if(PlayerInfo[playerid][mPurchaseCount][1] && PlayerInfo[playerid][mCooldown][1]) format(string, sizeof(string), "Job Boost cho cong viec %s con hieu luc %d phut.", GetJobName(PlayerInfo[playerid][mBoost][0]), PlayerInfo[playerid][mCooldown][1]), SendClientMessageEx(playerid, -1, string);
+	if(PlayerInfo[playerid][mCooldown][4]) format(string, sizeof(string), "Energy Bar con hieu luc %d phut.", PlayerInfo[playerid][mCooldown][4]), SendClientMessageEx(playerid, -1, string);
+	if(PlayerInfo[playerid][mPurchaseCount][12] && PlayerInfo[playerid][mCooldown][12]) format(string, sizeof(string), "Quick Bank Access con hieu luc %d phut.", PlayerInfo[playerid][mCooldown][12]), SendClientMessageEx(playerid, -1, string);
+	if(zombieevent) format(string, sizeof(string), "Khang sinh trong mau bao ve ban khoi %d lan Zombie can.", PlayerInfo[playerid][mInventory][18]), SendClientMessageEx(playerid, -1, string);
 	return 1;
 }
 
@@ -1756,7 +1756,7 @@ CMD:cooldowns(playerid, params[])
 		{
 			new microItemName[36];
 			strunpack(microItemName, mItemName[item], sizeof(microItemName));
-			SendClientMessageEx(playerid, -1, "You can purchase another \"%s\" in %s.", microItemName, ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
+			SendClientMessageEx(playerid, -1, "Ban co the mua lai \"%s\" sau %s.", microItemName, ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
 		}
 	}
 	return 1;
@@ -1765,7 +1765,7 @@ CMD:cooldowns(playerid, params[])
 CMD:managecredits(playerid, params[]) 
 {
 	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pShopTech] >= 3)
-		return ShowPlayerDialogEx(playerid, DIALOG_MANAGECREDITS, DIALOG_STYLE_LIST, "Manage Credits",  "Credits Selling\nFree Weekend\nNon-VIP Credit Selling", "Okay", "Cancel");
+		return ShowPlayerDialogEx(playerid, DIALOG_MANAGECREDITS, DIALOG_STYLE_LIST, "Quan ly Credits",  "Ban Credits\nFree Weekend\nBan Credit cho Non-VIP", "Dong y", "Huy");
 	return 0;
 }
 
@@ -1797,8 +1797,8 @@ public OnShopOrder(index)
 			  			cache_get_value_name_int(i, "order_product_id", product_id);
 				    	if(quantity-delivered <= 0)
 					    {
-	        				if(i<rows) format(string, sizeof(string), "%s%s (Delivered)\n", string, name);
-					        else format(string, sizeof(string), "%s%s (Delivered)", string, name);
+	        				if(i<rows) format(string, sizeof(string), "%s%s (Da giao)\n", string, name);
+					        else format(string, sizeof(string), "%s%s (Da giao)", string, name);
 						}
 						else
 						{
@@ -1811,25 +1811,25 @@ public OnShopOrder(index)
 					    new reason[27];
 						switch(status)
 						{
-						    case 0: format(reason, sizeof(reason), "{FF0000}No Payment");
-						    case 1: format(reason, sizeof(reason), "{FF0000}Pending");
-						    case 3: format(reason, sizeof(reason), "{00FF00}Shipped");
+						    case 0: format(reason, sizeof(reason), "{FF0000}Chua tra");
+						    case 1: format(reason, sizeof(reason), "{FF0000}Dang cho");
+						    case 3: format(reason, sizeof(reason), "{00FF00}Da gui");
 						    case 5:
 							{
-								ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "This order has already been delivered", "OK", "");
+								ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Loi don hang cua hang", "Don nay da giao xong", "Dong y", "");
 								return 1;
 							}
-			    			case 7: format(reason, sizeof(reason), "{FF0000}Cancelled");
-					    	case 8: format(reason, sizeof(reason), "{FF0000}Denied");
-				   			case 9: format(reason, sizeof(reason), "{FF0000}Cancelled Reversal");
-					    	case 10: format(reason, sizeof(reason), "{FF0000}Failed");
-						    case 11: format(reason, sizeof(reason), "{00FF00}Refundend");
-						    case 12: format(reason, sizeof(reason), "{FF0000}Reversed");
+			    			case 7: format(reason, sizeof(reason), "{FF0000}Da huy");
+					    	case 8: format(reason, sizeof(reason), "{FF0000}Tu choi");
+				   			case 9: format(reason, sizeof(reason), "{FF0000}Da huy dao nguoc");
+					    	case 10: format(reason, sizeof(reason), "{FF0000}That bai");
+						    case 11: format(reason, sizeof(reason), "{00FF00}Da hoan tien");
+						    case 12: format(reason, sizeof(reason), "{FF0000}Da dao nguoc");
 						    case 13: format(reason, sizeof(reason), "{FF0000}Chargeback");
-				   			default: format(reason, sizeof(reason), "{FF0000}Unknown");
+				   			default: format(reason, sizeof(reason), "{FF0000}Khong ro");
 						}
-						format(string, sizeof(string), "We are unable to process that order at this time,\nbecause the payment is currently marked as: %s", reason);
-						ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", string, "OK", "");
+						format(string, sizeof(string), "Chua the xu ly don nay,\nvi thanh toan dang duoc danh dau: %s", reason);
+						ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Loi don hang cua hang", string, "Dong y", "");
 	  					return 1;
 					}
 				}
@@ -1839,14 +1839,14 @@ public OnShopOrder(index)
 			    new email[256];
 			    cache_get_value_name(0, "email", email);
 			    SetPVarString(index, "ShopEmailVerify", email);
-			    ShowPlayerDialogEx(index, DIALOG_SHOPORDEREMAIL, DIALOG_STYLE_INPUT, "Shop Order Error", "We were unable to link your order to your IP,\nfor further verification of your identity please input your shop e-mail address:", "Submit", "Cancel");
+			    ShowPlayerDialogEx(index, DIALOG_SHOPORDEREMAIL, DIALOG_STYLE_INPUT, "Loi don hang cua hang", "Khong ghep duoc don hang voi IP cua ban,\nnhap e-mail shop de xac minh danh tinh:", "Gui", "Huy");
 			    return 1;
 			}
-			ShowPlayerDialogEx(index, DIALOG_SHOPORDER2, DIALOG_STYLE_LIST, "Shop Order List", string, "Select", "Cancel");
+			ShowPlayerDialogEx(index, DIALOG_SHOPORDER2, DIALOG_STYLE_LIST, "Danh sach don Shop", string, "Chon", "Huy");
 		}
 		else
 		{
-		    ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "Error: No orders were found by that Order ID\nIf you are sure that is the correct Order ID, please try again or input '1' for your order ID.", "OK", "");
+		    ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Loi don hang cua hang", "Loi: Khong co don nao voi Order ID nay\nNeu chac Order ID dung, hay thu lai hoac nhap '1' lam order ID.", "Dong y", "");
 		}
 	}
 	return 1;
@@ -1875,8 +1875,8 @@ public OnShopOrderEmailVer(index)
 	  				cache_get_value_name_int(i, "order_product_id", product_id);
 		   			if(quantity-delivered <= 0)
 				    {
-	   					if(i<rows) format(string, sizeof(string), "%s%s (Delivered)\n", string, name);
-	       				else format(string, sizeof(string), "%s%s (Delivered)", string, name);
+	   					if(i<rows) format(string, sizeof(string), "%s%s (Da giao)\n", string, name);
+	       				else format(string, sizeof(string), "%s%s (Da giao)", string, name);
 					}
 					else
 					{
@@ -1889,33 +1889,33 @@ public OnShopOrderEmailVer(index)
 	    			new reason[27];
 					switch(status)
 					{
-	    				case 0: format(reason, sizeof(reason), "{FF0000}No Payment");
-		   				case 1: format(reason, sizeof(reason), "{FF0000}Pending");
-					    case 3: format(reason, sizeof(reason), "{00FF00}Shipped");
+	    				case 0: format(reason, sizeof(reason), "{FF0000}Chua tra");
+		   				case 1: format(reason, sizeof(reason), "{FF0000}Dang cho");
+					    case 3: format(reason, sizeof(reason), "{00FF00}Da gui");
 					    case 5:
 						{
-							ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "This order has already been delivered", "OK", "");
+							ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Loi don hang cua hang", "Don nay da giao xong", "Dong y", "");
 							return 1;
 						}
-			   			case 7: format(reason, sizeof(reason), "{FF0000}Cancelled");
-					    case 8: format(reason, sizeof(reason), "{FF0000}Denied");
-					    case 9: format(reason, sizeof(reason), "{FF0000}Cancelled Reversal");
-					    case 10: format(reason, sizeof(reason), "{FF0000}Failed");
-			   			case 11: format(reason, sizeof(reason), "{00FF00}Refundend");
-					    case 12: format(reason, sizeof(reason), "{FF0000}Reversed");
+			   			case 7: format(reason, sizeof(reason), "{FF0000}Da huy");
+					    case 8: format(reason, sizeof(reason), "{FF0000}Tu choi");
+					    case 9: format(reason, sizeof(reason), "{FF0000}Da huy dao nguoc");
+					    case 10: format(reason, sizeof(reason), "{FF0000}That bai");
+			   			case 11: format(reason, sizeof(reason), "{00FF00}Da hoan tien");
+					    case 12: format(reason, sizeof(reason), "{FF0000}Da dao nguoc");
 					    case 13: format(reason, sizeof(reason), "{FF0000}Chargeback");
-					    default: format(reason, sizeof(reason), "{FF0000}Unknown");
+					    default: format(reason, sizeof(reason), "{FF0000}Khong ro");
 					}
-					format(string, sizeof(string), "We are unable to process that order at this time,\nbecause the payment is currently marked as: %s", reason);
-					ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", string, "OK", "");
+					format(string, sizeof(string), "Chua the xu ly don nay,\nvi thanh toan dang duoc danh dau: %s", reason);
+					ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Loi don hang cua hang", string, "Dong y", "");
 	 				return 1;
 				}
 			}
-			ShowPlayerDialogEx(index, DIALOG_SHOPORDER2, DIALOG_STYLE_LIST, "Shop Order List", string, "Select", "Cancel");
+			ShowPlayerDialogEx(index, DIALOG_SHOPORDER2, DIALOG_STYLE_LIST, "Danh sach don Shop", string, "Chon", "Huy");
 		}
 		else
 		{
-		    ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "Error: No orders were found by that Order ID\nIf you are sure that is the correct Order ID, please try again or input '1' for your order ID.", "OK", "");
+		    ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Loi don hang cua hang", "Loi: Khong co don nao voi Order ID nay\nNeu chac Order ID dung, hay thu lai hoac nhap '1' lam order ID.", "Dong y", "");
 		}
 	}
 	return 1;
@@ -1950,7 +1950,7 @@ public OnShopOrder2(index, extraid)
 			  			cache_get_value_name_int(i, "quantity", quantity);
 			  			cache_get_value_name_int(i, "delivered", delivered);
 
-						format(string, sizeof(string), "Order ID: %d\nProduct ID: %d\nProduct: %s\nPrice: %s\nName: %s\nQuantity: %d", \
+						format(string, sizeof(string), "Order ID: %d\nProduct ID: %d\nSan pham: %s\nGia: %s\nTen: %s\nSo luong: %d", \
 						order_id, order_product_id, name, price, user, quantity-delivered);
 
 						SetPVarInt(index, "DShop_order_id", order_id);
@@ -1958,7 +1958,7 @@ public OnShopOrder2(index, extraid)
 						SetPVarString(index, "DShop_name", name);
 						SetPVarInt(index, "DShop_quantity", quantity-delivered);
 
-						ShowPlayerDialogEx(index, DIALOG_SHOPDELIVER, DIALOG_STYLE_LIST, "Shop Order Info", string, "Deliver", "Cancel");
+						ShowPlayerDialogEx(index, DIALOG_SHOPDELIVER, DIALOG_STYLE_LIST, "Thong tin don Shop", string, "Giao hang", "Huy");
 						return 1;
 					}
 					else
@@ -1966,25 +1966,25 @@ public OnShopOrder2(index, extraid)
 						new reason[27];
 						switch(status)
 						{
-						    case 0: format(reason, sizeof(reason), "{FF0000}No Payment");
-						    case 1: format(reason, sizeof(reason), "{FF0000}Pending");
-						    case 3: format(reason, sizeof(reason), "{00FF00}Shipped");
+						    case 0: format(reason, sizeof(reason), "{FF0000}Chua tra");
+						    case 1: format(reason, sizeof(reason), "{FF0000}Dang cho");
+						    case 3: format(reason, sizeof(reason), "{00FF00}Da gui");
 						    case 5:
 							{
-								ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "This order has already been delivered", "OK", "");
+								ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Loi don hang cua hang", "Don nay da giao xong", "Dong y", "");
 								return 1;
 							}
-				   			case 7: format(reason, sizeof(reason), "{FF0000}Cancelled");
-						    case 8: format(reason, sizeof(reason), "{FF0000}Denied");
-						    case 9: format(reason, sizeof(reason), "{FF0000}Cancelled Reversal");
-						    case 10: format(reason, sizeof(reason), "{FF0000}Failed");
-						    case 11: format(reason, sizeof(reason), "{00FF00}Refundend");
-						    case 12: format(reason, sizeof(reason), "{FF0000}Reversed");
+				   			case 7: format(reason, sizeof(reason), "{FF0000}Da huy");
+						    case 8: format(reason, sizeof(reason), "{FF0000}Tu choi");
+						    case 9: format(reason, sizeof(reason), "{FF0000}Da huy dao nguoc");
+						    case 10: format(reason, sizeof(reason), "{FF0000}That bai");
+						    case 11: format(reason, sizeof(reason), "{00FF00}Da hoan tien");
+						    case 12: format(reason, sizeof(reason), "{FF0000}Da dao nguoc");
 						    case 13: format(reason, sizeof(reason), "{FF0000}Chargeback");
-						    default: format(reason, sizeof(reason), "{FF0000}Unknown");
+						    default: format(reason, sizeof(reason), "{FF0000}Khong ro");
 						}
-						format(string, sizeof(string), "We are unable to process that order at this time,\nbecause the payment is currently marked as: %s", reason);
-						ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", string, "OK", "");
+						format(string, sizeof(string), "Chua the xu ly don nay,\nvi thanh toan dang duoc danh dau: %s", reason);
+						ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Loi don hang cua hang", string, "Dong y", "");
 	  					return 1;
 					}
 				}
@@ -1992,7 +1992,7 @@ public OnShopOrder2(index, extraid)
 		}
 		else
 		{
-		    ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "Error: No orders were found by that Order ID\nIf you are sure that is the correct Order ID, please try again or input '1' for your order ID.", "OK", "");
+		    ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Loi don hang cua hang", "Loi: Khong co don nao voi Order ID nay\nNeu chac Order ID dung, hay thu lai hoac nhap '1' lam order ID.", "Dong y", "");
 		}
 	}
 	return 1;
@@ -2011,7 +2011,7 @@ public OnProcessOrderCheck(index, extraid)
 		cache_get_row_count(rows);
 		if(rows)
 		{
-			SendClientMessageEx(index, COLOR_WHITE, "This order has previously been processed, therefore it did not count toward your pay.");
+			SendClientMessageEx(index, COLOR_WHITE, "Don nay da duoc xu ly, khong duoc tinh vao luong cua ban.");
 			format(string, sizeof(string), "%s(IP: %s) has processed shop order ID %d from %s(IP: %s).", GetPlayerNameEx(index), playerip, GetPVarInt(index, "processorder"), GetPlayerNameEx(extraid), giveplayerip);
 			Log("logs/shoporders.log", string);
 		}

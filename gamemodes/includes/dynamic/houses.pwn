@@ -57,8 +57,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							hInviteHouse[hInviteOfferTo[playerid]] = i;
 							hInviteOffer[hInviteOfferTo[playerid]] = playerid;
 							SetPVarInt(hInviteOfferTo[playerid], "hInviteOfferSession", g_arrQueryHandle[playerid]);
-							SendClientMessageEx(hInviteOfferTo[playerid], COLOR_LIGHTBLUE, "   %s has invited you to their house in %s (type /accept invite).", GetPlayerNameEx(playerid), zone);
-							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "   You have invited %s to your house in %s.", GetPlayerNameEx(hInviteOfferTo[playerid]), zone);
+							SendClientMessageEx(hInviteOfferTo[playerid], COLOR_LIGHTBLUE, "   %s moi ban den nha tai %s (dung /accept invite).", GetPlayerNameEx(playerid), zone);
+							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "   Ban da moi %s den nha tai %s.", GetPlayerNameEx(hInviteOfferTo[playerid]), zone);
 							return 1;
 						}
 						j++;
@@ -68,7 +68,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else
 			{
 				hInviteOfferTo[playerid] = INVALID_PLAYER_ID;
-				SendClientMessageEx(playerid, COLOR_GRAD2, "The player you attempted to invite to you house disconnected or timed out.");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi ban moi den nha da ngat ket noi hoac het thoi gian cho.");
 			}
 		}
 	}
@@ -359,7 +359,7 @@ public OnLoadHouse(index)
 		cache_get_value_name_int(row, "Lights", HouseInfo[index][h_iLights]);
 		
 		if(HouseInfo[index][hExteriorX] != 0.0 || HouseInfo[index][hAreaID][0] != INVALID_STREAMER_ID || HouseInfo[index][hAreaID][1] != INVALID_STREAMER_ID) ReloadHousePickup(index);
-		if(HouseInfo[index][hClosetX] != 0.0) HouseInfo[index][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[index][hClosetX], HouseInfo[index][hClosetY], HouseInfo[index][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[index][hIntVW], .interiorid = HouseInfo[index][hIntIW], .streamdistance = 10.0);
+		if(HouseInfo[index][hClosetX] != 0.0) HouseInfo[index][hClosetTextID] = CreateDynamic3DTextLabel("Tu do\n/closet de su dung", 0xFFFFFF88, HouseInfo[index][hClosetX], HouseInfo[index][hClosetY], HouseInfo[index][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[index][hIntVW], .interiorid = HouseInfo[index][hIntIW], .streamdistance = 10.0);
 		if(HouseInfo[index][hMailX] != 0.0) RenderHouseMailbox(index);
 		if(HouseInfo[index][hSignExpire] != 0 && gettime() >= HouseInfo[index][hSignExpire]) 
 		{
@@ -387,10 +387,10 @@ stock ReloadHouseText(houseid)
 	new string[128];
 	if(HouseInfo[houseid][hOwned])
 	{
-		if(HouseInfo[houseid][hRentable]) format(string, sizeof(string), "This house is owned by\n%s\nRent: $%s\nLevel: %d\nID: %d\nType /rentroom to rent a room", StripUnderscore(HouseInfo[houseid][hOwnerName]), number_format(HouseInfo[houseid][hRentFee]), HouseInfo[houseid][hLevel], houseid);
-		else format(string, sizeof(string), "This house is owned by\n%s\nLevel: %d\nID: %d", StripUnderscore(HouseInfo[houseid][hOwnerName]), HouseInfo[houseid][hLevel], houseid);
+		if(HouseInfo[houseid][hRentable]) format(string, sizeof(string), "Nha nay thuoc ve\n%s\nThue: $%s\nCap: %d\nID: %d\nDung /rentroom de thue phong", StripUnderscore(HouseInfo[houseid][hOwnerName]), number_format(HouseInfo[houseid][hRentFee]), HouseInfo[houseid][hLevel], houseid);
+		else format(string, sizeof(string), "Nha nay thuoc ve\n%s\nCap: %d\nID: %d", StripUnderscore(HouseInfo[houseid][hOwnerName]), HouseInfo[houseid][hLevel], houseid);
 	}
-	else format(string, sizeof(string), "This house is\n for sale!\n Description: %s\nCost: $%s\n Level: %d\nID: %d\nTo buy this house type /buyhouse", HouseInfo[houseid][hDescription], number_format(HouseInfo[houseid][hValue]), HouseInfo[houseid][hLevel], houseid);
+	else format(string, sizeof(string), "Nha nay\n dang ban!\n Mo ta: %s\nGia: $%s\n Cap: %d\nID: %d\nDung /buyhouse de mua nha nay", HouseInfo[houseid][hDescription], number_format(HouseInfo[houseid][hValue]), HouseInfo[houseid][hLevel], houseid);
 	UpdateDynamic3DTextLabelText(HouseInfo[houseid][hTextID], HouseInfo[houseid][hInactive] ? COLOR_LIGHTBLUE : COLOR_GREEN, string);
 }
 
@@ -415,12 +415,12 @@ stock ReloadHousePickup(houseid)
 	if(HouseInfo[houseid][hOwned])
 	{
 		if(HouseInfo[houseid][hRentable])
-			format(string, sizeof(string), "This house is owned by\n%s\nRent: $%s\nLevel: %d\nID: %d\nType /rentroom to rent a room", StripUnderscore(HouseInfo[houseid][hOwnerName]), number_format(HouseInfo[houseid][hRentFee]), HouseInfo[houseid][hLevel], houseid);
+			format(string, sizeof(string), "Nha nay thuoc ve\n%s\nThue: $%s\nCap: %d\nID: %d\nDung /rentroom de thue phong", StripUnderscore(HouseInfo[houseid][hOwnerName]), number_format(HouseInfo[houseid][hRentFee]), HouseInfo[houseid][hLevel], houseid);
 		else
-			format(string, sizeof(string), "This house is owned by\n%s\nLevel: %d\nID: %d", StripUnderscore(HouseInfo[houseid][hOwnerName]), HouseInfo[houseid][hLevel], houseid);
+			format(string, sizeof(string), "Nha nay thuoc ve\n%s\nCap: %d\nID: %d", StripUnderscore(HouseInfo[houseid][hOwnerName]), HouseInfo[houseid][hLevel], houseid);
 	}
 	else
-		format(string, sizeof(string), "This house is\n for sale!\n Description: %s\nCost: $%s\n Level: %d\nID: %d\nTo buy this house type /buyhouse", HouseInfo[houseid][hDescription], number_format(HouseInfo[houseid][hValue]), HouseInfo[houseid][hLevel], houseid);
+		format(string, sizeof(string), "Nha nay\n dang ban!\n Mo ta: %s\nGia: $%s\n Cap: %d\nID: %d\nDung /buyhouse de mua nha nay", HouseInfo[houseid][hDescription], number_format(HouseInfo[houseid][hValue]), HouseInfo[houseid][hLevel], houseid);
 
 	HouseInfo[houseid][hTextID] = CreateDynamic3DTextLabel(string, HouseInfo[houseid][hInactive] ? COLOR_LIGHTBLUE : COLOR_GREEN, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[houseid][hExtVW], .interiorid = HouseInfo[houseid][hExtIW], .streamdistance = 10.0);
 	HouseInfo[houseid][hPickupID] = CreateDynamicPickup(HouseInfo[houseid][hInactive] ? 1272 : 1273, 23, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], .worldid = HouseInfo[houseid][hExtVW], .interiorid = HouseInfo[houseid][hExtIW]);
@@ -447,7 +447,7 @@ stock SaveHouses()
 	{
 		SaveHouse(i);
 	}
-	ABroadCastText(COLOR_LIGHTRED, "House saving finished.", 4);
+	ABroadCastText(COLOR_LIGHTRED, "Da luu xong nha.", 4);
 	return 1;
 }
 
@@ -529,11 +529,11 @@ CMD:househelp(playerid, params[])
 CMD:ohousehelp(playerid, params[])
 {
     SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-    SendClientMessageEx(playerid, COLOR_WHITE,"*** HOUSE HELP *** - type a command for more infomation.");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /lockhouse /setrentable /setrent /evict /evictall /sellmyhouse /ringbell");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /hwithdraw /hdeposit /hbalance /getgun /storegun /closet(add/remove) /houseinvite");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /movegate /setgatepass /placemailbox /destroymailbox /getmail /sendmail");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /workbench /houselights");
+    SendClientMessageEx(playerid, COLOR_WHITE,"*** TRO GIUP NHA *** - Nhap lenh de xem chi tiet.");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"*** NHA *** /lockhouse /setrentable /setrent /evict /evictall /sellmyhouse /ringbell");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"*** NHA *** /hwithdraw /hdeposit /hbalance /getgun /storegun /closet(add/remove) /houseinvite");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"*** NHA *** /movegate /setgatepass /placemailbox /destroymailbox /getmail /sendmail");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"*** NHA *** /workbench /houselights");
     return 1;
 }
 
@@ -547,14 +547,14 @@ CMD:renthelp(playerid, params[])
 CMD:orenthelp(playerid, params[])
 {
     SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-    SendClientMessageEx(playerid, COLOR_WHITE,"*** RENTING HELP *** - type a command for more infomation.");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"*** RENT *** /unrent /enter /exit /lock /home");
+    SendClientMessageEx(playerid, COLOR_WHITE,"*** TRO GIUP THUE NHA *** - Nhap lenh de xem chi tiet.");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"*** THUE NHA *** /unrent /enter /exit /lock /home");
     return 1;
 }
 
 CMD:buyhouse(playerid, params[])
 {
-	if(IsPlayerInRangeOfPoint(playerid, 100.0, 1109.0, 1537.0, 5.0) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessage(playerid, COLOR_WHITE, "You cannot use this command in this area!");
+	if(IsPlayerInRangeOfPoint(playerid, 100.0, 1109.0, 1537.0, 5.0) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessage(playerid, COLOR_WHITE, "Khong the dung lenh nay trong khu vuc nay!");
     new string[128];
     new Float:oldposx, Float:oldposy, Float:oldposz;
     GetPlayerPos(playerid, oldposx, oldposy, oldposz);
@@ -562,22 +562,22 @@ CMD:buyhouse(playerid, params[])
 	{
         if(IsPlayerInRangeOfPoint(playerid, 2.0, HouseInfo[h][hExteriorX], HouseInfo[h][hExteriorY], HouseInfo[h][hExteriorZ]) && GetPlayerInterior(playerid) == HouseInfo[h][hExtIW] && GetPlayerVirtualWorld(playerid) == HouseInfo[h][hExtVW])
 		{
-		    if(PlayerInfo[playerid][pFreezeHouse] == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: Your house assets are frozen, you cannot buy a house!");
+		    if(PlayerInfo[playerid][pFreezeHouse] == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Tai san nha cua ban bi dong bang, khong the mua nha!");
             if(HouseInfo[h][hOwned] == 0)
 			{
                 if(PlayerInfo[playerid][pLevel] < HouseInfo[h][hLevel])
 				{
-                    SendClientMessageEx(playerid, COLOR_GRAD5, "   You must be Level %d to purchase this!", HouseInfo[h][hLevel]);
+                    SendClientMessageEx(playerid, COLOR_GRAD5, "   Ban phai dat cap %d de mua!", HouseInfo[h][hLevel]);
                     return 1;
                 }
-				if(Homes[playerid] >= 2 && PlayerInfo[playerid][pDonateRank] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot own another home.");
-				else if(Homes[playerid] >= 3 && PlayerInfo[playerid][pDonateRank] >= 4) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot own another home.");
+				if(Homes[playerid] >= 2 && PlayerInfo[playerid][pDonateRank] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the so huu them nha.");
+				else if(Homes[playerid] >= 3 && PlayerInfo[playerid][pDonateRank] >= 4) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the so huu them nha.");
 				if(GetPlayerCash(playerid) > HouseInfo[h][hValue])
 				{
 					if(PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID) PlayerInfo[playerid][pPhousekey] = h;
 					else if(PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID) PlayerInfo[playerid][pPhousekey2] = h;
 					else if(PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID && PlayerInfo[playerid][pDonateRank] >= 4) PlayerInfo[playerid][pPhousekey3] = h;
-					else return SendClientMessageEx(playerid, COLOR_GREY, "You have no free house slot left.");
+					else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong con o nha trong.");
 
 					HouseInfo[h][hOwned] = 1;
 					HouseInfo[h][hOwnerID] = GetPlayerSQLId(playerid);
@@ -586,10 +586,10 @@ CMD:buyhouse(playerid, params[])
 					GivePlayerCash(playerid,-HouseInfo[h][hValue]);
 					SetPlayerInterior(playerid,HouseInfo[h][hIntIW]);
 					SetPlayerPos(playerid, HouseInfo[h][hInteriorX], HouseInfo[h][hInteriorY], HouseInfo[h][hInteriorZ]);
-					GameTextForPlayer(playerid, "~w~Welcome Home~n~You can exit at any time by moving to this door and typing /exit.", 5000, 3);
+					GameTextForPlayer(playerid, "~w~Chao mung ve nha~n~Den cua nay va dung /exit de ra ngoai bat cu luc nao.", 5000, 3);
 					PlayerInfo[playerid][pInt] = HouseInfo[h][hIntIW];
-					SendClientMessageEx(playerid, COLOR_WHITE, "Congratulations on your new purchase!");
-					SendClientMessageEx(playerid, COLOR_WHITE, "Type /help to review the property help section!");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Chuc mung ban da mua nha moi!");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Dung /help de xem muc tro giup bat dong san!");
 					SaveHouse(h);
 					OnPlayerStatsUpdate(playerid);
 					PlayerInfo[playerid][pVW] = HouseInfo[h][hIntVW];
@@ -600,9 +600,9 @@ CMD:buyhouse(playerid, params[])
 					if(HouseInfo[h][hCustomInterior] == 1) Player_StreamPrep(playerid, HouseInfo[h][hInteriorX],HouseInfo[h][hInteriorY],HouseInfo[h][hInteriorZ], FREEZE_TIME);
 					return 1;
 				}
-				else return SendClientMessageEx(playerid, COLOR_GREY, "   You don't have the cash for that!");
+				else return SendClientMessageEx(playerid, COLOR_GREY, "   Ban khong du tien mat!");
             }
-            else return SendClientMessageEx(playerid, COLOR_GREY, "This house is owned.");
+            else return SendClientMessageEx(playerid, COLOR_GREY, "Nha nay da co chu.");
         }
     }
     return 1;
@@ -621,20 +621,20 @@ CMD:rentroom(playerid, params[])
 		{
             if(!strcmp(HouseInfo[h][hOwnerName], "Nobody", true))
 			{
-                SendClientMessageEx( playerid, COLOR_WHITE, "You can't rent an unowned house." );
+                SendClientMessageEx( playerid, COLOR_WHITE, "Khong the thue nha chua co chu." );
             }
             else
 			{
                 if(PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(playerid))
 				{
-                    SendClientMessageEx(playerid, COLOR_WHITE, "   You already own a house, type /sellmyhouse if you want to rent this one.");
+                    SendClientMessageEx(playerid, COLOR_WHITE, "   Ban da co nha, dung /sellmyhouse neu muon thue nha nay.");
                     return 1;
                 }
                 if(GetPlayerCash(playerid) > HouseInfo[h][hRentFee])
 				{
                     if( HouseInfo[h][hRentable] == 0 )
 					{
-                        SendClientMessageEx(playerid, COLOR_WHITE, "This house is not rentable.");
+                        SendClientMessageEx(playerid, COLOR_WHITE, "Nha nay khong cho thue.");
                         return 1;
                     }
                     else
@@ -644,12 +644,12 @@ CMD:rentroom(playerid, params[])
                         HouseInfo[h][hSafeMoney] = HouseInfo[h][hSafeMoney]+HouseInfo[h][hRentFee];
                         SetPlayerInterior(playerid,HouseInfo[h][hIntIW]);
                         SetPlayerPos(playerid,HouseInfo[h][hInteriorX],HouseInfo[h][hInteriorY],HouseInfo[h][hInteriorZ]);
-                        GameTextForPlayer(playerid, "~w~Welcome Home~n~You can exit at any time by moving to this door and typing /exit.", 5000, 3);
+                        GameTextForPlayer(playerid, "~w~Chao mung ve nha~n~Den cua nay va dung /exit de ra ngoai bat cu luc nao.", 5000, 3);
                         PlayerInfo[playerid][pInt] = HouseInfo[h][hIntIW];
                         PlayerInfo[playerid][pVW] = HouseInfo[h][hIntVW];
                         SetPlayerVirtualWorld(playerid,HouseInfo[h][hIntVW]);
-                        SendClientMessageEx(playerid, COLOR_WHITE, "Congratulations. You can enter and exit here any time you want.");
-                        SendClientMessageEx(playerid, COLOR_WHITE, "Type /help to review the property help section.");
+                        SendClientMessageEx(playerid, COLOR_WHITE, "Chuc mung. Ban co the ra vao day bat cu luc nao.");
+                        SendClientMessageEx(playerid, COLOR_WHITE, "Dung /help de xem muc tro giup bat dong san.");
                         OnPlayerStatsUpdate(playerid);
                         //new ip[32];
                         //GetPlayerIp(playerid,ip,sizeof(ip));
@@ -661,7 +661,7 @@ CMD:rentroom(playerid, params[])
                 }
                 else
 				{
-                    SendClientMessageEx(playerid, COLOR_WHITE, "You don't have the cash for that.");
+                    SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du tien mat.");
                     return 1;
                 }
             }
@@ -676,13 +676,13 @@ CMD:unrent(playerid, params[])
     GetPlayerName(playerid, playername, sizeof(playername));
     if(PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(playerid))
 	{
-        SendClientMessageEx(playerid, COLOR_WHITE, "   You own this house!");
+        SendClientMessageEx(playerid, COLOR_WHITE, "   Ban la chu nha nay!");
         return 1;
     }
     if( PlayerInfo[playerid][pRenting] != INVALID_HOUSE_ID )
 	{
         PlayerInfo[playerid][pRenting] = INVALID_HOUSE_ID;
-        SendClientMessageEx(playerid, COLOR_WHITE, "You are now homeless.");
+        SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong con cho o.");
     }
     return 1;
 }
@@ -697,12 +697,12 @@ CMD:ringbell(playerid, params[])
 		foreach(new i: Player)
 		{
 			if((IsPlayerInRangeOfPoint(i, 15.0, HouseInfo[h][hInteriorX], HouseInfo[h][hInteriorY], HouseInfo[h][hInteriorZ])) && GetPlayerVirtualWorld(i) == HouseInfo[h][hIntVW] && GetPlayerInterior(i) == HouseInfo[h][hIntIW]) {
-				SendClientMessageEx(i,COLOR_PURPLE,"%s's doorbell rings.", StripUnderscore(HouseInfo[h][hOwnerName]));
-				GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~w~The doorbell rings...", 4000,3);
+				SendClientMessageEx(i,COLOR_PURPLE,"Chuong nha %s reo.", StripUnderscore(HouseInfo[h][hOwnerName]));
+				GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~w~Chuong cua reo...", 4000,3);
 				break;
 			}
 		}
-		format(string,sizeof(string),"* %s presses a button next to the door, ringing the doorbell of %s's house.", GetPlayerNameEx(playerid), StripUnderscore(HouseInfo[h][hOwnerName]));
+		format(string,sizeof(string),"* %s bam nut canh cua, lam chuong nha %s reo.", GetPlayerNameEx(playerid), StripUnderscore(HouseInfo[h][hOwnerName]));
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	}
 	return 1;
@@ -710,52 +710,52 @@ CMD:ringbell(playerid, params[])
 
 CMD:home(playerid, params[])
 {
-	if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
-	if(!Homes[playerid]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't own a home!"), GameTextForPlayer(playerid, "~w~You are homeless", 5000, 1);
+	if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Hay huy checkpoint hien tai truoc (ban dang giu goi vat lieu hoac co checkpoint khac).");
+	if(!Homes[playerid]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong so huu nha!"), GameTextForPlayer(playerid, "~w~Ban khong co nha", 5000, 1);
 	new home;
-	if(sscanf(params, "d", home) || !(1 <= home <= 3)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /home [1, 2 or 3]");
+	if(sscanf(params, "d", home) || !(1 <= home <= 3)) return SendClientMessageEx(playerid, COLOR_GRAD2, "CACH DUNG: /home [1, 2 or 3]");
 	switch(home)
 	{
 		case 1:
 		{
-			if(PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You do not own a house in that slot.");
+			if(PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co nha tai o do.");
 			SetPlayerCheckpoint(playerid,HouseInfo[PlayerInfo[playerid][pPhousekey]][hExteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey]][hExteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey]][hExteriorZ], 4.0);
 			SetPVarInt(playerid, "hInviteHouse", PlayerInfo[playerid][pPhousekey]);
 		}
 		case 2:
 		{
-			if(PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You do not own a house in that slot.");
+			if(PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co nha tai o do.");
 			SetPlayerCheckpoint(playerid,HouseInfo[PlayerInfo[playerid][pPhousekey2]][hExteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hExteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hExteriorZ], 4.0);
 			SetPVarInt(playerid, "hInviteHouse", PlayerInfo[playerid][pPhousekey2]);
 		}
 		case 3:
 		{
-			if(PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You do not own a house in that slot.");
+			if(PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co nha tai o do.");
 			SetPlayerCheckpoint(playerid,HouseInfo[PlayerInfo[playerid][pPhousekey3]][hExteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hExteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hExteriorZ], 4.0);
 			SetPVarInt(playerid, "hInviteHouse", PlayerInfo[playerid][pPhousekey3]);
 		}
 	}
-	GameTextForPlayer(playerid, "~w~Waypoint set ~r~Home", 5000, 1);
+	GameTextForPlayer(playerid, "~w~Da danh dau ~r~Nha", 5000, 1);
 	gPlayerCheckpointStatus[playerid] = CHECKPOINT_HOME;
     return 1;
 }
 
 CMD:sellmyhouse(playerid, params[])
 {
-	if(servernumber == 2) return SendClientMessage(playerid, COLOR_WHITE, "This command is disabled!");
+	if(servernumber == 2) return SendClientMessage(playerid, COLOR_WHITE, "Lenh nay da bi tat!");
 	if(Homes[playerid] > 0)
 	{
-		if(PlayerInfo[playerid][pFreezeHouse] == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: Your house assets are frozen, you cannot sell your house!");
+		if(PlayerInfo[playerid][pFreezeHouse] == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Tai san nha cua ban bi dong bang, khong the ban nha!");
 		new giveplayerid, price;
-		if(sscanf(params, "ud", giveplayerid, price)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellmyhouse [player] [price]");
-		if(price < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Price must be higher than 0.");
-		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Player is currently not connected to the server.");
-		if(Homes[giveplayerid] >= MAX_OWNABLE_HOUSES && PlayerInfo[giveplayerid][pDonateRank] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "They cannot own another home.");
-		if(Homes[giveplayerid] >= 3) return SendClientMessageEx(playerid, COLOR_GREY, "They cannot own another home.");		
+		if(sscanf(params, "ud", giveplayerid, price)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /sellmyhouse [player] [price]");
+		if(price < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Gia phai lon hon 0.");
+		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi hien khong ket noi may chu.");
+		if(Homes[giveplayerid] >= MAX_OWNABLE_HOUSES && PlayerInfo[giveplayerid][pDonateRank] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "Ho khong the so huu them nha.");
+		if(Homes[giveplayerid] >= 3) return SendClientMessageEx(playerid, COLOR_GREY, "Ho khong the so huu them nha.");		
 		if(PlayerInfo[giveplayerid][pFreezeHouse] == 1)
 		{
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, "ERROR: Your house assets are frozen, you cannot buy a house!");
-			SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: Their house assets are frozen, you cannot sell them a house!");
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "LOI: Tai san nha cua ban bi dong bang, khong the mua nha!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Tai san nha cua ho bi dong bang, khong the ban nha cho ho!");
 			return 1;
 		}
 
@@ -770,25 +770,25 @@ CMD:sellmyhouse(playerid, params[])
 						if(PlayerInfo[playerid][pBackpack] > 0 && HouseInfo[i][hSQLId] == PlayerInfo[playerid][pBStoredH] && !GetPVarInt(playerid, "confirmhousell")) 
 						{
 							SetPVarInt(playerid, "confirmhousell", 1);
-							return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You have a backpack stored in this house, withdraw it first or you will lose it, please confirm!");
+							return SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Ban con backpack trong nha nay, hay lay ra truoc de tranh mat, vui long xac nhan!");
 						}
 						HouseOffer[giveplayerid] = playerid;
 						SetPVarInt(giveplayerid, "HouseOfferSession", g_arrQueryHandle[playerid]);
 						HousePrice[giveplayerid] = price;
 						House[giveplayerid] = i;
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to buy your house for $%s.", GetPlayerNameEx(giveplayerid), number_format(price));
-						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s has offered you their house for $%s, (type /accept house) to buy.", GetPlayerNameEx(playerid), number_format(price));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Moi %s mua nha cua ban voi gia $%s.", GetPlayerNameEx(giveplayerid), number_format(price));
+						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s de nghi ban mua nha voi gia $%s, dung (/accept house) de mua.", GetPlayerNameEx(playerid), number_format(price));
 						DeletePVar(playerid, "confirmhousell");
 						return 1;
 					}
-					else return SendClientMessageEx(playerid, COLOR_GREY, "That person is not near you.");
+					else return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 				}
-				else return SendClientMessageEx(playerid, COLOR_GREY, "The person you are trying to sell your house to is not the appropriate level to buy this house.");
+				else return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi ban muon ban nha chua du cap de mua nha nay.");
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You are not at a house that you own.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o tai nha cua minh.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu nha.");
     return 1;
 }
 
@@ -800,7 +800,7 @@ CMD:asellhouse(playerid, params[])
 		GetPlayerName(playerid, playername, sizeof(playername));
 
 		new string[128], house;
-		if(sscanf(params, "d", house)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /asellhouse [houseid]");
+		if(sscanf(params, "d", house)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /asellhouse [houseid]");
 
 		HouseInfo[house][hLock] = 1;
 		foreach(new p : Player) {
@@ -818,7 +818,7 @@ CMD:asellhouse(playerid, params[])
 		HouseInfo[house][hOwnerID] = -1;
 		HouseInfo[house][hGLUpgrade] = 1;
 		PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-		format(string, sizeof(string), "~w~You have sold house %d.", house);
+		format(string, sizeof(string), "~w~Ban da ban nha %d.", house);
 		GameTextForPlayer(playerid, string, 10000, 3);
 		SaveHouse(house);
 		ReloadHousePickup(house);
@@ -826,7 +826,7 @@ CMD:asellhouse(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -836,17 +836,17 @@ CMD:goinhouse(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new housenum;
-		if(sscanf(params, "d", housenum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /goinhouse [housenumber]");
+		if(sscanf(params, "d", housenum)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /goinhouse [housenumber]");
 
 		if(housenum <= 0 || housenum >= MAX_HOUSES)
 		{
-			return SendClientMessageEx(playerid, COLOR_GREY, "House ID must be between 1 and %d.", MAX_HOUSES - 1);
+			return SendClientMessageEx(playerid, COLOR_GREY, "ID nha phai tu 1 den %d.", MAX_HOUSES - 1);
 		}
 
 		House_VistorCheck(housenum);
 		SetPlayerInterior(playerid,HouseInfo[housenum][hIntIW]);
 		SetPlayerPos(playerid, HouseInfo[housenum][hInteriorX], HouseInfo[housenum][hInteriorY], HouseInfo[housenum][hInteriorZ]);
-		GameTextForPlayer(playerid, "~w~Teleporting", 5000, 1);
+		GameTextForPlayer(playerid, "~w~Dang dich chuyen", 5000, 1);
 		PlayerInfo[playerid][pInt] = HouseInfo[housenum][hIntIW];
 		PlayerInfo[playerid][pVW] = HouseInfo[housenum][hIntVW];
   		SetPlayerVirtualWorld(playerid,HouseInfo[housenum][hIntVW]);
@@ -860,11 +860,11 @@ CMD:gotohouse(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new housenum;
-		if(sscanf(params, "d", housenum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotohouse [housenumber]");
+		if(sscanf(params, "d", housenum)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gotohouse [housenumber]");
 
 		if(housenum <= 0 || housenum >= MAX_HOUSES)
 		{
-			return SendClientMessageEx(playerid, COLOR_GREY, "House ID must be between 1 and %d.", MAX_HOUSES - 1);
+			return SendClientMessageEx(playerid, COLOR_GREY, "ID nha phai tu 1 den %d.", MAX_HOUSES - 1);
 		}
 
 		SetPlayerPos(playerid, HouseInfo[housenum][hExteriorX], HouseInfo[housenum][hExteriorY], HouseInfo[housenum][hExteriorZ]);
@@ -872,7 +872,7 @@ CMD:gotohouse(playerid, params[])
 		SetPlayerInterior(playerid,HouseInfo[housenum][hExtIW]);
 		PlayerInfo[playerid][pVW] = HouseInfo[housenum][hExtVW];
   		SetPlayerVirtualWorld(playerid,HouseInfo[housenum][hExtVW]);
-		GameTextForPlayer(playerid, "~w~Teleporting", 5000, 1);
+		GameTextForPlayer(playerid, "~w~Dang dich chuyen", 5000, 1);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
 	}
@@ -883,19 +883,19 @@ CMD:hnext(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available house...");
+		SendClientMessageEx(playerid, COLOR_RED, "* Dang tim nha trong tiep theo...");
 		for(new x;x<MAX_HOUSES;x++)
 		{
 		    if(HouseInfo[x][hExteriorX] == 0.0) // If the house is at blueberry!
 		    {
-		        SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", x);
+		        SendClientMessageEx(playerid, COLOR_WHITE, "%d co the su dung.", x);
 		        break;
 			}
 		}
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	    SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 	return 1;
@@ -905,15 +905,15 @@ CMD:hname(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new string[128], houseid, ownername[24];
-	if(sscanf(params, "ds[24]", houseid, ownername)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hname [houseid] [name]");
+	if(sscanf(params, "ds[24]", houseid, ownername)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /hname [houseid] [name]");
 
 	format(HouseInfo[houseid][hOwnerName], 24, "%s", ownername);
-	format(string, sizeof(string), "You have set the house owner to %s", ownername);
+	format(string, sizeof(string), "Da dat chu nha la %s", ownername);
 	HouseInfo[houseid][hOwned] = 1;
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
 	ReloadHouseText(houseid);
@@ -929,22 +929,22 @@ CMD:hedit(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new string[128], choice[32], houseid, amount;
 	if(sscanf(params, "s[32]dD(0)", choice, houseid, amount))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hedit [name] [houseid] [(Optional)amount]");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Exterior, Interior, VW, CustomInterior, CustomExterior, Class (1-3), Level, Price, Delete, Ignore");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /hedit [name] [houseid] [(Optional)amount]");
+		SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: Exterior, Interior, VW, CustomInterior, CustomExterior, Class (1-3), Level, Price, Delete, Ignore");
 		return 1;
 	}
 
 	if(strcmp(choice, "ignore", true) == 0)
 	{
-		if(PlayerInfo[playerid][pAdmin] < 99999) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
-		SendClientMessageEx(playerid, COLOR_WHITE, HouseInfo[houseid][hIgnore] ? ("House set to be checked in Inactive Player Resource checks!"):("House set to be ignored from Inactive Player Resource checks!"));
+		if(PlayerInfo[playerid][pAdmin] < 99999) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
+		SendClientMessageEx(playerid, COLOR_WHITE, HouseInfo[houseid][hIgnore] ? ("Da bat kiem tra nha trong Inactive Player Resource!"):("Da bo qua nha trong kiem tra Inactive Player Resource!"));
 		HouseInfo[houseid][hIgnore] = !HouseInfo[houseid][hIgnore];
 		HouseInfo[houseid][hInactive] = 0;
 		HouseInfo[houseid][hExpire] = 0;
@@ -956,7 +956,7 @@ CMD:hedit(playerid, params[])
 	}
 	else if(strcmp(choice, "delete", true) == 0)
 	{
-		if(HouseInfo[houseid][hExteriorX] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This house does not exist!");
+		if(HouseInfo[houseid][hExteriorX] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nha nay khong ton tai!");
 		// Do not reset the SQL ID as the house still exists but is not owned by any player and it isn't spawned
 		HouseInfo[houseid][hOwned] = 0;
 		HouseInfo[houseid][hLevel] = 0;
@@ -1008,7 +1008,7 @@ CMD:hedit(playerid, params[])
 		if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hClosetTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hClosetTextID]);
 		ReloadHousePickup(houseid);
 		SaveHouse(houseid);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted house id %d.", houseid);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa nha ID %d.", houseid);
 		format(string, sizeof(string), "%s has deleted house id %d", GetPlayerNameEx(playerid), houseid);
 		Log("logs/hedit.log", string);
 		return true;
@@ -1023,7 +1023,7 @@ CMD:hedit(playerid, params[])
 		GetPlayerFacingAngle(playerid, HouseInfo[houseid][hInteriorA]);
 		HouseInfo[houseid][hIntIW] = GetPlayerInterior( playerid );
 		HouseInfo[houseid][hIntVW] = houseid+6000;
-		SendClientMessageEx( playerid, COLOR_WHITE, "You have changed the interior!" );
+		SendClientMessageEx( playerid, COLOR_WHITE, "Ban da doi noi that!" );
 		SaveHouse(houseid);
 		ReloadHousePickup(houseid);
 		return 1;
@@ -1033,12 +1033,12 @@ CMD:hedit(playerid, params[])
 		if(HouseInfo[houseid][hCustomInterior] == 0)
 		{
 			HouseInfo[houseid][hCustomInterior] = 1;
-			SendClientMessageEx( playerid, COLOR_WHITE, "House set to custom interior!" );
+			SendClientMessageEx( playerid, COLOR_WHITE, "Da dat nha dung noi that tu tao!" );
 		}
 		else
 		{
 			HouseInfo[houseid][hCustomInterior] = 0;
-			SendClientMessageEx( playerid, COLOR_WHITE, "House set to normal (not custom) interior!" );
+			SendClientMessageEx( playerid, COLOR_WHITE, "Da dat nha dung noi that thuong!" );
 		}
 		SaveHouse(houseid);
 		ReloadHousePickup(houseid);
@@ -1052,12 +1052,12 @@ CMD:hedit(playerid, params[])
 		if(HouseInfo[houseid][hCustomExterior] == 0)
 		{
 			HouseInfo[houseid][hCustomExterior] = 1;
-			SendClientMessageEx( playerid, COLOR_WHITE, "House set to custom exterior!" );
+			SendClientMessageEx( playerid, COLOR_WHITE, "Da dat nha dung ben ngoai tu tao!" );
 		}
 		else
 		{
 			HouseInfo[houseid][hCustomExterior] = 0;
-			SendClientMessageEx( playerid, COLOR_WHITE, "House set to normal (not custom) exterior!" );
+			SendClientMessageEx( playerid, COLOR_WHITE, "Da dat nha dung ben ngoai thuong!" );
 		}
 		SaveHouse(houseid);
 		ReloadHousePickup(houseid);
@@ -1076,7 +1076,7 @@ CMD:hedit(playerid, params[])
 		GetPlayerFacingAngle(playerid, HouseInfo[houseid][hExteriorA]);
 		HouseInfo[houseid][hExtIW] = GetPlayerInterior(playerid);
 		HouseInfo[houseid][hExtVW] = GetPlayerVirtualWorld(playerid);
-		SendClientMessageEx( playerid, COLOR_WHITE, "You have changed the exterior!" );
+		SendClientMessageEx( playerid, COLOR_WHITE, "Ban da doi vi tri ben ngoai!" );
 		SaveHouse(houseid);
 		ReloadHousePickup(houseid);
 	}
@@ -1084,7 +1084,7 @@ CMD:hedit(playerid, params[])
 	{
 		HouseInfo[houseid][hIntVW] = amount;
 
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the home's interior VW to %d.", amount);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi VW ben trong nha thanh %d.", amount);
 
 		SaveHouse(houseid);
 		ReloadHousePickup(houseid);
@@ -1095,7 +1095,7 @@ CMD:hedit(playerid, params[])
 	else if(strcmp(choice, "level", true) == 0)
 	{
 		HouseInfo[houseid][hLevel] = amount;
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the house level to %d.", amount);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da dat cap nha la %d.", amount);
 		ReloadHouseText(houseid);
 		format(string, sizeof(string), "%s has edited HouseID %d's Level to %d.", GetPlayerNameEx(playerid), houseid, amount);
 		Log("logs/hedit.log", string);
@@ -1103,7 +1103,7 @@ CMD:hedit(playerid, params[])
 	else if(strcmp(choice, "price", true) == 0)
 	{
 		HouseInfo[houseid][hValue] = amount;
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the houses price to $%d.", amount);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da dat gia nha la $%d.", amount);
 		ReloadHouseText(houseid);
 
 		format(string, sizeof(string), "%s has edited HouseID %d's Price to $%d.", GetPlayerNameEx(playerid), houseid, amount);
@@ -1116,22 +1116,22 @@ CMD:hedit(playerid, params[])
 		case 1:
 			{
 				format(HouseInfo[houseid][hDescription], 128, "Low" );
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have set the house's class to 1 (Low)" );
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da dat hang nha la 1 (Low)" );
 			}
 		case 2:
 			{
 				format(HouseInfo[houseid][hDescription], 128, "Medium" );
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have set the house's class to 2 (Medium)" );
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da dat hang nha la 2 (Medium)" );
 			}
 		case 3:
 			{
 				format(HouseInfo[houseid][hDescription], 128, "High" );
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have set the house's class to 3 (High)" );
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da dat hang nha la 3 (High)" );
 			}
 		}
 		if(HouseInfo[houseid][hOwned] ==0)
 		{
-			format(string, sizeof(string), "This home is\n for sale!\n Description: %s\nCost: $%d\n Level: %d\nID: %d\nTo buy this house type /buyhouse",HouseInfo[houseid][hDescription],HouseInfo[houseid][hValue],HouseInfo[houseid][hLevel],houseid);
+			format(string, sizeof(string), "Nha nay\n dang ban!\n Mo ta: %s\nGia: $%d\n Cap: %d\nID: %d\nDung /buyhouse de mua nha nay",HouseInfo[houseid][hDescription],HouseInfo[houseid][hValue],HouseInfo[houseid][hLevel],houseid);
 			UpdateDynamic3DTextLabelText(HouseInfo[houseid][hTextID], COLOR_GREEN, string);
 		}
 
@@ -1144,13 +1144,13 @@ CMD:hedit(playerid, params[])
 
 CMD:shophouse(playerid, params[])
 {
-	if(PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 
 	new string[128], choice[32], houseid, amount, invoice[64];
 	if(sscanf(params, "s[32]dD(0)s[64]", choice, houseid, amount, invoice))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shophouse [name] [houseid] [amount] [invoice #]");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Exterior, Interior, CustomInterior, Class (1-3), Level, Price");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /shophouse [name] [houseid] [amount] [invoice #]");
+		SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: Exterior, Interior, CustomInterior, Class (1-3), Level, Price");
 		return 1;
 	}
 
@@ -1159,7 +1159,7 @@ CMD:shophouse(playerid, params[])
 		GetPlayerPos( playerid, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ] );
 		HouseInfo[houseid][hIntIW] = GetPlayerInterior( playerid );
 		HouseInfo[houseid][hIntVW] = houseid+6000;
-		SendClientMessageEx( playerid, COLOR_WHITE, "You have changed the interior!" );
+		SendClientMessageEx( playerid, COLOR_WHITE, "Ban da doi noi that!" );
 		SaveHouse(houseid);
 		return 1;
 	}
@@ -1168,12 +1168,12 @@ CMD:shophouse(playerid, params[])
 		if(HouseInfo[houseid][hCustomInterior] == 0)
 		{
 			HouseInfo[houseid][hCustomInterior] = 1;
-			SendClientMessageEx( playerid, COLOR_WHITE, "House set to custom interior!" );
+			SendClientMessageEx( playerid, COLOR_WHITE, "Da dat nha dung noi that tu tao!" );
 		}
 		else
 		{
 			HouseInfo[houseid][hCustomInterior] = 0;
-			SendClientMessageEx( playerid, COLOR_WHITE, "House set to normal (not custom) interior!" );
+			SendClientMessageEx( playerid, COLOR_WHITE, "Da dat nha dung noi that thuong!" );
 		}
 		SaveHouse(houseid);
 		return 1;
@@ -1183,12 +1183,12 @@ CMD:shophouse(playerid, params[])
 		if(HouseInfo[houseid][hCustomExterior] == 0)
 		{
 			HouseInfo[houseid][hCustomExterior] = 1;
-			SendClientMessageEx( playerid, COLOR_WHITE, "House set to custom exterior!" );
+			SendClientMessageEx( playerid, COLOR_WHITE, "Da dat nha dung ben ngoai tu tao!" );
 		}
 		else
 		{
 			HouseInfo[houseid][hCustomExterior] = 0;
-			SendClientMessageEx( playerid, COLOR_WHITE, "House set to normal (not custom) exterior!" );
+			SendClientMessageEx( playerid, COLOR_WHITE, "Da dat nha dung ben ngoai thuong!" );
 		}
 		SaveHouse(houseid);
 		return 1;
@@ -1198,20 +1198,20 @@ CMD:shophouse(playerid, params[])
 		GetPlayerPos( playerid, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ] );
 		HouseInfo[houseid][hExtIW] = GetPlayerInterior(playerid);
 		HouseInfo[houseid][hExtVW] = GetPlayerVirtualWorld(playerid);
-		SendClientMessageEx( playerid, COLOR_WHITE, "You have changed the exterior!" );
+		SendClientMessageEx( playerid, COLOR_WHITE, "Ban da doi vi tri ben ngoai!" );
 		SaveHouse(houseid);
 		ReloadHousePickup(houseid);
 	}
 	else if(strcmp(choice, "level", true) == 0)
 	{
 		HouseInfo[houseid][hLevel] = amount;
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the house level to %d.", amount);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da dat cap nha la %d.", amount);
 		ReloadHouseText(houseid);
 	}
 	else if(strcmp(choice, "price", true) == 0)
 	{
 		HouseInfo[houseid][hValue] = amount;
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the houses price to $%d.", amount);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da dat gia nha la $%d.", amount);
 		ReloadHouseText(houseid);
 	}
 	else if(strcmp(choice, "class", true) == 0)
@@ -1221,22 +1221,22 @@ CMD:shophouse(playerid, params[])
 		case 1:
 			{
 				format(HouseInfo[houseid][hDescription], 128, "Low" );
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have set the house's class to 1 (Low)" );
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da dat hang nha la 1 (Low)" );
 			}
 		case 2:
 			{
 				format(HouseInfo[houseid][hDescription], 128, "Medium" );
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have set the house's class to 2 (Medium)" );
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da dat hang nha la 2 (Medium)" );
 			}
 		case 3:
 			{
 				format(HouseInfo[houseid][hDescription], 128, "High" );
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have set the house's class to 3 (High)" );
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da dat hang nha la 3 (High)" );
 			}
 		}
 		if(HouseInfo[houseid][hOwned] ==0)
 		{
-			format(string, sizeof(string), "This home is\n for sale!\n Description: %s\nCost: $%d\n Level: %d\nID: %d\nTo buy this house type /buyhouse",HouseInfo[houseid][hDescription],HouseInfo[houseid][hValue],HouseInfo[houseid][hLevel],houseid);
+			format(string, sizeof(string), "Nha nay\n dang ban!\n Mo ta: %s\nGia: $%d\n Cap: %d\nID: %d\nDung /buyhouse de mua nha nay",HouseInfo[houseid][hDescription],HouseInfo[houseid][hValue],HouseInfo[houseid][hLevel],houseid);
 			UpdateDynamic3DTextLabelText(HouseInfo[houseid][hTextID], COLOR_GREEN, string);
 		}
 	}
@@ -1250,14 +1250,14 @@ CMD:shophousename(playerid, params[])
 {
 	if(PlayerInfo[playerid][pShopTech] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new string[128], houseid, ownername[MAX_PLAYER_NAME], invoice[64];
-	if(sscanf(params, "ds[24]s[64]", houseid, ownername, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shophousename [houseid] [name] [invoice]");
+	if(sscanf(params, "ds[24]s[64]", houseid, ownername, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /shophousename [houseid] [name] [invoice]");
 	format(HouseInfo[houseid][hOwnerName], sizeof(ownername), "%s", ownername);
-	format(string, sizeof(string), "You have set the house owner to %s", ownername);
+	format(string, sizeof(string), "Da dat chu nha la %s", ownername);
 	HouseInfo[houseid][hOwned] = 1;
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
 	DestroyDynamicPickup(HouseInfo[houseid][hPickupID]);
@@ -1276,26 +1276,26 @@ CMD:houseinvite(playerid, params[])
 	if(Homes[playerid] > 0)
 	{
 		new giveplayerid, hstring[1024], title[64], zone[MAX_ZONE_NAME];
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /houseinvite [player]");
-		if(gettime()-GetPVarInt(playerid, "LastHouseInvite") < 15) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use /houseinvite once every 15 seconds, please wait!");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /houseinvite [player]");
+		if(gettime()-GetPVarInt(playerid, "LastHouseInvite") < 15) return SendClientMessageEx(playerid, COLOR_GRAD2, "Chi duoc dung /houseinvite moi 15 giay, vui long cho!");
 		if(giveplayerid != INVALID_PLAYER_ID)
 		{
 			hInviteOfferTo[playerid] = giveplayerid;
 			SetPVarInt(playerid, "HouseInviteTargetSession", g_arrQueryHandle[giveplayerid]);
-			format(title, sizeof(title), "House Invite for %s", GetPlayerNameEx(giveplayerid));
+			format(title, sizeof(title), "Loi moi den nha cho %s", GetPlayerNameEx(giveplayerid));
 			for(new i; i < MAX_HOUSES; i++)
 			{
 				if(GetPlayerSQLId(playerid) == HouseInfo[i][hOwnerID])
 				{
 					Get3DZone(HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ], zone, MAX_ZONE_NAME);
-					format(hstring, sizeof(hstring), "%s\nHouse ID %d - Location: %s", hstring, i, zone);
+					format(hstring, sizeof(hstring), "%s\nNha ID %d - Vi tri: %s", hstring, i, zone);
 				}
 			}
-			ShowPlayerDialogEx(playerid, DIALOG_HOUSEINVITE, DIALOG_STYLE_LIST, title, hstring, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_HOUSEINVITE, DIALOG_STYLE_LIST, title, hstring, "Chon", "Huy");
 		}
-		else return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
+		else return SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi choi khong hop le.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu nha.");
 	return 1;
 }
 
@@ -1314,19 +1314,19 @@ CMD:setrentable(playerid, params[])
 				{
 					HouseInfo[i][hRentable] = 1;
 					ReloadHouseText(i);
-					return SendClientMessageEx(playerid, COLOR_WHITE, "This house is now rentable.");
+					return SendClientMessageEx(playerid, COLOR_WHITE, "Nha nay da cho phep thue.");
 				}
 				else
 				{
 					HouseInfo[i][hRentable] = 0;
 					ReloadHouseText(i);
-					return SendClientMessageEx(playerid, COLOR_WHITE, "This house is no longer rentable." );
+					return SendClientMessageEx(playerid, COLOR_WHITE, "Nha nay khong con cho thue." );
 				}
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not at a house that you own.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o tai nha cua minh.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu nha.");
 	return 1;
 }
 
@@ -1340,21 +1340,21 @@ CMD:setrent(playerid, params[])
 			if(GetPlayerSQLId(playerid) == HouseInfo[i][hOwnerID] && ((IsPlayerInRangeOfPoint(playerid, 5.0, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hExtVW] && GetPlayerInterior(playerid) == HouseInfo[i][hExtIW]) ||
 			(IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[i][hIntIW])))
 			{
-				if(sscanf(params, "d", fee)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setrent [fee]");
-				if(!(1 <= fee <= 10000)) return SendClientMessageEx(playerid, COLOR_WHITE, "Minimum rent is $1, maximum rent is $10,000.");
+				if(sscanf(params, "d", fee)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /setrent [fee]");
+				if(!(1 <= fee <= 10000)) return SendClientMessageEx(playerid, COLOR_WHITE, "Tien thue toi thieu $1, toi da $10,000.");
 				else
 				{
 					HouseInfo[i][hRentFee] = fee;
-					SendClientMessageEx(playerid, COLOR_WHITE, "You have set your house's rent fee to $%s.", number_format(HouseInfo[i][hRentFee]));
+					SendClientMessageEx(playerid, COLOR_WHITE, "Da dat tien thue nha la $%s.", number_format(HouseInfo[i][hRentFee]));
 
 					ReloadHouseText(i);
 					return 1;
 				}
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not at a house that you own.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o tai nha cua minh.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu nha.");
 	return 1;
 }
 
@@ -1368,27 +1368,27 @@ CMD:evict(playerid, params[])
 			if(GetPlayerSQLId(playerid) == HouseInfo[i][hOwnerID] && ((IsPlayerInRangeOfPoint(playerid, 5.0, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hExtVW] && GetPlayerInterior(playerid) == HouseInfo[i][hExtIW]) ||
 			(IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[i][hIntIW])))
 			{
-				if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /evict [player]");
+				if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /evict [player]");
 				if(IsPlayerConnected(giveplayerid))
 				{
-					if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't evict yourself.");
+					if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the tu duoi minh.");
 					else if(PlayerInfo[giveplayerid][pRenting] == i)
 					{
-						SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has evicted you from their house.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s da duoi ban khoi nha.", GetPlayerNameEx(playerid));
 
-						SendClientMessageEx(playerid, COLOR_WHITE, "You have evicted %s from your house.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_WHITE, "Ban da duoi %s khoi nha.", GetPlayerNameEx(giveplayerid));
 
 						PlayerInfo[giveplayerid][pRenting] = INVALID_HOUSE_ID;
 						return 1;
 					}
-					else return SendClientMessageEx(playerid, COLOR_WHITE, "That person isn't renting at your house.");
+					else return SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi do khong thue nha cua ban.");
 				}
-				else return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
+				else return SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi choi khong hop le.");
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not at a house that you own.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o tai nha cua minh.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu nha.");
 	return 1;
 }
 
@@ -1406,23 +1406,23 @@ CMD:evictall(playerid, params[])
 				{
 					if(PlayerInfo[p][pRenting] == i)
 					{
-						SendClientMessageEx(p, COLOR_WHITE, "%s has evicted you from their house.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(p, COLOR_WHITE, "%s da duoi ban khoi nha.", GetPlayerNameEx(playerid));
 						PlayerInfo[p][pRenting] = INVALID_HOUSE_ID;
 						++giveplayerid;
 					}
 				}	
-				return SendClientMessageEx(playerid, COLOR_WHITE, "%d online players have been evicted from your house.", giveplayerid);
+				return SendClientMessageEx(playerid, COLOR_WHITE, "Da duoi %d nguoi choi online khoi nha ban.", giveplayerid);
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not at a house that you own.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o tai nha cua minh.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu nha.");
 	return 1;
 }
 
 CMD:lockhouse(playerid, params[])
 {
-	if(PlayerInfo[playerid][pFreezeHouse] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this while having your assets frozen!");
+	if(PlayerInfo[playerid][pFreezeHouse] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the lam viec nay khi tai san bi dong bang!");
 	if(Homes[playerid] > 0)
 	{
 		for(new i; i < MAX_HOUSES; i++)
@@ -1435,38 +1435,38 @@ CMD:lockhouse(playerid, params[])
 				if(HouseInfo[i][hLock] == 1)
 				{
 					HouseInfo[i][hLock] = 0;
-					format(szMessage, sizeof(szMessage), "* %s has unlocked their house.", GetPlayerNameEx(playerid));
+					format(szMessage, sizeof(szMessage), "* %s mo khoa nha.", GetPlayerNameEx(playerid));
 					return ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
 				else
 				{
 					HouseInfo[i][hLock] = 1;
-					format(szMessage, sizeof(szMessage), "* %s has locked their house.", GetPlayerNameEx(playerid));
+					format(szMessage, sizeof(szMessage), "* %s khoa nha.", GetPlayerNameEx(playerid));
 					return ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not at a house that you own.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o tai nha cua minh.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu nha.");
 	return 1;
 }
 
 CMD:hstatus(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	new hid;
-	if(sscanf(params, "i", hid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hstatus [hid]");
-	SendClientMessageEx(playerid, COLOR_GREEN, "|___________ House Status (ID: %d) (OwnerID: %d)___________|", hid, HouseInfo[hid][hOwnerID]);
+	if(sscanf(params, "i", hid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /hstatus [hid]");
+	SendClientMessageEx(playerid, COLOR_GREEN, "|_____ Trang thai nha (ID: %d) (OwnerID: %d)_____|", hid, HouseInfo[hid][hOwnerID]);
 	SendClientMessageEx(playerid, COLOR_WHITE, "(Ext) X: %f | Y: %f | Z: %f | (Int) X: %f | Y: %f | Z: %f", HouseInfo[hid][hExteriorX], HouseInfo[hid][hExteriorY], HouseInfo[hid][hExteriorZ], HouseInfo[hid][hInteriorX], HouseInfo[hid][hInteriorY], HouseInfo[hid][hInteriorZ]);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Custom Int: %d | Custom Ext: %d | Exterior VW: %d | Exterior Int: %d | Interior VW: %d | Interior Int: %d", HouseInfo[hid][hCustomInterior], HouseInfo[hid][hCustomExterior], HouseInfo[hid][hExtVW], HouseInfo[hid][hExtIW], HouseInfo[hid][hIntVW], HouseInfo[hid][hIntIW]);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Money: %d | Pot: %d | Crack: %d | Meth: %d | Ecstasy: %d | Heroin: %d | Materials: %d", HouseInfo[hid][hSafeMoney], HouseInfo[hid][hPot], HouseInfo[hid][hCrack], HouseInfo[hid][hMeth], HouseInfo[hid][hEcstasy], HouseInfo[hid][hHeroin], HouseInfo[hid][hMaterials]);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Weapons - %d | %d | %d | %d | %d | GLUpgrade: %d", HouseInfo[hid][hWeapons][0], HouseInfo[hid][hWeapons][1], HouseInfo[hid][hWeapons][2], HouseInfo[hid][hWeapons][3], HouseInfo[hid][hWeapons][4], HouseInfo[hid][hGLUpgrade]);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Mailbox - Type: %d | X: %f | Y: %f | Z: %f", HouseInfo[hid][hMailType], HouseInfo[hid][hMailX], HouseInfo[hid][hMailY], HouseInfo[hid][hMailZ]);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Closet - X: %f | Y: %f | Z: %f", HouseInfo[hid][hClosetX], HouseInfo[hid][hClosetY], HouseInfo[hid][hClosetZ]);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Sale Sign - X: %f | Y: %f | Z: %f", HouseInfo[hid][hSign][0], HouseInfo[hid][hSign][1], HouseInfo[hid][hSign][2]);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Sale Sign - Description: %s | Expires in: %s", HouseInfo[hid][hSignDesc], (HouseInfo[hid][hSignExpire]) ? ConvertTimeS(HouseInfo[hid][hSignExpire]-gettime()):("None"));
-	SendClientMessageEx(playerid, COLOR_WHITE, "Inactivity - Status: %s | Expires: %s | Ignore: %d (1 = admin | 2 = shop) | Counter: %d", HouseInfo[hid][hInactive] ? ("Inactive"):("Active"), !HouseInfo[hid][hExpire] ? ("N/A"):date(HouseInfo[hid][hExpire], 4), HouseInfo[hid][hIgnore], HouseInfo[hid][hCounter]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Int tu tao: %d | Ngoai tu tao: %d | VW ngoai: %d | Int ngoai: %d | VW trong: %d | Int trong: %d", HouseInfo[hid][hCustomInterior], HouseInfo[hid][hCustomExterior], HouseInfo[hid][hExtVW], HouseInfo[hid][hExtIW], HouseInfo[hid][hIntVW], HouseInfo[hid][hIntIW]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Tien: %d | Pot: %d | Crack: %d | Meth: %d | Ecstasy: %d | Heroin: %d | Vat lieu: %d", HouseInfo[hid][hSafeMoney], HouseInfo[hid][hPot], HouseInfo[hid][hCrack], HouseInfo[hid][hMeth], HouseInfo[hid][hEcstasy], HouseInfo[hid][hHeroin], HouseInfo[hid][hMaterials]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Vu khi - %d | %d | %d | %d | %d | GLUpgrade: %d", HouseInfo[hid][hWeapons][0], HouseInfo[hid][hWeapons][1], HouseInfo[hid][hWeapons][2], HouseInfo[hid][hWeapons][3], HouseInfo[hid][hWeapons][4], HouseInfo[hid][hGLUpgrade]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Hop thu - Loai: %d | X: %f | Y: %f | Z: %f", HouseInfo[hid][hMailType], HouseInfo[hid][hMailX], HouseInfo[hid][hMailY], HouseInfo[hid][hMailZ]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Tu do - X: %f | Y: %f | Z: %f", HouseInfo[hid][hClosetX], HouseInfo[hid][hClosetY], HouseInfo[hid][hClosetZ]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Bien nha - X: %f | Y: %f | Z: %f", HouseInfo[hid][hSign][0], HouseInfo[hid][hSign][1], HouseInfo[hid][hSign][2]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Bien ban nha - Mo ta: %s | Het han sau: %s", HouseInfo[hid][hSignDesc], (HouseInfo[hid][hSignExpire]) ? ConvertTimeS(HouseInfo[hid][hSignExpire]-gettime()):("Khong co"));
+	SendClientMessageEx(playerid, COLOR_WHITE, "Vang mat - Trang thai: %s | Het han: %s | Bo qua: %d (1 = admin | 2 = shop) | Dem: %d", HouseInfo[hid][hInactive] ? ("Vang mat"):("Hoat dong"), !HouseInfo[hid][hExpire] ? ("N/A"):date(HouseInfo[hid][hExpire], 4), HouseInfo[hid][hIgnore], HouseInfo[hid][hCounter]);
 	return 1;
 }
 
@@ -1477,19 +1477,19 @@ CMD:hnear(playerid, params[])
 		new option;
 		if(!sscanf(params, "d", option)) 
 		{
-			SendClientMessageEx(playerid, COLOR_RED, "* Listing all houses within 30 meters of you in VW %d...", option);
+			SendClientMessageEx(playerid, COLOR_RED, "* Nha trong 30 met tai VW %d...", option);
 			for(new i, szMessage[128]; i < MAX_HOUSES; i++)
 			{
 				if(option == -1)
 				{
 					if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && HouseInfo[i][hIntVW] == option)
 					{
-						format(szMessage, sizeof(szMessage), "(Interior) House ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]), HouseInfo[i][hIntIW]);
+						format(szMessage, sizeof(szMessage), "(Ben trong) Nha ID %d | Cach ban %f | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]), HouseInfo[i][hIntIW]);
 						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 					}
 					if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) && HouseInfo[i][hExtVW] == option)
 					{
-						format(szMessage, sizeof(szMessage), "(Exterior) House ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]), HouseInfo[i][hExtIW]);
+						format(szMessage, sizeof(szMessage), "(Ben ngoai) Nha ID %d | Cach ban %f | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]), HouseInfo[i][hExtIW]);
 						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 					}
 				}
@@ -1497,12 +1497,12 @@ CMD:hnear(playerid, params[])
 				{
 					if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && HouseInfo[i][hIntVW] == option)
 					{
-						format(szMessage, sizeof(szMessage), "(Interior) House ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]), HouseInfo[i][hIntIW]);
+						format(szMessage, sizeof(szMessage), "(Ben trong) Nha ID %d | Cach ban %f | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]), HouseInfo[i][hIntIW]);
 						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 					}
 					if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) && HouseInfo[i][hExtVW] == option)
 					{
-						format(szMessage, sizeof(szMessage), "(Exterior) House ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]), HouseInfo[i][hExtIW]);
+						format(szMessage, sizeof(szMessage), "(Ben ngoai) Nha ID %d | Cach ban %f | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]), HouseInfo[i][hExtIW]);
 						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 					}
 				}
@@ -1510,17 +1510,17 @@ CMD:hnear(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_RED, "* Listing all houses within 30 meters of you...");
+			SendClientMessageEx(playerid, COLOR_RED, "* Nha trong ban kinh 30 met...");
 			for(new i, szMessage[128]; i < MAX_HOUSES; i++)
 			{
 				if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && HouseInfo[i][hIntVW] == GetPlayerVirtualWorld(playerid))
 				{
-					format(szMessage, sizeof(szMessage), "(Interior) House ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]), HouseInfo[i][hIntIW]);
+					format(szMessage, sizeof(szMessage), "(Ben trong) Nha ID %d | Cach ban %f | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]), HouseInfo[i][hIntIW]);
 					SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 				}
 				if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) && HouseInfo[i][hExtVW] == GetPlayerVirtualWorld(playerid))
 				{
-					format(szMessage, sizeof(szMessage), "(Exterior) House ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]), HouseInfo[i][hExtIW]);
+					format(szMessage, sizeof(szMessage), "(Ben ngoai) Nha ID %d | Cach ban %f | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]), HouseInfo[i][hExtIW]);
 					SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 				}
 			}
@@ -1528,20 +1528,20 @@ CMD:hnear(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
 
 CMD:hmove(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	new houseid, giveplayerid, fee, minfee, choice[16];
 	if(sscanf(params, "s[16]dudd", choice, houseid, giveplayerid, fee, minfee))
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /hmove <Choice> <HouseID> <playerid> <Fine (Percent)> <min. fine>");
-		SendClientMessageEx(playerid, COLOR_GREY, "Choice: Exterior | Interior");
-		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Set fine as 0 if you don't want to fine this player.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /hmove <Choice> <HouseID> <playerid> <Fine (Percent)> <min. fine>");
+		SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: Exterior | Interior");
+		SendClientMessageEx(playerid, COLOR_GREY, "CHU Y: Dat tien phat la 0 neu khong muon phat nguoi choi nay.");
 		return 1;
 	}
 	new string[128];
@@ -1571,21 +1571,21 @@ CMD:hmove(playerid, params[])
 		GetPlayerFacingAngle(playerid, HouseInfo[houseid][hInteriorA]);
 		HouseInfo[houseid][hIntIW] = GetPlayerInterior( playerid );
 		HouseInfo[houseid][hIntVW] = houseid+6000;
-		SendClientMessageEx( playerid, COLOR_WHITE, "You have changed the interior!" );
+		SendClientMessageEx( playerid, COLOR_WHITE, "Ban da doi noi that!" );
 		SaveHouse(houseid);
 		if(minfee > fee && minfee > 0)
 		{
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
 			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
-			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
+			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s bi phat $%s boi %s, ly do: Doi nha", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 		}
 		else if(fee > 0)
 		{
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
 			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
-			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
+			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s bi phat $%s boi %s, ly do: Doi nha", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 		}
 	}	
 	else if(strcmp(choice, "exterior", true) == 0)
@@ -1597,7 +1597,7 @@ CMD:hmove(playerid, params[])
 		GetPlayerFacingAngle(playerid, HouseInfo[houseid][hExteriorA]);
 		HouseInfo[houseid][hExtIW] = GetPlayerInterior(playerid);
 		HouseInfo[houseid][hExtVW] = GetPlayerVirtualWorld(playerid);
-		SendClientMessageEx( playerid, COLOR_WHITE, "You have changed the exterior!" );
+		SendClientMessageEx( playerid, COLOR_WHITE, "Ban da doi vi tri ben ngoai!" );
 		SaveHouse(houseid);
 		ReloadHousePickup(houseid);
 		if(minfee > fee && minfee > 0)
@@ -1605,14 +1605,14 @@ CMD:hmove(playerid, params[])
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
 			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
-			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
+			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s bi phat $%s boi %s, ly do: Doi nha", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 		}
 		else if(fee > 0)
 		{
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
 			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
-			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
+			SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s bi phat $%s boi %s, ly do: Doi nha", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 		}
 	}
 	return 1;
@@ -1621,14 +1621,14 @@ CMD:hmove(playerid, params[])
 CMD:houselights(playerid, params[]) {
 
 	new i = GetHouseID(playerid);
-	if(i == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a house.");
+	if(i == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o trong nha.");
     
     if(HouseInfo[i][h_iLights] == 0) {
 
         HouseInfo[i][h_iLights] = 1;
         SaveHouse(i);
 
-        format(szMiscArray, sizeof(szMiscArray), "* %s hits the light switch, switching the house lights off.", GetPlayerNameEx(playerid));
+        format(szMiscArray, sizeof(szMiscArray), "* %s nhan cong tac, tat den nha.", GetPlayerNameEx(playerid));
 		ProxChatBubble(playerid, szMiscArray);
 
 		foreach(new p : Player) if(GetPlayerVirtualWorld(p) == HouseInfo[i][hIntVW] && GetPlayerInterior(p) == HouseInfo[i][hIntIW]) TextDrawShowForPlayer(p, g_tHouseLights);
@@ -1638,7 +1638,7 @@ CMD:houselights(playerid, params[]) {
         HouseInfo[i][h_iLights] = 0;
         SaveHouse(i);
 
-        format(szMiscArray, sizeof(szMiscArray), "* %s hits the light switch, switching the house lights on.", GetPlayerNameEx(playerid));
+        format(szMiscArray, sizeof(szMiscArray), "* %s nhan cong tac, bat den nha.", GetPlayerNameEx(playerid));
 		ProxChatBubble(playerid, szMiscArray);
 
 		foreach(new p : Player) if(GetPlayerVirtualWorld(p) == HouseInfo[i][hIntVW] && GetPlayerInterior(p) == HouseInfo[i][hIntIW]) TextDrawHideForPlayer(p, g_tHouseLights);

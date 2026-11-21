@@ -42,7 +42,7 @@ CMD:helmet(playerid, const params[])
 {
     if(!IsABike(GetPlayerVehicleID(playerid)))
 	{
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not on a bike!");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong ngoi tren xe may!");
         return 1;
     }
 	new string[60 + MAX_PLAYER_NAME];
@@ -59,9 +59,9 @@ CMD:helmet(playerid, const params[])
 			}
 		}
 		if(helmetcount != 0)
-			ShowModelSelectionMenuEx(playerid, helmetlist, helmetcount, "Helmet Selector", 2000, 0.0, 0.0, 120.0);
+			ShowModelSelectionMenuEx(playerid, helmetlist, helmetcount, "Chon mu bao hiem", 2000, 0.0, 0.0, 120.0);
 		else
-			SendClientMessageEx(playerid, COLOR_GRAD2, "You do not own any helmets! Get one at any 24/7 in order to use /helmet");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua co mu bao hiem! Mua tai bat ky 24/7 nao de dung /helmet");
     }
     else if(Seatbelt[playerid] == 2)
 	{
@@ -74,8 +74,8 @@ CMD:helmet(playerid, const params[])
 				break;
 			}
 		}
-		format(string, sizeof(string), "{FF8000}** {C2A2DA}%s reaches for their helmet and takes it off.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have taken off your helmet.");
+		format(string, sizeof(string), "{FF8000}** {C2A2DA}%s dua tay len mu bao hiem va thao ra.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da thao mu bao hiem.");
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
     }
     return 1;
@@ -87,27 +87,27 @@ alias:checkhelmet("chm")
 CMD:checkhelmet(playerid, params[])
 {
 	new giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /checkhelmet [player]");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /checkhelmet [player]");
 
     if(GetPlayerState(giveplayerid) == PLAYER_STATE_ONFOOT)
 	{
-        SendClientMessageEx(playerid,COLOR_GREY,"That person is not in any vehicle!");
+        SendClientMessageEx(playerid,COLOR_GREY,"Nguoi do khong o trong xe!");
         return 1;
     }
     if (ProxDetectorS(9.0, playerid, giveplayerid))
 	{
 		new string[128];
         new stext[4];
-        if(Seatbelt[giveplayerid] == 0) { stext = "off"; }
-        else { stext = "on"; }
+        if(Seatbelt[giveplayerid] == 0) { stext = "tat"; }
+        else { stext = "bat"; }
         if(IsABike(GetPlayerVehicleID(playerid)))
 		{
-            SendClientMessageEx(playerid,COLOR_WHITE,"%s's helmet is currently %s." , GetPlayerNameEx(giveplayerid) , stext);
+            SendClientMessageEx(playerid,COLOR_WHITE,"Mu bao hiem cua %s hien dang %s." , GetPlayerNameEx(giveplayerid) , stext);
 
-            format(string, sizeof(string), "* %s looks at %s, checking to see if they are wearing a helmet.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
+            format(string, sizeof(string), "* %s nhin %s, kiem tra xem ho co doi mu bao hiem khong.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
             ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
         }
     }
-    else { SendClientMessageEx(playerid, COLOR_GREY, "You are not around that player!"); }
+    else { SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan nguoi choi do!"); }
     return 1;
 }

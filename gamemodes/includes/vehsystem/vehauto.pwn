@@ -11,23 +11,23 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	if((newkeys & KEY_YES) && vehicleid != INVALID_VEHICLE_ID && GetPlayerState(playerid) == PLAYER_STATE_DRIVER) {
 		//if(!AC_KeySpamCheck(playerid)) return 1;
 		new engine,lights,alarm,doors,bonnet,boot,objective;
-		if(GetVehicleModel(vehicleid) == 481 || GetVehicleModel(vehicleid) == 509 || GetVehicleModel(vehicleid) == 510 || DynVeh[vehicleid] != -1 && DynVehicleInfo[DynVeh[vehicleid]][gv_iType] == 1 && GetVehicleModel(vehicleid) == 592) return SendClientMessageEx(playerid,COLOR_WHITE,"This command can't be used in this vehicle.");
-		if(WheelClamp{vehicleid}) return SendClientMessageEx(playerid,COLOR_WHITE,"(( This vehicle has a wheel camp on its front tire, you will not be able to drive away with it. ))");
+		if(GetVehicleModel(vehicleid) == 481 || GetVehicleModel(vehicleid) == 509 || GetVehicleModel(vehicleid) == 510 || DynVeh[vehicleid] != -1 && DynVehicleInfo[DynVeh[vehicleid]][gv_iType] == 1 && GetVehicleModel(vehicleid) == 592) return SendClientMessageEx(playerid,COLOR_WHITE,"Khong the dung lenh nay trong xe nay.");
+		if(WheelClamp{vehicleid}) return SendClientMessageEx(playerid,COLOR_WHITE,"(( Lop truoc cua xe nay dang bi khoa banh, ban khong the lai xe di. ))");
 
 		GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
 		if(engine == VEHICLE_PARAMS_ON)
 		{
 			SetVehicleEngine(vehicleid, playerid);
-			format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s turns the key in the ignition and the engine stops.", GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s van chia khoa va tat dong co.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		else if((engine == VEHICLE_PARAMS_OFF || engine == VEHICLE_PARAMS_UNSET))
 		{
-			if (GetPVarInt(playerid, "Refueling")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while refueling.");
+			if (GetPVarInt(playerid, "Refueling")) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong the lam vay khi dang do xang.");
 			// if(!Vehicle_LockCheck(playerid, vehicleid)) return 1;
-			format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s turns the key in the ignition and the engine starts.", GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s van chia khoa va khoi dong co.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-			SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine starting, please wait...");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Dong co dang khoi dong, vui long cho...");
 			SetTimerEx("SetVehicleEngine", 1000, false, "dd",  vehicleid, playerid);
 			RemoveVehicleFromMeter(vehicleid);
 		}
@@ -51,7 +51,7 @@ stock Vehicle_LockCheck(playerid, iVehID) {
 		if(v != -1) {
 			if(IsABike(iVehID)) {
 				if(PlayerVehicleInfo[i][v][pvLocked] == 1 && PlayerVehicleInfo[i][v][pvLock] > 0 && PlayerVehicleInfo[i][v][pvLocksLeft] > 0) {
-					SendClientMessageEx(playerid, COLOR_WHITE, "This bike is currently locked.");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Xe may nay dang bi khoa.");
 					return 0;
 				}
 			}
@@ -67,18 +67,18 @@ ShowVehicleMenu(playerid, vehicleid) {
 	new engine, lights, alarm, doors, bonnet, boot, objective;
     GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
 
-	format(szMiscArray, sizeof(szMiscArray), "Item\tStatus\n\
-		Seatbelt or Helmet\t%s\n\
-		Lights\t%s\n\
-		Bonnet\t%s\n\
-		Boot\t%s",
-		((Seatbelt[playerid] == 0) ? ("Off") : ("On")),
-		((lights == VEHICLE_PARAMS_OFF) ? ("Off") : ("On")),
-		((bonnet == VEHICLE_PARAMS_OFF) ? ("Closed") : ("Open")),
-		((boot == VEHICLE_PARAMS_OFF) ? ("Closed") : ("Open"))
+	format(szMiscArray, sizeof(szMiscArray), "Muc\tTrang thai\n\
+		Day an toan hoac mu bao hiem\t%s\n\
+		Den xe\t%s\n\
+		Nap capo\t%s\n\
+		Cop xe\t%s",
+		((Seatbelt[playerid] == 0) ? ("Tat") : ("Bat")),
+		((lights == VEHICLE_PARAMS_OFF) ? ("Tat") : ("Bat")),
+		((bonnet == VEHICLE_PARAMS_OFF) ? ("Dong") : ("Mo")),
+		((boot == VEHICLE_PARAMS_OFF) ? ("Dong") : ("Mo"))
 	);
 
-	ShowPlayerDialogEx(playerid, VEHICLE_PARAMS_TOG, DIALOG_STYLE_TABLIST_HEADERS, "Vehicle Options", szMiscArray, "Select", "Cancel");
+	ShowPlayerDialogEx(playerid, VEHICLE_PARAMS_TOG, DIALOG_STYLE_TABLIST_HEADERS, "Tuy chon xe", szMiscArray, "Chon", "Huy");
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {

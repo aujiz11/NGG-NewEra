@@ -85,15 +85,15 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 						SetDynamicObjectPos(Tapes[tid][sObjectID], rx, ry, rz);
 						*/
 
-						format(szMiscArray, sizeof(szMiscArray), "Tape ID: %d's position has been edited successfully.", tid);
+						format(szMiscArray, sizeof(szMiscArray), "Da chinh sua vi tri Tape ID: %d.", tid);
 						SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 						valid = 1;
 					}
-					else SendClientMessageEx(playerid, COLOR_GRAD2, "Maximum Z Offset exceeded. Please try again.");
+					else SendClientMessageEx(playerid, COLOR_GRAD2, "Vuot qua do lech Z toi da. Vui long thu lai.");
 				}
-				else SendClientMessageEx(playerid, COLOR_GRAD2, "Maximum Y Offset exceeded. Please try again.");
+				else SendClientMessageEx(playerid, COLOR_GRAD2, "Vuot qua do lech Y toi da. Vui long thu lai.");
 			}
-			else SendClientMessageEx(playerid, COLOR_GRAD2, "Maximum X Offset exceeded. Please try again.");
+			else SendClientMessageEx(playerid, COLOR_GRAD2, "Vuot qua do lech X toi da. Vui long thu lai.");
 
 			
 			if(!valid)
@@ -127,7 +127,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 				DeletePVar(playerid, "furnfirst");
 
 
-				SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture]: You have cancelled placing the %s.", GetFurnitureName(iModelID));
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture]: Ban da huy dat %s.", GetFurnitureName(iModelID));
 				DeletePVar(playerid, PVAR_FURNITURE_EDITING);
 				DeletePVar(playerid, PVAR_FURNITURE_SLOT);
 				PlayerTextDrawSetPreviewModel(playerid, Furniture_PTD[playerid][0], PlayerInfo[playerid][pModel]);
@@ -189,7 +189,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 				PlayerTextDrawHide(playerid, Furniture_PTD[playerid][0]);
 				PlayerTextDrawShow(playerid, Furniture_PTD[playerid][0]);
 				
-				SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture]: You have successfully placed the %s.", GetFurnitureName(iModelID));
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture]: Ban da dat %s thanh cong.", GetFurnitureName(iModelID));
 
 				DeletePVar(playerid, "furnfirst");
 				DeletePVar(playerid, "PX");
@@ -219,17 +219,17 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 		if(response == EDIT_RESPONSE_CANCEL)
 		{
 			CreateGate(gateid);
-			return SendClientMessageEx(playerid, COLOR_WHITE, "Gate editing cancelled.");
+			return SendClientMessageEx(playerid, COLOR_WHITE, "Da huy sua cong.");
 		}
 		if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1)
 		{
 			CreateGate(gateid);
-			return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen thuc hien thao tac nay.");
 		}
 		if(!(-20000.0 <= x <= 20000.0) || !(-20000.0 <= y <= 20000.0) || !(-20000.0 <= z <= 20000.0))
 		{
 			CreateGate(gateid);
-			return SendClientMessageEx(playerid, COLOR_GREY, "Gate coordinates must be between -20000 and 20000.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Toa do cong phai tu -20000 den 20000.");
 		}
 		if(mode == 1)
 		{
@@ -251,7 +251,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 		}
 		CreateGate(gateid);
 		SaveGate(gateid);
-		return SendClientMessageEx(playerid, COLOR_WHITE, "Updated gate %d's %s position.", gateid, mode == 1 ? ("open") : ("closed"));
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri cong %d khi %s.", gateid, mode == 1 ? ("mo") : ("dong"));
 	}
 	if(GetPVarType(playerid, PVAR_EMETDET))
 	{
@@ -268,7 +268,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 		{
 			case EDIT_RESPONSE_FINAL:
 			{
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You successfully edited the metal detector's position.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Da doi vi tri may do kim loai.");
 				MetDet_Process(id, x, y, z, rx, ry, rz, iAssignData[0], iAssignData[1]);
 				MetDet_SaveMetDet(id);
 			}
@@ -276,7 +276,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			{
 				SetDynamicObjectPos(arrMetalDetector[id][metdet_iObjectID], fPos[0], fPos[1], fPos[2]);
 				SetDynamicObjectRot(arrMetalDetector[id][metdet_iObjectID], fPos[3], fPos[4], fPos[5]);
-				SendClientMessageEx(playerid, COLOR_GRAD1, "You have cancelled setting the metal detector's position.");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Da huy dat vi tri may do kim loai.");
 			}
 		}
 		DeletePVar(playerid, PVAR_EMETDET);
@@ -291,7 +291,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			{
 				if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0)
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this feature inside an interior or virtual world.");
+					SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung tinh nang nay trong interior hoac virtual world.");
 					RebuildParkingMeter(EditingMeterID[playerid]);
 					EditingMeterID[playerid] = 0;
 					return 1;
@@ -304,7 +304,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 				ParkingMeterInformation[EditingMeterID[playerid]][MeterPosition][5] = rz;
 				SaveParkingMeter(EditingMeterID[playerid]);
 				RebuildParkingMeter(EditingMeterID[playerid]);
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You have updated the position of parking meter ID %d.", EditingMeterID[playerid]);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Da doi vi tri dong ho do xe ID %d.", EditingMeterID[playerid]);
 				format(string, sizeof(string), "%s updated the position of parking meter ID %d to %0.3f, %0.3f, %0.3f, %0.3f, %0.3f, %0.3f.", GetPlayerNameEx(playerid), EditingMeterID[playerid], x, y, z, rx, ry, rz);
 				Log("logs/admin.log", string);
 				EditingMeterID[playerid] = 0;
@@ -312,7 +312,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			}
 			case EDIT_RESPONSE_CANCEL:
 			{
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You have cancelled editing the position of parking meter ID %d.", EditingMeterID[playerid]);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Da huy sua vi tri dong ho do xe ID %d.", EditingMeterID[playerid]);
 				RebuildParkingMeter(EditingMeterID[playerid]);
 				EditingMeterID[playerid] = 0;
 				return 1;
@@ -338,7 +338,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 				SetDynamicObjectPos(objectid, fPos[0], fPos[1], fPos[2]);
 				SetDynamicObjectRot(objectid, fPos[3], fPos[4], fPos[5]);
 				DeletePVar(playerid, PVAR_GANGTAGEDITING);
-				SendClientMessage(playerid, COLOR_GRAD1, "You cancelled editing the gang tag.");
+				SendClientMessage(playerid, COLOR_GRAD1, "Ban da huy chinh sua gang tag.");
 				return 1;
 			}
 			case EDIT_RESPONSE_FINAL:
@@ -376,7 +376,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			
 			new h = GetPVarInt(playerid, "house");
 			if(GetPointDistanceToPoint(HouseInfo[h][hExteriorX], HouseInfo[h][hExteriorY], HouseInfo[h][hExteriorZ], x, y, z) > 10)
-				return SendClientMessageEx(playerid, COLOR_GREY, "Keep the sign within the checkpoint radius!"), EditDynamicObject(playerid, GetPVarInt(playerid, "signID"));
+				return SendClientMessageEx(playerid, COLOR_GREY, "Giu bien trong ban kinh checkpoint!"), EditDynamicObject(playerid, GetPVarInt(playerid, "signID"));
 			HouseInfo[h][hSign][0] = x;
 			HouseInfo[h][hSign][1] = y;
 			HouseInfo[h][hSign][2] = z;
@@ -386,17 +386,17 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 				HouseInfo[h][hSignExpire] = gettime()+86400;
 				PlayerInfo[playerid][mInventory][6] = 0;
 				if(IsValidDynamicObject(GetPVarInt(playerid, "signID"))) DestroyDynamicObject(GetPVarInt(playerid, "signID"));
-				SendClientMessageEx(playerid, COLOR_GREY, "You have finished placing your house sale sign!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Ban da dat xong bien ban nha!");
 				format(string, sizeof(string), "[PLACESIGN] %s has placed down their house sale sign at House ID: %d", GetPlayerNameEx(playerid), h);
 			}
 			if(GetPVarInt(playerid, "editingsign") == 2)
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "You have finished editing the position of your house sale sign!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Ban da chinh sua xong vi tri bien ban nha!");
 				format(string, sizeof(string), "[EDITSIGN] %s has edited the position of their house sale sign at House ID: %d", GetPlayerNameEx(playerid), h);
 			}
 			if(GetPVarInt(playerid, "editingsign") == 3)
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "You have finished editing the house sale sign!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Ban da chinh sua xong bien ban nha!");
 				format(string, sizeof(string), "[AEDITSIGN] %s has adjusted the position of the house sale sign placed at House ID: %d", GetPlayerNameEx(playerid), h);
 			}
 			Log("logs/house.log", string);
@@ -420,7 +420,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			}*/
 	
 			if(GetPVarInt(playerid, "editingsign") == 1 && IsValidDynamicObject(GetPVarInt(playerid, "signID"))) DestroyDynamicObject(GetPVarInt(playerid, "signID"));
-			SendClientMessageEx(playerid, COLOR_GREY, "You have stopped yourself from placing down your House Sale Sign!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban da dung dat House Sale Sign!");
 			DeletePVar(playerid, "signID");
 			DeletePVar(playerid, "house");
 			DeletePVar(playerid, "editingsign");

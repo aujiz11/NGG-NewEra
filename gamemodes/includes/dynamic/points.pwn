@@ -41,10 +41,10 @@
 CMD:getmats(playerid, params[])
 {	
 	if(!Job_HasJob(playerid, JOB_ARMS_DEALER) && !Job_HasJob(playerid, JOB_CRAFTSMAN)) 
-		return SendClientMessageEx(playerid,COLOR_GREY,"   You are not an Arms Dealer or Craftsman!");
+		return SendClientMessageEx(playerid,COLOR_GREY,"   Ban khong phai Arms Dealer hoac Craftsman!");
 	
 	if(CheckPointCheck(playerid)) 
-		return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Hay huy checkpoint hien tai truoc (ban dang giu goi vat lieu hoac co checkpoint khac).");
 	
 	new point, drank[64], vip = ((0 <= PlayerInfo[playerid][pDonateRank] < 5) ? PlayerInfo[playerid][pDonateRank] : 0);
 	switch(vip)
@@ -56,24 +56,24 @@ CMD:getmats(playerid, params[])
 		case 4: drank = "Platinum VIP";
 	}
 	FetchPoint(playerid, point, (IsABoat(GetPlayerVehicleID(playerid)) ? 15.0 : 3.0));
-	if(point == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not at a material point!");
-	if(DynPoints[point][poType] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This point doesn't offer material runs!");
-	if(DynPoints[point][poAmount][vip] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "There is no material amount set up for %s for this point!", drank);
+	if(point == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o diem vat lieu!");
+	if(DynPoints[point][poType] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Diem nay khong co tuyen giao vat lieu!");
+	if(DynPoints[point][poAmount][vip] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Diem nay chua dat luong vat lieu cho %s!", drank);
 	if(PlayerInfo[playerid][pMats] < 0 || PlayerInfo[playerid][pMats] > cellmax - DynPoints[point][poAmount][vip])
-		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot carry the materials from this delivery.");
-	if(DynPoints[point][poPos2][0] == 0.0 || DynPoints[point][poPos2][1] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "The end delivery point hasn't been setup yet!");
-	if(DynPoints[point][poBoat] && !IsABoat(GetPlayerVehicleID(playerid))) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be in a boat!");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the mang so vat lieu tu chuyen giao nay.");
+	if(DynPoints[point][poPos2][0] == 0.0 || DynPoints[point][poPos2][1] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Diem giao cuoi chua duoc cau hinh!");
+	if(DynPoints[point][poBoat] && !IsABoat(GetPlayerVehicleID(playerid))) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban can o tren thuyen!");
 	if(vip == 0) {
-		if(GetPlayerCash(playerid) < 500) return SendClientMessageEx(playerid, COLOR_RED, "You cannot afford the $500 for the materials packages!");
+		if(GetPlayerCash(playerid) < 500) return SendClientMessageEx(playerid, COLOR_RED, "Ban khong du $500 de mua goi vat lieu!");
 		GivePlayerCash(playerid, -500);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased %s materials packages for $500", number_format(DynPoints[point][poAmount][vip]));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da mua %s goi vat lieu voi gia $500", number_format(DynPoints[point][poAmount][vip]));
 	} else {
-		if(GetPlayerCash(playerid) < (500 * vip)) return SendClientMessageEx(playerid, COLOR_RED, "You cannot afford the $%s for the materials packages!", number_format((500 * vip)));
+		if(GetPlayerCash(playerid) < (500 * vip)) return SendClientMessageEx(playerid, COLOR_RED, "Ban khong du $%s de mua goi vat lieu!", number_format((500 * vip)));
 		GivePlayerCash(playerid, -(500 * vip));
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased %s materials packages for $%s", number_format(DynPoints[point][poAmount][vip]), number_format((500 * vip)));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da mua %s goi vat lieu voi gia $%s", number_format(DynPoints[point][poAmount][vip]), number_format((500 * vip)));
 	}
 	MatsAmount[playerid] = DynPoints[point][poAmount][vip];
-	if(vip > 0) SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "VIP: You have recieved more materials packages because of your %s.", drank);
+	if(vip > 0) SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "VIP: Ban nhan them goi vat lieu nho %s.", drank);
 	MatDeliver[playerid] = point;
 	SetPVarInt(playerid, "tpMatRunTimer", 10);
 	SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPMATRUNTIMER);
@@ -86,8 +86,8 @@ CMD:getmats(playerid, params[])
 
 CMD:getdrugs(playerid, params[]) {
 
-	if(!Job_HasJob(playerid, JOB_DRUG_SMUGGLER) && !IsACriminal(playerid)) return SendClientMessageEx(playerid,COLOR_GREY,"  You are not a drug smuggler or in a family!");
-	if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
+	if(!Job_HasJob(playerid, JOB_DRUG_SMUGGLER) && !IsACriminal(playerid)) return SendClientMessageEx(playerid,COLOR_GREY,"  Ban khong phai Drug Smuggler hoac thanh vien family!");
+	if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Hay huy checkpoint hien tai truoc (ban dang giu goi vat lieu hoac co checkpoint khac).");
 	new point, drank[64], vip = ((0 <= PlayerInfo[playerid][pDonateRank] < 5) ? PlayerInfo[playerid][pDonateRank] : 0), string[128];
 	switch(vip)
 	{
@@ -98,40 +98,40 @@ CMD:getdrugs(playerid, params[]) {
 		case 4: drank = "Platinum VIP";
 	}
 	FetchPoint(playerid, point, (IsABoat(GetPlayerVehicleID(playerid)) ? 15.0 : 3.0));
-	if(point == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not at a drug point!");
-	if(DynPoints[point][poType] < 1 || DynPoints[point][poType] > 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "This point doesn't offer any drug runs! (TYPE: %d)", DynPoints[point][poType]);
-	if(DynPoints[point][poAmount][vip] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "There is no material amount set up for %s for this point!", drank);
-	if(DynPoints[point][poPos2][0] == 0.0 || DynPoints[point][poPos2][1] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "The end delivery point hasn't been setup yet!");
-	if(DynPoints[point][poBoat] && !IsABoat(GetPlayerVehicleID(playerid))) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be in a boat!");
+	if(point == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o diem ma tuy!");
+	if(DynPoints[point][poType] < 1 || DynPoints[point][poType] > 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "Diem nay khong co tuyen giao ma tuy! (TYPE: %d)", DynPoints[point][poType]);
+	if(DynPoints[point][poAmount][vip] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Diem nay chua dat luong vat lieu cho %s!", drank);
+	if(DynPoints[point][poPos2][0] == 0.0 || DynPoints[point][poPos2][1] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Diem giao cuoi chua duoc cau hinh!");
+	if(DynPoints[point][poBoat] && !IsABoat(GetPlayerVehicleID(playerid))) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban can o tren thuyen!");
 
 	if(DynPoints[point][poType] == 1) { // Pot
-		if(GetPlayerMoney(playerid) < 2000) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot afford the $2,000!");
+		if(GetPlayerMoney(playerid) < 2000) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong du $2,000!");
 		GivePlayerCashEx(playerid, TYPE_ONHAND, -2000);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased %sg of pot packages for $2,000", number_format(DynPoints[point][poAmount][vip]));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da mua %sg goi pot voi gia $2,000", number_format(DynPoints[point][poAmount][vip]));
 	}
 	if(DynPoints[point][poType] == 2) { // Crack
-		if(GetJobLevel(playerid, JOB_DRUG_SMUGGLER) < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be at least level two drug smuggler to do this run!");
-		if(GetPlayerMoney(playerid) < 10000) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot afford the $10,000!");
+		if(GetJobLevel(playerid, JOB_DRUG_SMUGGLER) < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Can Drug Smuggler cap hai tro len de chay tuyen nay!");
+		if(GetPlayerMoney(playerid) < 10000) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong du $10,000!");
 		GivePlayerCashEx(playerid, TYPE_ONHAND, -10000);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased %sg of crack packages for $10,000!", number_format(DynPoints[point][poAmount][vip]));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da mua %sg goi crack voi gia $10,000!", number_format(DynPoints[point][poAmount][vip]));
 	}
 	if(DynPoints[point][poType] == 3) { // Meth
-		if(PlayerInfo[playerid][pDrugSmuggler] < 200) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be at least level four drug smuggler to do this run!");
-		if(GetPlayerMoney(playerid) < 25000) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot afford the $25,000!");
+		if(PlayerInfo[playerid][pDrugSmuggler] < 200) return SendClientMessageEx(playerid, COLOR_GRAD1, "Can Drug Smuggler cap bon tro len de chay tuyen nay!");
+		if(GetPlayerMoney(playerid) < 25000) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong du $25,000!");
 		GivePlayerCashEx(playerid, TYPE_ONHAND, -25000);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased %sg of meth packages for $25,000!", number_format(DynPoints[point][poAmount][vip]));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da mua %sg goi meth voi gia $25,000!", number_format(DynPoints[point][poAmount][vip]));
 	}
 	if(DynPoints[point][poType] == 4) { // Ecstasy
-		if(GetJobLevel(playerid, JOB_DRUG_SMUGGLER) < 5) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be at least level five drug smuggler to do this run!");
-		if(GetPlayerMoney(playerid) < 50000) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot afford the $50,000!");
+		if(GetJobLevel(playerid, JOB_DRUG_SMUGGLER) < 5) return SendClientMessageEx(playerid, COLOR_GRAD1, "Can Drug Smuggler cap nam tro len de chay tuyen nay!");
+		if(GetPlayerMoney(playerid) < 50000) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong du $50,000!");
 		GivePlayerCashEx(playerid, TYPE_ONHAND, -50000);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased %sg of ecstasy packages for $50,000!", number_format(DynPoints[point][poAmount][vip]));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da mua %sg goi ecstasy voi gia $50,000!", number_format(DynPoints[point][poAmount][vip]));
 	}
-	format(string, sizeof(string), "* %s takes a drug package.", GetPlayerNameEx(playerid));
+	format(string, sizeof(string), "* %s lay mot goi ma tuy.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	MatsAmount[playerid] = DynPoints[point][poAmount][vip];
 	MatDeliver[playerid] = point;
-	if(vip > 0) SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "VIP: You have recieved more packages because of your %s.", drank);
+	if(vip > 0) SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "VIP: Ban nhan them goi hang nho %s.", drank);
 	SetPlayerCheckpoint(playerid, DynPoints[point][poPos2][0], DynPoints[point][poPos2][1], DynPoints[point][poPos2][2], 5);
 	SetPVarInt(playerid, "tpMatRunTimer", 10);
 	SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPMATRUNTIMER);
@@ -141,14 +141,14 @@ CMD:getdrugs(playerid, params[]) {
 CMD:pointtime(playerid, params[])
 {
 	new point;
-	if(sscanf(params, "i", point)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pointtime [pointid]");
+	if(sscanf(params, "i", point)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /pointtime [pointid]");
 	if((1 <= point <= MAX_POINTS)) {
-		if(strcmp(DynPoints[point-1][poName], "NULL", true) == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This point hasn't officaly been setup yet!");
-		if(DynPoints[point-1][poCapturable] != 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "%s is not ready for takeover.", DynPoints[point-1][poName]);
-		if(!DynPoints[point-1][poTimeLeft]) return SendClientMessageEx(playerid, COLOR_GRAD1, "%s is currently is not being captured!", DynPoints[point-1][poName]);
-		SendClientMessageEx(playerid, COLOR_YELLOW, "This point is currently being captured by: %s | Time left: %d minute(s)", arrGroupData[DynPoints[point-1][poCapperGroup]][g_szGroupName], DynPoints[point-1][poTimeLeft]);
+		if(strcmp(DynPoints[point-1][poName], "NULL", true) == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Diem nay chua duoc cau hinh chinh thuc!");
+		if(DynPoints[point-1][poCapturable] != 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "%s chua san sang bi chiem.", DynPoints[point-1][poName]);
+		if(!DynPoints[point-1][poTimeLeft]) return SendClientMessageEx(playerid, COLOR_GRAD1, "%s hien khong bi chiem!", DynPoints[point-1][poName]);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Diem nay dang bi chiem boi: %s | Con lai: %d phut", arrGroupData[DynPoints[point-1][poCapperGroup]][g_szGroupName], DynPoints[point-1][poTimeLeft]);
 	} else {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid point ID given - You can only select from 1 - %d!", MAX_POINTS);
+		SendClientMessageEx(playerid, COLOR_GRAD1, "ID diem khong hop le - Chi duoc chon tu 1 - %d!", MAX_POINTS);
 	}
 	return 1;
 }
@@ -156,17 +156,17 @@ CMD:pointtime(playerid, params[])
 CMD:gotodpoint(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
 		new pid;
-		if(sscanf(params, "d", pid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotodpoint [number]");
+		if(sscanf(params, "d", pid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gotodpoint [number]");
 		if((1 <= pid <= MAX_POINTS)) {
-			if(DynPoints[pid-1][poPos][0] == 0.0 || DynPoints[pid-1][poPos][1] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "The selected point ID hasn't been setup!");
+			if(DynPoints[pid-1][poPos][0] == 0.0 || DynPoints[pid-1][poPos][1] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "ID diem da chon chua duoc cau hinh!");
 			SetPlayerPos(playerid, DynPoints[pid-1][poPos][0], DynPoints[pid-1][poPos][1], DynPoints[pid-1][poPos][2]);
 			PlayerInfo[playerid][pInt] = DynPoints[pid-1][poInt];
 			SetPlayerInterior(playerid,DynPoints[pid-1][poInt]);
 			PlayerInfo[playerid][pVW] = DynPoints[pid-1][poVW];
 	  		SetPlayerVirtualWorld(playerid,DynPoints[pid-1][poVW]);
-			GameTextForPlayer(playerid, "~w~Teleporting", 5000, 1);
+			GameTextForPlayer(playerid, "~w~Dang dich chuyen", 5000, 1);
 		} else {
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid point ID given - You can only select from 1 - %d!", MAX_POINTS);
+			SendClientMessageEx(playerid, COLOR_GRAD1, "ID diem khong hop le - Chi duoc chon tu 1 - %d!", MAX_POINTS);
 		}
 	}
 	return 1;
@@ -175,17 +175,17 @@ CMD:gotodpoint(playerid, params[]) {
 CMD:capture(playerid, params[])
 {
 	new point, string[128];
-	if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be apart of a criminal organization to do this!");
+	if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban phai thuoc to chuc toi pham de lam viec nay!");
 	FetchPoint(playerid, point, 1.0);
-	if(point == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not at a capture point!");
-	if(PlayerInfo[playerid][pRank] < arrGroupData[PlayerInfo[playerid][pMember]][g_iPointCapRank]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not high rank enough to capture points!");
-	if(DynPoints[point][poLocked]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This point is not available for capture!");
-	if(DynPoints[point][poCapturable] != 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This point is not ready to be taken over!");
-	if(DynPoints[point][poCapperGroup] == PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your family is currently processing this take over!");
-	if(DynPoints[point][poCapping] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Someone is currently starting the takeover for this point!");
-	if(GetPlayerPing(playerid) > 500) return SendClientMessageEx(playerid, COLOR_WHITE, "You can not capture with 500+ ping!");
+	if(point == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o diem chiem dong!");
+	if(PlayerInfo[playerid][pRank] < arrGroupData[PlayerInfo[playerid][pMember]][g_iPointCapRank]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Hang cua ban chua du cao de chiem diem!");
+	if(DynPoints[point][poLocked]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Diem nay khong cho phep chiem!");
+	if(DynPoints[point][poCapturable] != 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Diem nay chua san sang bi chiem!");
+	if(DynPoints[point][poCapperGroup] == PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Family cua ban dang xu ly viec chiem diem nay!");
+	if(DynPoints[point][poCapping] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Da co nguoi bat dau chiem diem nay!");
+	if(GetPlayerPing(playerid) > 500) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the chiem diem voi ping 500+!");
 
-	format(string, sizeof(string), "%s is attempting to capture the point (VW: %d).", GetPlayerNameEx(playerid), DynPoints[point][poVW]);
+	format(string, sizeof(string), "%s dang co chiem diem (VW: %d).", GetPlayerNameEx(playerid), DynPoints[point][poVW]);
 	ProxDetector(70.0, playerid, string, COLOR_RED,COLOR_RED,COLOR_RED,COLOR_RED,COLOR_RED);
 	GetPlayerPos(playerid, DynPoints[point][CapturePos][0], DynPoints[point][CapturePos][1], DynPoints[point][CapturePos][2]);
 
@@ -202,15 +202,15 @@ public ProgressTimer(id)
 	new Float: x, Float: y, Float: z;
 	if(DynPoints[id][poCapping] != INVALID_PLAYER_ID && IsPlayerConnected(DynPoints[id][poCapping])) {
 		if(--DynPoints[id][poTimeCapLeft] > 0) {
-			format(szMiscArray, sizeof(szMiscArray), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", DynPoints[id][poTimeCapLeft]);
+			format(szMiscArray, sizeof(szMiscArray), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~Con %d giay", DynPoints[id][poTimeCapLeft]);
 			GameTextForPlayer(DynPoints[id][poCapping], szMiscArray, 1100, 3);
-			format(szMiscArray, sizeof(szMiscArray), "%s is attempting to capture the point, time left: %d", GetPlayerNameEx(DynPoints[id][poCapping]), DynPoints[id][poTimeCapLeft]);
+			format(szMiscArray, sizeof(szMiscArray), "%s dang co chiem diem, con lai: %d", GetPlayerNameEx(DynPoints[id][poCapping]), DynPoints[id][poTimeCapLeft]);
 			UpdateDynamic3DTextLabelText(DynPoints[id][poTextID], COLOR_RED, szMiscArray);
 			SetTimerEx("ProgressTimer", 1000, false, "d", id);
 		} else {
 			GetPlayerPos(DynPoints[id][poCapping], x, y, z);
 			if (DynPoints[id][CapturePos][0] != x || DynPoints[id][CapturePos][1] != y || DynPoints[id][CapturePos][2] != z || GetPVarInt(DynPoints[id][poCapping],"Injured") == 1) {
-				SendClientMessageEx(DynPoints[id][poCapping], COLOR_LIGHTBLUE, "You failed to capture. You either moved or died while attempting to capture.");
+				SendClientMessageEx(DynPoints[id][poCapping], COLOR_LIGHTBLUE, "Chiem that bai. Ban da di chuyen hoac chet trong luc chiem.");
 				DynPoints[id][poCapping] = INVALID_PLAYER_ID;
 				DynPoints[id][poTimeCapLeft] = 0;
 				UpdatePoint(id);
@@ -218,7 +218,7 @@ public ProgressTimer(id)
 			}
 			if(DynPoints[id][poCapturable] < 1)
 			{
-			    SendClientMessageEx(DynPoints[id][poCapping], COLOR_LIGHTBLUE, "You failed to capture. The point was already captured.");
+			    SendClientMessageEx(DynPoints[id][poCapping], COLOR_LIGHTBLUE, "Chiem that bai. Diem nay da bi chiem.");
 				DynPoints[id][poCapping] = INVALID_PLAYER_ID;
 				DynPoints[id][poTimeCapLeft] = 0;
 				UpdatePoint(id);
@@ -226,8 +226,8 @@ public ProgressTimer(id)
 			}
 			if(playerTabbed[DynPoints[id][poCapping]] != 0)
 			{
-			    SendClientMessageEx(DynPoints[id][poCapping], COLOR_LIGHTBLUE, "You failed to capture. You were alt-tabbed.");
-			    format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may have possibly alt tabbed to capture a point.", GetPlayerNameEx(DynPoints[id][poCapping]), DynPoints[id][poCapping]);
+			    SendClientMessageEx(DynPoints[id][poCapping], COLOR_LIGHTBLUE, "Chiem that bai. Ban da alt-tab.");
+			    format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) co the da alt-tab de chiem diem.", GetPlayerNameEx(DynPoints[id][poCapping]), DynPoints[id][poCapping]);
 				ABroadCast( COLOR_YELLOW, szMiscArray, 2 );
    				DynPoints[id][poCapping] = INVALID_PLAYER_ID;
 				DynPoints[id][poTimeCapLeft] = 0;
@@ -236,8 +236,8 @@ public ProgressTimer(id)
 			}
 			if(GetPlayerVirtualWorld(DynPoints[id][poCapping]) != DynPoints[id][poVW] || GetPlayerInterior(DynPoints[id][poCapping]) != DynPoints[id][poInt])
 			{
-			    SendClientMessageEx(DynPoints[id][poCapping], COLOR_LIGHTBLUE, "You failed to capture. You were not in the point virtual/interior world.");
-			    format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may have possibly desynced himself to capture a point.", GetPlayerNameEx(DynPoints[id][poCapping]), DynPoints[id][poCapping]);
+			    SendClientMessageEx(DynPoints[id][poCapping], COLOR_LIGHTBLUE, "Chiem that bai. Ban khong o dung virtual world/interior cua diem.");
+			    format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) co the da tu gay desync de chiem diem.", GetPlayerNameEx(DynPoints[id][poCapping]), DynPoints[id][poCapping]);
 				ABroadCast( COLOR_YELLOW, szMiscArray, 2 );
    				DynPoints[id][poCapping] = INVALID_PLAYER_ID;
 				DynPoints[id][poTimeCapLeft] = 0;
@@ -245,7 +245,7 @@ public ProgressTimer(id)
 			    return 1;
 			}
 			if(!IsACriminal(DynPoints[id][poCapping])) {
-			    SendClientMessageEx(DynPoints[id][poCapping], COLOR_LIGHTBLUE, "You failed to capture. You either left the group or were kicked!");
+			    SendClientMessageEx(DynPoints[id][poCapping], COLOR_LIGHTBLUE, "Chiem that bai. Ban da roi hoac bi duoi khoi to chuc!");
 				DynPoints[id][poCapping] = INVALID_PLAYER_ID;
 				DynPoints[id][poTimeCapLeft] = 0;
 				UpdatePoint(id);
@@ -256,7 +256,7 @@ public ProgressTimer(id)
 
 			if(IsValidDynamicPickup(DynPoints[id][poPickupID])) DestroyDynamicPickup(DynPoints[id][poPickupID]);
 			DynPoints[id][poPickupID] = CreateDynamicPickup(1313, 23, DynPoints[id][poPos][0], DynPoints[id][poPos][1], DynPoints[id][poPos][2], .worldid = DynPoints[id][poVW], .interiorid = DynPoints[id][poInt]);
-		   	format(szMiscArray, sizeof(szMiscArray), "%s has attempted to take control of the %s for %s, it will be theirs in 10 minutes.", DynPoints[id][poPName], DynPoints[id][poName], arrGroupData[fam][g_szGroupName]);
+		   	format(szMiscArray, sizeof(szMiscArray), "%s da bat dau chiem %s cho %s, diem se thuoc ho sau 10 phut.", DynPoints[id][poPName], DynPoints[id][poName], arrGroupData[fam][g_szGroupName]);
 			foreach(new i: Player) ChatTrafficProcess(i, COLOR_YELLOW, szMiscArray, CHAT_POINTS);
 			UpdateDynamic3DTextLabelText(DynPoints[id][poTextID], COLOR_YELLOW, szMiscArray);
 
@@ -280,10 +280,10 @@ public CaptureTimer(id)
 {
 	szMiscArray[0] = 0;
 	if(--DynPoints[id][poTimeLeft] > 0) {
-		format(szMiscArray, sizeof(szMiscArray), "%s has successfully attempted to take over of %s for %s, it will be theirs in %d minutes!", DynPoints[id][poPName], DynPoints[id][poName], arrGroupData[DynPoints[id][poCapperGroup]][g_szGroupName], DynPoints[id][poTimeLeft]);
+		format(szMiscArray, sizeof(szMiscArray), "%s da bat dau chiem %s cho %s, diem se thuoc ho sau %d phut!", DynPoints[id][poPName], DynPoints[id][poName], arrGroupData[DynPoints[id][poCapperGroup]][g_szGroupName], DynPoints[id][poTimeLeft]);
 		UpdateDynamic3DTextLabelText(DynPoints[id][poTextID], COLOR_YELLOW, szMiscArray);
 	} else {
-		format(szMiscArray, sizeof(szMiscArray), "%s has successfully taken control of the %s for %s.", DynPoints[id][poPName], DynPoints[id][poName], arrGroupData[DynPoints[id][poCapperGroup]][g_szGroupName]);
+		format(szMiscArray, sizeof(szMiscArray), "%s da chiem duoc %s cho %s.", DynPoints[id][poPName], DynPoints[id][poName], arrGroupData[DynPoints[id][poCapperGroup]][g_szGroupName]);
 		foreach(new i: Player) ChatTrafficProcess(i, COLOR_YELLOW, szMiscArray, CHAT_POINTS);
 		DynPoints[id][poCaptureGroup] = DynPoints[id][poCapperGroup];
 		DynPoints[id][poCapperGroup] = INVALID_GROUP_ID;
@@ -328,10 +328,10 @@ CMD:points(playerid, params[])
 					if(DynPoints[i][poLocked] != 1)
 					{
 						if((0 <= DynPoints[i][poCaptureGroup] < MAX_GROUPS)) {
-							format(szMiscArray, sizeof(szMiscArray), "Point ID: %d | Name: %s | Owner: %s | Captured By: %s | Hours: %d", DynPoints[i][poID], DynPoints[i][poName],arrGroupData[DynPoints[i][poCaptureGroup]][g_szGroupName],DynPoints[i][poCaptureName],DynPoints[i][poTimer]);
+							format(szMiscArray, sizeof(szMiscArray), "ID diem: %d | Ten: %s | Chu: %s | Nguoi chiem: %s | Gio: %d", DynPoints[i][poID], DynPoints[i][poName],arrGroupData[DynPoints[i][poCaptureGroup]][g_szGroupName],DynPoints[i][poCaptureName],DynPoints[i][poTimer]);
 						}
 						else {
-							format(szMiscArray, sizeof(szMiscArray), "Point ID: %d | Name: %s | Owner: Nobody | Captured By: Nobody | Hours: %d", DynPoints[i][poID], DynPoints[i][poName], DynPoints[i][poTimer]);
+							format(szMiscArray, sizeof(szMiscArray), "ID diem: %d | Ten: %s | Chu: Khong co | Nguoi chiem: Khong co | Gio: %d", DynPoints[i][poID], DynPoints[i][poName], DynPoints[i][poTimer]);
 						}
 						SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 					}
@@ -348,7 +348,7 @@ CMD:editpoint(playerid, params[])
 	{
 		ListPoints(playerid);
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to preform this command.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -361,10 +361,10 @@ ListPoints(playerid) {
 		if(strcmp(DynPoints[i][poName], "NULL", true) != 0)
 			format(szDialogStr, sizeof szDialogStr, "%s\n(%i) %s{FFFFFF}", szDialogStr, i + 1, DynPoints[i][poName]);
 		else
-			format(szDialogStr, sizeof szDialogStr, "%s\n(%i) (empty)", szDialogStr, i + 1);
+			format(szDialogStr, sizeof szDialogStr, "%s\n(%i) (trong)", szDialogStr, i + 1);
 		++i;
 	}
-	return ShowPlayerDialogEx(playerid, DIALOG_LISTPOINTS, DIALOG_STYLE_LIST, "Edit Points", szDialogStr, "Select", "Cancel");
+	return ShowPlayerDialogEx(playerid, DIALOG_LISTPOINTS, DIALOG_STYLE_LIST, "Sua diem", szDialogStr, "Chon", "Huy");
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
@@ -381,22 +381,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				case 0 .. MAX_POINTS:
 				{
 					SetPVarInt(playerid, "pEditingPoint", listitem);
-					format(szDialogStr, sizeof szDialogStr, "Name: %s\n\
-						Type: %s\n\
-						Edit Exterior/Interior Position\n\
-						Amount Per Hour (%s)\n\
-						Edit Delivery Packages\n\
-						Edit Capture Time\n\
-						Boat Run Only (%s)\n\
-						Locked (%s)\n\
-						Reset\n\
-						Delete", DynPoints[listitem][poName],
+					format(szDialogStr, sizeof szDialogStr, "Ten: %s\n\
+						Loai: %s\n\
+						Sua vi tri ngoai/trong\n\
+						Luong moi gio (%s)\n\
+						Sua goi giao hang\n\
+						Sua thoi gian chiem\n\
+						Chi dung thuyen (%s)\n\
+						Khoa (%s)\n\
+						Dat lai\n\
+						Xoa", DynPoints[listitem][poName],
 						PointTypeToName(DynPoints[listitem][poType]),
 						number_format(DynPoints[listitem][poAmountHour]),
-						(DynPoints[listitem][poBoat]) ? ("Yes") : ("No"),
-						(DynPoints[listitem][poLocked]) ? ("Yes") : ("No")
+						(DynPoints[listitem][poBoat]) ? ("Co") : ("Khong"),
+						(DynPoints[listitem][poLocked]) ? ("Co") : ("Khong")
 						);
-					ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT, DIALOG_STYLE_LIST, "Edit Points", szDialogStr, "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT, DIALOG_STYLE_LIST, "Sua diem", szDialogStr, "Chon", "Huy");
 				}
 			}
 		}
@@ -408,39 +408,39 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				case 0:
 				{
-					ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_NAME, DIALOG_STYLE_INPUT, "Edit Points - Name", "Please enter a new name for the point.", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_NAME, DIALOG_STYLE_INPUT, "Sua diem - Ten", "Nhap ten moi cho diem.", "Chon", "Huy");
 				}
 				case 1:
 				{
-					ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_TYPE, DIALOG_STYLE_LIST, "Edit Points - Type", "Materials\nPot\nCrack\nMeth\nEcstasy", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_TYPE, DIALOG_STYLE_LIST, "Sua diem - Loai", "Materials\nPot\nCrack\nMeth\nEcstasy", "Chon", "Huy");
 				}
 				case 2:
 				{
-					ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_POSITION, DIALOG_STYLE_LIST, "Edit Points - Position", "Pickup Point\nDelivery Point", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_POSITION, DIALOG_STYLE_LIST, "Sua diem - Vi tri", "Diem lay hang\nDiem giao hang", "Chon", "Huy");
 				}
 				case 3:
 				{
-					ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATERIALS, DIALOG_STYLE_INPUT, "Edit Points - Amount Per Hour", "Please enter the amount this point will give per hour to the owned group.", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATERIALS, DIALOG_STYLE_INPUT, "Sua diem - Luong moi gio", "Nhap luong diem nay cung cap moi gio cho to chuc so huu.", "Chon", "Huy");
 				}
 				case 4:
 				{
 					if(!response) return ResetDialog(playerid);
-					format(szDialogStr, sizeof szDialogStr, "Package Non-VIP (%s)\n\
-						Package Bronze VIP (%s)\n\
-						Package Silver VIP (%s)\n\
-						Package Gold VIP (%s)\n\
-						Package Platinum VIP (%s)", 
+					format(szDialogStr, sizeof szDialogStr, "Goi Non-VIP (%s)\n\
+						Goi Bronze VIP (%s)\n\
+						Goi Silver VIP (%s)\n\
+						Goi Gold VIP (%s)\n\
+						Goi Platinum VIP (%s)", 
 						number_format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmount][0]),
 						number_format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmount][1]),
 						number_format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmount][2]),
 						number_format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmount][3]),
 						number_format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmount][4])
 						);
-					ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATVIPLIST, DIALOG_STYLE_LIST, "Edit Points - Edit Delivery Packages", szDialogStr, "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATVIPLIST, DIALOG_STYLE_LIST, "Sua diem - Sua goi giao hang", szDialogStr, "Chon", "Huy");
 				}
 				case 5:
 				{
-					ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_CAPTIME, DIALOG_STYLE_INPUT, "Edit Points - Capturable Timer", "Specify a time (hours) to when the point is allowed to be captured.\nSetting 0 will announce point is ready for capture!", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_CAPTIME, DIALOG_STYLE_INPUT, "Sua diem - Hen gio chiem", "Nhap thoi gian (gio) truoc khi duoc chiem diem.\nDat 0 se thong bao diem san sang bi chiem!", "Chon", "Huy");
 				}
 				case 6:
 				{
@@ -478,7 +478,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poPName], MAX_PLAYER_NAME, "No One");
 					if(DynPoints[GetPVarInt(playerid, "pEditingPoint")][CapTimer] != 0) KillTimer(DynPoints[GetPVarInt(playerid, "pEditingPoint")][CapTimer]);
 					DynPoints[GetPVarInt(playerid, "pEditingPoint")][CapTimer] = 0;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "You have reset %s's capture timer / group owner.", DynPoints[GetPVarInt(playerid, "pEditingPoint")][poName]);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Da dat lai hen gio chiem / chu cua %s.", DynPoints[GetPVarInt(playerid, "pEditingPoint")][poName]);
 					UpdatePoint(GetPVarInt(playerid, "pEditingPoint"));
 					SavePoint(GetPVarInt(playerid, "pEditingPoint"));
 					ResetDialog(playerid);
@@ -511,7 +511,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poPName], MAX_PLAYER_NAME, "No One");
 					if(DynPoints[GetPVarInt(playerid, "pEditingPoint")][CapTimer] != 0) KillTimer(DynPoints[GetPVarInt(playerid, "pEditingPoint")][CapTimer]);
 					DynPoints[GetPVarInt(playerid, "pEditingPoint")][CapTimer] = 0;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "You have delete point: %s.", DynPoints[GetPVarInt(playerid, "pEditingPoint")][poName]);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Da xoa diem: %s.", DynPoints[GetPVarInt(playerid, "pEditingPoint")][poName]);
 					format(szMiscArray, sizeof(szMiscArray), "%s has deleted point ID: %d", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pEditingPoint"));
 					Log("logs/editpoint.log", szMiscArray);
 					format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poName], MAX_PLAYER_NAME, "NULL");
@@ -526,7 +526,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			szMiscArray[0] = 0;
 			if(!response) return ResetDialog(playerid);
 
-			if(strlen(inputtext) > 24) return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_NAME, DIALOG_STYLE_INPUT, "Edit Points - Name", "Please enter a new name for the point.\n\nPlease specify a name under 25 characters.", "Select", "Cancel"); 
+			if(strlen(inputtext) > 24) return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_NAME, DIALOG_STYLE_INPUT, "Sua diem - Ten", "Nhap ten moi cho diem.\n\nTen phai duoi 25 ky tu.", "Chon", "Huy"); 
 			strcpy(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poName], (isnull(inputtext) ? "NULL" : inputtext), 24);
 			format(szMiscArray, sizeof(szMiscArray), "%s has edited point %d's name to %s", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pEditingPoint"), inputtext);
 			Log("logs/editpoint.log", szMiscArray);
@@ -545,7 +545,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					DynPoints[GetPVarInt(playerid, "pEditingPoint")][poType] = listitem;
 					format(szMiscArray, sizeof(szMiscArray), "%s has edited point %d's type to %s.", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pEditingPoint"), PointTypeToName(listitem));
 					Log("logs/editpoint.log", szMiscArray);
-					SendClientMessageEx(playerid, COLOR_YELLOW, "You have edited point %d's type to %s", GetPVarInt(playerid, "pEditingPoint"), PointTypeToName(listitem));
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Da doi loai diem %d thanh %s", GetPVarInt(playerid, "pEditingPoint"), PointTypeToName(listitem));
 					ResetDialog(playerid);
 					UpdatePoint(GetPVarInt(playerid, "pEditingPoint"));
 					SavePoint(GetPVarInt(playerid, "pEditingPoint"));
@@ -566,7 +566,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					DynPoints[GetPVarInt(playerid, "pEditingPoint")][poPos][2] = pvPos[2];
 					DynPoints[GetPVarInt(playerid, "pEditingPoint")][poVW] = GetPlayerVirtualWorld(playerid);
 					DynPoints[GetPVarInt(playerid, "pEditingPoint")][poInt] = GetPlayerInterior(playerid);
-					SendClientMessageEx(playerid, COLOR_YELLOW, "You updated the points default location.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Da doi vi tri mac dinh cua diem.");
 					SavePoint(GetPVarInt(playerid, "pEditingPoint"));
 				}
 				case 1:
@@ -576,7 +576,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					DynPoints[GetPVarInt(playerid, "pEditingPoint")][poPos2][2] = pvPos[2];
 					DynPoints[GetPVarInt(playerid, "pEditingPoint")][po2VW] = GetPlayerVirtualWorld(playerid);
 					DynPoints[GetPVarInt(playerid, "pEditingPoint")][po2Int] = GetPlayerInterior(playerid);
-					SendClientMessageEx(playerid, COLOR_YELLOW, "You updated the delivery destination for %s", DynPoints[GetPVarInt(playerid, "pEditingPoint")][poName]);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Da doi diem giao hang cua %s", DynPoints[GetPVarInt(playerid, "pEditingPoint")][poName]);
 					SavePoint(GetPVarInt(playerid, "pEditingPoint"));
 				}
 			}
@@ -588,7 +588,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			szMiscArray[0] = 0;
 			if(!response) return ResetDialog(playerid);
-			if(!IsNumericString(inputtext) || strval(inputtext) < 0) return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATERIALS, DIALOG_STYLE_INPUT, "Edit Points - Amount Per Hour", "Please enter the amount this point will give per hour to the owned group.\n\nPlease enter a numerical integer and is 0 or above.", "Select", "Cancel");
+			if(!IsNumericString(inputtext) || strval(inputtext) < 0) return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATERIALS, DIALOG_STYLE_INPUT, "Sua diem - Luong moi gio", "Nhap luong diem nay cung cap moi gio cho to chuc so huu.\n\nNhap so nguyen tu 0 tro len.", "Chon", "Huy");
 
 			DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmountHour] = strval(inputtext);
 
@@ -601,7 +601,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(response) {
 				SetPVarInt(playerid, "pEditingVIPPoint", listitem);
-				ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATVIPSET, DIALOG_STYLE_INPUT, "Edit Points - Package", "Please enter an amount this package is to give to per delivery.", "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATVIPSET, DIALOG_STYLE_INPUT, "Sua diem - Goi hang", "Nhap so luong goi hang cung cap moi chuyen giao.", "Chon", "Huy");
 			} else {
 				ResetDialog(playerid);
 			}
@@ -610,7 +610,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			szMiscArray[0] = 0;
 			if(!response) return ResetDialog(playerid);
-			if(!IsNumericString(inputtext) || strval(inputtext) < 0) return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_CAPTIME, DIALOG_STYLE_INPUT, "Edit Points - Capturable Timer", "Specify a time (hours) to when the point is allowed to be captured.\nSetting 0 will announce point is ready for capture!\n\nPlease enter a numerical integer and is 0 or above.", "Select", "Cancel");
+			if(!IsNumericString(inputtext) || strval(inputtext) < 0) return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_CAPTIME, DIALOG_STYLE_INPUT, "Sua diem - Hen gio chiem", "Nhap thoi gian (gio) truoc khi duoc chiem diem.\nDat 0 se thong bao diem san sang bi chiem!\n\nNhap so nguyen tu 0 tro len.", "Chon", "Huy");
 			DynPoints[GetPVarInt(playerid, "pEditingPoint")][poCapturable] = (strval(inputtext) == 0 ? 1 : 0);
 			DynPoints[GetPVarInt(playerid, "pEditingPoint")][poTimer] = strval(inputtext);
 			format(szMiscArray, sizeof(szMiscArray), "%s has edited point %d's capturable timer to %d", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pEditingPoint"), inputtext);
@@ -622,7 +622,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case DIALOG_EDITPOINT_MATVIPSET:
 		{
 			if(response) {
-				if(!IsNumericString(inputtext) || strval(inputtext) < 1) return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATVIPSET, DIALOG_STYLE_INPUT, "Edit Points - Package", "Please enter an amount this package is to give to per delivery.\n\nPlease enter a numerical integer and is 0 or above.", "Select", "Cancel");
+				if(!IsNumericString(inputtext) || strval(inputtext) < 1) return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATVIPSET, DIALOG_STYLE_INPUT, "Sua diem - Goi hang", "Nhap so luong goi hang cung cap moi chuyen giao.\n\nNhap so nguyen tu 0 tro len.", "Chon", "Huy");
 				new drank[16];
 				szMiscArray[0] = 0;
 				switch(GetPVarInt(playerid, "pEditingVIPPoint"))
@@ -636,34 +636,34 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmount][GetPVarInt(playerid, "pEditingVIPPoint")] = strval(inputtext);
 				DeletePVar(playerid, "pEditingVIPPoint");
 				SavePoint(GetPVarInt(playerid, "pEditingPoint"));
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You set %s to get %s per package delivery!", drank, number_format(strval(inputtext)));
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Da dat %s nhan %s moi chuyen giao!", drank, number_format(strval(inputtext)));
 				format(szMiscArray, sizeof(szMiscArray), "%s has edited point %d's delivery package to %s for %s.", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pEditingPoint"), number_format(strval(inputtext)), drank);
 				Log("logs/editpoint.log", szMiscArray);
-				format(szDialogStr, sizeof szDialogStr, "Package Non-VIP (%s)\n\
-					Package Bronze VIP (%s)\n\
-					Package Silver VIP (%s)\n\
-					Package Gold VIP (%s)\n\
-					Package Platinum VIP (%s)", 
+				format(szDialogStr, sizeof szDialogStr, "Goi Non-VIP (%s)\n\
+					Goi Bronze VIP (%s)\n\
+					Goi Silver VIP (%s)\n\
+					Goi Gold VIP (%s)\n\
+					Goi Platinum VIP (%s)", 
 					number_format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmount][0]),
 					number_format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmount][1]),
 					number_format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmount][2]),
 					number_format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmount][3]),
 					number_format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmount][4])
 					);
-				ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATVIPLIST, DIALOG_STYLE_LIST, "Edit Points - Edit Delivery Packages", szDialogStr, "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATVIPLIST, DIALOG_STYLE_LIST, "Sua diem - Sua goi giao hang", szDialogStr, "Chon", "Huy");
 			} else {
-				format(szDialogStr, sizeof szDialogStr, "Package Non-VIP (%s)\n\
-					Package Bronze VIP (%s)\n\
-					Package Silver VIP (%s)\n\
-					Package Gold VIP (%s)\n\
-					Package Platinum VIP (%s)", 
+				format(szDialogStr, sizeof szDialogStr, "Goi Non-VIP (%s)\n\
+					Goi Bronze VIP (%s)\n\
+					Goi Silver VIP (%s)\n\
+					Goi Gold VIP (%s)\n\
+					Goi Platinum VIP (%s)", 
 					number_format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmount][0]),
 					number_format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmount][1]),
 					number_format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmount][2]),
 					number_format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmount][3]),
 					number_format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmount][4])
 					);
-				ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATVIPLIST, DIALOG_STYLE_LIST, "Edit Points - Edit Delivery Packages", szDialogStr, "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATVIPLIST, DIALOG_STYLE_LIST, "Sua diem - Sua goi giao hang", szDialogStr, "Chon", "Huy");
 			}
 		}
 	}
@@ -672,22 +672,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 stock ResetDialog(playerid) {
 	new szDialogStr[1256];
-	format(szDialogStr, sizeof szDialogStr, "Name: %s\n\
-		Type: %s\n\
-		Edit Exterior/Interior Position\n\
-		Amount Hour Hour (%s)\n\
-		Edit Delivery Packages\n\
-		Edit Capture Time\n\
-		Boat Run Only (%s)\n\
-		Locked (%s)\n\
-		Reset\n\
-		Delete", DynPoints[GetPVarInt(playerid, "pEditingPoint")][poName],
+	format(szDialogStr, sizeof szDialogStr, "Ten: %s\n\
+		Loai: %s\n\
+		Sua vi tri ngoai/trong\n\
+		Luong moi gio (%s)\n\
+		Sua goi giao hang\n\
+		Sua thoi gian chiem\n\
+		Chi dung thuyen (%s)\n\
+		Khoa (%s)\n\
+		Dat lai\n\
+		Xoa", DynPoints[GetPVarInt(playerid, "pEditingPoint")][poName],
 		PointTypeToName(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poType]),
 		number_format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poAmountHour]),
-		(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poBoat]) ? ("Yes") : ("No"),
-		(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poLocked]) ? ("Yes") : ("No")
+		(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poBoat]) ? ("Co") : ("Khong"),
+		(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poLocked]) ? ("Co") : ("Khong")
 		);
-	return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT, DIALOG_STYLE_LIST, "Edit Points", szDialogStr, "Select", "Cancel");
+	return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT, DIALOG_STYLE_LIST, "Sua diem", szDialogStr, "Chon", "Huy");
 }
 
 PointTypeToName(id)
@@ -769,14 +769,14 @@ stock UpdatePoint(id)
 	DynPoints[id][poPickupID] = CreateDynamicPickup(((DynPoints[id][poType] == 1) ? 1279 : (DynPoints[id][poType] == 2 || DynPoints[id][poType] == 3 || DynPoints[id][poType] == 4) ? 1241 : 1239), 23, DynPoints[id][poPos][0], DynPoints[id][poPos][1], DynPoints[id][poPos][2], .worldid = DynPoints[id][poVW], .interiorid = DynPoints[id][poInt]);
 	switch(DynPoints[id][poType])
 	{
-		case 0: format(string, sizeof(string), "Materials Pickup (ID: %d)\nType /getmats to get materials.", DynPoints[id][poID]);
-		case 1: format(string, sizeof(string), "Pot Pickup (ID: %d)\nType /getdrugs to get pot.", DynPoints[id][poID]);
-		case 2: format(string, sizeof(string), "Crack Pickup (ID: %d)\nType /getdrugs to get crack.", DynPoints[id][poID]);
-		case 3: format(string, sizeof(string), "Meth Pickup (ID: %d)\nType /getdrugs to get meth.", DynPoints[id][poID]);
-		case 4: format(string, sizeof(string), "Ecstasy Pickup (ID: %d)\nType /getdrugs to get ecstasy.", DynPoints[id][poID]);
+		case 0: format(string, sizeof(string), "Diem lay vat lieu (ID: %d)\nDung /getmats de lay vat lieu.", DynPoints[id][poID]);
+		case 1: format(string, sizeof(string), "Diem pot (ID: %d)\nDung /getdrugs de lay pot.", DynPoints[id][poID]);
+		case 2: format(string, sizeof(string), "Diem crack (ID: %d)\nDung /getdrugs de lay crack.", DynPoints[id][poID]);
+		case 3: format(string, sizeof(string), "Diem meth (ID: %d)\nDung /getdrugs de lay meth.", DynPoints[id][poID]);
+		case 4: format(string, sizeof(string), "Diem ecstasy (ID: %d)\nDung /getdrugs de lay ecstasy.", DynPoints[id][poID]);
 	}
 	if(DynPoints[id][poCapturable] && !DynPoints[id][poLocked]) {
-		format(string, sizeof(string), "%s\n%s has become available for capture! Stand here and /capture it.", string, DynPoints[id][poName]);
+		format(string, sizeof(string), "%s\n%s da san sang bi chiem! Dung day va dung /capture de chiem.", string, DynPoints[id][poName]);
 	}
 	DynPoints[id][poTextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, DynPoints[id][poPos][0], DynPoints[id][poPos][1], DynPoints[id][poPos][2]+0.6, 10.0, .testlos = 1, .worldid = DynPoints[id][poVW], .interiorid = DynPoints[id][poInt], .streamdistance = 10.0);
 	return 1;

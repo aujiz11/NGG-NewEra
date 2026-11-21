@@ -96,7 +96,7 @@ stock IncreaseFishingLevel(playerid)
 	PlayerInfo[playerid][pFishingSkill] += gained;
 	if(PlayerInfo[playerid][pDoubleEXP] > 0 && gained > 0) 
 	{
-		SendClientMessageEx(playerid, COLOR_YELLOW, "You gained %d fishing skill points with Double EXP. You have %d hours left on the token.", gained, PlayerInfo[playerid][pDoubleEXP]);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Ban nhan %d diem fishing nho Double EXP. Token con %d gio.", gained, PlayerInfo[playerid][pDoubleEXP]);
 	}
 	return 1;
 }
@@ -115,7 +115,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 	}
 
 	Fishing_ClearSaleCheckpoint(playerid);
-	SendClientMessageEx(playerid, COLOR_WHITE, "You have reached your destination. Type /sellfish [amount] to sell your fish.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Da den noi. Dung /sellfish [amount] de ban ca.");
 	return ~1;
 }
 
@@ -135,7 +135,7 @@ CMD:fishhelp(playerid, params[])
 CMD:ofishhelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
-	SendClientMessageEx(playerid, COLOR_WHITE, "FISH HELP: Fish from a boat in the normal world. Carry up to 1,000 lbs.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "CAU CA: Cau tren thuyen o world thuong. Giu toi da 1,000 lbs.");
 	SendClientMessageEx(playerid, COLOR_GRAD3, "/fish, /myfish, /sellfish");
 	return 1;
 }
@@ -143,21 +143,21 @@ CMD:ofishhelp(playerid, params[])
 CMD:fish(playerid, params[])
 {
 	if(!Fishing_CanAct(playerid)) 
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot fish right now. You must be outside in the normal world.");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Chua the cau ca. Ban phai o ngoai troi, world thuong.");
 	
 	if(!IsABoat(GetPlayerVehicleID(playerid))) 
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in a boat!");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o tren thuyen!");
 	
 	new weight = PlayerInfo[playerid][pFishWeight], skill = PlayerInfo[playerid][pFishingSkill];
 	if(weight < 0 || skill < 0) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "Your fishing data is invalid. Please contact an administrator.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Du lieu fishing sai. Hay lien he Admin.");
 	
 	if(weight >= 1000) 
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You have reached your maximum weight. Type /sellfish to profit.");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Da dat trong luong toi da. Dung /sellfish de ban.");
 	
 	new now = gettime(), remaining = GetPVarInt(playerid, "pFishTime") - now;
 	if(remaining > 0) 
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "Wait %d seconds before casting again.", remaining);
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Cho %d giay de tha cau tiep.", remaining);
 	
 	static const outcomesByLevel[] = {3, 5, 9, 12, sizeof(FishingCatches)};
 	new outcomes = outcomesByLevel[Job_SkillLevel(JOB_SKILL_FISHING, skill) - 1];
@@ -165,65 +165,65 @@ CMD:fish(playerid, params[])
 	
 	SetPVarInt(playerid, "pFishTime", now + 10);
 	IncreaseFishingLevel(playerid);
-	format(message, sizeof(message), "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+	format(message, sizeof(message), "{FF8000}* {C2A2DA}%s tha can cau roi cuon day vao.", GetPlayerNameEx(playerid));
 	SetPlayerChatBubble(playerid, message, COLOR_PURPLE, 30.0, 4000);
 	SendClientMessageEx(playerid, COLOR_PURPLE, "%s", message);
-	if(caught == 0) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught nothing!");
+	if(caught == 0) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban khong cau duoc gi!");
 	if(FishingCatches[caught][fishWeight] > 1000 - weight)
-		return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "The %s was too heavy for your remaining capacity and was released.", FishingCatches[caught][fishName]);
+		return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "%s qua nang so voi suc chua con lai, da tha di.", FishingCatches[caught][fishName]);
 	PlayerInfo[playerid][pFishWeight] += FishingCatches[caught][fishWeight];
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a %s!", FishingCatches[caught][fishName]);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da cau duoc %s!", FishingCatches[caught][fishName]);
 	return 1;
 }
 
 CMD:myfish(playerid, params[])
 {
-	return SendClientMessageEx(playerid, COLOR_YELLOW, "Fish: %d lbs.", PlayerInfo[playerid][pFishWeight]);
+	return SendClientMessageEx(playerid, COLOR_YELLOW, "Ca: %d lbs.", PlayerInfo[playerid][pFishWeight]);
 }
 
 CMD:sellfish(playerid, params[])
 {
 	if(!Fishing_CanAct(playerid)) 
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot sell fish right now. You must be outside in the normal world.");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Chua the ban ca. Ban phai o ngoai troi, world thuong.");
 	
 	new now = gettime(), remaining = GetPVarInt(playerid, "pFishSellTime") - now;
 	if(remaining > 0) 
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "Wait %d seconds before selling your fish again.", remaining);
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Cho %d giay de ban ca tiep.", remaining);
 	
 	if(PlayerInfo[playerid][pFishWeight] < 50) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You must have at least 50 lbs of fish to sell.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Can it nhat 50 lbs ca de ban.");
 	
 	if(!IsPlayerInRangeOfPoint(playerid, 30.0, 2161.0513, -98.5897, 2.7893))
 	{
 		if(GetPVarType(playerid, "pSellingFish") && Fishing_HasSaleCheckpoint(playerid))
-			return SendClientMessageEx(playerid, COLOR_YELLOW, "Follow your existing checkpoint to sell your fish.");
+			return SendClientMessageEx(playerid, COLOR_YELLOW, "Theo checkpoint hien tai de ban ca.");
 		
 		Fishing_ClearSaleCheckpoint(playerid);
 		if(CheckPointCheck(playerid) || IsPlayerCheckpointActive(playerid))
-			return SendClientMessageEx(playerid, COLOR_GREY, "Finish or cancel your current checkpoint before locating the fish market.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Xong hoac huy checkpoint hien tai truoc khi tim cho ca.");
 		
 		SetPVarInt(playerid, "pSellingFish", 1);
 		SetPlayerCheckpoint(playerid, 2161.0513, -98.5897, 2.7893, 10.0);
-		GameTextForPlayer(playerid, "~g~CHECKPOINT ~r~SET", 5000, 4);
-		return SendClientMessageEx(playerid, COLOR_YELLOW, "Make your way to the checkpoint to sell your fish.");
+		GameTextForPlayer(playerid, "~g~CHECKPOINT ~r~DA DAT", 5000, 4);
+		return SendClientMessageEx(playerid, COLOR_YELLOW, "Den checkpoint de ban ca.");
 	}
 	
 	new amount;
 	if(sscanf(params, "d", amount)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellfish [amount]");
+		return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /sellfish [amount]");
 	
-	if(amount < 50) return SendClientMessageEx(playerid, COLOR_GREY, "Sell at least 50 lbs of fish at a time.");
-	if(amount > PlayerInfo[playerid][pFishWeight]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have that many pounds!");
+	if(amount < 50) return SendClientMessageEx(playerid, COLOR_GREY, "Ban it nhat 50 lbs ca moi lan.");
+	if(amount > PlayerInfo[playerid][pFishWeight]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co du khoi luong do!");
 	
 	new bonus = Random(100, 200);
-	if(amount > (cellmax - bonus) / 40) return SendClientMessageEx(playerid, COLOR_GREY, "That sale is too large. Sell fewer fish at a time.");
+	if(amount > (cellmax - bonus) / 40) return SendClientMessageEx(playerid, COLOR_GREY, "Giao dich qua lon. Hay ban it ca hon moi lan.");
 	
 	new payment = amount * 40 + bonus;
-	if(GetPlayerCash(playerid) > cellmax - payment) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot carry this fish sale payment.");
+	if(GetPlayerCash(playerid) > cellmax - payment) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the nhan so tien ban ca nay.");
 	PlayerInfo[playerid][pFishWeight] -= amount;
 	GivePlayerCash(playerid, payment);
 	SetPVarInt(playerid, "pFishSellTime", now + 120);
 	Fishing_ClearSaleCheckpoint(playerid);
-	SendClientMessageEx(playerid, COLOR_YELLOW, "You have sold %d lbs for $%s.", amount, number_format(payment));
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Ban %d lbs, nhan $%s.", amount, number_format(payment));
 	return 1;
 }

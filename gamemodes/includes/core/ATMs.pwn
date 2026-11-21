@@ -71,7 +71,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 			if(areaid[0] == ATMPoint[i]) {
 				
-				format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s approaches the ATM, typing in their PIN.", GetPlayerNameEx(playerid));
+				format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s den ATM va nhap ma PIN.", GetPlayerNameEx(playerid));
 				//ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 15.0, 5000);
 				ShowATMMenu(playerid);
@@ -115,30 +115,30 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(GetPVarType(playerid, "ATMWithdraw")) {
 				
 				if(iAmount < 1) {
-					SendClientMessageEx(playerid, COLOR_WHITE, "  Negative amounts cannot be transfered!");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Khong the giao dich so tien am!");
 					return ShowATMMenu(playerid, 1);
 				}
 
 				if(iAmount > PlayerInfo[playerid][pAccount]) {
-					SendClientMessageEx(playerid, COLOR_WHITE, "  You are trying to withdraw more than you have!");
+					SendClientMessageEx(playerid, COLOR_WHITE, "So tien rut vuot qua so du!");
 					return ShowATMMenu(playerid, 1);
 				}
 
 				if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) {
-					SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Chi duoc giao dich moi 10 giay, hay cho!");
 					return ShowATMMenu(playerid, 1);
 				}
 				SetPVarInt(playerid, "LastTransaction", gettime());
 				
 				GivePlayerCash(playerid, iAmount);
 				PlayerInfo[playerid][pAccount] -= iAmount; 
-				SendClientMessageEx(playerid, COLOR_YELLOW, "  You have withdrawn $%s from your account. ", number_format(iAmount));
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Da rut $%s tu tai khoan.", number_format(iAmount));
 
 				if(PlayerInfo[playerid][pDonateRank] == 0) {
 					new fee;
 					fee = 3*iAmount/100;
 					PlayerInfo[playerid][pAccount] -= fee;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "  You have been charged a 3 percent withdraw fee: -$%d.", fee);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Phi rut tien 3 phan tram: -$%d.", fee);
 				}
 
 				OnPlayerStatsUpdate(playerid);
@@ -150,30 +150,30 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else if(GetPVarType(playerid, "ATMDeposit")) {
 
 				if(iAmount < 1) {
-					SendClientMessageEx(playerid, COLOR_WHITE, "  Negative amounts cannot be transfered!");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Khong the giao dich so tien am!");
 					return ShowATMMenu(playerid, 2);
 				}
 
 				if(iAmount > GetPlayerCash(playerid)) {
-					SendClientMessageEx(playerid, COLOR_WHITE, "  You are trying to deposit more than you have!");
+					SendClientMessageEx(playerid, COLOR_WHITE, "So tien gui vuot qua tien ban co!");
 					return ShowATMMenu(playerid, 2);
 				}
 
 				if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) {
-					SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Chi duoc giao dich moi 10 giay, hay cho!");
 					return ShowATMMenu(playerid, 2);
 				}
 				SetPVarInt(playerid, "LastTransaction", gettime());
 				
 				GivePlayerCash(playerid, -iAmount);
 				PlayerInfo[playerid][pAccount] += iAmount; 
-				SendClientMessageEx(playerid, COLOR_YELLOW, "  You have deposited $%s to your account. ", number_format(iAmount));
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Da gui $%s vao tai khoan.", number_format(iAmount));
 
 				if(PlayerInfo[playerid][pDonateRank] == 0) {
 					new fee;
 					fee = 3*iAmount/100;
 					PlayerInfo[playerid][pAccount] -= fee;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "  You have been charged a 3 percent deposit fee: -$%d.", fee);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Phi gui tien 3 phan tram: -$%d.", fee);
 				}
 
 				OnPlayerStatsUpdate(playerid);
@@ -198,7 +198,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			id = strval(inputtext);
 			
 			if(id < 0 || id >= MAX_PLAYERS || id == playerid || !IsPlayerConnected(id) || !gPlayerLogged{id}) {
-				SendClientMessageEx(playerid, COLOR_WHITE, "  The player you are trying to transfer to is not connected!");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi nhan chua ket noi!");
 				return ShowATMMenu(playerid, 3);
 			}
 
@@ -224,10 +224,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				|| GetPlayerSQLId(id) != GetPVarInt(playerid, "ATMTransferAccount")
 				|| g_arrQueryHandle[id] != GetPVarInt(playerid, "ATMTransferSession")) {
 				DeletePVar(playerid, "ATMTransferTo");
-				SendClientMessageEx(playerid, COLOR_GRAD1, "The recipient changed or disconnected. Select the recipient again.");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi nhan da doi hoac ngat ket noi. Hay chon lai.");
 				return ShowATMMenu(playerid, 3);
 			}
-			if(!ParseBankTransferAmount(inputtext, iAmount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Enter a positive whole amount within the supported range.");
+			if(!ParseBankTransferAmount(inputtext, iAmount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nhap so tien nguyen duong trong gioi han cho phep.");
 			return TransferBankAccount(playerid, id, iAmount, true);
 
 		}
@@ -248,33 +248,33 @@ ShowATMMenu(playerid, menu = 0) {
 
 	szMiscArray[0] = 0;
 
-	format(szTitle, sizeof(szTitle), "ATM Menu ($%s)", number_format(PlayerInfo[playerid][pAccount]));
+	format(szTitle, sizeof(szTitle), "Menu ATM ($%s)", number_format(PlayerInfo[playerid][pAccount]));
 
-	if(PlayerInfo[playerid][pFreezeBank] == 1) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, szTitle, "Your assets have been frozen! Contact judicial!", "Ok", "");
+	if(PlayerInfo[playerid][pFreezeBank] == 1) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, szTitle, "Tai san da bi dong bang! Hay lien he Judicial!", "Dong y", "");
 
 	switch(menu) {
 
 		case 0: { // main menu
-			ShowPlayerDialogEx(playerid, ATM, DIALOG_STYLE_LIST, szTitle, "Withdraw\nDeposit\nTransfer", "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, ATM, DIALOG_STYLE_LIST, szTitle, "Rut tien\nGui tien\nChuyen tien", "Chon", "Huy");
 		}
 
 		case 1: { // iAmount withdraw
-			ShowPlayerDialogEx(playerid, ATM_AMOUNT, DIALOG_STYLE_INPUT, szTitle, "Please input how much you wish to withdraw from your account.", "Withdraw", "Cancel");
+			ShowPlayerDialogEx(playerid, ATM_AMOUNT, DIALOG_STYLE_INPUT, szTitle, "Nhap so tien muon rut tu tai khoan.", "Rut", "Huy");
 			SetPVarInt(playerid, "ATMWithdraw", 1);
 		}
 
 		case 2: { // iAmount deposit
-			ShowPlayerDialogEx(playerid, ATM_AMOUNT, DIALOG_STYLE_INPUT, szTitle, "Please input how much you wish to deposit to your account.", "Deposit", "Cancel");
+			ShowPlayerDialogEx(playerid, ATM_AMOUNT, DIALOG_STYLE_INPUT, szTitle, "Nhap so tien muon gui vao tai khoan.", "Gui", "Huy");
 			SetPVarInt(playerid, "ATMDeposit", 1);
 		}
 
 		case 3: { // transfer to
-			ShowPlayerDialogEx(playerid, ATM_TRANSFER_TO, DIALOG_STYLE_INPUT, szTitle, "Please input the player id you wish to transfer money to.", "Next", "Cancel");
+			ShowPlayerDialogEx(playerid, ATM_TRANSFER_TO, DIALOG_STYLE_INPUT, szTitle, "Nhap ID nguoi nhan tien.", "Tiep", "Huy");
 		}
 
 		case 4: { // transfer iAmount
-			format(szMiscArray, sizeof(szMiscArray), "Please input the amount you wish to transfer to {FF0000}%s", GetPlayerNameEx(GetPVarInt(playerid, "ATMTransferTo")));
-			ShowPlayerDialogEx(playerid, ATM_TRANSFER_AMT, DIALOG_STYLE_INPUT, szTitle, szMiscArray, "Transfer", "Cancel");
+			format(szMiscArray, sizeof(szMiscArray), "Nhap so tien muon chuyen cho {FF0000}%s", GetPlayerNameEx(GetPVarInt(playerid, "ATMTransferTo")));
+			ShowPlayerDialogEx(playerid, ATM_TRANSFER_AMT, DIALOG_STYLE_INPUT, szTitle, szMiscArray, "Chuyen", "Huy");
 		}
 	}
 

@@ -224,14 +224,14 @@ InteractSpriteProcess(playerid, bool:choice) {
 	switch(choice) {
 
 		case true: {
-			SendClientMessage(playerid, 0x00FF00FF, "SUCCESS");
+			SendClientMessage(playerid, 0x00FF00FF, "THANH CONG");
 			TextDrawColor(TD_Interact[1], 0x00FF00FF);
 			TextDrawHideForPlayer(playerid, TD_Interact[1]);
 			TextDrawShowForPlayer(playerid, TD_Interact[1]);
 			SetPVarInt(playerid, INTERACT_TRUE, 1);
 		}
 		default: {
-			SendClientMessage(playerid, 0xFF0000FF, "FAIL");
+			SendClientMessage(playerid, 0xFF0000FF, "THAT BAI");
 			TextDrawColor(TD_Interact[1], 0xFF0000FF);
 			TextDrawHideForPlayer(playerid, TD_Interact[1]);
 			TextDrawShowForPlayer(playerid, TD_Interact[1]);

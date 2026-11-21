@@ -138,7 +138,7 @@ Group_DisbandGroup(iGroupID) {
 	foreach(new x: Player)
 	{
 		if(PlayerInfo[x][pMember] == iGroupID || PlayerInfo[x][pLeader] == iGroupID) {
-			SendClientMessageEx(x, COLOR_WHITE, "Your group has been disbanded by an administrator. All members have been automatically removed.");
+			SendClientMessageEx(x, COLOR_WHITE, "To chuc da bi quan tri vien giai tan. Tat ca thanh vien da bi loai tu dong.");
 			PlayerInfo[x][pLeader] = INVALID_GROUP_ID;
 			PlayerInfo[x][pMember] = INVALID_GROUP_ID;
 			PlayerInfo[x][pRank] = INVALID_RANK;
@@ -580,17 +580,17 @@ Group_ListGroups(iPlayerID, iDialogID = DIALOG_LISTGROUPS) {
 			format(szDialogStr, sizeof szDialogStr, "%s\n(%i) {%s}%s{FFFFFF}", szDialogStr, iCount+1, Group_NumToDialogHex(arrGroupData[iCount][g_hDutyColour]), arrGroupData[iCount][g_szGroupName]);
 
 		else
-			format(szDialogStr, sizeof szDialogStr, "%s\n(%i) (empty)", szDialogStr, iCount+1);
+			format(szDialogStr, sizeof szDialogStr, "%s\n(%i) (trong)", szDialogStr, iCount+1);
 
 		++iCount;
 	}
 	if(iDialogID == DIALOG_MAKELEADER)
 	{
 		new diagTitle[64];
-		format(diagTitle, sizeof(diagTitle), "Group List - Set Leadership for %s", GetPlayerNameEx(GetPVarInt(iPlayerID, "MakingLeader")));
-		return ShowPlayerDialogEx(iPlayerID, iDialogID, DIALOG_STYLE_LIST, diagTitle, szDialogStr, "Select", "Cancel");
+		format(diagTitle, sizeof(diagTitle), "To chuc - Gan lanh dao cho %s", GetPlayerNameEx(GetPVarInt(iPlayerID, "MakingLeader")));
+		return ShowPlayerDialogEx(iPlayerID, iDialogID, DIALOG_STYLE_LIST, diagTitle, szDialogStr, "Chon", "Huy");
 	}
-	else return ShowPlayerDialogEx(iPlayerID, iDialogID, DIALOG_STYLE_LIST, "Group List", szDialogStr, "Select", "Cancel");
+	else return ShowPlayerDialogEx(iPlayerID, iDialogID, DIALOG_STYLE_LIST, "Danh sach to chuc", szDialogStr, "Chon", "Huy");
 }
 
 Group_ReturnAllegiance(iAllegianceID) {
@@ -632,61 +632,61 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		szDialog[2048];
 
 	format(szDialog, sizeof(szDialog),
-		"{BBBBBB}Name:{FFFFFF} %s\n\
-		{BBBBBB}Type:{FFFFFF} %s\n\
-		{BBBBBB}Allegiance:{FFFFFF} %s\n\
-		{BBBBBB}Jurisdiction\n\
-		{BBBBBB}Duty colour: {%s}(edit)\n\
-		{BBBBBB}Radio colour: {%s}(edit)\n\
-		{BBBBBB}Radio access:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Department radio access:{FFFFFF} %s (rank %i)\n",
+		"{BBBBBB}Ten:{FFFFFF} %s\n\
+		{BBBBBB}Loai:{FFFFFF} %s\n\
+		{BBBBBB}Quoc gia:{FFFFFF} %s\n\
+		{BBBBBB}Tham quyen\n\
+		{BBBBBB}Mau truc: {%s}(sua)\n\
+		{BBBBBB}Mau radio: {%s}(sua)\n\
+		{BBBBBB}Quyen radio:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Radio lien nganh:{FFFFFF} %s (rank %i)\n",
 		arrGroupData[iGroupID][g_szGroupName],
 		Group_ReturnType(arrGroupData[iGroupID][g_iGroupType]),
 		Group_ReturnAllegiance(arrGroupData[iGroupID][g_iAllegiance]),
 		Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]),
 		Group_NumToDialogHex(arrGroupData[iGroupID][g_hRadioColour]),
-		(arrGroupData[iGroupID][g_iRadioAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iRadioAccess],
-		(arrGroupData[iGroupID][g_iDeptRadioAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDeptRadioAccess]
+		(arrGroupData[iGroupID][g_iRadioAccess] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iRadioAccess],
+		(arrGroupData[iGroupID][g_iDeptRadioAccess] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iDeptRadioAccess]
 	);
 
 	format(szDialog, sizeof(szDialog), "%s\
-		{BBBBBB}Int radio access:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Bug access:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Find access:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Government announcement:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Treasury Access:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Free name change:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Free name change div:{FFFFFF} %s (division %i)\n\
-		{BBBBBB}Spike Strips:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Barricades:{FFFFFF} %s (rank %i)\n",
+		{BBBBBB}Radio quoc te:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Nghe len:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Truy tim:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Thong bao chinh phu:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Quyen ngan quy:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Doi ten mien phi:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Division doi ten:{FFFFFF} %s (division %i)\n\
+		{BBBBBB}Dai dinh:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Rao chan:{FFFFFF} %s (rank %i)\n",
 		szDialog,
-		(arrGroupData[iGroupID][g_iIntRadioAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iIntRadioAccess],
-		(arrGroupData[iGroupID][g_iBugAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iBugAccess],
-		(arrGroupData[iGroupID][g_iFindAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iFindAccess],
-		(arrGroupData[iGroupID][g_iGovAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iGovAccess],
-		(arrGroupData[iGroupID][g_iTreasuryAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iTreasuryAccess],
-		(arrGroupData[iGroupID][g_iFreeNameChange] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iFreeNameChange],
-		(arrGroupData[iGroupID][g_iFreeNameChangeDiv] != INVALID_DIVISION) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iFreeNameChangeDiv],
-		(arrGroupData[iGroupID][g_iSpikeStrips] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iSpikeStrips],
-		(arrGroupData[iGroupID][g_iBarricades] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iBarricades]
+		(arrGroupData[iGroupID][g_iIntRadioAccess] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iIntRadioAccess],
+		(arrGroupData[iGroupID][g_iBugAccess] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iBugAccess],
+		(arrGroupData[iGroupID][g_iFindAccess] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iFindAccess],
+		(arrGroupData[iGroupID][g_iGovAccess] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iGovAccess],
+		(arrGroupData[iGroupID][g_iTreasuryAccess] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iTreasuryAccess],
+		(arrGroupData[iGroupID][g_iFreeNameChange] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iFreeNameChange],
+		(arrGroupData[iGroupID][g_iFreeNameChangeDiv] != INVALID_DIVISION) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iFreeNameChangeDiv],
+		(arrGroupData[iGroupID][g_iSpikeStrips] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iSpikeStrips],
+		(arrGroupData[iGroupID][g_iBarricades] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iBarricades]
 	);
 
 	format(szDialog, sizeof(szDialog), "%s\
-		{BBBBBB}Cones:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Flares:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Barrels:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Ladders:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Tapes:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Crate Island Control:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Edit Locker Stock:{FFFFFF} (%i)\n\
-		{BBBBBB}Edit Locker Weapons (%i defined)\n",
+		{BBBBBB}Coc tieu:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Phao sang:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Thung phuy:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Thang:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Day chan:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Quyen Crate Island:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Sua ton kho tu:{FFFFFF} (%i)\n\
+		{BBBBBB}Sua vu khi tu (%i da dat)\n",
 		szDialog,
-		(arrGroupData[iGroupID][g_iCones] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iCones],
-		(arrGroupData[iGroupID][g_iFlares] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iFlares],
-		(arrGroupData[iGroupID][g_iBarrels] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iBarrels],
-		(arrGroupData[iGroupID][g_iLadders] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iLadders],
-		(arrGroupData[iGroupID][g_iTapes] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iTapes],
-		(arrGroupData[iGroupID][g_iCrateIsland] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iCrateIsland],
+		(arrGroupData[iGroupID][g_iCones] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iCones],
+		(arrGroupData[iGroupID][g_iFlares] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iFlares],
+		(arrGroupData[iGroupID][g_iBarrels] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iBarrels],
+		(arrGroupData[iGroupID][g_iLadders] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iLadders],
+		(arrGroupData[iGroupID][g_iTapes] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iTapes],
+		(arrGroupData[iGroupID][g_iCrateIsland] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iCrateIsland],
 		arrGroupData[iGroupID][g_iLockerStock],
 		Array_Count(arrGroupData[iGroupID][g_iLockerGuns], MAX_GROUP_WEAPONS)
 	);
@@ -694,54 +694,54 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 	strunpack(lockerCostName, lockercosttype[arrGroupData[iGroupID][g_iLockerCostType]], sizeof(lockerCostName));
 	format(szDialog, sizeof(szDialog),
 		"%s\
-		{BBBBBB}Edit Payments\n\
-		{BBBBBB}Edit Divisions (%i defined)\n\
-		{BBBBBB}Edit Ranks (%i defined)\n\
-		{BBBBBB}Edit Lockers\n\
-		{BBBBBB}Edit Crate Delivery Position (current distance: %.0f)\n\
-		{BBBBBB}Locker Cost Type: %s\n\
-		{BBBBBB}Edit the Garage Position (current distance: %.0f)\n\
-		{BBBBBB}Edit Tackle Access:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Edit Wheel Clamps Access:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Edit DoC Access:{FFFFFF} %s (rank %i)\n",
+		{BBBBBB}Sua luong\n\
+		{BBBBBB}Sua Division (%i da dat)\n\
+		{BBBBBB}Sua rank (%i da dat)\n\
+		{BBBBBB}Sua tu do\n\
+		{BBBBBB}Sua diem giao thung (cach: %.0f)\n\
+		{BBBBBB}Nguon tra phi tu: %s\n\
+		{BBBBBB}Sua vi tri garage (cach: %.0f)\n\
+		{BBBBBB}Quyen vat nga:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Quyen khoa banh:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Quyen DoC:{FFFFFF} %s (rank %i)\n",
 		szDialog,
 		String_Count(arrGroupDivisions[iGroupID], MAX_GROUP_DIVS),
 		String_Count(arrGroupRanks[iGroupID], MAX_GROUP_RANKS),
 		GetPlayerDistanceFromPoint(iPlayerID, arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2]),
 		lockerCostName,
 		GetPlayerDistanceFromPoint(iPlayerID, arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2]),
-		(arrGroupData[iGroupID][g_iTackleAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iTackleAccess],
-		(arrGroupData[iGroupID][g_iWheelClamps] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iWheelClamps],
-		(arrGroupData[iGroupID][g_iDoCAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDoCAccess]
+		(arrGroupData[iGroupID][g_iTackleAccess] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iTackleAccess],
+		(arrGroupData[iGroupID][g_iWheelClamps] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iWheelClamps],
+		(arrGroupData[iGroupID][g_iDoCAccess] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iDoCAccess]
 	);
 
 	format(szDialog, sizeof(szDialog),
 		"%s\
-		{BBBBBB}Edit Medic Access:{FFFFFF} %s (Div %i)\n\
-		{BBBBBB}Edit DMV Release:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Edit Temporary Number:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Edit LEO Arrest Access:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Edit OOC Chat Access:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Edit OOC Chat Color: {%s}(edit)\n\
-		{BBBBBB}Edit Group Clothes\n\
-		{BBBBBB}Edit Turf Cap Rank{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Edit Point Cap Rank {FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Edit Crime Group Type {FFFFFF} %s",
+		{BBBBBB}Quyen Medic:{FFFFFF} %s (Div %i)\n\
+		{BBBBBB}Quyen DMV:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Quyen so tam:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Quyen bat giu LEO:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Quyen chat OOC:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Mau chat OOC: {%s}(sua)\n\
+		{BBBBBB}Sua quan ao\n\
+		{BBBBBB}Rank chiem turf{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Rank chiem point {FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Loai to chuc toi pham {FFFFFF} %s",
 		szDialog,
-		(arrGroupData[iGroupID][g_iMedicAccess] != INVALID_DIVISION) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iMedicAccess],
-		(arrGroupData[iGroupID][g_iDMVAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDMVAccess],
-		(arrGroupData[iGroupID][gTempNum] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][gTempNum],
-		(arrGroupData[iGroupID][gLEOArrest] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][gLEOArrest],
-		(arrGroupData[iGroupID][g_iOOCChat] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iOOCChat],
+		(arrGroupData[iGroupID][g_iMedicAccess] != INVALID_DIVISION) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iMedicAccess],
+		(arrGroupData[iGroupID][g_iDMVAccess] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iDMVAccess],
+		(arrGroupData[iGroupID][gTempNum] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][gTempNum],
+		(arrGroupData[iGroupID][gLEOArrest] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][gLEOArrest],
+		(arrGroupData[iGroupID][g_iOOCChat] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iOOCChat],
 		Group_NumToDialogHex(arrGroupData[iGroupID][g_hOOCColor]),
-		(arrGroupData[iGroupID][g_iTurfCapRank] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iTurfCapRank],
-		(arrGroupData[iGroupID][g_iPointCapRank] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iPointCapRank],
+		(arrGroupData[iGroupID][g_iTurfCapRank] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iTurfCapRank],
+		(arrGroupData[iGroupID][g_iPointCapRank] != INVALID_RANK) ? ("Co") : ("Khong"), arrGroupData[iGroupID][g_iPointCapRank],
 		ReturnCrimeGroupType(arrGroupData[iGroupID][g_iCrimeType])
 	);
 
-	if(PlayerInfo[iPlayerID][pAdmin] >= 1337) strcat(szDialog, "\nDisband Group");
-	format(szTitle, sizeof szTitle, "{FFFFFF}Edit {%s}%s", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-	return ShowPlayerDialogEx(iPlayerID, DIALOG_EDITGROUP, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+	if(PlayerInfo[iPlayerID][pAdmin] >= 1337) strcat(szDialog, "\nGiai tan to chuc");
+	format(szTitle, sizeof szTitle, "{FFFFFF}Sua {%s}%s", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+	return ShowPlayerDialogEx(iPlayerID, DIALOG_EDITGROUP, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 }
 
 stock CrateLog(groupid, const string[])
@@ -845,22 +845,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new iGroupID = PlayerInfo[playerid][pMember];
 			if(!ValidGroup(iGroupID)) return 1;
 
-			if (strcmp("Clothes", inputtext) == 0) {
+			if (strcmp("Quan ao", inputtext) == 0) {
 				if(IsACriminal(playerid) || IsARacer(playerid)) {
 
-					format(szMiscArray, sizeof(szMiscArray), "%s reaches into the locker grabbing their clothes", GetPlayerNameEx(playerid));
-					ShowModelSelectionMenuEx(playerid, arrGroupData[PlayerInfo[playerid][pMember]][g_iClothes], MAX_GROUP_RANKS, "Change your clothes.", DYNAMIC_FAMILY_CLOTHES, 0.0, 0.0, -55.0);
+					format(szMiscArray, sizeof(szMiscArray), "%s lay quan ao tu tu do", GetPlayerNameEx(playerid));
+					ShowModelSelectionMenuEx(playerid, arrGroupData[PlayerInfo[playerid][pMember]][g_iClothes], MAX_GROUP_RANKS, "Doi quan ao.", DYNAMIC_FAMILY_CLOTHES, 0.0, 0.0, -55.0);
 					return 1;
 				}
 			}
 
-			if (strcmp("Duty", inputtext) == 0) {
+			if (strcmp("Ca truc", inputtext) == 0) {
 				if(PlayerInfo[playerid][pDuty]==0) {
 
 					if (IsAReporter(playerid) || IsATaxiDriver(playerid))
-						format(string, sizeof(string), "* %s %s takes a badge from their locker.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
+						format(string, sizeof(string), "* %s %s lay phu hieu tu tu do.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 					else
-						format(string, sizeof(string), "* %s %s takes a badge and a gun from their locker.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
+						format(string, sizeof(string), "* %s %s lay phu hieu va sung tu tu do.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 
 					ProxChatBubble(playerid, string);
 					// ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -877,15 +877,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					else if(arrGroupData[iGroupID][g_iLockerCostType] != 0) SetArmour(playerid, 150.0);
 					else {
-						SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for your armor vest.");
-						SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the STAG and organize a crate delivery.");
+						SendClientMessageEx(playerid, COLOR_RED, "Tu khong du hang de cap ao giap.");
+						SendClientMessageEx(playerid, COLOR_GRAD2, "Hay lien he cap tren hoac STAG de to chuc giao thung hang.");
 					}
 					PlayerInfo[playerid][pDuty] = 1;
 					SetPlayerToTeamColor(playerid);
-					SendClientMessageEx(playerid, COLOR_GRAD2, "You may now select your weapons from the equipment locker");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ban co the chon vu khi tu tu trang bi");
 				}
 				else if(PlayerInfo[playerid][pDuty]==1) {
-					format(string, sizeof(string), "* %s %s places their badge and gun in their locker.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "* %s %s cat phu hieu va sung vao tu do.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 					ProxChatBubble(playerid, string);
 					if(IsAMedic(playerid)) Medics -= 1;
 					SetHealth(playerid, 100.0);
@@ -895,10 +895,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 			}
 
-			if (strcmp("Equipment", inputtext) == 0) {
+			if (strcmp("Trang bi", inputtext) == 0) {
 
 				if((PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pUndercover] >= 1) && PlayerInfo[playerid][pTogReports] == 0)
-					return SendClientMessageEx(playerid, COLOR_GRAD2, "Locker weapons have been restricted from admins, /togreports to gain access.");
+					return SendClientMessageEx(playerid, COLOR_GRAD2, "Admin bi han che vu khi tu, dung /togreports de truy cap.");
 				if(PlayerInfo[playerid][pTogReports] == 1 || PlayerInfo[playerid][pAdmin] < 2) {
 					new
 						szDialog[(32 + 8) * (MAX_GROUP_WEAPONS+1)];
@@ -908,43 +908,43 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							format(szDialog, sizeof szDialog, "%s%s(%i) %s", szDialog, szDialog[0] ? ("\n") : (""), arrGroupData[iGroupID][g_iLockerGuns][i], Weapon_ReturnName(arrGroupData[iGroupID][g_iLockerGuns][i]));
 							if (arrGroupData[iGroupID][g_iLockerCostType] == 2) format(szDialog, sizeof szDialog, "%s    $%d", szDialog, arrGroupData[iGroupID][g_iLockerCost][i]);
 						}
-						else strcat(szDialog, szDialog[0] ? ("\n(empty)") : ("(empty)"));
+						else strcat(szDialog, szDialog[0] ? ("\n(trong)") : ("(trong)"));
 					}
-					strcat(szDialog, "\nAccessories");
-					format(string, sizeof(string), "%s Weapon Locker", arrGroupData[iGroupID][g_szGroupName]);
+					strcat(szDialog, "\nPhu kien");
+					format(string, sizeof(string), "%s Tu vu khi", arrGroupData[iGroupID][g_szGroupName]);
 					SetPVarInt(playerid, "WeaponLockerGroup", iGroupID);
-					ShowPlayerDialogEx(playerid, G_LOCKER_EQUIPMENT, DIALOG_STYLE_LIST, string, szDialog, "Purchase", "Cancel");
+					ShowPlayerDialogEx(playerid, G_LOCKER_EQUIPMENT, DIALOG_STYLE_LIST, string, szDialog, "Mua", "Huy");
 				}
 			}
 
-			if (strcmp("Weapons", inputtext) == 0) {
+			if (strcmp("Vu khi", inputtext) == 0) {
 				//if(IsACriminal(playerid) || IsARacer(playerid)) return ShowGroupWeapons(playerid, iGroupID);
 				return ShowGroupWeapons(playerid, iGroupID);
 			}
-			if (strcmp("Crate Transfer", inputtext) == 0) {
+			if (strcmp("Chuyen thung", inputtext) == 0) {
 				//if(IsACriminal(playerid) || IsARacer(playerid)) return ShowGroupWeapons(playerid, iGroupID);
 				return CrateTransferOption(playerid, iGroupID);
 			}
 
-			if (strcmp("Drugs", inputtext) == 0) {
+			if (strcmp("Ma tuy", inputtext) == 0) {
 
 				szMiscArray[0] = 0;
-				szMiscArray = "Drugs\tAmount\n";
+				szMiscArray = "Ma tuy\tSo luong\n";
 				for(new i; i < sizeof(Drugs); ++i) {
 
 					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Drugs[i], number_format(arrGroupData[iGroupID][g_iDrugs][i]));
 				}
 
-				format(string, sizeof(string), "%s Drug Locker", arrGroupData[iGroupID][g_szGroupName]);
+				format(string, sizeof(string), "%s Tu ma tuy", arrGroupData[iGroupID][g_szGroupName]);
 				SetPVarInt(playerid, "GSafe_Opt", 2);
-				return ShowPlayerDialogEx(playerid, G_LOCKER_DRUGS, DIALOG_STYLE_TABLIST_HEADERS, string, szMiscArray, "Select", "<<");
+				return ShowPlayerDialogEx(playerid, G_LOCKER_DRUGS, DIALOG_STYLE_TABLIST_HEADERS, string, szMiscArray, "Chon", "<<");
 
 				//\nCannabis (%i)\nCrack (%i)\nHeroin (%i)\nSyringes (%i)\nOpium (%i)
 				//return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Cannabis Safe", "Deposit\nWithdraw", "Select", "Back");
 			}
 
-			if (strcmp("Uniform", inputtext) == 0) {
-				ShowPlayerDialogEx(playerid, G_LOCKER_UNIFORM, DIALOG_STYLE_INPUT, "Uniform","Choose a skin (by ID).", "Select", "Cancel");
+			if (strcmp("Dong phuc", inputtext) == 0) {
+				ShowPlayerDialogEx(playerid, G_LOCKER_UNIFORM, DIALOG_STYLE_INPUT, "Dong phuc","Chon skin (theo ID).", "Chon", "Huy");
 			}
 
 			/*if (strcmp("Ingredients", inputtext) == 0) {
@@ -965,10 +965,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if (strcmp("Portable Medkit & Vest Kit", inputtext) == 0) {
 
 				if(GetPVarInt(playerid, "MedVestKit") == 1) {
-					return SendClientMessageEx(playerid, COLOR_GRAD1, "You're already carrying a med kit.");
+					return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da mang Med Kit.");
 				}
 				if(arrGroupData[iGroupID][g_iLockerStock] > 1 && arrGroupData[iGroupID][g_iLockerCostType] == 0) {
-					SendClientMessageEx(playerid, COLOR_GRAD1, "You are now carrying a med kit.  /placekit to store it in your backpack/vehicle.");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Ban dang mang Med Kit. Dung /placekit de cat vao ba lo/xe.");
 					SetPVarInt(playerid, "MedVestKit", 1);
 					arrGroupData[iGroupID][g_iLockerStock] -= 1;
 					new str[128];
@@ -977,35 +977,35 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				else if(arrGroupData[iGroupID][g_iLockerCostType] == 1) {
 					if(arrGroupData[iGroupID][g_iBudget] > 3000) {
-						SendClientMessageEx(playerid, COLOR_GRAD1, "You are now carrying a med kit.  /placekit to store it in your backpack/vehicle.");
+						SendClientMessageEx(playerid, COLOR_GRAD1, "Ban dang mang Med Kit. Dung /placekit de cat vao ba lo/xe.");
 						SetPVarInt(playerid, "MedVestKit", 1);
 						arrGroupData[iGroupID][g_iBudget] -= 3000;
 						new str[128];
 						format(str, sizeof(str), "%s took a med kit & vest out of the %s locker at a cost of $3,000 to the budget fund.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
 						GroupPayLog(iGroupID, str);
 					}
-					else return SendClientMessageEx(playerid, COLOR_GRAD2, " Your agency cannot afford the vest. ($3,000)");
+					else return SendClientMessageEx(playerid, COLOR_GRAD2, " Co quan khong du tien mua ao giap. ($3,000)");
 				}
 
 				else if(arrGroupData[iGroupID][g_iLockerCostType] == 2) {
 					if(GetPlayerCash(playerid) > 3000) {
-						SendClientMessageEx(playerid, COLOR_GRAD1, "You are now carrying a med kit.  /placekit to store it in your backpack/vehicle.");
+						SendClientMessageEx(playerid, COLOR_GRAD1, "Ban dang mang Med Kit. Dung /placekit de cat vao ba lo/xe.");
 						SetPVarInt(playerid, "MedVestKit", 1);
 						GivePlayerCash(playerid, -3000);
 						new str[128];
 						format(str, sizeof(str), "%s took a med kit & vest out of the %s locker at a personal cost of $3,000.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
 						GroupPayLog(iGroupID, str);
 					}
-					else return SendClientMessageEx(playerid, COLOR_GRAD2, " You cannot afford the vest. ($3,000)");
+					else return SendClientMessageEx(playerid, COLOR_GRAD2, " Ban khong du tien mua ao giap. ($3,000)");
 				}
 				else {
-					SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for your trunk kit.");
-					SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor and organize a crate delivery.");
+					SendClientMessageEx(playerid, COLOR_RED, "Tu khong du hang de cap bo dung cu cop xe.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Hay lien he cap tren de to chuc giao thung hang.");
 				}
 			}
 
-			if (strcmp("Clear Suspect", inputtext) == 0) {
-				ShowPlayerDialogEx(playerid, G_LOCKER_CLEARSUSPECT,DIALOG_STYLE_INPUT, arrGroupData[iGroupID][g_szGroupName]," Who would you like to clear?","Clear","Return");
+			if (strcmp("Xoa truy na", inputtext) == 0) {
+				ShowPlayerDialogEx(playerid, G_LOCKER_CLEARSUSPECT,DIALOG_STYLE_INPUT, arrGroupData[iGroupID][g_szGroupName]," Ban muon xoa truy na cho ai?","Xoa","Quay lai");
 			}
 
 			if (strcmp("First Aid & Kevlar", inputtext) == 0) {
@@ -1028,7 +1028,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of $2,500.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
 						GroupPayLog(iGroupID, str);
 					}
-					else return SendClientMessageEx(playerid, COLOR_GRAD2, " Your agency cannot afford the vest. ($2,500)");
+					else return SendClientMessageEx(playerid, COLOR_GRAD2, " Co quan khong du tien mua ao giap. ($2,500)");
 				}
 				else if(arrGroupData[iGroupID][g_iLockerCostType] == 2) {
 					if(GetPlayerCash(playerid) > 2500) {
@@ -1040,12 +1040,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						format(str, sizeof(str), "%s took a vest out of the %s locker at a personal cost of $2,500.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
 						GroupPayLog(iGroupID, str);
 					}
-					else return SendClientMessageEx(playerid, COLOR_GRAD2, " You cannot afford the vest. ($2,500)");
+					else return SendClientMessageEx(playerid, COLOR_GRAD2, " Ban khong du tien mua ao giap. ($2,500)");
 				}
 
 				else {
-					SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for your armor vest.");
-					SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the SAAS and organize a crate delivery.");
+					SendClientMessageEx(playerid, COLOR_RED, "Tu khong du hang de cap ao giap.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Hay lien he cap tren hoac SAAS de to chuc giao thung hang.");
 					return 1;
 				}
 			}
@@ -1066,36 +1066,36 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 			}
 */
-			if (strcmp("Materials", inputtext, true, 9) == 0) { // we need to specify the cellmax as else it'll pick up the formatting
+			if (strcmp("Vat lieu", inputtext, true, 7) == 0) { // we need to specify the cellmax as else it'll pick up the formatting
 				SetPVarInt(playerid, "GSafe_Opt", 1);
-				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Material Safe", "Deposit\nWithdraw", "Select", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Ket vat lieu", "Gui vao\nRut ra", "Chon", "Quay lai");
 			}
 
-			if (strcmp("Vault", inputtext, true, 5) == 0) { // we need to specify the cellmax as else it'll pick up the formatting
+			if (strcmp("Ket tien", inputtext, true, 8) == 0) { // we need to specify the cellmax as else it'll pick up the formatting
 				SetPVarInt(playerid, "GSafe_Opt", 0);
-				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Money Vault", "Deposit\nWithdraw", "Select", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Ket tien", "Gui vao\nRut ra", "Chon", "Quay lai");
 			}
 
 			if (strcmp("Tazer & Cuffs", inputtext) == 0) {
 				if(PlayerInfo[playerid][pHasTazer] == 0) {
 					new szMessage[128];
-					format(szMessage, sizeof(szMessage), "%s reaches towards their locker, taking a tazer and cuffs out.", GetPlayerNameEx(playerid));
+					format(szMessage, sizeof(szMessage), "%s lay tazer va cong tay tu tu do.", GetPlayerNameEx(playerid));
 					ProxChatBubble(playerid, szMessage);
-					SendClientMessageEx(playerid, COLOR_WHITE, "You're now carrying a tazer and cuffs on you.");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Ban dang mang tazer va cong tay.");
 					PlayerInfo[playerid][pHasTazer] = 1;
 					PlayerInfo[playerid][pHasCuff] = 1;
 				}
-				else return SendClientMessageEx(playerid, COLOR_WHITE, "You're already carrying a tazer and pair of cuffs");
+				else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban da mang tazer va cong tay");
 			}
 
-			if (strcmp("Name Change", inputtext) == 0) {
+			if (strcmp("Doi ten", inputtext) == 0) {
 				if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] && (PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv] || arrGroupData[iGroupID][g_iFreeNameChangeDiv] == INVALID_DIVISION))  {
-					return ShowPlayerDialogEx( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Cancel" );
+					return ShowPlayerDialogEx( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Doi ten","Nhap ten moi ban muon!\n\nChu y: To chuc cua ban duoc doi ten mien phi.", "Doi", "Huy" );
 				}
 			}
 			
-			if (strcmp("Accessories", inputtext) == 0) {
-					return ShowPlayerDialogEx(playerid, BUYTOYSCOP, DIALOG_STYLE_MSGBOX, "Accessories", "Welcome to the law enforcement accessory locker!\n\n(As with regular toys, VIP unlocks more slots.)","Continue", "Cancel");
+			if (strcmp("Phu kien", inputtext) == 0) {
+					return ShowPlayerDialogEx(playerid, BUYTOYSCOP, DIALOG_STYLE_MSGBOX, "Phu kien", "Chao mung den tu phu kien hanh phap!\n\n(Nhu toy thuong, VIP mo them o.)","Tiep tuc", "Huy");
 			}
 		}
 		case G_LOCKER_EQUIPMENT: if(response)
@@ -1105,11 +1105,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if (listitem == 16)
 			{
-				ShowPlayerDialogEx(playerid, BUYTOYSCOP, DIALOG_STYLE_MSGBOX, "Accessories", "Welcome to the law enforcement accessory locker!\n\n(As with regular toys, VIP unlocks more slots.)","Continue", "Cancel");
+				ShowPlayerDialogEx(playerid, BUYTOYSCOP, DIALOG_STYLE_MSGBOX, "Phu kien", "Chao mung den tu phu kien hanh phap!\n\n(Nhu toy thuong, VIP mo them o.)","Tiep tuc", "Huy");
 			}
 			else
 			{
-				if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
+				if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Tai khoan cua ban bi han che!");
 				new iGunID = arrGroupData[iGroupID][g_iLockerGuns][listitem];
 				if(!iGunID || GetLoadoutWeaponSlot(iGunID) < 0 || arrGroupData[iGroupID][g_iLockerCost][listitem] < 0
 					|| PlayerInfo[playerid][pRank] < LockerWep[iGroupID][lwRank][listitem]) return 1;
@@ -1124,8 +1124,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					else
 					{
-						SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for that weapon.");
-						SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the SAAS and organize a crate delivery.");
+						SendClientMessageEx(playerid, COLOR_RED, "Tu khong du hang de cap vu khi do.");
+						SendClientMessageEx(playerid, COLOR_GRAD2, "Hay lien he cap tren hoac SAAS de to chuc giao thung hang.");
 						return 1;
 					}
 				}
@@ -1133,7 +1133,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if (arrGroupData[iGroupID][g_iBudget] < arrGroupData[iGroupID][g_iLockerCost][listitem])
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "Your group cannot afford that weapon!");
+						SendClientMessageEx(playerid, COLOR_WHITE, "To chuc khong du tien mua vu khi do!");
 						return 1;
 					}
 					else
@@ -1148,7 +1148,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if (GetPlayerCash(playerid) < arrGroupData[iGroupID][g_iLockerCost][listitem])
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "You can't afford that weapon!");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du tien mua vu khi do!");
 						return 1;
 					}
 					else
@@ -1162,7 +1162,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case G_LOCKER_UNIFORM: if(response)	{
 			new skin = strval(inputtext), iGroupID = PlayerInfo[playerid][pMember];
 			if(IsInvalidSkin(skin)) {
-				return ShowPlayerDialogEx(playerid, G_LOCKER_UNIFORM, DIALOG_STYLE_INPUT, arrGroupData[iGroupID][g_szGroupName],"Invalid skin specified. Choose another.", "Select", "Cancel");
+				return ShowPlayerDialogEx(playerid, G_LOCKER_UNIFORM, DIALOG_STYLE_INPUT, arrGroupData[iGroupID][g_szGroupName],"Skin khong hop le. Hay chon lai.", "Chon", "Huy");
 			}
 			PlayerInfo[playerid][pModel] = skin;
 			SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
@@ -1181,9 +1181,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					{
 						GetPlayerName(giveplayerid, giveplayer, sizeof(giveplayer));
 						GetPlayerName(playerid, sendername, sizeof(sendername));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You cleared the records and wanted points of %s.", GetPlayerNameEx(giveplayerid));
-						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s %s has cleared your records and wanted points.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
-						format(string, sizeof(string), "* %s %s has cleared %s's records and wanted points.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da xoa ho so va diem truy na cua %s.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s %s da xoa ho so va diem truy na cua ban.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
+						format(string, sizeof(string), "* %s %s da xoa ho so va diem truy na cua %s.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						SendGroupMessage(GROUP_TYPE_LEA, RADIO, string);
 
 						PlayerInfo[giveplayerid][pWantedLevel] = 0;
@@ -1196,11 +1196,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					else
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+						SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 					}
 				}
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have sufficient clearance to do this");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong du tham quyen de lam vay");
 		}
 		case DIALOG_LISTGROUPS: if(response) {
 			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pFactionModerator] < 2) return 1;
@@ -1215,8 +1215,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(response) switch(listitem) {
 				case 0: {
-					format(szTitle, sizeof szTitle, "Edit Group Name {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_NAME, DIALOG_STYLE_INPUT, szTitle, "Specify a name for this group.", "Confirm", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua ten to chuc {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_NAME, DIALOG_STYLE_INPUT, szTitle, "Nhap ten cho to chuc.", "Xac nhan", "Huy");
 				}
 				case 1: {
 
@@ -1226,8 +1226,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					for(new i = 0; i != MAX_GROUP_TYPES; ++i)
 						strcat(szDialog, "\n"), strcat(szDialog, Group_ReturnType(i));
 
-					format(szTitle, sizeof szTitle, "Edit Group Type {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_TYPE, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua loai {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_TYPE, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 2: {
 
@@ -1237,14 +1237,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					for(new i = 0; i < MAX_GROUP_ALLEGIANCES; ++i)
 						strcat(szDialog, "\n"), strcat(szDialog, Group_ReturnAllegiance(i));
 
-					format(szTitle, sizeof szTitle, "Edit Group Allegiance {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_ALLEGIANCE, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua quoc gia to chuc {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_ALLEGIANCE, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 3:
 				{
 					if(arrGroupData[iGroupID][g_iJCount] == 0)
 					{
-						format(string, sizeof(string), "%s doesn't have any jurisdiction. Add it via /groupaddjurisdiction", arrGroupData[iGroupID][g_szGroupName]);
+						format(string, sizeof(string), "%s chua co tham quyen. Them bang /groupaddjurisdiction", arrGroupData[iGroupID][g_szGroupName]);
 						SendClientMessage(playerid, COLOR_GRAD2, string);
 						return Group_DisplayDialog(playerid, iGroupID);
 					}
@@ -1257,17 +1257,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							strcat(szDialog, "\n"), strcat(szDialog, arrGroupJurisdictions[iGroupID][i][g_iAreaName]);
 						}
 
-						format(szTitle, sizeof szTitle, "Edit Group Jurisdiction {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-						ShowPlayerDialogEx(playerid, DIALOG_GROUP_JURISDICTION_LIST, DIALOG_STYLE_LIST, szTitle, szDialog, "Remove", "Go Back");
+						format(szTitle, sizeof szTitle, "Sua tham quyen {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+						ShowPlayerDialogEx(playerid, DIALOG_GROUP_JURISDICTION_LIST, DIALOG_STYLE_LIST, szTitle, szDialog, "Bo", "Quay lai");
 					}
 				}
 				case 4: {
-					format(szTitle, sizeof szTitle, "Edit Group Duty Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_DUTYCOL, DIALOG_STYLE_INPUT, szTitle, "Enter a colour in hexadecimal format (for example, BCA3FF). This colour will be used to identify the group (i.e. name tag colour).", "Confirm", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua mau truc {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_DUTYCOL, DIALOG_STYLE_INPUT, szTitle, "Nhap mau dang hex (vi du, BCA3FF). Mau nay dung nhan dien to chuc (vi du mau ten).", "Xac nhan", "Huy");
 				}
 				case 5: {
-					format(szTitle, sizeof szTitle, "Edit Group Radio Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOCOL, DIALOG_STYLE_INPUT, szTitle, "Enter a colour in hexadecimal format (for example, BCA3FF). This colour will be used for the group's in-character radio chat.", "Confirm", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua mau radio {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOCOL, DIALOG_STYLE_INPUT, szTitle, "Nhap mau dang hex (vi du, BCA3FF). Mau nay dung cho radio IC cua to chuc.", "Xac nhan", "Huy");
 				}
 				case 6 .. 9, 11, 13, 15 .. 22: {
 
@@ -1275,14 +1275,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
 					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 
-					strcat(szDialog, "\nRevoke from Group");
+					strcat(szDialog, "\nThu hoi quyen to chuc");
 
 					strmid(szTitle, inputtext, 0, strfind(inputtext, ":", true));
-					format(szTitle, sizeof szTitle, "Edit Group %s", szTitle);
-					if(listitem < 10) ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOACC + (listitem - 6), DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
-					if(listitem > 10) ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOACC + (listitem - 8), DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua %s", szTitle);
+					if(listitem < 10) ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOACC + (listitem - 6), DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
+					if(listitem > 10) ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOACC + (listitem - 8), DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 10: {
 
@@ -1290,13 +1290,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
 					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 
-					strcat(szDialog, "\nRevoke from Group");
+					strcat(szDialog, "\nThu hoi quyen to chuc");
 
 					strmid(szTitle, inputtext, 0, strfind(inputtext, ":", true));
-					format(szTitle, sizeof szTitle, "Edit Group %s", szTitle);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_FINDACC, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua %s", szTitle);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_FINDACC, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 12: {
 					
@@ -1304,13 +1304,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
 					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 
-					strcat(szDialog, "\nRevoke from Group");
+					strcat(szDialog, "\nThu hoi quyen to chuc");
 
 					strmid(szTitle, inputtext, 0, strfind(inputtext, ":", true));
-					format(szTitle, sizeof szTitle, "Edit Group %s", szTitle);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_TRESACC, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua %s", szTitle);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_TRESACC, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 14: {
 
@@ -1318,17 +1318,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						szDialog[((32 + 5) * MAX_GROUP_DIVS) + 24];
 
 					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupDivisions[iGroupID][i][0]) ? (arrGroupDivisions[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupDivisions[iGroupID][i][0]) ? (arrGroupDivisions[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 
-					strcat(szDialog, "\nRevoke from Group");
+					strcat(szDialog, "\nThu hoi quyen to chuc");
 
 					strmid(szTitle, inputtext, 0, strfind(inputtext, ":", true));
-					format(szTitle, sizeof szTitle, "Edit Group %s", szTitle);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOACC + (listitem - 8), DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua %s", szTitle);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOACC + (listitem - 8), DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 23: {
-					format(szTitle, sizeof szTitle, "Edit Group Locker Stock {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITSTOCK, DIALOG_STYLE_INPUT, szTitle, "Specify a value. Locker stock is used for weapons, and can be replenished using crates.", "Confirm", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua ton kho tu {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITSTOCK, DIALOG_STYLE_INPUT, szTitle, "Nhap so luong. Ton kho tu dung cap vu khi, co the bo sung bang thung hang.", "Xac nhan", "Huy");
 				}
 				case 24: {
 
@@ -1336,12 +1336,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						szDialog[(32 + 8) * MAX_GROUP_WEAPONS];
 
 					for(new i = 0; i != MAX_GROUP_WEAPONS; ++i) {
-						if(arrGroupData[iGroupID][g_iLockerGuns][i]) format(szDialog, sizeof szDialog, "%s\n(%i) %s (cost: %i)", szDialog, arrGroupData[iGroupID][g_iLockerGuns][i], Weapon_ReturnName(arrGroupData[iGroupID][g_iLockerGuns][i]), arrGroupData[iGroupID][g_iLockerCost][i]);
-						else strcat(szDialog, "\n(empty)");
+						if(arrGroupData[iGroupID][g_iLockerGuns][i]) format(szDialog, sizeof szDialog, "%s\n(%i) %s (gia: %i)", szDialog, arrGroupData[iGroupID][g_iLockerGuns][i], Weapon_ReturnName(arrGroupData[iGroupID][g_iLockerGuns][i]), arrGroupData[iGroupID][g_iLockerCost][i]);
+						else strcat(szDialog, "\n(trong)");
 					}
 
-					format(szTitle, sizeof szTitle, "Edit Group Weapons {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITWEPS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua vu khi to chuc {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITWEPS, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 25: {
 
@@ -1352,8 +1352,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						format(szDialog, sizeof szDialog, "%s\nRank %i (%s):    $%s", szDialog, i, arrGroupRanks[iGroupID][i], number_format(arrGroupData[iGroupID][g_iPaycheck][i]));
 					}
 
-					format(szTitle, sizeof szTitle, "Edit Group Paychecks {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_LISTPAY, DIALOG_STYLE_LIST, szTitle, szDialog, "Edit", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua luong to chuc {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_LISTPAY, DIALOG_STYLE_LIST, szTitle, szDialog, "Sua", "Huy");
 				}
 				case 26: {
 
@@ -1361,11 +1361,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						szDialog[(GROUP_MAX_DIV_LEN + 8) * MAX_GROUP_DIVS];
 
 					for(new i = 0; i != MAX_GROUP_DIVS; ++i) {
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i + 1, ((arrGroupDivisions[iGroupID][i][0]) ? (arrGroupDivisions[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i + 1, ((arrGroupDivisions[iGroupID][i][0]) ? (arrGroupDivisions[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 					}
 
-					format(szTitle, sizeof szTitle, "Edit Group Divisions {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITDIVS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua Division {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITDIVS, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 27: {
 
@@ -1373,11 +1373,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						szDialog[(GROUP_MAX_RANK_LEN + 8) * MAX_GROUP_RANKS];
 
 					for(new i = 0; i != MAX_GROUP_RANKS; ++i) {
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 					}
 
-					format(szTitle, sizeof szTitle, "Edit Group Ranks {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITRANKS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua rank {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITRANKS, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 28: {
 
@@ -1385,123 +1385,123 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						szDialog[MAX_GROUP_LOCKERS * 32];
 
 					for(new i = 0; i < MAX_GROUP_LOCKERS; ++i) {
-						format(szDialog, sizeof szDialog, "%s%Locker %d %s ID:%d\n", szDialog, i+1, ( arrGroupLockers[iGroupID][i][g_fLockerPos][0] != 0.0 ) ? ("(edit)") : ("(undefined)"), arrGroupLockers[iGroupID][i]);
+						format(szDialog, sizeof szDialog, "%s%Locker %d %s ID:%d\n", szDialog, i+1, ( arrGroupLockers[iGroupID][i][g_fLockerPos][0] != 0.0 ) ? ("(sua)") : ("(chua dat)"), arrGroupLockers[iGroupID][i]);
 					}
-					strcat(szDialog, "Delete All Lockers");
-					format(szTitle, sizeof szTitle, "Edit Group Lockers {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_LOCKERS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					strcat(szDialog, "Xoa tat ca tu do");
+					format(szTitle, sizeof szTitle, "Sua tu do to chuc {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_LOCKERS, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 29: {
-					format(szTitle, sizeof szTitle, "Edit Group Crate Delivery Position {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_CRATEPOS, DIALOG_STYLE_MSGBOX, szTitle, "Are you sure you want to move the crate delivery to your position?\n\nIf not, cancel and move to your desired location.", "Cancel", "Confirm");
+					format(szTitle, sizeof szTitle, "Sua diem giao thung {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_CRATEPOS, DIALOG_STYLE_MSGBOX, szTitle, "Ban chac muon chuyen diem giao thung den cho ban?\n\nNeu khong, hay huy va den vi tri mong muon.", "Huy", "Xac nhan");
 				}
 				case 30: {
-					format(szTitle, sizeof szTitle, "Edit Group Locker Cost Type {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_COSTTYPE, DIALOG_STYLE_LIST, szTitle, "Locker Stock\nGroup Budget\nPlayer Money", "OK", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua nguon tra phi tu {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_COSTTYPE, DIALOG_STYLE_LIST, szTitle, "Ton kho tu\nQuy to chuc\nTien nguoi choi", "Dong y", "Huy");
 				}
 				case 31: {
-					format(szTitle, sizeof szTitle, "Edit the Garage Position {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_GARAGEPOS, DIALOG_STYLE_MSGBOX, szTitle, "Please click on 'Confirm' to change the garage location to your current position.\n\nIf you do not wish to move it to your position, click on 'Cancel'.", "Cancel", "Confirm");
+					format(szTitle, sizeof szTitle, "Sua vi tri garage {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_GARAGEPOS, DIALOG_STYLE_MSGBOX, szTitle, "Nhan 'Xac nhan' de chuyen garage den cho ban.\n\nNeu khong muon doi vi tri, nhan 'Huy'.", "Huy", "Xac nhan");
 				}
 				case 32: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
 					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 
-					strcat(szDialog, "\nRevoke from Group");
+					strcat(szDialog, "\nThu hoi quyen to chuc");
 
-					format(szTitle, sizeof szTitle, "Edit Group Tackle Access");
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_TACKLEACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua quyen vat nga to chuc");
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_TACKLEACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 33: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
 					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 
-					strcat(szDialog, "\nRevoke from Group");
+					strcat(szDialog, "\nThu hoi quyen to chuc");
 
-					format(szTitle, sizeof szTitle, "Edit Group Wheel Clamps Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_WHEELCLAMPS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua quyen khoa banh {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_WHEELCLAMPS, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 34: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
 					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 
-					strcat(szDialog, "\nRevoke from Group");
+					strcat(szDialog, "\nThu hoi quyen to chuc");
 
-					format(szTitle, sizeof szTitle, "Edit Group DoC Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_DOCACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua quyen DoC {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_DOCACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 35: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_DIVS) + 24];
 
 					for(new i = 0; i != MAX_GROUP_DIVS; ++i)
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupDivisions[iGroupID][i][0]) ? (arrGroupDivisions[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupDivisions[iGroupID][i][0]) ? (arrGroupDivisions[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 
-					strcat(szDialog, "\nRevoke from Group");
+					strcat(szDialog, "\nThu hoi quyen to chuc");
 
-					format(szTitle, sizeof szTitle, "Edit Group Medic Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_MEDICACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua quyen Medic {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_MEDICACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 36: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
 					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 
-					strcat(szDialog, "\nRevoke from Group");
+					strcat(szDialog, "\nThu hoi quyen to chuc");
 
-					format(szTitle, sizeof szTitle, "Edit Group DMV Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_DMVACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua quyen DMV {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_DMVACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 37: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
 					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 
-					strcat(szDialog, "\nRevoke from Group");
+					strcat(szDialog, "\nThu hoi quyen to chuc");
 
-					format(szTitle, sizeof szTitle, "Edit Group Temp Number Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_TEMPNUMACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua quyen so tam {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_TEMPNUMACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 38: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
 					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 
-					strcat(szDialog, "\nRevoke from Group");
+					strcat(szDialog, "\nThu hoi quyen to chuc");
 
-					format(szTitle, sizeof szTitle, "Edit Group LEO Arrest Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_LEOARRESTACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua quyen bat giu LEO {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_LEOARRESTACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 39: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
 					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 
-					strcat(szDialog, "\nRevoke from Group");
+					strcat(szDialog, "\nThu hoi quyen to chuc");
 
-					format(szTitle, sizeof szTitle, "Edit Group OOC Chat Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_OOCCHAT, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua quyen chat OOC {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_OOCCHAT, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 40: {
-					format(szTitle, sizeof szTitle, "Edit Group OOC Chat Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_OOCCOLOR, DIALOG_STYLE_INPUT, szTitle, "Enter a color in hexadecimal format (for example, BCA3FF). This color will be that of their OOC Chat.", "Confirm", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua mau chat OOC {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_OOCCOLOR, DIALOG_STYLE_INPUT, szTitle, "Nhap mau dang hex (vi du, BCA3FF). Mau nay dung cho chat OOC.", "Xac nhan", "Huy");
 				}
 				case 41: {
 					new
@@ -1511,42 +1511,42 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						format(szDialog, sizeof szDialog, "%s\nRank %i (%s): Skin ID:%i", szDialog, i, arrGroupRanks[iGroupID][i], arrGroupData[iGroupID][g_iClothes][i]);
 					}
 
-					format(szTitle, sizeof szTitle, "Edit Group Clothes {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_LISTCLOTHES, DIALOG_STYLE_LIST, szTitle, szDialog, "Edit", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua quan ao {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_LISTCLOTHES, DIALOG_STYLE_LIST, szTitle, szDialog, "Sua", "Huy");
 				}
 				case 42: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
 					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 
-					strcat(szDialog, "\nRevoke from Group");
+					strcat(szDialog, "\nThu hoi quyen to chuc");
 
-					format(szTitle, sizeof szTitle, "Edit Group Turf Cap Rank {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					format(szTitle, sizeof szTitle, "Sua rank chiem turf {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_TURFCAP, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_TURFCAP, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 43: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
 					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 
-					strcat(szDialog, "\nRevoke from Group");
+					strcat(szDialog, "\nThu hoi quyen to chuc");
 
-					format(szTitle, sizeof szTitle, "Edit Group Point Cap Rank {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_POINTCAP, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua rank chiem point {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_POINTCAP, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 				}
 				case 44: {
-					format(szTitle, sizeof szTitle, "Edit Group Crime Type {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_CRIMETYPE, DIALOG_STYLE_LIST, szTitle, "None\nRacer", "Select", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua loai toi pham {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_CRIMETYPE, DIALOG_STYLE_LIST, szTitle, "None\nRacer", "Chon", "Huy");
 				}
 				default: {
-					format(szTitle, sizeof szTitle, "{FF0000}Disband Group{FFFFFF} {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_DISBAND, DIALOG_STYLE_MSGBOX, szTitle, "{FFFFFF}Are you absolutely sure you wish to {FF0000}disband this group?{FFFFFF}\n\n\
-					This action will {FF0000}delete all group data and remove all members and leaders{FFFFFF} from the group, whether online or offline.", "Cancel", "Confirm");
+					format(szTitle, sizeof szTitle, "{FF0000}Giai tan{FFFFFF} {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_DISBAND, DIALOG_STYLE_MSGBOX, szTitle, "{FFFFFF}Ban chac chan muon {FF0000}giai tan to chuc?{FFFFFF}\n\n\
+					Thao tac nay se {FF0000}xoa toan bo du lieu va loai moi thanh vien, lanh dao{FFFFFF} khoi to chuc, ke ca ngoai tuyen.", "Huy", "Xac nhan");
 				}
 			}
 			else if(GetPVarType(playerid, "Group_EditID")) { // They've made changes to a group setting - save it on exit!
@@ -1566,8 +1566,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					szTitle[32 + GROUP_MAX_NAME_LEN];
 
 				if(!(2 < strlen(inputtext) < GROUP_MAX_NAME_LEN)) {
-					format(szTitle, sizeof szTitle, "Edit Group {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_NAME, DIALOG_STYLE_INPUT, szTitle, "The specified name must be between 2 and "#GROUP_MAX_NAME_LEN" characters.\n\nSpecify a name for this group.", "Confirm", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_NAME, DIALOG_STYLE_INPUT, szTitle, "Ten phai dai tu 2 den "#GROUP_MAX_NAME_LEN" ky tu.\n\nNhap ten cho to chuc.", "Xac nhan", "Huy");
 				}
 				format(string, sizeof(string), "%s has changed group %d's name from %s to %s", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName], inputtext);
 				Log("logs/editgroup.log", string);
@@ -1607,10 +1607,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response)
 			{
 				new szTitle[128], szDialog[128];
-				format(szTitle, sizeof(szTitle), "%s's Jurisdiction", arrGroupData[iGroupID][g_szGroupName]);
-				format(szDialog, sizeof(szDialog), "Are you sure you want to remove %s from the %s?", arrGroupJurisdictions[iGroupID][listitem][g_iAreaName], arrGroupData[iGroupID][g_szGroupName]);
+				format(szTitle, sizeof(szTitle), "Tham quyen cua %s", arrGroupData[iGroupID][g_szGroupName]);
+				format(szDialog, sizeof(szDialog), "Ban chac muon go %s khoi %s?", arrGroupJurisdictions[iGroupID][listitem][g_iAreaName], arrGroupData[iGroupID][g_szGroupName]);
 				SetPVarInt(playerid, "JurisdictionRemoval", listitem);
-				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_JURISDICTION_REMOVE, DIALOG_STYLE_MSGBOX, szTitle, szDialog, "Confirm", "Cancel");
+				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_JURISDICTION_REMOVE, DIALOG_STYLE_MSGBOX, szTitle, szDialog, "Xac nhan", "Huy");
 			}
 			else return Group_DisplayDialog(playerid, iGroupID);
 		}
@@ -1622,7 +1622,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				mysql_format(MainPipeline, string, sizeof(string), "DELETE FROM `jurisdictions` WHERE `id` = %i", arrGroupJurisdictions[iGroupID][jurisdictionid][g_iJurisdictionSQLId]);
 				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 				mysql_tquery(MainPipeline, "SELECT * FROM `jurisdictions`", "Group_QueryFinish", "ii", GROUP_QUERY_JURISDICTIONS, 0);
-				format(string, sizeof(string), "You have successfully removed %s from %s.", arrGroupJurisdictions[iGroupID][jurisdictionid][g_iAreaName], arrGroupData[iGroupID][g_szGroupName]);
+				format(string, sizeof(string), "Da go %s khoi %s.", arrGroupJurisdictions[iGroupID][jurisdictionid][g_iAreaName], arrGroupData[iGroupID][g_szGroupName]);
 				SendClientMessage(playerid, COLOR_WHITE, string);
 				format(string, sizeof(string), "%s has removed %s from group %d's jurisdictions.", GetPlayerNameEx(playerid), arrGroupJurisdictions[iGroupID][jurisdictionid][g_iAreaName], iGroupID+1);
 				Log("logs/editgroup.log", string);
@@ -1971,13 +1971,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					hColour;
 
 				if(strlen(inputtext) > 6 || !IsHex(inputtext)) {
-					format(szTitle, sizeof szTitle, "Edit Group Duty Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_DUTYCOL, DIALOG_STYLE_INPUT, szTitle, "Invalid value specified.\n\nEnter a colour in hexadecimal format (for example, BCA3FF). This colour will be used to identify the group.", "Confirm", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua mau truc {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_DUTYCOL, DIALOG_STYLE_INPUT, szTitle, "Gia tri sai.\n\nNhap mau hex (vi du, BCA3FF). Mau nay dung nhan dien to chuc.", "Xac nhan", "Huy");
 				}
 				sscanf(inputtext, "h", hColour);
 				if (hColour == 0xFFFFFF) {
-					format(szTitle, sizeof szTitle, "Edit Group Duty Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_DUTYCOL, DIALOG_STYLE_INPUT, szTitle, "You cannot use white as the value.\n\nEnter a colour in hexadecimal format (for example, BCA3FF). This colour will be used to identify the group.", "Confirm", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua mau truc {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_DUTYCOL, DIALOG_STYLE_INPUT, szTitle, "Khong duoc dung mau trang.\n\nNhap mau hex (vi du, BCA3FF). Mau nay dung nhan dien to chuc.", "Xac nhan", "Huy");
 				}
 				arrGroupData[iGroupID][g_hDutyColour] = hColour;
 				foreach(new i: Player)
@@ -2004,8 +2004,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					hColour;
 
 				if(strlen(inputtext) > 6 || !IsHex(inputtext)) {
-					format(szTitle, sizeof szTitle, "Edit Group Radio Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOCOL, DIALOG_STYLE_INPUT, szTitle, "Invalid value specified.\n\nEnter a colour in hexadecimal format (for example, BCA3FF). This colour will be used for the group's in-character radio chat.", "Confirm", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua mau radio {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOCOL, DIALOG_STYLE_INPUT, szTitle, "Gia tri sai.\n\nNhap mau hex (vi du, BCA3FF). Mau nay dung cho radio IC cua to chuc.", "Xac nhan", "Huy");
 				}
 				sscanf(inputtext, "h", hColour);
 				arrGroupData[iGroupID][g_hRadioColour] = hColour;
@@ -2029,8 +2029,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					iValue = strval(inputtext);
 
 				if(isnull(inputtext) || iValue <= -1) {
-					format(szTitle, sizeof szTitle, "Edit Group Locker Stock {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITSTOCK, DIALOG_STYLE_INPUT, szTitle, "Invalid value specified.\n\nSpecify a value. Locker stock is used for weapons, and can be replenished using crates.", "Confirm", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua ton kho tu {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITSTOCK, DIALOG_STYLE_INPUT, szTitle, "Gia tri sai.\n\nNhap so luong. Ton kho tu dung cap vu khi, co the bo sung bang thung hang.", "Xac nhan", "Huy");
 				}
 				arrGroupData[iGroupID][g_iLockerStock] = iValue;
 
@@ -2049,8 +2049,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(response) {
 				SetPVarInt(playerid, "Group_EditWep", listitem);
-				format(szTitle, sizeof szTitle, "Edit Group Weapon (%i) {%s}(%s)", listitem + 1, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITWEPID, DIALOG_STYLE_INPUT, szTitle, "Specify a weapon ID (zero to remove this weapon).", "Select", "Cancel");
+				format(szTitle, sizeof szTitle, "Sua vu khi (%i) {%s}(%s)", listitem + 1, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITWEPID, DIALOG_STYLE_INPUT, szTitle, "Nhap ID vu khi (zero de xoa vu khi).", "Chon", "Huy");
 			}
 			else return Group_DisplayDialog(playerid, iGroupID);
 		}
@@ -2061,19 +2061,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID"),
 				iWepID = GetPVarInt(playerid, "Group_EditWep");
 
-			format(szTitle, sizeof szTitle, "Edit Group Weapon (%i) {%s}(%s)", iWepID + 1, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+			format(szTitle, sizeof szTitle, "Sua vu khi (%i) {%s}(%s)", iWepID + 1, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 			if(response) {
 
 				new
 					iValue = strval(inputtext);
 
 				if(isnull(inputtext) || !(0 <= iValue <= 46)) {
-					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITWEPID, DIALOG_STYLE_INPUT, szTitle, "Invalid weapon specified.\n\nSpecify a weapon ID (zero to remove this weapon).", "Select", "Cancel");
+					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITWEPID, DIALOG_STYLE_INPUT, szTitle, "Vu khi sai.\n\nNhap ID vu khi (zero de xoa vu khi).", "Chon", "Huy");
 				}
 
 				for (new i; i < MAX_GROUP_WEAPONS; i++) {
 					if (arrGroupData[iGroupID][g_iLockerGuns][i] == iValue && iValue != 0)
-					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITWEPID, DIALOG_STYLE_INPUT, szTitle, "This weapon already exists in the locker.\n\nSpecify a weapon ID (zero to remove this weapon).", "Select", "Cancel");
+					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITWEPID, DIALOG_STYLE_INPUT, szTitle, "Vu khi da co trong tu.\n\nNhap ID vu khi (zero de xoa vu khi).", "Chon", "Huy");
 				}
 
 				arrGroupData[iGroupID][g_iLockerGuns][iWepID] = iValue;
@@ -2082,7 +2082,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				Log("logs/editgroup.log", string);
 
 				if(iValue >= 1) {
-					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITCOST, DIALOG_STYLE_INPUT, szTitle, "Specify an (optional) cost for this weapon. This value will be charged in locker stock (or cash, where specified).", "Select", "Back");
+					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITCOST, DIALOG_STYLE_INPUT, szTitle, "Nhap gia (tuy chon) cua vu khi. Tru vao ton kho tu (hoac tien mat neu da dat).", "Chon", "Quay lai");
 				}
 			}
 
@@ -2091,12 +2091,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			arrGroupData[iGroupID][g_iLockerCost][iWepID] = 0;
 			for(new i = 0; i != MAX_GROUP_WEAPONS; ++i) {
-				if(arrGroupData[iGroupID][g_iLockerGuns][i]) format(szDialog, sizeof szDialog, "%s\n(%i) %s (cost: %i)", szDialog, arrGroupData[iGroupID][g_iLockerGuns][i], Weapon_ReturnName(arrGroupData[iGroupID][g_iLockerGuns][i]), arrGroupData[iGroupID][g_iLockerCost][i]);
-				else strcat(szDialog, "\n(empty)");
+				if(arrGroupData[iGroupID][g_iLockerGuns][i]) format(szDialog, sizeof szDialog, "%s\n(%i) %s (gia: %i)", szDialog, arrGroupData[iGroupID][g_iLockerGuns][i], Weapon_ReturnName(arrGroupData[iGroupID][g_iLockerGuns][i]), arrGroupData[iGroupID][g_iLockerCost][i]);
+				else strcat(szDialog, "\n(trong)");
 			}
 			DeletePVar(playerid, "Group_EditWep");
-			format(szTitle, sizeof szTitle, "Edit Group Weapons {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-			return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITWEPS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+			format(szTitle, sizeof szTitle, "Sua vu khi to chuc {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+			return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITWEPS, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 		}
 		case DIALOG_GROUP_EDITCOST: {
 
@@ -2113,8 +2113,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					iValue = strval(inputtext);
 
 				if(isnull(inputtext) || iValue <= -1) {
-					format(szTitle, sizeof szTitle, "Edit Group Weapon (%i) {%s}(%s)", iWepID + 1, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITCOST, DIALOG_STYLE_INPUT, szTitle, "Invalid value specified.\n\nSpecify an (optional) cost for this weapon. This value will be charged in locker stock (or cash, where specified).", "Select", "Back");
+					format(szTitle, sizeof szTitle, "Sua vu khi (%i) {%s}(%s)", iWepID + 1, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITCOST, DIALOG_STYLE_INPUT, szTitle, "Gia tri sai.\n\nNhap gia (tuy chon) cua vu khi. Tru vao ton kho tu (hoac tien mat neu da dat).", "Chon", "Quay lai");
 				}
 				arrGroupData[iGroupID][g_iLockerCost][iWepID] = iValue;
 
@@ -2127,11 +2127,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				szDialog[(32 + 8) * MAX_GROUP_WEAPONS];
 
 			for(new i = 0; i != MAX_GROUP_WEAPONS; ++i) {
-				if(arrGroupData[iGroupID][g_iLockerGuns][i]) format(szDialog, sizeof szDialog, "%s\n(%i) %s (cost: %i)", szDialog, arrGroupData[iGroupID][g_iLockerGuns][i], Weapon_ReturnName(arrGroupData[iGroupID][g_iLockerGuns][i]), arrGroupData[iGroupID][g_iLockerCost][i]);
-				else strcat(szDialog, "\n(empty)");
+				if(arrGroupData[iGroupID][g_iLockerGuns][i]) format(szDialog, sizeof szDialog, "%s\n(%i) %s (gia: %i)", szDialog, arrGroupData[iGroupID][g_iLockerGuns][i], Weapon_ReturnName(arrGroupData[iGroupID][g_iLockerGuns][i]), arrGroupData[iGroupID][g_iLockerCost][i]);
+				else strcat(szDialog, "\n(trong)");
 			}
-			format(szTitle, sizeof szTitle, "Edit Group Weapons {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-			return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITWEPS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+			format(szTitle, sizeof szTitle, "Sua vu khi to chuc {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+			return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITWEPS, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 		}
 		case DIALOG_GROUP_EDITDIVS: {
 
@@ -2144,8 +2144,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					szTitle[32 + GROUP_MAX_NAME_LEN];
 
 				SetPVarInt(playerid, "Group_EditDiv", listitem);
-				format(szTitle, sizeof szTitle, "Edit Group Division (%i) {%s}(%s)", listitem + 1, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITDIV, DIALOG_STYLE_INPUT, szTitle, "Specify a division name (or none to disable it).", "Confirm", "Cancel");
+				format(szTitle, sizeof szTitle, "Sua Division (%i) {%s}(%s)", listitem + 1, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITDIV, DIALOG_STYLE_INPUT, szTitle, "Nhap ten Division (hoac none de tat).", "Xac nhan", "Huy");
 			}
 			return Group_DisplayDialog(playerid, iGroupID);
 		}
@@ -2158,8 +2158,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(response) {
 				if(strlen(inputtext) >= GROUP_MAX_DIV_LEN) {
-					format(szTitle, sizeof szTitle, "Edit Group Division (%i) {%s}(%s)", iDivID + 1, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITDIV, DIALOG_STYLE_INPUT, szTitle, "The specified name must be less than "#GROUP_MAX_DIV_LEN" characters in length.\n\nSpecify a division name (or none to disable it).", "Confirm", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua Division (%i) {%s}(%s)", iDivID + 1, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITDIV, DIALOG_STYLE_INPUT, szTitle, "Ten phai ngan hon "#GROUP_MAX_DIV_LEN" ky tu.\n\nNhap ten Division (hoac none de tat).", "Xac nhan", "Huy");
 				}
 				arrGroupDivisions[iGroupID][iDivID][0] = 0;
 				if(!isnull(inputtext)) mysql_escape_string(inputtext, arrGroupDivisions[iGroupID][iDivID]);
@@ -2169,11 +2169,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				szDialog[(GROUP_MAX_DIV_LEN + 8) * MAX_GROUP_DIVS];
 
 			for(new i = 0; i != MAX_GROUP_DIVS; ++i) {
-				format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i + 1, ((arrGroupDivisions[iGroupID][i][0]) ? (arrGroupDivisions[iGroupID][i]) : ("{AAAAAA}(undefined){FFFFFF}")));
+				format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i + 1, ((arrGroupDivisions[iGroupID][i][0]) ? (arrGroupDivisions[iGroupID][i]) : ("{AAAAAA}(chua dat){FFFFFF}")));
 			}
 
-			format(szTitle, sizeof szTitle, "Edit Group Divisions {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-			ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITDIVS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+			format(szTitle, sizeof szTitle, "Sua Division {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+			ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITDIVS, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 			DeletePVar(playerid, "Group_EditDiv");
 		}
 		case DIALOG_GROUP_LOCKERS: {
@@ -2184,16 +2184,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(response)
 			{
-				format(szTitle, sizeof szTitle, "Edit Group Locker Position {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+				format(szTitle, sizeof szTitle, "Sua vi tri tu do {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 				if (listitem == MAX_GROUP_LOCKERS)
 				{
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_LOCKERDELETECONF, DIALOG_STYLE_MSGBOX, szTitle, "{FFFFFF}Are you sure you want to delete ALL of the lockers for this group?", "Cancel", "Confirm");
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_LOCKERDELETECONF, DIALOG_STYLE_MSGBOX, szTitle, "{FFFFFF}Ban chac muon xoa TAT CA tu do cua to chuc?", "Huy", "Xac nhan");
 					return 1;
 				}
 				else
 				{
 					SetPVarInt(playerid, "Group_EditLocker", listitem);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_LOCKERACTION, DIALOG_STYLE_LIST, szTitle, "Go to Locker\nMove Locker (to your current position)\nDelete Locker", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_LOCKERACTION, DIALOG_STYLE_LIST, szTitle, "Den tu do\nChuyen tu den cho ban\nXoa tu do", "Chon", "Huy");
 					return 1;
 				}
 			}
@@ -2219,7 +2219,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					DestroyDynamic3DTextLabel(arrGroupLockers[iGroupID][iLocker][g_tLocker3DLabel]);
 					DestroyDynamicArea(arrGroupLockers[iGroupID][iLocker][g_iLockerAreaID]);
 
-					format(szMiscArray, sizeof szMiscArray, "%s Locker\n{1FBDFF}Press ~k~~CONVERSATION_YES~ {FFFF00} to use\n ID: %i", arrGroupData[iGroupID][g_szGroupName], arrGroupLockers[iGroupID][iLocker]);
+					format(szMiscArray, sizeof szMiscArray, "%s Tu do\n{1FBDFF}Nhan ~k~~CONVERSATION_YES~ {FFFF00} de dung\n ID: %i", arrGroupData[iGroupID][g_szGroupName], arrGroupLockers[iGroupID][iLocker]);
 					arrGroupLockers[iGroupID][iLocker][g_tLocker3DLabel] = CreateDynamic3DTextLabel(szMiscArray, arrGroupData[iGroupID][g_hDutyColour] * 256 + 0xFF, arrGroupLockers[iGroupID][iLocker][g_fLockerPos][0], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][1], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][2], 15.0, .testlos = 1, .worldid = arrGroupLockers[iGroupID][iLocker][g_iLockerVW]);
 					arrGroupLockers[iGroupID][iLocker][g_iLockerAreaID] = CreateDynamicSphere(arrGroupLockers[iGroupID][iLocker][g_fLockerPos][0], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][1], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][2], 3.0, .worldid = arrGroupLockers[iGroupID][iLocker][g_iLockerVW]);
 
@@ -2232,7 +2232,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					arrGroupLockers[iGroupID][iLocker][g_fLockerPos][2] = 0;
 					arrGroupLockers[iGroupID][iLocker][g_iLockerVW] = 0;
 					DestroyDynamic3DTextLabel(arrGroupLockers[iGroupID][iLocker][g_tLocker3DLabel]);
-					SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted locker %d of %s", iLocker, arrGroupData[iGroupID][g_szGroupName]);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa tu %d cua %s", iLocker, arrGroupData[iGroupID][g_szGroupName]);
 				}
 			}
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -2248,8 +2248,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					szTitle[32 + GROUP_MAX_NAME_LEN];
 
 				SetPVarInt(playerid, "Group_EditRank", listitem);
-				format(szTitle, sizeof szTitle, "Edit Group Rank (%i) {%s}(%s)", listitem, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITPAY, DIALOG_STYLE_INPUT, szTitle, "Specify a paycheck amount for this rank.", "OK", "Cancel");
+				format(szTitle, sizeof szTitle, "Sua rank (%i) {%s}(%s)", listitem, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITPAY, DIALOG_STYLE_INPUT, szTitle, "Nhap so tien luong cho rank nay.", "Dong y", "Huy");
 			}
 			return Group_DisplayDialog(playerid, iGroupID);
 		}
@@ -2269,8 +2269,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					format(szDialog, sizeof szDialog, "%s\nRank %i (%s):    $%s", szDialog, i, arrGroupRanks[iGroupID][i], number_format(arrGroupData[iGroupID][g_iPaycheck][i]));
 				}
 
-				format(szTitle, sizeof szTitle, "Edit Group Paychecks {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-				ShowPlayerDialogEx(playerid, DIALOG_GROUP_LISTPAY, DIALOG_STYLE_LIST, szTitle, szDialog, "Edit", "Cancel");
+				format(szTitle, sizeof szTitle, "Sua luong to chuc {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+				ShowPlayerDialogEx(playerid, DIALOG_GROUP_LISTPAY, DIALOG_STYLE_LIST, szTitle, szDialog, "Sua", "Huy");
 				format(string, sizeof(string), "%s has changed the paycheck for rank %d (%s) to $%d in %s (%d)", GetPlayerNameEx(playerid), iRankID, arrGroupRanks[iGroupID][iRankID], strval(inputtext), iGroupID + 1);
 				Log("logs/editgroup.log", string);
 				return 1;
@@ -2288,8 +2288,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					szTitle[32 + GROUP_MAX_NAME_LEN];
 
 				SetPVarInt(playerid, "Group_EditRank", listitem);
-				format(szTitle, sizeof szTitle, "Edit Group Rank (%i) {%s}(%s)", listitem + 1, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITRANK, DIALOG_STYLE_INPUT, szTitle, "Specify a rank name (or none to disable it).", "Confirm", "Cancel");
+				format(szTitle, sizeof szTitle, "Sua rank (%i) {%s}(%s)", listitem + 1, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITRANK, DIALOG_STYLE_INPUT, szTitle, "Nhap ten rank (hoac none de tat).", "Xac nhan", "Huy");
 			}
 			return Group_DisplayDialog(playerid, iGroupID);
 		}
@@ -2302,8 +2302,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(response) {
 				if(strlen(inputtext) >= GROUP_MAX_RANK_LEN) {
-					format(szTitle, sizeof szTitle, "Edit Group Rank (%i) {%s}(%s)", iRankID + 1, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITRANK, DIALOG_STYLE_INPUT, szTitle, "The specified name must be less than "#GROUP_MAX_RANK_LEN" characters in length.\n\nSpecify a rank name (or none to disable it).", "Confirm", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua rank (%i) {%s}(%s)", iRankID + 1, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITRANK, DIALOG_STYLE_INPUT, szTitle, "Ten phai ngan hon "#GROUP_MAX_RANK_LEN" ky tu.\n\nNhap ten rank (hoac none de tat).", "Xac nhan", "Huy");
 				}
 				arrGroupRanks[iGroupID][iRankID][0] = 0;
 				if(!isnull(inputtext)) mysql_escape_string(inputtext, arrGroupRanks[iGroupID][iRankID]);
@@ -2313,11 +2313,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				szDialog[(GROUP_MAX_RANK_LEN + 8) * MAX_GROUP_RANKS];
 
 			for(new i = 0; i != MAX_GROUP_RANKS; ++i) {
-				format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i + 1, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+				format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i + 1, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(chua dat){FFFFFF}")));
 			}
 
-			format(szTitle, sizeof szTitle, "Edit Group Ranks {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-			ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITRANKS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+			format(szTitle, sizeof szTitle, "Sua rank {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+			ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITRANKS, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 			DeletePVar(playerid, "Group_EditRank");
 		}
 
@@ -2335,11 +2335,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 				{
-					format(szText, sizeof(szText), "%s Shipment Delivery Point\n{1FBDFF}/gdelivercrate", arrGroupData[iGroupID][g_szGroupName]);
+					format(szText, sizeof(szText), "%s Diem giao Shipment\n{1FBDFF}/gdelivercrate", arrGroupData[iGroupID][g_szGroupName]);
 				}
 				else
 				{
-					format(szText, sizeof szText, "%s Crate Delivery Point\n{1FBDFF}/delivercrate", arrGroupData[iGroupID][g_szGroupName]);
+					format(szText, sizeof szText, "%s Diem giao thung\n{1FBDFF}/delivercrate", arrGroupData[iGroupID][g_szGroupName]);
 				}
 				arrGroupData[iGroupID][g_tCrate3DLabel] = CreateDynamic3DTextLabel(szText, arrGroupData[iGroupID][g_hDutyColour] * 256 + 0xFF, arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2], 10.0, .testlos = 1, .streamdistance = 20.0);
 
@@ -2388,7 +2388,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					DestroyDynamic3DTextLabel(arrGroupLockers[iGroupID][i][g_tLocker3DLabel]);
 				}
 
-				SendClientMessage(playerid, COLOR_WHITE, "You have deleted all lockers of this group.");
+				SendClientMessage(playerid, COLOR_WHITE, "Da xoa tat ca tu do cua to chuc.");
 				format(string, sizeof(string), "%s has deleted all lockers of %s", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
 				Log("logs/editgroup.log", string);
 
@@ -2400,7 +2400,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new iGroupID = GetPVarInt(playerid, "Group_EditID");
 			if(response)
 			{
-				if(arrGroupData[iGroupID][g_iJCount] >= MAX_GROUP_JURISDICTIONS) return SendClientMessage(playerid, COLOR_GRAD2, "Error: Cannot add anymore jurisdictions.");
+				if(arrGroupData[iGroupID][g_iJCount] >= MAX_GROUP_JURISDICTIONS) return SendClientMessage(playerid, COLOR_GRAD2, "Loi: Khong the them tham quyen nua.");
 				new szTitle[128], szDialog[2500];
 
 				for(new i = 0; i < 161; ++i)
@@ -2409,8 +2409,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					strcat(szDialog, "\n"), strcat(szDialog, areaName);
 				}
 
-				format(szTitle, sizeof szTitle, "Add Group Jurisdiction {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-				ShowPlayerDialogEx(playerid, DIALOG_GROUP_JURISDICTION_ADD2, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Go Back");
+				format(szTitle, sizeof szTitle, "Them tham quyen {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+				ShowPlayerDialogEx(playerid, DIALOG_GROUP_JURISDICTION_ADD2, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Quay lai");
 			}
 			else return Group_DisplayDialog(playerid, iGroupID);
 		}
@@ -2424,7 +2424,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 				mysql_tquery(MainPipeline, "SELECT * FROM `jurisdictions`", "Group_QueryFinish", "ii", GROUP_QUERY_JURISDICTIONS, 0);
 				strunpack(areaName, AreaName[listitem], sizeof(areaName));
-				format(string, sizeof(string), "You have successfully assigned %s to %s.", areaName, arrGroupData[iGroupID][g_szGroupName]);
+				format(string, sizeof(string), "Da gan %s cho %s.", areaName, arrGroupData[iGroupID][g_szGroupName]);
 				SendClientMessage(playerid, COLOR_WHITE, string);
 				format(string, sizeof(string), "%s has assigned %s to %s", GetPlayerNameEx(playerid), areaName, arrGroupData[iGroupID][g_szGroupName]);
 				Log("logs/editgroup.log", string);
@@ -2437,7 +2437,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(!response) {
 				GetPlayerPos(playerid, arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2]);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You've changed the garage position to your current location.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri garage den cho ban.");
 				format(string, sizeof(string), "%s has changed the garage position to X:%f, Y:%f, Z:%f in %s (%d)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2], arrGroupData[iGroupID][g_szGroupName], iGroupID+1);
 				Log("logs/editgroup.log", string);
 			}
@@ -2609,8 +2609,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					hColour;
 
 				if(strlen(inputtext) > 6 || !IsHex(inputtext)) {
-					format(szTitle, sizeof szTitle, "Edit Group OOC Chat Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOCOL, DIALOG_STYLE_INPUT, szTitle, "Invalid value specified.\n\nEnter a color in hexadecimal format (for example, BCA3FF). This color will be that of their OOC Chat.", "Confirm", "Cancel");
+					format(szTitle, sizeof szTitle, "Sua mau chat OOC {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					return ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOCOL, DIALOG_STYLE_INPUT, szTitle, "Gia tri sai.\n\nNhap mau hex (vi du, BCA3FF). Mau nay dung cho chat OOC.", "Xac nhan", "Huy");
 				}
 				sscanf(inputtext, "h", hColour);
 				arrGroupData[iGroupID][g_hOOCColor] = hColour;
@@ -2632,8 +2632,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					szTitle[32 + GROUP_MAX_NAME_LEN];
 
 				SetPVarInt(playerid, "Group_EditRank", listitem);
-				format(szTitle, sizeof szTitle, "Edit Group Rank (%i) {%s}(%s)", listitem, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITCLOTHES, DIALOG_STYLE_INPUT, szTitle, "Specify a skin ID for this rank.", "OK", "Cancel");
+				format(szTitle, sizeof szTitle, "Sua rank (%i) {%s}(%s)", listitem, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_EDITCLOTHES, DIALOG_STYLE_INPUT, szTitle, "Nhap skin ID cho rank nay.", "Dong y", "Huy");
 			}
 			return Group_DisplayDialog(playerid, iGroupID);
 		}
@@ -2653,8 +2653,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						format(szDialog, sizeof szDialog, "%s\nRank %i (%s): Skin ID:%i", szDialog, i, arrGroupRanks[iGroupID][i], arrGroupData[iGroupID][g_iClothes][i]);
 				}
 
-				format(szTitle, sizeof szTitle, "Edit Group Clothes {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-				ShowPlayerDialogEx(playerid, DIALOG_GROUP_LISTCLOTHES, DIALOG_STYLE_LIST, szTitle, szDialog, "Edit", "Cancel");
+				format(szTitle, sizeof szTitle, "Sua quan ao {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+				ShowPlayerDialogEx(playerid, DIALOG_GROUP_LISTCLOTHES, DIALOG_STYLE_LIST, szTitle, szDialog, "Sua", "Huy");
 				format(string, sizeof(string), "%s has changed the skin ID for rank %d (%s) to $%d in %s (%d)", GetPlayerNameEx(playerid), iRankID, arrGroupRanks[iGroupID][iRankID], strval(inputtext), iGroupID + 1);
 				Log("logs/editgroup.log", string);
 
@@ -2716,8 +2716,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else {
 
 				SetPVarInt(playerid, "GLocker_SID", listitem);
-				format(szMiscArray, sizeof(szMiscArray), "Gang Safe | Editing: {FFFF00}%s", Drugs[listitem]);
-				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, szMiscArray, "Deposit\nWithdraw", "Select", "Back");
+				format(szMiscArray, sizeof(szMiscArray), "Gang Safe | Sua: {FFFF00}%s", Drugs[listitem]);
+				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, szMiscArray, "Gui vao\nRut ra", "Chon", "Quay lai");
 			}
 		}
 		/*case G_LOCKER_INGREDIENTS: {
@@ -2741,7 +2741,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				case 0:
 				{
 					SetPVarInt(playerid, "GSafe_Action", 1);
-					format(szMiscArray, sizeof(szMiscArray), "Please type an amount to deposit.");
+					format(szMiscArray, sizeof(szMiscArray), "Nhap so luong can gui.");
 				}
 				case 1:
 				{
@@ -2749,17 +2749,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iWithdrawRank][GetSafeTakePerm(iTemp)])
 					{
 						SetPVarInt(playerid, "GSafe_Action", 2);
-						format(szMiscArray, sizeof(szMiscArray), "Please type an amount to withdraw.");
+						format(szMiscArray, sizeof(szMiscArray), "Nhap so luong can rut.");
 					}
 					else
 					{
 						DeletePVar(playerid, "GSafe_Opt");
-						return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to withdraw from the locker.");
+						return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen rut do khoi tu.");
 					}
 
 				}
 			}
-			return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", szMiscArray, "Input", "Cancel");
+			return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Ket bang nhom", szMiscArray, "Nhap", "Huy");
 		}
 		case DIALOG_GROUP_SACTIONEXEC:
 		{
@@ -2772,7 +2772,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			if(response)
 			{
-				if(strval(inputtext) <= 0) return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount cannot be less than or 0.", "Input", "Cancel");
+				if(strval(inputtext) <= 0) return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Ket bang nhom", "So luong phai lon hon 0.", "Nhap", "Huy");
 
 				switch(GetPVarInt(playerid, "GSafe_Opt")) {
 
@@ -2789,12 +2789,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									GivePlayerCash( playerid, -amount);
 									format(szMiscArray, sizeof(szMiscArray), "%s has deposited $%i into the safe.", GetPlayerNameEx(playerid), strval(inputtext));
 									GroupLog(iGroupID, szMiscArray);
-									SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited $%i into the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, "Ban da gui $%i vao ket.", strval(inputtext));
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
 									OnPlayerStatsUpdate(playerid);
 								}
-								else return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
+								else return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Ket bang nhom", "So luong vuot qua so ban mang.\nHay nhap lai.", "Nhap", "Huy");
 							}
 							case 2:
 							{
@@ -2805,14 +2805,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									GivePlayerCash(playerid, amount);
 									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn $%s from the safe.", GetPlayerNameEx(playerid), number_format(iMoney));
 									GroupLog(iGroupID, szMiscArray);
-									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn $%s from the safe.", number_format(iMoney));
-									format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has withdrawn $%s of the group money from their gang vault", GetPlayerNameEx(playerid), number_format(iMoney));
+									format(szMiscArray, sizeof(szMiscArray), "Ban da rut $%s tu ket.", number_format(iMoney));
+									format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s da rut $%s tien to chuc tu ket bang nhom", GetPlayerNameEx(playerid), number_format(iMoney));
 									ABroadCast(COLOR_YELLOW, string, 2);
 									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
 								}
-								else return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that in the safe.\nPlease input another amount.", "Input", "Cancel");
+								else return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Ket bang nhom", "So luong vuot qua so trong ket.\nHay nhap lai.", "Nhap", "Huy");
 							}
 						}
 					}
@@ -2828,11 +2828,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									PlayerInfo[playerid][pMats] -= strval(inputtext);
 									format(szMiscArray, sizeof(szMiscArray), "%s has deposited %i materials into the safe.", GetPlayerNameEx(playerid), strval(inputtext));
 									GroupLog(iGroupID, szMiscArray);
-									SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %i materials into the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, "Ban da gui %i vat lieu vao ket.", strval(inputtext));
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
 								}
-								else return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
+								else return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Ket bang nhom", "So luong vuot qua so ban mang.\nHay nhap lai.", "Nhap", "Huy");
 							}
 							case 2:
 							{
@@ -2842,11 +2842,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									PlayerInfo[playerid][pMats] += strval(inputtext);
 									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %i materials from the safe.", GetPlayerNameEx(playerid), strval(inputtext));
 									GroupLog(iGroupID, szMiscArray);
-									SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %i materials from the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, "Ban da rut %i vat lieu tu ket.", strval(inputtext));
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
 								}
-								else return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that in the safe.\nPlease input another amount.", "Input", "Cancel");
+								else return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Ket bang nhom", "So luong vuot qua so trong ket.\nHay nhap lai.", "Nhap", "Huy");
 							}
 						}
 					}
@@ -2864,7 +2864,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									PlayerInfo[playerid][pDrugs][iDrugID] -= strval(inputtext);
 									format(szMiscArray, sizeof(szMiscArray), "%s has deposited %i grams of %s into the safe.", GetPlayerNameEx(playerid), strval(inputtext), Drugs[iDrugID]);
 									GroupLog(iGroupID, szMiscArray);
-									SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %i grams of %s into the safe.", strval(inputtext), Drugs[iDrugID]);
+									SendClientMessageEx(playerid, COLOR_WHITE, "Ban da gui %i gram %s vao ket.", strval(inputtext), Drugs[iDrugID]);
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
 									SaveGroup(iGroupID);
@@ -2872,7 +2872,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									pc_cmd_locker(playerid, "");
 
 								}
-								else return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
+								else return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Ket bang nhom", "So luong vuot qua so ban mang.\nHay nhap lai.", "Nhap", "Huy");
 							}
 							case 2:
 							{
@@ -2882,14 +2882,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									PlayerInfo[playerid][pDrugs][iDrugID] += strval(inputtext);
 									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %i grams of %s from the safe.", GetPlayerNameEx(playerid), strval(inputtext), Drugs[iDrugID]);
 									GroupLog(iGroupID, szMiscArray);
-									SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %i grams of %s from the safe.", strval(inputtext), Drugs[iDrugID]);
+									SendClientMessageEx(playerid, COLOR_WHITE, "Ban da rut %i gram %s tu ket.", strval(inputtext), Drugs[iDrugID]);
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
 									SaveGroup(iGroupID);
 
 									pc_cmd_locker(playerid, "");
 								}
-								else return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that in the safe.\nPlease input another amount.", "Input", "Cancel");
+								else return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Ket bang nhom", "So luong vuot qua so trong ket.\nHay nhap lai.", "Nhap", "Huy");
 							}
 						}
 					}
@@ -2948,32 +2948,32 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(!response) return 1;
 			new closestCar = GetClosestCar(playerid, .fRange = 8.0);
-			if(closestCar == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near any vehicle!");
+			if(closestCar == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan xe nao!");
 			ClearAnimationsEx(playerid);
 			if(listitem == 0)
 			{
 				if(IsACop(playerid) && IsACopCar(closestCar)) SetPlayerSkin(playerid, 285); // SWAT
 				else if(IsAMedic(playerid) && IsAnAmbulance(closestCar)) SetPlayerSkin(playerid, 277); // LS Fire
-				else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near a group vehicle!");
+				else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan xe to chuc!");
 			}
 			if(listitem == 1 || listitem == 3)
 			{
 				if(IsACop(playerid) || listitem == 3) // Original Clothes
 				{
-					if(!GetPVarType(playerid, "turnoutVeh")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not wearing any turnout clothes!");
-					if(!IsPlayerInRangeOfVehicle(playerid, GetPVarInt(playerid, "turnoutVeh"), 8.0)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the vehicle you changed clothes from.");
+					if(!GetPVarType(playerid, "turnoutVeh")) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua mac do Turnout!");
+					if(!IsPlayerInRangeOfVehicle(playerid, GetPVarInt(playerid, "turnoutVeh"), 8.0)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan xe da lay quan ao.");
 					DeletePVar(playerid, "turnoutVeh");
 					SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
-					SendClientMessageEx(playerid, -1, "You have returned to your original clothing.");
+					SendClientMessageEx(playerid, -1, "Ban da mac lai quan ao cu.");
 					return 1;
 				}
 				if(IsAnAmbulance(closestCar)) SetPlayerSkin(playerid, 279); // SF Fire
-				else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near a group vehicle!");
+				else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan xe to chuc!");
 			}
 			if(listitem == 2)
 			{
 				if(IsAnAmbulance(closestCar)) SetPlayerSkin(playerid, 278); // LV Fire
-				else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near a group vehicle!");
+				else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan xe to chuc!");
 			}
 			SetPVarInt(playerid, "turnoutVeh", closestCar);
 			return 1;
@@ -3023,7 +3023,7 @@ stock EditDV(playerid, iDvSlotID, params[], const name[], Float:value, &slot)
 		DynVehicleInfo[iDvSlotID][gv_iSiren] = !DynVehicleInfo[iDvSlotID][gv_iSiren];
 		DynVeh_Save(iDvSlotID);
 		DynVeh_Spawn(iDvSlotID);
-		SendClientMessageEx(playerid, COLOR_WHITE, DynVehicleInfo[iDvSlotID][gv_iSiren] ? ("You have enabled the siren on the dynamic vehicle."):("You have disabled the siren on the dynamic vehicle."));
+		SendClientMessageEx(playerid, COLOR_WHITE, DynVehicleInfo[iDvSlotID][gv_iSiren] ? ("Da bat coi hut cho xe dong."):("Da tat coi hut cho xe dong."));
 		return 1;
 	}
 	if(strcmp(name, "delete", true) == 0)
@@ -3040,7 +3040,7 @@ stock EditDV(playerid, iDvSlotID, params[], const name[], Float:value, &slot)
 		DynVehicleInfo[iDvSlotID][gv_iSiren] = 0;
 		DynVeh_Save(iDvSlotID);
 		DynVeh_Spawn(iDvSlotID);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted the dynamic vehicle");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa xe dong");
 		return 1;
 	}
 	if(strcmp(name, "vw", true) == 0)
@@ -3048,7 +3048,7 @@ stock EditDV(playerid, iDvSlotID, params[], const name[], Float:value, &slot)
 		DynVehicleInfo[iDvSlotID][gv_iVW] = floatround(value);
 		DynVeh_Save(iDvSlotID);
 		DynVeh_Spawn(iDvSlotID);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the virtual world of the dynamic vehicle");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi virtual world xe dong");
 		return 1;
 	}
 	if(strcmp(name, "disabled", true) == 0)
@@ -3056,36 +3056,36 @@ stock EditDV(playerid, iDvSlotID, params[], const name[], Float:value, &slot)
 		DynVehicleInfo[iDvSlotID][gv_iDisabled] = floatround(value);
 		DynVeh_Save(iDvSlotID);
 		DynVeh_Spawn(iDvSlotID);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the dynamic vehicle");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da vo hieu hoa xe dong");
 		return 1;
 	}
 	if(strcmp(name, "vmodel", true) == 0)
 	{
-		if(!(400 < value < 612)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Model ID");
+		if(!(400 < value < 612)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Model ID khong hop le");
 		DynVehicleInfo[iDvSlotID][gv_iModel] = floatround(value);
 		DynVeh_Save(iDvSlotID);
 		DynVeh_Spawn(iDvSlotID);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the vehicle model of the dynamic vehicle");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi model xe dong");
 		return 1;
 	}
 	if(strcmp(name, "vcol1", true) == 0)
 	{
 		if(!(0 <= value <= 255)) {
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Mau khong hop le (ID tu 0 den 255).");
 		}
 		DynVehicleInfo[iDvSlotID][gv_iCol1] = floatround(value);
 		DynVeh_Save(iDvSlotID);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the color (1) of the dynamic vehicle");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi mau (1) xe dong");
 		return 1;
 	}
 	if(strcmp(name, "vcol2", true) == 0)
 	{
 		if(!(0 <= value <= 255)) {
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Mau khong hop le (ID tu 0 den 255).");
 		}
 		DynVehicleInfo[iDvSlotID][gv_iCol2] = floatround(value);
 		DynVeh_Save(iDvSlotID);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the color (2) of the dynamic vehicle");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi mau (2) xe dong");
 		return 1;
 	}
 	if(strcmp(name, "groupid", true) == 0)
@@ -3094,56 +3094,56 @@ stock EditDV(playerid, iDvSlotID, params[], const name[], Float:value, &slot)
 		{
 			DynVehicleInfo[iDvSlotID][gv_igID] = INVALID_GROUP_ID;
 			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have removed the group id flag of the dynamic vehicle");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da go co group id cua xe dong");
 			return 1;
 		}
-		if(!(0 <= value < MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group specified (Start at 1, end at "#MAX_GROUPS")");
+		if(!(0 <= value < MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GRAD2, "To chuc sai (tu 1 den "#MAX_GROUPS")");
 		DynVehicleInfo[iDvSlotID][gv_igID] = floatround(value-1);
 		DynVeh_Save(iDvSlotID);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the group id flag of the dynamic vehicle");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi co group id xe dong");
 		return 1;
 	}
 	if(strcmp(name, "divid", true) == 0)
 	{
 		DynVehicleInfo[iDvSlotID][gv_igDivID] = floatround(value);
 		DynVeh_Save(iDvSlotID);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the division id of the dynamic vehicle");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi division id xe dong");
 		return 1;
 	}
 	if(strcmp(name, "rank", true) == 0)
 	{
 		DynVehicleInfo[iDvSlotID][gv_irID] = floatround(value);
 		DynVeh_Save(iDvSlotID);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the rank id of the dynamic vehicle");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi rank id xe dong");
 		return 1;
 	}
 	if(strcmp(name, "loadmax", true) == 0)
 	{
-		if(!(0 < value < 6)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group specified (Start at 1, end at 6)");
+		if(!(0 < value < 6)) return SendClientMessageEx(playerid, COLOR_GRAD2, "To chuc sai (tu 1 den 6)");
 		DynVehicleInfo[iDvSlotID][gv_iLoadMax] = floatround(value);
 		DynVeh_Save(iDvSlotID);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the load max of the dynamic vehicle");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi gioi han tai xe dong");
 		return 1;
 	}
 	if(strcmp(name, "maxhealth", true) == 0)
 	{
 		DynVehicleInfo[iDvSlotID][gv_fMaxHealth] = (value);
 		DynVeh_Save(iDvSlotID);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the maximum health of the dynamic vehicle");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi mau toi da xe dong");
 		return 1;
 	}
 	if(strcmp(name, "upkeep", true) == 0)
 	{
 		DynVehicleInfo[iDvSlotID][gv_iUpkeep] = floatround(value);
 		DynVeh_Save(iDvSlotID);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the up keep of the dynamic vehicle");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi phi duy tri xe dong");
 		return 1;
 	}
 	if(strcmp(name, "vtype", true) == 0)
 	{
 		DynVehicleInfo[iDvSlotID][gv_iType] = floatround(value);
 		DynVeh_Save(iDvSlotID);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the vehicle type of the dynamic vehicle");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi loai xe dong");
 		return 1;
 	}
 	if(1 <= slot <= MAX_DV_OBJECTS)
@@ -3152,12 +3152,12 @@ stock EditDV(playerid, iDvSlotID, params[], const name[], Float:value, &slot)
 		{
 			if(slot == 3 || slot == 4)
 			{
-				if(floatround(value) != 0 && !IsABlankTexture(floatround(value))) return SendClientMessageEx(playerid, COLOR_GREY, "DV Object slots 3 and 4 can only be assigned models 19475-19483");
+				if(floatround(value) != 0 && !IsABlankTexture(floatround(value))) return SendClientMessageEx(playerid, COLOR_GREY, "O object DV 3 va 4 chi nhan model 19475-19483");
 			}
 			DynVehicleObjInfo[iDvSlotID][slot-1][gv_iAttachedObjectModel] = floatround(value);
 			DynVeh_Spawn(iDvSlotID);
 			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object model of the dynamic vehicle");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi model object xe dong");
 			return 1;
 		}
 		if(strcmp(name, "objx", true) == 0)
@@ -3165,7 +3165,7 @@ stock EditDV(playerid, iDvSlotID, params[], const name[], Float:value, &slot)
 			DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectX] = value;
 			DynVeh_Spawn(iDvSlotID);
 			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object position (X) of the dynamic vehicle");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri object (X) xe dong");
 			return 1;
 		}
 		if(strcmp(name, "objy", true) == 0)
@@ -3173,7 +3173,7 @@ stock EditDV(playerid, iDvSlotID, params[], const name[], Float:value, &slot)
 			DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectY] = value;
 			DynVeh_Spawn(iDvSlotID);
 			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object position (Y) of the dynamic vehicle");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri object (Y) xe dong");
 			return 1;
 		}
 		if(strcmp(name, "objz", true) == 0)
@@ -3181,7 +3181,7 @@ stock EditDV(playerid, iDvSlotID, params[], const name[], Float:value, &slot)
 			DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectZ] = value;
 			DynVeh_Spawn(iDvSlotID);
 			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object position (Z) of the dynamic vehicle");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri object (Z) xe dong");
 			return 1;
 		}
 		if(strcmp(name, "objrx", true) == 0)
@@ -3189,7 +3189,7 @@ stock EditDV(playerid, iDvSlotID, params[], const name[], Float:value, &slot)
 			DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectRX] = value;
 			DynVeh_Spawn(iDvSlotID);
 			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object rotation (X) of the dynamic vehicle");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi goc object (X) xe dong");
 			return 1;
 		}
 		if(strcmp(name, "objry", true) == 0)
@@ -3197,7 +3197,7 @@ stock EditDV(playerid, iDvSlotID, params[], const name[], Float:value, &slot)
 			DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectRY] = value;
 			DynVeh_Spawn(iDvSlotID);
 			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object rotation (Y) of the dynamic vehicle");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi goc object (Y) xe dong");
 			return 1;
 		}
 		if(strcmp(name, "objrz", true) == 0)
@@ -3205,7 +3205,7 @@ stock EditDV(playerid, iDvSlotID, params[], const name[], Float:value, &slot)
 			DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectRZ] = value;
 			DynVeh_Spawn(iDvSlotID);
 			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object rotation (Z) of the dynamic vehicle");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi goc object (Z) xe dong");
 			return 1;
 		}
 		if(strcmp(name, "objmatsize", true) == 0)
@@ -3213,7 +3213,7 @@ stock EditDV(playerid, iDvSlotID, params[], const name[], Float:value, &slot)
 			DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectMatSize] = floatround(value);
 			DynVeh_Spawn(iDvSlotID);
 			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object material size of the dynamic vehicle");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi kich thuoc material xe dong");
 			return 1;
 		}
 		if(strcmp(name, "objsize", true) == 0)
@@ -3221,11 +3221,11 @@ stock EditDV(playerid, iDvSlotID, params[], const name[], Float:value, &slot)
 			DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectSize] = floatround(value);
 			DynVeh_Spawn(iDvSlotID);
 			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object text size of the dynamic vehicle");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi co chu object xe dong");
 			return 1;
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Slot ID Must be between 1 and "#MAX_DV_OBJECTS"!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Slot ID phai tu 1 den "#MAX_DV_OBJECTS"!");
 	return 1;
 }
 
@@ -3244,7 +3244,7 @@ CMD:clearbugs(playerid, params[])
 	{
 		if(PlayerInfo[playerid][pLeader] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBugAccess]) // has leader flag
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD2, "All agency bugs destroyed.");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Da huy het may nghe len cua co quan.");
 			foreach(new i : Player)
 			{
 				if(PlayerInfo[i][pBugged] == PlayerInfo[playerid][pMember]){
@@ -3257,7 +3257,7 @@ CMD:clearbugs(playerid, params[])
 			return 1;
 		}
 	}
-	return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
+	return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 }
 
 CMD:listbugs(playerid, params[])
@@ -3266,7 +3266,7 @@ CMD:listbugs(playerid, params[])
 	{
 		if(PlayerInfo[playerid][pLeader] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBugAccess]) // has leader flag
 		{
-			SendClientMessageEx(playerid, COLOR_GREEN, "List of deployed Bugs:");
+			SendClientMessageEx(playerid, COLOR_GREEN, "Danh sach may nghe len da dat:");
 			foreach(new i : Player)
 			{
 				if(PlayerInfo[i][pBugged] == PlayerInfo[playerid][pMember]){
@@ -3279,13 +3279,13 @@ CMD:listbugs(playerid, params[])
 			return 1;
 		}
 	}
-	return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
+	return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 }
 
 CMD:online(playerid, params[]) {
 	if(PlayerInfo[playerid][pLeader] >= 0 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1 || IsACriminal(playerid))
 	{
-		if(PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, -1, "You are not a member of any group!");
+		if(PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, -1, "Ban khong thuoc to chuc nao!");
 		szMiscArray[0] = 0;
 		new badge[11];
 		foreach(new i: Player)
@@ -3294,29 +3294,29 @@ CMD:online(playerid, params[]) {
 			if(strcmp(PlayerInfo[i][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[i][pBadge]);
 			else format(badge, sizeof(badge), "");
 			if(IsAnFTSDriver(playerid) && IsAnFTSDriver(i)) switch(TransportDuty[i]) {
-				case 1: format(szMiscArray, sizeof(szMiscArray), "%s\n* %s%s (on duty), %i calls accepted", szMiscArray, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
-				default: format(szMiscArray, sizeof(szMiscArray), "%s\n* %s%s (off duty), %i calls accepted", szMiscArray, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
+				case 1: format(szMiscArray, sizeof(szMiscArray), "%s\n* %s%s (truc), %i cuoc da nhan", szMiscArray, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
+				default: format(szMiscArray, sizeof(szMiscArray), "%s\n* %s%s (nghi), %i cuoc da nhan", szMiscArray, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
 			}
 			else if(IsAMedic(playerid) && IsAMedic(i) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance])) switch(PlayerInfo[i][pDuty]) {
-				case 1: format(szMiscArray, sizeof(szMiscArray), "%s\n* %s%s (on duty), %i calls accepted, %i patients delivered.", szMiscArray, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
-				default: format(szMiscArray, sizeof(szMiscArray), "%s\n* %s%s (off duty), %i calls accepted, %i patients delivered.", szMiscArray, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
+				case 1: format(szMiscArray, sizeof(szMiscArray), "%s\n* %s%s (truc), %i cuoc da nhan, %i ca da giao.", szMiscArray, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
+				default: format(szMiscArray, sizeof(szMiscArray), "%s\n* %s%s (nghi), %i cuoc da nhan, %i ca da giao.", szMiscArray, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
 			}
 			else if(IsACriminal(playerid) && PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) {
 				format(szMiscArray, sizeof(szMiscArray), "* %s | Rank: %s (%d) | Division: %s", GetPlayerNameEx(i), arrGroupRanks[PlayerInfo[i][pMember]][PlayerInfo[i][pRank]], PlayerInfo[i][pRank], PlayerInfo[i][pDivision] != INVALID_DIVISION ? arrGroupDivisions[PlayerInfo[i][pMember]][PlayerInfo[i][pDivision]] : ("N/A"));
 				SendClientMessageEx(playerid, -1, szMiscArray);
 			}
 			else if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) switch(PlayerInfo[i][pDuty]) {
-				case 1: format(szMiscArray, sizeof(szMiscArray), "%s\n* %s%s (on duty)", szMiscArray, badge, GetPlayerNameEx(i));
-				default: format(szMiscArray, sizeof(szMiscArray), "%s\n* %s%s (off duty)", szMiscArray, badge, GetPlayerNameEx(i));
+				case 1: format(szMiscArray, sizeof(szMiscArray), "%s\n* %s%s (truc)", szMiscArray, badge, GetPlayerNameEx(i));
+				default: format(szMiscArray, sizeof(szMiscArray), "%s\n* %s%s (het truc)", szMiscArray, badge, GetPlayerNameEx(i));
 			}
 			end:
 		}
 		if(!isnull(szMiscArray)) {
-			if(!IsACriminal(playerid)) strdel(szMiscArray, 0, 1), ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_LIST, "Online Members", szMiscArray, "Select", "Cancel");
+			if(!IsACriminal(playerid)) strdel(szMiscArray, 0, 1), ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_LIST, "Thanh vien online", szMiscArray, "Chon", "Huy");
 		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "No members are online at this time.");
+		else SendClientMessageEx(playerid, COLOR_GREY, "Chua co thanh vien online.");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "Only group leaders may use this command.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Chi lanh dao to chuc duoc dung lenh nay.");
 	return 1;
 }
 
@@ -3325,16 +3325,16 @@ CMD:badge(playerid, params[]) {
 	{
 		if(GetPVarType(playerid, "IsInArena") || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "EventToken") != 0)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You can't use your badge now.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the dung phu hieu.");
 			return 1;
 		}
 		#if defined zombiemode
-		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
+		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombie khong the dung.");
 		#endif
 		if(PlayerInfo[playerid][pDuty]) {
 			PlayerInfo[playerid][pDuty] = 0;
 			SetPlayerToTeamColor(playerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have hidden your badge, and will now be identified as being off-duty.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da an phu hieu, ban duoc xem la het truc.");
 			if(IsAMedic(playerid) || IsFirstAid(playerid))
 			{
 				Medics -= 1;
@@ -3343,7 +3343,7 @@ CMD:badge(playerid, params[]) {
 		else {
 			PlayerInfo[playerid][pDuty] = 1;
 			SetPlayerToTeamColor(playerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have shown your badge, and will now be identified as being on-duty.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da hien phu hieu, ban duoc xem la dang truc.");
 			if(IsAMedic(playerid) || IsFirstAid(playerid))
 			{
 				Medics += 1;
@@ -3359,12 +3359,12 @@ CMD:viewbudget(playerid, params[])
 	new string[128];
 	if(arrGroupData[i][g_iGroupType] == GROUP_TYPE_GOV ||arrGroupData[i][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[i][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[i][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[i][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[i][g_iGroupType] == GROUP_TYPE_NEWS || arrGroupData[i][g_iGroupType] == GROUP_TYPE_CONTRACT || arrGroupData[i][g_iGroupType] == GROUP_TYPE_TOWING)
 	{
-	    SendClientMessage(playerid, 0x008EFC00, "            BALANCE SHEET            ");
-		if(arrGroupData[i][g_szGroupName][0] && arrGroupData[i][g_hDutyColour] != 0) format(string, sizeof(string), "{%6x}%s {AFAFAF} [Balance: $%s] [Hourly Payments: $%s]| ", arrGroupData[i][g_hDutyColour], arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudget]), number_format(arrGroupData[i][g_iBudgetPayment]));
-		else if(arrGroupData[i][g_szGroupName][0]) format(string, sizeof(string), "%s [Balance: $%s] [Hourly Payments: $%s]| ", arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudget]), number_format(arrGroupData[i][g_iBudgetPayment]));
+	    SendClientMessage(playerid, 0x008EFC00, "            BANG CAN DOI            ");
+		if(arrGroupData[i][g_szGroupName][0] && arrGroupData[i][g_hDutyColour] != 0) format(string, sizeof(string), "{%6x}%s {AFAFAF} [So du: $%s] [Tra moi gio: $%s]| ", arrGroupData[i][g_hDutyColour], arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudget]), number_format(arrGroupData[i][g_iBudgetPayment]));
+		else if(arrGroupData[i][g_szGroupName][0]) format(string, sizeof(string), "%s [So du: $%s] [Tra moi gio: $%s]| ", arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudget]), number_format(arrGroupData[i][g_iBudgetPayment]));
 		SendClientMessage(playerid, COLOR_YELLOW, string);
 	}
-	else return SendClientMessage(playerid, COLOR_GRAD2, "Your agency does not receive government payments.");
+	else return SendClientMessage(playerid, COLOR_GRAD2, "Co quan khong nhan ngan sach chinh phu.");
 	return 1;
 }
 
@@ -3382,15 +3382,15 @@ CMD:setbudget(playerid, params[])
 
 			if(sscanf(params, "iii", iGroupID, iBudgetAmt))
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setbudget [Group ID] [$ Per Budget Payment (Hourly)]");
+				SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /setbudget [Group ID] [$ Per Budget Payment (Hourly)]");
 				for(new i = 0; i < MAX_GROUPS; i++)
 				{
 				    if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[i][g_iAllegiance])
 				    {
 					    if(arrGroupData[i][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[i][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[i][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[i][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[i][g_iGroupType] == GROUP_TYPE_TOWING)
 					    {
-						    if(arrGroupData[i][g_szGroupName][0] && arrGroupData[i][g_hDutyColour] != 0) format(string, sizeof(string), "%d - {%6x}%s {AFAFAF} [Balance: $%s] [Current Budget: $%s]| ", i, arrGroupData[i][g_hDutyColour], arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudget]), number_format(arrGroupData[i][g_iBudgetPayment]));
-							else if(arrGroupData[i][g_szGroupName][0]) format(string, sizeof(string), "%d - %s [Balance: $%s] [Current Budget: $%s]| ", i, arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudget]), number_format(arrGroupData[i][g_iBudgetPayment]));
+						    if(arrGroupData[i][g_szGroupName][0] && arrGroupData[i][g_hDutyColour] != 0) format(string, sizeof(string), "%d - {%6x}%s {AFAFAF} [So du: $%s] [Ngan sach: $%s]| ", i, arrGroupData[i][g_hDutyColour], arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudget]), number_format(arrGroupData[i][g_iBudgetPayment]));
+							else if(arrGroupData[i][g_szGroupName][0]) format(string, sizeof(string), "%d - %s [So du: $%s] [Ngan sach: $%s]| ", i, arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudget]), number_format(arrGroupData[i][g_iBudgetPayment]));
 							SendClientMessageEx(playerid, COLOR_GRAD2, string);
 						}
 					}
@@ -3402,18 +3402,18 @@ CMD:setbudget(playerid, params[])
 			    if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[iGroupID][g_iAllegiance])
 			    {
 					arrGroupData[iGroupID][g_iBudgetPayment] = iBudgetAmt;
-					format(string, sizeof(string), "You have set %s's Budget Payment to $%s. This will be issued hourly to pay for their vehicles, weapons and staffing", arrGroupData[iGroupID][g_szGroupName], number_format(iBudgetAmt));
+					format(string, sizeof(string), "Da dat ngan sach %s thanh $%s moi gio, dung tra phi xe, vu khi va nhan su", arrGroupData[iGroupID][g_szGroupName], number_format(iBudgetAmt));
 					SendClientMessage(playerid, COLOR_GRAD1, string);
 					format(szMiscArray, sizeof(szMiscArray), "%s has changed %s's hourly pay to $%s", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName], number_format(iBudgetAmt));
 					GroupPayLog(PlayerInfo[playerid][pMember], szMiscArray);
 				}
-				else return SendClientMessage(playerid, COLOR_GRAD2, "This agency is not under your government.");
+				else return SendClientMessage(playerid, COLOR_GRAD2, "Co quan nay khong thuoc chinh phu cua ban.");
 			}
-			else return SendClientMessage(playerid, COLOR_GRAD2, "Invalid Group ID");
+			else return SendClientMessage(playerid, COLOR_GRAD2, "ID to chuc khong hop le");
 	    }
-	    else return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be a group leader and hold the minimum rank required for treasury access.");
+	    else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban phai la lanh dao va du rank de truy cap ngan quy.");
 	}
-	else return SendClientMessage(playerid, COLOR_GRAD2, "You're not a Government Official!");
+	else return SendClientMessage(playerid, COLOR_GRAD2, "Ban khong phai Government Official!");
 	return 1;
 }
 
@@ -3425,13 +3425,13 @@ CMD:gwithdraw(playerid, params[])
 	{
 		if(sscanf(params, "dds[64]", iGroupID, amount, reason))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gwithdraw [groupid] [amount] [reason]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gwithdraw [groupid] [amount] [reason]");
 			return 1;
 		}
 		if(!(-1 < iGroupID <= MAX_GROUPS))
 		{
-			SendClientMessageEx(playerid, COLOR_RED, "* Invalid Group ID");
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gwithdraw [groupid] [amount] [reason]");
+			SendClientMessageEx(playerid, COLOR_RED, "* ID to chuc khong hop le");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gwithdraw [groupid] [amount] [reason]");
 			return 1;
 		}
 	}
@@ -3440,18 +3440,18 @@ CMD:gwithdraw(playerid, params[])
 		iGroupID = PlayerInfo[playerid][pLeader];
 		if(sscanf(params, "ds[64]", amount, reason))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gwithdraw [amount] [reason]");
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* VAULT BALANCE: $%s.", number_format(arrGroupData[iGroupID][g_iBudget]));
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gwithdraw [amount] [reason]");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* SO DU KET: $%s.", number_format(arrGroupData[iGroupID][g_iBudget]));
 			return 1;
 		}
 	}
-	else return SendClientMessage(playerid, COLOR_GRAD3, " You are not a group leader or an authorized admin. ");
+	else return SendClientMessage(playerid, COLOR_GRAD3, " Ban khong phai lanh dao hoac admin co quyen. ");
 
 
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pLeader] != iGroupID) iGroupID--;
 	if(amount < 0)
 	{
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Invalid amount specified.");
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "So luong khong hop le.");
 		return 1;
 	}
 	if( arrGroupData[iGroupID][g_iBudget] > amount )
@@ -3463,15 +3463,15 @@ CMD:gwithdraw(playerid, params[])
         Misc_Save();
         SaveGroup(iGroupID);
 		GivePlayerCash( playerid, amount );
-		SendClientMessageEx( playerid, COLOR_WHITE, "You have withdrawn $%d from the group vault.", amount );
-		format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has withdrawn $%s of the group money from their vault, reason: %s.", GetPlayerNameEx(playerid), number_format(amount), reason);
+		SendClientMessageEx( playerid, COLOR_WHITE, "Ban da rut $%d tu quy to chuc.", amount );
+		format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s da rut $%s tien to chuc tu quy, ly do: %s.", GetPlayerNameEx(playerid), number_format(amount), reason);
 		ABroadCast( COLOR_YELLOW, string, 2);
  		format(string,sizeof(string),"%s(%d) has withdrawn $%s of the group money from %s's vault, reason: %s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(amount),arrGroupData[iGroupID][g_szGroupName],reason);
 		Log("logs/rpspecial.log", string);
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "Insufficient funds are available.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Khong du so du.");
 	}
 	return 1;
 }
@@ -3484,16 +3484,16 @@ CMD:gdonate(playerid, params[])
 		if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_NEWS || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CONTRACT || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV)
 		{
 			new string[128], moneys;
-			if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gdonate [amount]");
+			if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gdonate [amount]");
 
 			if(moneys < 1)
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "That is not enough.");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "So luong qua it.");
 				return 1;
 			}
 			if(GetPlayerCash(playerid) < moneys)
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have that much money.");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong du tien.");
 				return 1;
 			}
 			GivePlayerCash(playerid, -moneys);
@@ -3503,7 +3503,7 @@ CMD:gdonate(playerid, params[])
 			GroupPayLog(iGroupID, str);
 			SaveGroup(iGroupID);
 			OnPlayerStatsUpdate(playerid);
-			format(string, sizeof(string), "%s, you have donated $%s to your agency's budget.",GetPlayerNameEx(playerid), number_format(moneys));
+			format(string, sizeof(string), "%s, ban da ung ho $%s vao ngan sach co quan.",GetPlayerNameEx(playerid), number_format(moneys));
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 			SendClientMessageEx(playerid, COLOR_GRAD1, string);
 			format(string, sizeof(string), "%s(%d) has donated $%s to %s's budget vault.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(moneys), arrGroupData[iGroupID][g_szGroupName]);
@@ -3512,12 +3512,12 @@ CMD:gdonate(playerid, params[])
 		}
 		else
 		{
-		    SendClientMessageEx(playerid, COLOR_GRAD2,  "You're not in a government agency!");
+		    SendClientMessageEx(playerid, COLOR_GRAD2,  "Ban khong thuoc co quan chinh phu!");
 		}
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in a group.");
+	    SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong thuoc to chuc.");
 	}
 	return 1;
 }
@@ -3535,19 +3535,19 @@ CMD:dvtrackcar(playerid, params[])
 				new vehicleName[18];
 				if(DynVehicleInfo[i][gv_iDisabled] == 1) {
 					strunpack(vehicleName, VehicleName[iModelID - 400], sizeof(vehicleName));
-					format(vstring, sizeof(vstring), "%s\n(%d)%s (Upkeep: $%s) (repo'd)", vstring, i, vehicleName, number_format(DynVehicleInfo[i][gv_iUpkeep]));
+					format(vstring, sizeof(vstring), "%s\n(%d)%s (Phi: $%s) (tich thu)", vstring, i, vehicleName, number_format(DynVehicleInfo[i][gv_iUpkeep]));
 				}
 				else if(DynVehicleInfo[i][gv_iDisabled] == 2) {
 					strunpack(vehicleName, VehicleName[iModelID - 400], sizeof(vehicleName));
-					format(vstring, sizeof(vstring), "%s\n(%d)%s (Upkeep: $%s) (stored)", vstring, i, vehicleName, number_format(DynVehicleInfo[i][gv_iUpkeep]));
+					format(vstring, sizeof(vstring), "%s\n(%d)%s (Phi: $%s) (luu kho)", vstring, i, vehicleName, number_format(DynVehicleInfo[i][gv_iUpkeep]));
 				}
 				else if(DynVehicleInfo[i][gv_iSpawnedID] != INVALID_VEHICLE_ID) {
 					strunpack(vehicleName, VehicleName[iModelID - 400], sizeof(vehicleName));
-					format(vstring, sizeof(vstring), "%s\n(%d) %s (Upkeep: $%s) (VID: %d)", vstring, i, vehicleName, number_format(DynVehicleInfo[i][gv_iUpkeep]), DynVehicleInfo[i][gv_iSpawnedID]);
+					format(vstring, sizeof(vstring), "%s\n(%d) %s (Phi: $%s) (VID: %d)", vstring, i, vehicleName, number_format(DynVehicleInfo[i][gv_iUpkeep]), DynVehicleInfo[i][gv_iSpawnedID]);
 				}
 			}
 		}
-		ShowPlayerDialogEx(playerid, DV_TRACKCAR, DIALOG_STYLE_LIST, "Vehicle GPS Tracking", vstring, "Track", "Cancel");
+		ShowPlayerDialogEx(playerid, DV_TRACKCAR, DIALOG_STYLE_LIST, "Theo doi GPS xe", vstring, "Theo doi", "Huy");
 	}
 	return 1;
 }
@@ -3557,8 +3557,8 @@ CMD:grepocars(playerid, params[])
 	new iGroupID = PlayerInfo[playerid][pMember];
 	if((0 <= iGroupID <= MAX_GROUPS) && PlayerInfo[playerid][pRank] == Group_GetMaxRank(iGroupID))
 	{
-	    SendClientMessageEx(playerid, COLOR_GREEN, "Repossessed Agency Vehicles:");
-	    SendClientMessageEx(playerid, COLOR_GRAD4, "NOTE: Type /gvbuyback to purchase these cars back when your agency can afford it.");
+	    SendClientMessageEx(playerid, COLOR_GREEN, "Xe co quan bi tich thu:");
+	    SendClientMessageEx(playerid, COLOR_GRAD4, "CHU Y: Dung /gvbuyback de chuoc xe khi co quan du tien.");
 	    for(new iDvSlotID = 0; iDvSlotID < MAX_DYNAMIC_VEHICLES; iDvSlotID++)
 		{
 		    if(DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID && DynVehicleInfo[iDvSlotID][gv_igID] == iGroupID)
@@ -3569,13 +3569,13 @@ CMD:grepocars(playerid, params[])
 			        {
 			            new vehicleName[18];
 			            strunpack(vehicleName, VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel] - 400], sizeof(vehicleName));
-			            SendClientMessageEx(playerid, COLOR_GRAD1, "Vehicle ID: %d - %s - Buyback Cost $%d.", iDvSlotID, vehicleName, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2));
+			            SendClientMessageEx(playerid, COLOR_GRAD1, "ID xe: %d - %s - Gia chuoc $%d.", iDvSlotID, vehicleName, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2));
 					}
 			    }
 			}
 		}
 	}
-	else SendClientMessage(playerid, COLOR_GRAD2, " You're not authorized to use this command.");
+	else SendClientMessage(playerid, COLOR_GRAD2, " Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -3587,8 +3587,8 @@ CMD:gvbuyback(playerid, params[])
 	{
 		new vehicleName[18];
 		if(sscanf(params, "s[6]", iVehicle)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gvbuyback [ID/all] *You may buy an individual car back, or all of your repo'd cars.");
-			return SendClientMessageEx(playerid, COLOR_GREY, "Note: ID is indicated under /grepocars");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gvbuyback [ID/all] *Chuoc mot xe hoac tat ca xe bi tich thu.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Chu y: Xem ID tai /grepocars");
 		}
 		if(strcmp(iVehicle, "all", true) == 0)
 		{
@@ -3608,7 +3608,7 @@ CMD:gvbuyback(playerid, params[])
 								DynVeh_Save(iDvSlotID);
 								DynVeh_Spawn(iDvSlotID);
 								strunpack(vehicleName, VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], sizeof(vehicleName));
-								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have bought back your %s with ID %d for $%d", vehicleName, iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
+								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da chuoc %s ID %d voi gia $%d", vehicleName, iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
 								new str[128];
 								format(str, sizeof(str), "Vehicle Slot ID %d buyback fee cost $%d to %s's budget fund.",iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), arrGroupData[iGroupID][g_szGroupName]);
 								GroupPayLog(iGroupID, str);
@@ -3616,7 +3616,7 @@ CMD:gvbuyback(playerid, params[])
 							else
 							{
 								strunpack(vehicleName, VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], sizeof(vehicleName));
-								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your agency could not afford to buy back your %s with ID %d for $%d", vehicleName, iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
+								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Co quan khong du tien chuoc %s ID %d voi gia $%d", vehicleName, iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
 								return 1;
 							}
 						}
@@ -3638,7 +3638,7 @@ CMD:gvbuyback(playerid, params[])
 					DynVeh_Save(iDvSlotID);
 					DynVeh_Spawn(iDvSlotID);
 					strunpack(vehicleName, VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], sizeof(vehicleName));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have bought back your %s with ID %d for $%d", vehicleName, iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da chuoc %s ID %d voi gia $%d", vehicleName, iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
 					new str[128];
 					format(str, sizeof(str), "Vehicle Slot ID %d buyback fee cost $%d to %s's budget fund.",iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), arrGroupData[iGroupID][g_szGroupName]);
 					GroupPayLog(iGroupID, str);
@@ -3647,49 +3647,49 @@ CMD:gvbuyback(playerid, params[])
 				else
 				{
 					strunpack(vehicleName, VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], sizeof(vehicleName));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your agency could not afford to buy back your %s with ID %d for $%d", vehicleName, iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Co quan khong du tien chuoc %s ID %d voi gia $%d", vehicleName, iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
 					return 1;
 				}
 			}
-			else return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "That car has either not been repossessed or does not belong to your agency.");
+			else return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Xe chua bi tich thu hoac khong thuoc co quan cua ban.");
 		}
-		else SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Invalid ID");
+		else SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "ID khong hop le");
 	}
-	else SendClientMessage(playerid, COLOR_GRAD2, " You're not authorized to use this command.");
+	else SendClientMessage(playerid, COLOR_GRAD2, " Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
 CMD:dvadjust(playerid, params[])
 {
-	if(PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a group!");
-	if(PlayerInfo[playerid][pMember] != PlayerInfo[playerid][pLeader]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have leadership!");
+	if(PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong thuoc to chuc!");
+	if(PlayerInfo[playerid][pMember] != PlayerInfo[playerid][pLeader]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen lanh dao!");
 	new vehicleid, opt[5], rank;
 	if(sscanf(params, "ds[5]d", vehicleid, opt, rank))
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /dvadjust [vehicle id] [rank/div] [value]");
-		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Use /dl to get the vehicle ID");
-		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Value of 0 = Disabled");
+		SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /dvadjust [vehicle id] [rank/div] [value]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CHU Y: Dung /dl de lay ID xe");
+		SendClientMessageEx(playerid, COLOR_GREY, "CHU Y: Gia tri 0 = Tat");
 		return 1;
 	}
 	new iDvSlotID = DynVeh[vehicleid];
-	if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vehicleid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid dynamic vehicle ID provided!");
-	if(DynVehicleInfo[iDvSlotID][gv_igID] != PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This vehicle is not owned by your group!");
+	if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vehicleid) return SendClientMessageEx(playerid, COLOR_GRAD1, "ID xe dong khong hop le!");
+	if(DynVehicleInfo[iDvSlotID][gv_igID] != PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Xe khong thuoc to chuc cua ban!");
 	//if(DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This Vehicle is owned by a faction!");
 	if(strcmp(opt, "rank", true) == 0)
 	{
-		if(rank > 9 || rank < 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ranks can't go below 0 or above 9!");
+		if(rank > 9 || rank < 0) return SendClientMessageEx(playerid, COLOR_GREY, "Rank phai tu 0 den 9!");
 		DynVehicleInfo[iDvSlotID][gv_irID] = rank;
 		new string[128];
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have adjusted the rank of this vehicle to %s (%d).", arrGroupRanks[DynVehicleInfo[iDvSlotID][gv_igID]][DynVehicleInfo[iDvSlotID][gv_irID]], rank);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi rank xe thanh %s (%d).", arrGroupRanks[DynVehicleInfo[iDvSlotID][gv_igID]][DynVehicleInfo[iDvSlotID][gv_irID]], rank);
 		format(string, sizeof(string), "%s has adjusted the rank to %s (%d) on DV Slot %d.", GetPlayerNameEx(playerid), arrGroupRanks[DynVehicleInfo[iDvSlotID][gv_igID]][DynVehicleInfo[iDvSlotID][gv_irID]], rank, iDvSlotID);
 		Log("logs/dv.log", string);
 	}
 	else if(strcmp(opt, "div", true) == 0)
 	{
-		if(rank > 9 || rank < 0) return SendClientMessageEx(playerid, COLOR_GREY, "Divisions can't go below 0 or above 9!");
+		if(rank > 9 || rank < 0) return SendClientMessageEx(playerid, COLOR_GREY, "Division phai tu 0 den 9!");
 		DynVehicleInfo[iDvSlotID][gv_igDivID] = rank;
 		new string[128];
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have adjusted the division of this vehicle to %s (%d).", arrGroupDivisions[DynVehicleInfo[iDvSlotID][gv_igID]][rank - 1], rank);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi division xe thanh %s (%d).", arrGroupDivisions[DynVehicleInfo[iDvSlotID][gv_igID]][rank - 1], rank);
 		format(string, sizeof(string), "%s has adjusted the division to %s (%d) on DV Slot %d.", GetPlayerNameEx(playerid), arrGroupDivisions[DynVehicleInfo[iDvSlotID][gv_igID]][rank - 1], rank, iDvSlotID);
 		Log("logs/dv.log", string);
 	}
@@ -3704,7 +3704,7 @@ CMD:dvpark(playerid, params[])
 		new vehicleid = GetPlayerVehicleID(playerid), iDvSlotID = DynVeh[vehicleid];
  		if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vehicleid)
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD1, " Invalid Dynamic Vehicle ID Provided!" );
+			return SendClientMessageEx(playerid, COLOR_GRAD1, " ID xe dong khong hop le!" );
 		}
 		if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || (PlayerInfo[playerid][pLeader] == DynVehicleInfo[iDvSlotID][gv_igID]) && DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID) {
 			GetVehiclePos(vehicleid, DynVehicleInfo[iDvSlotID][gv_fX], DynVehicleInfo[iDvSlotID][gv_fY], DynVehicleInfo[iDvSlotID][gv_fZ]);
@@ -3714,7 +3714,7 @@ CMD:dvpark(playerid, params[])
 			DynVeh_Save(iDvSlotID);
 			DynVeh_Spawn(iDvSlotID);
 		}
-		else return SendClientMessageEx(playerid, COLOR_GREY, "You can't park this vehicle.");
+		else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the do xe nay.");
 	}
 	return 1;
 }
@@ -3725,7 +3725,7 @@ CMD:gotodv(playerid, params[])
 	{
 		new moneys;
 		if(sscanf(params, "i", moneys)) {
-			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotodv [slot ID]");
+			return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gotodv [slot ID]");
 		}
 		if(DynVeh[DynVehicleInfo[moneys][gv_iSpawnedID]] != -1 && (0 <= moneys < MAX_DYNAMIC_VEHICLES))
 		{
@@ -3746,13 +3746,13 @@ CMD:gotodv(playerid, params[])
 				SetPlayerVirtualWorld(playerid,GetVehicleVirtualWorld(DynVehicleInfo[moneys][gv_iSpawnedID]));
 				SetPlayerInterior(playerid, DynVehicleInfo[moneys][gv_iInt]);
 			}
-			SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(playerid, 0);
 			return 1;
 		}
-		else return SendClientMessage(playerid, COLOR_GRAD2, "That dynamic vehicle does not exist or is not spawned.");
+		else return SendClientMessage(playerid, COLOR_GRAD2, "Xe dong khong ton tai hoac chua duoc tao.");
 	}
-	else return SendClientMessage(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
+	else return SendClientMessage(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 }
 
 CMD:dvstatus(playerid, params[])
@@ -3760,7 +3760,7 @@ CMD:dvstatus(playerid, params[])
 	new iDvSlotID, vehicleid;
 	if(sscanf(params, "i", vehicleid))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dvstatus [vehicleid]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /dvstatus [vehicleid]");
 		return 1;
 	}
 	iDvSlotID = DynVeh[vehicleid];
@@ -3768,16 +3768,16 @@ CMD:dvstatus(playerid, params[])
 	{
 	    if(iDvSlotID != -1)
 	    {
-			SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Dynamic Vehicle Status (ID: %d | Slot ID: %d) ___________|", vehicleid, iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "X: %f | Y: %f | Z: %f | Model: %d | Upkeep: $%d | Maxhealth: %f", DynVehicleInfo[iDvSlotID][gv_fX], DynVehicleInfo[iDvSlotID][gv_fY], DynVehicleInfo[iDvSlotID][gv_fZ], DynVehicleInfo[iDvSlotID][gv_iModel], DynVehicleInfo[iDvSlotID][gv_iUpkeep], DynVehicleInfo[iDvSlotID][gv_fMaxHealth]);
-			SendClientMessageEx(playerid, COLOR_WHITE, "Group: %d | Division: %d | Rank: %d | Type: %d | VW: %d | Int: %d | Disabled: %d", DynVehicleInfo[iDvSlotID][gv_igID], DynVehicleInfo[iDvSlotID][gv_igDivID], DynVehicleInfo[iDvSlotID][gv_irID], DynVehicleInfo[iDvSlotID][gv_iType], DynVehicleInfo[iDvSlotID][gv_iVW], DynVehicleInfo[iDvSlotID][gv_iInt], DynVehicleInfo[iDvSlotID][gv_iDisabled]);
-			SendClientMessageEx(playerid, COLOR_WHITE, "Obj Model 1: %d | Obj Model 2: %d | Obj Model 3: %d | Obj Model 4: %d | LoadMax: %d | Siren: %d", DynVehicleObjInfo[iDvSlotID][0][gv_iAttachedObjectModel], DynVehicleObjInfo[iDvSlotID][1][gv_iAttachedObjectModel], DynVehicleObjInfo[iDvSlotID][2][gv_iAttachedObjectModel], DynVehicleObjInfo[iDvSlotID][3][gv_iAttachedObjectModel], DynVehicleInfo[iDvSlotID][gv_iLoadMax], DynVehicleInfo[iDvSlotID][gv_iSiren]);
+			SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Xe dong (ID: %d | Slot ID: %d) ___________|", vehicleid, iDvSlotID);
+			SendClientMessageEx(playerid, COLOR_WHITE, "X: %f | Y: %f | Z: %f | Model: %d | Phi: $%d | Mau max: %f", DynVehicleInfo[iDvSlotID][gv_fX], DynVehicleInfo[iDvSlotID][gv_fY], DynVehicleInfo[iDvSlotID][gv_fZ], DynVehicleInfo[iDvSlotID][gv_iModel], DynVehicleInfo[iDvSlotID][gv_iUpkeep], DynVehicleInfo[iDvSlotID][gv_fMaxHealth]);
+			SendClientMessageEx(playerid, COLOR_WHITE, "To chuc: %d | Division: %d | Rank: %d | Loai: %d | VW: %d | Int: %d | Tat: %d", DynVehicleInfo[iDvSlotID][gv_igID], DynVehicleInfo[iDvSlotID][gv_igDivID], DynVehicleInfo[iDvSlotID][gv_irID], DynVehicleInfo[iDvSlotID][gv_iType], DynVehicleInfo[iDvSlotID][gv_iVW], DynVehicleInfo[iDvSlotID][gv_iInt], DynVehicleInfo[iDvSlotID][gv_iDisabled]);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Model 1: %d | Model 2: %d | Model 3: %d | Model 4: %d | Tai max: %d | Coi: %d", DynVehicleObjInfo[iDvSlotID][0][gv_iAttachedObjectModel], DynVehicleObjInfo[iDvSlotID][1][gv_iAttachedObjectModel], DynVehicleObjInfo[iDvSlotID][2][gv_iAttachedObjectModel], DynVehicleObjInfo[iDvSlotID][3][gv_iAttachedObjectModel], DynVehicleInfo[iDvSlotID][gv_iLoadMax], DynVehicleInfo[iDvSlotID][gv_iSiren]);
 		}
-		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Dynamic Vehicle Slot ID.");
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Slot ID xe dong khong hop le.");
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -3792,20 +3792,20 @@ CMD:dvcreate(playerid, params[])
 				string[128];
 
 		if(sscanf(params, "iii", iVehicle, iColors[0], iColors[1])) {
-			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dvcreate [model ID] [color 1] [color 2]");
+			return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /dvcreate [model ID] [color 1] [color 2]");
 		}
-		if(!(400 < iVehicle < 612)) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid Model ID");
+		if(!(400 < iVehicle < 612)) return SendClientMessage(playerid, COLOR_GRAD2, "Model ID khong hop le");
 		else if(IsATrain(iVehicle)) {
-				SendClientMessageEx(playerid, COLOR_GREY, "Trains cannot be spawned during runtime.");
+				SendClientMessageEx(playerid, COLOR_GREY, "Khong the tao tau khi may chu dang chay.");
 			}
 		else if(!(0 <= iColors[0] <= 255 && 0 <= iColors[1] <= 255)) {
-			SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Mau khong hop le (ID tu 0 den 255).");
 		}
 		mysql_tquery(MainPipeline, "SELECT id from `groupvehs` WHERE vModel = 0 LIMIT 1;", "DynVeh_CreateDVQuery", "iiii", playerid, iVehicle, iColors[0], iColors[1]);
 		format(string, sizeof(string), "%s has created a dynamic vehicle.", GetPlayerNameEx(playerid));
 		Log("logs/dv.log", string);
 	}
-	else return SendClientMessage(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
+	else return SendClientMessage(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -3818,7 +3818,7 @@ CMD:dvrespawnall(playerid, params[])
 			new
 				szString[128];
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "Respawning all current dynamic vehicles...");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Dang tao lai tat ca xe dong...");
 
 			for(new i = 0; i < MAX_DYNAMIC_VEHICLES; i++)
 			{
@@ -3826,16 +3826,16 @@ CMD:dvrespawnall(playerid, params[])
 				DynVeh_Spawn(i);
 			}
 
-			format(szString, sizeof(szString), "{AA3333}AdmWarning{FFFF00}: %s has respawned all dynamic vehicles loaded on the server.", GetPlayerNameEx(playerid));
+			format(szString, sizeof(szString), "{AA3333}AdmWarning{FFFF00}: %s da tao lai toan bo xe dong tren may chu.", GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_YELLOW, szString, 2);
 			format(szString, sizeof(szString), "Administrator %s has respawned all dynamic vehicles loaded on the server.", GetPlayerNameEx(playerid));
 			Log("logs/admin.log", szString);
 			SetPVarInt(playerid, "dvRespawnAll", 0);
 		}
 		else
-			return SendClientMessageEx(playerid, COLOR_GREY, "There is already a dynamic vehicle respawn request in progress.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Dang co yeu cau tao lai xe dong.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You're not authorized to use this command!");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay!");
 	return 1;
 }
 
@@ -3860,7 +3860,7 @@ CMD:dvrespawn(playerid, const params[])
 					}
 			    }
 			}
-			format(szString, sizeof(szString), "** Respawning all dynamic group vehicles%s...",(strval(params) == 1)?(" at no charge"):(""));
+			format(szString, sizeof(szString), "** Dang tao lai xe dong to chuc%s...",(strval(params) == 1)?(" mien phi"):(""));
 			foreach(new i: Player)
 			{
 				if(PlayerInfo[i][pMember] == iGroupID)
@@ -3882,17 +3882,17 @@ CMD:dvedit(playerid, params[])
 		new vehicleid, name[24], Float:value, slot;
 		if(sscanf(params, "is[24]F(0)D(0)", vehicleid, name, value, slot))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dvedit [vehicleid] [v parameter] [value] [slot] (if applicable - indicated by *)");
-			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: vmodel vcol1 vcol2 groupid divid loadmax maxhealth upkeep vtype vw delete");
-			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: disabled rank siren objmodel* objx* objy* objz* objrx* objry* objrz*");
-			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: objmatsize* objsize* (Object Offsets)");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /dvedit [vehicleid] [v parameter] [value] [slot] (neu can - danh dau *)");
+			SendClientMessageEx(playerid, COLOR_GREY, "Tham so: vmodel vcol1 vcol2 groupid divid loadmax maxhealth upkeep vtype vw delete");
+			SendClientMessageEx(playerid, COLOR_GREY, "Tham so: disabled rank siren objmodel* objx* objy* objz* objrx* objry* objrz*");
+			SendClientMessageEx(playerid, COLOR_GREY, "Tham so: objmatsize* objsize* (Do lech object)");
 			return 1;
 		}
 		new iDvSlotID = DynVeh[vehicleid];
-		if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vehicleid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Dynamic Vehicle ID provided!" );
+		if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vehicleid) return SendClientMessageEx(playerid, COLOR_GRAD1, "ID xe dong khong hop le!" );
 		EditDV(playerid, iDvSlotID, params, name, value, slot);
 	}
-	else return SendClientMessage(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
+	else return SendClientMessage(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -3902,16 +3902,16 @@ CMD:dveditslot(playerid, params[])
 	{
 		new iDvSlotID, name[24], Float:value, slot;
 		if(sscanf(params, "is[24]F(0)D(0)", iDvSlotID, name, value, slot)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dveditslot [dv slot id] [v parameter] [value] [slot] (if applicable - indicated by *)");
-			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: vmodel vcol1 vcol2 groupid divid loadmax maxhealth upkeep vtype vw delete");
-			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: disabled rank siren objmodel* objx* objy* objz* objrx* objry* objrz*");
-			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: objmatsize* objsize* (Object Offsets)");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /dveditslot [dv slot id] [v parameter] [value] [slot] (neu can - danh dau *)");
+			SendClientMessageEx(playerid, COLOR_GREY, "Tham so: vmodel vcol1 vcol2 groupid divid loadmax maxhealth upkeep vtype vw delete");
+			SendClientMessageEx(playerid, COLOR_GREY, "Tham so: disabled rank siren objmodel* objx* objy* objz* objrx* objry* objrz*");
+			SendClientMessageEx(playerid, COLOR_GREY, "Tham so: objmatsize* objsize* (Do lech object)");
 			return 1;
 		}
-		if(iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iModel] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Dynamic Vehicle ID provided!" );
+		if(iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iModel] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "ID xe dong khong hop le!" );
 		EditDV(playerid, iDvSlotID, params, name, value, slot);
 	}
-	else return SendClientMessage(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
+	else return SendClientMessage(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -3920,22 +3920,22 @@ CMD:dvtextobj(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
 	{
 		new vehicleid, name[24], value[32], slot, string[128];
-		if(sscanf(params, "ids[8]s[32]", vehicleid, slot, name, value)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dvtextobj [vehicleid] [object slot] [text/font/color/bgcolor] [value]");
+		if(sscanf(params, "ids[8]s[32]", vehicleid, slot, name, value)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /dvtextobj [vehicleid] [object slot] [text/font/color/bgcolor] [value]");
 
 		new iDvSlotID = DynVeh[vehicleid];
-		if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vehicleid) return SendClientMessageEx(playerid, COLOR_GRAD1, " Invalid Dynamic Vehicle ID Provided " );
+		if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vehicleid) return SendClientMessageEx(playerid, COLOR_GRAD1, " ID xe dong khong hop le " );
 		format(string, sizeof(string), "%s has edited DV Slot %d - %s.", GetPlayerNameEx(playerid), iDvSlotID, params);
 		Log("logs/dv.log", string);
 
 		if(1 <= slot <= MAX_DV_OBJECTS)
 		{
-			if(DynVehicleObjInfo[iDvSlotID][slot-1][gv_iAttachedObjectModel] == INVALID_OBJECT_ID || !IsABlankTexture(DynVehicleObjInfo[iDvSlotID][slot-1][gv_iAttachedObjectModel])) return SendClientMessageEx(playerid, COLOR_GREY, "The object slot given is not valid with this command!");
+			if(DynVehicleObjInfo[iDvSlotID][slot-1][gv_iAttachedObjectModel] == INVALID_OBJECT_ID || !IsABlankTexture(DynVehicleObjInfo[iDvSlotID][slot-1][gv_iAttachedObjectModel])) return SendClientMessageEx(playerid, COLOR_GREY, "O object khong hop le voi lenh nay!");
 			if(strcmp(name, "text", true) == 0)
 			{
 				format(DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectText], 32, "%s", value);
 				DynVeh_Spawn(iDvSlotID);
 				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object text of the dynamic vehicle");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi noi dung object xe dong");
 				return 1;
 			}
 			if(strcmp(name, "font", true) == 0)
@@ -3943,7 +3943,7 @@ CMD:dvtextobj(playerid, params[])
 				format(DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectFont], 32, "%s", value);
 				DynVeh_Spawn(iDvSlotID);
 				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object font face of the dynamic vehicle");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi font object xe dong");
 				return 1;
 			}
 			if(strcmp(name, "color", true) == 0)
@@ -3951,7 +3951,7 @@ CMD:dvtextobj(playerid, params[])
 				sscanf(value, "h", DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectColor]);
 				DynVeh_Spawn(iDvSlotID);
 				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object text color of the dynamic vehicle");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi mau chu object xe dong");
 				return 1;
 			}
 			if(strcmp(name, "bgcolor", true) == 0)
@@ -3959,13 +3959,13 @@ CMD:dvtextobj(playerid, params[])
 				sscanf(value, "h", DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectBGColor]);
 				DynVeh_Spawn(iDvSlotID);
 				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object background color of the dynamic vehicle");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi mau nen object xe dong");
 				return 1;
 			}
 		}
-		else return SendClientMessageEx(playerid, COLOR_GRAD2, "Slot ID Must be between 1 and "#MAX_DV_OBJECTS"!");
+		else return SendClientMessageEx(playerid, COLOR_GRAD2, "Slot ID phai tu 1 den "#MAX_DV_OBJECTS"!");
 	}
-	else return SendClientMessage(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
+	else return SendClientMessage(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -3976,13 +3976,13 @@ CMD:dvplate(playerid, params[])
 		new vehicleid, plate[32];
         if(sscanf(params, "ds[32]", vehicleid, plate))
 		{
-		    SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dvplate [vehicleid] [plate/remove]");
-		    SendClientMessageEx(playerid, COLOR_GREY, "COLORS: (black/white/blue/red/green/purple/yellow/lightblue/navy/beige/darkgreen/darkblue/darkgrey/gold/brown/darkbrown/darkred");
-			SendClientMessageEx(playerid, COLOR_GREY, "/pink) USAGE: (red)Hi(white)how are you? NOTE: Each color counts for 8 characters");
+		    SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /dvplate [vehicleid] [plate/remove]");
+		    SendClientMessageEx(playerid, COLOR_GREY, "MAU: (black/white/blue/red/green/purple/yellow/lightblue/navy/beige/darkgreen/darkblue/darkgrey/gold/brown/darkbrown/darkred");
+			SendClientMessageEx(playerid, COLOR_GREY, "/pink) CACH DUNG: (red)Chao(white)ban! CHU Y: Moi mau chiem 8 ky tu");
 			return 1;
 		}
 		new iDvSlotID = DynVeh[vehicleid];
-		if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vehicleid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Dynamic Vehicle ID provided!");
+		if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vehicleid) return SendClientMessageEx(playerid, COLOR_GRAD1, "ID xe dong khong hop le!");
 
 		format(plate, sizeof(plate), "%s", str_replace("(black)", "{000000}", plate));
 		format(plate, sizeof(plate), "%s", str_replace("(white)", "{FFFFFF}", plate));
@@ -4006,20 +4006,20 @@ CMD:dvplate(playerid, params[])
 		if(strcmp(plate, "remove", true) == 0)
 		{
 			DynVehicleInfo[iDvSlotID][gv_iPlate] = 0;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have removed the custom plate of the dynamic vehicle");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da go bien so tuy chinh xe dong");
 		}
 		else
 		{
 			format(DynVehicleInfo[iDvSlotID][gv_iPlate], 32, "%s", plate);
 			DynVeh_Spawn(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the custom plate of the dynamic vehicle");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi bien so tuy chinh xe dong");
 		}
 
 		DynVeh_Save(iDvSlotID);
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -4052,16 +4052,16 @@ CMD:deploy(playerid, params[])
 {
 	if(ValidGroup(PlayerInfo[playerid][pMember]))
 	{
-		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot do this right now.");
-		if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
+		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban chua the lam viec nay.");
+		if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban dang o dau truong, chua the lam vay!");
 		new type, object[12];
 		if(sscanf(params, "s[12]D(0)", object, type))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deploy [object] [type (option for barricades/signs)]");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Objects: Cade, Spikes, Flare, Cone, Barrel, Ladder, Sign, Tape");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /deploy [object] [type (option for barricades/signs)]");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Vat the: Cade, Spikes, Flare, Cone, Barrel, Ladder, Sign, Tape");
 			return 1;
 		}
-		else if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be on foot to use this command.");
+		else if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai di bo de dung lenh nay.");
 
 		new iGroup = PlayerInfo[playerid][pMember];
 
@@ -4072,7 +4072,7 @@ CMD:deploy(playerid, params[])
 				new aCades[12] = {981, 4504, 4505, 4514, 4526, 978, 979, 3091, 1459, 1423, 1424, 981};
 				ShowModelSelectionMenuEx(playerid, aCades, sizeof(aCades), "Cades", 1500, -16.0, 0.0, -55.0);
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		}
 		else if(strcmp(object, "spikes", true) == 0)
 		{
@@ -4093,7 +4093,7 @@ CMD:deploy(playerid, params[])
 						if(!IsValidDynamicObject(SpikeStrips[iGroup][i][sObjectID]))
 						{
 							DeleteSpikeStrip(iGroup, i);
-							return SendClientMessageEx(playerid, COLOR_GREY, "Unable to create the spike strip. Please try again.");
+							return SendClientMessageEx(playerid, COLOR_GREY, "Khong tao duoc dai dinh. Hay thu lai.");
 						}
 						SpikeStrips[iGroup][i][sCosAngle] = floatcos(f_TempAngle, degrees);
 						SpikeStrips[iGroup][i][sSinAngle] = floatsin(f_TempAngle, degrees);
@@ -4102,7 +4102,7 @@ CMD:deploy(playerid, params[])
 						SpikeStrips[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
 						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) SpikeStrips[iGroup][i][sDeployedByStatus] = 1;
 						else SpikeStrips[iGroup][i][sDeployedByStatus] = 0;
-						SendClientMessageEx(playerid, COLOR_WHITE, "Spike ID: %d successfully created.", i);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da tao dai dinh ID: %d.", i);
 						/*format(string, sizeof(string), "** HQ: A spike has been deployed by %s at %s **", GetPlayerNameEx(playerid), SpikeStrips[iGroup][i][sDeployedAt]);
 						foreach(new x: Player)
 						{
@@ -4120,9 +4120,9 @@ CMD:deploy(playerid, params[])
 						return 1;
 					}
 				}
-				SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more spike strips, limit is " #MAX_SPIKES# ".");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Khong tao duoc them dai dinh, gioi han la " #MAX_SPIKES# ".");
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		}
 		else if(strcmp(object, "flare", true) == 0)
 		{
@@ -4141,13 +4141,13 @@ CMD:deploy(playerid, params[])
 						Flares[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
 						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Flares[iGroup][i][sDeployedByStatus] = 1;
 						else Flares[iGroup][i][sDeployedByStatus] = 0;
-						SendClientMessageEx(playerid, COLOR_WHITE, "Flare ID: %d successfully created.", i);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da tao phao sang ID: %d.", i);
 						return 1;
 					}
 				}
-				SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more flares, limit is " #MAX_FLARES# ".");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Khong tao duoc them phao sang, gioi han la " #MAX_FLARES# ".");
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		}
 		else if(strcmp(object, "cone", true) == 0)
 		{
@@ -4166,13 +4166,13 @@ CMD:deploy(playerid, params[])
 						Cones[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
 						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Cones[iGroup][i][sDeployedByStatus] = 1;
 						else Cones[iGroup][i][sDeployedByStatus] = 0;
-						SendClientMessageEx(playerid, COLOR_WHITE, "Cone ID: %d successfully created.", i);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da tao coc tieu ID: %d.", i);
 						return 1;
 					}
 				}
-				SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more cones, limit is " #MAX_CONES# ".");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Khong tao duoc them coc tieu, gioi han la " #MAX_CONES# ".");
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		}
 		else if(strcmp(object, "barrel", true) == 0)
 		{
@@ -4191,13 +4191,13 @@ CMD:deploy(playerid, params[])
 						Barrels[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
 						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Barrels[iGroup][i][sDeployedByStatus] = 1;
 						else Barrels[iGroup][i][sDeployedByStatus] = 0;
-						SendClientMessageEx(playerid, COLOR_WHITE, "Barrel ID: %d successfully created.", i);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da tao thung phuy ID: %d.", i);
 						return 1;
 					}
 				}
-				SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more barrels limit is " #MAX_BARRELS# ".");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Khong tao duoc them thung phuy, gioi han la " #MAX_BARRELS# ".");
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		}
 		else if(strcmp(object, "ladder", true) == 0)
 		{
@@ -4217,13 +4217,13 @@ CMD:deploy(playerid, params[])
 						Ladders[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
 						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Ladders[iGroup][i][sDeployedByStatus] = 1;
 						else Ladders[iGroup][i][sDeployedByStatus] = 0;
-						SendClientMessageEx(playerid, COLOR_WHITE, "Ladder ID: %d successfully created.", i);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da tao thang ID: %d.", i);
 						return 1;
 					}
 				}
-				SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more ladders, limit is " #MAX_LADDERS# ".");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Khong tao duoc them thang, gioi han la " #MAX_LADDERS# ".");
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		}
 		else if(strcmp(object, "sign", true) == 0)
 		{
@@ -4324,13 +4324,13 @@ CMD:deploy(playerid, params[])
 						Signs[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
 						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Signs[iGroup][i][sDeployedByStatus] = 1;
 						else Signs[iGroup][i][sDeployedByStatus] = 0;
-						SendClientMessageEx(playerid, COLOR_WHITE, "Sign ID: %d successfully created.", i);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da tao bien bao ID: %d.", i);
 						return 1;
 					}
 				}
-				SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more signs, limit is " #MAX_SIGNS# ".");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Khong tao duoc them bien bao, gioi han la " #MAX_SIGNS# ".");
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		}
 		else if(strcmp(object, "tape", true) == 0) {
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iTapes]) {
@@ -4347,22 +4347,22 @@ CMD:deploy(playerid, params[])
 							Tapes[i][sDeployedBy] = GetPlayerNameEx(playerid);
 							if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Tapes[i][sDeployedByStatus] = 1;
 							else Tapes[i][sDeployedByStatus] = 0;
-							SendClientMessageEx(playerid, COLOR_WHITE, "Tape ID: %d successfully created. You may edit its location using the controls on-screen.", i);
-							SendClientMessage(playerid, COLOR_WHITE, "Once done, you can save the tape position by clicking the disc. To cancel, press ESC.");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Da tao day chan ID: %d. Dung dieu khien tren man hinh de doi vi tri.", i);
+							SendClientMessage(playerid, COLOR_WHITE, "Nhan bieu tuong dia de luu vi tri day chan. Nhan ESC de huy.");
 							SetPlayerPos(playerid, Tapes[i][sX], Tapes[i][sY]-0.4, Tapes[i][sZ]); // Force streamer.
 							SetPVarInt(playerid, "DeployingTapeID", i);
 							EditDynamicObject(playerid, Tapes[i][sObjectID]);
 							return 1;
 						}
 					}
-					SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more tapes, limit is " #MAX_TAPES# ".");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Khong tao duoc them day chan, gioi han la " #MAX_TAPES# ".");
 				}
-				else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are already editing a tape.");
+				else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban dang sua mot day chan.");
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -4373,11 +4373,11 @@ CMD:destroy(playerid, params[])
 		new type, object[12];
 		if(sscanf(params, "s[12]d", object, type))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /destroy [object] [ID]");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Objects: Cade, Spikes, Flare, Cone, Barrel, Ladder, Sign, Tape");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /destroy [object] [ID]");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Vat the: Cade, Spikes, Flare, Cone, Barrel, Ladder, Sign, Tape");
 			return 1;
 		}
-		else if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be on foot to use this command.");
+		else if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai di bo de dung lenh nay.");
 
 		new iGroup = PlayerInfo[playerid][pMember];
 
@@ -4385,8 +4385,8 @@ CMD:destroy(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarricades])
 			{
-				if(!(0 <= type < MAX_BARRICADES) || (Barricades[iGroup][type][sX] == 0 && Barricades[iGroup][type][sY] == 0 && Barricades[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid barricade ID.");
-				else if(PlayerInfo[playerid][pAdmin] < 2 && Barricades[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a barricade that an Administrator deployed.");
+				if(!(0 <= type < MAX_BARRICADES) || (Barricades[iGroup][type][sX] == 0 && Barricades[iGroup][type][sY] == 0 && Barricades[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "ID rao chan khong hop le.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && Barricades[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the huy rao chan do Administrator dat.");
 				else
 				{
 					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
@@ -4397,8 +4397,8 @@ CMD:destroy(playerid, params[])
 					Barricades[iGroup][type][sObjectID] = -1;
 					Barricades[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Barricades[iGroup][type][sDeployedByStatus] = 0;
-					SendClientMessageEx(playerid, COLOR_WHITE, "Barricade ID: %d successfully deleted.", type);
-					format(string, sizeof(string), "** HQ: A barricade has been destroyed by %s at %s **", GetPlayerNameEx(playerid), Barricades[iGroup][type][sDeployedAt]);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa rao chan ID: %d.", type);
+					format(string, sizeof(string), "** HQ: %s da huy rao chan tai %s **", GetPlayerNameEx(playerid), Barricades[iGroup][type][sDeployedAt]);
 					foreach(new i: Player)
 					{
 						if(PlayerInfo[i][pToggledChats][CHAT_GROUP_RADIO] == 0)
@@ -4413,18 +4413,18 @@ CMD:destroy(playerid, params[])
 					return 1;
 				}
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		}
 		else if(strcmp(object, "spikes", true) == 0)
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iSpikeStrips])
 			{
-				if(!(0 <= type < MAX_SPIKES) || !IsValidDynamicObject(SpikeStrips[iGroup][type][sObjectID])) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid spike ID.");
-				else if(PlayerInfo[playerid][pAdmin] < 2 && SpikeStrips[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a spikestrip that an Administrator deployed.");
+				if(!(0 <= type < MAX_SPIKES) || !IsValidDynamicObject(SpikeStrips[iGroup][type][sObjectID])) return SendClientMessageEx(playerid, COLOR_WHITE, "ID dai dinh khong hop le.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && SpikeStrips[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the huy dai dinh do Administrator dat.");
 				else
 				{
 					DeleteSpikeStrip(iGroup, type);
-					SendClientMessageEx(playerid, COLOR_WHITE, "Spike %d successfully deleted.", type);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa dai dinh %d.", type);
 					/*format(string, sizeof(string), "** HQ: A spike has been destroyed by %s at %s **", GetPlayerNameEx(playerid), SpikeStrips[iGroup][type][sDeployedAt]);
 					foreach(new i: Player)
 					{
@@ -4442,14 +4442,14 @@ CMD:destroy(playerid, params[])
 					return 1;
 				}
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		}
 		else if(strcmp(object, "flare", true) == 0)
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iFlares])
 			{
-				if(!(0 <= type < MAX_FLARES) || (Flares[iGroup][type][sX] == 0 && Flares[iGroup][type][sY] == 0 && Flares[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid flare ID.");
-				else if(PlayerInfo[playerid][pAdmin] < 2 && Flares[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a flare that an Administrator deployed.");
+				if(!(0 <= type < MAX_FLARES) || (Flares[iGroup][type][sX] == 0 && Flares[iGroup][type][sY] == 0 && Flares[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "ID phao sang khong hop le.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && Flares[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the huy phao sang do Administrator dat.");
 				else
 				{
 					if(IsValidDynamicObject(Flares[iGroup][type][sObjectID])) DestroyDynamicObject(Flares[iGroup][type][sObjectID]);
@@ -4459,18 +4459,18 @@ CMD:destroy(playerid, params[])
 					Flares[iGroup][type][sObjectID] = -1;
 					Flares[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Flares[iGroup][type][sDeployedByStatus] = 0;
-					SendClientMessageEx(playerid, COLOR_WHITE, "Flare ID: %d successfully deleted.", type);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa phao sang ID: %d.", type);
 					return 1;
 				}
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		}
 		else if(strcmp(object, "cone", true) == 0)
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iCones])
 			{
-				if(!(0 <= type < MAX_CONES) || (Cones[iGroup][type][sX] == 0 && Cones[iGroup][type][sY] == 0 && Cones[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid cone ID.");
-				else if(PlayerInfo[playerid][pAdmin] < 2 && Cones[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a cone that an Administrator deployed.");
+				if(!(0 <= type < MAX_CONES) || (Cones[iGroup][type][sX] == 0 && Cones[iGroup][type][sY] == 0 && Cones[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "ID coc tieu khong hop le.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && Cones[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the huy coc tieu do Administrator dat.");
 				else
 				{
 					if(IsValidDynamicObject(Cones[iGroup][type][sObjectID])) DestroyDynamicObject(Cones[iGroup][type][sObjectID]);
@@ -4480,18 +4480,18 @@ CMD:destroy(playerid, params[])
 					Cones[iGroup][type][sObjectID] = -1;
 					Cones[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Cones[iGroup][type][sDeployedByStatus] = 0;
-					SendClientMessageEx(playerid, COLOR_WHITE, "Cone ID: %d successfully deleted.", type);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa coc tieu ID: %d.", type);
 					return 1;
 				}
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		}
 		else if(strcmp(object, "barrel", true) == 0)
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarrels])
 			{
-				if(!(0 <= type < MAX_BARRELS) || (Barrels[iGroup][type][sX] == 0 && Barrels[iGroup][type][sY] == 0 && Barrels[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid barrel ID.");
-				else if(PlayerInfo[playerid][pAdmin] < 2 && Barrels[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a barrel that an Administrator deployed.");
+				if(!(0 <= type < MAX_BARRELS) || (Barrels[iGroup][type][sX] == 0 && Barrels[iGroup][type][sY] == 0 && Barrels[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "ID thung phuy khong hop le.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && Barrels[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the huy thung phuy do Administrator dat.");
 				else
 				{
 					if(IsValidDynamicObject(Barrels[iGroup][type][sObjectID])) DestroyDynamicObject(Barrels[iGroup][type][sObjectID]);
@@ -4501,18 +4501,18 @@ CMD:destroy(playerid, params[])
 					Barrels[iGroup][type][sObjectID] = -1;
 					Barrels[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Barrels[iGroup][type][sDeployedByStatus] = 0;
-					SendClientMessageEx(playerid, COLOR_WHITE, "Barrel ID: %d successfully deleted.", type);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa thung phuy ID: %d.", type);
 					return 1;
 				}
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		}
 		else if(strcmp(object, "ladder", true) == 0)
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iLadders])
 			{
-				if(!(0 <= type < MAX_LADDERS) || (Ladders[iGroup][type][sX] == 0 && Ladders[iGroup][type][sY] == 0 && Ladders[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid ladder ID.");
-				else if(PlayerInfo[playerid][pAdmin] < 2 && Barrels[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a ladder that an Administrator deployed.");
+				if(!(0 <= type < MAX_LADDERS) || (Ladders[iGroup][type][sX] == 0 && Ladders[iGroup][type][sY] == 0 && Ladders[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "ID thang khong hop le.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && Barrels[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the huy thang do Administrator dat.");
 				else
 				{
 					if(IsValidDynamicObject(Ladders[iGroup][type][sObjectID])) DestroyDynamicObject(Ladders[iGroup][type][sObjectID]);
@@ -4522,18 +4522,18 @@ CMD:destroy(playerid, params[])
 					Ladders[iGroup][type][sObjectID] = -1;
 					Ladders[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Ladders[iGroup][type][sDeployedByStatus] = 0;
-					SendClientMessageEx(playerid, COLOR_WHITE, "Ladder ID: %d successfully deleted.", type);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa thang ID: %d.", type);
 					return 1;
 				}
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		}
 		else if(strcmp(object, "sign", true) == 0)
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarrels])
 			{
-				if(!(0 <= type < MAX_SIGNS) || (Signs[iGroup][type][sX] == 0 && Signs[iGroup][type][sY] == 0 && Signs[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid sign ID.");
-				else if(PlayerInfo[playerid][pAdmin] < 2 && Signs[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a sign that an Administrator deployed.");
+				if(!(0 <= type < MAX_SIGNS) || (Signs[iGroup][type][sX] == 0 && Signs[iGroup][type][sY] == 0 && Signs[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "ID bien bao khong hop le.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && Signs[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the huy bien bao do Administrator dat.");
 				else
 				{
 					if(IsValidDynamicObject(Signs[iGroup][type][sObjectID])) DestroyDynamicObject(Signs[iGroup][type][sObjectID]);
@@ -4543,18 +4543,18 @@ CMD:destroy(playerid, params[])
 					Signs[iGroup][type][sObjectID] = -1;
 					Signs[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Signs[iGroup][type][sDeployedByStatus] = 0;
-					SendClientMessageEx(playerid, COLOR_WHITE, "Sign ID: %d successfully deleted.", type);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa bien bao ID: %d.", type);
 					return 1;
 				}
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		}
 		else if(strcmp(object, "tape", true) == 0)
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iTapes])
 			{
-				if(!(0 <= type < sizeof(Tapes)) || (Tapes[type][sX] == 0 && Tapes[type][sY] == 0 && Tapes[type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid tape ID.");
-				else if(PlayerInfo[playerid][pAdmin] < 2 && Tapes[type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a tape that an Administrator deployed.");
+				if(!(0 <= type < sizeof(Tapes)) || (Tapes[type][sX] == 0 && Tapes[type][sY] == 0 && Tapes[type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "ID day chan khong hop le.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && Tapes[type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the huy day chan do Administrator dat.");
 				else
 				{
 					if(PlayerInfo[playerid][pMember] == Tapes[type][iDeployedByGroup])
@@ -4566,29 +4566,29 @@ CMD:destroy(playerid, params[])
 							Tapes[type][sObjectID] = INVALID_OBJECT_ID;
 							Tapes[type][sDeployedBy] = INVALID_PLAYER_ID;
 							Tapes[type][sDeployedByStatus] = 0;
-							SendClientMessageEx(playerid, COLOR_WHITE, "Tape ID: %d successfully deleted.", type);
+							SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa day chan ID: %d.", type);
 							return 1;
 					}
 					else
 					{
-							SendClientMessageEx(playerid, COLOR_GRAD2, "* You can not delete other groups tape *");
+							SendClientMessageEx(playerid, COLOR_GRAD2, "* Khong the xoa day chan to chuc khac *");
 
 					}
 				}
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
 CMD:acades(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 
 	szMiscArray[0] = 0;
-	szMiscArray = "Group\tID\tLocation\tDeployer";
+	szMiscArray = "To chuc\tID\tVi tri\tNguoi dat";
 
 	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
 		for(new iCade; iCade < MAX_BARRICADES; iCade++) {
@@ -4598,7 +4598,7 @@ CMD:acades(playerid, params[]) {
 		}
 	}
 
-	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Server Barricades", szMiscArray, "Close", "");
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Rao chan may chu", szMiscArray, "Dong", "");
 
 	return 1;
 }
@@ -4608,29 +4608,29 @@ CMD:cades(playerid, params[])
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iBarricades] != -1 && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarricades])
 	{
 		new iGroup = PlayerInfo[playerid][pMember];
-		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed barricades:");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Rao chan dang dat:");
 		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < MAX_BARRICADES; i++)
 		{
 			if(Barricades[iGroup][i][sX] != 0 && Barricades[iGroup][i][sY] != 0 && Barricades[iGroup][i][sZ] != 0) // Checking for next available ID.
 			{
-				format(string, sizeof(string), "HQ: Barricade #%d | Deployed location: %s | Deployed by: %s", i, Barricades[iGroup][i][sDeployedAt], Barricades[iGroup][i][sDeployedBy]);
+				format(string, sizeof(string), "HQ: Rao chan #%d | Vi tri: %s | Nguoi dat: %s", i, Barricades[iGroup][i][sDeployedAt], Barricades[iGroup][i][sDeployedBy]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen.");
 	}
 	return 1;
 }
 
 CMD:aspikes(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 
 	szMiscArray[0] = 0;
-	szMiscArray = "Group\tID\tLocation\tDeployer";
+	szMiscArray = "To chuc\tID\tVi tri\tNguoi dat";
 
 	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
 		for(new iSpike; iSpike < MAX_SPIKES; iSpike++) {
@@ -4640,7 +4640,7 @@ CMD:aspikes(playerid, params[]) {
 		}
 	}
 
-	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Server Spikes", szMiscArray, "Close", "");
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Dai dinh may chu", szMiscArray, "Dong", "");
 
 	return 1;
 }
@@ -4650,25 +4650,25 @@ CMD:spikes(playerid, params[])
 	if (ValidGroup(PlayerInfo[playerid][pMember]) && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iSpikeStrips])
 	{
 		new iGroup = PlayerInfo[playerid][pMember];
-		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed spikes:");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dai dinh dang dat:");
 		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < MAX_SPIKES; i++)
 		{
 			if(IsValidDynamicObject(SpikeStrips[iGroup][i][sObjectID]))
 			{
-				format(string, sizeof(string), "HQ: Spike ID: %d | Deployed location: %s | Deployed by: %s", i, SpikeStrips[iGroup][i][sDeployedAt], SpikeStrips[iGroup][i][sDeployedBy]);
+				format(string, sizeof(string), "HQ: Dai dinh ID: %d | Vi tri: %s | Nguoi dat: %s", i, SpikeStrips[iGroup][i][sDeployedAt], SpikeStrips[iGroup][i][sDeployedBy]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
-	} else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	} else SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
 CMD:aflares(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 
 	szMiscArray[0] = 0;
-	szMiscArray = "Group\tID\tLocation\tDeployer";
+	szMiscArray = "To chuc\tID\tVi tri\tNguoi dat";
 
 	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
 		for(new iFlare; iFlare < MAX_FLARES; iFlare++) {
@@ -4678,7 +4678,7 @@ CMD:aflares(playerid, params[]) {
 		}
 	}
 
-	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Server Flares", szMiscArray, "Close", "");
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Phao sang may chu", szMiscArray, "Dong", "");
 
 	return 1;
 }
@@ -4688,29 +4688,29 @@ CMD:flares(playerid, params[])
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iFlares])
 	{
 		new iGroup = PlayerInfo[playerid][pMember];
-		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed flares:");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Phao sang dang dat:");
 		for(new i, string[58 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < MAX_FLARES; i++)
 		{
 			if(Flares[iGroup][i][sX] != 0 && Flares[iGroup][i][sY] != 0 && Flares[iGroup][i][sZ] != 0) // Checking for next available ID.
 			{
-				format(string, sizeof(string), "HQ: Flare ID: %d | Deployed location: %s | Deployed by: %s", i, Flares[iGroup][i][sDeployedAt], Flares[iGroup][i][sDeployedBy]);
+				format(string, sizeof(string), "HQ: Phao sang ID: %d | Vi tri: %s | Nguoi dat: %s", i, Flares[iGroup][i][sDeployedAt], Flares[iGroup][i][sDeployedBy]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen.");
 	}
 	return 1;
 }
 
 CMD:acones(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 
 	szMiscArray[0] = 0;
-	szMiscArray = "Group\tID\tLocation\tDeployer";
+	szMiscArray = "To chuc\tID\tVi tri\tNguoi dat";
 
 	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
 		for(new iCone; iCone < MAX_CONES; iCone++) {
@@ -4720,7 +4720,7 @@ CMD:acones(playerid, params[]) {
 		}
 	}
 
-	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Server Cones", szMiscArray, "Close", "");
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Coc tieu may chu", szMiscArray, "Dong", "");
 
 	return 1;
 }
@@ -4730,29 +4730,29 @@ CMD:cones(playerid, params[])
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iCones])
 	{
 		new iGroup = PlayerInfo[playerid][pMember];
-		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed cones:");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Coc tieu dang dat:");
 		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < MAX_CONES; i++)
 		{
 			if(Cones[iGroup][i][sX] != 0 && Cones[iGroup][i][sY] != 0 && Cones[iGroup][i][sZ] != 0) // Checking for next available ID.
 			{
-				format(string, sizeof(string), "HQ: Cone ID: %d | Deployed location: %s | Deployed by: %s", i, Cones[iGroup][i][sDeployedAt], Cones[iGroup][i][sDeployedBy]);
+				format(string, sizeof(string), "HQ: Coc tieu ID: %d | Vi tri: %s | Nguoi dat: %s", i, Cones[iGroup][i][sDeployedAt], Cones[iGroup][i][sDeployedBy]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen.");
 	}
 	return 1;
 }
 
 CMD:abarrels(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 
 	szMiscArray[0] = 0;
-	szMiscArray = "Group\tID\tLocation\tDeployer";
+	szMiscArray = "To chuc\tID\tVi tri\tNguoi dat";
 
 	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
 		for(new iBarrel; iBarrel < MAX_BARRELS; iBarrel++) {
@@ -4762,7 +4762,7 @@ CMD:abarrels(playerid, params[]) {
 		}
 	}
 
-	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Server Barrels", szMiscArray, "Close", "");
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Thung phuy may chu", szMiscArray, "Dong", "");
 
 	return 1;
 }
@@ -4772,29 +4772,29 @@ CMD:barrels(playerid, params[])
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarrels])
 	{
 		new iGroup = PlayerInfo[playerid][pMember];
-		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed barrels:");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Thung phuy dang dat:");
 		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < MAX_BARRELS; i++)
 		{
 			if(Barrels[iGroup][i][sX] != 0 && Barrels[iGroup][i][sY] != 0 && Barrels[iGroup][i][sZ] != 0) // Checking for next available ID.
 			{
-				format(string, sizeof(string), "HQ: Barrel ID: %d | Deployed location: %s | Deployed by: %s", i, Barrels[iGroup][i][sDeployedAt], Barrels[iGroup][i][sDeployedBy]);
+				format(string, sizeof(string), "HQ: Thung phuy ID: %d | Vi tri: %s | Nguoi dat: %s", i, Barrels[iGroup][i][sDeployedAt], Barrels[iGroup][i][sDeployedBy]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen.");
 	}
 	return 1;
 }
 
 CMD:aladders(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 
 	szMiscArray[0] = 0;
-	szMiscArray = "Group\tID\tLocation\tDeployer";
+	szMiscArray = "To chuc\tID\tVi tri\tNguoi dat";
 
 	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
 		for(new iLadder; iLadder < MAX_LADDERS; iLadder++) {
@@ -4804,7 +4804,7 @@ CMD:aladders(playerid, params[]) {
 		}
 	}
 
-	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Server Ladders", szMiscArray, "Close", "");
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Thang may chu", szMiscArray, "Dong", "");
 
 	return 1;
 }
@@ -4814,29 +4814,29 @@ CMD:ladders(playerid, params[])
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iLadders])
 	{
 		new iGroup = PlayerInfo[playerid][pMember];
-		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed ladders:");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Thang dang dat:");
 		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < MAX_LADDERS; i++)
 		{
 			if(Ladders[iGroup][i][sX] != 0 && Ladders[iGroup][i][sY] != 0 && Ladders[iGroup][i][sZ] != 0) // Checking for next available ID.
 			{
-				format(string, sizeof(string), "HQ: Ladder ID: %d | Deployed location: %s | Deployed by: %s", i, Ladders[iGroup][i][sDeployedAt], Ladders[iGroup][i][sDeployedBy]);
+				format(string, sizeof(string), "HQ: Thang ID: %d | Vi tri: %s | Nguoi dat: %s", i, Ladders[iGroup][i][sDeployedAt], Ladders[iGroup][i][sDeployedBy]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen.");
 	}
 	return 1;
 }
 
 CMD:asigns(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 
 	szMiscArray[0] = 0;
-	szMiscArray = "Group\tID\tLocation\tDeployer";
+	szMiscArray = "To chuc\tID\tVi tri\tNguoi dat";
 
 	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
 		for(new iSign; iSign < MAX_SIGNS; iSign++) {
@@ -4846,7 +4846,7 @@ CMD:asigns(playerid, params[]) {
 		}
 	}
 
-	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Server Signs", szMiscArray, "Close", "");
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Bien bao may chu", szMiscArray, "Dong", "");
 
 	return 1;
 }
@@ -4856,19 +4856,19 @@ CMD:signs(playerid, params[])
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarrels])
 	{
 		new iGroup = PlayerInfo[playerid][pMember];
-		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed signs:");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Bien bao dang dat:");
 		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < MAX_BARRELS; i++)
 		{
 			if(Signs[iGroup][i][sX] != 0 && Signs[iGroup][i][sY] != 0 && Signs[iGroup][i][sZ] != 0) // Checking for next available ID.
 			{
-				format(string, sizeof(string), "HQ: Sign ID: %d | Deployed location: %s | Deployed by: %s", i, Signs[iGroup][i][sDeployedAt], Signs[iGroup][i][sDeployedBy]);
+				format(string, sizeof(string), "HQ: Bien bao ID: %d | Vi tri: %s | Nguoi dat: %s", i, Signs[iGroup][i][sDeployedAt], Signs[iGroup][i][sDeployedBy]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen.");
 	}
 	return 1;
 }
@@ -4877,19 +4877,19 @@ CMD:tapes(playerid, params[]) {
 
     if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iTapes] != -1 && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iTapes])
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed tapes:");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Day chan dang dat:");
 		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < sizeof(Tapes); i++)
 		{
 			if(Tapes[i][sX] != 0 && Tapes[i][sY] != 0 && Tapes[i][sZ] != 0) // Checking for next available ID.
 			{
-				format(string, sizeof(string), "HQ: Tape #%d | Deployed location: %s | Deployed by: %s", i, Tapes[i][sDeployedAt], Tapes[i][sDeployedBy]);
+				format(string, sizeof(string), "HQ: Day chan #%d | Vi tri: %s | Nguoi dat: %s", i, Tapes[i][sDeployedAt], Tapes[i][sDeployedBy]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen.");
 	}
 	return 1;
 }
@@ -4898,7 +4898,7 @@ CMD:quitgroup(playerid, params[])
 {
     if(PlayerInfo[playerid][pMember] >= 0 || PlayerInfo[playerid][pLeader] >= 0)
 	{
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have quit your group, you are now a civilian again.");
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Ban da roi to chuc va tro lai lam cong dan.");
 		new string[128];
 		format(string, sizeof(string), "%s (%d) has quit the %s as a rank %i", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], PlayerInfo[playerid][pRank]);
 		GroupLog(PlayerInfo[playerid][pMember], string);
@@ -4923,7 +4923,7 @@ CMD:quitgroup(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You're not in a group.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc to chuc.");
 	}
 	return 1;
 }
@@ -4946,23 +4946,23 @@ CMD:dvstorage(playerid, params[])
 						new vehicleName[18];
 						strunpack(vehicleName, VehicleName[iModelID - 400], sizeof(vehicleName));
 						if(DynVehicleInfo[i][gv_iDisabled] == 1) {
-							format(vstring, sizeof(vstring), "%s\n(%d)%s (Disabled)", vstring, i, vehicleName);
+							format(vstring, sizeof(vstring), "%s\n(%d)%s (Da tat)", vstring, i, vehicleName);
 						}
 						else if(DynVehicleInfo[i][gv_iDisabled] == 2) {
-							format(vstring, sizeof(vstring), "%s\n(%d) %s (Stored)", vstring, i, vehicleName, DynVehicleInfo[i][gv_iSpawnedID]);
+							format(vstring, sizeof(vstring), "%s\n(%d) %s (Cat)", vstring, i, vehicleName, DynVehicleInfo[i][gv_iSpawnedID]);
 						}
 						else if(DynVehicleInfo[i][gv_iSpawnedID] != INVALID_VEHICLE_ID) {
-							format(vstring, sizeof(vstring), "%s\n(%d) %s (Spawned) [VehicleID : %d]", vstring, i, vehicleName, DynVehicleInfo[i][gv_iSpawnedID]);
+							format(vstring, sizeof(vstring), "%s\n(%d) %s (Da tao) [VehicleID : %d]", vstring, i, vehicleName, DynVehicleInfo[i][gv_iSpawnedID]);
 						}
 					}
 				}
-				ShowPlayerDialogEx(playerid, DV_STORAGE, DIALOG_STYLE_LIST, "Dynamic Group Vehicle Storage", vstring, "Track", "Cancel");
+				ShowPlayerDialogEx(playerid, DV_STORAGE, DIALOG_STYLE_LIST, "Kho xe dong to chuc", vstring, "Theo doi", "Huy");
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not in range of your group garage!");
+			else return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o gan garage cua to chuc!");
 		}
-		else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not a group leader!");
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong phai lanh dao to chuc!");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not in a group!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc to chuc!");
 	return 1;
 }
 
@@ -4974,29 +4974,29 @@ CMD:bug(playerid, params[])
 			iTargetID;
 
         if(sscanf(params, "u", iTargetID)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /bug [player]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /bug [player]");
 		}
         else if(PlayerInfo[iTargetID][pAdmin] >= 2) {
-			SendClientMessageEx(playerid, COLOR_GREY, "You cannot place a bug on this person.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Khong the dat may nghe len len nguoi nay.");
 		}
 		else if(GetPVarInt(iTargetID, "AdvisorDuty") == 1 && (GetPVarType(iTargetID, "HelpingSomeone") || GetPVarType(iTargetID, "pGodMode"))) {
-    		SendClientMessageEx(playerid, COLOR_GREY, "You cannot place bugs on advisors while they are on duty.");
+    		SendClientMessageEx(playerid, COLOR_GREY, "Khong the dat may nghe len len Advisor dang truc.");
 		}
 
   		else if(PlayerInfo[iTargetID][pBugged] != INVALID_GROUP_ID) {
 
 
     		PlayerInfo[iTargetID][pBugged] = INVALID_GROUP_ID;
-			SendClientMessageEx(playerid, COLOR_GRAD1, "The bug on %s has been disabled.", GetPlayerNameEx(iTargetID));
+			SendClientMessageEx(playerid, COLOR_GRAD1, "May nghe len tren %s da bi tat.", GetPlayerNameEx(iTargetID));
 		}
 		else if(ProxDetectorS(4.0, playerid, iTargetID)) {
 
 
 			PlayerInfo[iTargetID][pBugged] = PlayerInfo[playerid][pMember];
-		    SendClientMessageEx(playerid, COLOR_GRAD1, "You have placed a bug on %s.",GetPlayerNameEx(iTargetID));
+		    SendClientMessageEx(playerid, COLOR_GRAD1, "Da gan may nghe len cho %s.",GetPlayerNameEx(iTargetID));
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be close to the person.");
-	} else SendClientMessageEx(playerid, COLOR_GREY, "You do not have access to this radio frequency.");
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban can o gan nguoi do.");
+	} else SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen truy cap tan so nay.");
 	return 1;
 }
 
@@ -5010,12 +5010,12 @@ CMD:gov(playerid, params[])
 		if(!isnull(params)) {
 			new string[128];
 			format(string, sizeof(string), "** %s %s %s: %s **", arrGroupData[iGroupID][g_szGroupName], arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), params);
-   			SendClientMessageToAllEx(COLOR_WHITE, "|___________ Government News Announcement ___________|");
+   			SendClientMessageToAllEx(COLOR_WHITE, "|___________ Thong bao chinh phu ___________|");
 			SendClientMessageToAllEx(arrGroupData[iGroupID][g_hDutyColour] * 256 + 255, string);
 			format(string, sizeof(string), "** %s %s %s(%d): %s **", arrGroupData[iGroupID][g_szGroupName], arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), params);
 			Log("logs/gov.log", string);
-		} else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/gov)ernment [text]");
-	} else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		} else SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: (/gov)ernment [text]");
+	} else SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -5024,7 +5024,7 @@ CMD:switchgroup(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] || PlayerInfo[playerid][pFactionModerator] >= 4) {
 		Group_ListGroups(playerid, DIALOG_SWITCHGROUP);
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen.");
 	return 1;
 }
 
@@ -5033,14 +5033,14 @@ CMD:groupcsfban(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
 		new giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /groupcsfban [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /groupcsfban [player]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if( PlayerInfo[giveplayerid][pMember] >= 0 || PlayerInfo[giveplayerid][pLeader] >= 0 )
 			{
 				PlayerInfo[giveplayerid][pCSFBanned] = 1;
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have been group-banned, by %s, from ALL Civil Service Groups.", GetPlayerNameEx( playerid ));
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Ban bi %s cam gia nhap TAT CA Civil Service Groups.", GetPlayerNameEx( playerid ));
 				PlayerInfo[giveplayerid][pMember] = INVALID_GROUP_ID;
 				PlayerInfo[giveplayerid][pLeader] = INVALID_GROUP_ID;
 				PlayerInfo[giveplayerid][pDivision] = INVALID_DIVISION;
@@ -5050,16 +5050,16 @@ CMD:groupcsfban(playerid, params[])
 				PlayerInfo[giveplayerid][pModel] = NOOB_SKIN;
 				SetPlayerToTeamColor(giveplayerid);
 				SetPlayerSkin(giveplayerid, NOOB_SKIN);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have faction-banned %s from all CSF groups.", GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da cam %s gia nhap moi to chuc CSF.", GetPlayerNameEx(giveplayerid));
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "You can't kick someone from a faction if they're not a leader / member.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Khong the loai nguoi khong phai lanh dao / thanh vien.");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Player not connected.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi chua ket noi.");
 		}
 	}
 	return 1;
@@ -5070,7 +5070,7 @@ CMD:groupunban(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		new giveplayerid, group;
-		if(sscanf(params, "ud", giveplayerid, group)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /groupunban [player] [groupid]");
+		if(sscanf(params, "ud", giveplayerid, group)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /groupunban [player] [groupid]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
@@ -5079,11 +5079,11 @@ CMD:groupunban(playerid, params[])
 			SetPVarInt(playerid, "GroupUnBanningGroup", group);
 			mysql_format(MainPipeline, string,sizeof(string),"DELETE FROM `groupbans` WHERE  `PlayerID` = %d AND `GroupBan` = %d", GetPlayerSQLId(giveplayerid), group);
 			mysql_tquery(MainPipeline, string, "Group_QueryFinish", "ii", GROUP_QUERY_UNBAN, playerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "Attempting to unban %s from group %d...", GetPlayerNameEx(giveplayerid), group);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Dang go cam %s khoi to chuc %d...", GetPlayerNameEx(giveplayerid), group);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Player not connected.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi chua ket noi.");
 		}
 	}
 	return 1;
@@ -5095,18 +5095,18 @@ CMD:groupcsfunban(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		new giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /faccsfunban [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /faccsfunban [player]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if( PlayerInfo[giveplayerid][pCSFBanned] == 0 ) return SendClientMessageEx( playerid, COLOR_WHITE, "That person isn't banned from Civil Service Groups." );
+			if( PlayerInfo[giveplayerid][pCSFBanned] == 0 ) return SendClientMessageEx( playerid, COLOR_WHITE, "Nguoi do khong bi cam Civil Service Groups." );
 			PlayerInfo[giveplayerid][pCSFBanned] = 0;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have unbanned person %s from all Civil Service Groups.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been unbanned from Civil Service Groups, by %s.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da go cam %s khoi tat ca Civil Service Groups.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Ban da duoc %s go cam Civil Service Groups.", GetPlayerNameEx(playerid));
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Player not connected.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi chua ket noi.");
 		}
 	}
 	return 1;
@@ -5119,7 +5119,7 @@ CMD:groupban(playerid, params[])
 		new giveplayerid, group , reason[64];
 		if(sscanf(params, "uds[64]", giveplayerid, group, reason))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /groupban [player] [group id] [reason]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /groupban [player] [group id] [reason]");
 			return 1;
 		}
 
@@ -5132,16 +5132,16 @@ CMD:groupban(playerid, params[])
 				new string[256];
 				mysql_format(MainPipeline, string,sizeof(string),"INSERT INTO `groupbans` (`PlayerID`, `GroupBan`, `BanReason`, `BanDate`) VALUES (%d, %d, '%e', NOW())", GetPlayerSQLId(giveplayerid), group, reason);
 				mysql_tquery(MainPipeline, string, "Group_QueryFinish", "ii", GROUP_QUERY_ADDBAN, playerid);
-			    SendClientMessageEx(playerid, COLOR_WHITE, "Attempting to ban %s from group %d...", GetPlayerNameEx(giveplayerid), group);
+			    SendClientMessageEx(playerid, COLOR_WHITE, "Dang cam %s khoi to chuc %d...", GetPlayerNameEx(giveplayerid), group);
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "Invalid group id.");
+				SendClientMessageEx(playerid, COLOR_GREY, "ID to chuc khong hop le.");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Player not connected.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi chua ket noi.");
 		}
 	}
 	return 1;
@@ -5152,7 +5152,7 @@ CMD:showbadge(playerid, params[])
 	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL && arrGroupData[PlayerInfo[playerid][pMember]][g_iCrimeType] != GROUP_CRIMINAL_TYPE_RACE))
 	{
 		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /showbadge [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /showbadge [player]");
 
 		if(giveplayerid != INVALID_PLAYER_ID) {
 			if(ProxDetectorS(5.0, playerid, giveplayerid)) {
@@ -5163,22 +5163,22 @@ CMD:showbadge(playerid, params[])
 				if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[playerid][pBadge]);
 
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "----------------------------------------------------------------------------------------------------");
-				SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s%s %s is a duly sworn member of the %s.", badge, infoArrays[0], GetPlayerNameEx(playerid), infoArrays[2]);
-				SendClientMessageEx(giveplayerid, COLOR_WHITE, "Current Assignment: %s.", infoArrays[1]);
+				SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s%s %s la thanh vien tuyen the cua %s.", badge, infoArrays[0], GetPlayerNameEx(playerid), infoArrays[2]);
+				SendClientMessageEx(giveplayerid, COLOR_WHITE, "Nhiem vu hien tai: %s.", infoArrays[1]);
 				switch(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance]) {
-					case 1: SendClientMessageEx(giveplayerid, COLOR_WHITE, "Under the Authority of the San Andreas Government.");
-					case 2: SendClientMessageEx(giveplayerid, COLOR_WHITE, "Under the Authority of the Nation of New Robada.");
+					case 1: SendClientMessageEx(giveplayerid, COLOR_WHITE, "Duoi tham quyen cua San Andreas Government.");
+					case 2: SendClientMessageEx(giveplayerid, COLOR_WHITE, "Duoi tham quyen cua Nation of New Robada.");
 				}
-				if(IsACop(playerid)) SendClientMessageEx(giveplayerid, COLOR_WHITE, "Official has the authority to arrest.");
-				else if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != 2) SendClientMessageEx(giveplayerid, COLOR_WHITE, "Official has the authority to assist in arrests.");
+				if(IsACop(playerid)) SendClientMessageEx(giveplayerid, COLOR_WHITE, "Nhan vien co quyen bat giu.");
+				else if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != 2) SendClientMessageEx(giveplayerid, COLOR_WHITE, "Nhan vien co quyen ho tro bat giu.");
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "----------------------------------------------------------------------------------------------------");
-				format(string, sizeof(string), "* %s shows their badge to %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "* %s cho %s xem phu hieu.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxChatBubble(playerid, string);
 				// ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
-			} else SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
-		} else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-	} else SendClientMessageEx(playerid, COLOR_WHITE, "You are not in a civil service group.");
+			} else SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
+		} else SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
+	} else SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong thuoc Civil Service Group.");
 	return 1;
 }
 
@@ -5187,7 +5187,7 @@ CMD:groupkick(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
 		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /groupkick [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /groupkick [player]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
@@ -5195,7 +5195,7 @@ CMD:groupkick(playerid, params[])
 			{
 				format(string, sizeof(string), "Administrator %s has group-kicked %s (%d) from %s (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName], PlayerInfo[giveplayerid][pMember]+1);
 				GroupLog(PlayerInfo[giveplayerid][pMember], string);
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have been faction-kicked, by %s.", GetPlayerNameEx( playerid ));
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Ban da bi %s loai khoi to chuc.", GetPlayerNameEx( playerid ));
 				arrGroupData[PlayerInfo[giveplayerid][pMember]][g_iMemberCount]--;
 				PlayerInfo[giveplayerid][pDuty] = 0;
 				PlayerInfo[giveplayerid][pMember] = INVALID_GROUP_ID;
@@ -5213,24 +5213,24 @@ CMD:groupkick(playerid, params[])
 				pTazer{giveplayerid} = 0;
 				DeletePVar(giveplayerid, "HidingKnife");
 				SetPlayerToTeamColor(giveplayerid);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have group-kicked %s.", GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da loai %s khoi to chuc.", GetPlayerNameEx(giveplayerid));
 				if(GetPVarType(giveplayerid, "RepFam_TL")) Rivalry_Toggle(giveplayerid, false);
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "You can't kick someone from a group if they're not a member.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Khong the loai nguoi khong phai thanh vien to chuc.");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 		}
 	}
 	return 1;
 }
 
 CMD:m(playerid, params[]) {
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
 	if(!isnull(params)) {
 		if(IsACop(playerid) || IsAMedic(playerid) || IsAHitman(playerid) || IsAGovernment(playerid) || IsAJudge(playerid) || (IsATowman(playerid) && PlayerInfo[playerid][pRank] > 1)) {
 			new
@@ -5239,9 +5239,9 @@ CMD:m(playerid, params[]) {
 			format(szMessage, sizeof(szMessage), "(megaphone) %s: %s", GetPlayerNameEx(playerid), params);
 			ProxDetector(60.0, playerid, szMessage, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW,1);
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD2, "   You do not have authority to use the megaphone.");
+		else SendClientMessageEx(playerid, COLOR_GRAD2, "   Ban khong co quyen dung loa.");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/m)egaphone [megaphone chat]");
+	else SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: (/m)egaphone [megaphone chat]");
 	return 1;
 }
 
@@ -5249,8 +5249,8 @@ CMD:m(playerid, params[]) {
 
 alias:r("radio")
 CMD:r(playerid, params[]) {
-	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua the lam viec nay.");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
 	new
 		iGroupID = PlayerInfo[playerid][pMember],
 		iRank = PlayerInfo[playerid][pRank];
@@ -5282,13 +5282,13 @@ CMD:r(playerid, params[]) {
 						}
 					}
 				}
-				else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/r)adio [radio chat]");
+				else return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: (/r)adio [radio chat]");
 			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "Your radio is currently turned off, type /tog radio to turn it back on.");
+			else return SendClientMessageEx(playerid, COLOR_GREY, "Radio dang tat, dung /tog radio de bat lai.");
 		}
-		else return SendClientMessageEx(playerid, COLOR_GREY, "You do not have access to this radio frequency.");
+		else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen truy cap tan so nay.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You are not in a group.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong thuoc to chuc.");
 	return 1;
 }
 
@@ -5302,12 +5302,12 @@ alias:international("int")
 CMD:international(playerid, params[])
 {
 
-	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua the lam viec nay.");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
 	new iGroupID = PlayerInfo[playerid][pMember],
 	    iRank = PlayerInfo[playerid][pRank];
 
-	if(PlayerInfo[playerid][pToggledChats][CHAT_INTERNATIONAL]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You have the international chat toggled.");
+	if(PlayerInfo[playerid][pToggledChats][CHAT_INTERNATIONAL]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da tat chat quoc te.");
 	if(0 <= iGroupID < MAX_GROUPS)
 	{
 	    if(iRank >= arrGroupData[iGroupID][g_iIntRadioAccess])
@@ -5326,11 +5326,11 @@ CMD:international(playerid, params[])
 	            format(szRadio, sizeof(szRadio), "(radio) %s", params);
              	SetPlayerChatBubble(playerid, szRadio, COLOR_WHITE, 15.0, 5000);
              }
-             else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/int(ernational) [text]");
+             else return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: (/int(ernational) [text]");
 		}
-		else return SendClientMessageEx(playerid, COLOR_GREY, "You do not have access to this radio frequency!");
+		else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen truy cap tan so nay!");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You're not in a group!");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong thuoc to chuc!");
 	return 1;
 }
 
@@ -5342,8 +5342,8 @@ CMD:togdept(playerid, params[])
 CMD:dept(playerid, params[])
 {
 
-	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua the lam viec nay.");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
 	new
 		iGroupID = PlayerInfo[playerid][pMember],
 		iRank = PlayerInfo[playerid][pRank];
@@ -5390,20 +5390,20 @@ CMD:dept(playerid, params[])
 									{
 										PlayerInfo[i][pReceiver]--;
 										SetPVarInt(i, "pReceiverMLeft", 4);
-										return SendClientMessageEx(i, DEPTRADIO, "Your receiver ran out of batteries!");
+										return SendClientMessageEx(i, DEPTRADIO, "May thu cua ban da het pin!");
 									}
 								}
 							}
 						}
 					}
 				}
-				else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/dept) [department chat]");
+				else return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: (/dept) [department chat]");
 			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "Your department radio is currently turned off, turn it on by typing /togdept.");
+			else return SendClientMessageEx(playerid, COLOR_GREY, "Radio lien nganh dang tat, dung /togdept de bat.");
 		}
-		else return SendClientMessageEx(playerid, COLOR_GREY, "You do not have access to this radio frequency.");
+		else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen truy cap tan so nay.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You are not in a group.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong thuoc to chuc.");
 	return 1;
 }
 
@@ -5418,7 +5418,7 @@ CMD:makeleader(playerid, params[])
 	{
 		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /makeleader [player]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /makeleader [player]");
 		}
 		else {
 			if(IsPlayerConnected(giveplayerid))	{
@@ -5426,10 +5426,10 @@ CMD:makeleader(playerid, params[])
    				SetPVarInt(playerid, "MakingLeaderSQL", GetPlayerSQLId(giveplayerid));
 				Group_ListGroups(playerid, DIALOG_MAKELEADER);
 			}
-			else SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+			else SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 		}
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 
 	return 1;
 }
@@ -5437,7 +5437,7 @@ CMD:makeleader(playerid, params[])
 CMD:leaders(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 3 || PlayerInfo[playerid][pFactionModerator] >= 1) {
-		SendClientMessageEx(playerid, COLOR_WHITE, "Group leaders online:");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Lanh dao to chuc online:");
 
 		new	sz_FacInfo[3][64];
 
@@ -5448,7 +5448,7 @@ CMD:leaders(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, "(%s) %s %s", sz_FacInfo[2], sz_FacInfo[0], GetPlayerNameEx(i));
 			}
 		}
-	} else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	} else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -5457,13 +5457,13 @@ CMD:hfind(playerid, params[])
 	if (IsAHitman(playerid) || (PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iFindAccess]) || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports] != 1))
 	{
 	    if(GetPVarType(playerid, "HfindCount")) {
-	    	SendClientMessageEx(playerid, COLOR_GRAD2, "Tracing interrupted.");
+	    	SendClientMessageEx(playerid, COLOR_GRAD2, "Truy tim bi gian doan.");
 	    	DeletePVar(playerid, "HfindCount");
 	    	return 1;
 	    }
 
 	    if(GetPVarType(playerid, "hFind")) {
-	   		SendClientMessageEx(playerid, COLOR_GRAD2, "Stopped Updating");
+	   		SendClientMessageEx(playerid, COLOR_GRAD2, "Da dung cap nhat");
 	        DeletePVar(playerid, "hFind");
 	        DisablePlayerCheckpoint(playerid);
 		}
@@ -5472,42 +5472,42 @@ CMD:hfind(playerid, params[])
 			new	iTargetID;
 
 			if(CheckPointCheck(playerid)) {
-				return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command as of this moment!");
+				return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the dung lenh nay!");
 			}
 			if(sscanf(params, "u", iTargetID)) {
-				return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hfind [player]");
+				return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /hfind [player]");
 			}
 			else if(iTargetID == playerid) {
-				return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this command on yourself.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung lenh nay voi chinh minh.");
 			}
 
 			else if(!IsPlayerConnected(iTargetID)) {
-				return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 			}
 			else if(GetPlayerInterior(iTargetID) != 0) {
-				return SendClientMessageEx(playerid, COLOR_GREY, "That person is inside an interior.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do dang trong noi that.");
 			}
 			else if((PlayerInfo[iTargetID][pAdmin] >= 2 || PlayerInfo[iTargetID][pWatchdog] >= 2) && PlayerInfo[iTargetID][pTogReports] != 1) {
-				return SendClientMessageEx(playerid, COLOR_GREY, "You are unable to find this person.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "Khong the tim nguoi nay.");
 			}
 			else if (GetPVarInt(playerid, "_SwimmingActivity") >= 1) {
-				return SendClientMessageEx(playerid, COLOR_GRAD2, "You are unable to find people while swimming.");
+				return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the tim nguoi khi dang boi.");
 			}
 			if (GetPVarInt(playerid, "_SwimmingActivity") >= 1)
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD2, "  You must stop swimming first! (/stopswimming)");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "  Ban phai ngung boi truoc! (/stopswimming)");
 				return 1;
 			}
 			if(PhoneOnline[iTargetID] == 0 && PlayerInfo[iTargetID][pPnumber] != 0 || (PlayerInfo[iTargetID][pBugged] == PlayerInfo[playerid][pMember] || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports] != 1)))
 			{
 				SetPVarInt(playerid, "HfindCount", 15);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have started a trace, type /hfind again to stop this.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da bat dau truy tim, dung /hfind lan nua de dung.");
 				SetTimerEx("HitmanTrace", 1000, false, "ii", playerid, iTargetID);
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are unable to get a trace on this person.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the truy tim nguoi nay.");
 		}
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -5517,24 +5517,24 @@ public HitmanTrace(playerid, iTargetID) {
 	new iTraceCount = GetPVarInt(playerid, "HfindCount");
 	if(PlayerInfo[iTargetID][pBugged] == PlayerInfo[playerid][pMember]) iTraceCount = 0;
 
-	if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command as of this moment!");
-	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-	if(GetPlayerInterior(iTargetID) != 0) return SendClientMessageEx(playerid, COLOR_GREY, "That person is inside an interior.");
-	if((PlayerInfo[iTargetID][pAdmin] >= 2 || PlayerInfo[iTargetID][pWatchdog] >= 2) && PlayerInfo[iTargetID][pTogReports] != 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unable to find this person.");
-	if(GetPVarInt(playerid, "_SwimmingActivity") >= 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are unable to find people while swimming.");
-	if (GetPVarInt(playerid, "_SwimmingActivity") >= 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "  You must stop swimming first! (/stopswimming)");
-	if((PhoneOnline[iTargetID] > 0 || PlayerInfo[iTargetID][pPnumber] == 0 ) && PlayerInfo[iTargetID][pBugged] != PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GREY, "The trace was interrupted.");
-	if(!GetPVarType(playerid, "HfindCount")) return SendClientMessageEx(playerid, COLOR_WHITE,  "An error occured!");
+	if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the dung lenh nay!");
+	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
+	if(GetPlayerInterior(iTargetID) != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do dang trong noi that.");
+	if((PlayerInfo[iTargetID][pAdmin] >= 2 || PlayerInfo[iTargetID][pWatchdog] >= 2) && PlayerInfo[iTargetID][pTogReports] != 1) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the tim nguoi nay.");
+	if(GetPVarInt(playerid, "_SwimmingActivity") >= 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the tim nguoi khi dang boi.");
+	if (GetPVarInt(playerid, "_SwimmingActivity") >= 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "  Ban phai ngung boi truoc! (/stopswimming)");
+	if((PhoneOnline[iTargetID] > 0 || PlayerInfo[iTargetID][pPnumber] == 0 ) && PlayerInfo[iTargetID][pBugged] != PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GREY, "Truy tim da bi gian doan.");
+	if(!GetPVarType(playerid, "HfindCount")) return SendClientMessageEx(playerid, COLOR_WHITE,  "Da xay ra loi!");
 
 
 	if(iTraceCount >= 1) {
 		SetPVarInt(playerid, "HfindCount", --iTraceCount);
-		format(szMiscArray, sizeof(szMiscArray), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~Correlating Signal: %d seconds left", iTraceCount);
+		format(szMiscArray, sizeof(szMiscArray), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~Do tin hieu: con %d giay", iTraceCount);
 		GameTextForPlayer(playerid, szMiscArray, 1100, 3);
 		SetTimerEx("HitmanTrace", 1000, false, "ii", playerid, iTargetID);
 	}
 	else if(iTraceCount == 0) {
-		GameTextForPlayer(playerid, "Trace established", 1100, 3);
+		GameTextForPlayer(playerid, "Da ket noi theo doi", 1100, 3);
 
 		new
 			szZone[MAX_ZONE_NAME];
@@ -5544,8 +5544,8 @@ public HitmanTrace(playerid, iTargetID) {
 	    DisablePlayerCheckpoint(playerid);
 	    SetPlayerCheckpoint(playerid, X, Y, Z, 4.0);
 		GetPlayer3DZone(iTargetID, szZone, sizeof(szZone));
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Tracking on %s, last seen at %s.", GetPlayerNameEx(iTargetID), szZone);
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Type /hfind again to stop tracking.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Dang theo doi %s, lan cuoi o %s.", GetPlayerNameEx(iTargetID), szZone);
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Dung /hfind lan nua de dung theo doi.");
 		SetPVarInt(playerid, "hFind", iTargetID);
 		DeletePVar(playerid, "HfindCount");
 	}
@@ -5558,12 +5558,12 @@ alias:g("f")
 CMD:g(playerid, params[])
 {
 
-	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua the lam viec nay.");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
 	new iGroupID = PlayerInfo[playerid][pMember],
 		iRank = PlayerInfo[playerid][pRank];
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/g)roup [group chat]");
-	if(iGroupID == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a part of a group!");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: (/g)roup [group chat]");
+	if(iGroupID == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong thuoc to chuc nao!");
 	if(iRank >= arrGroupData[iGroupID][g_iOOCChat])
 	{
 		new string[128];
@@ -5575,7 +5575,7 @@ CMD:g(playerid, params[])
 			}
 		}
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the dung lenh nay.");
 	return 1;
 }
 
@@ -5591,9 +5591,9 @@ CMD:locker(playerid, const params[]) {
 		szTitle[18 + GROUP_MAX_NAME_LEN],
 		szDialog[172];
 
-	if(PlayerInfo[playerid][pWRestricted] != 0 || PlayerInfo[playerid][pConnectHours] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command while having a weapon restriction.");
-	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
-	if(zombieevent && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this as a Zombie.");
+	if(PlayerInfo[playerid][pWRestricted] != 0 || PlayerInfo[playerid][pConnectHours] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay khi bi han che vu khi.");
+	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   Khong the lam vay trong Hunger Games Event!");
+	if(zombieevent && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombie khong the dung.");
 	if(0 <= iGroupID < MAX_GROUPS)
 	{
 		for(new i; i < MAX_GROUPS; i++)
@@ -5604,24 +5604,24 @@ CMD:locker(playerid, const params[]) {
 				{
 					if(i == iGroupID || (arrGroupData[i][g_iGroupType] == arrGroupData[iGroupID][g_iGroupType] && arrGroupLockers[i][j][g_iLockerShare]))
 					{
-					    format(szTitle, sizeof(szTitle), "%s Locker Menu", arrGroupData[iGroupID][g_szGroupName]);
+					    format(szTitle, sizeof(szTitle), "%s Menu tu do", arrGroupData[iGroupID][g_szGroupName]);
 					    if(arrGroupData[iGroupID][g_iLockerCostType] == 0) {
 					        if(arrGroupData[iGroupID][g_iLockerStock] > 100)
 					        {
-					        	format(szTitle, sizeof(szTitle), "%s - Locker Stock: %d", szTitle, arrGroupData[iGroupID][g_iLockerStock]);
+					        	format(szTitle, sizeof(szTitle), "%s - Ton kho tu: %d", szTitle, arrGroupData[iGroupID][g_iLockerStock]);
 							}
 							else
 							{
-							    format(szTitle, sizeof(szTitle), "%s - {AA3333}Locker Stock: %d", szTitle, arrGroupData[iGroupID][g_iLockerStock]);
+							    format(szTitle, sizeof(szTitle), "%s - {AA3333}Ton kho tu: %d", szTitle, arrGroupData[iGroupID][g_iLockerStock]);
 							}
 					    }
 					    if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL /*|| arrGroupData[iGroupID][g_iGroupType] == GROUP_CRIMINAL_TYPE_RACE*/)
 					    {
-					    	format(szDialog, sizeof(szDialog), "Clothes\nWeapons\nCrate Transfer\nDrugs\nMaterials (%i)\nVault ($%s)",
+					    	format(szDialog, sizeof(szDialog), "Quan ao\nVu khi\nChuyen thung\nMa tuy\nVat lieu (%i)\nKet tien ($%s)",
 					    		arrGroupData[iGroupID][g_iMaterials],
 					    		number_format(arrGroupData[iGroupID][g_iBudget])
 					    	);
-					    	return ShowPlayerDialogEx(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					    	return ShowPlayerDialogEx(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 					    }
 					    /* if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_CRIMINAL_TYPE_RACE)
 					    {
@@ -5639,28 +5639,28 @@ CMD:locker(playerid, const params[]) {
 
 					    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] && (PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv] || arrGroupData[iGroupID][g_iFreeNameChangeDiv] == INVALID_DIVISION)) // name-change point in faction lockers for free namechange factions
 						{
-							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change\nAccessories") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nName Change") : ("")));
+							format(szDialog, sizeof(szDialog), "Ca truc\nVu khi\nChuyen thung\nDong phuc%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nXoa truy na\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nDoi ten\nPhu kien") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nDoi ten") : ("")));
 						}
 						else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) {
-							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar");
+							format(szDialog, sizeof(szDialog), "Ca truc\nVu khi\nChuyen thung\nDong phuc\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar");
 						}
 						else
 						{
-							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nAccessories") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_NEWS || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
+							format(szDialog, sizeof(szDialog), "Ca truc\nVu khi\nChuyen thung\nDong phuc%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nXoa truy na\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nPhu kien") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_NEWS || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
 						}
-						ShowPlayerDialogEx(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+						ShowPlayerDialogEx(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Chon", "Huy");
 						return 1;
 					}
 					else
 					{
-					    SendClientMessageEx(playerid, COLOR_GREY, "You can't access this locker.");
+					    SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the dung tu nay.");
 						return 1;
 					}
 				}
 			}
 		}
 	}
-	SendClientMessageEx(playerid, COLOR_GREY, "You're not near a locker!");
+	SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan tu do!");
 	return 1;
 }
 
@@ -5685,12 +5685,12 @@ CMD:uninvite(playerid, params[]) {
 			iGroupID = PlayerInfo[playerid][pLeader];
 
 		if(sscanf(params, "u", iTargetID)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /uninvite [player]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /uninvite [player]");
 		}
 		else if(IsPlayerConnected(iTargetID)) {
 			if(iGroupID == PlayerInfo[iTargetID][pMember]) {
 				if(playerid == iTargetID) {
-					SendClientMessageEx(playerid, COLOR_GREY, "You can't uninvite yourself.");
+					SendClientMessageEx(playerid, COLOR_GREY, "Khong the tu loai minh.");
 				}
 				else if(PlayerInfo[playerid][pRank] > PlayerInfo[iTargetID][pRank] || PlayerInfo[playerid][pRank] >= Group_GetMaxRank(iGroupID)) {
 
@@ -5698,10 +5698,10 @@ CMD:uninvite(playerid, params[]) {
 						szMessage[128],
 						iRank = PlayerInfo[playerid][pRank];
 
-					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "%s %s has kicked you out of %s.", arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-					SendClientMessageEx(iTargetID, COLOR_WHITE, "You are now a civilian again.");
+					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "%s %s da loai ban khoi %s.", arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
+					SendClientMessageEx(iTargetID, COLOR_WHITE, "Ban da tro lai lam cong dan.");
 
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have kicked %s out of the group.", GetPlayerNameEx(iTargetID));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da loai %s khoi to chuc.", GetPlayerNameEx(iTargetID));
 
 					format(szMessage, sizeof szMessage, "%s %s (%d) (rank %i) has uninvited %s (%d) (rank %i) from %s (%i).", arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), iRank, GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), PlayerInfo[iTargetID][pRank], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 					GroupLog(iGroupID, szMessage);
@@ -5721,13 +5721,13 @@ CMD:uninvite(playerid, params[]) {
 					if(GetPVarType(iTargetID, "RepFam_TL")) Rivalry_Toggle(iTargetID, false);
 
 				}
-				else SendClientMessageEx(playerid, COLOR_GREY, "You can't do this to a person of equal or higher rank.");
+				else SendClientMessageEx(playerid, COLOR_GREY, "Khong the lam vay voi nguoi ngang hoac cao cap hon.");
 			}
-			else SendClientMessageEx(playerid, COLOR_GRAD1, "That person is not in your group.");
+			else SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi do khong thuoc to chuc cua ban.");
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "Only group leaders may use this command.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Chi lanh dao to chuc duoc dung lenh nay.");
 	return 1;
 }
 
@@ -5737,7 +5737,7 @@ CMD:ouninvite(playerid, params[]) {
 
 			if (IsPlayerConnected(ReturnUser(params)))
 			{
-				return SendClientMessageEx(playerid, COLOR_GREY, "That person is currently online - use /uninvite.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do dang online, dung /uninvite.");
 			}
 			new
 				szQuery[96],
@@ -5751,11 +5751,11 @@ CMD:ouninvite(playerid, params[]) {
 			while((iPos = strfind(szName, "_", false, iPos)) != -1) szName[iPos] = ' ';
 			SetPVarString(playerid, "Group_Uninv", szName);
 
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Attempting to remove %s from the group, please wait...", szName);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Dang loai %s khoi to chuc, vui long cho...", szName);
 		}
-		else SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ouninvite [account name]");
+		else SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /ouninvite [account name]");
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "Only group leaders may use this command.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Chi lanh dao to chuc duoc dung lenh nay.");
 	return 1;
 }
 
@@ -5769,42 +5769,42 @@ CMD:giverank(playerid, params[]) {
             szMessage[128];
 
 		if(sscanf(params, "ui", iTargetID, iRank)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /giverank [player] [rank]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /giverank [player] [rank]");
 		}
 		else if(!(0 <= iRank <= Group_GetMaxRank(iGroupID))) {
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid rank specified (must be between 0 and %d)", Group_GetMaxRank(iGroupID));
+			SendClientMessageEx(playerid, COLOR_GREY, "Rank sai (phai tu 0 den %d)", Group_GetMaxRank(iGroupID));
 		}
 		else if(IsPlayerConnected(iTargetID)) {
 			if(iGroupID == PlayerInfo[iTargetID][pMember]) {
 				if(iRank == PlayerInfo[iTargetID][pRank]) {
-					SendClientMessageEx(playerid, COLOR_GREY, "That person is already of that rank.");
+					SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co rank nay.");
 				}
 				else if(playerid == iTargetID) {
-					SendClientMessageEx(playerid, COLOR_GREY, "You can't change your own rank!");
+					SendClientMessageEx(playerid, COLOR_GREY, "Khong the tu doi rank!");
 				}
 				if(PlayerInfo[iTargetID][pRank] > PlayerInfo[playerid][pRank])
 		    	{
-			        SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot perform this command on a higher rank than you!");
+			        SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh voi nguoi rank cao hon!");
 			        return 1;
 		    	}
 				else if(PlayerInfo[playerid][pRank] > PlayerInfo[iTargetID][pRank] || PlayerInfo[playerid][pRank] >= Group_GetMaxRank(iGroupID) || PlayerInfo[playerid][pAdmin] >= 4) {
 
-					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "%s %s has %s you to the rank of %s.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), ((iRank > PlayerInfo[iTargetID][pRank]) ? ("promoted") : ("demoted")), arrGroupRanks[iGroupID][iRank]);
+					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "%s %s da %s ban len rank %s.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), ((iRank > PlayerInfo[iTargetID][pRank]) ? ("thang cap") : ("ha cap")), arrGroupRanks[iGroupID][iRank]);
 
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have %s %s to the rank of %s.", ((iRank > PlayerInfo[iTargetID][pRank]) ? ("promoted") : ("demoted")), GetPlayerNameEx(iTargetID), arrGroupRanks[iGroupID][iRank]);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da %s %s len rank %s.", ((iRank > PlayerInfo[iTargetID][pRank]) ? ("thang cap") : ("ha cap")), GetPlayerNameEx(iTargetID), arrGroupRanks[iGroupID][iRank]);
 
 					format(szMessage, sizeof szMessage, "%s %s (%d) (rank %i) has given %s (%d) rank %i (%s) in %s (%i).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pRank], GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), iRank, arrGroupRanks[iGroupID][iRank], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 					GroupLog(iGroupID, szMessage);
 
 					PlayerInfo[iTargetID][pRank] = iRank;
 				}
-				else SendClientMessageEx(playerid, COLOR_GREY, "You can't do this to a person of equal or higher rank.");
+				else SendClientMessageEx(playerid, COLOR_GREY, "Khong the lam vay voi nguoi ngang hoac cao cap hon.");
 			}
-			else SendClientMessageEx(playerid, COLOR_GRAD1, "That person is not in your group.");
+			else SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi do khong thuoc to chuc cua ban.");
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "Only group leaders may use this command.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Chi lanh dao to chuc duoc dung lenh nay.");
 	return 1;
 }
 
@@ -5820,7 +5820,7 @@ CMD:setdivname(playerid, params[])
 
 		if(sscanf(params, "is[16]", iDiv, iName))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setdivname [division] [name] -- Use 'none' as name to remove division");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /setdivname [division] [name] -- Dung 'none' lam ten de xoa division");
 			format(szMessage, sizeof(szMessage), "%s", "0 (None), ");
 			for(new i; i < MAX_GROUP_DIVS; i++)
 			{
@@ -5831,18 +5831,18 @@ CMD:setdivname(playerid, params[])
 		}
 		else if(!(1 <= iDiv <= Group_GetMaxDiv(iGroupID)+1))
 		{
-			return SendClientMessageEx(playerid, COLOR_GREY, "Invalid division specified! Must be between 1 and %d.", Group_GetMaxDiv(iGroupID) + 1);
+			return SendClientMessageEx(playerid, COLOR_GREY, "Division sai! Phai tu 1 den %d.", Group_GetMaxDiv(iGroupID) + 1);
 		}
 		else if(strlen(iName) > sizeof(iName))
 		{
-			return SendClientMessageEx(playerid, COLOR_GREY, "Division name must be less than %d characters!", sizeof(iName));
+			return SendClientMessageEx(playerid, COLOR_GREY, "Ten Division phai ngan hon %d ky tu!", sizeof(iName));
 		}
 		else
 		{
 			iDiv = iDiv - 1;
 			if(strcmp(iName, "none", true) == 0)
 			{
-				format(szMessage, sizeof(szMessage), "** %s has removed the %s division (#%i) **", GetPlayerNameEx(playerid), arrGroupDivisions[iGroupID][iDiv], iDiv + 1);
+				format(szMessage, sizeof(szMessage), "** %s da xoa Division %s (#%i) **", GetPlayerNameEx(playerid), arrGroupDivisions[iGroupID][iDiv], iDiv + 1);
 				foreach(new i: Player)
 				{
 					if(PlayerInfo[i][pToggledChats][CHAT_GROUP_RADIO] == 0)
@@ -5859,7 +5859,7 @@ CMD:setdivname(playerid, params[])
 			}
 			else
 			{
-				format(szMessage, sizeof(szMessage), "** %s has renamed division %s (#%i) to %s **", GetPlayerNameEx(playerid), arrGroupDivisions[iGroupID][iDiv], iDiv + 1, iName);
+				format(szMessage, sizeof(szMessage), "** %s doi ten Division %s (#%i) thanh %s **", GetPlayerNameEx(playerid), arrGroupDivisions[iGroupID][iDiv], iDiv + 1, iName);
 				foreach(new i: Player)
 				{
 					if(PlayerInfo[i][pToggledChats][CHAT_GROUP_RADIO] == 0)
@@ -5877,7 +5877,7 @@ CMD:setdivname(playerid, params[])
 			mysql_escape_string(iName, arrGroupDivisions[iGroupID][iDiv]);
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You're not authorized to use this command!");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay!");
 	return 1;
 }
 
@@ -5891,7 +5891,7 @@ CMD:setdiv(playerid, params[]) {
 			szMessage[128];
 
 		if(sscanf(params, "ui", iTargetID, iDiv)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setdiv [player] [div]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /setdiv [player] [div]");
 			format(szMessage, sizeof(szMessage), "%s", "0 (None), ");
 			for(new i; i < MAX_GROUP_DIVS; i++)
 			{
@@ -5901,40 +5901,40 @@ CMD:setdiv(playerid, params[]) {
 			}
 		}
 		else if(!(0 <= iDiv <= Group_GetMaxDiv(iGroupID)+1)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid division specified (must be between 0 and %d)", Group_GetMaxDiv(iGroupID) + 1);
+			SendClientMessageEx(playerid, COLOR_GREY, "Division sai (phai tu 0 den %d)", Group_GetMaxDiv(iGroupID) + 1);
 		}
 		else if(IsPlayerConnected(iTargetID)) {
 			if(iGroupID == PlayerInfo[iTargetID][pMember]) {
 				if(iDiv - 1 == PlayerInfo[iTargetID][pDivision]) {
-					if (iDiv == 0) SendClientMessageEx(playerid, COLOR_GREY, "That person already has no division.");
-					else SendClientMessageEx(playerid, COLOR_GREY, "That person is already in that division.");
+					if (iDiv == 0) SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do chua co Division.");
+					else SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da thuoc Division nay.");
 				}
 				else if(PlayerInfo[playerid][pLeader] == iGroupID || PlayerInfo[playerid][pDivision] == PlayerInfo[iTargetID][pDivision] || PlayerInfo[playerid][pRank] >= (Group_GetMaxRank(iGroupID) - 3)) {
 
 					if(iDiv == 0)
 					{
-						SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "You have been kicked out of your current division by %s.", GetPlayerNameEx(playerid));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have kicked %s from their division.", GetPlayerNameEx(iTargetID));
+						SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "Ban da bi %s loai khoi Division hien tai.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da loai %s khoi Division cua ho.", GetPlayerNameEx(iTargetID));
 						format(szMessage, sizeof szMessage, "%s %s (%d) has kicked %s (%d) out of their division in %s (%d).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 						GroupLog(iGroupID, szMessage);
 					}
 					else
 					{
-						SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "%s %s has set you to the %s division.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), arrGroupDivisions[iGroupID][iDiv-1]);
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have set %s to the %s division.", GetPlayerNameEx(iTargetID), arrGroupDivisions[iGroupID][iDiv-1]);
+						SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "%s %s da gan ban vao Division %s.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), arrGroupDivisions[iGroupID][iDiv-1]);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da gan %s vao Division %s.", GetPlayerNameEx(iTargetID), arrGroupDivisions[iGroupID][iDiv-1]);
 						format(szMessage, sizeof szMessage, "%s %s (%d) has set %s's (%d) division to %s in %s (%d).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), arrGroupDivisions[iGroupID][iDiv-1], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 						GroupLog(iGroupID, szMessage);
 					}
 					PlayerInfo[iTargetID][pDivision] = iDiv-1;
 				}
-				else SendClientMessageEx(playerid, COLOR_GREY, "You're not authorized to make that division change.");
+				else SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen doi Division nhu vay.");
 			}
-			else SendClientMessageEx(playerid, COLOR_GRAD1, "That person is not in your group.");
+			else SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi do khong thuoc to chuc cua ban.");
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 	}
 	else
-	    return SendClientMessageEx(playerid, COLOR_GREY, "You're not authorized to use this command!");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay!");
 	return 1;
 }
 
@@ -5949,33 +5949,33 @@ CMD:setbadge(playerid, params[])
 			szMessage[128],
 			tmp[9];
 
-		if(sscanf(params, "us[8]", iTargetID, iBadge)) SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setbadge [player] [number] -- Use 'none' as number to remove badge");
+		if(sscanf(params, "us[8]", iTargetID, iBadge)) SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /setbadge [player] [number] -- Dung 'none' lam so de go phu hieu");
 		else if(IsPlayerConnected(iTargetID))
 		{
 			if(iGroupID == PlayerInfo[iTargetID][pMember])
 			{
 				if(strcmp(iBadge, "none", true) == 0)
 				{
-					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "Your badge has been removed by %s.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have removed %s's badge.", GetPlayerNameEx(iTargetID));
+					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "Phu hieu cua ban da bi %s go.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da go phu hieu cua %s.", GetPlayerNameEx(iTargetID));
 					format(szMessage, sizeof(szMessage), "%s (%d) has removed %s's (%d) badge.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
 					GroupLog(iGroupID, szMessage);
 				}
 				else
 				{
-					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "Your badge has been set to %s by %s.", iBadge, GetPlayerNameEx(playerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have set %s's badge to %s.", GetPlayerNameEx(iTargetID), iBadge);
+					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "Phu hieu la %s, do %s dat.", iBadge, GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da doi phu hieu %s thanh %s.", GetPlayerNameEx(iTargetID), iBadge);
 					format(szMessage, sizeof(szMessage), "%s (%d) has set %s's (%d) badge to %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), iBadge);
 					GroupLog(iGroupID, szMessage);
 				}
 				mysql_escape_string(iBadge, tmp);
 				strcat((PlayerInfo[iTargetID][pBadge][0] = 0, PlayerInfo[iTargetID][pBadge]), tmp, 9);
 			}
-			else SendClientMessageEx(playerid, COLOR_GRAD1, "That person is not in your group.");
+			else SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi do khong thuoc to chuc cua ban.");
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You're not authorized to use this command!");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay!");
 	return 1;
 }
 
@@ -5986,7 +5986,7 @@ CMD:invite(playerid, params[]) {
 			iTargetID;
 
 		if(sscanf(params, "u", iTargetID)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /invite [player]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /invite [player]");
 		}
 		else if(IsPlayerConnected(iTargetID)) {
 		    if (iTargetID != playerid) {
@@ -5999,17 +5999,17 @@ CMD:invite(playerid, params[]) {
 					mysql_format(MainPipeline, szQuery, sizeof szQuery, "SELECT `TypeBan` FROM `groupbans` WHERE `PlayerID` = %i AND (`TypeBan` = %i OR `GroupBan` = %i)", GetPlayerSQLId(iTargetID), arrGroupData[iGroupID][g_iGroupType], iGroupID);
 					mysql_tquery(MainPipeline, szQuery, "OnGroupInviteChecked", "iiiii", playerid, g_arrQueryHandle[playerid], iTargetID, g_arrQueryHandle[iTargetID], iGroupID);
 
-					SendClientMessage(playerid, COLOR_WHITE, "Checking group ban list, please wait...");
+					SendClientMessage(playerid, COLOR_WHITE, "Dang kiem tra danh sach cam to chuc, vui long cho...");
 					SetPVarInt(playerid, "Group_Invited", iTargetID);
 					SetPVarInt(playerid, "GroupTargetSession", g_arrQueryHandle[iTargetID]);
 				}
-				else SendClientMessageEx(playerid, COLOR_GREY, "The person you're trying to invite is already in another group.");
+				else SendClientMessageEx(playerid, COLOR_GREY, "Nguoi ban moi da thuoc to chuc khac.");
 			}
-			else SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command on yourself.");
+			else SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung lenh nay voi chinh minh.");
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "Only group leaders may use this command.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Chi lanh dao to chuc duoc dung lenh nay.");
 	return 1;
 }
 
@@ -6017,13 +6017,13 @@ CMD:invite(playerid, params[]) {
 CMD:lastdriver(playerid, params[])
 {
 	new vehid, string[128];
-	if(sscanf(params, "d", vehid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /lastdriver [vehicle id]");
+	if(sscanf(params, "d", vehid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "CACH DUNG: /lastdriver [vehicle id]");
 	if(isnull(VehInfo[vehid][vLastDriver])) format(VehInfo[vehid][vLastDriver], MAX_PLAYER_NAME, "nobody");
 	if(GetVehicleModel(vehid) != 0)
 	{
 		if(PlayerInfo[playerid][pAdmin] > 1)
 		{
-			format(string, sizeof(string), "Vehicle %d's last known driver was {AA3333}%s", vehid, VehInfo[vehid][vLastDriver]);
+			format(string, sizeof(string), "Nguoi lai xe %d lan cuoi: {AA3333}%s", vehid, VehInfo[vehid][vLastDriver]);
 			SendClientMessage(playerid, COLOR_YELLOW, string);
 		}
 		else if(PlayerInfo[playerid][pLeader] != INVALID_GROUP_ID)
@@ -6032,16 +6032,16 @@ CMD:lastdriver(playerid, params[])
 			{
 				if(DynVehicleInfo[DynVeh[vehid]][gv_igID] == PlayerInfo[playerid][pLeader])
 				{
-					format(string, sizeof(string), "Vehicle %d's last known driver was {AA3333}%s", vehid, VehInfo[vehid][vLastDriver]);
+					format(string, sizeof(string), "Nguoi lai xe %d lan cuoi: {AA3333}%s", vehid, VehInfo[vehid][vLastDriver]);
 					SendClientMessage(playerid, COLOR_YELLOW, string);
 				}
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "That vehicle does not belong to your group");
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Xe khong thuoc to chuc cua ban");
 
 		}
-		else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command!");
+		else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay!");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid Vehicle ID");
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "ID xe khong hop le");
 	return 1;
 }
 
@@ -6067,36 +6067,36 @@ CMD:sanrank(playerid, params[])
 		Executive Commands
 	*/
 
-	if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_NEWS) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_NEWS) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	if(PlayerInfo[playerid][pLeader] == iGroupID)
 	{
 		new iRank,
 			iChoice;
 		if(sscanf(params, "dd", iChoice, iRank)) {
 
-			SendClientMessageEx(playerid, COLOR_GREY, "CURRENTLY: Cameraman (Rank: %d) | Show Host (Rank: %d) | Broadcast Editor/Director (Rank: %d) | All Priviledges (Rank: %d)",
+			SendClientMessageEx(playerid, COLOR_GREY, "HIEN TAI: Cameraman (Rank: %d) | Show Host (Rank: %d) | Broadcast Editor/Director (Rank: %d) | Moi quyen (Rank: %d)",
 				arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2],
 				arrGroupData[iGroupID][g_iWithdrawRank][3]);
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sanrank [choice] [rank]");
-			return SendClientMessageEx(playerid, COLOR_GREY, "CHOICES: Cameraman(0) Show Host(1) Broadcast Editor/Director(2) All(3)");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /sanrank [choice] [rank]");
+			return SendClientMessageEx(playerid, COLOR_GREY, "LUA CHON: Cameraman(0) Show Host(1) Broadcast Editor/Director(2) All(3)");
 		}
 		if(!(0 <= iChoice <= 3)) {
-			return SendClientMessageEx(playerid, COLOR_GREY, "Specify a valid choice!");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Hay chon gia tri hop le!");
 		}
 		else
 		{
 			if(0 <= iRank <= MAX_GROUP_RANKS-1 || iRank == INVALID_RANK)
 			{
 				arrGroupData[iGroupID][g_iWithdrawRank][iChoice] = iRank;
-				SendClientMessageEx(playerid, COLOR_GREY, "You have adjusted the rank permission to %i.", iRank);
+				SendClientMessageEx(playerid, COLOR_GREY, "Da doi rank duoc phep thanh %i.", iRank);
 				format(szMiscArray, sizeof(szMiscArray), "%s has adjusted the rank permission for choice %d to %i.", GetPlayerNameEx(playerid), iChoice, iRank);
 				GroupLog(iGroupID, szMiscArray);
 				SaveGroup(iGroupID);
 			}
-			else SendClientMessage(playerid, COLOR_GREY, "Please specify a valid rank");
+			else SendClientMessage(playerid, COLOR_GREY, "Hay nhap rank hop le");
 		}
 	}
-	else SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	else SendClientMessage(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -6113,44 +6113,44 @@ CMD:adjustwithdrawrank(playerid, params[])
 		Weapons(4)
 		Ammo(5)
 	*/
-	if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_CRIMINAL && arrGroupData[iGroupID][g_iCrimeType] != GROUP_CRIMINAL_TYPE_RACE) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_CRIMINAL && arrGroupData[iGroupID][g_iCrimeType] != GROUP_CRIMINAL_TYPE_RACE) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	if(PlayerInfo[playerid][pLeader] == iGroupID)
 	{
 		new iRank,
 			iChoice;
 		if(sscanf(params, "dd", iChoice, iRank)) {
-			SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /adjustwithdrawrank [choice] [rank]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Choice: Money - 0 | Materials - 1 | Drugs - 2");
-			return SendClientMessageEx(playerid, COLOR_GREY, "CURRENTLY: Money (Rank: %d) | Materials (Rank: %d) | Drugs (Rank: %d)",
+			SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /adjustwithdrawrank [choice] [rank]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Lua chon: Money - 0 | Materials - 1 | Drugs - 2");
+			return SendClientMessageEx(playerid, COLOR_GREY, "HIEN TAI: Tien (Rank: %d) | Vat lieu (Rank: %d) | Ma tuy (Rank: %d)",
 				arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2]);
 		}
 		if(!(0 <= iChoice <= 2)) {
-			return SendClientMessageEx(playerid, COLOR_GREY, "Specify a valid choice!");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Hay chon gia tri hop le!");
 		}
 		else
 		{
 			if(0 <= iRank <= MAX_GROUP_RANKS-1 || iRank == INVALID_RANK)
 			{
 				arrGroupData[iGroupID][g_iWithdrawRank][iChoice] = iRank;
-				SendClientMessageEx(playerid, COLOR_GREY, "You have adjusted the withdraw rank to %i.", iRank);
+				SendClientMessageEx(playerid, COLOR_GREY, "Da doi rank duoc rut thanh %i.", iRank);
 				format(szMiscArray, sizeof(szMiscArray), "%s has adjusted the withdraw rank for item %d to %i.", GetPlayerNameEx(playerid), iChoice, iRank);
 				GroupLog(iGroupID, szMiscArray);
 			}
-			else SendClientMessage(playerid, COLOR_GREY, "Please specify a valid rank");
+			else SendClientMessage(playerid, COLOR_GREY, "Hay nhap rank hop le");
 		}
 	}
-	else SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	else SendClientMessage(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
 CMD:families(playerid, params[])
 {
-	if(!IsACriminal(playerid) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessage(playerid, COLOR_GRAD2, "You need to be in a family / gang to use this command.");
+	if(!IsACriminal(playerid) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessage(playerid, COLOR_GRAD2, "Ban phai thuoc family / gang de dung lenh nay.");
 
 	if(isnull(params))
 	{
 		szMiscArray[0] = 0;
-		SendClientMessage(playerid, COLOR_GRAD2, "USAGE: /families [id]");
+		SendClientMessage(playerid, COLOR_GRAD2, "CACH DUNG: /families [id]");
 		for(new i = 0; i < MAX_GROUPS; i++)
 		{
 			if(arrGroupData[i][g_iGroupType] == GROUP_TYPE_CRIMINAL && strlen(arrGroupData[i][g_szGroupName]) > 0)
@@ -6161,7 +6161,7 @@ CMD:families(playerid, params[])
 					if(PlayerInfo[x][pMember] == i) iMemberCount++;
 				}
 
-				format(szMiscArray, sizeof szMiscArray, "** %s (%d) | Total Members: %d | Members Online: %d", arrGroupData[i][g_szGroupName], i, arrGroupData[i][g_iMemberCount], iMemberCount);
+				format(szMiscArray, sizeof szMiscArray, "** %s (%d) | Tong thanh vien: %d | Dang online: %d", arrGroupData[i][g_szGroupName], i, arrGroupData[i][g_iMemberCount], iMemberCount);
 				SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
 			}
 		}
@@ -6169,9 +6169,9 @@ CMD:families(playerid, params[])
 	else
 	{
 		new grp = strval(params);
-		if(grp < 0 || grp > MAX_GROUPS || strlen(arrGroupData[grp][g_szGroupName]) == 0) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid group ID specified.");
+		if(grp < 0 || grp > MAX_GROUPS || strlen(arrGroupData[grp][g_szGroupName]) == 0) return SendClientMessage(playerid, COLOR_GRAD2, "ID to chuc da chon khong hop le.");
 
-		if(arrGroupData[grp][g_iGroupType] != GROUP_TYPE_CRIMINAL) return SendClientMessage(playerid, COLOR_GRAD2, "That group is not a family / gang.");
+		if(arrGroupData[grp][g_iGroupType] != GROUP_TYPE_CRIMINAL) return SendClientMessage(playerid, COLOR_GRAD2, "To chuc khong phai family / gang.");
 
 		new iCount = 0;
 
@@ -6185,7 +6185,7 @@ CMD:families(playerid, params[])
 			}
 		}
 
-		if(iCount == 0) SendClientMessage(playerid, COLOR_GRAD3, "There are no players online in this gang.");
+		if(iCount == 0) SendClientMessage(playerid, COLOR_GRAD3, "Chua co nguoi online trong bang nhom nay.");
 	}
 	return 1;
 }
@@ -6203,7 +6203,7 @@ CMD:orgs(playerid, params[])
 			{
 				if(PlayerInfo[x][pMember] == i) iMemberCount++;
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, "** %s | Total Members: %d | Members Online: %i", arrGroupData[i][g_szGroupName], arrGroupData[i][g_iMemberCount], iMemberCount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "** %s | Tong thanh vien: %d | Dang online: %i", arrGroupData[i][g_szGroupName], arrGroupData[i][g_iMemberCount], iMemberCount);
 		}
 	}
 	return 1;
@@ -6212,7 +6212,7 @@ CMD:orgs(playerid, params[])
 CMD:clothes(playerid, params[])
 {
 	new biz = InBusiness(playerid);
-	if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not in a Family/Gang!");
+	if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Family/Gang!");
 	if (biz != INVALID_BUSINESS_ID && Businesses[biz][bType] == BUSINESS_TYPE_CLOTHING)
 	{
 		new fSkin[MAX_GROUP_RANKS];
@@ -6220,9 +6220,9 @@ CMD:clothes(playerid, params[])
 		{
 			fSkin[i] = arrGroupData[PlayerInfo[playerid][pMember]][g_iClothes][i];
 		}
-		ShowModelSelectionMenuEx(playerid, fSkin, MAX_GROUP_RANKS, "Change your clothes.", DYNAMIC_FAMILY_CLOTHES, 0.0, 0.0, -55.0);
+		ShowModelSelectionMenuEx(playerid, fSkin, MAX_GROUP_RANKS, "Doi quan ao.", DYNAMIC_FAMILY_CLOTHES, 0.0, 0.0, -55.0);
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in a clothing shop.");
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o trong cua hang quan ao.");
 	return true;
 }
 
@@ -6230,7 +6230,7 @@ stock ShowPlayerCrimeDialog(playerid)
 {
 	new crimeName[41];
 	new szCrime[1200];
-	format(szCrime, sizeof(szCrime), "----Misdemeanors----\n");
+	format(szCrime, sizeof(szCrime), "----Khinh toi----\n");
 	for(new i = 0; i < sizeof(SuspectCrimes); i++)
 	{
 		if(SuspectCrimeInfo[i][0] == 0)
@@ -6241,7 +6241,7 @@ stock ShowPlayerCrimeDialog(playerid)
 		    strcat(szCrime, "\n");
 		}
 	}
-	strcat(szCrime, "----Felonies----\n");
+	strcat(szCrime, "----Trong toi----\n");
 	for(new i = 0; i < sizeof(SuspectCrimes); i++)
 	{
 		if(SuspectCrimeInfo[i][0] == 1)
@@ -6253,7 +6253,7 @@ stock ShowPlayerCrimeDialog(playerid)
 		}
 	}
 	//strcat(szCrime, "Other (Not Listed)");
-	return ShowPlayerDialogEx(playerid, DIALOG_SUSPECTMENU, DIALOG_STYLE_LIST, "Select a committed crime", szCrime, "Select", "Exit");
+	return ShowPlayerDialogEx(playerid, DIALOG_SUSPECTMENU, DIALOG_STYLE_LIST, "Chon toi da pham", szCrime, "Chon", "Thoat");
 }
 
 CMD:lockerbalance(playerid, params[])
@@ -6266,20 +6266,20 @@ CMD:lockerbalance(playerid, params[])
 			if(arrGroupData[GroupID][g_iWeapons][s] != 0) weps++;
 		}
 		szMiscArray[0] = 0;
-		SendClientMessageEx(playerid, COLOR_WHITE, "Locker: Weapons: %d/50 | Cash: $%s | Pot: %d | Crack: %d | Meth: %d | Ecstasy: %d | Heroin: %d | Syringes: %d | Materials: %d ", weps, number_format(arrGroupData[GroupID][g_iBudget]), arrGroupData[GroupID][g_iPot], arrGroupData[GroupID][g_iCrack],
+		SendClientMessageEx(playerid, COLOR_WHITE, "Tu: Vu khi: %d/50 | Tien: $%s | Pot: %d | Crack: %d | Meth: %d | Ecstasy: %d | Heroin: %d | Syringes: %d | Vat lieu: %d ", weps, number_format(arrGroupData[GroupID][g_iBudget]), arrGroupData[GroupID][g_iPot], arrGroupData[GroupID][g_iCrack],
 			arrGroupData[GroupID][g_iMeth], arrGroupData[GroupID][g_iEcstasy], arrGroupData[GroupID][g_iHeroin], arrGroupData[GroupID][g_iSyringes], arrGroupData[GroupID][g_iMaterials]);
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You're not in a criminal group.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc to chuc toi pham.");
 	return 1;
 }
 
 CMD:turnout(playerid, params[])
 {
-	if(!IsACop(playerid) && !IsAMedic(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a Law Enforcement Officer/Medic.");
+	if(!IsACop(playerid) && !IsAMedic(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong phai Law Enforcement Officer/Medic.");
 	new closestCar = GetClosestCar(playerid, .fRange = 8.0);
-	if(closestCar == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near any vehicle!");
-	if(!IsACopCar(closestCar) && !IsAnAmbulance(closestCar)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near a group vehicle!");
-    return ShowPlayerDialogEx(playerid, DIALOG_GROUP_TURNOUT, DIALOG_STYLE_LIST, "Turnout", IsFirstAid(playerid) ? ("SWAT\nLS Fire\nSF Fire\nLV Fire\nOriginal Clothes"):("SWAT\nOriginal Clothes"), "Select", "Cancel");
+	if(closestCar == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan xe nao!");
+	if(!IsACopCar(closestCar) && !IsAnAmbulance(closestCar)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan xe to chuc!");
+    return ShowPlayerDialogEx(playerid, DIALOG_GROUP_TURNOUT, DIALOG_STYLE_LIST, "Turnout", IsFirstAid(playerid) ? ("SWAT\nLS Fire\nSF Fire\nLV Fire\nQuan ao cu"):("SWAT\nQuan ao cu"), "Chon", "Huy");
 }
 
 MemberCount(groupID)
@@ -6326,8 +6326,8 @@ public OnShowGroupWeapons(playerid, iGroupID) {
 		format(szMiscArray, sizeof(szMiscArray), "%s\n[%d]%s (%d)",szMiscArray, i, Weapon_ReturnName(i), iCount);
 	}
 
-	strcat(szMiscArray, "\nDeposit Weapon");
-	ShowPlayerDialogEx(playerid, DIALOG_GROUP_WEAPONSAFE, DIALOG_STYLE_LIST, "Gang Weapon Safe", szMiscArray, "Select", "Cancel");
+	strcat(szMiscArray, "\nGui vu khi");
+	ShowPlayerDialogEx(playerid, DIALOG_GROUP_WEAPONSAFE, DIALOG_STYLE_LIST, "Ket vu khi bang nhom", szMiscArray, "Chon", "Huy");
 
 	return 1;
 }
@@ -6336,7 +6336,7 @@ stock WithdrawGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount = 1) {
 
 	szMiscArray[0] = 0;
 
-	if(PlayerInfo[playerid][pRank] < arrGroupData[iGroupID][g_iWithdrawRank][3] && playerid != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to withdraw weapons from the locker!");
+	if(PlayerInfo[playerid][pRank] < arrGroupData[iGroupID][g_iWithdrawRank][3] && playerid != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong co quyen rut vu khi tu tu!");
 
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `gWeaponsNew` SET `%d` = `%d` - %d WHERE `id` = '%d'", iWeaponID, iWeaponID, iAmount, iGroupID+1);
 
@@ -6356,10 +6356,10 @@ public OnWithdrawGroupWeapons(playerid, iGroupID, iWeaponID, iAmount) {
 		format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn a %s from the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(iWeaponID));
 		GroupLog(iGroupID-1, szMiscArray);
 		if(iWeaponID != 22 && iWeaponID != 19){
-			format(szMiscArray, sizeof(szMiscArray), "You have withdrawn a %s from the locker.", Weapon_ReturnName(iWeaponID));
+			format(szMiscArray, sizeof(szMiscArray), "Ban da rut %s tu tu do.", Weapon_ReturnName(iWeaponID));
 		}
 		else {
-			format(szMiscArray, sizeof(szMiscArray), "You have withdrawn a Colt from the locker.");
+			format(szMiscArray, sizeof(szMiscArray), "Ban da rut Colt tu tu do.");
 		}
 		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	}
@@ -6395,7 +6395,7 @@ public OnAddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount) {
 		format(szMiscArray, sizeof(szMiscArray), "%s has deposited a %s into the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(iWeaponID));
 		GroupLog(iGroupID-1, szMiscArray);
 
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited a %s into the locker.", Weapon_ReturnName(iWeaponID));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da cat %s vao tu do.", Weapon_ReturnName(iWeaponID));
 	}
 	else {
 		format(szMiscArray, sizeof(szMiscArray), "A %s has been deposited into the locker (x%d).", Weapon_ReturnName(iWeaponID), iAmount);

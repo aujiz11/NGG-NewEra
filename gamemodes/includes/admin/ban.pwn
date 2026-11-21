@@ -7,7 +7,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 		case DIALOG_MONEYFARMING: {
 			if(response) {
-				if(strcmp(inputtext, "Ban All", true) == 0) {
+				if(strcmp(inputtext, "Cam tat ca", true) == 0) {
 
 					new szIP[16];
 					GetPVarString(playerid, "MF_IP", szIP, sizeof(szIP));
@@ -56,20 +56,20 @@ public OnCreateBan(iBanCreator, iPlayerID, szIPAddress[], iBanned, szReason[], i
 			szMiscArray[0] = 0;
 			GetPVarString(iBanCreator, "BanningName", szMiscArray, MAX_PLAYER_NAME);
 			DeletePVar(iBanCreator, "BanningName");
-			format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s was offline banned by %s", szMiscArray, GetPlayerNameEx(iBanCreator));
+			format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s da bi %s cam offline", szMiscArray, GetPlayerNameEx(iBanCreator));
 			return ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 		}
 
 		else if(iPlayerID != INVALID_PLAYER_ID && IsPlayerConnected(iPlayerID)) {
 
 			if(iBanCreator == INVALID_PLAYER_ID) {
-				format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s was auto-banned (%s)", GetPlayerNameEx(iPlayerID), szReason);
+				format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s bi tu dong cam (%s)", GetPlayerNameEx(iPlayerID), szReason);
 			}
 			else if(iBanCreator != INVALID_PLAYER_ID && iPermBan == 0) {
-				format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s was banned by %s (%s)", GetPlayerNameEx(iPlayerID), GetPlayerNameEx(iBanCreator), szReason);
+				format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s da bi %s cam (%s)", GetPlayerNameEx(iPlayerID), GetPlayerNameEx(iBanCreator), szReason);
 			}
 			else if(iBanCreator != INVALID_PLAYER_ID && iPermBan == 1) {
-				format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s was permanently banned by %s (%s)", GetPlayerNameEx(iPlayerID), GetPlayerNameEx(iBanCreator), szReason);
+				format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s da bi %s cam vinh vien (%s)", GetPlayerNameEx(iPlayerID), GetPlayerNameEx(iBanCreator), szReason);
 			}
 
 			if(!iSilentBan) {
@@ -86,13 +86,13 @@ public OnCreateBan(iBanCreator, iPlayerID, szIPAddress[], iBanned, szReason[], i
 
 		else {
 
-			format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has banned IP %s (%s)", GetPlayerNameEx(iBanCreator), szIPAddress, szReason);
+			format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s da cam IP %s (%s)", GetPlayerNameEx(iBanCreator), szIPAddress, szReason);
 			return ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 
 		}
 
 	}
-	else SendClientMessageEx(iBanCreator, COLOR_YELLOW, "There was an issue creating that ban ...");
+	else SendClientMessageEx(iBanCreator, COLOR_YELLOW, "Khong the tao lenh cam nay...");
 
 	return 1;
 }
@@ -120,28 +120,31 @@ public OnRemoveBan(iRemover, iBanned, szIPAddress[]) {
 
 		new iRows = cache_affected_rows();
 
-		if(!iRows) return SendClientMessageEx(iRemover, COLOR_YELLOW, "No bans matching that criteria were found");
+		if(!iRows) return SendClientMessageEx(iRemover, COLOR_YELLOW, "Khong tim thay lenh cam phu hop");
 		else {
 
 			if(!isnull(szIPAddress)) {
-				format(szMiscArray, sizeof(szMiscArray), "%s unbanned IP %s", GetPlayerNameEx(iRemover), szIPAddress);
+				format(szMiscArray, sizeof(szMiscArray), "%s da go cam IP %s", GetPlayerNameEx(iRemover), szIPAddress);
 				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+				format(szMiscArray, sizeof(szMiscArray), "%s unbanned IP %s", GetPlayerNameEx(iRemover), szIPAddress);
 				Log("logs/unbans.log", szMiscArray);
 			}
 
 			if(iBanned != INVALID_PLAYER_ID) {
 				szMiscArray[0] = 0;
-				GetPVarString(iRemover, "UnbanName", szMiscArray, MAX_PLAYER_NAME);
+				new name[MAX_PLAYER_NAME];
+				GetPVarString(iRemover, "UnbanName", name, sizeof(name));
 				DeletePVar(iRemover, "UnbanName");
-				format(szMiscArray, sizeof(szMiscArray), "%s unbanned %s.", GetPlayerNameEx(iRemover), szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%s da go cam %s.", GetPlayerNameEx(iRemover), name);
 				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+				format(szMiscArray, sizeof(szMiscArray), "%s unbanned %s.", GetPlayerNameEx(iRemover), name);
 				Log("logs/unbans.log", szMiscArray);
 			}
 
-			SendClientMessageEx(iRemover, COLOR_WHITE, "%d ban records removed.", iRows);
+			SendClientMessageEx(iRemover, COLOR_WHITE, "Da go %d ban ghi cam.", iRows);
 		}
 	}
-	else SendClientMessageEx(iRemover, COLOR_YELLOW, "There was an issue removing that ban ...");
+	else SendClientMessageEx(iRemover, COLOR_YELLOW, "Khong the go lenh cam nay...");
 
 	return 1;
 }
@@ -180,7 +183,7 @@ public InitiateOfflineBan(iBanCreator, szReason[], iLength) {
 		cache_get_value_name_int(0, "id", id);
 		cache_get_value_name(0, "IP", szIPAddress);
 		if(cache_get_value_name_int(0, "AdminLevel", value) > PlayerInfo[iBanCreator][pAdmin]) {
-			return SendClientMessageEx(iBanCreator, COLOR_GREY, "You cannot ban a player with a higher admin level than you.");
+			return SendClientMessageEx(iBanCreator, COLOR_GREY, "Khong the cam Admin cap cao hon ban.");
 		}
 		return CreateBan(iBanCreator, id, INVALID_PLAYER_ID, szIPAddress, szReason, iLength);
 	}
@@ -209,7 +212,7 @@ public InitiateIPBan(iBanCreator, szReason[], iLength) {
 			cache_get_value_name(iCount, "Username", szName, MAX_PLAYER_NAME);
 			SetPVarString(iBanCreator, "BanningName", szName);
 			if(cache_get_value_name_int(iCount, "AdminLevel", value) > PlayerInfo[iBanCreator][pAdmin]) {
-				SendClientMessageEx(iBanCreator, COLOR_GREY, "[SYSTEM]: Couldn't ban account ID %d (higher admin level than you).", id);
+				SendClientMessageEx(iBanCreator, COLOR_GREY, "[SYSTEM]: Khong the cam tai khoan ID %d (Admin cap cao hon ban).", id);
 			}
 			else CreateBan(iBanCreator, id, INVALID_PLAYER_ID, szIPAddress, szReason, iLength);
 			iCount++;
@@ -241,14 +244,14 @@ public OnCheckBan(iPlayerID)
 		SetTimerEx("KickEx", 1000, false, "i", iPlayerID);
 		*/
 		if(iDate > gettime()) {
-			SendClientMessageEx(iPlayerID, COLOR_RED, "This account or IP is currently banned.");
-			format(szMiscArray, sizeof(szMiscArray), "Reason: %s - Days left (GMT 0): %s", szMiscArray, date(iDate, 1));
+			SendClientMessageEx(iPlayerID, COLOR_RED, "Tai khoan hoac IP nay dang bi cam.");
+			format(szMiscArray, sizeof(szMiscArray), "Ly do: %s - Con lai (GMT 0): %s", szMiscArray, date(iDate, 1));
 			SendClientMessage(iPlayerID, COLOR_RED, szMiscArray);
 			SetTimerEx("KickEx", 1000, false, "i", iPlayerID);
 			return 1;
 		}
 		else {
-			SendClientMessageEx(iPlayerID, COLOR_WHITE, "Your ban has expired. You have now been unbanned.");
+			SendClientMessageEx(iPlayerID, COLOR_WHITE, "Lenh cam da het han. Ban da duoc go cam.");
 			RemoveBan(INVALID_PLAYER_ID, PlayerInfo[iPlayerID][pId], PlayerInfo[iPlayerID][pIP]);
 			return 1;
 		}
@@ -260,8 +263,8 @@ public OnCheckBan(iPlayerID)
 
 CMD:unbanip(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /unbanip [ip]");
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /unbanip [ip]");
 
 	RemoveBan(playerid, INVALID_PLAYER_ID, params);
 
@@ -270,8 +273,8 @@ CMD:unbanip(playerid, params[]) {
 
 CMD:unban(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pBanAppealer] < 1 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /unban [username]");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pBanAppealer] < 1 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /unban [username]");
 
 	//if(strfind(params, "_", true, 0) != -1) SendClientMessage(playerid, COLOR_GRAD1, "Please use an underscore as spaces for non-admin accounts.");
 	SetPVarString(playerid, "UnbanName", params);
@@ -290,21 +293,21 @@ CMD:ban(playerid, params[]) {
 		iLength,
 		iSilentBan = 0;
 
-	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay");
 	if(sscanf(params, "udD(0)s[64]", iTargetID, iLength, iSilentBan, szReason)) {
 
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ban [playerid] [length in days] [silent(1=yes 2=no)] [reason]");
-		SendClientMessageEx(playerid, COLOR_GREY, "** 1 = Yes, the ban will only broadcast to admins | 2 = No, the ban will be globally broadcasted **");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /ban [playerid] [length in days] [silent(1=yes 2=no)] [reason]");
+		SendClientMessageEx(playerid, COLOR_GREY, "** 1 = Co, chi bao lenh cam cho Admin | 2 = Khong, thong bao lenh cam toan may chu **");
 		return 1;
 	}
-	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected");
+	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do chua ket noi");
 	if(!(0 <= iSilentBan < 2)) {
 
-		SendClientMessageEx(playerid, COLOR_GREY, "You must specify a value that is either 0 or 1");
-		SendClientMessageEx(playerid, COLOR_GREY, "** 1 = Yes, the ban will only broadcast to admins | 2 = No, the ban will be globally broadcasted **");
+		SendClientMessageEx(playerid, COLOR_GREY, "Hay nhap gia tri 0 hoac 1");
+		SendClientMessageEx(playerid, COLOR_GREY, "** 1 = Co, chi bao lenh cam cho Admin | 2 = Khong, thong bao lenh cam toan may chu **");
 		return 1;
 	}
-	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "That player is a higher ranking admin than you");
+	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do la Admin cap cao hon ban");
 
 	CreateBan(playerid, PlayerInfo[iTargetID][pId], iTargetID, GetPlayerIpEx(iTargetID), szReason, iLength, iSilentBan);
 
@@ -318,21 +321,21 @@ CMD:permban(playerid, params[]) {
 		szReason[64],
 		iSilentBan = 0;
 
-	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay");
 	if(sscanf(params, "us[64]D(0)", iTargetID, szReason, iSilentBan)) {
 
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /permban [playerid] [reason] [silent(optional)]");
-		SendClientMessageEx(playerid, COLOR_GREY, "** Acceptable values for silent are 0=No and 1=Yes, Default is 0 **");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /permban [playerid] [reason] [silent(optional)]");
+		SendClientMessageEx(playerid, COLOR_GREY, "** Gia tri silent: 0=Khong, 1=Co, mac dinh la 0 **");
 		return 1;
 	}
-	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected");
+	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do chua ket noi");
 	if(!(0 <= iSilentBan < 2)) {
 
-		SendClientMessageEx(playerid, COLOR_GREY, "You must specify a value that is either 0 or 1");
-		SendClientMessageEx(playerid, COLOR_GREY, "** 1 = Yes, the ban will only broadcast to admins | 2 = No, the ban will be globally broadcasted **");
+		SendClientMessageEx(playerid, COLOR_GREY, "Hay nhap gia tri 0 hoac 1");
+		SendClientMessageEx(playerid, COLOR_GREY, "** 1 = Co, chi bao lenh cam cho Admin | 2 = Khong, thong bao lenh cam toan may chu **");
 		return 1;
 	}
-	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "That player is a higher ranking admin than you");
+	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do la Admin cap cao hon ban");
 
 	CreateBan(playerid, PlayerInfo[iTargetID][pId], iTargetID, GetPlayerIpEx(iTargetID), szReason, 9999999, iSilentBan, 1);
 
@@ -345,21 +348,21 @@ CMD:hackban(playerid, params[]) {
 		iTargetID,
 		iSilentBan = 0;
 
-	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay");
 	if(sscanf(params, "uD(0)", iTargetID, iSilentBan)) {
 
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hackban [playerid] [silent(optional)]");
-		SendClientMessageEx(playerid, COLOR_GREY, "** Acceptable values for silent are 0=No and 1=Yes, Default is 0 **");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /hackban [playerid] [silent(optional)]");
+		SendClientMessageEx(playerid, COLOR_GREY, "** Gia tri silent: 0=Khong, 1=Co, mac dinh la 0 **");
 		return 1;
 	}
-	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected");
+	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do chua ket noi");
 	if(!(0 <= iSilentBan < 2)) {
 
-		SendClientMessageEx(playerid, COLOR_GREY, "You must specify a value that is either 0 or 1");
-		SendClientMessageEx(playerid, COLOR_GREY, "** 1 = Yes, the ban will only broadcast to admins | 2 = No, the ban will be globally broadcasted **");
+		SendClientMessageEx(playerid, COLOR_GREY, "Hay nhap gia tri 0 hoac 1");
+		SendClientMessageEx(playerid, COLOR_GREY, "** 1 = Co, chi bao lenh cam cho Admin | 2 = Khong, thong bao lenh cam toan may chu **");
 		return 1;
 	}
-	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "That player is a higher ranking admin than you");
+	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do la Admin cap cao hon ban");
 
 	CreateBan(playerid, PlayerInfo[iTargetID][pId], iTargetID, GetPlayerIpEx(iTargetID), "Hacking", 180, iSilentBan);
 
@@ -372,21 +375,21 @@ CMD:saban(playerid, params[]) {
 		iTargetID,
 		iSilentBan = 0;
 
-	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay");
 	if(sscanf(params, "uD(0)", iTargetID, iSilentBan)) {
 
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /saban [playerid] [silent(optional)]");
-		SendClientMessageEx(playerid, COLOR_GREY, "** Acceptable values for silent are 0=No and 1=Yes, Default is 0 **");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /saban [playerid] [silent(optional)]");
+		SendClientMessageEx(playerid, COLOR_GREY, "** Gia tri silent: 0=Khong, 1=Co, mac dinh la 0 **");
 		return 1;
 	}
-	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected");
+	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do chua ket noi");
 	if(!(0 <= iSilentBan < 2)) {
 
-		SendClientMessageEx(playerid, COLOR_GREY, "You must specify a value that is either 0 or 1");
-		SendClientMessageEx(playerid, COLOR_GREY, "** 1 = Yes, the ban will only broadcast to admins | 2 = No, the ban will be globally broadcasted **");
+		SendClientMessageEx(playerid, COLOR_GREY, "Hay nhap gia tri 0 hoac 1");
+		SendClientMessageEx(playerid, COLOR_GREY, "** 1 = Co, chi bao lenh cam cho Admin | 2 = Khong, thong bao lenh cam toan may chu **");
 		return 1;
 	}
-	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "That player is a higher ranking admin than you");
+	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do la Admin cap cao hon ban");
 
 	CreateBan(playerid, PlayerInfo[iTargetID][pId], iTargetID, GetPlayerIpEx(iTargetID), "Server Advertising", 180, iSilentBan);
 
@@ -397,7 +400,7 @@ CMD:moneyfarmban(playerid, params[]) {
 
 	if(PlayerInfo[playerid][pAdmin] < 99999) return 1;
 	new uPlayer;
-	if(sscanf(params, "u", uPlayer)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /moneyfarmban [playerid / name]");
+	if(sscanf(params, "u", uPlayer)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /moneyfarmban [playerid / name]");
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `Username`, `IP`, `Money`, `Bank`, `SPos_x`, `SPos_y`, `SPos_z` FROM `accounts` WHERE `IP` = '%s'", GetPlayerIpEx(uPlayer));
 	mysql_tquery(MainPipeline, szMiscArray, "OnCheckMoneyFarm", "is", playerid, GetPlayerIpEx(uPlayer));
 	return 1;
@@ -425,14 +428,14 @@ public OnCheckMoneyFarm(playerid, szIP[]) {
 			cache_get_value_name_float(iCount, "SPos_z", iFloat),
 			szZone, MAX_ZONE_NAME);
 		
-		format(szMiscArray, sizeof(szMiscArray), "%s\n%s - %s - Hand: $%s Bank: $%s - LastLocation: %s", szMiscArray, szName, szIP,
+		format(szMiscArray, sizeof(szMiscArray), "%s\n%s - %s - Mat: $%s Bank: $%s - Vi tri cuoi: %s", szMiscArray, szName, szIP,
 			number_format(cache_get_value_name_int(iCount, "Money", iValue)), number_format(cache_get_value_name_int(iCount, "Bank", iValue)), szZone);
 		iCount++;
 	}
-	strcat(szMiscArray, "\n___________________\nBan All", sizeof(szMiscArray));
+	strcat(szMiscArray, "\n___________________\nCam tat ca", sizeof(szMiscArray));
 	SetPVarString(playerid, "MF_IP", szIP);
-	format(szTitle, sizeof(szTitle), "%s - Moneyfarm check", szIP);
-	ShowPlayerDialogEx(playerid, DIALOG_MONEYFARMING, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "<<");
+	format(szTitle, sizeof(szTitle), "%s - Kiem tra farm", szIP);
+	ShowPlayerDialogEx(playerid, DIALOG_MONEYFARMING, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Chon", "<<");
 }
 
 
@@ -443,10 +446,10 @@ CMD:banip(playerid, params[]) {
 		szReason[64],
 		iLength;
 
-	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
-	if(sscanf(params, "s[16]ds[64]", szIP, iLength, szReason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /banip [ip] [length in days] [reason]");
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay");
+	if(sscanf(params, "s[16]ds[64]", szIP, iLength, szReason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /banip [ip] [length in days] [reason]");
 
-	if(IsPlayerConnected(ReturnUserFromIP(szIP))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /ban.");
+	if(IsPlayerConnected(ReturnUserFromIP(szIP))) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi dang online, hay dung /ban.");
 
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `id`,`AdminLevel`,`IP` FROM `accounts` WHERE `IP` = '%e'", szIP);
 	mysql_tquery(MainPipeline, szMiscArray, "InitiateIPBan","isi", playerid, szReason, iLength);
@@ -462,10 +465,10 @@ CMD:banaccount(playerid, params[]) {
 		szReason[64],
 		iLength;
 
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pBanAppealer] < 2 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
-	if(sscanf(params, "s[24]ds[64]", szName, iLength, szReason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /banaccount [username] [length in days] [reason]");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pBanAppealer] < 2 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay");
+	if(sscanf(params, "s[24]ds[64]", szName, iLength, szReason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /banaccount [username] [length in days] [reason]");
 
-	if(IsPlayerConnected(ReturnUser(szName))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /ban.");
+	if(IsPlayerConnected(ReturnUser(szName))) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi dang online, hay dung /ban.");
 
 	SetPVarString(playerid, "BanningName", szName);
 
@@ -480,13 +483,13 @@ CMD:oldunban(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pBanAppealer] >= 1)
 	{
 		new query[256], tmpName[24];
-		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /oldunban [player name]");
+		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /oldunban [player name]");
 
 		mysql_escape_string(params, tmpName);
 		SetPVarString(playerid, "OnUnbanPlayer", tmpName);
 
 		mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Band`=0, `Warnings`=0, `Disabled`=0 WHERE `Username`='%s' AND `PermBand` < 3", tmpName);
-		SendClientMessageEx(playerid, COLOR_YELLOW, "Attempting to unban %s...", tmpName);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Dang go cam cho %s...", tmpName);
 		mysql_tquery(MainPipeline, query, "OnUnbanPlayer", "i", playerid);
 
 		mysql_format(MainPipeline, query, sizeof(query), "SELECT `IP` FROM `accounts` WHERE `Username`='%s'", tmpName);
@@ -494,7 +497,7 @@ CMD:oldunban(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	}
 	return 1;
 }

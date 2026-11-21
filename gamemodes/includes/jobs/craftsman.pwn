@@ -100,12 +100,12 @@ public firstaidexpire(playerid, session)
 {
 	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session || !GetPVarInt(playerid, "usingfirstaid")) return 1;
 	Craftsman_StopFirstAid(playerid);
-	SendClientMessageEx(playerid, COLOR_GRAD1, "Your first aid kit no longer takes effect.");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Bo so cuu da het tac dung.");
 	foreach(new i: Player)
 	{
 		if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid)
 		{
-			SendClientMessageEx(i, COLOR_ORANGE, "Note{ffffff}: First Aid effect has expired on the person you are damage checking.");
+			SendClientMessageEx(i, COLOR_ORANGE, "Luu y{ffffff}: First Aid da het tac dung tren nguoi ban kiem tra thuong tich.");
 		}
 	}
 	return 1;
@@ -116,7 +116,7 @@ public rccam(playerid, session)
 {
 	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session || !GetPVarInt(playerid, "rccam")) return 1;
 	Craftsman_StopRCCam(playerid);
-	SendClientMessageEx(playerid, COLOR_GRAD1, "Your RC Cam has run out of batteries!");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "RC Cam cua ban da het pin!");
 	return 1;
 }
 
@@ -125,18 +125,18 @@ public cameraexpire(playerid, session)
 {
 	if(!IsPlayerConnected(playerid) || g_arrQueryHandle[playerid] != session || !GetPVarInt(playerid, "cameraactive")) return 1;
 	Craftsman_DestroyCamera(playerid);
-	SendClientMessageEx(playerid, COLOR_GRAD1, "Your camera ran out of batteries!");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Camera cua ban da het pin!");
 	return 1;
 }
 
 CMD:pc(playerid, params[])
 {
-	if(PlayerInfo[playerid][pSurveillance] <= 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have a surveillance camera!");
-	if(GetPVarInt(playerid, "cameraactive")) return SendClientMessageEx(playerid, COLOR_GRAD1, "Wait for your other camera to expire.");
+	if(PlayerInfo[playerid][pSurveillance] <= 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co camera giam sat!");
+	if(GetPVarInt(playerid, "cameraactive")) return SendClientMessageEx(playerid, COLOR_GRAD1, "Hay cho camera kia het tac dung.");
 	new Float:X, Float:Y, Float:Z, string[128];
 	GetPlayerPos(playerid, X, Y, Z);
-	Camera3D[playerid] = CreateDynamic3DTextLabel("** A small camera. **", 0x008080FF, X, Y, Z, 4.0, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = GetPlayerInterior(playerid));
-	if(Camera3D[playerid] == Text3D:INVALID_STREAMER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Unable to place your camera right now.");
+	Camera3D[playerid] = CreateDynamic3DTextLabel("** Mot camera nho. **", 0x008080FF, X, Y, Z, 4.0, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = GetPlayerInterior(playerid));
+	if(Camera3D[playerid] == Text3D:INVALID_STREAMER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Chua the dat camera luc nay.");
 	SetPVarInt(playerid, "cameraactive", 1);
 	SetPVarFloat(playerid, "cameraX", X);
 	SetPVarFloat(playerid, "cameraY", Y);
@@ -145,15 +145,15 @@ CMD:pc(playerid, params[])
 	SetPVarInt(playerid, "cameraint", GetPlayerInterior(playerid));
 	SetPVarInt(playerid, "cameraexpire", SetTimerEx("cameraexpire", 120000, false, "ii", playerid, g_arrQueryHandle[playerid]));
 	PlayerInfo[playerid][pSurveillance]--;
-	SendClientMessageEx(playerid, COLOR_GRAD1, "You placed your camera, go hide and use /sc. Batteries expire in 2 minutes.");
-	format(string, sizeof(string), "* %s places something on the ground.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Da dat camera, hay an nap va dung /sc. Pin het sau 2 phut.");
+	format(string, sizeof(string), "* %s dat mot vat xuong dat.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	return 1;
 }
 
 CMD:sc(playerid, params[])
 {
-	if(!GetPVarInt(playerid, "cameraactive")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You have no active camera!");
+	if(!GetPVarInt(playerid, "cameraactive")) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban chua co camera hoat dong!");
 	if(GetPVarInt(playerid, "camerasc"))
 	{
 		Craftsman_StopCameraView(playerid);
@@ -161,9 +161,9 @@ CMD:sc(playerid, params[])
 	}
 	if(GetPVarInt(playerid, "rccam") || GetPVarType(playerid, "WatchingTV")
 		|| GetPlayerState(playerid) != PLAYER_STATE_ONFOOT || PlayerIsDead[playerid] || GetPVarInt(playerid, "Injured") || PlayerInfo[playerid][pHospital] > 0)
-		return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Ban chua the lam viec nay.");
 	new Float:X, Float:Y, Float:Z, string[128];
-	format(string, sizeof(string), "* %s stares into a small screen.", GetPlayerNameEx(playerid));
+	format(string, sizeof(string), "* %s nhin vao mot man hinh nho.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	GetPlayerPos(playerid, X, Y, Z);
 	SetPVarFloat(playerid, "cameraX2", X);
@@ -183,13 +183,13 @@ CMD:sc(playerid, params[])
 
 CMD:dc(playerid, params[])
 {
-	if(!GetPVarInt(playerid, "cameraactive")) return SendClientMessageEx(playerid, COLOR_GRAD1, "There is nothing to destroy!");
+	if(!GetPVarInt(playerid, "cameraactive")) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong co gi de huy!");
 	if(!GetPVarInt(playerid, "camerasc") && (GetPlayerVirtualWorld(playerid) != GetPVarInt(playerid, "cameravw")
 		|| GetPlayerInterior(playerid) != GetPVarInt(playerid, "cameraint")
 		|| !IsPlayerInRangeOfPoint(playerid, 5.0, GetPVarFloat(playerid, "cameraX"), GetPVarFloat(playerid, "cameraY"), GetPVarFloat(playerid, "cameraZ"))))
-		return SendClientMessageEx(playerid, COLOR_WHITE, "You are not near your camera.");
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong o gan camera.");
 	Craftsman_DestroyCamera(playerid);
-	SendClientMessageEx(playerid, COLOR_GRAD1, "Camera Destroyed!");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Camera da bi huy!");
 	return 1;
 }
 
@@ -201,24 +201,24 @@ CMD:rccam(playerid, params[])
 		return 1;
 	}
 	if(PlayerInfo[playerid][pRccam] <= 0) 
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have an RC Cam!");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co RC Cam!");
 	
 	if(GetPVarType(playerid, "IsInArena") || GetPVarType(playerid, "WatchingTV") || GetPVarInt(playerid, "camerasc")) 
-		return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Ban chua the lam viec nay.");
 	
 	if(GetPVarInt(playerid, "Injured") || PlayerIsDead[playerid] || PlayerInfo[playerid][pHospital] > 0 || GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) 
-		return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Ban chua the lam viec nay.");
 	
 	if(GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0) 
-		return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Ban chua the lam viec nay.");
 	
 	if(PlayerInfo[playerid][pJailTime] > 0) 
-		return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this while in prison.");
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the dung khi o tu.");
 	
 	new Float:X, Float:Y, Float:Z, string[128];
 	GetPlayerPos(playerid, X, Y, Z);
 	new vehicleid = CreateVehicle(594, X, Y, Z, 0.0, 0, 0, -1);
-	if(vehicleid == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Unable to place your RC Cam right now.");
+	if(vehicleid == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Chua the dat RC Cam luc nay.");
 	SetPVarFloat(playerid, "rcX", X);
 	SetPVarFloat(playerid, "rcY", Y);
 	SetPVarFloat(playerid, "rcZ", Z);
@@ -229,26 +229,26 @@ CMD:rccam(playerid, params[])
 	{
 		IsPlayerEntering{playerid} = false;
 		Craftsman_StopRCCam(playerid, false);
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "Unable to use your RC Cam right now.");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Chua the dung RC Cam luc nay.");
 	}
 	SetPVarInt(playerid, "rccamtimer", SetTimerEx("rccam", 60000, false, "ii", playerid, g_arrQueryHandle[playerid]));
 	PlayerInfo[playerid][pRccam]--;
-	format(string, sizeof(string), "* %s places something on the ground.", GetPlayerNameEx(playerid));
+	format(string, sizeof(string), "* %s dat mot vat xuong dat.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	return 1;
 }
 
 CMD:firstaid(playerid, params[])
 {
-	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
+	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   Khong the lam vay trong Hunger Games Event!");
 	if(GetPVarType(playerid, "IsInArena"))
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay khi o dau truong!");
 		return 1;
 	}
 	if(GetPVarInt(playerid, "Injured") == 1)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban chua the lam viec nay.");
 		return 1;
 	}
 	if(PlayerInfo[playerid][pFirstaid] > 0)
@@ -260,17 +260,17 @@ CMD:firstaid(playerid, params[])
 			SetPVarInt(playerid, "firstaid5", SetTimerEx("firstaid5", 5000, true, "ii", playerid, g_arrQueryHandle[playerid]));
 			SetPVarInt(playerid, "firstaidexpire", SetTimerEx("firstaidexpire", 10*60000, false, "ii", playerid, g_arrQueryHandle[playerid]));
 			SetPVarInt(playerid, "usingfirstaid", 1);
-			format(string, sizeof(string), "* %s uses a first aid kit.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s dung bo so cuu.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "You're already using first aid!");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Ban dang duoc so cuu!");
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have a first aid kit!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co bo so cuu!");
 	}
 	return 1;
 }
@@ -282,41 +282,41 @@ CMD:sweep(playerid, params[])
 		if(PlayerInfo[playerid][pSweepLeft] > 0)
 		{
 			new string[128], giveplayerid;
-			if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sweep [player]");
+			if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /sweep [player]");
 
-			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 			new Float:X, Float:Y, Float:Z;
 			GetPlayerPos(giveplayerid, X, Y, Z);
 			if((Spectating[giveplayerid] != 0 && PlayerInfo[playerid][pAdmin] < 2)
 				|| GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(giveplayerid) || GetPlayerInterior(playerid) != GetPlayerInterior(giveplayerid)
-				|| !IsPlayerInRangeOfPoint(playerid, 4.0, X, Y, Z)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be close to the person.");
+				|| !IsPlayerInRangeOfPoint(playerid, 4.0, X, Y, Z)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban phai o gan nguoi do.");
 			
 			PlayerInfo[playerid][pSweepLeft]--;
-			format(string, sizeof(string), "* %s sweeps a large wand around %s's body...", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			format(string, sizeof(string), "* %s ra cay do lon quanh nguoi %s...", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			if(PlayerInfo[giveplayerid][pBugged] != INVALID_GROUP_ID)
 			{
-				format(string, sizeof(string), "* A small spark is seen as the bug on %s shorts out.", GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "* Tia lua nho loe len khi may nghe len tren %s bi chap.", GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				format(string, sizeof(string), "(bug) %s: *static*", GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "(bug) %s: *nhieu song*", GetPlayerNameEx(giveplayerid));
 				SendBugMessage(giveplayerid, PlayerInfo[giveplayerid][pBugged], string);
 				PlayerInfo[giveplayerid][pBugged] = INVALID_GROUP_ID;
 			}
 			else
 			{
-				ProxDetector(30.0, playerid, "Nothing happens.", COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				ProxDetector(30.0, playerid, "Khong co gi xay ra.", COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Your Bug Sweeper has ran out of batteries!");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Bug Sweeper cua ban da het pin!");
 			PlayerInfo[playerid][pSweep]--;
 			PlayerInfo[playerid][pSweepLeft] = 3;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have a bug sweep!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co may do nghe len!");
 	}
 	return 1;
 }
@@ -328,15 +328,15 @@ CMD:gps(playerid, params[])
 		new string[128];
 		if(GetPVarInt(playerid, "gpsonoff") == 0)
 		{
-			format(string, sizeof(string), "* %s turns on their GPS.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s bat GPS.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "gpsonoff", 1);
-			PlayerTextDrawSetString(playerid, GPS[playerid], "Loading...");
+			PlayerTextDrawSetString(playerid, GPS[playerid], "Dang tai...");
 			PlayerTextDrawShow(playerid, GPS[playerid]);
 		}
 		else
 		{
-			format(string, sizeof(string), "* %s turns off their GPS.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s tat GPS.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			DeletePVar(playerid, "gpsonoff");
 			PlayerTextDrawHide(playerid, GPS[playerid]);
@@ -344,7 +344,7 @@ CMD:gps(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have a GPS!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co GPS!");
 	}
 	return 1;
 }
@@ -361,7 +361,7 @@ CMD:wristwatch(playerid, params[])
 		{
 			SetPVarInt(playerid, "wristwatchonoff", 1);
 			TextDrawShowForPlayer(playerid, WristWatch);
-			format(string, sizeof(string), "* %s turns on their wristwatch.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s bat dong ho deo tay.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		else
@@ -369,13 +369,13 @@ CMD:wristwatch(playerid, params[])
 			KillTimer(GetPVarInt(playerid, "wristwatchtimer"));
 			TextDrawHideForPlayer(playerid, WristWatch);
 			DeletePVar(playerid, "wristwatchonoff");
-			format(string, sizeof(string), "* %s turns off their wristwatch.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s tat dong ho deo tay.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have a wristwatch!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co dong ho deo tay!");
 	}
 	return 1;
 }
@@ -386,18 +386,18 @@ CMD:receiver(playerid, params[])
 	{
 		if(!GetPVarType(playerid, "pReceiverOn"))
 		{
-			SendClientMessageEx(playerid, COLOR_YELLOW, "You've turned on your receiver.");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Ban da bat may thu.");
 			SetPVarInt(playerid, "pReceiverOn", 1);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_YELLOW, "You've turned off your receiver.");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Ban da tat may thu.");
 			DeletePVar(playerid, "pReceiverOn");
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have a receiver.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co may thu.");
 	}
 	return 1;
 }
@@ -405,40 +405,40 @@ CMD:receiver(playerid, params[])
 CMD:smslog(playerid, params[])
 {
 	if(PlayerInfo[playerid][pSmslog] > 0) GetSMSLog(playerid);
-	else return SendClientMessageEx(playerid, COLOR_YELLOW, "    You don't have a SMS log!");
+	else return SendClientMessageEx(playerid, COLOR_YELLOW, "    Ban khong co SMS log!");
 	return 1;
 }
 
 CMD:craft(playerid, params[])
 {
-	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
-	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
+	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban dang o dau truong, chua the lam vay!");
+	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   Khong the lam vay trong Hunger Games Event!");
 	if (!Job_HasJob(playerid, JOB_CRAFTSMAN))
 	{
-		SendClientMessageEx(playerid,COLOR_GREY,"   You are not a Craftsman!");
+		SendClientMessageEx(playerid,COLOR_GREY,"   Ban khong phai Craftsman!");
 		return 1;
 	}
 	if (PlayerInfo[playerid][pJailTime] > 0)
 	{
-		SendClientMessageEx(playerid,COLOR_GREY,"   You can not make things while in jail or prison!");
+		SendClientMessageEx(playerid,COLOR_GREY,"   Khong the che tao khi o tu!");
 		return 1;
 	}
 	new string[128];
 	if (GetPVarInt(playerid, "ArmsTimer") > 0)
 	{
-		SendClientMessageEx(playerid,COLOR_GREY,"   You must wait %d seconds before crafting again.", GetPVarInt(playerid, "ArmsTimer"));
+		SendClientMessageEx(playerid,COLOR_GREY,"   Cho %d giay de che tao tiep.", GetPVarInt(playerid, "ArmsTimer"));
 		return 1;
 	}
 	if(PlayerInfo[playerid][pHospital] > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You can't craft while in the Hospital.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Khong the che tao trong Hospital.");
 		return 1;
 	}
 	new giveplayerid, choice[32], weapon, price;
 	if(sscanf(params, "us[32]", giveplayerid, choice))
 	{
 		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-		SendClientMessageEx(playerid, COLOR_YELLOW, "<< Available crafts >>");
+		SendClientMessageEx(playerid, COLOR_YELLOW, "<< Do che tao >>");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "screwdriver(1,000)	 smslog(2,000)");
 		SendClientMessageEx(playerid, COLOR_GRAD2, "wristwatch(500)	 surveillance(8,000)");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "tire(250)	         lock(500)");
@@ -456,12 +456,12 @@ CMD:craft(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD2, "dildo (300)          spraycan(2000)");
 		SendClientMessageEx(playerid, COLOR_GRAD2, "rimkit (400000)");
 		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /craft [player] [craftname]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /craft [player] [craftname]");
 		return 1;
 	}
 	if(IsPlayerConnected(giveplayerid))
 	{
-		if(HungerPlayerInfo[giveplayerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   This person is not able to receive anything at the moment.");
+		if(HungerPlayerInfo[giveplayerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   Nguoi nay hien chua the nhan do.");
 		enum eCraftRecipe { craftRecipeName[16], craftRecipeMats };
 		static const recipes[][eCraftRecipe] = {
 			{"screwdriver", 1000},
@@ -501,9 +501,9 @@ CMD:craft(playerid, params[])
 			price = recipes[i][craftRecipeMats];
 			break;
 		}
-		if(!weapon) return SendClientMessageEx(playerid, COLOR_GREY, "   Invalid Craft name!");
-		if(weapon == 14) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot craft this right now!");
-		if(PlayerInfo[playerid][pMats] < price) return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough Materials for that!");
+		if(!weapon) return SendClientMessageEx(playerid, COLOR_GREY, "   Ten Craft sai!");
+		if(weapon == 14) return SendClientMessageEx(playerid, COLOR_WHITE, "Chua the che tao vat nay!");
+		if(PlayerInfo[playerid][pMats] < price) return SendClientMessageEx(playerid, COLOR_GREY, "   Khong du vat lieu!");
 		new Float:X, Float:Y, Float:Z;
 		GetPlayerPos(giveplayerid, X, Y, Z);
 		if((Spectating[giveplayerid] == 0 || PlayerInfo[playerid][pAdmin] >= 2)
@@ -514,11 +514,11 @@ CMD:craft(playerid, params[])
 			{
 				if(PlayerInfo[giveplayerid][pPhousekey] == INVALID_HOUSE_ID && PlayerInfo[giveplayerid][pPhousekey2] == INVALID_HOUSE_ID && PlayerInfo[giveplayerid][pPhousekey3] == INVALID_HOUSE_ID)
 				{
-					if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house!");
+					if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu nha!");
 					else
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "They don't own a house!");
-						SendClientMessageEx(giveplayerid, COLOR_GREY, "You don't own a house!");
+						SendClientMessageEx(playerid, COLOR_GREY, "Ho khong so huu nha!");
+						SendClientMessageEx(giveplayerid, COLOR_GREY, "Ban khong so huu nha!");
 						return 1;
 					}
 				}
@@ -580,7 +580,7 @@ CMD:craft(playerid, params[])
 					{
 						PlayerInfo[playerid][pReceiver]++;
 						SetPVarInt(playerid, "pReceiverMLeft", 4);
-						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You will receive the next four department radio messages.");
+						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Ban se nhan bon tin department radio tiep theo.");
 					}
 				case 11:
 					{
@@ -605,7 +605,7 @@ CMD:craft(playerid, params[])
 				case 15:
 					{
 						PlayerInfo[playerid][pMailbox]++;
-						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Type /placemailbox where you want mailbox to be at.");
+						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Dung /placemailbox tai noi muon dat hop thu.");
 					}
 				case 16:
 					{
@@ -617,7 +617,7 @@ CMD:craft(playerid, params[])
 						}
 						else
 						{
-							return SendClientMessageEx(playerid, COLOR_GREY, "You can't hold anymore syringes.");
+							return SendClientMessageEx(playerid, COLOR_GREY, "Khong the giu them ong tiem.");
 						}
 					}
 				case 17:
@@ -634,10 +634,10 @@ CMD:craft(playerid, params[])
 							closet = houseid;
 							break;
 						}
-						if(closet == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You aren't inside of your house!");
+						if(closet == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o trong nha cua minh!");
 						GetPlayerPos(playerid, HouseInfo[closet][hClosetX], HouseInfo[closet][hClosetY], HouseInfo[closet][hClosetZ]);
 						if(IsValidDynamic3DTextLabel(HouseInfo[closet][hClosetTextID])) DestroyDynamic3DTextLabel(HouseInfo[closet][hClosetTextID]);
-						HouseInfo[closet][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[closet][hClosetX], HouseInfo[closet][hClosetY], HouseInfo[closet][hClosetZ] + 0.5, 10.0, .testlos = 1, .worldid = HouseInfo[closet][hIntVW], .interiorid = HouseInfo[closet][hIntIW], .streamdistance = 10.0);
+						HouseInfo[closet][hClosetTextID] = CreateDynamic3DTextLabel("Tu quan ao\n/closet de dung", 0xFFFFFF88, HouseInfo[closet][hClosetX], HouseInfo[closet][hClosetY], HouseInfo[closet][hClosetZ] + 0.5, 10.0, .testlos = 1, .worldid = HouseInfo[closet][hIntVW], .interiorid = HouseInfo[closet][hIntIW], .streamdistance = 10.0);
 						SaveHouse(closet);
 						PlayerInfo[playerid][pMats] -= price;
 						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "/closet(add/remove)");
@@ -647,12 +647,12 @@ CMD:craft(playerid, params[])
 				case 18:
 					{
 						PlayerInfo[playerid][pToolBox] += 15;
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /pickveh(icle) in any car to attempt to lock pick it.");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Dung /pickveh(icle) trong xe de thu pha khoa.");
 					}
 				case 19:
 					{
 						PlayerInfo[playerid][pCrowBar] += 25;
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /cracktrunk in any car that you already lock picked to attempt to open the trunk.");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Dung /cracktrunk trong xe da pha khoa de thu mo cop.");
 					}
 				case 20: GivePlayerValidWeapon(playerid, WEAPON_FLOWER);
 				case 21: GivePlayerValidWeapon(playerid, WEAPON_BRASSKNUCKLE);
@@ -665,22 +665,22 @@ CMD:craft(playerid, params[])
 				case 28: GivePlayerValidWeapon(playerid, WEAPON_SPRAYCAN);
 				case 29: {
 					PlayerInfo[playerid][pRimMod]++;
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /userimkit as a mechanic in any car to modify your rims.");
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Dung /userimkit khi lam mechanic trong xe de doi mam.");
 				}
 				
 				}
-				SendClientMessageEx(playerid, COLOR_GRAD1, "   You have given yourself a %s.", choice);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "   Ban tu cap cho minh %s.", choice);
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 				switch( PlayerInfo[playerid][pSex] )
 				{
-					case 1: format(string, sizeof(string), "* %s created something from Materials, and hands it to himself.", GetPlayerNameEx(playerid));
-					case 2: format(string, sizeof(string), "* %s created something from Materials, and hands it to herself.", GetPlayerNameEx(playerid));
+					case 1: format(string, sizeof(string), "* %s che tao mot vat tu Materials va tu nhan lay.", GetPlayerNameEx(playerid));
+					case 2: format(string, sizeof(string), "* %s che tao mot vat tu Materials va tu nhan lay.", GetPlayerNameEx(playerid));
 				}
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
 			}
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to buy a %s.", GetPlayerNameEx(giveplayerid), choice);
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Craftsman %s wants to sell you a %s, (type /accept craft) to buy.", GetPlayerNameEx(playerid), choice);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban moi %s mua %s.", GetPlayerNameEx(giveplayerid), choice);
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Craftsman %s muon ban %s cho ban, (dung /accept craft) de mua.", GetPlayerNameEx(playerid), choice);
 			CraftOffer[giveplayerid] = playerid;
 			SetPVarInt(giveplayerid, "CraftOfferSession", g_arrQueryHandle[playerid]);
 			CraftId[giveplayerid] = weapon;
@@ -694,13 +694,13 @@ CMD:craft(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 			return 1;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 		return 1;
 	}
 }

@@ -52,23 +52,23 @@ stock PaintballEditMenu(playerid)
 	{
 	    if(PaintBallArena[i][pbLocked] == 0)
  	    {
- 	        format(status,sizeof(status),"Open");
+ 	        format(status,sizeof(status),"Mo");
  	    }
  	    if(PaintBallArena[i][pbLocked] == 1)
  	    {
- 	        format(status,sizeof(status),"Active");
+ 	        format(status,sizeof(status),"Dang choi");
  	    }
  	    if(PaintBallArena[i][pbLocked] == 2)
  	    {
- 	        format(status,sizeof(status),"Closed");
+ 	        format(status,sizeof(status),"Dong");
  	    }
  	    if(PaintBallArena[i][pbLocked] == 3)
  	    {
- 	        format(status,sizeof(status),"Setup");
+ 	        format(status,sizeof(status),"Cai dat");
  	    }
 		format(szMiscArray,sizeof(szMiscArray),"%s%s - \t(%s)\n",szMiscArray,PaintBallArena[i][pbArenaName],status);
 	}
-	ShowPlayerDialogEx(playerid,PBEDITMENU,DIALOG_STYLE_LIST,"Paintball Arena - Edit Menu:",szMiscArray,"Select","Back");
+	ShowPlayerDialogEx(playerid,PBEDITMENU,DIALOG_STYLE_LIST,"Paintball Arena - Menu chinh sua:",szMiscArray,"Chon","Quay lai");
 }
 
 stock PaintballEditArenaMenu(playerid)
@@ -76,8 +76,8 @@ stock PaintballEditArenaMenu(playerid)
 	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
 
 	new arenaid = GetPVarInt(playerid, "ArenaNumber");
-	format(szMiscArray,sizeof(szMiscArray),"Edit Arena Name - (%s)\nEdit Deathmatch Positions...\nEdit Team Positions...\nEdit Flag Positions...\nEdit Hill Position...\nHill Radius (%f)\nInterior (%d)\nVirtual World (%d)\nWar Vehicle 1\nWar Vehicle 2\nWar Vehicle 3\nWar Vehicle 4\nWar Vehicle 5\nWar Vehicle 6",PaintBallArena[arenaid][pbArenaName],PaintBallArena[arenaid][pbHillRadius],PaintBallArena[arenaid][pbInterior],PaintBallArena[arenaid][pbVirtual]);
-	ShowPlayerDialogEx(playerid,PBEDITARENAMENU,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena Menu:",szMiscArray,"Select","Back");
+	format(szMiscArray,sizeof(szMiscArray),"Sua ten dau truong - (%s)\nSua diem Deathmatch...\nSua diem xuat hien doi...\nSua vi tri co...\nSua vi tri doi...\nBan kinh doi (%f)\nInterior (%d)\nVirtual World (%d)\nXe War 1\nXe War 2\nXe War 3\nXe War 4\nXe War 5\nXe War 6",PaintBallArena[arenaid][pbArenaName],PaintBallArena[arenaid][pbHillRadius],PaintBallArena[arenaid][pbInterior],PaintBallArena[arenaid][pbVirtual]);
+	ShowPlayerDialogEx(playerid,PBEDITARENAMENU,DIALOG_STYLE_LIST,"Paintball Arena - Menu sua dau truong:",szMiscArray,"Chon","Quay lai");
 	return 1;
 }
 
@@ -86,50 +86,50 @@ stock PaintballEditArenaName(playerid)
 	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
 
 	new arenaid = GetPVarInt(playerid, "ArenaNumber");
-	format(szMiscArray,sizeof(szMiscArray),"Enter a new Arena Name for Arena Slot %d:",arenaid);
-	ShowPlayerDialogEx(playerid,PBEDITARENANAME,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Name:",szMiscArray,"Change","Back");
+	format(szMiscArray,sizeof(szMiscArray),"Nhap ten moi cho dau truong tai o %d:",arenaid);
+	ShowPlayerDialogEx(playerid,PBEDITARENANAME,DIALOG_STYLE_INPUT,"Paintball Arena - Sua ten dau truong:",szMiscArray,"Doi","Quay lai");
 	return 1;
 }
 
 stock PaintballEditArenaDMSpawns(playerid)
 {
     if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
-	ShowPlayerDialogEx(playerid,PBEDITARENADMSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena DM Spawns:","Deathmatch Spawn 1\nDeathmatch Spawn 2\nDeathmatch Spawn 3\nDeathmatch Spawn 4","Change","Back");
+	ShowPlayerDialogEx(playerid,PBEDITARENADMSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Sua diem DM:","Diem Deathmatch 1\nDiem Deathmatch 2\nDiem Deathmatch 3\nDiem Deathmatch 4","Doi","Quay lai");
 	return 1;
 }
 
 stock PaintballEditArenaTeamSpawns(playerid)
 {
 	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
-	ShowPlayerDialogEx(playerid,PBEDITARENATEAMSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena Team Spawns:","Red Team Spawn 1\nRed Team Spawn 2\nRed Team Spawn 3\nBlue Team Spawn 1\nBlue Team Spawn 2\nBlue Team Spawn 3","Change","Back");
+	ShowPlayerDialogEx(playerid,PBEDITARENATEAMSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Sua diem xuat hien doi:","Diem doi do 1\nDiem doi do 2\nDiem doi do 3\nDiem doi xanh 1\nDiem doi xanh 2\nDiem doi xanh 3","Doi","Quay lai");
 	return 1;
 }
 
 stock PaintballEditArenaFlagSpawns(playerid)
 {
 	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
-	ShowPlayerDialogEx(playerid,PBEDITARENAFLAGSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena Flag Spawns:","Red Team Flag\nBlue Team Flag","Change","Back");
+	ShowPlayerDialogEx(playerid,PBEDITARENAFLAGSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Sua vi tri co:","Co doi do\nCo doi xanh","Doi","Quay lai");
 	return 1;
 }
 
 stock PaintballEditArenaInt(playerid)
 {
 	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
-	ShowPlayerDialogEx(playerid,PBEDITARENAINT,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Interior:","Please enter a new interior id to place on the Arena:","Change","Back");
+	ShowPlayerDialogEx(playerid,PBEDITARENAINT,DIALOG_STYLE_INPUT,"Paintball Arena - Sua Interior:","Nhap ID interior moi cho dau truong:","Doi","Quay lai");
 	return 1;
 }
 
 stock PaintballEditArenaVW(playerid)
 {
 	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
-	ShowPlayerDialogEx(playerid,PBEDITARENAVW,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Virtual World:","Please enter a new virtual world id to place on the Arena:","Change","Back");
+	ShowPlayerDialogEx(playerid,PBEDITARENAVW,DIALOG_STYLE_INPUT,"Paintball Arena - Sua Virtual World:","Nhap ID virtual world moi cho dau truong:","Doi","Quay lai");
 	return 1;
 }
 
 stock PaintballEditArenaHillRadius(playerid)
 {
 	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
-	ShowPlayerDialogEx(playerid,PBEDITARENAHILLRADIUS,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Hill Radius:","Please enter a new hill radius for the Arena:","Change","Back");
+	ShowPlayerDialogEx(playerid,PBEDITARENAHILLRADIUS,DIALOG_STYLE_INPUT,"Paintball Arena - Sua ban kinh doi:","Nhap ban kinh doi moi cho dau truong:","Doi","Quay lai");
 	return 1;
 }
 
@@ -148,7 +148,7 @@ stock PaintballScoreboard(playerid, arenaid)
 		{
 			if(PaintBallArena[arenaid][pbGameType] == 1)
 			{
-				format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) %s - (Kills: %d) (Deaths: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],PlayerInfo[p][pDeaths],GetPlayerPing(p));
+				format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) %s - (Ha: %d) (Chet: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],PlayerInfo[p][pDeaths],GetPlayerPing(p));
 			}
 			if(PaintBallArena[arenaid][pbGameType] == 2 || PaintBallArena[arenaid][pbGameType] == 3)
 			{
@@ -156,17 +156,17 @@ stock PaintballScoreboard(playerid, arenaid)
 				{
 					case 1: // Red Team
 					{
-						format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) ({FF0000}Red Team{FFFFFF}) %s - (Points: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
+						format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) ({FF0000}Doi do{FFFFFF}) %s - (Diem: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
 					}
 					case 2: // Blue Team
 					{
-						format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) ({0000FF}Blue Team{FFFFFF}) %s - (Points: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
+						format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) ({0000FF}Doi xanh{FFFFFF}) %s - (Diem: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
 					}
 				}
 			}
 			if(PaintBallArena[arenaid][pbGameType] == 4)
 			{
-				format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) %s - (Points: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
+				format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) %s - (Diem: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
 			}
 			if(PaintBallArena[arenaid][pbGameType] == 5)
 			{
@@ -174,11 +174,11 @@ stock PaintballScoreboard(playerid, arenaid)
 				{
 					case 1: // Red Team
 					{
-						format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) ({FF0000}Red Team{FFFFFF}) %s - (Points: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
+						format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) ({FF0000}Doi do{FFFFFF}) %s - (Diem: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
 					}
 					case 2: // Blue Team
 					{
-						format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) ({0000FF}Blue Team{FFFFFF}) %s - (Points: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
+						format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) ({0000FF}Doi xanh{FFFFFF}) %s - (Diem: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
 					}
 				}
 			}
@@ -188,29 +188,29 @@ stock PaintballScoreboard(playerid, arenaid)
 	{
 		case 1: // Deathmatch
 		{
-			format(titlestring,sizeof(titlestring),"(DM) Scoreboard - Time Left: (%d)",PaintBallArena[arenaid][pbTimeLeft]);
+			format(titlestring,sizeof(titlestring),"(DM) Bang diem - Con: (%d)",PaintBallArena[arenaid][pbTimeLeft]);
 		}
 		case 2: // Team Deathmatch
 		{
-		    format(titlestring,sizeof(titlestring),"(TDM) Scoreboard - Red: (%d) - Blue: (%d) - Time Left: (%d)",
+		    format(titlestring,sizeof(titlestring),"(TDM) Bang diem - Do: (%d) - Xanh: (%d) - Con: (%d)",
 			PaintBallArena[arenaid][pbTeamRedKills],
 			PaintBallArena[arenaid][pbTeamBlueKills],
 			PaintBallArena[arenaid][pbTimeLeft]);
 		}
 		case 3: // Capture The Flag
 		{
-		    format(titlestring,sizeof(titlestring),"(CTF) Scoreboard - Red: (%d) - Blue: (%d) - Time Left: (%d)",PaintBallArena[arenaid][pbTeamRedScores],PaintBallArena[arenaid][pbTeamBlueScores],PaintBallArena[arenaid][pbTimeLeft]);
+		    format(titlestring,sizeof(titlestring),"(CTF) Bang diem - Do: (%d) - Xanh: (%d) - Con: (%d)",PaintBallArena[arenaid][pbTeamRedScores],PaintBallArena[arenaid][pbTeamBlueScores],PaintBallArena[arenaid][pbTimeLeft]);
 		}
 		case 4: // King of the Hill
 		{
-		    format(titlestring,sizeof(titlestring),"(KOTH) Scoreboard - Time Left: (%d)",PaintBallArena[arenaid][pbTimeLeft]);
+		    format(titlestring,sizeof(titlestring),"(KOTH) Bang diem - Con: (%d)",PaintBallArena[arenaid][pbTimeLeft]);
 		}
 		case 5: // Team King of the Hill
 		{
-		    format(titlestring,sizeof(titlestring),"(TKOTH) Scoreboard - Red: (%d) - Blue: (%d) - Time Left (%d)",PaintBallArena[arenaid][pbTeamRedScores],PaintBallArena[arenaid][pbTeamBlueScores],PaintBallArena[arenaid][pbTimeLeft]);
+		    format(titlestring,sizeof(titlestring),"(TKOTH) Bang diem - Do: (%d) - Xanh: (%d) - Con (%d)",PaintBallArena[arenaid][pbTeamRedScores],PaintBallArena[arenaid][pbTeamBlueScores],PaintBallArena[arenaid][pbTimeLeft]);
 		}
 	}
-	ShowPlayerDialogEx(playerid,PBARENASCORES,DIALOG_STYLE_LIST,titlestring,szMiscArray,"Update","Close");
+	ShowPlayerDialogEx(playerid,PBARENASCORES,DIALOG_STYLE_LIST,titlestring,szMiscArray,"Cap nhat","Dong");
 	return 1;
 }
 
@@ -225,19 +225,19 @@ stock PaintballArenaSelection(playerid)
 
  	    if(PaintBallArena[i][pbLocked] == 0)
  	    {
- 	        format(status,sizeof(status),"{00FF00}Open{FFFFFF}");
+ 	        format(status,sizeof(status),"{00FF00}Mo{FFFFFF}");
  	    }
  	    if(PaintBallArena[i][pbLocked] == 1)
  	    {
- 	        format(status,sizeof(status),"{00FF00}Active{FFFFFF}");
+ 	        format(status,sizeof(status),"{00FF00}Dang choi{FFFFFF}");
  	    }
  	    if(PaintBallArena[i][pbLocked] == 2)
  	    {
- 	        format(status,sizeof(status),"{FF0000}Closed{FFFFFF}");
+ 	        format(status,sizeof(status),"{FF0000}Dong{FFFFFF}");
  	    }
  	    if(PaintBallArena[i][pbLocked] == 3)
  	    {
- 	        format(status,sizeof(status),"{FF6600}Setup{FFFFFF}");
+ 	        format(status,sizeof(status),"{FF6600}Cai dat{FFFFFF}");
  	    }
 
  	    if(PaintBallArena[i][pbGameType] == 1)
@@ -263,7 +263,7 @@ stock PaintballArenaSelection(playerid)
 
 		if(PaintBallArena[i][pbExploitPerm] == 0)
 		{
-		    format(eperm,sizeof(eperm),"{FF0000}No QS/CS{FFFFFF}");
+		    format(eperm,sizeof(eperm),"{FF0000}Cam QS/CS{FFFFFF}");
 		}
 		if(PaintBallArena[i][pbExploitPerm] == 1)
 		{
@@ -288,13 +288,13 @@ stock PaintballArenaSelection(playerid)
 		    format(szMiscArray,sizeof(szMiscArray),"%s{FFFFFF}%s - \t(%s) (%s) (%s) (%d/%d) ($%d) (%s)%s (PW)\n",szMiscArray,PaintBallArena[i][pbArenaName],PaintBallArena[i][pbOwner],status,gametype,count,limit,money,eperm,war);
 		}
 	}
-	ShowPlayerDialogEx(playerid,PBARENASELECTION,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Arena:",szMiscArray,"Select","Back");
+	ShowPlayerDialogEx(playerid,PBARENASELECTION,DIALOG_STYLE_LIST,"Paintball Arena - Chon dau truong:",szMiscArray,"Chon","Quay lai");
 }
 
 stock PaintballTokenBuyMenu(playerid)
 {
-	format(szMiscArray,sizeof(szMiscArray),"{FFFFFF}How many Paintball Tokens do you wish to purchase?\n\nEach token costs a total of $%d. You currently have {AA3333}%d{FFFFFF} Tokens.", 5000, PlayerInfo[playerid][pPaintTokens]);
-	ShowPlayerDialogEx(playerid,PBTOKENBUYMENU,DIALOG_STYLE_INPUT,"Paintball Arena - Paintball Tokens:",szMiscArray,"Buy","Back");
+	format(szMiscArray,sizeof(szMiscArray),"{FFFFFF}Ban muon mua bao nhieu Paintball Tokens?\n\nMoi token gia $%d. Ban hien co {AA3333}%d{FFFFFF} Tokens.", 5000, PlayerInfo[playerid][pPaintTokens]);
+	ShowPlayerDialogEx(playerid,PBTOKENBUYMENU,DIALOG_STYLE_INPUT,"Paintball Arena - Paintball Tokens:",szMiscArray,"Mua","Quay lai");
 }
 
 stock PaintballSetupArena(playerid)
@@ -340,71 +340,71 @@ stock PaintballSetupArena(playerid)
 
 	if(PaintBallArena[a][pbExploitPerm] == 0)
 	{
-		format(eperm,sizeof(eperm),"Not Allowed");
+		format(eperm,sizeof(eperm),"Khong cho phep");
 	}
 	if(PaintBallArena[a][pbExploitPerm] == 1)
 	{
-	    format(eperm,sizeof(eperm),"Allowed");
+	    format(eperm,sizeof(eperm),"Cho phep");
 	}
 
 	if(PaintBallArena[a][pbFlagInstagib] == 0)
 	{
-	    format(finstagib,sizeof(finstagib),"Off");
+	    format(finstagib,sizeof(finstagib),"Tat");
 	}
 	if(PaintBallArena[a][pbFlagInstagib] == 1)
 	{
-	    format(finstagib,sizeof(finstagib),"On");
+	    format(finstagib,sizeof(finstagib),"Bat");
 	}
 
 	if(PaintBallArena[a][pbFlagNoWeapons] == 0)
 	{
-	    format(fnoweapons,sizeof(fnoweapons),"Off");
+	    format(fnoweapons,sizeof(fnoweapons),"Tat");
 	}
 	if(PaintBallArena[a][pbFlagNoWeapons] == 1)
 	{
-	    format(fnoweapons,sizeof(fnoweapons),"On");
+	    format(fnoweapons,sizeof(fnoweapons),"Bat");
 	}
 	if(PaintBallArena[a][pbWar] == 0)
 	{
-		format(war, sizeof(war), "Off");
+		format(war, sizeof(war), "Tat");
 	}
 	if(PaintBallArena[a][pbWar] == 1)
 	{
-		format(war, sizeof(war), "On");
+		format(war, sizeof(war), "Bat");
 	}
 
 	switch(PaintBallArena[a][pbGameType])
 	{
 	    case 1:
 	    {
-	        format(szMiscArray,sizeof(szMiscArray),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
+	        format(szMiscArray,sizeof(szMiscArray),"Mat khau - (%s)\nChe do - (%s)\nGioi han - (%d)\nThoi gian - (%d Phut)\nTien cuoc - ($%d)\nMau - (%.2f)\nGiap - (%.2f)\nO vu khi 1 - (%s)\nO vu khi 2 - (%s)\nO vu khi 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBat dau dau truong",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
 	    }
 	    case 2:
 	    {
-	        format(szMiscArray,sizeof(szMiscArray),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
+	        format(szMiscArray,sizeof(szMiscArray),"Mat khau - (%s)\nChe do - (%s)\nGioi han - (%d)\nThoi gian - (%d Phut)\nTien cuoc - ($%d)\nMau - (%.2f)\nGiap - (%.2f)\nO vu khi 1 - (%s)\nO vu khi 2 - (%s)\nO vu khi 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBat dau dau truong",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
 	    }
 	    case 3:
 	    {
-	        format(szMiscArray,sizeof(szMiscArray),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nFlag Instagib - (%s)\nFlag No Weapons - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war,finstagib,fnoweapons);
+	        format(szMiscArray,sizeof(szMiscArray),"Mat khau - (%s)\nChe do - (%s)\nGioi han - (%d)\nThoi gian - (%d Phut)\nTien cuoc - ($%d)\nMau - (%.2f)\nGiap - (%.2f)\nO vu khi 1 - (%s)\nO vu khi 2 - (%s)\nO vu khi 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nFlag Instagib - (%s)\nFlag No Weapons - (%s)\nBat dau dau truong",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war,finstagib,fnoweapons);
 	    }
 	    case 4:
 	    {
-	        format(szMiscArray,sizeof(szMiscArray),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
+	        format(szMiscArray,sizeof(szMiscArray),"Mat khau - (%s)\nChe do - (%s)\nGioi han - (%d)\nThoi gian - (%d Phut)\nTien cuoc - ($%d)\nMau - (%.2f)\nGiap - (%.2f)\nO vu khi 1 - (%s)\nO vu khi 2 - (%s)\nO vu khi 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBat dau dau truong",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
 	    }
 	    case 5:
 	    {
-	        format(szMiscArray,sizeof(szMiscArray),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
+	        format(szMiscArray,sizeof(szMiscArray),"Mat khau - (%s)\nChe do - (%s)\nGioi han - (%d)\nThoi gian - (%d Phut)\nTien cuoc - ($%d)\nMau - (%.2f)\nGiap - (%.2f)\nO vu khi 1 - (%s)\nO vu khi 2 - (%s)\nO vu khi 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBat dau dau truong",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
 	    }
 	}
-	ShowPlayerDialogEx(playerid,PBSETUPARENA,DIALOG_STYLE_LIST,"Paintball Arena - Setup Arena:",szMiscArray,"Select","Leave");
+	ShowPlayerDialogEx(playerid,PBSETUPARENA,DIALOG_STYLE_LIST,"Paintball Arena - Cai dat dau truong:",szMiscArray,"Chon","Roi di");
 }
 
 stock PaintballSwitchTeam(playerid)
 {
 	new arenaid = GetPVarInt(playerid, "IsInArena");
 	new teamlimit = PaintBallArena[arenaid][pbLimit]/2;
-	format(szMiscArray, sizeof(szMiscArray),"{FF0000}Red Team (%d/%d)\n{0000FF}Blue Team (%d/%d)",PaintBallArena[arenaid][pbTeamRed],teamlimit,PaintBallArena[arenaid][pbTeamBlue],teamlimit);
-	ShowPlayerDialogEx(playerid,PBSWITCHTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:", szMiscArray,"Switch","Cancel");
+	format(szMiscArray, sizeof(szMiscArray),"{FF0000}Doi do (%d/%d)\n{0000FF}Doi xanh (%d/%d)",PaintBallArena[arenaid][pbTeamRed],teamlimit,PaintBallArena[arenaid][pbTeamBlue],teamlimit);
+	ShowPlayerDialogEx(playerid,PBSWITCHTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Chon doi:", szMiscArray,"Chuyen","Huy");
 }
 
 stock InitPaintballArenas()
@@ -526,7 +526,7 @@ stock ResetPaintballArena(arenaid)
 }
 
 stock CreatePaintballArenaHill(arenaid) {
-	PaintBallArena[arenaid][pbHillTextID] = Create3DTextLabel("Hill", COLOR_GREEN, PaintBallArena[arenaid][pbHillX], PaintBallArena[arenaid][pbHillY], PaintBallArena[arenaid][pbHillZ], 200.0, PaintBallArena[arenaid][pbVirtual], false);
+	PaintBallArena[arenaid][pbHillTextID] = Create3DTextLabel("Doi", COLOR_GREEN, PaintBallArena[arenaid][pbHillX], PaintBallArena[arenaid][pbHillY], PaintBallArena[arenaid][pbHillZ], 200.0, PaintBallArena[arenaid][pbVirtual], false);
 }
 
 stock ResetPaintballArenaHill(arenaid) {
@@ -630,7 +630,7 @@ stock ResetFlagPaintballArena(arenaid, flagid)
 	        ////SendPaintballArenaAudio(arenaid, 24, 75);
 	        //SetTimerEx("//SendPaintballArenaAudio", 250, false, "iii", arenaid, 29, 100);
 	        PaintBallArena[arenaid][pbFlagRedActive] = 0;
-	        SendPaintballArenaTextMessage(arenaid, 5, "~r~Red Flag ~w~Returned!");
+	        SendPaintballArenaTextMessage(arenaid, 5, "~r~Co do ~w~Da tra ve!");
 	        DestroyDynamicObject(PaintBallArena[arenaid][pbFlagRedID]);
 	        PaintBallArena[arenaid][pbFlagRedID] = CreateDynamicObject(RED_FLAG_OBJ, PaintBallArena[arenaid][pbFlagRedSpawn][0], PaintBallArena[arenaid][pbFlagRedSpawn][1], PaintBallArena[arenaid][pbFlagRedSpawn][2], 0.0, 0.0, 0.0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior], -1);
 
@@ -648,7 +648,7 @@ stock ResetFlagPaintballArena(arenaid, flagid)
 	        ////SendPaintballArenaAudio(arenaid, 24, 75);
 	        //SetTimerEx("//SendPaintballArenaAudio", 250, false, "iii", arenaid, 11, 100);
 	        PaintBallArena[arenaid][pbFlagBlueActive] = 0;
-	        SendPaintballArenaTextMessage(arenaid, 5, "~b~Blue Flag ~w~Returned!");
+	        SendPaintballArenaTextMessage(arenaid, 5, "~b~Co xanh ~w~Da tra ve!");
 	        DestroyDynamicObject(PaintBallArena[arenaid][pbFlagBlueID]);
 	        PaintBallArena[arenaid][pbFlagBlueID] = CreateDynamicObject(BLUE_FLAG_OBJ, PaintBallArena[arenaid][pbFlagBlueSpawn][0], PaintBallArena[arenaid][pbFlagBlueSpawn][1], PaintBallArena[arenaid][pbFlagBlueSpawn][2], 0.0, 0.0, 0.0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior], -1);
 
@@ -681,8 +681,8 @@ stock ScoreFlagPaintballArena(playerid, arenaid, flagid)
 	        SetPVarInt(playerid, "AOSlotPaintballFlag", -1);
 	        PaintBallArena[arenaid][pbFlagRedActive] = 0;
 	        PaintBallArena[arenaid][pbTeamBlueScores]++;
-	        SendPaintballArenaTextMessage(arenaid, 5, "~b~Blue Team ~w~Scores!");
-			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has scored for the Blue Team!", GetPlayerNameEx(playerid));
+	        SendPaintballArenaTextMessage(arenaid, 5, "~b~Doi xanh ~w~Ghi diem!");
+			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s da ghi diem cho doi xanh!", GetPlayerNameEx(playerid));
 	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, szMiscArray);
 	        PaintBallArena[arenaid][pbFlagRedID] = CreateDynamicObject(RED_FLAG_OBJ, PaintBallArena[arenaid][pbFlagRedSpawn][0], PaintBallArena[arenaid][pbFlagRedSpawn][1], PaintBallArena[arenaid][pbFlagRedSpawn][2], 0.0, 0.0, 0.0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior], -1);
 
@@ -708,8 +708,8 @@ stock ScoreFlagPaintballArena(playerid, arenaid, flagid)
 	        SetPVarInt(playerid, "AOSlotPaintballFlag", -1);
 	        PaintBallArena[arenaid][pbFlagBlueActive] = 0;
 	        PaintBallArena[arenaid][pbTeamRedScores]++;
-	        SendPaintballArenaTextMessage(arenaid, 5, "~r~Red Team ~w~Scores!");
-			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has scored for the Red Team!", GetPlayerNameEx(playerid));
+	        SendPaintballArenaTextMessage(arenaid, 5, "~r~Doi do ~w~Ghi diem!");
+			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s da ghi diem cho doi do!", GetPlayerNameEx(playerid));
 	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, szMiscArray);
 	        PaintBallArena[arenaid][pbFlagBlueID] = CreateDynamicObject(BLUE_FLAG_OBJ, PaintBallArena[arenaid][pbFlagBlueSpawn][0], PaintBallArena[arenaid][pbFlagBlueSpawn][1], PaintBallArena[arenaid][pbFlagBlueSpawn][2], 0.0, 0.0, 0.0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior], -1);
 
@@ -733,11 +733,11 @@ stock DropFlagPaintballArena(playerid, arenaid, flagid)
 	    {
   			////SendPaintballArenaAudio(arenaid, 28, 100);
 	        PaintBallArena[arenaid][pbFlagRedActive] = 1;
-	        SendPaintballArenaTextMessage(arenaid, 5, "~r~Red Flag ~w~Dropped!");
-			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has dropped the Red Flag!", GetPlayerNameEx(playerid));
+	        SendPaintballArenaTextMessage(arenaid, 5, "~r~Co do ~w~Da roi!");
+			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s da lam roi co do!", GetPlayerNameEx(playerid));
 	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, szMiscArray);
 	        PaintBallArena[arenaid][pbFlagRedID] = CreateDynamicObject(RED_FLAG_OBJ, X, Y, Z, 0.0, 0.0, 0.0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior], -1);
-	        PaintBallArena[arenaid][pbFlagRedTextID] = Create3DTextLabel("Red Flag", COLOR_RED, X, Y, Z, 200.0, PaintBallArena[arenaid][pbVirtual], false);
+	        PaintBallArena[arenaid][pbFlagRedTextID] = Create3DTextLabel("Co do", COLOR_RED, X, Y, Z, 200.0, PaintBallArena[arenaid][pbVirtual], false);
 	        //PaintBallArena[arenaid][pbFlagRedTextID] = CreateDynamic3DTextLabel("Red Flag", COLOR_RED, X, Y, Z, 200.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior]);
 	        PaintBallArena[arenaid][pbFlagRedActiveTime] = 30;
 
@@ -749,11 +749,11 @@ stock DropFlagPaintballArena(playerid, arenaid, flagid)
 	    {
 	        ////SendPaintballArenaAudio(arenaid, 10, 100);
 	        PaintBallArena[arenaid][pbFlagBlueActive] = 1;
-	        SendPaintballArenaTextMessage(arenaid, 5, "~b~Blue Flag ~w~Dropped!");
-			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has dropped the Blue Flag!", GetPlayerNameEx(playerid));
+	        SendPaintballArenaTextMessage(arenaid, 5, "~b~Co xanh ~w~Da roi!");
+			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s da lam roi co xanh!", GetPlayerNameEx(playerid));
 	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, szMiscArray);
 	        PaintBallArena[arenaid][pbFlagBlueID] = CreateDynamicObject(BLUE_FLAG_OBJ, X, Y, Z, 0.0, 0.0, 0.0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior], -1);
-	        PaintBallArena[arenaid][pbFlagBlueTextID] = Create3DTextLabel("Blue Flag", COLOR_DBLUE, X, Y, Z, 200.0, PaintBallArena[arenaid][pbVirtual], false);
+	        PaintBallArena[arenaid][pbFlagBlueTextID] = Create3DTextLabel("Co xanh", COLOR_DBLUE, X, Y, Z, 200.0, PaintBallArena[arenaid][pbVirtual], false);
 	        //PaintBallArena[arenaid][pbFlagBlueTextID] = CreateDynamic3DTextLabel("Blue Flag", COLOR_DBLUE, X, Y, Z, 200.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior]);
 	        PaintBallArena[arenaid][pbFlagBlueActiveTime] = 30;
 
@@ -779,8 +779,8 @@ stock PickupFlagPaintballArena(playerid, arenaid, flagid)
 	        ////SendPaintballArenaAudio(arenaid, 23, 75);
 	        //SetTimerEx("//SendPaintballArenaAudio", 250, false, "iii", arenaid, 30, 100);
 	        PaintBallArena[arenaid][pbFlagRedActive] = -1;
-	        SendPaintballArenaTextMessage(arenaid, 5, "~r~Red Flag ~w~Taken!");
-			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has taken the Red Flag!", GetPlayerNameEx(playerid));
+	        SendPaintballArenaTextMessage(arenaid, 5, "~r~Co do ~w~Da bi lay!");
+			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s da lay co do!", GetPlayerNameEx(playerid));
 	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, szMiscArray);
 	        //SetTimerEx("//SendAudioToPlayer", 1500, false, "iii", playerid, 42, 100);
 			index = FindFreeAttachedObjectSlot(playerid);
@@ -797,8 +797,8 @@ stock PickupFlagPaintballArena(playerid, arenaid, flagid)
 	        ////SendPaintballArenaAudio(arenaid, 23, 75);
 	        //SetTimerEx("//SendPaintballArenaAudio", 250, false, "iii", arenaid, 12, 100);
 	        PaintBallArena[arenaid][pbFlagBlueActive] = -1;
-	        SendPaintballArenaTextMessage(arenaid, 5, "~b~Blue Flag ~w~Taken!");
-			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has taken the Blue Flag!", GetPlayerNameEx(playerid));
+	        SendPaintballArenaTextMessage(arenaid, 5, "~b~Co xanh ~w~Da bi lay!");
+			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s da lay co xanh!", GetPlayerNameEx(playerid));
 	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, szMiscArray);
 	        //SetTimerEx("//SendAudioToPlayer", 1500, false, "iii", playerid, 42, 100);
 			index = FindFreeAttachedObjectSlot(playerid);
@@ -957,7 +957,7 @@ stock JoinPaintballArena(playerid, arenaid, const password[])
 	{
 	    case 0: // No Team
 	    {
-	        format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has joined the Paintball Arena!", name);
+	        format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s da vao Paintball Arena!", name);
 	        SendPaintballArenaMessage(arenaid,COLOR_WHITE,szMiscArray);
 	        //SendAudioToPlayer(playerid, 27, 100);
 	    }
@@ -965,10 +965,10 @@ stock JoinPaintballArena(playerid, arenaid, const password[])
 		{
 		    if(PaintBallArena[arenaid][pbTeamRed] >= teamlimit)
 		    {
-		        SendClientMessageEx(playerid, COLOR_WHITE, "Red team is currently full, sending you to the Blue team.");
+		        SendClientMessageEx(playerid, COLOR_WHITE, "Doi do da day, chuyen ban sang doi xanh.");
 		        PlayerInfo[playerid][pPaintTeam] = 2;
 		    	PaintBallArena[arenaid][pbTeamBlue]++;
-		    	format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has joined the Paintball Arena on the Blue Team!", name);
+		    	format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s da vao doi xanh tai Paintball Arena!", name);
 		       	SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_BLUE,szMiscArray);
 		       	//SendAudioToPlayer(playerid, 40, 100);
 		    }
@@ -976,10 +976,10 @@ stock JoinPaintballArena(playerid, arenaid, const password[])
 		    {
 		        if(PaintBallArena[arenaid][pbTeamRed] > PaintBallArena[arenaid][pbTeamBlue])
 		        {
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Teams are currently un-even, sending you to the Blue team.");
+		            SendClientMessageEx(playerid, COLOR_WHITE, "Doi mat can bang, chuyen ban sang doi xanh.");
 		        	PlayerInfo[playerid][pPaintTeam] = 2;
 		    		PaintBallArena[arenaid][pbTeamBlue]++;
-		    		format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has joined the Paintball Arena on the Blue Team!", name);
+		    		format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s da vao doi xanh tai Paintball Arena!", name);
 		       		SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_BLUE,szMiscArray);
 		       		//SendAudioToPlayer(playerid, 40, 100);
 		        }
@@ -987,7 +987,7 @@ stock JoinPaintballArena(playerid, arenaid, const password[])
 		        {
 		        	PlayerInfo[playerid][pPaintTeam] = 1;
 		    		PaintBallArena[arenaid][pbTeamRed]++;
-		    		format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has joined the Paintball Arena on the Red Team!", name);
+		    		format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s da vao doi do tai Paintball Arena!", name);
 		       		SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_RED,szMiscArray);
 		       		//SendAudioToPlayer(playerid, 41, 100);
 				}
@@ -997,10 +997,10 @@ stock JoinPaintballArena(playerid, arenaid, const password[])
 	   	{
      		if(PaintBallArena[arenaid][pbTeamBlue] >= teamlimit)
    			{
-      			SendClientMessageEx(playerid, COLOR_WHITE, "Blue team is currently full, sending you to the Red team.");
+      			SendClientMessageEx(playerid, COLOR_WHITE, "Doi xanh da day, chuyen ban sang doi do.");
 	        	PlayerInfo[playerid][pPaintTeam] = 1;
 	    		PaintBallArena[arenaid][pbTeamRed]++;
-	    		format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has joined the Paintball Arena on the Red Team!", name);
+	    		format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s da vao doi do tai Paintball Arena!", name);
       			SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_RED,szMiscArray);
       			//SendAudioToPlayer(playerid, 41, 100);
 		    }
@@ -1008,10 +1008,10 @@ stock JoinPaintballArena(playerid, arenaid, const password[])
 		    {
 		        if(PaintBallArena[arenaid][pbTeamBlue] > PaintBallArena[arenaid][pbTeamRed])
 		        {
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Teams are currently un-even, sending you to the Red team.");
+		            SendClientMessageEx(playerid, COLOR_WHITE, "Doi mat can bang, chuyen ban sang doi do.");
 	        		PlayerInfo[playerid][pPaintTeam] = 1;
 	    			PaintBallArena[arenaid][pbTeamRed]++;
-	    			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has joined the Paintball Arena on the Red Team!", name);
+	    			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s da vao doi do tai Paintball Arena!", name);
       				SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_RED,szMiscArray);
       				//SendAudioToPlayer(playerid, 41, 100);
 		        }
@@ -1019,22 +1019,22 @@ stock JoinPaintballArena(playerid, arenaid, const password[])
 		        {
       				PlayerInfo[playerid][pPaintTeam] = 2;
 	    			PaintBallArena[arenaid][pbTeamBlue]++;
-		    		format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has joined the Paintball Arena on the Blue Team!", name);
+		    		format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s da vao doi xanh tai Paintball Arena!", name);
       				SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_BLUE,szMiscArray);
       				//SendAudioToPlayer(playerid, 40, 100);
 				}
 		    }
 	    }
 	}
- 	SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+ 	SendClientMessageEx(playerid, COLOR_WHITE, "Lenh Paintball Arena: /scores - /exitarena - /joinarena - /switchteam");
 
 	if(PaintBallArena[arenaid][pbExploitPerm] == 0)
  	{
- 	    SendClientMessageEx(playerid, COLOR_YELLOW, "Warning: This room does not allow any QS/CS, any attempt will be punishable.");
+ 	    SendClientMessageEx(playerid, COLOR_YELLOW, "Canh bao: Phong nay cam QS/CS, vi pham se bi xu phat.");
  	}
  	else
  	{
- 	    SendClientMessageEx(playerid, COLOR_YELLOW, "Warning: This room allows QS/CS, if you do not like it, leave the arena now.");
+ 	    SendClientMessageEx(playerid, COLOR_YELLOW, "Canh bao: Phong nay cho phep QS/CS, neu khong thich hay roi dau truong.");
  	}
 
  	PlayerInfo[playerid][pKills] = 0;
@@ -1093,7 +1093,7 @@ stock LeavePaintballArena(playerid, arenaid, disconnect = 0)
 		PaintBallArena[arenaid][pbPlayers]--;
 		if(PaintBallArena[arenaid][pbTimeLeft] > 30)
 		{
-			format(szMiscArray, sizeof(szMiscArray),"[Paintball Arena] %s has left the Paintball Arena!", name);
+			format(szMiscArray, sizeof(szMiscArray),"[Paintball Arena] %s da roi Paintball Arena!", name);
 			SendPaintballArenaMessage(arenaid, COLOR_WHITE, szMiscArray);
 		}
 		if(PaintBallArena[arenaid][pbPlayers] == 0)
@@ -1339,12 +1339,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					{
 						if(PlayerInfo[playerid][pAdmin] >= 1337)
 						{
-							ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
+							ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Menu Admin:","Sua dau truong...\nKhoa tat ca dau truong\nMo khoa tat ca dau truong\nLuu moi thay doi dau truong","Chon","Quay lai");
 						}
 						else
 						{
-							ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
-							SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have authorization to access the admin panel.");
+							ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Menu chinh:","Chon dau truong\nPaintball Tokens\nMenu Admin","Chon","Roi di");
+							SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen vao bang quan tri.");
 							return 1;
 						}
 					}
@@ -1374,7 +1374,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									if(PaintBallArena[arenaid][pbBidMoney] > 0)
 									{
 										GivePlayerCash(p,PaintBallArena[arenaid][pbBidMoney]);
-										SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of $%d because of premature closure.",PaintBallArena[arenaid][pbBidMoney]);
+										SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan tong cong $%d vi dong som.",PaintBallArena[arenaid][pbBidMoney]);
 									}
 									if(arenaid == GetPVarInt(p, "ArenaNumber"))
 									{
@@ -1385,7 +1385,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 												if(PlayerInfo[p][pDonateRank] < 3)
 												{
 													PlayerInfo[p][pPaintTokens] += 3;
-													SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
+													SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",3);
 												}
 											}
 											case 2:
@@ -1393,7 +1393,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 												if(PlayerInfo[p][pDonateRank] < 3)
 												{
 													PlayerInfo[p][pPaintTokens] += 4;
-													SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
+													SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",4);
 												}
 											}
 											case 3:
@@ -1401,7 +1401,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 												if(PlayerInfo[p][pDonateRank] < 3)
 												{
 													PlayerInfo[p][pPaintTokens] += 5;
-													SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+													SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",5);
 												}
 											}
 											case 4:
@@ -1409,7 +1409,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 												if(PlayerInfo[p][pDonateRank] < 3)
 												{
 													PlayerInfo[p][pPaintTokens] += 5;
-													SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+													SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",5);
 												}
 											}
 											case 5:
@@ -1417,7 +1417,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 												if(PlayerInfo[p][pDonateRank] < 3)
 												{
 													PlayerInfo[p][pPaintTokens] += 6;
-													SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
+													SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",6);
 												}
 											}
 										}
@@ -1428,10 +1428,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							ResetPaintballArena(i);
 							PaintBallArena[i][pbLocked] = 2;
 						}
-						format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has locked all Arenas.", GetPlayerNameEx(playerid));
+						format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s da khoa tat ca dau truong.", GetPlayerNameEx(playerid));
 						ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-						SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s has locked all Paintball Arenas for some short maintenance.", GetPlayerNameEx(playerid));
-						ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
+						SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s da khoa tat ca Paintball Arenas de bao tri ngan.", GetPlayerNameEx(playerid));
+						ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Menu Admin:","Sua dau truong...\nKhoa tat ca dau truong\nMo khoa tat ca dau truong\nLuu moi thay doi dau truong","Chon","Quay lai");
 					}
 					case 2: // Unlock all Arenas
 					{
@@ -1442,22 +1442,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								ResetPaintballArena(i);
 							}
 						}
-						format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has unlocked all Arenas.", GetPlayerNameEx(playerid));
+						format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s da mo khoa tat ca dau truong.", GetPlayerNameEx(playerid));
 						ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-						SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s has unlocked all Paintball Arenas, you may join/create them now.", GetPlayerNameEx(playerid));
-						ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
+						SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s da mo khoa tat ca Paintball Arenas, ban co the vao/tao phong.", GetPlayerNameEx(playerid));
+						ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Menu Admin:","Sua dau truong...\nKhoa tat ca dau truong\nMo khoa tat ca dau truong\nLuu moi thay doi dau truong","Chon","Quay lai");
 					}
 					case 3: // Force Save Arenas
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "You have forced saved all changes to the Painball Arenas.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da buoc luu moi thay doi Paintball Arenas.");
 						SavePaintballArenas();
-						ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
+						ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Menu Admin:","Sua dau truong...\nKhoa tat ca dau truong\nMo khoa tat ca dau truong\nLuu moi thay doi dau truong","Chon","Quay lai");
 					}
 				}
 			}
 			else
 			{
-				ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
+				ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Menu chinh:","Chon dau truong\nPaintball Tokens\nMenu Admin","Chon","Roi di");
 			}
 		}
 		case PBARENASCORES:
@@ -1479,7 +1479,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						if(PaintBallArena[i][pbLocked] != 2)
 						{
 							PaintballEditMenu(playerid);
-							SendClientMessageEx(playerid, COLOR_WHITE, "You cannot edit a arena that is not closed.");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Chi duoc sua dau truong da dong.");
 							return 1;
 						}
 						ResetPaintballArena(i);
@@ -1507,7 +1507,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else
 			{
-				ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
+				ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Menu Admin:","Sua dau truong...\nKhoa tat ca dau truong\nMo khoa tat ca dau truong\nLuu moi thay doi dau truong","Chon","Quay lai");
 			}
 		}
 		case PBEDITARENAMENU:
@@ -1535,7 +1535,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					case 4: // Hill Position
 					{
 						SetPVarInt(playerid, "EditingHillStage", 1);
-						SendClientMessageEx(playerid, COLOR_WHITE, "Goto a location and type (/savehillpos) to edit the Hill Position.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Den vi tri va dung (/savehillpos) de sua vi tri doi.");
 					}
 					case 5: // Hill Radius
 					{
@@ -1552,32 +1552,32 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					case 8: // War Vehicle 1
 					{
 						SetPVarInt(playerid, "PBVeh", 1);
-						SendClientMessageEx(playerid, COLOR_WHITE, "Type /savepbvehicle inside the selected vehicle (or outside if you want to delete it).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Dung /savepbvehicle trong xe da chon (hoac ra ngoai de xoa xe).");
 					}
 					case 9: // War Vehicle 2
 					{
 						SetPVarInt(playerid, "PBVeh", 2);
-						SendClientMessageEx(playerid, COLOR_WHITE, "Type /savepbvehicle inside the selected vehicle (or outside if you want to delete it).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Dung /savepbvehicle trong xe da chon (hoac ra ngoai de xoa xe).");
 					}
 					case 10: // War Vehicle 3
 					{
 						SetPVarInt(playerid, "PBVeh", 3);
-						SendClientMessageEx(playerid, COLOR_WHITE, "Type /savepbvehicle inside the selected vehicle (or outside if you want to delete it).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Dung /savepbvehicle trong xe da chon (hoac ra ngoai de xoa xe).");
 					}
 					case 11: // War Vehicle 4
 					{
 						SetPVarInt(playerid, "PBVeh", 4);
-						SendClientMessageEx(playerid, COLOR_WHITE, "Type /savepbvehicle inside the selected vehicle (or outside if you want to delete it).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Dung /savepbvehicle trong xe da chon (hoac ra ngoai de xoa xe).");
 					}
 					case 12: // War Vehicle 5
 					{
 						SetPVarInt(playerid, "PBVeh", 5);
-						SendClientMessageEx(playerid, COLOR_WHITE, "Type /savepbvehicle inside the selected vehicle (or outside if you want to delete it).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Dung /savepbvehicle trong xe da chon (hoac ra ngoai de xoa xe).");
 					}
 					case 13: // War Vehicle 6
 					{
 						SetPVarInt(playerid, "PBVeh", 6);
-						SendClientMessageEx(playerid, COLOR_WHITE, "Type /savepbvehicle inside the selected vehicle (or outside if you want to delete it).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Dung /savepbvehicle trong xe da chon (hoac ra ngoai de xoa xe).");
 					}				
 				}
 			}
@@ -1606,7 +1606,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				if(strlen(inputtext) > 11)
 				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "Arena names cannot be bigger than 11 characters.");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Ten dau truong khong duoc qua 11 ky tu.");
 					PaintballEditArenaName(playerid);
 					return 1;
 				}
@@ -1628,8 +1628,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					case 0: // Spawn Positions 1
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "DM Position 1: Move in a position and type (/savedmpos).");
-						SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Diem DM 1: Den vi tri va dung (/savedmpos).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Hay dung dung vi tri truoc khi luu.");
 						SetPVarInt(playerid, "EditingDMPos", 1);
 
 						SetPlayerPos(playerid, PaintBallArena[arenaid][pbDeathmatch1][0],PaintBallArena[arenaid][pbDeathmatch1][1],PaintBallArena[arenaid][pbDeathmatch1][2]);
@@ -1642,8 +1642,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					case 1: // Spawn Positions 2
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "DM Position 2: Move in a position and type (/savedmpos).");
-						SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Diem DM 2: Den vi tri va dung (/savedmpos).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Hay dung dung vi tri truoc khi luu.");
 						SetPVarInt(playerid, "EditingDMPos", 2);
 
 						SetPlayerPos(playerid, PaintBallArena[arenaid][pbDeathmatch2][0],PaintBallArena[arenaid][pbDeathmatch2][1],PaintBallArena[arenaid][pbDeathmatch2][2]);
@@ -1656,8 +1656,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					case 2: // Spawn Positions 3
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "DM Position 3: Move in a position and type (/savedmpos).");
-						SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Diem DM 3: Den vi tri va dung (/savedmpos).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Hay dung dung vi tri truoc khi luu.");
 						SetPVarInt(playerid, "EditingDMPos", 3);
 
 						SetPlayerPos(playerid, PaintBallArena[arenaid][pbDeathmatch3][0],PaintBallArena[arenaid][pbDeathmatch3][1],PaintBallArena[arenaid][pbDeathmatch3][2]);
@@ -1670,8 +1670,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					case 3: // Spawn Positions 4
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "DM Position 4: Move in a position and type (/savedmpos).");
-						SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Diem DM 4: Den vi tri va dung (/savedmpos).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Hay dung dung vi tri truoc khi luu.");
 						SetPVarInt(playerid, "EditingDMPos", 4);
 
 						SetPlayerPos(playerid, PaintBallArena[arenaid][pbDeathmatch4][0],PaintBallArena[arenaid][pbDeathmatch4][1],PaintBallArena[arenaid][pbDeathmatch4][2]);
@@ -1698,8 +1698,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					case 0: // Red Spawn Positions 1
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "Red Team Position 1: Move in a position and type (/saveteampos).");
-						SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Diem doi do 1: Den vi tri va dung (/saveteampos).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Hay dung dung vi tri truoc khi luu.");
 						SetPVarInt(playerid, "EditingTeamPos", 1);
 
 						SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamRed1][0],PaintBallArena[arenaid][pbTeamRed1][1],PaintBallArena[arenaid][pbTeamRed1][2]);
@@ -1712,8 +1712,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					case 1: // Red Spawn Positions 2
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "Red Team Position 2: Move in a position and type (/saveteampos).");
-						SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Diem doi do 2: Den vi tri va dung (/saveteampos).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Hay dung dung vi tri truoc khi luu.");
 						SetPVarInt(playerid, "EditingTeamPos", 2);
 
 						SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamRed2][0],PaintBallArena[arenaid][pbTeamRed2][1],PaintBallArena[arenaid][pbTeamRed2][2]);
@@ -1726,8 +1726,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					case 2: // Red Spawn Positions 3
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "Red Team Position 3: Move in a position and type (/saveteampos).");
-						SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Diem doi do 3: Den vi tri va dung (/saveteampos).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Hay dung dung vi tri truoc khi luu.");
 						SetPVarInt(playerid, "EditingTeamPos", 3);
 
 						SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamRed3][0],PaintBallArena[arenaid][pbTeamRed3][1],PaintBallArena[arenaid][pbTeamRed3][2]);
@@ -1740,8 +1740,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					case 3: // Blue Spawn Positions 1
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team Position 1: Move in a position and type (/saveteampos).");
-						SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Diem doi xanh 1: Den vi tri va dung (/saveteampos).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Hay dung dung vi tri truoc khi luu.");
 						SetPVarInt(playerid, "EditingTeamPos", 4);
 
 						SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamBlue1][0],PaintBallArena[arenaid][pbTeamBlue1][1],PaintBallArena[arenaid][pbTeamBlue1][2]);
@@ -1754,8 +1754,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					case 4: // Blue Spawn Positions 2
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team Position 2: Move in a position and type (/saveteampos).");
-						SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Diem doi xanh 2: Den vi tri va dung (/saveteampos).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Hay dung dung vi tri truoc khi luu.");
 						SetPVarInt(playerid, "EditingTeamPos", 5);
 
 						SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamBlue2][0],PaintBallArena[arenaid][pbTeamBlue2][1],PaintBallArena[arenaid][pbTeamBlue2][2]);
@@ -1768,8 +1768,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					case 5: // Blue Spawn Positions 3
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team Position 3: Move in a position and type (/saveteampos).");
-						SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Diem doi xanh 3: Den vi tri va dung (/saveteampos).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Hay dung dung vi tri truoc khi luu.");
 						SetPVarInt(playerid, "EditingTeamPos", 6);
 
 						SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamBlue3][0],PaintBallArena[arenaid][pbTeamBlue3][1],PaintBallArena[arenaid][pbTeamBlue3][2]);
@@ -1796,8 +1796,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					case 0: // Red Flag
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "Red Team Flag Position: Move in a position and type (/saveflagpos).");
-						SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Vi tri co doi do: Den vi tri va dung (/saveflagpos).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Hay dung dung vi tri truoc khi luu.");
 						SetPVarInt(playerid, "EditingFlagPos", 1);
 
 						SetPlayerPos(playerid,PaintBallArena[arenaid][pbFlagRedSpawn][0],PaintBallArena[arenaid][pbFlagRedSpawn][1],PaintBallArena[arenaid][pbFlagRedSpawn][2]);
@@ -1806,8 +1806,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					case 1: // Blue Flag
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team Flag Position: Move in a position and type (/saveflagpos).");
-						SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Vi tri co doi xanh: Den vi tri va dung (/saveflagpos).");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Hay dung dung vi tri truoc khi luu.");
 						SetPVarInt(playerid, "EditingFlagPos", 2);
 
 						SetPlayerPos(playerid,PaintBallArena[arenaid][pbFlagBlueSpawn][0],PaintBallArena[arenaid][pbFlagBlueSpawn][1],PaintBallArena[arenaid][pbFlagBlueSpawn][2]);
@@ -1897,7 +1897,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							{
 								if(PlayerInfo[playerid][pDonateRank] <= 2)
 								{
-									SendClientMessageEx(playerid, COLOR_WHITE, "You need at least 3 tokens to rent a room.");
+									SendClientMessageEx(playerid, COLOR_WHITE, "Can it nhat 3 tokens de thue phong.");
 									PaintballArenaSelection(playerid);
 									return 1;
 								}
@@ -1946,32 +1946,32 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							}
 							if(PaintBallArena[i][pbBidMoney] > GetPlayerCash(playerid))
 							{
-								SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough cash to enter the Arena.");
+								SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du tien vao dau truong.");
 								PaintballArenaSelection(playerid);
 								return 1;
 							}
 							if(PaintBallArena[i][pbTimeLeft] < 180)
 							{
-								SendClientMessageEx(playerid, COLOR_WHITE, "That Arena's round is about to end, you cannot join it.");
+								SendClientMessageEx(playerid, COLOR_WHITE, "Vong dau nay sap ket thuc, ban khong the vao.");
 								PaintballArenaSelection(playerid);
 								return 1;
 							}
 							if(PaintBallArena[i][pbWar] == 1 && PlayerInfo[playerid][pDonateRank] < 3)
 							{
-								SendClientMessageEx(playerid, COLOR_WHITE, "Only Gold VIP+ can enter WAR arenas.");
+								SendClientMessageEx(playerid, COLOR_WHITE, "Chi Gold VIP+ duoc vao dau truong WAR.");
 								PaintballArenaSelection(playerid);
 								return 1;
 							}
 							if(PaintBallArena[i][pbGameType] == 2 || PaintBallArena[i][pbGameType] == 3 || PaintBallArena[i][pbGameType] == 5)
 							{
 								SetPVarInt(playerid, "ArenaEnterTeam", i);
-								ShowPlayerDialogEx(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
+								ShowPlayerDialogEx(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Chon doi:","{FF0000}Doi do\n{0000FF}Doi xanh","Vao","Roi di");
 								return 1;
 							}
 							if(strcmp(PaintBallArena[i][pbPassword], "None", false))
 							{
 								SetPVarInt(playerid, "ArenaEnterPass", i);
-								ShowPlayerDialogEx(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Password:","This Arena is currently passworded, please enter the password:","Enter","Leave");
+								ShowPlayerDialogEx(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Mat khau:","Dau truong nay co mat khau, hay nhap mat khau:","Nhap","Roi di");
 								return 1;
 							}
 							JoinPaintballArena(playerid, i, "None");
@@ -1991,7 +1991,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else
 			{
-				ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
+				ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Menu chinh:","Chon dau truong\nPaintball Tokens\nMenu Admin","Chon","Roi di");
 			}
 		}
 		case PBTOKENBUYMENU:
@@ -2011,22 +2011,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(strval(inputtext) > 1000)
 				{
 					PaintballTokenBuyMenu(playerid);
-					SendClientMessageEx(playerid, COLOR_WHITE, "You can not purchase more than 1000 tokens at a time.");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Khong the mua qua 1000 tokens moi lan.");
 					return 1;
 				}
 				if(GetPlayerCash(playerid) < 5000*strval(inputtext))
 				{
 					PaintballTokenBuyMenu(playerid);
-					SendClientMessageEx(playerid, COLOR_WHITE, "You can not afford %d tokens for $%d.",strval(inputtext),strval(inputtext)*5000);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du tien mua %d tokens gia $%d.",strval(inputtext),strval(inputtext)*5000);
 					return 1;
 				}
 				GivePlayerCash(playerid, -5000*strval(inputtext));
 				PlayerInfo[playerid][pPaintTokens] += strval(inputtext);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased %d tokens for $%d.",strval(inputtext),strval(inputtext)*5000);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ban da mua %d tokens voi gia $%d.",strval(inputtext),strval(inputtext)*5000);
 			}
 			else
 			{
-				ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
+				ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Menu chinh:","Chon dau truong\nPaintball Tokens\nMenu Admin","Chon","Roi di");
 			}
 		}
 		case PBSETUPARENA:
@@ -2040,62 +2040,62 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					{
 						case 0: // Password
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Change Password:","Please enter your desired password, leave it empty if you do not want the arena passworded:","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Doi mat khau:","Nhap mat khau muon dat, de trong neu khong muon dung mat khau:","Doi","Quay lai");
 							return 1;
 						}
 						case 1: // GameType
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEGAMEMODE,DIALOG_STYLE_LIST,"Paintball Arena - Change Gamemode:","Deathmatch\nTeam Deathmatch\nCapture the Flag\nKing of the Hill\nTeam King of the Hill","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEGAMEMODE,DIALOG_STYLE_LIST,"Paintball Arena - Doi che do:","Deathmatch\nTeam Deathmatch\nCapture the Flag\nKing of the Hill\nTeam King of the Hill","Doi","Quay lai");
 							return 1;
 						}
 						case 2: // Limit
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Doi gioi han:","Nhap gioi han nguoi choi (2-16):","Doi","Quay lai");
 							return 1;
 						}
 						case 3: // Time Limit
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a time limit for the round (5-15 minutes):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Doi gioi han thoi gian:","Nhap gioi han thoi gian vong dau (5-15 phut):","Doi","Quay lai");
 							return 1;
 						}
 						case 4: // Bid Money
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each player ($0-$10000):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Doi tien cuoc:","Nhap tien cuoc moi nguoi ($0-$10000):","Doi","Quay lai");
 							return 1;
 						}
 						case 5: // Health
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each player (1-100):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Doi mau:","Nhap mau khi xuat hien cho moi nguoi (1-100):","Doi","Quay lai");
 							return 1;
 						}
 						case 6: // Armor
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each player (0-100):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Doi giap:","Nhap giap khi xuat hien cho moi nguoi (0-100):","Doi","Quay lai");
 							return 1;
 						}
 						case 7: // Weapons 1
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 1):","Nhap ID vu khi o 1 cho moi nguoi (0-34):","Doi","Quay lai");
 							return 1;
 						}
 						case 8: // Weapons 2
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 2):","Nhap ID vu khi o 2 cho moi nguoi (0-34):","Doi","Quay lai");
 							return 1;
 						}
 						case 9: // Weapons 3
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 3):","Nhap ID vu khi o 3 cho moi nguoi (0-34):","Doi","Quay lai");
 							return 1;
 						}
 						case 10: // Exploit Perm
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Doi quyen Exploit:","Cho phep QS/CS trong phong? (1 = Co / 0 = Khong):","Doi","Quay lai");
 							return 1;
 						}
 						case 11: // War
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEWAR,DIALOG_STYLE_MSGBOX,"Paintball Arena - Change War:", "Do you wish to allow War in the room?", "Yes", "No");
+							ShowPlayerDialogEx(playerid,PBCHANGEWAR,DIALOG_STYLE_MSGBOX,"Paintball Arena - Doi War:", "Ban muon cho phep War trong phong?", "Co", "Khong");
 							return 1;
 						}
 						case 12: // Begin Arena
@@ -2105,15 +2105,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								if(PlayerInfo[playerid][pDonateRank] <= 2)
 								{
 									PlayerInfo[playerid][pPaintTokens] -= 3;
-									SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,3);
-									SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+									SendClientMessageEx(playerid, COLOR_YELLOW, "Ban thue phong %d phut voi gia %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,3);
+									SendClientMessageEx(playerid, COLOR_WHITE, "Lenh Paintball Arena: /scores - /exitarena - /joinarena - /switchteam");
 									PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 									//SendAudioToPlayer(playerid, 27, 100);
 								}
 								else
 								{
-									SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
-									SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+									SendClientMessageEx(playerid, COLOR_YELLOW, "Ban thue phong %d phut mien phi nho Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
+									SendClientMessageEx(playerid, COLOR_WHITE, "Lenh Paintball Arena: /scores - /exitarena - /joinarena - /switchteam");
 									PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 									//SendAudioToPlayer(playerid, 27, 100);
 								}
@@ -2125,22 +2125,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									if(PlayerInfo[playerid][pPaintTokens] >= 4)
 									{
 										PlayerInfo[playerid][pPaintTokens] -= 4;
-										SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,4);
-										SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+										SendClientMessageEx(playerid, COLOR_YELLOW, "Ban thue phong %d phut voi gia %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,4);
+										SendClientMessageEx(playerid, COLOR_WHITE, "Lenh Paintball Arena: /scores - /exitarena - /joinarena - /switchteam");
 										PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 										//SendAudioToPlayer(playerid, 27, 100);
 									}
 									else
 									{
 										PaintballSetupArena(playerid);
-										SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough tokens to rent this room for this gametype.");
+										SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du tokens de thue phong voi che do nay.");
 										return 1;
 									}
 								}
 								else
 								{
-									SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
-									SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+									SendClientMessageEx(playerid, COLOR_YELLOW, "Ban thue phong %d phut mien phi nho Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
+									SendClientMessageEx(playerid, COLOR_WHITE, "Lenh Paintball Arena: /scores - /exitarena - /joinarena - /switchteam");
 									PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 									//SendAudioToPlayer(playerid, 41, 100);
 								}
@@ -2152,15 +2152,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								if(PlayerInfo[playerid][pDonateRank] <= 2)
 								{
 									PlayerInfo[playerid][pPaintTokens] -= 5;
-									SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,5);
-									SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+									SendClientMessageEx(playerid, COLOR_YELLOW, "Ban thue phong %d phut voi gia %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,5);
+									SendClientMessageEx(playerid, COLOR_WHITE, "Lenh Paintball Arena: /scores - /exitarena - /joinarena - /switchteam");
 									PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 									//SendAudioToPlayer(playerid, 27, 100);
 								}
 								else
 								{
-									SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
-									SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+									SendClientMessageEx(playerid, COLOR_YELLOW, "Ban thue phong %d phut mien phi nho Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
+									SendClientMessageEx(playerid, COLOR_WHITE, "Lenh Paintball Arena: /scores - /exitarena - /joinarena - /switchteam");
 									PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 									//SendAudioToPlayer(playerid, 27, 100);
 								}
@@ -2176,22 +2176,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									if(PlayerInfo[playerid][pPaintTokens] >= 6)
 									{
 										PlayerInfo[playerid][pPaintTokens] -= 6;
-										SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,6);
-										SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+										SendClientMessageEx(playerid, COLOR_YELLOW, "Ban thue phong %d phut voi gia %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,6);
+										SendClientMessageEx(playerid, COLOR_WHITE, "Lenh Paintball Arena: /scores - /exitarena - /joinarena - /switchteam");
 										PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 										//SendAudioToPlayer(playerid, 41, 100);
 									}
 									else
 									{
 										PaintballSetupArena(playerid);
-										SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough tokens to rent this room for this gametype.");
+										SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du tokens de thue phong voi che do nay.");
 										return 1;
 									}
 								}
 								else
 								{
-									SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
-									SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+									SendClientMessageEx(playerid, COLOR_YELLOW, "Ban thue phong %d phut mien phi nho Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
+									SendClientMessageEx(playerid, COLOR_WHITE, "Lenh Paintball Arena: /scores - /exitarena - /joinarena - /switchteam");
 									PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 									//SendAudioToPlayer(playerid, 41, 100);
 								}
@@ -2256,72 +2256,72 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					{
 						case 0: // Password
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Change Password:","Please enter your desired password, leave it empty if you do not want the arena passworded:","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Doi mat khau:","Nhap mat khau muon dat, de trong neu khong muon dung mat khau:","Doi","Quay lai");
 							return 1;
 						}
 						case 1: // GameType
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEGAMEMODE,DIALOG_STYLE_LIST,"Paintball Arena - Change Gamemode:","Deathmatch\nTeam Deathmatch\nCapture the Flag\nKing of the Hill\nTeam King of the Hill","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEGAMEMODE,DIALOG_STYLE_LIST,"Paintball Arena - Doi che do:","Deathmatch\nTeam Deathmatch\nCapture the Flag\nKing of the Hill\nTeam King of the Hill","Doi","Quay lai");
 							return 1;
 						}
 						case 2: // Limit
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Doi gioi han:","Nhap gioi han nguoi choi (2-16):","Doi","Quay lai");
 							return 1;
 						}
 						case 3: // Time Limit
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a time limit for the round (5-15 minutes):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Doi gioi han thoi gian:","Nhap gioi han thoi gian vong dau (5-15 phut):","Doi","Quay lai");
 							return 1;
 						}
 						case 4: // Bid Money
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each player ($0-$10000):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Doi tien cuoc:","Nhap tien cuoc moi nguoi ($0-$10000):","Doi","Quay lai");
 							return 1;
 						}
 						case 5: // Health
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each player (1-100):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Doi mau:","Nhap mau khi xuat hien cho moi nguoi (1-100):","Doi","Quay lai");
 							return 1;
 						}
 						case 6: // Armor
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each player (0-100):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Doi giap:","Nhap giap khi xuat hien cho moi nguoi (0-100):","Doi","Quay lai");
 							return 1;
 						}
 						case 7: // Weapons 1
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 1):","Nhap ID vu khi o 1 cho moi nguoi (0-34):","Doi","Quay lai");
 							return 1;
 						}
 						case 8: // Weapons 2
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 2):","Nhap ID vu khi o 2 cho moi nguoi (0-34):","Doi","Quay lai");
 							return 1;
 						}
 						case 9: // Weapons 3
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 3):","Nhap ID vu khi o 3 cho moi nguoi (0-34):","Doi","Quay lai");
 							return 1;
 						}
 						case 10: // Exploit Perm
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Doi quyen Exploit:","Cho phep QS/CS trong phong? (1 = Co / 0 = Khong):","Doi","Quay lai");
 							return 1;
 						}
 						case 11: // War
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEWAR,DIALOG_STYLE_MSGBOX,"Paintball Arena - Change War:", "Do you wish to allow War in the room?", "Yes", "No");
+							ShowPlayerDialogEx(playerid,PBCHANGEWAR,DIALOG_STYLE_MSGBOX,"Paintball Arena - Doi War:", "Ban muon cho phep War trong phong?", "Co", "Khong");
 							return 1;
 						}
 						case 12: // Flag Instagib
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag Instagib:","Do you wish to allow one-shot kills on the flag holder in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's health to 1 on pickup.","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Doi Flag Instagib:","Cho phep ha nguoi cam co bang mot phat? (1 = Co / 0 = Khong):\n\nGoi y: Dat mau nguoi cam co ve 1 khi nhat co.","Doi","Quay lai");
 							return 1;
 						}
 						case 13: // Flag No Weapons
 						{
-							ShowPlayerDialogEx(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag No Weapons:","Do you wish to have the flag holder's weapons to be disabled in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's weapons to fists on pickup.","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Doi Flag No Weapons:","Cam vu khi nguoi cam co? (1 = Co / 0 = Khong):\n\nGoi y: Chuyen vu khi nguoi cam co thanh tay khong khi nhat co.","Doi","Quay lai");
 							return 1;
 						}
 						case 14: // Begin Arena
@@ -2331,22 +2331,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								if(PlayerInfo[playerid][pPaintTokens] >= 5)
 								{
 									PlayerInfo[playerid][pPaintTokens] -= 5;
-									SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,5);
-									SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+									SendClientMessageEx(playerid, COLOR_YELLOW, "Ban thue phong %d phut voi gia %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,5);
+									SendClientMessageEx(playerid, COLOR_WHITE, "Lenh Paintball Arena: /scores - /exitarena - /joinarena - /switchteam");
 									PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 									//SendAudioToPlayer(playerid, 41, 100);
 								}
 								else
 								{
 									PaintballSetupArena(playerid);
-									SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough tokens to rent this room for this gametype.");
+									SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du tokens de thue phong voi che do nay.");
 									return 1;
 								}
 							}
 							else
 							{
-								SendClientMessageEx(playerid, COLOR_YELLOW, "You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
-								SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+								SendClientMessageEx(playerid, COLOR_YELLOW, "Ban thue phong %d phut mien phi nho Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
+								SendClientMessageEx(playerid, COLOR_WHITE, "Lenh Paintball Arena: /scores - /exitarena - /joinarena - /switchteam");
 								PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 								//SendAudioToPlayer(playerid, 41, 100);
 							}
@@ -2497,12 +2497,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Doi gioi han:","Nhap gioi han nguoi choi (2-16):","Doi","Quay lai");
 					return 1;
 				}
 				if(strval(inputtext) < 2 || strval(inputtext) > 16)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Doi gioi han:","Nhap gioi han nguoi choi (2-16):","Doi","Quay lai");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbLimit] = strval(inputtext);
@@ -2520,17 +2520,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a Time Limit for the round (5-15 Minutes):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Doi gioi han thoi gian:","Nhap gioi han thoi gian vong dau (5-15 phut):","Doi","Quay lai");
 					return 1;
 				}
 				if(strfind(".", inputtext, true) != -1)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a Time Limit for the round (5-15 Minutes):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Doi gioi han thoi gian:","Nhap gioi han thoi gian vong dau (5-15 phut):","Doi","Quay lai");
 					return 1;
 				}
 				if(strval(inputtext) < 5 || strval(inputtext) > 15)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a Time Limit for the round (5-15 Minutes):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Doi gioi han thoi gian:","Nhap gioi han thoi gian vong dau (5-15 phut):","Doi","Quay lai");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbTimeLeft] = strval(inputtext)*60;
@@ -2548,18 +2548,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each person ($0-$10000):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Doi tien cuoc:","Nhap tien cuoc moi nguoi ($0-$10000):","Doi","Quay lai");
 					return 1;
 				}
 				if(strval(inputtext) < 0 || strval(inputtext) > 10000)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each person ($0-$10000):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Doi tien cuoc:","Nhap tien cuoc moi nguoi ($0-$10000):","Doi","Quay lai");
 					return 1;
 				}
 				if(strval(inputtext) > GetPlayerCash(playerid))
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each person ($0-$10000):","Change","Back");
-					SendClientMessageEx(playerid, COLOR_WHITE, "You can't enter a bid amount greater than your current cash.");
+					ShowPlayerDialogEx(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Doi tien cuoc:","Nhap tien cuoc moi nguoi ($0-$10000):","Doi","Quay lai");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Tien cuoc khong duoc vuot tien mat cua ban.");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbBidMoney] = strval(inputtext);
@@ -2577,12 +2577,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each person (1-100):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Doi mau:","Nhap mau khi xuat hien cho moi nguoi (1-100):","Doi","Quay lai");
 					return 1;
 				}
 				if(strval(inputtext) < 1 || strval(inputtext) > 100)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each person (1-100):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Doi mau:","Nhap mau khi xuat hien cho moi nguoi (1-100):","Doi","Quay lai");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbHealth] = strval(inputtext);
@@ -2600,12 +2600,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each person (0-99):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Doi giap:","Nhap giap khi xuat hien cho moi nguoi (0-99):","Doi","Quay lai");
 					return 1;
 				}
 				if(strval(inputtext) < 0 || strval(inputtext) > 99)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each person (0-99):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Doi giap:","Nhap giap khi xuat hien cho moi nguoi (0-99):","Doi","Quay lai");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbArmor] = strval(inputtext);
@@ -2623,22 +2623,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 1):","Nhap ID vu khi o 1 cho moi nguoi (0-34):","Doi","Quay lai");
 					return 1;
 				}
 				if(strval(inputtext) == 16 || strval(inputtext) == 18)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 1):","Nhap ID vu khi o 1 cho moi nguoi (0-34):","Doi","Quay lai");
 					return 1;			
 				}
 				if(strval(inputtext) < 0||strval(inputtext) > 34)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 1):","Nhap ID vu khi o 1 cho moi nguoi (0-34):","Doi","Quay lai");
 					return 1;
 				}
 				if(strval(inputtext) >= 19 && strval(inputtext) <= 21)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 1):","Nhap ID vu khi o 1 cho moi nguoi (0-34):","Doi","Quay lai");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbWeapons][0] = strval(inputtext);
@@ -2656,22 +2656,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 2):","Nhap ID vu khi o 2 cho moi nguoi (0-34):","Doi","Quay lai");
 					return 1;
 				}
 				if(strval(inputtext) == 16 || strval(inputtext) == 18)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 1):","Nhap ID vu khi o 1 cho moi nguoi (0-34):","Doi","Quay lai");
 					return 1;			
 				}			
 				if(strval(inputtext) < 0||strval(inputtext) > 34)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 2):","Nhap ID vu khi o 2 cho moi nguoi (0-34):","Doi","Quay lai");
 					return 1;
 				}
 				if(strval(inputtext) >= 19 && strval(inputtext) <= 21)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 2):","Nhap ID vu khi o 2 cho moi nguoi (0-34):","Doi","Quay lai");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbWeapons][1] = strval(inputtext);
@@ -2689,22 +2689,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 3):","Nhap ID vu khi o 3 cho moi nguoi (0-34):","Doi","Quay lai");
 					return 1;
 				}
 				if(strval(inputtext) == 16 || strval(inputtext) == 18)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 1):","Nhap ID vu khi o 1 cho moi nguoi (0-34):","Doi","Quay lai");
 					return 1;			
 				}			
 				if(strval(inputtext) < 0||strval(inputtext) > 34)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 3):","Nhap ID vu khi o 3 cho moi nguoi (0-34):","Doi","Quay lai");
 					return 1;
 				}
 				if(strval(inputtext) >= 19 && strval(inputtext) <= 21)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Doi vu khi (Slot 3):","Nhap ID vu khi o 3 cho moi nguoi (0-34):","Doi","Quay lai");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbWeapons][2] = strval(inputtext);
@@ -2722,12 +2722,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Doi quyen Exploit:","Cho phep QS/CS trong phong? (1 = Co / 0 = Khong):","Doi","Quay lai");
 					return 1;
 				}
 				if(strval(inputtext) < 0||strval(inputtext) > 1)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Doi quyen Exploit:","Cho phep QS/CS trong phong? (1 = Co / 0 = Khong):","Doi","Quay lai");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbExploitPerm] = strval(inputtext);
@@ -2750,7 +2750,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				else
 				{
 					PaintBallArena[arenaid][pbWar] = 0;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "Only Gold VIP+ can use this feature.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Chi Gold VIP+ duoc dung tinh nang nay.");
 				}
 				PaintballSetupArena(playerid);
 			}
@@ -2767,12 +2767,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag Instagib:","Do you wish to allow one-shot kills on the flag holder in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's health to 1 on pickup.","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Doi Flag Instagib:","Cho phep ha nguoi cam co bang mot phat? (1 = Co / 0 = Khong):\n\nGoi y: Dat mau nguoi cam co ve 1 khi nhat co.","Doi","Quay lai");
 					return 1;
 				}
 				if(strval(inputtext) < 0||strval(inputtext) > 1)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag Instagib:","Do you wish to allow one-shot kills on the flag holder in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's health to 1 on pickup.","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Doi Flag Instagib:","Cho phep ha nguoi cam co bang mot phat? (1 = Co / 0 = Khong):\n\nGoi y: Dat mau nguoi cam co ve 1 khi nhat co.","Doi","Quay lai");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbFlagInstagib] = strval(inputtext);
@@ -2790,12 +2790,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag No Weapons:","Do you wish to have the flag holder's weapons to be disabled in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's weapons to fists on pickup.","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Doi Flag No Weapons:","Cam vu khi nguoi cam co? (1 = Co / 0 = Khong):\n\nGoi y: Chuyen vu khi nguoi cam co thanh tay khong khi nhat co.","Doi","Quay lai");
 					return 1;
 				}
 				if(strval(inputtext) < 0||strval(inputtext) > 1)
 				{
-					ShowPlayerDialogEx(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag No Weapons:","Do you wish to have the flag holder's weapons to be disabled in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's weapons to fists on pickup.","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Doi Flag No Weapons:","Cam vu khi nguoi cam co? (1 = Co / 0 = Khong):\n\nGoi y: Chuyen vu khi nguoi cam co thanh tay khong khi nhat co.","Doi","Quay lai");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbFlagNoWeapons] = strval(inputtext);
@@ -2860,24 +2860,24 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						new teamlimit = PaintBallArena[arenaid][pbLimit]/2;
 						if(PlayerInfo[playerid][pPaintTeam] == 1)
 						{
-							SendClientMessageEx(playerid, COLOR_WHITE, "You are already on the Red Team!");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Ban da o doi do!");
 							PaintballSwitchTeam(playerid);
 							return 1;
 						}
 						if(PaintBallArena[arenaid][pbTimeLeft] < 180)
 						{
-							SendClientMessageEx(playerid, COLOR_WHITE, "You can not switch teams now!");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Hien khong the doi doi!");
 							return 1;
 						}
 						if(PaintBallArena[arenaid][pbTeamRed] >= teamlimit)
 						{
-							SendClientMessageEx(playerid, COLOR_WHITE, "Red Team is currently full, please choose another team.");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Doi do da day, hay chon doi khac.");
 							PaintballSwitchTeam(playerid);
 							return 1;
 						}
 						if(PaintBallArena[arenaid][pbTeamRed] > PaintBallArena[arenaid][pbTeamBlue])
 						{
-							SendClientMessageEx(playerid, COLOR_WHITE, "Teams would be un-even, you cannot switch teams right now.");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Se mat can bang, hien khong the doi doi.");
 							return 1;
 						}
 						PaintBallArena[arenaid][pbTeamBlue]--;
@@ -2890,24 +2890,24 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						new teamlimit = PaintBallArena[arenaid][pbLimit]/2;
 						if(PlayerInfo[playerid][pPaintTeam] == 2)
 						{
-							SendClientMessageEx(playerid, COLOR_WHITE, "You are already on the Blue Team!");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Ban da o doi xanh!");
 							PaintballSwitchTeam(playerid);
 							return 1;
 						}
 						if(PaintBallArena[arenaid][pbTimeLeft] < 180)
 						{
-							SendClientMessageEx(playerid, COLOR_WHITE, "You can not switch teams now!");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Hien khong the doi doi!");
 							return 1;
 						}
 						if(PaintBallArena[arenaid][pbTeamBlue] >= teamlimit)
 						{
-							SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team is currently full, please choose another team.");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Doi xanh da day, hay chon doi khac.");
 							PaintballSwitchTeam(playerid);
 							return 1;
 						}
 						if(PaintBallArena[arenaid][pbTeamBlue] > PaintBallArena[arenaid][pbTeamRed])
 						{
-							SendClientMessageEx(playerid, COLOR_WHITE, "Teams would be un-even, you cannot switch teams right now.");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Se mat can bang, hien khong the doi doi.");
 							return 1;
 						}
 						PaintBallArena[arenaid][pbTeamRed]--;
@@ -2936,21 +2936,21 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						new teamlimit = PaintBallArena[arenaid][pbLimit]/2;
 						if(PaintBallArena[arenaid][pbTeamRed] >= teamlimit)
 						{
-							SendClientMessageEx(playerid, COLOR_WHITE, "Red Team is currently full, please choose another team.");
-							ShowPlayerDialogEx(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Doi do da day, hay chon doi khac.");
+							ShowPlayerDialogEx(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Chon doi:","{FF0000}Doi do\n{0000FF}Doi xanh","Vao","Roi di");
 							return 1;
 						}
 						if(PaintBallArena[arenaid][pbTeamRed] > PaintBallArena[arenaid][pbTeamBlue])
 						{
-							SendClientMessageEx(playerid, COLOR_WHITE, "Teams are un-even, please choose another team.");
-							ShowPlayerDialogEx(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Cac doi mat can bang, hay chon doi khac.");
+							ShowPlayerDialogEx(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Chon doi:","{FF0000}Doi do\n{0000FF}Doi xanh","Vao","Roi di");
 							return 1;
 						}
 						SetPVarInt(playerid, "pbTeamChoice", 1);
 						if(strcmp(PaintBallArena[arenaid][pbPassword], "None", false))
 						{
 							SetPVarInt(playerid, "ArenaEnterPass", arenaid);
-							ShowPlayerDialogEx(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Password:","This Arena is currently passworded, please enter the password:","Enter","Leave");
+							ShowPlayerDialogEx(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Mat khau:","Dau truong nay co mat khau, hay nhap mat khau:","Nhap","Roi di");
 							return 1;
 						}
 						JoinPaintballArena(playerid, arenaid, "None");
@@ -2960,21 +2960,21 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						new teamlimit = PaintBallArena[arenaid][pbLimit]/2;
 						if(PaintBallArena[arenaid][pbTeamBlue] >= teamlimit)
 						{
-							SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team is currently full, please choose another team.");
-							ShowPlayerDialogEx(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Doi xanh da day, hay chon doi khac.");
+							ShowPlayerDialogEx(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Chon doi:","{FF0000}Doi do\n{0000FF}Doi xanh","Vao","Roi di");
 							return 1;
 						}
 						if(PaintBallArena[arenaid][pbTeamBlue] > PaintBallArena[arenaid][pbTeamRed])
 						{
-							SendClientMessageEx(playerid, COLOR_WHITE, "Teams are un-even, please choose another team.");
-							ShowPlayerDialogEx(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Cac doi mat can bang, hay chon doi khac.");
+							ShowPlayerDialogEx(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Chon doi:","{FF0000}Doi do\n{0000FF}Doi xanh","Vao","Roi di");
 							return 1;
 						}
 						SetPVarInt(playerid, "pbTeamChoice", 2);
 						if(strcmp(PaintBallArena[arenaid][pbPassword], "None", false))
 						{
 							SetPVarInt(playerid, "ArenaEnterPass", arenaid);
-							ShowPlayerDialogEx(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Password:","This Arena is currently passworded, please enter the password:","Enter","Leave");
+							ShowPlayerDialogEx(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Mat khau:","Dau truong nay co mat khau, hay nhap mat khau:","Nhap","Roi di");
 							return 1;
 						}
 						JoinPaintballArena(playerid, arenaid, "None");
@@ -2995,14 +2995,14 @@ CMD:areloadpb(playerid, params[])
     if(PlayerInfo[playerid][pAdmin] >= 1337)
     {
 		LoadPaintballArenas();
-		SendClientMessageEx(playerid, COLOR_RED, " Paintball Arenas Loaded from the database. ");
+		SendClientMessageEx(playerid, COLOR_RED, " Da tai Paintball Arenas tu co so du lieu.");
     }
 }
 
 CMD:unlockarenas(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
         return 1;
     }
     for(new i = 0; i < MAX_ARENAS; i++) {
@@ -3010,16 +3010,16 @@ CMD:unlockarenas(playerid, params[])
             ResetPaintballArena(i);
         }
     }
-    format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has unlocked all Paintball Arenas.", GetPlayerNameEx(playerid));
+    format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s da mo khoa tat ca Paintball Arenas.", GetPlayerNameEx(playerid));
     ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-    SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s has unlocked all Paintball Arenas, you may join/create them now.", GetPlayerNameEx(playerid));
+    SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s da mo khoa tat ca Paintball Arenas, ban co the vao/tao phong.", GetPlayerNameEx(playerid));
     return 1;
 }
 
 CMD:lockarenas(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
         return 1;
     }
 
@@ -3032,7 +3032,7 @@ CMD:lockarenas(playerid, params[])
 			if(arenaid == i) {
 				if(PaintBallArena[arenaid][pbBidMoney] > 0) {
 					GivePlayerCash(p,PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
-					SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of $%d because of premature closure.",PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
+					SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan tong cong $%d vi dong som.",PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
 				}
 				if(arenaid == GetPVarInt(p, "ArenaNumber")) {
 					switch(PaintBallArena[arenaid][pbGameType]) {
@@ -3040,35 +3040,35 @@ CMD:lockarenas(playerid, params[])
 						{
 							if(PlayerInfo[p][pDonateRank] < 3) {
 								PlayerInfo[p][pPaintTokens] += 3;
-								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
+								SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",3);
 							}
 						}
 						case 2:
 						{
 							if(PlayerInfo[p][pDonateRank] < 3) {
 								PlayerInfo[p][pPaintTokens] += 4;
-								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
+								SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",4);
 							}
 						}
 						case 3:
 						{
 							if(PlayerInfo[p][pDonateRank] < 3) {
 								PlayerInfo[p][pPaintTokens] += 5;
-								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+								SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",5);
 							}
 						}
 						case 4:
 						{
 							if(PlayerInfo[p][pDonateRank] < 3) {
 								PlayerInfo[p][pPaintTokens] += 5;
-								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+								SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",5);
 							}
 						}
 						case 5:
 						{
 							if(PlayerInfo[p][pDonateRank] < 3) {
 								PlayerInfo[p][pPaintTokens] += 6;
-								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
+								SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",6);
 							}
 						}
 					}
@@ -3079,9 +3079,9 @@ CMD:lockarenas(playerid, params[])
         ResetPaintballArena(i);
         PaintBallArena[i][pbLocked] = 2;
     }
-    format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has locked all Paintball Arenas.", GetPlayerNameEx(playerid));
+    format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s da khoa tat ca Paintball Arenas.", GetPlayerNameEx(playerid));
     ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-    SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s has locked all Paintball Arenas for some short maintenance.", GetPlayerNameEx(playerid));
+    SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s da khoa tat ca Paintball Arenas de bao tri ngan.", GetPlayerNameEx(playerid));
     return 1;
 }
 
@@ -3089,11 +3089,11 @@ CMD:savedmpos(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 1337) {
         if(GetPVarInt(playerid, "EditingDMPos") == 0) {
-            SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently not editing any spawn positions.");
+            SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong dang sua diem xuat hien.");
             return 1;
         }
         if(!GetPVarType(playerid, "ArenaNumber")) {
-            SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently not editing any arenas.");
+            SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong dang sua dau truong.");
             return 1;
         }
         new arenaid = GetPVarInt(playerid, "ArenaNumber");
@@ -3111,7 +3111,7 @@ CMD:savedmpos(playerid, params[])
                 PaintBallArena[arenaid][pbDeathmatch1][3] = angle;
 
                 format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
-                SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited DM Spawn Position 1.");
+                SendClientMessageEx(playerid, COLOR_WHITE, "Da doi diem DM 1.");
                 SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingDMPos", 0);
@@ -3125,7 +3125,7 @@ CMD:savedmpos(playerid, params[])
                 PaintBallArena[arenaid][pbDeathmatch2][3] = angle;
 
                 format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
-                SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited DM Spawn Position 2.");
+                SendClientMessageEx(playerid, COLOR_WHITE, "Da doi diem DM 2.");
                 SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingDMPos", 0);
@@ -3139,7 +3139,7 @@ CMD:savedmpos(playerid, params[])
                 PaintBallArena[arenaid][pbDeathmatch3][3] = angle;
 
                 format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
-                SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited DM Spawn Position 3.");
+                SendClientMessageEx(playerid, COLOR_WHITE, "Da doi diem DM 3.");
                 SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingDMPos", 0);
@@ -3153,7 +3153,7 @@ CMD:savedmpos(playerid, params[])
                 PaintBallArena[arenaid][pbDeathmatch4][3] = angle;
 
                 format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
-                SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited DM Spawn Position 4.");
+                SendClientMessageEx(playerid, COLOR_WHITE, "Da doi diem DM 4.");
                 SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingDMPos", 0);
@@ -3163,7 +3163,7 @@ CMD:savedmpos(playerid, params[])
 
     }
     else {
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
     }
     return 1;
 }
@@ -3172,11 +3172,11 @@ CMD:saveteampos(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 1337) {
         if(GetPVarInt(playerid, "EditingTeamPos") == 0) {
-            SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently not editing any spawn positions.");
+            SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong dang sua diem xuat hien.");
             return 1;
         }
         if(!GetPVarType(playerid, "ArenaNumber")) {
-            SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently not editing any arenas.");
+            SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong dang sua dau truong.");
             return 1;
         }
         new arenaid = GetPVarInt(playerid, "ArenaNumber");
@@ -3194,7 +3194,7 @@ CMD:saveteampos(playerid, params[])
                 PaintBallArena[arenaid][pbTeamRed1][3] = angle;
 
                 format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
-                SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Red Team Spawn Position 1.");
+                SendClientMessageEx(playerid, COLOR_WHITE, "Da doi diem xuat hien doi do 1.");
                 SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingTeamPos", 0);
@@ -3208,7 +3208,7 @@ CMD:saveteampos(playerid, params[])
                 PaintBallArena[arenaid][pbTeamRed2][3] = angle;
 
                 format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
-                SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Red Team Spawn Position 2.");
+                SendClientMessageEx(playerid, COLOR_WHITE, "Da doi diem xuat hien doi do 2.");
                 SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingTeamPos", 0);
@@ -3222,7 +3222,7 @@ CMD:saveteampos(playerid, params[])
                 PaintBallArena[arenaid][pbTeamRed3][3] = angle;
 
                 format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
-                SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Red Team Spawn Position 3.");
+                SendClientMessageEx(playerid, COLOR_WHITE, "Da doi diem xuat hien doi do 3.");
                 SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingTeamPos", 0);
@@ -3236,7 +3236,7 @@ CMD:saveteampos(playerid, params[])
                 PaintBallArena[arenaid][pbTeamBlue1][3] = angle;
 
                 format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
-                SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Blue Team Spawn Position 1.");
+                SendClientMessageEx(playerid, COLOR_WHITE, "Da doi diem xuat hien doi xanh 1.");
                 SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingTeamPos", 0);
@@ -3250,7 +3250,7 @@ CMD:saveteampos(playerid, params[])
                 PaintBallArena[arenaid][pbTeamBlue2][3] = angle;
 
                 format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
-                SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Blue Team Spawn Position 2.");
+                SendClientMessageEx(playerid, COLOR_WHITE, "Da doi diem xuat hien doi xanh 2.");
                 SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingTeamPos", 0);
@@ -3264,7 +3264,7 @@ CMD:saveteampos(playerid, params[])
                 PaintBallArena[arenaid][pbTeamBlue3][3] = angle;
 
                 format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
-                SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Blue Team Spawn Position 3.");
+                SendClientMessageEx(playerid, COLOR_WHITE, "Da doi diem xuat hien doi xanh 3.");
                 SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingTeamPos", 0);
@@ -3274,7 +3274,7 @@ CMD:saveteampos(playerid, params[])
 
     }
     else {
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
     }
     return 1;
 }
@@ -3283,11 +3283,11 @@ CMD:saveflagpos(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 1337) {
         if(GetPVarInt(playerid, "EditingFlagPos") == 0) {
-            SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently not editing any flag positions.");
+            SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong dang sua vi tri co.");
             return 1;
         }
         if(!GetPVarType(playerid, "ArenaNumber")) {
-            SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently not editing any arenas.");
+            SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong dang sua dau truong.");
             return 1;
         }
         new arenaid = GetPVarInt(playerid, "ArenaNumber");
@@ -3303,7 +3303,7 @@ CMD:saveflagpos(playerid, params[])
                 PaintBallArena[arenaid][pbFlagRedSpawn][2] = z;
 
                 format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f",x,y,z);
-                SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Red Team Flag Position.");
+                SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri co doi do.");
                 SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingFlagPos", 0);
@@ -3316,7 +3316,7 @@ CMD:saveflagpos(playerid, params[])
                 PaintBallArena[arenaid][pbFlagBlueSpawn][2] = z;
 
                 format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f",x,y,z);
-                SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Blue Team Flag Position.");
+                SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri co doi xanh.");
                 SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingFlagPos", 0);
@@ -3326,7 +3326,7 @@ CMD:saveflagpos(playerid, params[])
 
     }
     else {
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
     }
     return 1;
 }
@@ -3335,7 +3335,7 @@ CMD:savehillpos(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 1337) {
         if(!GetPVarType(playerid, "ArenaNumber")) {
-            SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently not editing any arenas.");
+            SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong dang sua dau truong.");
             return 1;
         }
         new arenaid = GetPVarInt(playerid, "ArenaNumber");
@@ -3344,7 +3344,7 @@ CMD:savehillpos(playerid, params[])
         GetPlayerPos(playerid, x, y, z);
 
         if(stage == -1) {
-            SendClientMessageEx(playerid, COLOR_GRAD2, "You are not editing any Hill Positions right now!");
+            SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong dang sua vi tri doi!");
             return 1;
         }
         else {
@@ -3356,7 +3356,7 @@ CMD:savehillpos(playerid, params[])
                     PaintBallArena[arenaid][pbHillZ] = z;
 
                     format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f",x,y,z);
-                    SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited the Hill Position.");
+                    SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri doi.");
                     SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                     DeletePVar(playerid, "EditingHillStage");
@@ -3366,7 +3366,7 @@ CMD:savehillpos(playerid, params[])
         }
     }
     else {
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
     }
     return 1;
 }
@@ -3374,11 +3374,11 @@ CMD:savehillpos(playerid, params[])
 CMD:switchteam(playerid, params[])
 {
     if(!GetPVarType(playerid, "IsInArena")) {
-        SendClientMessageEx(playerid,COLOR_WHITE,"You are not in an arena, you can not switch teams!");
+        SendClientMessageEx(playerid,COLOR_WHITE,"Ban khong o dau truong, khong the doi doi!");
         return 1;
     }
     if(GetPVarInt(playerid, "AOSlotPaintballFlag") != -1) {
-        SendClientMessageEx(playerid,COLOR_WHITE,"You can not switch teams while holding the flag!");
+        SendClientMessageEx(playerid,COLOR_WHITE,"Khong the doi doi khi dang cam co!");
         return 1;
     }
 
@@ -3387,7 +3387,7 @@ CMD:switchteam(playerid, params[])
         PaintballSwitchTeam(playerid);
     }
     else {
-        SendClientMessageEx(playerid,COLOR_WHITE,"You can not switch teams in this gamemode!");
+        SendClientMessageEx(playerid,COLOR_WHITE,"Khong the doi doi trong che do nay!");
     }
     return 1;
 }
@@ -3396,35 +3396,35 @@ CMD:joinarena(playerid, params[])
 {
     if(!GetPVarType(playerid, "IsInArena")) {
         if(PlayerInfo[playerid][pConnectHours] < 2) {
-            SendClientMessageEx(playerid, COLOR_WHITE, "You are unable to join a Paintball Match due to your weapon restriction.");
+            SendClientMessageEx(playerid, COLOR_WHITE, "Ban bi han che vu khi nen khong the vao Paintball Match.");
             return 1;
         }
         if(GetPVarInt(playerid, "Packages") >= 1 || TaxiAccepted[playerid] != INVALID_PLAYER_ID || EMSAccepted[playerid] != INVALID_PLAYER_ID || BusAccepted[playerid] != INVALID_PLAYER_ID || MedicAccepted[playerid] != INVALID_PLAYER_ID || MechanicCallTime[playerid] >= 1) {
-            SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
+            SendClientMessageEx(playerid, COLOR_WHITE, "Hay huy checkpoint hien tai truoc (ban dang giu goi vat lieu hoac co checkpoint khac).");
             return 1;
         }
         if(pTazer{playerid} != 0)
 		{
 			RemovePlayerLoadoutWeapon(playerid, 23);
 			GivePlayerValidWeapon(playerid, pTazerReplace{playerid});
-			format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));			ProxDetector(4.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			format(szMiscArray, sizeof(szMiscArray), "* %s cat sung dien.", GetPlayerNameEx(playerid));			ProxDetector(4.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
  			pTazer{playerid} = 0;
  		}
-		if(PlayerCuffed[playerid] >= 1 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "Injured")) return SendClientMessageEx( playerid, COLOR_WHITE, "You can't do this right now." );
+		if(PlayerCuffed[playerid] >= 1 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "Injured")) return SendClientMessageEx( playerid, COLOR_WHITE, "Khong the lam viec nay luc nay." );
         if(PlayerInfo[playerid][pAdmin] > 2) {
-            ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
+            ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Menu chinh:","Chon dau truong\nPaintball Tokens\nMenu Admin","Chon","Roi di");
             return 1;
         }
         if(IsPlayerInRangeOfPoint(playerid, 10.0, 1294.5062, -1445.0599, 0.4403)) {
-            ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
+            ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Menu chinh:","Chon dau truong\nPaintball Tokens\nMenu Admin","Chon","Roi di");
         }
         else {
-            SendClientMessageEx(playerid, COLOR_WHITE, "You are not near the Paintball Arena!");
+            SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong o gan Paintball Arena!");
         }
 
     }
     else {
-        SendClientMessageEx(playerid, COLOR_WHITE, "You are already in an arena!");
+        SendClientMessageEx(playerid, COLOR_WHITE, "Ban da o trong dau truong!");
     }
     return 1;
 }
@@ -3433,21 +3433,21 @@ CMD:exitarena(playerid, params[])
 {
     if(GetPVarType(playerid, "IsInArena")) {
         if(GetPlayerState(playerid) == PLAYER_STATE_WASTED) {
-            SendClientMessageEx(playerid, COLOR_WHITE, "You cannot do that at this time.");
+            SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam viec nay luc nay.");
             return 1;
         }
         if(PaintBallArena[GetPVarInt(playerid, "IsInArena")][pbTimeLeft] <= 30) {
-            SendClientMessageEx(playerid, COLOR_WHITE, "You cannot leave when there is less than 30 seconds left!");
+            SendClientMessageEx(playerid, COLOR_WHITE, "Khong the roi khi con duoi 30 giay!");
             return 1;
         }
         if(GetPVarInt(playerid, "commitSuicide") == 1) {
         	DeletePVar(playerid, "commitSuicide");
-        	SendClientMessageEx(playerid, COLOR_GREY, "Exiting the arena cancelled your request to /kill.");
+        	SendClientMessageEx(playerid, COLOR_GREY, "Roi dau truong da huy yeu cau /kill.");
         } 
         LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
     }
     else {
-        SendClientMessageEx(playerid, COLOR_WHITE, "You are not in an arena!");
+        SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong o trong dau truong!");
     }
     return 1;
 }
@@ -3460,7 +3460,7 @@ CMD:scores(playerid, params[])
     }
     else
 	{
-        SendClientMessageEx(playerid, COLOR_WHITE, "You are not in an arena!");
+        SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong o trong dau truong!");
     }
     return 1;
 }
@@ -3469,18 +3469,18 @@ CMD:lockarena(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 3)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new arenaid;
-	if(sscanf(params, "d", arenaid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /lockarena [arenaid]");
+	if(sscanf(params, "d", arenaid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /lockarena [arenaid]");
 
 	arenaid--;
 
 	if(arenaid < 0 || arenaid > MAX_ARENAS-1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You have entered a invalid arenaid.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "ID dau truong khong hop le.");
 		return 1;
 	}
 	foreach(new p: Player)
@@ -3492,7 +3492,7 @@ CMD:lockarena(playerid, params[])
 			if(PaintBallArena[cid][pbBidMoney] > 0)
 			{
 				GivePlayerCash(p,PaintBallArena[cid][pbBidMoney]);
-				SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of $%d because of premature closure.",PaintBallArena[cid][pbBidMoney]);
+				SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan tong cong $%d vi dong som.",PaintBallArena[cid][pbBidMoney]);
 			}
 			if(arenaid == GetPVarInt(p, "ArenaNumber"))
 			{
@@ -3503,7 +3503,7 @@ CMD:lockarena(playerid, params[])
 						if(PlayerInfo[p][pDonateRank] < 3)
 						{
 							PlayerInfo[p][pPaintTokens] += 3;
-							SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
+							SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",3);
 						}
 					}
 					case 2:
@@ -3511,7 +3511,7 @@ CMD:lockarena(playerid, params[])
 						if(PlayerInfo[p][pDonateRank] < 3)
 						{
 							PlayerInfo[p][pPaintTokens] += 4;
-							SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
+							SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",4);
 						}
 					}
 					case 3:
@@ -3519,7 +3519,7 @@ CMD:lockarena(playerid, params[])
 						if(PlayerInfo[p][pDonateRank] < 3)
 						{
 							PlayerInfo[p][pPaintTokens] += 5;
-							SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+							SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",5);
 						}
 					}
 					case 4:
@@ -3527,7 +3527,7 @@ CMD:lockarena(playerid, params[])
 						if(PlayerInfo[p][pDonateRank] < 3)
 						{
 							PlayerInfo[p][pPaintTokens] += 5;
-							SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+							SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",5);
 						}
 					}
 					case 5:
@@ -3535,7 +3535,7 @@ CMD:lockarena(playerid, params[])
 						if(PlayerInfo[p][pDonateRank] < 3)
 						{
 							PlayerInfo[p][pPaintTokens] += 6;
-							SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
+							SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",6);
 						}
 					}
 				}
@@ -3545,9 +3545,9 @@ CMD:lockarena(playerid, params[])
 	}	
 	ResetPaintballArena(arenaid);
 	PaintBallArena[arenaid][pbLocked] = 2;
-	format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has locked %s.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName]);
+	format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s da khoa %s.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName]);
 	ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-	SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s has locked %s (ArenaID: %d) for some short maintenance.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName],arenaid+1);
+	SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s da khoa %s (ArenaID: %d) de bao tri ngan.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName],arenaid+1);
 	return 1;
 }
 
@@ -3555,26 +3555,26 @@ CMD:unlockarena(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 3)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new arenaid;
-	if(sscanf(params, "d", arenaid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /unlockarena [arenaid]");
+	if(sscanf(params, "d", arenaid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /unlockarena [arenaid]");
 
 	arenaid--;
 
 	if(arenaid < 0 || arenaid > MAX_ARENAS-1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You have entered a invalid arenaid.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "ID dau truong khong hop le.");
 		return 1;
 	}
 	if(PaintBallArena[arenaid][pbLocked] == 2)
 	{
 		ResetPaintballArena(arenaid);
-		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has unlocked %s.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName]);
+		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s da mo khoa %s.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName]);
 		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-		SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s has unlocked %s (ArenaID: %d), you may join/create it now.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName],arenaid+1);
+		SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* Admin %s da mo khoa %s (ArenaID: %d), ban co the vao/tao phong.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName],arenaid+1);
 	}
 	return 1;
 }
@@ -3582,20 +3582,20 @@ CMD:unlockarena(playerid, params[])
 CMD:givepainttokens(playerid, params[])
 {
 	new giveplayerid, amount;
-	if(sscanf(params, "ud", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givepainttokens [player] [amount]");
+	if(sscanf(params, "ud", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /givepainttokens [player] [amount]");
 
 	if(IsPlayerConnected(giveplayerid))
 	{
 		if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 			return 1;
 		}
 		PlayerInfo[giveplayerid][pPaintTokens] += amount;
 
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have received %d Paintball Tokens from Admin %s.", amount, GetPlayerNameEx(playerid));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given %s %d Paintbll Tokens.", GetPlayerNameEx(giveplayerid), amount);
-		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has given %s, %d Paintball Tokens.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid),amount);
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Ban nhan %d Paintball Tokens tu Admin %s.", amount, GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua %s %d Paintbll Tokens.", GetPlayerNameEx(giveplayerid), amount);
+		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s da dua %s, %d Paintball Tokens.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid),amount);
 		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 
 	}
@@ -3604,8 +3604,8 @@ CMD:givepainttokens(playerid, params[])
 
 CMD:savepbvehicle(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
-	if(!GetPVarType(playerid, "ArenaNumber")) return SendClientMessageEx(playerid, COLOR_WHITE, "You did not select an arena yet.");
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
+	if(!GetPVarType(playerid, "ArenaNumber")) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban chua chon dau truong.");
 	new arenaid = GetPVarInt(playerid, "ArenaNumber");
 	new vehslot = GetPVarInt(playerid, "PBVeh");
 
@@ -3721,7 +3721,7 @@ CMD:savepbvehicle(playerid, params[])
 			}
 		}
 	}
-	SendClientMessageEx(playerid, COLOR_WHITE, "You have adjusted War Vehicle %d for ArenaID %d.",vehslot, arenaid);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Da doi xe War %d cho ArenaID %d.",vehslot, arenaid);
 	SavePaintballArena(arenaid);
 	PaintballEditArenaMenu(playerid);
 	return 1;

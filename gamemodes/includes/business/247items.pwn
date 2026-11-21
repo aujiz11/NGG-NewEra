@@ -162,23 +162,23 @@ CMD:tie(playerid, params[])
 	if(PlayerInfo[playerid][pRope] > 0)
 	{
 		new id;
-		if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_WHITE, "SYNTAX: /tie [playerid]");
+		if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_WHITE, "CU PHAP: /tie [playerid]");
 
 		if(IsPlayerConnected(id))
 		{
-			if(PlayerTied[id] > 0) return SendClientMessageEx(playerid, -1, "That player is already tied.");
-			if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, -1, "You cannot do this right now!");
-			if(PlayerCuffed[id] != 0) return SendClientMessageEx(playerid, -1, "You cannot do this to them right now.");
+			if(PlayerTied[id] > 0) return SendClientMessageEx(playerid, -1, "Nguoi do da bi troi.");
+			if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, -1, "Ban chua the lam viec nay!");
+			if(PlayerCuffed[id] != 0) return SendClientMessageEx(playerid, -1, "Luc nay khong the lam vay voi nguoi do.");
 
 			if(ProxDetectorS(8.0, playerid, id))
 			{
 				szMiscArray[0] = 0;
 
-				if(id == playerid) return SendClientMessageEx(playerid, -1, "You cannot tie yourself!");
-				if(GetPVarInt(id, "Injured") == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot tie someone in a injured state.");
-				if(GetPlayerSpecialAction(id) != SPECIAL_ACTION_HANDSUP) return SendClientMessage(playerid, -1, "This player is not restrained.");
+				if(id == playerid) return SendClientMessageEx(playerid, -1, "Ban khong the tu troi minh!");
+				if(GetPVarInt(id, "Injured") == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the troi nguoi dang bi thuong.");
+				if(GetPlayerSpecialAction(id) != SPECIAL_ACTION_HANDSUP) return SendClientMessage(playerid, -1, "Nguoi do chua gio tay dau hang.");
 
-				format(szMiscArray, sizeof(szMiscArray), "* %s has used some rope to tie %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
+				format(szMiscArray, sizeof(szMiscArray), "* %s dung day thung troi %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
 				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
 				ClearAnimationsEx(id);
@@ -188,39 +188,39 @@ CMD:tie(playerid, params[])
 				PlayerTied[id] = 1;
 				PlayerInfo[playerid][pRope]--;
 			}
-			else return SendClientMessageEx(playerid, -1, "That person isn't near you.");
+			else return SendClientMessageEx(playerid, -1, "Nguoi do khong o gan ban.");
 		}
-		else return SendClientMessageEx(playerid, -1, "That player is not connected.");
+		else return SendClientMessageEx(playerid, -1, "Nguoi do chua ket noi.");
 	}
-	else SendClientMessageEx(playerid, -1, "You do not have any rope!");
+	else SendClientMessageEx(playerid, -1, "Ban khong co day thung!");
 	return 1;
 }
 
 CMD:untie(playerid, params[])
 {
 	new id;
-	if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_WHITE, "SYNTAX: /untie [playerid]");
+	if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_WHITE, "CU PHAP: /untie [playerid]");
 
 	if(IsPlayerConnected(id))
 	{
-		if(PlayerTied[id] == 0) return SendClientMessageEx(playerid, -1, "That player isn't tied.");
-		if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, -1, "You cannot do this right now!");
+		if(PlayerTied[id] == 0) return SendClientMessageEx(playerid, -1, "Nguoi do khong bi troi.");
+		if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, -1, "Ban chua the lam viec nay!");
 
 		if(ProxDetectorS(8.0, playerid, id))
 		{
 			szMiscArray[0] = 0;
 
-			if(id == playerid) return SendClientMessageEx(playerid, -1, "You cannot untie yourself!");
+			if(id == playerid) return SendClientMessageEx(playerid, -1, "Ban khong the tu coi troi!");
 
-			format(szMiscArray, sizeof(szMiscArray), "* %s has untied %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
+			format(szMiscArray, sizeof(szMiscArray), "* %s coi troi %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
 			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
 			SetPlayerSpecialAction(id,SPECIAL_ACTION_NONE);
 			PlayerTied[id] = 0;
 		}
-		else return SendClientMessageEx(playerid, -1, "That person isn't near you.");
+		else return SendClientMessageEx(playerid, -1, "Nguoi do khong o gan ban.");
 	}
-	else SendClientMessageEx(playerid, -1, "That player is not connected.");
+	else SendClientMessageEx(playerid, -1, "Nguoi do chua ket noi.");
 	return 1;
 }
 
@@ -229,12 +229,12 @@ CMD:blindfold(playerid, params[])
 	if(PlayerInfo[playerid][pRags] > 0)
 	{
 		new id;
-		if(sscanf(params, "u", id)) return SendClientMessage(playerid, COLOR_WHITE, "SYNTAX: /blindfold [playerid]");
+		if(sscanf(params, "u", id)) return SendClientMessage(playerid, COLOR_WHITE, "CU PHAP: /blindfold [playerid]");
 
 		if(IsPlayerConnected(id))
 		{
-			if(PlayerTied[id] == 0) return SendClientMessageEx(playerid, -1, "The person you are trying to blindfold must be tied.");
-			if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, -1, "You cannot do this right now!");
+			if(PlayerTied[id] == 0) return SendClientMessageEx(playerid, -1, "Nguoi do phai bi troi truoc khi bit mat.");
+			if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, -1, "Ban chua the lam viec nay!");
 
 			if(ProxDetectorS(8.0, playerid, id))
 			{
@@ -244,9 +244,9 @@ CMD:blindfold(playerid, params[])
 					{
 						szMiscArray[0] = 0;
 
-						if(id == playerid) return SendClientMessageEx(playerid, -1, "You cannot blindfold yourself!");
+						if(id == playerid) return SendClientMessageEx(playerid, -1, "Ban khong the tu bit mat!");
 
-						format(szMiscArray, sizeof(szMiscArray), "* %s has placed a rag around %s's head, blinding them.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
+						format(szMiscArray, sizeof(szMiscArray), "* %s quan gie quanh dau %s de bit mat.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
 						ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
 						TextDrawShowForPlayer(id, BFText);
@@ -257,9 +257,9 @@ CMD:blindfold(playerid, params[])
 					{
 						szMiscArray[0] = 0;
 
-						if(id == playerid) return SendClientMessageEx(playerid, -1, "You cannot unblindfold yourself!");
+						if(id == playerid) return SendClientMessageEx(playerid, -1, "Ban khong the tu thao khan bit mat!");
 
-						format(szMiscArray, sizeof(szMiscArray), "* %s has removed the rag around %s's head.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
+						format(szMiscArray, sizeof(szMiscArray), "* %s thao mieng gie quanh dau %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
 						ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
 						TextDrawHideForPlayer(id, BFText);
@@ -267,27 +267,27 @@ CMD:blindfold(playerid, params[])
 					}
 				}
 			}
-			else return SendClientMessageEx(playerid, -1, "That person isn't near you.");
+			else return SendClientMessageEx(playerid, -1, "Nguoi do khong o gan ban.");
 		}
-		else return SendClientMessageEx(playerid, -1, "That player is not connected.");
+		else return SendClientMessageEx(playerid, -1, "Nguoi do chua ket noi.");
 	}
-	else SendClientMessage(playerid, COLOR_WHITE, "You do not have any rags!");
+	else SendClientMessage(playerid, COLOR_WHITE, "Ban khong co gie!");
 	return 1;
 }
 
 CMD:usesprunk(playerid, params[])
 {
-	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
-	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
+	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay khi dang o dau truong!");
+	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   Khong the lam vay trong Hunger Games Event!");
     #if defined zombiemode
-	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
+	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombie khong the dung vat pham nay.");
 	#endif
 	if(PlayerInfo[playerid][pSprunk] > 0)
 	{
-		if(GetPVarInt(playerid, "UsingSprunk") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're already drinking a sprunk can.");
+		if(GetPVarInt(playerid, "UsingSprunk") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban dang uong mot lon Sprunk.");
 		if( PlayerCuffed[playerid] >= 1 || GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pHospital] > 0)
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban chua the lam viec nay.");
 			return 1;
 		}
 
@@ -295,13 +295,13 @@ CMD:usesprunk(playerid, params[])
 		{
 			if(IsABike(GetPlayerVehicleID(playerid)))
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this on a bike.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay khi dang di xe hai banh.");
 				return 1;
 			}
 		}
 		new string[128];
 		SetPlayerSpecialAction(playerid,SPECIAL_ACTION_DRINK_SPRUNK);
-		format(string, sizeof(string), "* %s opens a can of sprunk.", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "* %s mo mot lon sprunk.", GetPlayerNameEx(playerid));
 		ProxDetector(15.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		SetPVarInt(playerid, "UsingSprunk", 1);
 		SetPVarInt(playerid, "DrinkCooledDown", 1);
@@ -310,7 +310,7 @@ CMD:usesprunk(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You don't have any sprunk, buy some from the 24/7!");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co sprunk, hay mua tai 24/7!");
 		return 1;
 	}
 }
@@ -321,29 +321,29 @@ CMD:usecigar(playerid, params[])
 	{
 		if( PlayerCuffed[playerid] >= 1 || GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pHospital] > 0)
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban chua the lam viec nay.");
 			return 1;
 		}
 		new string[128];
 		SetPlayerSpecialAction(playerid,SPECIAL_ACTION_SMOKE_CIGGY);
-		format(string, sizeof(string), "* %s takes out a cigar and lights it.", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "* %s lay xi ga ra va cham lua.", GetPlayerNameEx(playerid));
 		ProxDetector(15.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		PlayerInfo[playerid][pCigar]--;
 		return 1;
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You don't have any cigars, buy some from the 24/7!");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co xi ga, hay mua tai 24/7!");
 		return 1;
 	}
 }
 
 CMD:paintcar(playerid, params[]) {
 	new iPaintID;
-	if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in a vehicle.");
-	if(PlayerInfo[playerid][pSpraycan] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your spraycan is empty.");
-	if(sscanf(params, "i", iPaintID)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /paintcar [0-6] (3 to remove a paintjob)");
-	if(!(0 <= iPaintID <= 6)) return SendClientMessageEx(playerid, COLOR_GRAD2, "The specified paint job ID must be between 0 and 6.");
+	if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o trong xe.");
+	if(PlayerInfo[playerid][pSpraycan] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Binh son da het.");
+	if(sscanf(params, "i", iPaintID)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /paintcar [0-6] (3 de xoa mau son)");
+	if(!(0 <= iPaintID <= 6)) return SendClientMessageEx(playerid, COLOR_GRAD2, "ID mau son phai tu 0 den 6.");
 	
 	for(new i = 0; i < MAX_PLAYERVEHICLES; i++)
 	{
@@ -353,7 +353,7 @@ CMD:paintcar(playerid, params[]) {
 			ChangeVehiclePaintjob(PlayerVehicleInfo[playerid][i][pvId], iPaintID);
 			PlayerInfo[playerid][pSpraycan]--;
 			g_mysql_SaveVehicle(playerid, i);
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully applied a paint job to your vehicle.");
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Da son thanh cong xe cua ban.");
 		}
 	}
 	for(new i = 0; i < sizeof(VIPVehicles); i++)
@@ -362,7 +362,7 @@ CMD:paintcar(playerid, params[]) {
 		{
 			ChangeVehiclePaintjob(VIPVehicles[i], iPaintID);
 			PlayerInfo[playerid][pSpraycan]--;
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully applied a paint job to this vehicle.");		
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Da son thanh cong xe nay.");		
 		}
 	}
 	for(new i = 0; i < sizeof(FamedVehicles); i++)
@@ -371,10 +371,10 @@ CMD:paintcar(playerid, params[]) {
 		{
 			ChangeVehiclePaintjob(FamedVehicles[i], iPaintID);
 			PlayerInfo[playerid][pSpraycan]--;
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully applied a paint job to this vehicle.");
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Da son thanh cong xe nay.");
 		}
 	}	
-	SendClientMessageEx(playerid, COLOR_GREY, "You can't spray other people's vehicles.");
+	SendClientMessageEx(playerid, COLOR_GREY, "Khong the son xe cua nguoi khac.");
 	return 1;
 }
 

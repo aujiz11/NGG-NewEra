@@ -194,7 +194,7 @@ new const MapLocationStarts[] = {0, 9, 14, 19, 24, 33, sizeof(gpsZones)};
 GetEntity3DZone(entityID, type, zone[], len, Float:x2 = 0.0, Float:y2 = 0.0, Float:z2 = 0.0) //Credits to Cueball, Betamaster, Mabako, and Simon.
 {
 	new Float:x, Float:y, Float:z;
-	format(zone, len, "Unknown");
+	format(zone, len, "Khong ro");
 	switch(type) {
 		case 0: {
 			x = Businesses[entityID][bExtPos][0];
@@ -251,22 +251,22 @@ CMD:map(playerid, params[])
 
 CMD:mygps(playerid, const params[])
 {
-	if(CheckPointCheck(playerid) || IsPlayerCheckpointActive(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please clear your current checkpoint before using the map.");
-	return ShowPlayerDialogEx(playerid, DIALOG_GPS_ONE, DIALOG_STYLE_TABLIST_HEADERS, "Doodle Maps | Destinations",
-		"Category\tFind a destination\nBusinesses\tShops and services\nJobs\tNearest recruitment points\nGeneral Locations\tLandmarks and public services\nBusiness Address\tSearch by business ID\nHouse Address\tSearch by house ID\nDoor Address\tSearch by door ID", "Open", "Close");
+	if(CheckPointCheck(playerid) || IsPlayerCheckpointActive(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Hay xoa checkpoint hien tai truoc khi dung ban do.");
+	return ShowPlayerDialogEx(playerid, DIALOG_GPS_ONE, DIALOG_STYLE_TABLIST_HEADERS, "Doodle Maps | Diem den",
+		"Danh muc\tTim diem den\nDoanh nghiep\tCua hang va dich vu\nCong viec\tDiem tuyen dung gan nhat\nDia diem chung\tDia danh va dich vu cong\nDia chi doanh nghiep\tTim theo ID doanh nghiep\nDia chi nha\tTim theo ID nha\nDia chi cua\tTim theo ID cua", "Mo", "Dong");
 }
 
 Map_ShowBusinessTypes(playerid)
 {
-	return ShowPlayerDialogEx(playerid, DIALOG_MAP_BUSINESSES, DIALOG_STYLE_LIST, "Doodle Maps | Business Categories",
-		"24/7\nClothing Stores\nRestaurants\nBars\nGun Stores\nPetrol Stations\nCar Dealerships\nClubs", "Open", "Back");
+	return ShowPlayerDialogEx(playerid, DIALOG_MAP_BUSINESSES, DIALOG_STYLE_LIST, "Doodle Maps | Loai doanh nghiep",
+		"24/7\nCua hang quan ao\nNha hang\nQuan bar\nCua hang sung\nTram xang\nDai ly xe\nClub", "Mo", "Quay lai");
 }
 
 Map_ShowLocationTypes(playerid)
 {
 	SetPVarInt(playerid, "gpsUsingID", 0);
-	return ShowPlayerDialogEx(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_LIST, "Doodle Maps | Location Categories",
-		"Faction HQs\nBanks\nVIP Areas\nHospitals\nNew Robada\nMiscellaneous", "Open", "Back");
+	return ShowPlayerDialogEx(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_LIST, "Doodle Maps | Danh muc dia diem",
+		"Tru so to chuc\nNgan hang\nKhu VIP\nBenh vien\nNew Robada\nKhac", "Mo", "Quay lai");
 }
 
 Map_GetDestination(type, id, name[], len, &Float:x, &Float:y, &Float:z)
@@ -284,7 +284,7 @@ Map_GetDestination(type, id, name[], len, &Float:x, &Float:y, &Float:z)
 		case CHECKPOINT_HOUSE:
 		{
 			if(!(0 <= id < MAX_HOUSES) || !HouseInfo[id][hOwned]) return 0;
-			format(name, len, "House #%d", id);
+			format(name, len, "Nha #%d", id);
 			x = HouseInfo[id][hExteriorX];
 			y = HouseInfo[id][hExteriorY];
 			z = HouseInfo[id][hExteriorZ];
@@ -292,7 +292,7 @@ Map_GetDestination(type, id, name[], len, &Float:x, &Float:y, &Float:z)
 		case CHECKPOINT_DOOR:
 		{
 			if(!(0 <= id < MAX_DDOORS) || !DDoorsInfo[id][ddDescription][0]) return 0;
-			format(name, len, "Door #%d (%s)", id, DDoorsInfo[id][ddDescription]);
+			format(name, len, "Cua #%d (%s)", id, DDoorsInfo[id][ddDescription]);
 			x = DDoorsInfo[id][ddExteriorX];
 			y = DDoorsInfo[id][ddExteriorY];
 			z = DDoorsInfo[id][ddExteriorZ];
@@ -321,12 +321,12 @@ Map_GetDestination(type, id, name[], len, &Float:x, &Float:y, &Float:z)
 
 Map_SetDestination(playerid, type, id)
 {
-	if(CheckPointCheck(playerid) || IsPlayerCheckpointActive(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please clear your current checkpoint before using the map.");
+	if(CheckPointCheck(playerid) || IsPlayerCheckpointActive(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Hay xoa checkpoint hien tai truoc khi dung ban do.");
 	new name[160], area[32], Float:x, Float:y, Float:z;
 	if(!Map_GetDestination(type, id, name, sizeof(name), x, y, z))
-		return SendClientMessageEx(playerid, COLOR_GREY, "That destination is no longer available.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Diem den khong con kha dung.");
 	if(type == CHECKPOINT_JOB && (JobData[id][jVw] != GetPlayerVirtualWorld(playerid) || JobData[id][jInt] != GetPlayerInterior(playerid)))
-		return SendClientMessageEx(playerid, COLOR_GREY, "That job point is in a different world or interior. Please reopen the map.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Diem cong viec o world hoac interior khac. Hay mo lai ban do.");
 
 	GetEntity3DZone(0, 3, area, sizeof(area), x, y, z);
 	DisablePlayerCheckpoint(playerid);
@@ -334,7 +334,7 @@ Map_SetDestination(playerid, type, id)
 	gPlayerCheckpointStatus[playerid] = type;
 	SetPVarString(playerid, "gpsName", name);
 	DeletePVar(playerid, "gpsAddressID");
-	SendClientMessageEx(playerid, COLOR_WHITE, "GPS destination: {33CCFF}%s{FFFFFF} in %s (%.0f meters).", name, area, GetPlayerDistanceFromPoint(playerid, x, y, z));
+	SendClientMessageEx(playerid, COLOR_WHITE, "Diem GPS: {33CCFF}%s{FFFFFF} tai %s (%.0f meters).", name, area, GetPlayerDistanceFromPoint(playerid, x, y, z));
 	return 1;
 }
 
@@ -346,7 +346,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 		{
 			new name[160];
 			GetPVarString(playerid, "gpsName", name, sizeof(name));
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have arrived at {33CCFF}%s{FFFFFF}.", name);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da den {33CCFF}%s{FFFFFF}.", name);
 			DeletePVar(playerid, "gpsName");
 			DisablePlayerCheckpoint(playerid);
 			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
@@ -370,8 +370,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 3, 4, 5:
 				{
 					SetPVarInt(playerid, "gpsUsingID", listitem - 2);
-					return ShowPlayerDialogEx(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_INPUT, "Doodle Maps | Address Search",
-						"Enter the destination's numeric ID.", "Find", "Back");
+					return ShowPlayerDialogEx(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_INPUT, "Doodle Maps | Tim dia chi",
+						"Nhap ID so cua diem den.", "Tim", "Quay lai");
 				}
 			}
 			return 1;
@@ -402,7 +402,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new mode = GetPVarInt(playerid, "gpsUsingID");
 			if(mode == 0) return Map_ShowLocations(playerid, listitem);
 			if(!inputtext[0] || strlen(inputtext) > 5 || !IsNumericString(inputtext))
-				return SendClientMessageEx(playerid, COLOR_GREY, "Enter a valid numeric destination ID.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "Nhap ID diem den hop le.");
 
 			new id = strval(inputtext), type, name[160], area[32], Float:x, Float:y, Float:z;
 			switch(mode)
@@ -413,11 +413,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				default: return 1;
 			}
 			if(!Map_GetDestination(type, id, name, sizeof(name), x, y, z))
-				return SendClientMessageEx(playerid, COLOR_GREY, "That destination address is invalid or has not been configured.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "Dia chi diem den khong hop le hoac chua duoc cau hinh.");
 			GetEntity3DZone(0, 3, area, sizeof(area), x, y, z);
-			format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Set your GPS destination to:\n\n{33CCFF}%s{FFFFFF}\nArea: %s\nDistance: %.0f meters", name, area, GetPlayerDistanceFromPoint(playerid, x, y, z));
+			format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Dat diem GPS den:\n\n{33CCFF}%s{FFFFFF}\nKhu vuc: %s\nKhoang cach: %.0f meters", name, area, GetPlayerDistanceFromPoint(playerid, x, y, z));
 			SetPVarInt(playerid, "gpsAddressID", id);
-			return ShowPlayerDialogEx(playerid, DIALOG_GPS_THREE, DIALOG_STYLE_MSGBOX, "Doodle Maps | Confirm Destination", szMiscArray, "Navigate", "Back");
+			return ShowPlayerDialogEx(playerid, DIALOG_GPS_THREE, DIALOG_STYLE_MSGBOX, "Doodle Maps | Xac nhan diem den", szMiscArray, "Dan duong", "Quay lai");
 		}
 		case DIALOG_GPS_GEN:
 		{
@@ -476,7 +476,7 @@ Map_ShowBusinesses(playerid, btype, page = 0)
 {
 	if(!(0 <= btype < sizeof(MapBusinessTypes)) || !(0 <= page < (MAX_BUSINESSES + MAP_BUSINESS_PAGE_SIZE - 1) / MAP_BUSINESS_PAGE_SIZE)) return 1;
 	new row[192], area[32], count, rows;
-	format(szMiscArray, sizeof(szMiscArray), "Business\tArea\tStatus\tDistance (m)\n");
+	format(szMiscArray, sizeof(szMiscArray), "Doanh nghiep\tKhu vuc\tTrang thai\tKhoang cach (m)\n");
 	for(new i; i < MAX_BUSINESSES; ++i)
 	{
 		if(Businesses[i][bType] != MapBusinessTypes[btype]) continue;
@@ -484,7 +484,7 @@ Map_ShowBusinesses(playerid, btype, page = 0)
 		if(count++ < page * MAP_BUSINESS_PAGE_SIZE || rows >= MAP_BUSINESS_PAGE_SIZE) continue;
 		GetEntity3DZone(i, 0, area, sizeof(area));
 		format(row, sizeof(row), "%s [#%d]\t%s\t%s\t%.0f m\n", Businesses[i][bName], i, area,
-			Businesses[i][bStatus] ? ("{00CC66}Open") : ("{FF6666}Closed"),
+			Businesses[i][bStatus] ? ("{00CC66}Mo") : ("{FF6666}Dong"),
 			GetPlayerDistanceFromPoint(playerid, Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2]));
 		strcat(szMiscArray, row, sizeof(szMiscArray));
 		ListItemTrackId[playerid][rows++] = i;
@@ -492,25 +492,25 @@ Map_ShowBusinesses(playerid, btype, page = 0)
 	if(!rows)
 	{
 		if(page > 0) return Map_ShowBusinesses(playerid, btype, 0);
-		SendClientMessageEx(playerid, COLOR_GREY, "No configured businesses were found in this category.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Khong co doanh nghiep duoc cau hinh trong muc nay.");
 		return Map_ShowBusinessTypes(playerid);
 	}
 	if(page > 0)
 	{
-		strcat(szMiscArray, "{33CCFF}<< Previous page\t\t\t\n", sizeof(szMiscArray));
+		strcat(szMiscArray, "{33CCFF}<< Trang truoc\t\t\t\n", sizeof(szMiscArray));
 		ListItemTrackId[playerid][rows++] = -2;
 	}
 	if(count > (page + 1) * MAP_BUSINESS_PAGE_SIZE)
 	{
-		strcat(szMiscArray, "{33CCFF}Next page >>\t\t\t\n", sizeof(szMiscArray));
+		strcat(szMiscArray, "{33CCFF}Trang sau >>\t\t\t\n", sizeof(szMiscArray));
 		ListItemTrackId[playerid][rows++] = -1;
 	}
 	new title[64];
-	format(title, sizeof(title), "Doodle Maps | Businesses | %d/%d", page + 1, (count + MAP_BUSINESS_PAGE_SIZE - 1) / MAP_BUSINESS_PAGE_SIZE);
+	format(title, sizeof(title), "Doodle Maps | Doanh nghiep | %d/%d", page + 1, (count + MAP_BUSINESS_PAGE_SIZE - 1) / MAP_BUSINESS_PAGE_SIZE);
 	SetPVarInt(playerid, "gpsBusinessType", btype);
 	SetPVarInt(playerid, "gpsBusinessPage", page);
 	SetPVarInt(playerid, "gpsMapRows", rows);
-	return ShowPlayerDialogEx(playerid, DIALOG_MAP_BUSINESSES2, DIALOG_STYLE_TABLIST_HEADERS, title, szMiscArray, "Navigate", "Back");
+	return ShowPlayerDialogEx(playerid, DIALOG_MAP_BUSINESSES2, DIALOG_STYLE_TABLIST_HEADERS, title, szMiscArray, "Dan duong", "Quay lai");
 }
 
 Map_ShowJobs(playerid)
@@ -532,7 +532,7 @@ Map_ShowJobs(playerid)
 		}
 	}
 	new row[192], area[32], rows;
-	format(szMiscArray, sizeof(szMiscArray), "Job\tArea\tLevel\tDistance (m)\n");
+	format(szMiscArray, sizeof(szMiscArray), "Cong viec\tKhu vuc\tCap\tKhoang cach (m)\n");
 	for(new type = 1; type < MAX_JOBTYPES; ++type)
 	{
 		new point = nearest[type];
@@ -544,18 +544,18 @@ Map_ShowJobs(playerid)
 	}
 	if(!rows)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "No active job recruitment points were found in your current world and interior.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Khong co diem tuyen dung nao hoat dong trong world va interior hien tai.");
 		return pc_cmd_mygps(playerid, "");
 	}
 	SetPVarInt(playerid, "gpsMapRows", rows);
-	return ShowPlayerDialogEx(playerid, DIALOG_MAP_JOBS, DIALOG_STYLE_TABLIST_HEADERS, "Doodle Maps | Nearest Job Points", szMiscArray, "Navigate", "Back");
+	return ShowPlayerDialogEx(playerid, DIALOG_MAP_JOBS, DIALOG_STYLE_TABLIST_HEADERS, "Doodle Maps | Diem cong viec gan nhat", szMiscArray, "Dan duong", "Quay lai");
 }
 
 Map_ShowLocations(playerid, category)
 {
 	if(!(0 <= category < sizeof(MapLocationStarts) - 1)) return 1;
 	new row[160], area[32];
-	format(szMiscArray, sizeof(szMiscArray), "Location\tArea\tDistance (m)\n");
+	format(szMiscArray, sizeof(szMiscArray), "Dia diem\tKhu vuc\tKhoang cach (m)\n");
 	for(new i = MapLocationStarts[category]; i < MapLocationStarts[category + 1]; ++i)
 	{
 		GetEntity3DZone(0, 3, area, sizeof(area), gpsZones[i][0], gpsZones[i][1], gpsZones[i][2]);
@@ -563,5 +563,5 @@ Map_ShowLocations(playerid, category)
 		strcat(szMiscArray, row, sizeof(szMiscArray));
 	}
 	SetPVarInt(playerid, "gpsUsingID", category);
-	return ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_TABLIST_HEADERS, "Doodle Maps | General Locations", szMiscArray, "Navigate", "Back");
+	return ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_TABLIST_HEADERS, "Doodle Maps | Dia diem chung", szMiscArray, "Dan duong", "Quay lai");
 }

@@ -51,21 +51,21 @@ stock ShowAdMuteFine(playerid)
     new fine = 10*totalwealth/100;
 	if(PlayerInfo[playerid][pADMuteTotal] < 4)
 	{
-		format(string,sizeof(string),"Jail for %d Minutes\nCash Fine ($%d)",PlayerInfo[playerid][pADMuteTotal]*15,fine);
+		format(string,sizeof(string),"Giam %d phut\nPhat tien ($%d)",PlayerInfo[playerid][pADMuteTotal]*15,fine);
 	}
 	if(PlayerInfo[playerid][pADMuteTotal] == 4)
 	{
-	    format(string,sizeof(string),"Prison for 1 Hour");
+	    format(string,sizeof(string),"Tu 1 gio");
 	}
 	if(PlayerInfo[playerid][pADMuteTotal] == 5)
 	{
-	    format(string,sizeof(string),"Prison for 1 Hour and 15 Minutes)");
+	    format(string,sizeof(string),"Tu 1 gio 15 phut)");
 	}
 	if(PlayerInfo[playerid][pADMuteTotal] == 6)
 	{
-	    format(string,sizeof(string),"Prison for 1 Hour and 30 Minutes");
+	    format(string,sizeof(string),"Tu 1 gio 30 phut");
 	}
-	ShowPlayerDialogEx(playerid,ADMUTE,DIALOG_STYLE_LIST,"Advertisements Unmute - Select your Punishment:",string,"Select","Cancel");
+	ShowPlayerDialogEx(playerid,ADMUTE,DIALOG_STYLE_LIST,"Mo cam quang cao - Chon hinh phat:",string,"Chon","Huy");
 }
 
 
@@ -74,7 +74,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	if(strfind(inputtext, "%", true) != -1)
 	{
-		SendClientMessage(playerid, COLOR_GREY, "Invalid Character, please try again.");
+		SendClientMessage(playerid, COLOR_GREY, "Ky tu khong hop le, hay thu lai.");
 		return 1;
 	}
 	switch(dialogid)
@@ -106,45 +106,45 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				++iBreak;
 			}
-			if(!isnull(szMiscArray)) return ShowPlayerDialogEx(playerid, DIALOG_ADLIST, DIALOG_STYLE_LIST, "Advertisements - List", szMiscArray, "Select", "Return");
-			ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
-			SendClientMessage(playerid, COLOR_GREY, "No advertisements have been posted.");
+			if(!isnull(szMiscArray)) return ShowPlayerDialogEx(playerid, DIALOG_ADLIST, DIALOG_STYLE_LIST, "Danh sach quang cao", szMiscArray, "Chon", "Quay lai");
+			ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Danh muc quang cao", "Bat dong san\nXe co\nCan mua\nCan ban\nKhac", "Chon", "Huy");
+			SendClientMessage(playerid, COLOR_GREY, "Chua co quang cao nao.");
 		}
 		case DIALOG_ADMAIN: if(response) switch(listitem) {
-			case 0: ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
-			case 1: ShowPlayerDialogEx(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Advertisements - Search", "Enter a search phrase.", "Search", "Return");
+			case 0: ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Danh muc quang cao", "Bat dong san\nXe co\nCan mua\nCan ban\nKhac", "Chon", "Huy");
+			case 1: ShowPlayerDialogEx(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Quang cao - Tim kiem", "Nhap noi dung tim kiem.", "Tim", "Quay lai");
 			case 2: {
 				if(PlayerInfo[playerid][pADMute] == 1) {
-					SendClientMessageEx(playerid, COLOR_GREY, "You are muted from advertisements.");
+					SendClientMessageEx(playerid, COLOR_GREY, "Ban bi cam dang quang cao.");
 				}
 				else if(PlayerInfo[playerid][pPnumber] == 0) {
-					SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a cell phone.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co dien thoai.");
 				}
-				else ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORYPLACE, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+				else ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORYPLACE, DIALOG_STYLE_LIST, "Chon danh muc", "Bat dong san\nXe co\nCan mua\nCan ban\nKhac", "Chon", "Huy");
 			}
 			case 3: {
 				if(PlayerInfo[playerid][pADMute] == 1) {
-					SendClientMessageEx(playerid, COLOR_GREY, "You are muted from advertisements.");
+					SendClientMessageEx(playerid, COLOR_GREY, "Ban bi cam dang quang cao.");
 				}
 				else if(PlayerInfo[playerid][pPnumber] == 0) {
-					SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a cell phone.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co dien thoai.");
 				}
 				else if(gettime() < GetPVarInt(playerid, "adT")) {
 					ShowMainAdvertMenu(playerid);
-					return SendClientMessageEx(playerid, COLOR_GREY, "You may only place one priority advertisement every two minutes.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Chi duoc dang quang cao uu tien moi hai phut.");
 				}	
 				else if(gettime() < iAdverTimer) {
 					ShowMainAdvertMenu(playerid);
-					return SendClientMessageEx(playerid, COLOR_GREY, "Only one priority advertisement can be placed every 30 seconds.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Chi duoc dang mot quang cao uu tien moi 30 giay.");
 				}
 				else
 				{
 					if(PlayerInfo[playerid][pAdvertVoucher] != 0)
 					{
-						ShowPlayerDialogEx(playerid, DIALOG_ADVERTVOUCHER, DIALOG_STYLE_MSGBOX, "Priority Advertisement Voucher", "We found a Priority Advertisement Voucher on your account, would you like to use it?\n\n{FF0000}Note: You will lose 1 voucher if you choose yes.{FFFFFF}", "Yes", "Nope");
+						ShowPlayerDialogEx(playerid, DIALOG_ADVERTVOUCHER, DIALOG_STYLE_MSGBOX, "Priority Advertisement Voucher", "Ban co Priority Advertisement Voucher, ban muon dung khong?\n\n{FF0000}Luu y: Ban se mat 1 voucher neu chon Co.{FFFFFF}", "Co", "Khong");
 					}
 					else if(PlayerInfo[playerid][pAdvertVoucher] == 0)
-						return ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+						return ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Chon danh muc", "Bat dong san\nXe co\nCan mua\nCan ban\nKhac", "Chon", "Huy");
 				}
 			}
 			case 4: pc_cmd_houselistings(playerid, "");
@@ -153,28 +153,28 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response) switch(listitem) {
 				case 0: {
 					AdvertType[playerid] = 1;
-					ShowPlayerDialogEx(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
-					"Enter your Real Estate Advertisement! Keep it below 128 characters.", "Submit", "Return");
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Quang cao",
+					"Nhap quang cao bat dong san, duoi 128 ky tu.", "Gui", "Quay lai");
 				}
 				case 1: {
 					AdvertType[playerid] = 2;
-					ShowPlayerDialogEx(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
-					"Enter your Automobile Advertisement! Keep it below 128 characters.", "Submit", "Return");
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Quang cao",
+					"Nhap quang cao xe co, duoi 128 ky tu.", "Gui", "Quay lai");
 				}	
 				case 2: {
 					AdvertType[playerid] = 3;
-					ShowPlayerDialogEx(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
-					"Enter your Buying Advertisement! Keep it below 128 characters.", "Submit", "Return");
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Quang cao",
+					"Nhap quang cao can mua, duoi 128 ky tu.", "Gui", "Quay lai");
 				}
 				case 3: {
 					AdvertType[playerid] = 4;
-					ShowPlayerDialogEx(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
-					"Enter your Selling Advertisement! Keep it below 128 characters.", "Submit", "Return");
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Quang cao",
+					"Nhap quang cao can ban, duoi 128 ky tu.", "Gui", "Quay lai");
 				}
 				case 4: {
 					AdvertType[playerid] = 5;
-					ShowPlayerDialogEx(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
-					"Enter your Miscellaneous Advertisement! Keep it below 128 characters.", "Submit", "Return");
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Quang cao",
+					"Nhap quang cao khac, duoi 128 ky tu.", "Gui", "Quay lai");
 				}
 			}
 		}	
@@ -182,28 +182,28 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response) switch(listitem) {
 				case 0: {
 					AdvertType[playerid] = 1;
-					ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
-					"Enter your Real Estate Priority Advertisement! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Quang cao - Quang cao uu tien",
+					"Nhap quang cao uu tien ve bat dong san, duoi 128 ky tu.\nQuang cao uu tien se duoc phat toan may chu, phi $150,000.", "Gui", "Quay lai");
 				}
 				case 1: {
 					AdvertType[playerid] = 2;
-					ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
-					"Enter your Automobile Priority Advertisement! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Quang cao - Quang cao uu tien",
+					"Nhap quang cao uu tien ve xe co, duoi 128 ky tu.\nQuang cao uu tien se duoc phat toan may chu, phi $150,000.", "Gui", "Quay lai");
 				}	
 				case 2: {
 					AdvertType[playerid] = 3;
-					ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
-					"Enter your Buying Priority Advertisement! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Quang cao - Quang cao uu tien",
+					"Nhap quang cao uu tien can mua, duoi 128 ky tu.\nQuang cao uu tien se duoc phat toan may chu, phi $150,000.", "Gui", "Quay lai");
 				}
 				case 3: {
 					AdvertType[playerid] = 4;
-					ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
-					"Enter your Selling Priority Advertisement! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Quang cao - Quang cao uu tien",
+					"Nhap quang cao uu tien can ban, duoi 128 ky tu.\nQuang cao uu tien se duoc phat toan may chu, phi $150,000.", "Gui", "Quay lai");
 				}
 				case 4: {
 					AdvertType[playerid] = 5;
-					ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
-					"Enter your Miscellaneous Priority Advertisement! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Quang cao - Quang cao uu tien",
+					"Nhap quang cao uu tien khac, duoi 128 ky tu.\nQuang cao uu tien se duoc phat toan may chu, phi $150,000.", "Gui", "Quay lai");
 				}
 			}
 		}		
@@ -212,17 +212,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				new iLength = strlen(inputtext);
 				
-				if(GetPVarInt(playerid, "RequestingAdP") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have a priority advertisement pending.");
+				if(GetPVarInt(playerid, "RequestingAdP") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da co quang cao uu tien cho xu ly.");
 
 				if(!(2 <= iLength <= 127)) {
 					ShowMainAdvertMenu(playerid);
-					return SendClientMessageEx(playerid, COLOR_GREY, "Your input was too long or too short.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Noi dung qua dai hoac qua ngan.");
 				}
 
 				iLength *= 50;
 				if(GetPlayerCash(playerid) < iLength) {
 					ShowMainAdvertMenu(playerid);
-					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du tien mat.");
 				}
 				/*if(Homes[playerid] > 0 && AdvertType[playerid] == 1 && !PlayerInfo[playerid][pShopNotice])
 				{
@@ -233,22 +233,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				strcpy(szAdvert[playerid], inputtext, 128);
 				StripColorEmbedding(szAdvert[playerid]);
 				GivePlayerCash(playerid, -iLength);
-				SendClientMessageEx(playerid, COLOR_WHITE, "Congratulations, you have placed your advertisement!");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Chuc mung, quang cao cua ban da duoc dang!");
 			}
 			else ShowMainAdvertMenu(playerid);
 		}
 		case DIALOG_ADPLACEP: {
 			if(response) {
-				if(GetPVarInt(playerid, "RequestingAdP") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have a priority advertisement pending.");
+				if(GetPVarInt(playerid, "RequestingAdP") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da co quang cao uu tien cho xu ly.");
 			
 				if(gettime() < iAdverTimer) {
-					SendClientMessageEx(playerid, COLOR_GREY, "Only one priority advertisement can be placed every 30 seconds.");
-					return ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
-					"Enter your desired advertisement text! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
+					SendClientMessageEx(playerid, COLOR_GREY, "Chi duoc dang mot quang cao uu tien moi 30 giay.");
+					return ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Quang cao - Quang cao uu tien",
+					"Nhap quang cao mong muon, duoi 128 ky tu.\nQuang cao uu tien se duoc phat toan may chu, phi $150,000.", "Gui", "Quay lai");
 				}
 				if(!(2 <= strlen(inputtext) <= 79)) {
 					ShowMainAdvertMenu(playerid);
-					return SendClientMessageEx(playerid, COLOR_GREY, "Your input was too long or too short.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Noi dung qua dai hoac qua ngan.");
 				}				
 				if(GetPVarInt(playerid, "AdvertVoucher") > 0)
 				{
@@ -258,19 +258,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				else if(PlayerInfo[playerid][pDonateRank] == 2 && GetPlayerCash(playerid) < 125000) {
 					ShowMainAdvertMenu(playerid);
-					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du tien mat.");
 				}
 				else if(PlayerInfo[playerid][pDonateRank] == 3 && GetPlayerCash(playerid) < 100000) {
 					ShowMainAdvertMenu(playerid);
-					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du tien mat.");
 				}
 				else if(PlayerInfo[playerid][pDonateRank] >= 4 && GetPlayerCash(playerid) < 50000) {
 					ShowMainAdvertMenu(playerid);
-					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du tien mat.");
 				}
 				else if(PlayerInfo[playerid][pDonateRank] <= 1 && GetPlayerCash(playerid) < 150000) {
 					ShowMainAdvertMenu(playerid);
-					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du tien mat.");
 				}
 				SetPVarInt(playerid, "adT", gettime()+120);
 				strcpy(szAdvert[playerid], inputtext, 128);
@@ -280,9 +280,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetPVarString(playerid, "PriorityAdText", szAdvert[playerid]);
 				new playername[MAX_PLAYER_NAME];
 				GetPlayerName(playerid, playername, sizeof(playername));
-				SendReportToQue(playerid, "Priority Advertisement", 2, 4);	
+				SendReportToQue(playerid, "Quang cao uu tien", 2, 4);	
 					
-				return SendClientMessageEx(playerid, COLOR_WHITE, "You have placed a priority advertisement, please wait until an admin approves/denies your advertisement.");
+				return SendClientMessageEx(playerid, COLOR_WHITE, "Da gui quang cao uu tien, hay cho Admin duyet hoac tu choi.");
 			}
 			else ShowMainAdvertMenu(playerid);
 		}
@@ -290,7 +290,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response) {
 
 				if(!(4 <= strlen(inputtext) <= 80)) {
-					return ShowPlayerDialogEx(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Advertisements - Search", "Queries must be between 4\n and 80 characters in length.\n\nEnter a search phrase.", "Search", "Return");
+					return ShowPlayerDialogEx(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Quang cao - Tim kiem", "Tu khoa phai tu 4\n den 80 ky tu.\n\nNhap noi dung tim kiem.", "Tim", "Quay lai");
 				}
 				else for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
 
@@ -314,8 +314,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						}
 					}
 				}	
-				if(!isnull(szDialog)) ShowPlayerDialogEx(playerid, DIALOG_ADSEARCHLIST, DIALOG_STYLE_LIST, "Advertisements - Search Results", szDialog, "Select", "Return");
-				else ShowPlayerDialogEx(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Advertisements - Search", "No results found.\n\nEnter a search phrase.", "Search", "Return");
+				if(!isnull(szDialog)) ShowPlayerDialogEx(playerid, DIALOG_ADSEARCHLIST, DIALOG_STYLE_LIST, "Quang cao - Ket qua tim kiem", szDialog, "Chon", "Quay lai");
+				else ShowPlayerDialogEx(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Quang cao - Tim kiem", "Khong co ket qua.\n\nNhap noi dung tim kiem.", "Tim", "Quay lai");
 
 			}
 			else ShowMainAdvertMenu(playerid);
@@ -328,10 +328,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(IsPlayerConnected(i) && !isnull(szAdvert[i])) {
 				SetPVarInt(playerid, "advertContact", PlayerInfo[i][pPnumber]);
-				format(szDialog, sizeof(szDialog), "%s\r\nContact: %i", szAdvert[i], PlayerInfo[i][pPnumber]);
-				ShowPlayerDialogEx(playerid, DIALOG_ADFINAL, DIALOG_STYLE_MSGBOX, "Advertisements - Search Result", szDialog, "Call", "Exit");
+				format(szDialog, sizeof(szDialog), "%s\r\nLien he: %i", szAdvert[i], PlayerInfo[i][pPnumber]);
+				ShowPlayerDialogEx(playerid, DIALOG_ADFINAL, DIALOG_STYLE_MSGBOX, "Quang cao - Ket qua tim kiem", szDialog, "Goi", "Thoat");
 			}
-			else SendClientMessage(playerid, COLOR_GREY, "This person has either disconnected or withdrawn their advertisement.");
+			else SendClientMessage(playerid, COLOR_GREY, "Nguoi nay da ngat ket noi hoac go quang cao.");
 		}
 		case DIALOG_ADFINAL: {
 			if(response) {
@@ -350,10 +350,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				if(IsPlayerConnected(i) && !isnull(szAdvert[i])) {
 					SetPVarInt(playerid, "advertContact", PlayerInfo[i][pPnumber]);
-					format(szDialog, sizeof(szDialog), "%s\r\nContact: %i", szAdvert[i], PlayerInfo[i][pPnumber]);
-					return ShowPlayerDialogEx(playerid, DIALOG_ADFINAL, DIALOG_STYLE_MSGBOX, "Advertisements - Search Result", szDialog, "Call", "Exit");
+					format(szDialog, sizeof(szDialog), "%s\r\nLien he: %i", szAdvert[i], PlayerInfo[i][pPnumber]);
+					return ShowPlayerDialogEx(playerid, DIALOG_ADFINAL, DIALOG_STYLE_MSGBOX, "Quang cao - Ket qua tim kiem", szDialog, "Goi", "Thoat");
 				}
-				else SendClientMessage(playerid, COLOR_GREY, "This person has either disconnected or withdrawn their advertisement.");
+				else SendClientMessage(playerid, COLOR_GREY, "Nguoi nay da ngat ket noi hoac go quang cao.");
 			}
 			else ShowMainAdvertMenu(playerid);
 		}
@@ -362,11 +362,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response) // Clicked Yes
 			{
 				SetPVarInt(playerid, "AdvertVoucher", 1);
-				ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Chon danh muc", "Bat dong san\nXe co\nCan mua\nCan ban\nKhac", "Chon", "Huy");
 			}
 			else // Clicked No
 			{
-				ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Chon danh muc", "Bat dong san\nXe co\nCan mua\nCan ban\nKhac", "Chon", "Huy");
 			}
 		}
 	}
@@ -378,16 +378,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 alias:advertisements("ads")
 CMD:advertisements(playerid, const params[]) {
 	if(gPlayerLogged{playerid} == 0) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
 	}
 	else if(GetPVarType(playerid, "Injured")) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You can't use advertisements while injured.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung quang cao khi bi thuong.");
 	}
 	else if(PlayerCuffed[playerid] != 0) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You can't use advertisements right now.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Luc nay khong the dung quang cao.");
 	}
 	else if(PlayerInfo[playerid][pJailTime] > 0) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You can't use advertisements while in jail.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung quang cao khi o tu.");
 	}
 	else ShowMainAdvertMenu(playerid);
 	return 1;
@@ -398,7 +398,7 @@ CMD:adunmute(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /adunmute [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /adunmute [player]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
@@ -406,20 +406,20 @@ CMD:adunmute(playerid, params[])
 			{
 				if(PlayerInfo[giveplayerid][pJailTime] != 0)
 				{
-					SendClientMessageEx(playerid, COLOR_LIGHTRED, "You cannot offer someone in jail/prison an unmute!");
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "Sorry, you cannot be unmuted from /ad while you are in jail/prison.");
+					SendClientMessageEx(playerid, COLOR_LIGHTRED, "Khong the de nghi mo cam cho nguoi trong tu!");
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "Khong the duoc mo cam /ad khi dang o tu.");
 					return 1;
 				}
 				format(string, sizeof(string), "AdmCmd: %s(%d) was unmuted from /ad by %s.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/admin.log", string);
-				format(string, sizeof(string), "AdmCmd: %s was unmuted from /ad by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s duoc %s mo cam /ad.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_LIGHTRED,string,2);
 				PlayerInfo[giveplayerid][pADMute] = 0;
 				PlayerInfo[giveplayerid][pADMuteTotal]--;
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_LIGHTRED,"That person is not muted from /newb!");
+				SendClientMessageEx(playerid, COLOR_LIGHTRED,"Nguoi do khong bi cam /newb!");
 			}
 
 		}
@@ -432,11 +432,11 @@ CMD:admute(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pSMod] == 1)
 	{
 		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /admute [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /admute [player]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
-				if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_LIGHTRED, "You can't /admute admins");
+				if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_LIGHTRED, "Khong the /admute Admin");
 				if(PlayerInfo[giveplayerid][pADMute] == 0)
 				{
 				    SetPVarInt(giveplayerid, "UnmuteTime", gettime());
@@ -444,7 +444,7 @@ CMD:admute(playerid, params[])
 					PlayerInfo[giveplayerid][pADMuteTotal] += 1;
 					format(string, sizeof(string), "AdmCmd: %s(%d) was muted from placing /ad's by %s(%d).", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/admin.log", string);
-					format(string, sizeof(string), "AdmCmd: %s was muted from placing /ad's by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "AdmCmd: %s bi %s cam dang /ad.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_LIGHTRED,string,2);
 
 					if(PlayerInfo[giveplayerid][pADMuteTotal] > 6)
@@ -455,32 +455,32 @@ CMD:admute(playerid, params[])
 
 					if(PlayerInfo[playerid][pAdmin] == 1)
 					{
-						format(string, sizeof(string), "AdmCmd: %s was muted from placing /ad's by Admin.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "AdmCmd: %s bi Admin cam dang /ad.", GetPlayerNameEx(giveplayerid));
 						SendDutyAdvisorMessage(TEAM_AZTECAS_COLOR, string);
-						SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "You were just muted from Advertisements [/ads] by an Admin.");
+						SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "Ban vua bi Admin cam dung Quang cao [/ads].");
 					}
 					else
 					{
-						format(string, sizeof(string), "AdmCmd: %s was muted from placing /ad's by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+						format(string, sizeof(string), "AdmCmd: %s bi %s cam dang /ad.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 						SendDutyAdvisorMessage(TEAM_AZTECAS_COLOR, string);
-						SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "You were just muted from the Advertisements (/ads) by %s.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "Ban vua bi %s cam dung Quang cao (/ads).", GetPlayerNameEx(playerid));
 					}
 
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "Remember, advertisements may only be used for IC purposes and may not be used for any other purpose, unless stated otherwise by an admin.");
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "If you wish to be unmuted, you will be fined or jailed. Future abuse could result in increased punishment. If you feel this was in error, contact a senior administrator.");
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "Chi duoc dung quang cao cho muc dich IC, tru khi Admin cho phep khac.");
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "De duoc mo cam, ban se bi phat tien hoac giam giu. Tai pham se bi phat nang hon. Lien he Admin cap cao neu co nham lan.");
 
-					SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s was just muted from using Advertisements [/ads] due to misuse.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageToAllEx(COLOR_LIGHTRED, "AdmCmd: %s bi cam dung Quang cao [/ads] do lam dung.", GetPlayerNameEx(giveplayerid));
 				}
 				else
 				{
 					if(PlayerInfo[playerid][pAdmin] >= 2)
 					{
 						ShowAdMuteFine(giveplayerid);
-						SendClientMessageEx(playerid, COLOR_LIGHTRED, "You offered %s an unmute from /ads.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_LIGHTRED, "Ban de nghi mo cam /ads cho %s.", GetPlayerNameEx(giveplayerid));
 					}
 					else
 					{
-						SendClientMessageEx(playerid, COLOR_GRAD1, "That person is currently muted. You are unable to unmute players from advertisements as a Advisor.");
+						SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi do dang bi cam. Advisor khong duoc mo cam quang cao.");
 					}
 				}
 
@@ -488,34 +488,34 @@ CMD:admute(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
 
 CMD:freeads(playerid, params[])
 {
-	if(PlayerInfo[playerid][pDonateRank] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Platinum VIP+");
+	if(PlayerInfo[playerid][pDonateRank] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai Platinum VIP+");
 	new days;
 	ConvertTime(gettime() - PlayerInfo[playerid][pFreeAdsDay], .ctd=days);
 	if(days >= 1)
 	{
 		PlayerInfo[playerid][pFreeAdsDay] = gettime();
 		PlayerInfo[playerid][pFreeAdsLeft] = 3;
-		SendClientMessageEx(playerid, COLOR_YELLOW, "* You still have 3 free ads left for today.");
+		SendClientMessageEx(playerid, COLOR_YELLOW, "* Hom nay ban con 3 quang cao mien phi.");
 	}	
 	else if(PlayerInfo[playerid][pFreeAdsLeft] > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_YELLOW, "* You still have %d free ads left for today.", PlayerInfo[playerid][pFreeAdsLeft]);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "* Hom nay ban con %d quang cao mien phi.", PlayerInfo[playerid][pFreeAdsLeft]);
 	}
 	else
 	{
 		new datestring[32];
 		datestring = date(PlayerInfo[playerid][pFreeAdsDay]+86400, 3);
-		SendClientMessageEx(playerid, COLOR_YELLOW, "* You have used all your free ads, you will need to wait until %s.", datestring);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "* Da het quang cao mien phi, hay cho den %s.", datestring);
 	}
 	return 1;
 }
 
 ShowMainAdvertMenu(playerid)
-	return ShowPlayerDialogEx(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement\nHouse Listings", "Select", "Cancel");
+	return ShowPlayerDialogEx(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Quang cao", "Danh sach quang cao\nTim quang cao\nDang quang cao\nDang quang cao uu tien\nNha dang ban", "Chon", "Huy");

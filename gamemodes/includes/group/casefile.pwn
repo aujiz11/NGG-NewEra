@@ -62,15 +62,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		case DIALOG_CASEFILE:
 		{
-			if(!response) return ShowPlayerDialog(playerid, DIALOG_CASEFILE_QUIT, DIALOG_STYLE_MSGBOX, "Casefile - Cancel", "Are you sure you would like to exit out of the casefile creation?\n(Note: This will reset all of your work)", "Yes", "No");
+			if(!response) return ShowPlayerDialog(playerid, DIALOG_CASEFILE_QUIT, DIALOG_STYLE_MSGBOX, "Ho so vu an - Huy", "Ban muon thoat tao ho so vu an?\n(Luu y: Moi noi dung dang soan se bi xoa)", "Co", "Khong");
 			switch(listitem)
 			{
-				case 0: return ShowPlayerDialog(playerid, DIALOG_CASEFILE_NAME, DIALOG_STYLE_INPUT, "Casefile - Name", "Please enter the name of the suspect. (( Firstname_Lastname ))", "Select", "Cancel");
-				case 1: return ShowPlayerDialog(playerid, DIALOG_CASEFILE_INFO, DIALOG_STYLE_INPUT, "Casefile - Information", "Please enter a description of the casefile. (( Maximum 256 characters. ))", "Select", "Cancel");
+				case 0: return ShowPlayerDialog(playerid, DIALOG_CASEFILE_NAME, DIALOG_STYLE_INPUT, "Ho so vu an - Ten", "Nhap ten nghi pham. (( Firstname_Lastname ))", "Chon", "Huy");
+				case 1: return ShowPlayerDialog(playerid, DIALOG_CASEFILE_INFO, DIALOG_STYLE_INPUT, "Ho so vu an - Thong tin", "Nhap mo ta ho so vu an. (( Toi da 256 ky tu. ))", "Chon", "Huy");
 				case 2:
 				{
-					if(!GetPVarType(playerid, "CasefileName")) return ShowPlayerDialog(playerid, DIALOG_CASEFILE_NAME, DIALOG_STYLE_INPUT, "Casefile - Name", "Please enter the name of the suspect. (( Firstname_Lastname ))", "Select", "Cancel");
-					else if(!GetPVarType(playerid, "CasefileInfo")) return ShowPlayerDialog(playerid, DIALOG_CASEFILE_INFO, DIALOG_STYLE_INPUT, "Casefile - Information", "Please enter a description for the casefile. (( Maximum 256 characters. ))", "Select", "Cancel");
+					if(!GetPVarType(playerid, "CasefileName")) return ShowPlayerDialog(playerid, DIALOG_CASEFILE_NAME, DIALOG_STYLE_INPUT, "Ho so vu an - Ten", "Nhap ten nghi pham. (( Firstname_Lastname ))", "Chon", "Huy");
+					else if(!GetPVarType(playerid, "CasefileInfo")) return ShowPlayerDialog(playerid, DIALOG_CASEFILE_INFO, DIALOG_STYLE_INPUT, "Ho so vu an - Thong tin", "Nhap mo ta ho so vu an. (( Toi da 256 ky tu. ))", "Chon", "Huy");
 					else
 					{
 						new CasefileName[MAX_PLAYER_NAME], CasefileInfo[256];
@@ -92,7 +92,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(strlen(inputtext) == 0)
 				{
-					SendClientMessage(playerid, -1, "You have reset the casefile name.");
+					SendClientMessage(playerid, -1, "Da xoa ten trong ho so vu an.");
 					DeletePVar(playerid, "CasefileName");
 				}
 				szMiscArray[0] = 0;
@@ -113,7 +113,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(strlen(inputtext) == 0)
 				{
 					DeletePVar(playerid, "CasefileInfo");
-					return SendClientMessage(playerid, -1, "You have reset the casefile information.");
+					return SendClientMessage(playerid, -1, "Da xoa thong tin ho so vu an.");
 				}
 				else if(strlen(inputtext) < 257)
 				{
@@ -145,12 +145,12 @@ ShowCasefileDialog(playerid)
 	if(!GetPVarType(playerid, "CasefileName")) format(CasefileName, sizeof(CasefileName), "Nobody");
 	else GetPVarString(playerid, "CasefileName", CasefileName, sizeof(CasefileName));
 
-	format(string, 156, "%s - Casefile", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
-	format(szMiscArray, sizeof(szMiscArray), "Name: %s\n\
-		Information\n\
-		Submit", CasefileName);
+	format(string, 156, "%s - Ho so vu an", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
+	format(szMiscArray, sizeof(szMiscArray), "Ten: %s\n\
+		Thong tin\n\
+		Gui", CasefileName);
 
-	return ShowPlayerDialog(playerid, DIALOG_CASEFILE, DIALOG_STYLE_LIST, string, szMiscArray, "Select", "Cancel");
+	return ShowPlayerDialog(playerid, DIALOG_CASEFILE, DIALOG_STYLE_LIST, string, szMiscArray, "Chon", "Huy");
 }
 
 ListCasefiles(playerid, group)
@@ -173,7 +173,7 @@ public OnCasefileName(playerid)
 		else 
 		{
 			DeletePVar(playerid, "CasefileName");
-			return SendClientMessageEx(playerid, COLOR_WHITE, "This name does not exist.");
+			return SendClientMessageEx(playerid, COLOR_WHITE, "Ten nay khong ton tai.");
 		}
 	}
 	else DeletePVar(playerid, "CasefileName");
@@ -201,7 +201,7 @@ public OnCasefileList(playerid)
 					GetPlayerName(d, PlayerName, sizeof(PlayerName));
 					if(strfind(PlayerName, suspect, true) != -1)
 					{ 
-						SendClientMessageEx(playerid, COLOR_GREEN, "%s (ID: %d) | Issuer: %s | Information: %s", GetPlayerNameEx(d), d, issuer, information);
+						SendClientMessageEx(playerid, COLOR_GREEN, "%s (ID: %d) | Nguoi lap: %s | Noi dung: %s", GetPlayerNameEx(d), d, issuer, information);
 					}
 				}
 			}
@@ -211,10 +211,10 @@ public OnCasefileList(playerid)
 				cache_get_value_name(i, "issuer", issuer);
 				cache_get_value_name(i, "information", information);
 
-				SendClientMessageEx(playerid, COLOR_GREY, "%s | Issuer: %s | Information: %s",suspect, issuer, information);
+				SendClientMessageEx(playerid, COLOR_GREY, "%s | Nguoi lap: %s | Noi dung: %s",suspect, issuer, information);
 			}
 		}
-		else return SendClientMessageEx(playerid, COLOR_WHITE, "Your group does not have any casefiles.");
+		else return SendClientMessageEx(playerid, COLOR_WHITE, "To chuc cua ban khong co ho so vu an.");
 	}
 	return 1;
 }

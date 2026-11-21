@@ -116,11 +116,11 @@ CMD:vipdate(playerid, params[]) {
 		}
 	    new datestring[32];
 		datestring = date(PlayerInfo[giveplayerid][pVIPExpire], 4);
-		if(PlayerInfo[giveplayerid][pVIPExpire] == 0) format(string, sizeof(string), "* Your %s VIP subscription is not set to expire.", drank);
-		else format(string, sizeof(string), "* Your %s VIP subscription expires on %s.", drank, datestring);
+		if(PlayerInfo[giveplayerid][pVIPExpire] == 0) format(string, sizeof(string), "* Goi %s VIP cua ban khong het han.", drank);
+		else format(string, sizeof(string), "* Goi %s VIP cua ban het han ngay %s.", drank, datestring);
 	    SendClientMessageEx(playerid, COLOR_VIP, string);
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a VIP subscription.");
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co goi VIP.");
 	return 1;
 }
 
@@ -131,16 +131,16 @@ CMD:spawnathome(playerid, params[])
         if(PlayerInfo[playerid][pDonateRank] >= 4)
 		{
             PlayerInfo[playerid][pInsurance] = HOSPITAL_HOMECARE;
-            SendClientMessageEx( playerid, COLOR_YELLOW, "Platinum VIP: You will now spawn at your house after deaths." );
+            SendClientMessageEx( playerid, COLOR_YELLOW, "Platinum VIP: Ban se hoi sinh tai nha sau khi chet." );
         }
         else
 		{
-            SendClientMessageEx( playerid, COLOR_WHITE, "You are not Platinum VIP!" );
+            SendClientMessageEx( playerid, COLOR_WHITE, "Ban khong phai Platinum VIP!" );
         }
     }
     else
 	{
-        SendClientMessageEx( playerid, COLOR_WHITE, "You do not own a house." );
+        SendClientMessageEx( playerid, COLOR_WHITE, "Ban khong so huu nha." );
     }
     return 1;
 }
@@ -151,16 +151,16 @@ CMD:vipnum(playerid, params[])
 
     if(!(IsPlayerInRangeOfPoint(playerid, 3.0, 2549.548095, 1404.047729, 7699.584472 ) || IsPlayerInRangeOfPoint(playerid, 3.0, 1832.6000, 1375.1700, 1464.4600)) )
     {
-    	SendClientMessageEx(playerid, COLOR_GREY, "You are not at the VIP phone number changing station!");
+    	SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o tram doi so dien thoai VIP!");
      	return 1;
    	}
 
     if(PlayerInfo[playerid][pDonateRank] < 2)
     {
-    	SendClientMessageEx(playerid, COLOR_GRAD1, "You must be a Silver VIP or higher to use this function.");
+    	SendClientMessageEx(playerid, COLOR_GRAD1, "Can Silver VIP tro len de dung tinh nang nay.");
      	return 1;
 	}
-	ShowPlayerDialogEx(playerid, VIPNUMMENU, DIALOG_STYLE_INPUT, "New Phone Number","New phone number:", "Submit", "Cancel");
+	ShowPlayerDialogEx(playerid, VIPNUMMENU, DIALOG_STYLE_INPUT, "So dien thoai moi","So dien thoai moi:", "Gui", "Huy");
 	return 1;
 }
 
@@ -170,28 +170,28 @@ CMD:buddyinvites(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pShopTech] > 2) {
 		if(BuddyInvite == true) {
 			BuddyInvite = false;
-			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has disabled the /buddyinvite command.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s da tat lenh /buddyinvite.", GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_YELLOW, string, 2);
 		} else {
 			BuddyInvite = true;
-			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has enabled the /buddyinvite command.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s da bat lenh /buddyinvite.", GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_YELLOW, string, 2);
 		}
 	} else {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have permission to use this command.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
 
 CMD:buddyinvite(playerid, params[])
 {
-	if(PlayerInfo[playerid][pDonateRank] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You need to be Silver VIP+ to use this function!");
-	if(BuddyInvite == false) return SendClientMessageEx(playerid, COLOR_GREY, "Buddy invites has been disabled by an adminstrator.");
+	if(PlayerInfo[playerid][pDonateRank] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "Can Silver VIP+ de dung tinh nang nay!");
+	if(BuddyInvite == false) return SendClientMessageEx(playerid, COLOR_GREY, "Quan tri vien da tat Buddy invites.");
 	new giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /buddyinvite [player]");
-	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is not connected!");
-	if(PlayerInfo[giveplayerid][pDonateRank] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Unable to invite: That person is already a VIP.");
-	if(PlayerInfo[giveplayerid][pAdmin] >= 2 && !PlayerInfo[giveplayerid][pTogReports]) return SendClientMessageEx(playerid, COLOR_WHITE, "Unable to invite: That person is already a VIP.");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /buddyinvite [player]");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do chua ket noi!");
+	if(PlayerInfo[giveplayerid][pDonateRank] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong moi duoc: Nguoi do da la VIP.");
+	if(PlayerInfo[giveplayerid][pAdmin] >= 2 && !PlayerInfo[giveplayerid][pTogReports]) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong moi duoc: Nguoi do da la VIP.");
 	new days, daytime, string[128];
 	if(PlayerInfo[playerid][pDonateRank] == 2)
 	{
@@ -211,19 +211,19 @@ CMD:buddyinvite(playerid, params[])
 		PlayerInfo[playerid][pVIPInviteDay] = gettime();
 		PlayerInfo[playerid][pBuddyInvites] = 3;
 	}
-	if(days < daytime && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_WHITE, "You must wait 7 days as silver or 1 day as gold, before inviting another person to become a VIP.");
-	if(PlayerInfo[playerid][pDonateRank] >= 4 && PlayerInfo[playerid][pBuddyInvites] < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You must wait 7 days as silver or 1 day as gold, before inviting another person to become a VIP.");
+	if(days < daytime && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_WHITE, "Phai cho 7 ngay voi silver hoac 1 ngay voi gold de moi nguoi khac thanh VIP.");
+	if(PlayerInfo[playerid][pDonateRank] >= 4 && PlayerInfo[playerid][pBuddyInvites] < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "Phai cho 7 ngay voi silver hoac 1 ngay voi gold de moi nguoi khac thanh VIP.");
 	PlayerInfo[giveplayerid][pDonateRank] = 1;
 	PlayerInfo[giveplayerid][pTempVIP] = 180;
 	PlayerInfo[giveplayerid][pBuddyInvited] = 1;
-	SendClientMessageEx(playerid, COLOR_WHITE, "You have invited %s to become a Bronze VIP for 3 hours.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have been invited by %s to become a Bronze VIP for 3 hours. Enjoy!", GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_WHITE, "Ban da moi %s thanh Bronze VIP trong 3 gio.", GetPlayerNameEx(giveplayerid));
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Ban duoc %s moi thanh Bronze VIP trong 3 gio. Chuc vui!", GetPlayerNameEx(playerid));
 	format(string, sizeof(string), "BUDDY INVITE: %s(%d) has invited %s(%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 	Log("logs/setvip.log", string);
 	if(PlayerInfo[playerid][pDonateRank] >= 4)
 	{
 		PlayerInfo[playerid][pBuddyInvites]--;
-		format(string, sizeof(string), "Platinum VIP: You have %d invites left for today.", PlayerInfo[playerid][pBuddyInvites]);
+		format(string, sizeof(string), "Platinum VIP: Hom nay ban con %d loi moi.", PlayerInfo[playerid][pBuddyInvites]);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 	}
 	else
@@ -244,7 +244,7 @@ CMD:travel(playerid, params[])
 	    {
 	        if(isnull(params))
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /travel [famed, sffamed, trfamed]");
+				SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /travel [famed, sffamed, trfamed]");
 				return 1;
 			}
             if(strcmp(params,"famed",true) == 0)
@@ -257,7 +257,7 @@ CMD:travel(playerid, params[])
 						SetPVarInt(playerid, "tpJustEntered", 1);
 					SetVehicleZAngle(tmpcar, 180.0373);
 					fVehSpeed[playerid] = 0.0;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "Famed: You have traveled to the front of the famed lounge.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Famed: Ban da den truoc famed lounge.");
 					SetPlayerInterior(playerid,0);
 					PlayerInfo[playerid][pInt] = 0;
 					SetPlayerVirtualWorld(playerid, 0);
@@ -265,7 +265,7 @@ CMD:travel(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "You're not inside a vehicle!");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o trong xe!");
 				}
 			}
 			else if(strcmp(params,"trfamed",true) == 0)
@@ -278,7 +278,7 @@ CMD:travel(playerid, params[])
 						SetPVarInt(playerid, "tpJustEntered", 1);
 					SetVehicleZAngle(tmpcar, 14.1091);
 					fVehSpeed[playerid] = 0.0;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "Famed: You have traveled to the front of the New Robada famed lounge.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Famed: Ban da den truoc New Robada famed lounge.");
 					SetPlayerInterior(playerid,0);
 					PlayerInfo[playerid][pInt] = 0;
 					SetPlayerVirtualWorld(playerid, 0);
@@ -286,7 +286,7 @@ CMD:travel(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "You're not inside a vehicle!");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o trong xe!");
 				}
 			}
 			else if(strcmp(params,"sffamed",true) == 0)
@@ -299,7 +299,7 @@ CMD:travel(playerid, params[])
 						SetPVarInt(playerid, "tpJustEntered", 1);
 					SetVehicleZAngle(tmpcar, 357.5536);
 					fVehSpeed[playerid] = 0.0;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "Famed: You have traveled to the front of the San Fierro famed lounge.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Famed: Ban da den truoc San Fierro famed lounge.");
 					SetPlayerInterior(playerid,0);
 					PlayerInfo[playerid][pInt] = 0;
 					SetPlayerVirtualWorld(playerid, 0);
@@ -307,12 +307,12 @@ CMD:travel(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "You're not inside a vehicle!");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o trong xe!");
 				}
 			}
 		}
 		else
-		    return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not part of famed!");
+		    return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Famed!");
 	}
 	else if(IsPlayerInRangeOfPoint(playerid, 13.0, -4429.944824, 905.032470, 987.078186))
 	{
@@ -320,8 +320,8 @@ CMD:travel(playerid, params[])
 		{
 			if(isnull(params))
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /travel [location]");
-				SendClientMessageEx(playerid, COLOR_GRAD1, "Locations: LS, SF, RC, LSVIP, SFVIP, LVVIP, APVIP, FC, BAYSIDE, FLINT");
+				SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /travel [location]");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Dia diem: LS, SF, RC, LSVIP, SFVIP, LVVIP, APVIP, FC, BAYSIDE, FLINT");
 				return 1;
 			}
 
@@ -334,7 +334,7 @@ CMD:travel(playerid, params[])
 					if(GetPVarInt(playerid, "tpDeliverVehTimer") > 0)
 						SetPVarInt(playerid, "tpJustEntered", 1);
 					fVehSpeed[playerid] = 0.0;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have traveled to Los Santos with your vehicle.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: Ban da den Los Santos cung xe cua minh.");
 					SetPlayerInterior(playerid,0);
 					PlayerInfo[playerid][pInt] = 0;
 					SetPlayerVirtualWorld(playerid, 0);
@@ -342,7 +342,7 @@ CMD:travel(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not in a vehicle!");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "   Ban khong o trong xe!");
 				}
 			}
 
@@ -355,7 +355,7 @@ CMD:travel(playerid, params[])
 					if(GetPVarInt(playerid, "tpDeliverVehTimer") > 0)
 						SetPVarInt(playerid, "tpJustEntered", 1);
 					fVehSpeed[playerid] = 0.0;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have traveled to San Fierro with your vehicle.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: Ban da den San Fierro cung xe cua minh.");
 					SetPlayerInterior(playerid,0);
 					PlayerInfo[playerid][pInt] = 0;
 					SetPlayerVirtualWorld(playerid, 0);
@@ -364,7 +364,7 @@ CMD:travel(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not in a vehicle!");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "   Ban khong o trong xe!");
 				}
 			}
 			if(strcmp(params,"rc",true) == 0)
@@ -376,7 +376,7 @@ CMD:travel(playerid, params[])
 					if(GetPVarInt(playerid, "tpDeliverVehTimer") > 0)
 						SetPVarInt(playerid, "tpJustEntered", 1);
 					fVehSpeed[playerid] = 0.0;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have traveled to Red County with your vehicle.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: Ban da den Red County cung xe cua minh.");
 					SetPlayerInterior(playerid,0);
 					PlayerInfo[playerid][pInt] = 0;
 					SetPlayerVirtualWorld(playerid, 0);
@@ -385,7 +385,7 @@ CMD:travel(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not in a vehicle!");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "   Ban khong o trong xe!");
 				}
 			}
 			if(strcmp(params,"lsvip",true) == 0)
@@ -398,7 +398,7 @@ CMD:travel(playerid, params[])
 						SetPVarInt(playerid, "tpJustEntered", 1);
 					SetPlayerFacingAngle(playerid, 255.08);
 					fVehSpeed[playerid] = 0.0;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have traveled to the VIP Lounge with your vehicle.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: Ban da den VIP Lounge cung xe cua minh.");
 					SetPlayerInterior(playerid,0);
 					PlayerInfo[playerid][pInt] = 0;
 					SetPlayerVirtualWorld(playerid, 0);
@@ -407,7 +407,7 @@ CMD:travel(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not in a vehicle!");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "   Ban khong o trong xe!");
 				}
 			}
 			if(strcmp(params,"sfvip",true) == 0)
@@ -420,7 +420,7 @@ CMD:travel(playerid, params[])
 						SetPVarInt(playerid, "tpJustEntered", 1);
 					SetPlayerFacingAngle(playerid, 181.54);
 					fVehSpeed[playerid] = 0.0;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have traveled to the VIP Lounge with your vehicle.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: Ban da den VIP Lounge cung xe cua minh.");
 					SetPlayerInterior(playerid,0);
 					PlayerInfo[playerid][pInt] = 0;
 					SetPlayerVirtualWorld(playerid, 0);
@@ -429,7 +429,7 @@ CMD:travel(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not in a vehicle!");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "   Ban khong o trong xe!");
 				}
 			}
 			if(strcmp(params,"apvip",true) == 0)
@@ -443,7 +443,7 @@ CMD:travel(playerid, params[])
 						SetPVarInt(playerid, "tpJustEntered", 1);
 					SetPlayerFacingAngle(playerid, 232.05);
 					fVehSpeed[playerid] = 0.0;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have traveled to the VIP Lounge with your vehicle.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: Ban da den VIP Lounge cung xe cua minh.");
 					SetPlayerInterior(playerid,0);
 					PlayerInfo[playerid][pInt] = 0;
 					SetPlayerVirtualWorld(playerid, 0);
@@ -452,7 +452,7 @@ CMD:travel(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not in a vehicle!");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "   Ban khong o trong xe!");
 				}
 			}
 			if(strcmp(params,"lvvip",true) == 0)
@@ -465,7 +465,7 @@ CMD:travel(playerid, params[])
 						SetPVarInt(playerid, "tpJustEntered", 1);
 					SetPlayerFacingAngle(playerid, 255.08);
 					fVehSpeed[playerid] = 0.0;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have traveled to the VIP Lounge with your vehicle.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: Ban da den VIP Lounge cung xe cua minh.");
 					SetPlayerInterior(playerid,0);
 					PlayerInfo[playerid][pInt] = 0;
 					SetPlayerVirtualWorld(playerid, 0);
@@ -474,7 +474,7 @@ CMD:travel(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not in a vehicle!");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "   Ban khong o trong xe!");
 				}
 			}
 			if(strcmp(params,"fc",true) == 0)
@@ -487,7 +487,7 @@ CMD:travel(playerid, params[])
 						SetPVarInt(playerid, "tpJustEntered", 1);
 					SetPlayerFacingAngle(playerid, 255.08);
 					fVehSpeed[playerid] = 0.0;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have traveled to the VIP Lounge with your vehicle.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: Ban da den VIP Lounge cung xe cua minh.");
 					SetPlayerInterior(playerid,0);
 					PlayerInfo[playerid][pInt] = 0;
 					SetPlayerVirtualWorld(playerid, 0);
@@ -495,7 +495,7 @@ CMD:travel(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not in a vehicle!");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "   Ban khong o trong xe!");
 				}
 			}
 			if(strcmp(params,"bayside",true) == 0)
@@ -508,7 +508,7 @@ CMD:travel(playerid, params[])
 						SetPVarInt(playerid, "tpJustEntered", 1);
 					SetPlayerFacingAngle(playerid, 255.08);
 					fVehSpeed[playerid] = 0.0;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have traveled to the VIP Lounge with your vehicle.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: Ban da den VIP Lounge cung xe cua minh.");
 					SetPlayerInterior(playerid,0);
 					PlayerInfo[playerid][pInt] = 0;
 					SetPlayerVirtualWorld(playerid, 0);
@@ -517,7 +517,7 @@ CMD:travel(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not in a vehicle!");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "   Ban khong o trong xe!");
 				}
 			}
 			if(strcmp(params,"flint",true) == 0)
@@ -531,7 +531,7 @@ CMD:travel(playerid, params[])
 						SetPVarInt(playerid, "tpJustEntered", 1);
 					SetPlayerFacingAngle(playerid, 73.97);
 					fVehSpeed[playerid] = 0.0;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have traveled to Flint County with your vehicle.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: Ban da den Flint County cung xe cua minh.");
 					SetPlayerInterior(playerid,0);
 					PlayerInfo[playerid][pInt] = 0;
 					SetPlayerVirtualWorld(playerid, 0);
@@ -540,7 +540,7 @@ CMD:travel(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not in a vehicle!");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "   Ban khong o trong xe!");
 				}
 			}			
 		}
@@ -550,41 +550,41 @@ CMD:travel(playerid, params[])
 
 CMD:viplocker(playerid, params[]) {
     #if defined zombiemode
-	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
+	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombie khong the dung.");
 	#endif
 	if(IsPlayerInRangeOfPoint(playerid, 7.0, 2555.747314, 1404.106079, 7699.584472) /*LS Main*/
 	|| IsPlayerInRangeOfPoint(playerid, 7.0, 1832.0533, 1380.7281, 1464.3822) /*LV Main*/
 	|| IsPlayerInRangeOfPoint(playerid, 7.0, 772.4844, 1715.7213, 1938.0391) /*LV Plat*/
 	|| IsPlayerInRangeOfPoint(playerid, 7.0, 1378.0017, 1747.4668, 927.3564) /*Olympics*/)
 	switch(PlayerInfo[playerid][pDonateRank]) {
-		case 0: SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a VIP.");
-		case 1: ShowPlayerDialogEx(playerid, 7483, DIALOG_STYLE_LIST, "VIP Locker", "First Aid Kit (Free)\nKevlar Vest ($15000)\nWeapons\nClothes Corner\nJob Center\nVIP Color", "Select", "Cancel");
-		case 2: ShowPlayerDialogEx(playerid, 7483, DIALOG_STYLE_LIST, "VIP Locker", "First Aid Kit (Free)\nKevlar Vest ($10000)\nWeapons\nClothes Corner\nJob Center\nVIP Color", "Select", "Cancel");
-		default: ShowPlayerDialogEx(playerid, 7483, DIALOG_STYLE_LIST, "VIP Locker", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons\nClothes Corner\nJob Center\nVIP Color", "Select", "Cancel");
+		case 0: SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong phai VIP.");
+		case 1: ShowPlayerDialogEx(playerid, 7483, DIALOG_STYLE_LIST, "VIP Locker", "First Aid Kit (Mien phi)\nKevlar Vest ($15000)\nVu khi\nGoc quan ao\nTrung tam viec lam\nMau VIP", "Chon", "Huy");
+		case 2: ShowPlayerDialogEx(playerid, 7483, DIALOG_STYLE_LIST, "VIP Locker", "First Aid Kit (Mien phi)\nKevlar Vest ($10000)\nVu khi\nGoc quan ao\nTrung tam viec lam\nMau VIP", "Chon", "Huy");
+		default: ShowPlayerDialogEx(playerid, 7483, DIALOG_STYLE_LIST, "VIP Locker", "First Aid Kit (Mien phi)\nKevlar Vest (Mien phi)\nVu khi\nGoc quan ao\nTrung tam viec lam\nMau VIP", "Chon", "Huy");
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD2, "You're not at the VIP locker.");
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o tai VIP Locker.");
 	return 1;
 }
 
 CMD:v(playerid, params[]) {
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
 	if(PlayerInfo[playerid][pDonateRank] >= 1 || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pVIPMod]) {
 		if(isnull(params)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /v [message]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /v [message]");
 		}
 		else if(gettime() < GetPVarInt(playerid, "timeVIP")) {
 
 
-			SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before speaking again in this channel.", GetPVarInt(playerid, "timeVIP") - gettime());
+			SendClientMessageEx(playerid, COLOR_GREY, "Hay cho %d giay de noi tiep trong kenh nay.", GetPVarInt(playerid, "timeVIP") - gettime());
 		}
 		else if(PlayerInfo[playerid][pToggledChats][9]) {
-		    SendClientMessageEx(playerid, COLOR_GREY, "You have VIP chat toggled - /tog vip to enable it.");
+		    SendClientMessageEx(playerid, COLOR_GREY, "Ban da tat chat VIP, dung /tog vip de bat.");
 		}
 		else if(PlayerInfo[playerid][pVMuted] > 0) {
-			SendClientMessageEx(playerid, COLOR_GREY, "You are muted from the VIP chat channel.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban bi cam chat VIP.");
 		}
 		else {
-			if(novip && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "The VIP chat has been disabled by an administrator.");
+			if(novip && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "Quan tri vien da tat chat VIP.");
 			new szMessage[128];
 
 			if(PlayerInfo[playerid][pAdmin] >= 2 && !GetPVarType(playerid, "Undercover"))
@@ -613,7 +613,7 @@ CMD:searchvipm(playerid, params[])
 	        count,
 	        vipm;
 
- 		if(sscanf(params, "d", vipm)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /searchvipm [vipm]");
+ 		if(sscanf(params, "d", vipm)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /searchvipm [vipm]");
 
   		foreach(new i: Player)
 		{
@@ -627,7 +627,7 @@ CMD:searchvipm(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_WHITE, "%s (%d) | VIPM Old: %d", GetPlayerNameEx(i), i, vipm);
 				count++;
 			}
-			else if(count == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "No person online matched that VIPM number.");
+			else if(count == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong ai online co VIPM do.");
 		}
 	}
 	return 1;
@@ -635,20 +635,20 @@ CMD:searchvipm(playerid, params[])
 
 CMD:sellvip(playerid, params[]) {
 	if(!(1 <= PlayerInfo[playerid][pDonateRank] <= 3)) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You can only sell Bronze, Silver, and Gold VIP.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Chi duoc ban Bronze, Silver va Gold VIP.");
 	}
 	else if(PlayerInfo[playerid][pVIPM] == 0) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You currently don't have a VIP ID assigned. Contact a Shop Tech.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban chua duoc cap VIP ID. Hay lien he Shop Tech.");
 	}
 	else if(PlayerInfo[playerid][pVIPSellable] == 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "Your VIP is not sellable.");
+		SendClientMessageEx(playerid, COLOR_GREY, "VIP cua ban khong ban duoc.");
 	}
   	else if(PlayerInfo[playerid][pVIPExpire] - 604800 < gettime()) {
-		SendClientMessageEx(playerid, COLOR_GREY, "Your VIP expires in less than a week - you can't sell it.");
+		SendClientMessageEx(playerid, COLOR_GREY, "VIP con duoi mot tuan, khong the ban.");
 	}
 	else if(PlayerInfo[playerid][pVIPSold] > gettime()) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You can only sell your VIP once every two hours.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Chi duoc ban VIP hai gio mot lan.");
 	}
 	else {
 
@@ -659,19 +659,19 @@ CMD:sellvip(playerid, params[]) {
 			viptype[7];
 
 		if(sscanf(params, "ud", player, price)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellvip [player] [price]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /sellvip [player] [price]");
 		}
 		else if(price < 0) {
-			SendClientMessageEx(playerid, COLOR_GREY, "The price can't be below zero.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Gia khong duoc duoi zero.");
 		}
 		else if(player == playerid) {
-			SendClientMessageEx(playerid, COLOR_WHITE, "You can't sell VIP to yourself.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Khong the tu ban VIP cho minh.");
 		}
 		else if(!IsPlayerConnected(player)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 		}
 		else if(PlayerInfo[player][pVIPSold] > gettime()) {
-			SendClientMessageEx(playerid, COLOR_GREY, "That person can only buy VIP once every two hours.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do chi duoc mua VIP hai gio mot lan.");
 		}
 		else if (ProxDetectorS(10.0, playerid, player))
 		{
@@ -680,16 +680,16 @@ CMD:sellvip(playerid, params[]) {
 				case 1: viptype = "Bronze";
 				case 2: viptype = "Silver";
 				case 3: viptype = "Gold";
-				default: viptype = "Error";
+				default: viptype = "Loi";
 			}
 			SetPVarInt(player, "VIPSell", playerid);
 			SetPVarInt(player, "VIPCost", price);
 			SetPVarString(player, "VIPSeller", GetPlayerNameEx(playerid));
-			format(string, sizeof(string), "Seller: %s\nVIP level: %s \nPrice: %d \nVIP ID: %d\nExpires: %s\n\nDo you wish to purchase %s VIP from %s for $%d?", GetPlayerNameEx(playerid), viptype, price, PlayerInfo[playerid][pVIPM], date(PlayerInfo[playerid][pVIPExpire], 2), viptype, GetPlayerNameEx(playerid), price);
-			ShowPlayerDialogEx(player, SELLVIP, DIALOG_STYLE_MSGBOX, "Purchase VIP", string, "Purchase", "Decline");
-			SendClientMessageEx(playerid, COLOR_WHITE, "You offered %s $%d for your %s VIP.", GetPlayerNameEx(player), price, viptype);
+			format(string, sizeof(string), "Nguoi ban: %s\nVIP cap: %s \nGia: %d \nVIP ID: %d\nHet han: %s\n\nBan muon mua %s VIP tu %s gia $%d?", GetPlayerNameEx(playerid), viptype, price, PlayerInfo[playerid][pVIPM], date(PlayerInfo[playerid][pVIPExpire], 2), viptype, GetPlayerNameEx(playerid), price);
+			ShowPlayerDialogEx(player, SELLVIP, DIALOG_STYLE_MSGBOX, "Mua VIP", string, "Mua", "Tu choi");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban chao %s gia $%d cho goi %s VIP cua ban.", GetPlayerNameEx(player), price, viptype);
 		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "That person is not near you.");
+		else SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 	}
     return 1;
 }
@@ -706,16 +706,16 @@ CMD:newgvip(playerid, params[])
 			szMessage[128];
 
 		if(sscanf(params, "ud", iTargetID, iOrderID)) {
-		    SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /newgvip [Player] [OrderID]");
+		    SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /newgvip [Player] [OrderID]");
 		}
 		else if(!IsPlayerConnected(iTargetID)) {
-		    SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+		    SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 		}
 		else {
 			if(PlayerInfo[iTargetID][pGVip] != 0 && GetPVarInt(playerid, "ConfirmGVip") == 0) {
 	    	    SetPVarInt(playerid, "ConfirmGVip", 1);
-	    	    SendClientMessageEx(playerid, COLOR_WHITE, "That person has been issued gold vip before, if you are sure you want to issue him gold vip again");
-	    	    SendClientMessageEx(playerid, COLOR_WHITE, "re-type this command (/newgvip). If he ordered a gold vip renewal use the other command (/renewgvip).");
+	    	    SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi do da duoc cap gold vip. Neu chac muon cap lai gold vip");
+	    	    SendClientMessageEx(playerid, COLOR_WHITE, "hay nhap lai lenh (/newgvip). Neu ho mua gia han gold vip, dung lenh khac (/renewgvip).");
 	    	}
 	    	else
 	    	{
@@ -729,11 +729,11 @@ CMD:newgvip(playerid, params[])
 					VIPM++;
 				}
 				PlayerInfo[iTargetID][pVIPExpire] = gettime()+2592000;
-				format(szMessage, sizeof(szMessage), "AdmCmd: %s has set %s's VIP level to Gold (3).", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+				format(szMessage, sizeof(szMessage), "AdmCmd: %s da dat cap VIP cua %s thanh Gold (3).", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 				ABroadCast(COLOR_LIGHTRED,szMessage, 1337);
-				SendClientMessageEx(iTargetID, COLOR_WHITE, "Your VIP level has been set to Gold by Admin %s.", GetPlayerNameEx(playerid));
+				SendClientMessageEx(iTargetID, COLOR_WHITE, "Admin %s da dat cap VIP cua ban thanh Gold.", GetPlayerNameEx(playerid));
 				if (PlayerInfo[playerid][pAdmin] < 1337) {
-					SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s has set %s's VIP level to Gold (3).", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+					SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s da dat cap VIP cua %s thanh Gold (3).", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 				}
         	    PlayerInfo[iTargetID][pDonateRank] = 3;
 				PlayerInfo[iTargetID][pTempVIP] = 0;
@@ -748,7 +748,7 @@ CMD:newgvip(playerid, params[])
 	}
 	else
 	{
-	    SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use that command.");
+	    SendClientMessage(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -765,13 +765,13 @@ CMD:renewgvip(playerid, params[])
 			months;
 
 		if(sscanf(params, "udd", iTargetID, iOrderID, months)) {
-		    SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /renewgvip [player] [order ID] [months]");
+		    SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /renewgvip [player] [order ID] [months]");
 		}
 		else if(!IsPlayerConnected(iTargetID)) {
-		    SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+		    SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 		}
 		else if(PlayerInfo[iTargetID][pGVip] == 0) {
-		    SendClientMessageEx(playerid, COLOR_GREY, "That person has never purchased Gold VIP.");
+		    SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do chua tung mua Gold VIP.");
 		}
 		else {
 			if(PlayerInfo[iTargetID][pVIPM] != 0) {
@@ -783,11 +783,11 @@ CMD:renewgvip(playerid, params[])
 				VIPM++;
 			}
 			PlayerInfo[iTargetID][pVIPExpire] = gettime()+(2592000*months);
-			format(szMessage, sizeof(szMessage), "AdmCmd: %s has set %s's VIP level to Gold (3).", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+			format(szMessage, sizeof(szMessage), "AdmCmd: %s da dat cap VIP cua %s thanh Gold (3).", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 			ABroadCast(COLOR_LIGHTRED,szMessage, 1337);
-			SendClientMessageEx(iTargetID, COLOR_WHITE, "Your VIP level has been set to Gold by Admin %s.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(iTargetID, COLOR_WHITE, "Admin %s da dat cap VIP cua ban thanh Gold.", GetPlayerNameEx(playerid));
 			if (PlayerInfo[playerid][pAdmin] < 1337) {
-				SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s has set %s's VIP level to Gold (3).", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s da dat cap VIP cua %s thanh Gold (3).", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 			}
    			PlayerInfo[iTargetID][pDonateRank] = 3;
 			PlayerInfo[iTargetID][pTempVIP] = 0;
@@ -799,7 +799,7 @@ CMD:renewgvip(playerid, params[])
 	}
 	else
 	{
-	    SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use that command.");
+	    SendClientMessage(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -811,8 +811,8 @@ CMD:setvip(playerid, params[])
 		new string[128], giveplayerid, level, months, orderid[32];
 		if(sscanf(params, "udds[32]", giveplayerid, level, months, orderid))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setvip [player] [level] [months] [orderID]");
-			SendClientMessageEx(playerid, COLOR_GRAD3, "Available Levels: |0| None |1| Bronze |2| Silver |4| Platinum");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /setvip [player] [level] [months] [orderID]");
+			SendClientMessageEx(playerid, COLOR_GRAD3, "Cap hop le: |0| None |1| Bronze |2| Silver |4| Platinum");
 			return 1;
 		}
 
@@ -820,19 +820,19 @@ CMD:setvip(playerid, params[])
 		{
    			if(giveplayerid != INVALID_PLAYER_ID)
 			{
-				if(level < 0 || level > 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "VIP Level can not be below 0 or above 4!");
-				if(level == 3) return SendClientMessage(playerid, COLOR_GRAD1, "VIP Level can not be set to 3 through this command");
+				if(level < 0 || level > 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "Cap VIP khong duoc duoi 0 hoac tren 4!");
+				if(level == 3) return SendClientMessage(playerid, COLOR_GRAD1, "Khong the dat cap VIP thanh 3 bang lenh nay");
 				new playerip[32];
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
 				if(level == 0)
 				{
 					if (PlayerInfo[playerid][pAdmin] < 1337)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s has set %s's VIP level to None (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
+						SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s da dat cap VIP cua %s thanh None (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 					}
-					format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to None (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
+					format(string, sizeof(string), "AdmCmd: %s da dat cap VIP cua %s thanh None (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 					ABroadCast(COLOR_LIGHTRED,string, 1337);
-					SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your VIP level has been set to None by Admin %s.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(giveplayerid, COLOR_WHITE, "Admin %s da dat cap VIP cua ban thanh None.", GetPlayerNameEx(playerid));
 					PlayerInfo[giveplayerid][pTokens] = 0;
 
 					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to None (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
@@ -842,16 +842,16 @@ CMD:setvip(playerid, params[])
 				{
 					if (PlayerInfo[playerid][pAdmin] < 1337)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s has set %s's VIP level to Bronze (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level, orderid);
+						SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s da dat cap VIP cua %s thanh Bronze (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level, orderid);
 					}
 					if(PlayerInfo[giveplayerid][pVIPM] == 0)
 					{
 						PlayerInfo[giveplayerid][pVIPM] = VIPM;
 						VIPM++;
 					}
-					format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Bronze (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
+					format(string, sizeof(string), "AdmCmd: %s da dat cap VIP cua %s thanh Bronze (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 					ABroadCast(COLOR_LIGHTRED,string, 1337);
-					SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your VIP level has been set to Bronze by Admin %s.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(giveplayerid, COLOR_WHITE, "Admin %s da dat cap VIP cua ban thanh Bronze.", GetPlayerNameEx(playerid));
 
 					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Bronze (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 					Log("logs/setvip.log", string);
@@ -860,16 +860,16 @@ CMD:setvip(playerid, params[])
 				{
 					if (PlayerInfo[playerid][pAdmin] < 1337)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s has set %s's VIP level to Silver (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
+						SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s da dat cap VIP cua %s thanh Silver (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 					}
 					if(PlayerInfo[giveplayerid][pVIPM] == 0)
 					{
 						PlayerInfo[giveplayerid][pVIPM] = VIPM;
 						VIPM++;
 					}
-					format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Silver (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
+					format(string, sizeof(string), "AdmCmd: %s da dat cap VIP cua %s thanh Silver (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 					ABroadCast(COLOR_LIGHTRED,string, 1337);
-					SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your VIP level has been set to Silver by Admin %s.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(giveplayerid, COLOR_WHITE, "Admin %s da dat cap VIP cua ban thanh Silver.", GetPlayerNameEx(playerid));
 
 					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Silver (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 					Log("logs/setvip.log", string);
@@ -877,8 +877,8 @@ CMD:setvip(playerid, params[])
 				if(level == 3)
 				{
 					if(!GetPVarType(playerid, "ConfirmGold")) {
-						SendClientMessageEx(playerid, COLOR_WHITE, "You are about to set someone's vip level to gold. If this is a gold vip order please use the new system.");
-						SendClientMessageEx(playerid, COLOR_WHITE, "For a new purchase of Gold Vip use(/newgvip). For renewals use(/renewgvip). If you wish to continue using this command type it again(/setvip)");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Ban sap dat cap vip cua mot nguoi thanh gold. Neu la don gold vip, hay dung he thong moi.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Mua moi Gold Vip dung(/newgvip). Gia han dung(/renewgvip). Neu van muon dung lenh nay, nhap lai(/setvip)");
 						SetPVarInt(playerid, "ConfirmGold", 1);
 						return 1;
 					}
@@ -886,7 +886,7 @@ CMD:setvip(playerid, params[])
 						DeletePVar(playerid, "ConfirmGold");
 						if (PlayerInfo[playerid][pAdmin] < 1337)
 						{
-							SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s has set %s's VIP level to Gold (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
+							SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s da dat cap VIP cua %s thanh Gold (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 						}
 						if(PlayerInfo[giveplayerid][pVIPM] == 0)
 						{
@@ -894,9 +894,9 @@ CMD:setvip(playerid, params[])
 							VIPM++;
 						}
 						
-						format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Gold (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
+						format(string, sizeof(string), "AdmCmd: %s da dat cap VIP cua %s thanh Gold (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 						ABroadCast(COLOR_LIGHTRED,string, 1337);
-						SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your VIP level has been set to Gold by Admin %s.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(giveplayerid, COLOR_WHITE, "Admin %s da dat cap VIP cua ban thanh Gold.", GetPlayerNameEx(playerid));
 						format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Gold (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 						Log("logs/setvip.log", string);
 					}
@@ -905,16 +905,16 @@ CMD:setvip(playerid, params[])
 				{
 					if (PlayerInfo[giveplayerid][pAdmin] < 1337)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s has set %s's VIP level to Platinum (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
+						SendClientMessageEx(playerid, COLOR_LIGHTRED, "AdmCmd: %s da dat cap VIP cua %s thanh Platinum (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 					}
 					if(PlayerInfo[giveplayerid][pVIPM] == 0)
 					{
 						PlayerInfo[giveplayerid][pVIPM] = VIPM;
 						VIPM++;
 					}
-					format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Platinum (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
+					format(string, sizeof(string), "AdmCmd: %s da dat cap VIP cua %s thanh Platinum (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
 					ABroadCast(COLOR_LIGHTRED,string, 1337);
-					SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your VIP level has been set to Platinum by Admin %s.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(giveplayerid, COLOR_WHITE, "Admin %s da dat cap VIP cua ban thanh Platinum.", GetPlayerNameEx(playerid));
 
 					PlayerInfo[giveplayerid][pVIPExpire] = gettime()+2592000*months;
 
@@ -937,7 +937,7 @@ CMD:setvip(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -949,7 +949,7 @@ CMD:giftgvip(playerid, params[])
 		new string[128], giveplayerid, days,reason[32];
 		if(sscanf(params, "uds[32]", giveplayerid, days, reason))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /giftgvip [player] [days] [reason]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /giftgvip [player] [days] [reason]");
 			return 1;
 		}
 
@@ -961,9 +961,9 @@ CMD:giftgvip(playerid, params[])
 			new playerip[32];
 			GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
 			PlayerInfo[giveplayerid][pVIPExpire] = gettime()+86400*days;
-			format(string, sizeof(string), "AdmCmd: %s has gifted %s Gold VIP for %d days (%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), days, reason);
+			format(string, sizeof(string), "AdmCmd: %s da tang %s Gold VIP trong %d ngay (%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), days, reason);
 			ABroadCast(COLOR_LIGHTRED,string, 1337);
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your VIP level has been set to Gold by Admin %s.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Admin %s da dat cap VIP cua ban thanh Gold.", GetPlayerNameEx(playerid));
 			format(string, sizeof(string), "AdmCmd: %s has gifted %s(%d) Gold VIP for %d days (%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), days, reason);
 			Log("logs/setvip.log", string);
 			return 1;
@@ -971,7 +971,7 @@ CMD:giftgvip(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -981,25 +981,25 @@ CMD:vsuspend(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vsuspend [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /vsuspend [player]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
 			format(string, sizeof(string), "AdmCmd: %s(%d) has been VIP suspended by %s.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s has been VIP suspended by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s bi %s dinh chi VIP.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_LIGHTRED, string, 2);
 			if(PlayerInfo[playerid][pAdmin] == 0)
 			{
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
 			}
 			PlayerInfo[giveplayerid][pDonateRank] = 0;
-			format(string, sizeof(string), "Your VIP has been suspended by %s. You may appeal this on the forums (admin complaint).", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "VIP cua ban bi %s dinh chi. Co the khieu nai tren dien dan (admin complaint).", GetPlayerNameEx(playerid));
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -1017,7 +1017,7 @@ CMD:respawnvipcars(playerid, params[])
 				SetVehicleToRespawn(VIPVehicles[i]);
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You have respawned all unoccupied VIP Vehicles.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Da tao lai moi xe VIP khong co nguoi.");
 	}
 	return 1;
 }
@@ -1027,34 +1027,34 @@ CMD:vmute(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pVIPMod])
 	{
 		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vmute [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /vmute [player]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot mute admins from VIP Chat!");
+			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the cam admin chat VIP Chat!");
 			if(PlayerInfo[giveplayerid][pVMuted] == 0)
 			{
 				PlayerInfo[giveplayerid][pVMuted] = 1;
-				format(string, sizeof(string), "AdmCmd: %s has indefinitely blocked %s from using VIP Chat.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "AdmCmd: %s da cam %s dung VIP Chat vo thoi han.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				if(PlayerInfo[playerid][pAdmin] < 2)
 				{
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
 				}
 				ABroadCast(COLOR_LIGHTRED,string,2);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been indefinitely muted from VIP Chat for abuse by %s. You may appeal this on the forums (admin complaint)", GetPlayerNameEx(playerid));
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Ban bi %s cam VIP Chat vo thoi han vi lam dung. Khieu nai tren dien dan (admin complaint)", GetPlayerNameEx(playerid));
 				format(string, sizeof(string), "AdmCmd: %s(%d) was blocked from /v by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 				Log("logs/mute.log", string);
 			}
 			else
 			{
 				PlayerInfo[giveplayerid][pVMuted] = 0;
-				format(string, sizeof(string), "AdmCmd: %s has been re-allowed to use VIP Chat by %s.",GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s duoc phep dung lai VIP Chat boi %s.",GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				if(PlayerInfo[playerid][pAdmin] < 2)
 				{
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
 				}
 				ABroadCast(COLOR_LIGHTRED,string,2);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been re-allowed to use VIP Chat by %s.", GetPlayerNameEx(playerid));
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Ban duoc %s cho phep dung lai VIP Chat.", GetPlayerNameEx(playerid));
 				format(string, sizeof(string), "AdmCmd: %s(%d) was unblocked from /v by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 				Log("logs/mute.log", string);
 			}
@@ -1062,7 +1062,7 @@ CMD:vmute(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -1072,7 +1072,7 @@ CMD:vto(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pVIPMod])
 	{
 		new string[128], giveplayerid, reason[64];
-		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vto [player] [reason]");
+		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /vto [player] [reason]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
@@ -1080,28 +1080,28 @@ CMD:vto(playerid, params[])
 			{
 				PlayerInfo[giveplayerid][pVMuted] = 2;
 				PlayerInfo[giveplayerid][pVMutedTime] = 15*60;
-				format(string, sizeof(string), "AdmCmd: %s has temporarily blocked %s from using VIP Chat, reason: %s",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s tam cam %s dung VIP Chat, ly do: %s",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
 				ABroadCast(COLOR_LIGHTRED,string,2);
 				if(PlayerInfo[playerid][pAdmin] < 2)
 				{
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
 				}
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been temporarily blocked from using VIP Chat by %s, reason: %s.", GetPlayerNameEx(playerid), reason);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You will not be able to use VIP Chat for 15 minutes.");
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Note the future abuse of VIP Chat could result in loss of that privilege altogether or being banned from the server.");
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Ban bi %s tam cam dung VIP Chat, ly do: %s.", GetPlayerNameEx(playerid), reason);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Ban khong duoc dung VIP Chat trong 15 phut.");
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Tiep tuc lam dung VIP Chat co the bi thu hoi quyen chat hoac cam khoi may chu.");
 				format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from VIP Chat by %s(%d), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), reason);
 				Log("logs/mute.log", string);
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD2, "That person is already disabled from VIP Chat.");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do da bi khoa VIP Chat.");
 			}
 
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -1111,7 +1111,7 @@ CMD:vtoreset(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pVIPMod])
 	{
 		new string[128], giveplayerid, reason[64];
-		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vtoreset [player] [reason]");
+		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /vtoreset [player] [reason]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
@@ -1119,97 +1119,97 @@ CMD:vtoreset(playerid, params[])
 			{
 				PlayerInfo[giveplayerid][pVMuted] = 0;
 				PlayerInfo[giveplayerid][pVMutedTime] = 0;
-				format(string, sizeof(string), "AdmCmd: %s has unblocked %s from using VIP Chat, reason: %s",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s da go cam %s dung VIP Chat, ly do: %s",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
 				if(PlayerInfo[playerid][pAdmin] < 2)
 				{
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
 				}
 				ABroadCast(COLOR_LIGHTRED,string,2);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been unblocked from using VIP Chat. You may now use the VIP Chat system again.");
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Please accept our apologies for any error and inconvenience this may have caused.");
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Ban duoc go cam VIP Chat. Ban co the dung lai he thong VIP Chat.");
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Chung toi xin loi ve su co va bat tien da gay ra.");
 				format(string, sizeof(string), "AdmCmd: %s(%d) was unblocked from VIP Chat by %s(%d), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), reason);
 				Log("logs/mute.log", string);
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD2, "That person is not temporarily disabled from VIP Chat.");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do khong bi tam khoa VIP Chat.");
 			}
 
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
 
 CMD:vipplate(playerid, params[])
 {
-	if(PlayerInfo[playerid][pDonateRank] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not a Platinum VIP+");
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /vipplate [use/remove]");
+	if(PlayerInfo[playerid][pDonateRank] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong phai Platinum VIP+");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /vipplate [use/remove]");
 	for(new d = 0 ; d < MAX_PLAYERVEHICLES; d++)
 	{
      	if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][d][pvId]))
        	{
 			new Float: vHealth;
 			GetVehicleHealth(PlayerVehicleInfo[playerid][d][pvId], vHealth);
-    		if(vHealth < 800) return SendClientMessageEx(playerid, COLOR_LIGHTRED, "Please repair your vehicle before replacing your plate.");
+    		if(vHealth < 800) return SendClientMessageEx(playerid, COLOR_LIGHTRED, "Hay sua xe truoc khi doi bien so.");
 			new string[64];
 			if(strcmp(params, "remove", true) == 0)
 			{
 				PlayerVehicleInfo[playerid][d][pvPlate] = 0;
-				SendClientMessageEx(playerid, COLOR_YELLOW, "Your vehicle will now appear with the default plate, parking your vehicle momentarily...");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Xe se dung bien mac dinh, dang do xe...");
 				pc_cmd_park(playerid, params); //Save a few lines of code here xD
 			}
 			else if(strcmp(params, "use", true) == 0)
 			{
 				format(string, sizeof(string), "{800080}PVIP");
 				format(PlayerVehicleInfo[playerid][d][pvPlate], 32, "%s", string);
-				SendClientMessageEx(playerid, COLOR_YELLOW, "Your vehicle will now appear with the PVIP Plate, parking your vehicle momentarily...");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Xe se dung bien PVIP Plate, dang do xe...");
 				pc_cmd_park(playerid, params); //Save a few lines of code here xD
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /vipplate [use/remove]");
+				SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /vipplate [use/remove]");
 			}
 			return 1;
 		}
 	}
-	SendClientMessageEx(playerid, COLOR_GRAD2, "You're not inside a vehicle that you own!");
+	SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o trong xe cua minh!");
 	return 1;
 }
 
 CMD:spawnatvip(playerid, params[])
 {
-	if(PlayerInfo[playerid][pDonateRank] > 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are already able to get an insurance inside the Gold VIP+ room.");
-	if(PlayerInfo[playerid][pDonateRank] != 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Silver VIP+!");
-	if(PlayerInfo[playerid][pVIPSpawn] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You already bought a spawn at the Gold VIP+ room, you will be able to use it after your next death.");
+	if(PlayerInfo[playerid][pDonateRank] > 2) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da co the nhan bao hiem trong phong Gold VIP+.");
+	if(PlayerInfo[playerid][pDonateRank] != 2) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai Silver VIP+!");
+	if(PlayerInfo[playerid][pVIPSpawn] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da mua luot hoi sinh tai phong Gold VIP+, co the dung sau lan chet tiep theo.");
 	if(!GetPVarType(playerid, "PinConfirmed")) return PinLogin(playerid);
-	if(PlayerInfo[playerid][pCredits] < 10) return SendClientMessageEx(playerid, COLOR_GREY, "You need 10 credits to buy a spawn at the Gold VIP+ room. Visit shop.ng-gaming.net to purchase credits.");
+	if(PlayerInfo[playerid][pCredits] < 10) return SendClientMessageEx(playerid, COLOR_GREY, "Can 10 credits de mua luot hoi sinh tai phong Gold VIP+. Mua credits tai shop.ng-gaming.net.");
 	new string[128];
 	SetPVarInt(playerid, "MiscShop", 9);
-	format(string, sizeof(string), "Spawn at Gold VIP+ room\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[30][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[30][sItemPrice]));
-	ShowPlayerDialogEx(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Purchase a spawn at Gold VIP+ room", string, "Purchase", "Cancel");
+	format(string, sizeof(string), "Hoi sinh tai phong Gold VIP+\nCredits: %s\nGia: {FFD700}%s{A9C4E4}\nCon lai: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[30][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[30][sItemPrice]));
+	ShowPlayerDialogEx(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Mua luot hoi sinh tai phong Gold VIP+", string, "Mua", "Huy");
 	return 1;
 }
 
 CMD:pvipjob(playerid, params[])
 {
-	if(PlayerInfo[playerid][pDonateRank] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Platinum VIP+");
-	if(PlayerInfo[playerid][pVIPJob] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You have already used this feature.");
-	SendClientMessageEx(playerid, COLOR_YELLOW, "You can select one job to be set to level 5 as a Platinum VIP+");
-	ShowPlayerDialogEx(playerid, DIALOG_VIPJOB, DIALOG_STYLE_LIST, "Job List", "Detective\nLawyer\nWhore\nDrugs Dealer\nDrug Smuggling\nArms Dealer\nCar Mechanic\nBoxer\nFishing\nShipment Contractor\nLock Picking", "Select", "Close");
+	if(PlayerInfo[playerid][pDonateRank] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai Platinum VIP+");
+	if(PlayerInfo[playerid][pVIPJob] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da dung tinh nang nay.");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Platinum VIP+ duoc chon mot cong viec de dat cap 5");
+	ShowPlayerDialogEx(playerid, DIALOG_VIPJOB, DIALOG_STYLE_LIST, "Danh sach cong viec", "Detective\nLawyer\nWhore\nDrugs Dealer\nDrug Smuggling\nArms Dealer\nCar Mechanic\nBoxer\nFishing\nShipment Contractor\nLock Picking", "Chon", "Dong");
 	return 1;
 }
 
 CMD:ovmute(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	new query[256], tmpName[MAX_PLAYER_NAME];
-	if(sscanf(params, "s[24]", tmpName)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ovmute [player name]");
+	if(sscanf(params, "s[24]", tmpName)) return SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /ovmute [player name]");
 	new giveplayerid = ReturnUser(tmpName);
-	if(IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "This player is currently connected, please use /vmute.");
+	if(IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi do dang online, hay dung /vmute.");
 
 	mysql_escape_string(params, tmpName);
 	SetPVarString(playerid, "OnSetVMute", tmpName);
@@ -1217,17 +1217,17 @@ CMD:ovmute(playerid, params[])
 	mysql_format(MainPipeline, query,sizeof(query),"UPDATE `accounts` SET `VIPMuted` = 1 WHERE `Username`= '%s' AND `AdminLevel` < 4", tmpName);
 	mysql_tquery(MainPipeline, query, "OnSetVMute", "ii", playerid, 1);
 
-	SendClientMessageEx(playerid, COLOR_YELLOW, "Attempting to vip mute %s's account.", tmpName);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Dang cam chat VIP cho tai khoan %s.", tmpName);
 	return 1;
 }
 
 CMD:ovunmute(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	new query[256], tmpName[MAX_PLAYER_NAME];
-	if(sscanf(params, "s[24]", tmpName)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ovunmute [player name]");
+	if(sscanf(params, "s[24]", tmpName)) return SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /ovunmute [player name]");
 	new giveplayerid = ReturnUser(tmpName);
-	if(IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "This player is currently connected, please use /vmute.");
+	if(IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi do dang online, hay dung /vmute.");
 
 	mysql_escape_string(params, tmpName);
 	SetPVarString(playerid, "OnSetVMute", tmpName);
@@ -1235,31 +1235,31 @@ CMD:ovunmute(playerid, params[])
 	mysql_format(MainPipeline, query,sizeof(query),"UPDATE `accounts` SET `VIPMuted` = 0 WHERE `Username`= '%s' AND `AdminLevel` < 4", tmpName);
 	mysql_tquery(MainPipeline, query, "OnSetVMute", "ii", playerid, 2);
 
-	SendClientMessageEx(playerid, COLOR_YELLOW, "Attempting to vip unmute %s's account.", tmpName);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Dang go cam chat VIP cho tai khoan %s.", tmpName);
 	return 1;
 }
 
 CMD:togvipm(playerid, params[])
 {
-	if(!PlayerInfo[playerid][pVIPMod] && PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	if(!PlayerInfo[playerid][pVIPMod] && PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	if(GetPVarInt(playerid, "vStaffChat") == 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled VIP staff chat.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "** Ban da tat chat nhan su VIP.");
 		return SetPVarInt(playerid, "vStaffChat", 0);
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have enabled VIP staff chat.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "** Ban da bat chat nhan su VIP.");
 		return SetPVarInt(playerid, "vStaffChat", 1);
 	}
 }
 
 CMD:vipm(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
-	if(!PlayerInfo[playerid][pVIPMod] && PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
-	if(GetPVarInt(playerid, "vStaffChat") == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You have VIP staff chat disabled - /togvipm to enable it.");
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vipm [text]");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
+	if(!PlayerInfo[playerid][pVIPMod] && PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
+	if(GetPVarInt(playerid, "vStaffChat") == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da tat chat nhan su VIP, dung /togvipm de bat.");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /vipm [text]");
 	new szMessage[128];
 	if(PlayerInfo[playerid][pVIPMod] == 1) format(szMessage, sizeof(szMessage), "* VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
 	else if(PlayerInfo[playerid][pVIPMod] == 2) format(szMessage, sizeof(szMessage), "* Senior VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
@@ -1278,14 +1278,14 @@ CMD:vipm(playerid, params[])
 
 CMD:makevipmod(playerid, params[])
 {
-	if(PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	if(PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	new target, level;
 	szMiscArray[0] = 0;
-	if(sscanf(params, "ud", target, level)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /makevipmod [player] [level(0-2)])");
-	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
-	if(!(0 <= level <= 2)) return SendClientMessageEx(playerid, COLOR_GREY, "Valid levels are 0 - 2");
-	if(PlayerInfo[target][pVIPMod] == level) return SendClientMessageEx(playerid, COLOR_GREY, "This person already has this level.");
-	if(IsStaffBanned(target)) return SendClientMessage(playerid, COLOR_WHITE, "That player is currently staff banned.");
+	if(sscanf(params, "ud", target, level)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /makevipmod [player] [level(0-2)])");
+	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi choi khong hop le.");
+	if(!(0 <= level <= 2)) return SendClientMessageEx(playerid, COLOR_GREY, "Cap hop le la 0 - 2");
+	if(PlayerInfo[target][pVIPMod] == level) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co cap nay.");
+	if(IsStaffBanned(target)) return SendClientMessage(playerid, COLOR_WHITE, "Nguoi do dang bi cam lam staff.");
 	switch(level)
 	{
 		case 0: format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has removed %s's VIP Moderator rank.", GetPlayerNameEx(playerid), GetPlayerNameEx(target));
@@ -1295,16 +1295,16 @@ CMD:makevipmod(playerid, params[])
 	Log("logs/admin.log", szMiscArray);
 	switch(level)
 	{
-		case 0: format(szMiscArray, sizeof(szMiscArray), "Your VIP Moderator rank has been removed by %s.", GetPlayerNameEx(playerid));
-		case 1: format(szMiscArray, sizeof(szMiscArray), "You have been made a VIP Moderator by %s.", GetPlayerNameEx(playerid));
-		case 2: format(szMiscArray, sizeof(szMiscArray), "You have been made a Senior VIP Moderator by %s.", GetPlayerNameEx(playerid));
+		case 0: format(szMiscArray, sizeof(szMiscArray), "Rank VIP Moderator cua ban bi %s go.", GetPlayerNameEx(playerid));
+		case 1: format(szMiscArray, sizeof(szMiscArray), "Ban duoc %s bo nhiem lam VIP Moderator.", GetPlayerNameEx(playerid));
+		case 2: format(szMiscArray, sizeof(szMiscArray), "Ban duoc %s bo nhiem lam Senior VIP Moderator.", GetPlayerNameEx(playerid));
 	}
 	SendClientMessageEx(target, COLOR_LIGHTBLUE, szMiscArray);
 	switch(level)
 	{
-		case 0: format(szMiscArray, sizeof(szMiscArray), "You have removed %s's VIP Moderator rank.", GetPlayerNameEx(target));
-		case 1: format(szMiscArray, sizeof(szMiscArray), "You have made %s a VIP Moderator.", GetPlayerNameEx(target));
-		case 2: format(szMiscArray, sizeof(szMiscArray), "You have made %s a Senior VIP Moderator.", GetPlayerNameEx(target));
+		case 0: format(szMiscArray, sizeof(szMiscArray), "Ban da go rank VIP Moderator cua %s.", GetPlayerNameEx(target));
+		case 1: format(szMiscArray, sizeof(szMiscArray), "Ban da bo nhiem %s lam VIP Moderator.", GetPlayerNameEx(target));
+		case 2: format(szMiscArray, sizeof(szMiscArray), "Ban da bo nhiem %s lam Senior VIP Moderator.", GetPlayerNameEx(target));
 	}
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
 	PlayerInfo[target][pVIPMod] = level;
@@ -1313,13 +1313,13 @@ CMD:makevipmod(playerid, params[])
 
 CMD:vipmods(playerid, params[])
 {
-	if(PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
-	SendClientMessageEx(playerid, -1, "VIP Moderators Online:");
+	if(PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
+	SendClientMessageEx(playerid, -1, "VIP Moderators online:");
 	foreach(new i : Player)
 	{
 		if(PlayerInfo[i][pVIPMod])
 		{
-			SendClientMessageEx(playerid, -1, "%s %s - VIP Chat %s", PlayerInfo[i][pVIPMod] == 1 ? ("VIP Moderator"):("Senior VIP Moderator"), GetPlayerNameEx(i), PlayerInfo[playerid][pToggledChats][9] == 0 ? ("On"):("Off"));
+			SendClientMessageEx(playerid, -1, "%s %s - VIP Chat %s", PlayerInfo[i][pVIPMod] == 1 ? ("VIP Moderator"):("Senior VIP Moderator"), GetPlayerNameEx(i), PlayerInfo[playerid][pToggledChats][9] == 0 ? ("Bat"):("Tat"));
 		}
 	}
 	return 1;
@@ -1334,7 +1334,7 @@ CMD:novip(playerid, params[])
 			novip = 1;
 			foreach(new p: Player) {
 				if(PlayerInfo[p][pDonateRank] > 0 || PlayerInfo[p][pVIPMod] || PlayerInfo[p][pAdmin] > 1) {
-					SendClientMessageEx(p, COLOR_VIP, "** System: VIP chat channel has been disabled by an Admin!");
+					SendClientMessageEx(p, COLOR_VIP, "** System: Admin da tat kenh chat VIP!");
 				}
 			}
 		}
@@ -1343,14 +1343,14 @@ CMD:novip(playerid, params[])
 			novip = 0;
 			foreach(new p: Player) {
 				if(PlayerInfo[p][pDonateRank] > 0 || PlayerInfo[p][pVIPMod] || PlayerInfo[p][pAdmin] > 1) {
-					SendClientMessageEx(p, COLOR_VIP, "** System: VIP chat channel has been enabled by an Admin!");
+					SendClientMessageEx(p, COLOR_VIP, "** System: Admin da bat kenh chat VIP!");
 				}
 			}
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }

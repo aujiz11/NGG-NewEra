@@ -74,14 +74,14 @@ Rivalry_Toggle(playerid, bool:bState) {
             PlayerInfo[playerid][pGroupToy][0], PlayerInfo[playerid][pGroupToy][1], PlayerInfo[playerid][pGroupToy][2],
             PlayerInfo[playerid][pGroupToy][3], PlayerInfo[playerid][pGroupToy][4], PlayerInfo[playerid][pGroupToy][5],
             PlayerInfo[playerid][pGroupToy][6], PlayerInfo[playerid][pGroupToy][7], PlayerInfo[playerid][pGroupToy][8]);
-        SendClientMessageEx(playerid, COLOR_WHITE, "You are now representing your gang (/grouptoy to adjust).");
+        SendClientMessageEx(playerid, COLOR_WHITE, "Ban dang dai dien gang cua minh (/grouptoy de chinh).");
  
         if(PlayerInfo[playerid][pToggledChats][CHAT_REPFAM_HUD] == 0) TextDrawShowForPlayer(playerid, TD_RepFam);
     }
     else {
         DestroyDynamic3DTextLabel(Text3D:GetPVarInt(playerid, "RepFam_TL"));
         DeletePVar(playerid, "RepFam_TL");
-        SendClientMessageEx(playerid, COLOR_WHITE, "You are not representing your gang anymore.");
+        SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong con dai dien gang.");
  
         TextDrawHideForPlayer(playerid, TD_RepFam);
     }
@@ -91,7 +91,7 @@ CMD:aviewrivals(playerid, params[]) {
 
 	if(!IsAdminLevel(playerid, ADMIN_GENERAL)) return 1;
 	szMiscArray[0] = 0;
-	szMiscArray = "Gang\tRival";
+	szMiscArray = "Gang\tDoi thu";
 	for(new i; i < MAX_GROUP_RIVALS; ++i) {
 
 		for(new j; j < MAX_GROUPS; ++j) {
@@ -107,16 +107,16 @@ CMD:aviewrivals(playerid, params[]) {
 			}
 		}
 	}
-	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Gangs | Rival List", szMiscArray, "<<", "");
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Gangs | Danh sach doi thu", szMiscArray, "<<", "");
 	return 1;
 }
 
 
 CMD:repfam(playerid, params[]) {
  
-    if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of a gang.");
-    if(PlayerInfo[playerid][pHospital] > 0) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
-    if(GetPVarType(playerid, "RepFam")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot take your bandana off yet.");
+    if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc gang nao.");
+    if(PlayerInfo[playerid][pHospital] > 0) return SendClientMessage(playerid, COLOR_GRAD2, "Ban chua the lam viec nay!");
+    if(GetPVarType(playerid, "RepFam")) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban chua the thao bandana.");
     if(GetPVarType(playerid, "RepFam_TL")) Rivalry_Toggle(playerid, false);
     else {
         SetPVarInt(playerid, "RepFam", 1);
@@ -128,26 +128,26 @@ CMD:repfam(playerid, params[]) {
 
 CMD:repcheck(playerid, params[]) {
 
-	if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of a gang.");
-	if(GetPVarType(playerid, "RepFam_TL")) SendClientMessageEx(playerid, COLOR_GREEN, "[GANG]: {CCCCCC}You're representing the gang.");
-	else SendClientMessageEx(playerid, COLOR_GREEN, "[GANG]: {CCCCCC}You're not representing the gang.");
+	if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc gang nao.");
+	if(GetPVarType(playerid, "RepFam_TL")) SendClientMessageEx(playerid, COLOR_GREEN, "[GANG]: {CCCCCC}Ban dang dai dien gang.");
+	else SendClientMessageEx(playerid, COLOR_GREEN, "[GANG]: {CCCCCC}Ban khong dai dien gang.");
 	return 1;
 }
 
 CMD:myrivals(playerid, params[]) {
 
-	if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of a gang.");
-	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a gang.");
+	if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc gang nao.");
+	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o trong gang.");
 	Rivalry_GetRivalList(playerid, PlayerInfo[playerid][pMember]);
 	return 1;
 }
 
 CMD:grouptoy(playerid, params[]) {
 
-	if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of a gang.");
-	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupToyID] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your group does not have a toy.");
-	if(!GetPVarType(playerid, "RepFam_TL")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not wearing it.");
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /grouptoy [pos/bone]");
+	if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc gang nao.");
+	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupToyID] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "To chuc cua ban khong co toy.");
+	if(!GetPVarType(playerid, "RepFam_TL")) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban chua deo toy.");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /grouptoy [pos/bone]");
 	if(strcmp(params, "pos", true) == 0) {
 		SetPVarInt(playerid, "EditGToy", 1);
 		EditAttachedObject(playerid, 8);
@@ -160,23 +160,23 @@ CMD:grouptoy(playerid, params[]) {
 			strunpack(boneName, HoldingBones[i], sizeof(boneName));
 			format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, boneName);
 		}
-		ShowPlayerDialogEx(playerid, DIALOG_TOYS_GROUP, DIALOG_STYLE_LIST, "Edit Group Toy", szMiscArray, "Select", "Cancel");
+		ShowPlayerDialogEx(playerid, DIALOG_TOYS_GROUP, DIALOG_STYLE_LIST, "Sua toy to chuc", szMiscArray, "Chon", "Huy");
 	}
 	return 1;
 }
 
 CMD:editgrouptoy(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not allowed to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong duoc dung lenh nay.");
 
 	new iGroupID,
 		iObjectID;
-	if(sscanf(params, "dd", iGroupID, iObjectID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /editgrouptoy [Group ID] [Object ID]");
+	if(sscanf(params, "dd", iGroupID, iObjectID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /editgrouptoy [Group ID] [Object ID]");
 	
-	if(!(1 <= iGroupID < MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid Group ID.");
+	if(!(1 <= iGroupID < MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GRAD1, "ID to chuc khong hop le.");
 	arrGroupData[iGroupID-1][g_iGroupToyID] = iObjectID;
 	SaveGroup(iGroupID-1);
-	SendClientMessageEx(playerid, COLOR_GRAD1, "[Group Toy]: You set %s's toy to object ID %d", arrGroupData[iGroupID-1][g_szGroupName], iObjectID);
+	SendClientMessageEx(playerid, COLOR_GRAD1, "[Group Toy]: Dat toy cua %s la object ID %d", arrGroupData[iGroupID-1][g_szGroupName], iObjectID);
 	return 1;
 }
 
@@ -184,13 +184,13 @@ CMD:amanagerivals(playerid, params[]) {
 
 	if(IsAdminLevel(playerid, ADMIN_SENIOR, 0) || PlayerInfo[playerid][pGangModerator] >= 2) {
 
-		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /amanagerivals [Group ID]");
+		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GRAD1, "DUNG: /amanagerivals [Group ID]");
 		new iGroupID = strval(params);
-		if(!(0 < iGroupID <= MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid group ID.");
+		if(!(0 < iGroupID <= MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GRAD1, "ID to chuc khong hop le.");
 		iGroupID--; // GroupIDs start at 1 in the dialogs.
 		Rivalry_GetRivalList(playerid, iGroupID);
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong the dung lenh nay.");
 	return 1;
 }
 
@@ -223,7 +223,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(arrGroupData[iGroupID][g_iRivals][i] == iAddGroupID) {
 						DeletePVar(playerid, "AddRival");
 						DeletePVar(playerid, "RemRival");
-						return SendClientMessageEx(playerid, COLOR_GRAD1, "These groups are already rivals.");
+						return SendClientMessageEx(playerid, COLOR_GRAD1, "Cac to chuc nay da la doi thu.");
 					}
 					if(iFreeSlot[0] == INVALID_GROUP_ID && arrGroupData[iAddGroupID][g_iRivals][i] == INVALID_GROUP_ID) iFreeSlot[0] = i;
 					if(iFreeSlot[1] == INVALID_GROUP_ID && arrGroupData[iGroupID][g_iRivals][i] == INVALID_GROUP_ID) iFreeSlot[1] = i;
@@ -232,10 +232,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(iFreeSlot[0] == INVALID_GROUP_ID || iFreeSlot[1] == INVALID_GROUP_ID) {
 					DeletePVar(playerid, "AddRival");
 					DeletePVar(playerid, "RemRival");
-					return SendClientMessageEx(playerid, COLOR_GRAD1, "One of the groups cannot have another rival.");
+					return SendClientMessageEx(playerid, COLOR_GRAD1, "Mot to chuc khong the co them doi thu.");
 				}
 
-				format(szMiscArray, sizeof(szMiscArray), "[RIVALS]: {FFFF00}%s {CCCCCC}and {FFFF00}%s {CCCCCC}are now rivals.", arrGroupData[iGroupID][g_szGroupName], arrGroupData[iAddGroupID][g_szGroupName]);
+				format(szMiscArray, sizeof(szMiscArray), "[RIVALS]: {FFFF00}%s {CCCCCC}va {FFFF00}%s {CCCCCC}la doi thu.", arrGroupData[iGroupID][g_szGroupName], arrGroupData[iAddGroupID][g_szGroupName]);
 				foreach(new i: Player)
 				{
 					if(PlayerInfo[i][pMember] == iGroupID) {
@@ -246,9 +246,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 				}
 
-				SendClientMessageEx(playerid, COLOR_YELLOW, "Successfully added %s to %s's rivals.", arrGroupData[iAddGroupID][g_szGroupName], arrGroupData[iGroupID][g_szGroupName]);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Da them %s lam doi thu cua %s.", arrGroupData[iAddGroupID][g_szGroupName], arrGroupData[iGroupID][g_szGroupName]);
 
-				SendClientMessageEx(playerid, COLOR_YELLOW, "Successfully added %s to %s's rivals.", arrGroupData[iGroupID][g_szGroupName], arrGroupData[iAddGroupID][g_szGroupName]);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Da them %s lam doi thu cua %s.", arrGroupData[iGroupID][g_szGroupName], arrGroupData[iAddGroupID][g_szGroupName]);
 
 				format(szMiscArray, sizeof(szMiscArray), "%s (%d) added %s to %s's rivals.",
 					GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), arrGroupData[iAddGroupID][g_szGroupName], arrGroupData[iGroupID][g_szGroupName]);
@@ -270,7 +270,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					iGroupID = GetPVarInt(playerid, "RGroupID");
 
 				DeletePVar(playerid, "RGroupID");
-				format(szMiscArray, sizeof(szMiscArray), "[RIVALS]: {FFFF00}%s {CCCCCC}and {FFFF00}%s {CCCCCC}are no longer rivals.", arrGroupData[iGroupID][g_szGroupName], arrGroupData[iRemGroupID][g_szGroupName]);
+				format(szMiscArray, sizeof(szMiscArray), "[RIVALS]: {FFFF00}%s {CCCCCC}va {FFFF00}%s {CCCCCC}khong con la doi thu.", arrGroupData[iGroupID][g_szGroupName], arrGroupData[iRemGroupID][g_szGroupName]);
 				foreach(new i: Player)
 				{
 					if(PlayerInfo[i][pMember] == iGroupID) {
@@ -281,7 +281,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 				}
 
-				SendClientMessageEx(playerid, COLOR_YELLOW, "Successfully removed %s from %s's rivals.", arrGroupData[iRemGroupID][g_szGroupName], arrGroupData[iGroupID][g_szGroupName]);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Da xoa %s khoi danh sach doi thu cua %s.", arrGroupData[iRemGroupID][g_szGroupName], arrGroupData[iGroupID][g_szGroupName]);
 
 				format(szMiscArray, sizeof(szMiscArray), "%s (%d) removed %s from %s's rivals.",
 					GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), arrGroupData[iRemGroupID][g_szGroupName], arrGroupData[iGroupID][g_szGroupName]);
@@ -303,13 +303,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				DeletePVar(playerid, "RGroupID");
 				return 1;
 			}
-			if(strcmp("Add Rival", inputtext, true) == 0) {
+			if(strcmp("Them doi thu", inputtext, true) == 0) {
 
 				new szTitle[GROUP_MAX_NAME_LEN + 24],
 					iGroupID = GetPVarInt(playerid, "RGroupID"),
 					iDialogCount;
 
-				format(szTitle, sizeof(szTitle), "{%s}%s (ID %d) | Add Rival", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
+				format(szTitle, sizeof(szTitle), "{%s}%s #%d +Doi thu", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 				for(new i; i < MAX_GROUPS; ++i) {
 
 					if(arrGroupData[i][g_iGroupType] == GROUP_TYPE_CRIMINAL) {
@@ -319,16 +319,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 				}
 				SetPVarInt(playerid, "AddRival", 1);
-				ShowPlayerDialogEx(playerid, DIALOG_GROUP_RIVALS, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Add", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_GROUP_RIVALS, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Them", "Huy");
 				return 1;
 			}
-			if(strcmp("Remove Rival", inputtext, true) == 0) {
+			if(strcmp("Xoa doi thu", inputtext, true) == 0) {
 				new szTitle[GROUP_MAX_NAME_LEN + 24],
 					iGroupID = GetPVarInt(playerid, "RGroupID"),
 					iRivalID,
 					iDialogCount;
 
-				format(szTitle, sizeof(szTitle), "{%s}%s (ID %d) | Remove Rival", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
+				format(szTitle, sizeof(szTitle), "{%s}%s (ID %d) | Xoa doi thu", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 				for(new i; i < MAX_GROUP_RIVALS; ++i) {
 
 					if(arrGroupData[iGroupID][g_iRivals][i] != INVALID_GROUP_ID) {
@@ -340,7 +340,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 				}
 				SetPVarInt(playerid, "RemRival", 1);
-				ShowPlayerDialogEx(playerid, DIALOG_GROUP_RIVALS, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_GROUP_RIVALS, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Chon", "Huy");
 				return 1;
 			}
 		}
@@ -353,7 +353,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			strunpack(boneName, HoldingBones[listitem], sizeof(boneName));
-			SendClientMessageEx(playerid, COLOR_GRAD1, "[Group Toy]: Attached to %s", boneName);
+			SendClientMessageEx(playerid, COLOR_GRAD1, "[Group Toy]: Da gan vao %s", boneName);
 			RemovePlayerAttachedObject(playerid, 8);
 			SetPlayerAttachedObject(playerid, 8, arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupToyID], PlayerInfo[playerid][pGroupToyBone],
 				PlayerInfo[playerid][pGroupToy][0], PlayerInfo[playerid][pGroupToy][1], PlayerInfo[playerid][pGroupToy][2],
@@ -372,17 +372,17 @@ Rivalry_GetRivalList(playerid, iGroupID) {
 		szTitle[GROUP_MAX_NAME_LEN + 24];
 
 	SetPVarInt(playerid, "RGroupID", iGroupID);
-	format(szTitle, sizeof(szTitle), "{%s}%s (ID %d) | Rivals", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName], iRivalID + 1);
+	format(szTitle, sizeof(szTitle), "{%s}%s #%d Doi thu", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName], iRivalID + 1);
 	for(new i; i < MAX_GROUP_RIVALS; ++i) {
 		iRivalID = arrGroupData[iGroupID][g_iRivals][i];
-		if(iRivalID == INVALID_GROUP_ID) format(szMiscArray, sizeof(szMiscArray), "%s(%d) (Empty)\n", szMiscArray, i);
+		if(iRivalID == INVALID_GROUP_ID) format(szMiscArray, sizeof(szMiscArray), "%s(%d) (Trong)\n", szMiscArray, i);
 		else {
 			format(szMiscArray, sizeof(szMiscArray), "%s(%d) {%s} %s (ID %d)\n", 
 				szMiscArray, i, Group_NumToDialogHex(arrGroupData[iRivalID][g_hDutyColour]), arrGroupData[iRivalID][g_szGroupName], iRivalID + 1);
 		}
 	}
-	if(IsAdminLevel(playerid, ADMIN_SENIOR, 0) || PlayerInfo[playerid][pGangModerator] >= 2) strcat(szMiscArray, "Add Rival\nRemove Rival", sizeof(szMiscArray));
-	ShowPlayerDialogEx(playerid, DIALOG_GROUP_RIVALS, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
+	if(IsAdminLevel(playerid, ADMIN_SENIOR, 0) || PlayerInfo[playerid][pGangModerator] >= 2) strcat(szMiscArray, "Them doi thu\nXoa doi thu", sizeof(szMiscArray));
+	ShowPlayerDialogEx(playerid, DIALOG_GROUP_RIVALS, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Chon", "Huy");
 }
 
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart) {

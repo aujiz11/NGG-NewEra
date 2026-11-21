@@ -57,7 +57,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 	}
 	else if(itemid == 4 && fromplayerid == -1 && fromstorageid == -1 && special == 2) {
 		if(PlayerInfo[playerid][pMats] < 0 || PlayerInfo[playerid][pMats] > cellmax - amount) {
-			SendClientMessageEx(playerid, COLOR_GREY, "You cannot carry this many materials. Your delivery has not been completed.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the mang tung nay vat lieu. Chuyen hang chua hoan tat.");
 			return 0;
 		}
 		destination = PlayerInfo[playerid][pMats] + amount;
@@ -67,12 +67,12 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 	new notifyid = itemid == 1 ? fromplayerid : playerid;
 	if(restarting || !gAccountsInnoDB || mysql_unprocessed_queries(MainPipeline)) {
-		SendClientMessageEx(notifyid, COLOR_GREY, "Storage is unavailable or busy. Please try again.");
+		SendClientMessageEx(notifyid, COLOR_GREY, "Kho chua san sang hoac dang ban. Hay thu lai.");
 		return 0;
 	}
 	new Cache:result = mysql_query(MainPipeline, query);
 	if(!cache_is_valid(result)) {
-		SendClientMessageEx(notifyid, COLOR_GREY, "The storage update was not confirmed. Please try again.");
+		SendClientMessageEx(notifyid, COLOR_GREY, "Cap nhat kho chua duoc xac nhan. Hay thu lai.");
 		return 0;
 	}
 	new affected = cache_affected_rows();
@@ -88,7 +88,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 			cache_delete(result);
 		}
 		if(rows != (itemid == 1 ? 2 : 1)) {
-			SendClientMessageEx(notifyid, COLOR_GREY, "The storage accounts could not be confirmed. Please try again.");
+			SendClientMessageEx(notifyid, COLOR_GREY, "Chua xac nhan duoc tai khoan cho kho. Hay thu lai.");
 			return 0;
 		}
 	}
@@ -96,23 +96,23 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 	if(itemid == 4) {
 		PlayerInfo[playerid][pMats] = destination;
-		SendClientMessageEx(playerid, COLOR_WHITE, "%s Materials has been transferred to your Pocket (%s).", number_format(amount), number_format(destination));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da chuyen %s vat lieu vao tui (%s).", number_format(amount), number_format(destination));
 		return 1;
 	}
 	PlayerInfo[fromplayerid][pCash] = source;
 	PlayerInfo[playerid][pCash] = destination;
 	new string[128];
-	format(string, sizeof(string), "$%d has been transferred to your Pocket ($%d).", amount, destination);
+	format(string, sizeof(string), "Da chuyen $%d vao tui ($%d).", amount, destination);
 	SendClientMessage(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "$%d has been transferred from your Pocket to %s's Pocket.", amount, GetPlayerNameEx(playerid));
+	format(string, sizeof(string), "Da chuyen $%d tu tui ban sang tui cua %s.", amount, GetPlayerNameEx(playerid));
 	SendClientMessage(fromplayerid, COLOR_WHITE, string);
 	PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
-	format(string, sizeof(string), "* %s takes out some Cash from their Pocket, and hands it to %s.", GetPlayerNameEx(fromplayerid), GetPlayerNameEx(playerid));
+	format(string, sizeof(string), "* %s lay tien mat tu tui va dua cho %s.", GetPlayerNameEx(fromplayerid), GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2) {
 		format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given $%s Cash to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
 		Log("logs/adminpay.log", string);
-		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given $%s Cash to %s", GetPlayerNameEx(fromplayerid), number_format(amount), GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s dua $%s tien mat cho %s", GetPlayerNameEx(fromplayerid), number_format(amount), GetPlayerNameEx(playerid));
 		if(!strcmp(GetPlayerIpEx(playerid), GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
 		ABroadCast(COLOR_YELLOW, string, 4);
 	}
@@ -139,27 +139,27 @@ stock ShowInventory(playerid,targetid)
 		if(PlayerInfo[targetid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[targetid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(targetid)) totalwealth += HouseInfo[PlayerInfo[targetid][pPhousekey2]][hSafeMoney];
 		if(PlayerInfo[targetid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[targetid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(targetid)) totalwealth += HouseInfo[PlayerInfo[targetid][pPhousekey3]][hSafeMoney];
 
-		if(PlayerInfo[targetid][pToolBox] >= 1) format(toolboxstring, 50, "Tool Box: 1, (Usages: %s)", number_format(PlayerInfo[targetid][pToolBox]));
-		else format(toolboxstring, 50, "Tool Box: 0");
+		if(PlayerInfo[targetid][pToolBox] >= 1) format(toolboxstring, 50, "Dung cu: 1, con %s", number_format(PlayerInfo[targetid][pToolBox]));
+		else format(toolboxstring, 50, "Hop dung cu: 0");
 		
 		SetPVarInt(playerid, "ShowInventory", targetid);
-		format(header, sizeof(header), "%s's Inventory", GetPlayerNameEx(targetid));
-		format(resultline, sizeof(resultline),"{FFFFFF}Total Wealth: $%s\n\
-		Cash: $%s\n\
-		Bank: $%s\n\
-		Phone Number: %s\n\
-		Radio Frequency: %dkhz\n\
-		Materials: %s\n\
-		Rope: %s\n\
-		Rags: %s\n\
-		Screwdrivers: %s\n\
-		Tires: %s\n\
-		Paper: %s\n\
-		Cigars: %s\n\
-		Sprunk Cans: %s\n\
-		Spraycans: %s\n\
+		format(header, sizeof(header), "Tui do cua %s", GetPlayerNameEx(targetid));
+		format(resultline, sizeof(resultline),"{FFFFFF}Tai san: $%s\n\
+		Tien mat: $%s\n\
+		Ngan hang: $%s\n\
+		So dien thoai: %s\n\
+		Tan so bo dam: %dkhz\n\
+		Vat lieu: %s\n\
+		Day thung: %s\n\
+		Gie: %s\n\
+		Tua vit: %s\n\
+		Lop xe: %s\n\
+		Giay: %s\n\
+		Xi ga: %s\n\
+		Lon Sprunk: %s\n\
+		Binh son: %s\n\
 		%s\n\
-		Crowbar: %d",
+		Xa beng: %d",
 		number_format(totalwealth),
 		number_format(GetPlayerCash(targetid)),
 		number_format(PlayerInfo[targetid][pAccount]),
@@ -176,7 +176,7 @@ stock ShowInventory(playerid,targetid)
 		number_format(PlayerInfo[targetid][pSpraycan]),
 		toolboxstring,
 		PlayerInfo[targetid][pCrowBar]);
-		ShowPlayerDialogEx(playerid, DISPLAY_INV, DIALOG_STYLE_MSGBOX, header, resultline, "Next Page", "Close");
+		ShowPlayerDialogEx(playerid, DISPLAY_INV, DIALOG_STYLE_MSGBOX, header, resultline, "Trang tiep", "Dong");
 	}
 	return 1;
 }
@@ -208,19 +208,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					new resultline[1024], header[64];
 
-					format(header, sizeof(header), "%s's Inventory", GetPlayerNameEx(targetid));
-					format(resultline, sizeof(resultline),"{FFFFFF}Locks: %d\n\
-					First Aid Kit: %d\n\
-					Receivers: %d\n\
+					format(header, sizeof(header), "Tui do cua %s", GetPlayerNameEx(targetid));
+					format(resultline, sizeof(resultline),"{FFFFFF}Khoa: %d\n\
+					Tui so cuu: %d\n\
+					May thu: %d\n\
 					GPS: %d\n\
-					Bug Sweeps: %d\n\
-					Fireworks: %d\n\
-					Boomboxes: %d\n\
-					Mailboxes: %d\n\
+					May quet: %d\n\
+					Phao hoa: %d\n\
+					Boombox: %d\n\
+					Hop thu: %d\n\
 					Rim Kits: %d\n\
-					Checks: %s\n\
-					Additional Vehicle Slots: %s\n\
-					Additional Toy Slots: %s",
+					Sec: %s\n\
+					O xe them: %s\n\
+					O toy them: %s",
 					PlayerInfo[targetid][pLock],
 					PlayerInfo[targetid][pFirstaid],
 					PlayerInfo[targetid][pReceiver],
@@ -233,14 +233,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					number_format(PlayerInfo[targetid][pChecks]),
 					number_format(PlayerInfo[targetid][pVehicleSlot]),
 					number_format(PlayerInfo[targetid][pToySlot]));
-					if(zombieevent) format(resultline, sizeof(resultline), "%s\nCure Vials: %d\nScrap Metal: %d\nAntibiotic Injections: %d\n.50 Cals: %d\nSurvivor Kits: %d\nFuel Can: %d%% Fuel", resultline, PlayerInfo[targetid][pVials], PlayerInfo[targetid][mInventory][16], PlayerInfo[targetid][mInventory][17], PlayerInfo[targetid][mPurchaseCount][18], PlayerInfo[targetid][mInventory][19], PlayerInfo[targetid][zFuelCan]);
-					ShowPlayerDialogEx(playerid, DISPLAY_INV2, DIALOG_STYLE_MSGBOX, header, resultline, "First Page", "Close");
+					if(zombieevent) format(resultline, sizeof(resultline), "%s\nCure Vials: %d\nSat vun: %d\nAntibiotic Injections: %d\n.50 Cals: %d\nSurvivor Kits: %d\nBinh xang: %d%%", resultline, PlayerInfo[targetid][pVials], PlayerInfo[targetid][mInventory][16], PlayerInfo[targetid][mInventory][17], PlayerInfo[targetid][mPurchaseCount][18], PlayerInfo[targetid][mInventory][19], PlayerInfo[targetid][zFuelCan]);
+					ShowPlayerDialogEx(playerid, DISPLAY_INV2, DIALOG_STYLE_MSGBOX, header, resultline, "Trang dau", "Dong");
 				}
 				else DeletePVar(playerid, "ShowInventory");
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "The player you were checking has logged out.");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi dang duoc kiem tra da dang xuat.");
 				DeletePVar(playerid, "ShowInventory");
 				return 1;
 			}
@@ -258,7 +258,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "The player you were checking has logged out.");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi dang duoc kiem tra da dang xuat.");
 				DeletePVar(playerid, "ShowInventory");
 				return 1;
 			}
@@ -280,7 +280,7 @@ CMD:mytokens(playerid, params[])
 
 	SendClientMessage(playerid, COLOR_GREY, "------------------------------------------------------------------------------------------------");
 
-	format(szMiscArray, sizeof(szMiscArray), "VIP Tokens: %s, Paintball Tokens: %s, EXP Tokens: %s (Hours: %s), Event Tokens: %s, Gold Giftbox: %s",
+	format(szMiscArray, sizeof(szMiscArray), "VIP Tokens: %s, Paintball Tokens: %s, EXP Tokens: %s (Gio: %s), Event Tokens: %s, Gold Giftbox: %s",
 		number_format(PlayerInfo[playerid][pTokens]),
 		number_format(PlayerInfo[playerid][pPaintTokens]),
 		number_format(PlayerInfo[playerid][pEXPToken]),
@@ -298,19 +298,19 @@ CMD:trunkput(playerid, params[])
 {
 	if(GetPVarType(playerid, "IsInArena"))
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay khi dang o dau truong!");
 		return 1;
 	}
 	if(GetPVarInt( playerid, "EventToken") != 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung khi dang tham gia su kien.");
 		return 1;
 	}
-	if(IsPlayerInAnyVehicle(playerid)) { SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!"); return 1; }
-	if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
+	if(IsPlayerInAnyVehicle(playerid)) { SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay khi dang o trong xe!"); return 1; }
+	if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong the dung lenh nay!");
 
 	new string[128], weaponchoice[32], slot;
-	if(sscanf(params, "s[32]D(0)", weaponchoice, slot)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /trunkput [weapon] [slot]");
+	if(sscanf(params, "s[32]D(0)", weaponchoice, slot)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /trunkput [weapon] [slot]");
 
 	new pvid = -1, Float: x, Float: y, Float: z;
 
@@ -323,43 +323,43 @@ CMD:trunkput(playerid, params[])
 			break;
 		}
 	}
-	if(pvid == -1) return SendClientMessageEx(playerid,COLOR_GREY,"You are not near any vehicle that you own.");
+	if(pvid == -1) return SendClientMessageEx(playerid,COLOR_GREY,"Ban khong o gan xe do minh so huu.");
 	new engine,lights,alarm,doors,bonnet,boot,objective;
 	GetVehicleParamsEx(PlayerVehicleInfo[playerid][pvid][pvId],engine,lights,alarm,doors,bonnet,boot,objective);
-	if(boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET) return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't take/put stuff inside the trunk if it's closed!(/car trunk to open it)");
-	if(GetVehicleModel(PlayerVehicleInfo[playerid][pvid][pvId]) == 481 || GetVehicleModel(PlayerVehicleInfo[playerid][pvid][pvId]) == 510)  return SendClientMessageEx(playerid,COLOR_GREY,"That vehicle doesn't have a trunk.");
+	if(boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET) return SendClientMessageEx(playerid, COLOR_GRAD3, "Cop dang dong, khong the lay/cat do!(/car trunk de mo)");
+	if(GetVehicleModel(PlayerVehicleInfo[playerid][pvid][pvId]) == 481 || GetVehicleModel(PlayerVehicleInfo[playerid][pvid][pvId]) == 510)  return SendClientMessageEx(playerid,COLOR_GREY,"Xe nay khong co cop.");
 
 	new Float: Health;
 	GetHealth(playerid, Health);
-	if(Health < 80.0) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot store weapons or drugs in a car when your health lower than 80.");
+	if(Health < 80.0) return SendClientMessageEx(playerid,COLOR_GREY,"Khong the cat vu khi hay ma tuy vao xe khi mau duoi 80.");
 	if (GetPVarInt(playerid, "GiveWeaponTimer") > 0)
 	{
-		SendClientMessageEx(playerid,COLOR_GREY,"   You must wait %d seconds before depositing another weapon.", GetPVarInt(playerid, "GiveWeaponTimer"));
+		SendClientMessageEx(playerid,COLOR_GREY,"Can cho %d giay truoc khi cat them vu khi.", GetPVarInt(playerid, "GiveWeaponTimer"));
 		return 1;
 	}
 	
 	new maxslots = PlayerVehicleInfo[playerid][pvid][pvWepUpgrade]+1;
 	if(slot > maxslots || slot < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "Invalid slot.");
+		SendClientMessageEx(playerid, COLOR_GREY, "O khong hop le.");
 		return 1;
 	}
 
 	if( PlayerVehicleInfo[playerid][pvid][pvWeapons][slot-1] != 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You have a weapon stored in that slot already.");
+		SendClientMessageEx(playerid, COLOR_GREY, "O nay da co vu khi.");
 		return 1;
 	}
 
 	new weapon;
 	if(strcmp(weaponchoice, "sdpistol", true, strlen(weaponchoice)) == 0)
 	{
-		if(pTazer{playerid} == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot store a tazer!");
+		if(pTazer{playerid} == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the cat sung dien!");
 		if( PlayerInfo[playerid][pGuns][2] == 23 && PlayerInfo[playerid][pAGuns][2] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a silenced pistol into your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat silenced pistol vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][2];
-			format(string,sizeof(string), "* %s deposited their silenced pistol in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat silenced pistol vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -368,9 +368,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][2] == 22 && PlayerInfo[playerid][pAGuns][2] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a 9mm in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat 9mm vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][2];
-			format(string,sizeof(string), "* %s deposited their 9mm in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat 9mm vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -379,9 +379,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][2] == 24 && PlayerInfo[playerid][pAGuns][2] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a Desert Eagle in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat Desert Eagle vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][2];
-			format(string,sizeof(string), "* %s deposited their Desert Eagle in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat Desert Eagle vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -390,9 +390,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][3] == 25 && PlayerInfo[playerid][pAGuns][3] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a shotgun in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat shotgun vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][3];
-			format(string,sizeof(string), "* %s deposited their Shotgun in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat Shotgun vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -401,9 +401,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][3] == 27 && PlayerInfo[playerid][pAGuns][3] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a combat shotgun in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat combat shotgun vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][3];
-			format(string,sizeof(string), "* %s deposited their Combat Shotgun in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat Combat Shotgun vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -412,9 +412,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][4] == 29 && PlayerInfo[playerid][pAGuns][4] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited an MP5 in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat MP5 vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][4];
-			format(string,sizeof(string), "* %s deposited their MP5 in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat MP5 vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -424,9 +424,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][4] == 32 && PlayerInfo[playerid][pAGuns][4] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a TEC9 in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat TEC9 vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][4];
-			format(string,sizeof(string), "* %s deposited their TEC9 in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat TEC9 vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -436,9 +436,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][5] == 30 && PlayerInfo[playerid][pAGuns][5] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited an AK-47 in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat AK-47 vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][5];
-			format(string,sizeof(string), "* %s deposited their AK-47 in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat AK-47 vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -447,9 +447,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][5] == 31 && PlayerInfo[playerid][pAGuns][5] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited an M4 in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat M4 vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][5];
-			format(string,sizeof(string), "* %s deposited their M4 in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat M4 vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -458,9 +458,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][6] == 33 && PlayerInfo[playerid][pAGuns][6] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a rifle in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat rifle vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][6];
-			format(string,sizeof(string), "* %s deposited their rifle in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat rifle vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -469,9 +469,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][6] == 34 && PlayerInfo[playerid][pAGuns][6] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a sniper rifle in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat sniper rifle vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][6];
-			format(string,sizeof(string), "* %s deposited their sniper rifle in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat sniper rifle vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -480,9 +480,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][1] == 2 && PlayerInfo[playerid][pAGuns][1] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a golf club in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat golf club vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][1];
-			format(string,sizeof(string), "* %s deposited their golf club in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat golf club vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -491,9 +491,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][1] == 5 && PlayerInfo[playerid][pAGuns][1] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a baseball bat in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat baseball bat vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][1];
-			format(string,sizeof(string), "* %s deposited their baseball bat in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat baseball bat vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -502,9 +502,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][1] == 6 && PlayerInfo[playerid][pAGuns][1] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a shovel in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat shovel vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][1];
-			format(string,sizeof(string), "* %s deposited their shovel in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat shovel vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -513,9 +513,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][1] == 7 && PlayerInfo[playerid][pAGuns][1] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a pool cue in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat pool cue vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][1];
-			format(string,sizeof(string), "* %s deposited their pool cue in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat pool cue vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -524,9 +524,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][1] == 8 && PlayerInfo[playerid][pAGuns][1] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a katana in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat katana vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][1];
-			format(string,sizeof(string), "* %s deposited their katana in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat katana vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -535,9 +535,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][10] == 15 && PlayerInfo[playerid][pAGuns][1] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a cane in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat cane vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][10];
-			format(string,sizeof(string), "* %s deposited their cane in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat cane vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -546,9 +546,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][10] == 14 && PlayerInfo[playerid][pAGuns][1] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited flowers in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat flowers vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][10];
-			format(string,sizeof(string), "* %s deposited their flowers in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat flowers vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -557,9 +557,9 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][11] == 46 && PlayerInfo[playerid][pAGuns][1] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a parachute in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat parachute vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][11];
-			format(string,sizeof(string), "* %s deposited their parachute in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat parachute vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
@@ -568,14 +568,14 @@ CMD:trunkput(playerid, params[])
 	{
 		if( PlayerInfo[playerid][pGuns][10] == 10 && PlayerInfo[playerid][pAGuns][1] == 0 )
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a dildo in your car gun locker.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat dildo vao tu vu khi tren xe.");
 			weapon = PlayerInfo[playerid][pGuns][10];
-			format(string,sizeof(string), "* %s deposited their dildo in their car safe.", GetPlayerNameEx(playerid));
+			format(string,sizeof(string), "* %s cat dildo vao ket xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
 	}	
-	else { SendClientMessageEx(playerid,COLOR_GREY,"   Invalid weapon name!"); return 1; }
+	else { SendClientMessageEx(playerid,COLOR_GREY,"Ten vu khi khong hop le!"); return 1; }
 	if(PlayerVehicleInfo[playerid][pvid][pvWeapons][slot-1] == 0)
 	{
 		PlayerVehicleInfo[playerid][pvid][pvWeapons][slot-1] = weapon;
@@ -586,14 +586,14 @@ CMD:trunkput(playerid, params[])
 }
 
 CMD:trunktake(playerid, params[]) {
-	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while you're inside a vehicle.");
-	if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
-	else if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
-	else if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
-	else if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
+	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay trong xe.");
+	if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Tai khoan cua ban bi han che!");
+	else if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay khi o dau truong!");
+	else if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung khi dang tham gia su kien.");
+	else if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the dung vi ban dang bi cam so huu vu khi!");
 	else if(GetPVarInt(playerid, "GiveWeaponTimer") >= 1)
 	{
-		return SendClientMessageEx(playerid, COLOR_GREY, "   You must wait %d seconds before getting another weapon.", GetPVarInt(playerid, "GiveWeaponTimer"));
+		return SendClientMessageEx(playerid, COLOR_GREY, "Can cho %d giay truoc khi lay them vu khi.", GetPVarInt(playerid, "GiveWeaponTimer"));
 	}
 
 	new
@@ -607,19 +607,19 @@ CMD:trunktake(playerid, params[]) {
 				if(isnull(params)) {
 
 
-					SendClientMessageEx(playerid, COLOR_WHITE, "*** %s's %s Safe ***", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]));
+					SendClientMessageEx(playerid, COLOR_WHITE, "*** Ket %s - %s ***", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]));
 					for(new s = 0; s < 3; s++) if(PlayerVehicleInfo[playerid][d][pvWeapons][s] != 0) {
 
 						new
 							szWeapon[16];
 
 						GetWeaponName(PlayerVehicleInfo[playerid][d][pvWeapons][s], szWeapon, sizeof(szWeapon));
-						SendClientMessageEx(playerid, COLOR_WHITE, "Slot %d: %s", s+1, szWeapon);
+						SendClientMessageEx(playerid, COLOR_WHITE, "O %d: %s", s+1, szWeapon);
 					}
-					return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /trunktake [slot]");
+					return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /trunktake [slot]");
 				}
 				else if(GetVehicleModel(PlayerVehicleInfo[playerid][d][pvId]) == 481 || GetVehicleModel(PlayerVehicleInfo[playerid][d][pvId]) == 509) {
-					return SendClientMessageEx(playerid,COLOR_GREY,"That vehicle doesn't have a trunk.");
+					return SendClientMessageEx(playerid,COLOR_GREY,"Xe nay khong co cop.");
 				}
 
 				new
@@ -628,12 +628,12 @@ CMD:trunktake(playerid, params[]) {
 				GetVehicleParamsEx(PlayerVehicleInfo[playerid][d][pvId], engine, lights, alarm, doors, bonnet, boot, objective);
 
 				if(boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET) {
-					return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't take weapons from the trunk if it's closed! /car trunk to open it.");
+					return SendClientMessageEx(playerid, COLOR_GRAD3, "Cop dang dong, khong the lay vu khi! /car trunk de mo.");
 				}
 
 				new maxslots = PlayerVehicleInfo[playerid][d][pvWepUpgrade]+1;
 				if(iWeaponSlot > maxslots || iWeaponSlot < 1) {
-					return SendClientMessageEx(playerid, COLOR_GREY, "Invalid slot specified.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "O duoc chon khong hop le.");
 				}
 
 				else if(PlayerVehicleInfo[playerid][d][pvWeapons][iWeaponSlot - 1] != 0) {
@@ -646,7 +646,7 @@ CMD:trunktake(playerid, params[]) {
 
 					for(new i; i < 13; ++i) {
 						GetPlayerWeaponData(playerid, i, aWeapons[i][0], aWeapons[i][1]);
-						if(aWeapons[i][0] == PlayerVehicleInfo[playerid][d][pvWeapons][iWeaponSlot - 1]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are already carrying this weapon.");
+						if(aWeapons[i][0] == PlayerVehicleInfo[playerid][d][pvWeapons][iWeaponSlot - 1]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da mang vu khi nay.");
 					}
 
 					GetWeaponName(PlayerVehicleInfo[playerid][d][pvWeapons][iWeaponSlot - 1], szWeapon, sizeof(szWeapon));
@@ -654,27 +654,27 @@ CMD:trunktake(playerid, params[]) {
 					PlayerVehicleInfo[playerid][d][pvWeapons][iWeaponSlot - 1] = 0;
 					g_mysql_SaveVehicle(playerid, d);
 
-					SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn a %s from your car gun locker.", szWeapon);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Ban lay %s tu tu vu khi tren xe.", szWeapon);
 
-					format(szMessage, sizeof(szMessage), "* %s has withdrawn a %s from their car safe.", GetPlayerNameEx(playerid), szWeapon);
+					format(szMessage, sizeof(szMessage), "* %s lay %s tu ket xe.", GetPlayerNameEx(playerid), szWeapon);
 					return ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
-				else return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have a weapon stored in that slot.");
+				else return SendClientMessageEx(playerid, COLOR_WHITE, "O nay khong co vu khi.");
 			}
 		}
 	}
-	return SendClientMessageEx(playerid,COLOR_GREY,"You are not near any vehicle that you own.");
+	return SendClientMessageEx(playerid,COLOR_GREY,"Ban khong o gan xe do minh so huu.");
 }
 
 CMD:storegun(playerid, params[])
 {
 	if(Homes[playerid] > 0)
 	{
-		if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
-		if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
-		if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+		if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay khi o dau truong!");
+		if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung khi dang tham gia su kien.");
+		if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "Ban chua the lam viec nay!");
 		new string[128], weaponchoice[32], slot;
-		if(sscanf(params, "s[32]d", weaponchoice, slot)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /storegun [weapon] [slot]");
+		if(sscanf(params, "s[32]d", weaponchoice, slot)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /storegun [weapon] [slot]");
 
 		for(new i; i < MAX_HOUSES; i++)
 		{
@@ -682,20 +682,20 @@ CMD:storegun(playerid, params[])
 			{
 				if (GetPVarInt(playerid, "GiveWeaponTimer") > 0)
 				{
-					SendClientMessageEx(playerid,COLOR_GREY,"   You must wait %d seconds before depositing another weapon.", GetPVarInt(playerid, "GiveWeaponTimer"));
+					SendClientMessageEx(playerid,COLOR_GREY,"Can cho %d giay truoc khi cat them vu khi.", GetPVarInt(playerid, "GiveWeaponTimer"));
 					return 1;
 				}
 
 				new maxslots = HouseInfo[i][hGLUpgrade];
 				if(slot > maxslots || slot == 0)
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "That is not a valid slot. Slots are from 1-5.");
+					SendClientMessageEx(playerid, COLOR_GREY, "O khong hop le. Cac o tu 1-5.");
 					return 1;
 				}
 
 				if( HouseInfo[i][hWeapons][slot-1] != 0)
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "You have a weapon stored in that slot already.");
+					SendClientMessageEx(playerid, COLOR_GREY, "O nay da co vu khi.");
 					return 1;
 				}
 
@@ -704,9 +704,9 @@ CMD:storegun(playerid, params[])
 				{
 					if( PlayerInfo[playerid][pGuns][2] == 23 && PlayerInfo[playerid][pAGuns][2] == 0 )
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a silenced pistol into your gun locker.");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat silenced pistol vao tu vu khi.");
 						weapon = PlayerInfo[playerid][pGuns][2];
-						format(string,sizeof(string), "* %s deposited their silenced pistol in their house safe.", GetPlayerNameEx(playerid));
+						format(string,sizeof(string), "* %s cat silenced pistol vao ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
@@ -715,9 +715,9 @@ CMD:storegun(playerid, params[])
 				{
 					if( PlayerInfo[playerid][pGuns][2] == 24 && PlayerInfo[playerid][pAGuns][2] == 0 )
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a Desert Eagle in your gun locker.");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat Desert Eagle vao tu vu khi.");
 						weapon = PlayerInfo[playerid][pGuns][2];
-						format(string,sizeof(string), "* %s deposited their Desert Eagle in their house safe.", GetPlayerNameEx(playerid));
+						format(string,sizeof(string), "* %s cat Desert Eagle vao ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
@@ -726,9 +726,9 @@ CMD:storegun(playerid, params[])
 				{
 					if( PlayerInfo[playerid][pGuns][3] == 25 && PlayerInfo[playerid][pAGuns][3] == 0 )
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a shotgun in your gun locker.");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat shotgun vao tu vu khi.");
 						weapon = PlayerInfo[playerid][pGuns][3];
-						format(string,sizeof(string), "* %s deposited their Shotgun in their house safe.", GetPlayerNameEx(playerid));
+						format(string,sizeof(string), "* %s cat Shotgun vao ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
@@ -737,9 +737,9 @@ CMD:storegun(playerid, params[])
 				{
 					if( PlayerInfo[playerid][pGuns][3] == 27 && PlayerInfo[playerid][pAGuns][3] == 0 )
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a combat shotgun in your gun locker.");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat combat shotgun vao tu vu khi.");
 						weapon = PlayerInfo[playerid][pGuns][3];
-						format(string,sizeof(string), "* %s deposited their Combat Shotgun in their house safe.", GetPlayerNameEx(playerid));
+						format(string,sizeof(string), "* %s cat Combat Shotgun vao ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
@@ -748,9 +748,9 @@ CMD:storegun(playerid, params[])
 				{
 					if( PlayerInfo[playerid][pGuns][4] == 29 && PlayerInfo[playerid][pAGuns][4] == 0 )
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited an MP5 in your gun locker.");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat MP5 vao tu vu khi.");
 						weapon = PlayerInfo[playerid][pGuns][4];
-						format(string,sizeof(string), "* %s deposited their MP5 in their house safe.", GetPlayerNameEx(playerid));
+						format(string,sizeof(string), "* %s cat MP5 vao ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
@@ -759,9 +759,9 @@ CMD:storegun(playerid, params[])
 				{
 					if( PlayerInfo[playerid][pGuns][5] == 30 && PlayerInfo[playerid][pAGuns][5] == 0 )
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited an AK-47 in your gun locker.");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat AK-47 vao tu vu khi.");
 						weapon = PlayerInfo[playerid][pGuns][5];
-						format(string,sizeof(string), "* %s deposited their AK-47 in their house safe.", GetPlayerNameEx(playerid));
+						format(string,sizeof(string), "* %s cat AK-47 vao ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
@@ -770,9 +770,9 @@ CMD:storegun(playerid, params[])
 				{
 					if( PlayerInfo[playerid][pGuns][5] == 31 && PlayerInfo[playerid][pAGuns][5] == 0 )
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited an M4 in your gun locker.");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat M4 vao tu vu khi.");
 						weapon = PlayerInfo[playerid][pGuns][5];
-						format(string,sizeof(string), "* %s deposited their M4 in their house safe.", GetPlayerNameEx(playerid));
+						format(string,sizeof(string), "* %s cat M4 vao ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
@@ -781,9 +781,9 @@ CMD:storegun(playerid, params[])
 				{
 					if( PlayerInfo[playerid][pGuns][6] == 33 && PlayerInfo[playerid][pAGuns][6] == 0 )
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a rifle in your gun locker.");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat rifle vao tu vu khi.");
 						weapon = PlayerInfo[playerid][pGuns][6];
-						format(string,sizeof(string), "* %s deposited their rifle in their house safe.", GetPlayerNameEx(playerid));
+						format(string,sizeof(string), "* %s cat rifle vao ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
@@ -792,9 +792,9 @@ CMD:storegun(playerid, params[])
 				{
 					if( PlayerInfo[playerid][pGuns][6] == 34 && PlayerInfo[playerid][pAGuns][6] == 0 )
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a sniper rifle in your gun locker.");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat sniper rifle vao tu vu khi.");
 						weapon = PlayerInfo[playerid][pGuns][6];
-						format(string,sizeof(string), "* %s deposited their sniper rifle in their house safe.", GetPlayerNameEx(playerid));
+						format(string,sizeof(string), "* %s cat sniper rifle vao ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
@@ -803,9 +803,9 @@ CMD:storegun(playerid, params[])
 				{
 					if( PlayerInfo[playerid][pGuns][4] == 28 && PlayerInfo[playerid][pAGuns][4] == 0 )
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited an uzi in your gun locker.");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat uzi vao tu vu khi.");
 						weapon = PlayerInfo[playerid][pGuns][4];
-						format(string,sizeof(string), "* %s deposited their uzi in their house safe.", GetPlayerNameEx(playerid));
+						format(string,sizeof(string), "* %s cat uzi vao ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
@@ -814,14 +814,14 @@ CMD:storegun(playerid, params[])
 				{
 					if( PlayerInfo[playerid][pGuns][4] == 32 && PlayerInfo[playerid][pAGuns][4] == 0 )
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a tec9 in your gun locker.");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da cat tec9 vao tu vu khi.");
 						weapon = PlayerInfo[playerid][pGuns][4];
-						format(string,sizeof(string), "* %s deposited their tec9 in their house safe.", GetPlayerNameEx(playerid));
+						format(string,sizeof(string), "* %s cat tec9 vao ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
 				}
-				if(weapon == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that weapon.");
+				if(weapon == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do.");
 				if(HouseInfo[i][hWeapons][slot-1] == 0)
 				{
 					HouseInfo[i][hWeapons][slot-1] = weapon;
@@ -829,12 +829,12 @@ CMD:storegun(playerid, params[])
 					SaveHouse(i);
 					return 1;
 				}
-				else { SendClientMessageEx(playerid,COLOR_GREY,"   Invalid weapon name!"); return 1; }
+				else { SendClientMessageEx(playerid,COLOR_GREY,"Ten vu khi khong hop le!"); return 1; }
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not in a house that you own.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o trong nha cua minh.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu nha.");
 	return 1;
 }
 
@@ -848,35 +848,35 @@ CMD:getgun(playerid, params[])
 		{
 			if(GetPlayerSQLId(playerid) == HouseInfo[i][hOwnerID] && IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[i][hIntIW])
 			{
-				if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
+				if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the dung vi ban dang bi cam so huu vu khi!");
 
 				if(sscanf(params, "d", slot))
 				{
 					new weaponname[50];
 					SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-					SendClientMessageEx(playerid, COLOR_WHITE, "*** %s's Safe ***", GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_WHITE, "*** Ket %s ***", GetPlayerNameEx(playerid));
 					for(new s = 0; s < 5; s++)
 					{
 						if( HouseInfo[i][hWeapons][s] != 0 )
 						{
 							GetWeaponName(HouseInfo[i][hWeapons][s], weaponname, sizeof(weaponname));
-							SendClientMessageEx(playerid, COLOR_WHITE, "Slot %d: %s", s+1, weaponname);
+							SendClientMessageEx(playerid, COLOR_WHITE, "O %d: %s", s+1, weaponname);
 						}
 					}
 					SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /getgun [slot]");
+					SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /getgun [slot]");
 					return 1;
 				}
 
 				if (GetPVarInt(playerid, "GiveWeaponTimer") > 0)
 				{
-					SendClientMessageEx(playerid,COLOR_GREY,"   You must wait %d seconds before getting another weapon.", GetPVarInt(playerid, "GiveWeaponTimer"));
+					SendClientMessageEx(playerid,COLOR_GREY,"Can cho %d giay truoc khi lay them vu khi.", GetPVarInt(playerid, "GiveWeaponTimer"));
 					return 1;
 				}
 				new maxslots = HouseInfo[i][hGLUpgrade];
 				if(slot > maxslots)
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "Invalid slot.");
+					SendClientMessageEx(playerid, COLOR_GREY, "O khong hop le.");
 					return 1;
 				}
 
@@ -888,79 +888,79 @@ CMD:getgun(playerid, params[])
 					HouseInfo[i][hWeapons][slot-1] = 0;
 					if(strcmp(weaponname, "silenced pistol", true, strlen(weaponname)) == 0)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have withdrawn a silenced pistol from your gun locker.");
-						format(string,sizeof(string), "* %s has withdrawn a silenced pistol from their house safe.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da lay silenced pistol tu tu vu khi.");
+						format(string,sizeof(string), "* %s lay silenced pistol tu ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
 					if(strcmp(weaponname, "desert eagle", true, strlen(weaponname)) == 0)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have withdrawn a Desert Eagle from your gun locker.");
-						format(string,sizeof(string), "* %s has withdrawn a Desert Eagle from their house safe.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da lay Desert Eagle tu tu vu khi.");
+						format(string,sizeof(string), "* %s lay Desert Eagle tu ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
 					if(strcmp(weaponname, "shotgun", true, strlen(weaponname)) == 0)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have withdrawn a shotgun from your gun locker.");
-						format(string,sizeof(string), "* %s has withdrawn a shotgun from their house safe.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da lay shotgun tu tu vu khi.");
+						format(string,sizeof(string), "* %s lay shotgun tu ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
 					if(strcmp(weaponname, "combat shotgun", true, strlen(weaponname)) == 0)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have withdrawn a combat shotgun from your gun locker.");
-						format(string,sizeof(string), "* %s has withdrawn a combat shotgun from their house safe.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da lay combat shotgun tu tu vu khi.");
+						format(string,sizeof(string), "* %s lay combat shotgun tu ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
 					if(strcmp(weaponname, "mp5", true, strlen(weaponname)) == 0)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have withdrawn an MP5 from your gun locker.");
-						format(string,sizeof(string), "* %s has withdrawn an MP5 from their house safe.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da lay MP5 tu tu vu khi.");
+						format(string,sizeof(string), "* %s lay MP5 tu ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
 					if(strcmp(weaponname, "ak47", true, strlen(weaponname)) == 0)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have withdrawn an AK-47 from your gun locker.");
-						format(string,sizeof(string), "* %s has withdrawn an AK-47 from their house safe.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da lay AK-47 tu tu vu khi.");
+						format(string,sizeof(string), "* %s lay AK-47 tu ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
 					if(strcmp(weaponname, "m4", true, strlen(weaponname)) == 0)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have withdrawn an M4 from your gun locker.");
-						format(string,sizeof(string), "* %s has withdrawn an M4 from their house safe.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da lay M4 tu tu vu khi.");
+						format(string,sizeof(string), "* %s lay M4 tu ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
 					if(strcmp(weaponname, "rifle", true, strlen(weaponname)) == 0)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have withdrawn a rifle from your gun locker.");
-						format(string,sizeof(string), "* %s has withdrawn a rifle from their house safe.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da lay rifle tu tu vu khi.");
+						format(string,sizeof(string), "* %s lay rifle tu ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 					}
 					if(strcmp(weaponname, "sniper rifle", true, strlen(weaponname)) == 0)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have withdrawn a sniper rifle from your gun locker.");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da lay sniper rifle tu tu vu khi.");
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
-						format(string,sizeof(string), "* %s has withdrawn a sniper rifle from their house safe.", GetPlayerNameEx(playerid));
+						format(string,sizeof(string), "* %s lay sniper rifle tu ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					}
 					if(strcmp(weaponname, "micro smg", true, strlen(weaponname)) == 0)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have withdrawn an uzi from your gun locker.");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da lay uzi tu tu vu khi.");
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
-						format(string,sizeof(string), "* %s has withdrawn an uzi from their house safe.", GetPlayerNameEx(playerid));
+						format(string,sizeof(string), "* %s lay uzi tu ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					}
 					if(strcmp(weaponname, "tec9", true, strlen(weaponname)) == 0)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have withdrawn an uzi from your gun locker.");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da lay uzi tu tu vu khi.");
 						SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
-						format(string,sizeof(string), "* %s has withdrawn an uzi from their house safe.", GetPlayerNameEx(playerid));
+						format(string,sizeof(string), "* %s lay uzi tu ket nha.", GetPlayerNameEx(playerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					}
 					SaveHouse(i);
@@ -968,14 +968,14 @@ CMD:getgun(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "You don't have a weapon stored in that slot.");
+					SendClientMessageEx(playerid, COLOR_WHITE, "O nay khong co vu khi.");
 					return 1;
 				}
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not in a house that you own.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o trong nha cua minh.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu nha.");
 	return 1;
 }
 
@@ -992,17 +992,17 @@ CMD:hwithdraw(playerid, params[])
 
 				if(sscanf(params, "dd", itemid, amount))
 				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /hwithdraw [itemid] [amount]");
-					SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Cash - (2) Pot - (3) Crack - (4) Materials - (5) Meth - (6) Ecstasy - (7) Heroin");
+					SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /hwithdraw [itemid] [amount]");
+					SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Tien mat - (2) Pot - (3) Crack - (4) Vat lieu - (5) Meth - (6) Ecstasy - (7) Heroin");
 					return 1;
 				}
 				if(itemid < 1 || itemid > 7) {
-					SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /hwithdraw [itemid] [amount]");
-					SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Cash - (2) Pot - (3) Crack - (4) Materials - (5) Meth - (6) Ecstasy - (7) Heroin");
+					SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /hwithdraw [itemid] [amount]");
+					SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Tien mat - (2) Pot - (3) Crack - (4) Vat lieu - (5) Meth - (6) Ecstasy - (7) Heroin");
 					return 1;
 				}
 
-				if(amount < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't withdraw less than 1.");
+				if(amount < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "So luong lay ra khong the duoi 1.");
 
 				switch(itemid)
 				{
@@ -1014,12 +1014,12 @@ CMD:hwithdraw(playerid, params[])
 							GivePlayerCash(playerid, amount);
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
-							SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn $%d from your house safe.", amount);
+							SendClientMessageEx(playerid, COLOR_WHITE, "Da lay $%d tu ket nha.", amount);
 							format(string, sizeof(string), "%s (SQL: %d) has withdrawn $%d from their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
 							Log("logs/hsafe.log", string);
 							return 1;
 						}
-						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to withdraw!");
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du de rut!");
 					}
 					case 2: // Pot
 					{
@@ -1029,12 +1029,12 @@ CMD:hwithdraw(playerid, params[])
 							PlayerInfo[playerid][pDrugs][0] += amount;
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
-							SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %d Pot from your house safe.", amount);
+							SendClientMessageEx(playerid, COLOR_WHITE, "Da lay %d Pot tu ket nha.", amount);
 							format(string, sizeof(string), "%s (SQL: %d) has withdrawn %d Pot from their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
 							Log("logs/hsafe.log", string);
 							return 1;
 						}
-						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to withdraw!");
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du de rut!");
 					}
 					case 3: // Crack
 					{
@@ -1044,12 +1044,12 @@ CMD:hwithdraw(playerid, params[])
 							PlayerInfo[playerid][pDrugs][1] += amount;
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
-							SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %d crack from your house safe.", amount);
+							SendClientMessageEx(playerid, COLOR_WHITE, "Da lay %d crack tu ket nha.", amount);
 							format(string, sizeof(string), "%s (SQL: %d) has withdrawn %d crack from their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
 							Log("logs/hsafe.log", string);
 							return 1;
 						}
-						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to withdraw!");
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du de rut!");
 					}
 					case 4: // Materials
 					{
@@ -1059,12 +1059,12 @@ CMD:hwithdraw(playerid, params[])
 							PlayerInfo[playerid][pMats] += amount;
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
-							SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %d materials from your house safe.", amount);
+							SendClientMessageEx(playerid, COLOR_WHITE, "Da lay %d vat lieu tu ket nha.", amount);
 							format(string, sizeof(string), "%s (SQL: %d) has withdrawn %d materials from their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
 							Log("logs/hsafe.log", string);
 							return 1;
 						}
-						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to withdraw!");
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du de rut!");
 					}
 					case 5: // Meth
 					{
@@ -1074,12 +1074,12 @@ CMD:hwithdraw(playerid, params[])
 							PlayerInfo[playerid][pDrugs][2] += amount;
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
-							SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %d meth from your house safe.", amount);
+							SendClientMessageEx(playerid, COLOR_WHITE, "Da lay %d meth tu ket nha.", amount);
 							format(string, sizeof(string), "%s (SQL: %d) has withdrawn %d meth from their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
 							Log("logs/hsafe.log", string);
 							return 1;
 						}
-						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to withdraw!");
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du de rut!");
 					}
 					case 6: // Ecstasy
 					{
@@ -1089,12 +1089,12 @@ CMD:hwithdraw(playerid, params[])
 							PlayerInfo[playerid][pDrugs][3] += amount;
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
-							SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %d ecstasy from your house safe.", amount);
+							SendClientMessageEx(playerid, COLOR_WHITE, "Da lay %d ecstasy tu ket nha.", amount);
 							format(string, sizeof(string), "%s (SQL: %d) has withdrawn %d ecstasy from their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
 							Log("logs/hsafe.log", string);
 							return 1;
 						}
-						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to withdraw!");
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du de rut!");
 					}
 					case 7: // Heroin
 					{
@@ -1104,19 +1104,19 @@ CMD:hwithdraw(playerid, params[])
 							PlayerInfo[playerid][pDrugs][4] += amount;
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
-							SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn %d heroin from your house safe.", amount);
+							SendClientMessageEx(playerid, COLOR_WHITE, "Da lay %d heroin tu ket nha.", amount);
 							format(string, sizeof(string), "%s (SQL: %d) has withdrawn %d heroin from their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
 							Log("logs/hsafe.log", string);
 							return 1;
 						}
-						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to withdraw!");
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du de rut!");
 					}
 				}
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not in a house that you own.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o trong nha cua minh.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu nha.");
 	return 1;
 }
 
@@ -1132,26 +1132,26 @@ CMD:hdeposit(playerid, params[])
 
 				if(sscanf(params, "dd", itemid, amount))
 				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /hdeposit [itemid] [amount]");
-					SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Cash - (2) Pot - (3) Crack - (4) Materials - (5) Meth - (6) Ecstasy - (7) Heroin");
+					SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /hdeposit [itemid] [amount]");
+					SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Tien mat - (2) Pot - (3) Crack - (4) Vat lieu - (5) Meth - (6) Ecstasy - (7) Heroin");
 					return 1;
 				}
 				if(itemid < 1 || itemid > 7) {
-					SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /hdeposit [itemid] [amount]");
-					SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Cash - (2) Pot - (3) Crack - (4) Materials - (5) Meth - (6) Ecstasy - (7) Heroin");
+					SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /hdeposit [itemid] [amount]");
+					SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Tien mat - (2) Pot - (3) Crack - (4) Vat lieu - (5) Meth - (6) Ecstasy - (7) Heroin");
 					return 1;
 				}
 
-				if(amount < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't deposit less than 1.");
+				if(amount < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "So luong cat vao khong the duoi 1.");
 				switch(itemid)
 				{
 					case 1: // Cash
 					{
 						if(PlayerInfo[playerid][pCash] >= amount) PlayerInfo[playerid][pCash] -= amount;
-						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du de gui!");
 
 						HouseInfo[i][hSafeMoney] += amount;
-						SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited $%d to your house's safe.", amount);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da cat $%d vao ket nha.", amount);
 						OnPlayerStatsUpdate(playerid);
 						SaveHouse(i);
 						format(string, sizeof(string), "%s (SQL: %d) has deposited $%d into their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
@@ -1161,10 +1161,10 @@ CMD:hdeposit(playerid, params[])
 					case 2: // Pot
 					{
 						if(PlayerInfo[playerid][pDrugs][0] >= amount) PlayerInfo[playerid][pDrugs][0] -= amount;
-						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du de gui!");
 
 						HouseInfo[i][hPot] += amount;
-						SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %d Pot to your house's safe.", amount);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da cat %d Pot vao ket nha.", amount);
 						OnPlayerStatsUpdate(playerid);
 						SaveHouse(i);
 						format(string, sizeof(string), "%s (SQL: %d) has deposited %d Pot into their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
@@ -1174,10 +1174,10 @@ CMD:hdeposit(playerid, params[])
 					case 3: // Crack
 					{
 						if(PlayerInfo[playerid][pDrugs][1] >= amount) PlayerInfo[playerid][pDrugs][1] -= amount;
-						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du de gui!");
 
 						HouseInfo[i][hCrack] += amount;
-						SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %d Crack to your house's safe.", amount);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da cat %d Crack vao ket nha.", amount);
 						OnPlayerStatsUpdate(playerid);
 						SaveHouse(i);
 						format(string, sizeof(string), "%s (SQL: %d) has deposited %d crack into their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
@@ -1187,10 +1187,10 @@ CMD:hdeposit(playerid, params[])
 					case 4: // Materials
 					{
 						if(PlayerInfo[playerid][pMats] >= amount) PlayerInfo[playerid][pMats] -= amount;
-						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du de gui!");
 
 						HouseInfo[i][hMaterials] += amount;
-						SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %d Materials to your house's safe.", amount);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da cat %d Materials vao ket nha.", amount);
 						OnPlayerStatsUpdate(playerid);
 						SaveHouse(i);
 						format(string, sizeof(string), "%s (SQL: %d) has deposited %d materials into their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
@@ -1200,10 +1200,10 @@ CMD:hdeposit(playerid, params[])
 					case 5: // Meth
 					{
 						if(PlayerInfo[playerid][pDrugs][2] >= amount) PlayerInfo[playerid][pDrugs][2] -= amount;
-						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du de gui!");
 
 						HouseInfo[i][hMeth] += amount;
-						SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %d Meth to your house's safe.", amount);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da cat %d Meth vao ket nha.", amount);
 						OnPlayerStatsUpdate(playerid);
 						SaveHouse(i);
 						format(string, sizeof(string), "%s (SQL: %d) has deposited %d meth into their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
@@ -1213,10 +1213,10 @@ CMD:hdeposit(playerid, params[])
 					case 6: // Ecstasy
 					{
 						if(PlayerInfo[playerid][pDrugs][3] >= amount) PlayerInfo[playerid][pDrugs][3] -= amount;
-						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du de gui!");
 
 						HouseInfo[i][hEcstasy] += amount;
-						SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %d Ecstasy to your house's safe.", amount);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da cat %d Ecstasy vao ket nha.", amount);
 						OnPlayerStatsUpdate(playerid);
 						SaveHouse(i);
 						format(string, sizeof(string), "%s (SQL: %d) has deposited %d Ecstasy into their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
@@ -1226,10 +1226,10 @@ CMD:hdeposit(playerid, params[])
 					case 7: // Heroin
 					{
 						if(PlayerInfo[playerid][pDrugs][4] >= amount) PlayerInfo[playerid][pDrugs][4] -= amount;
-						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du de gui!");
 
 						HouseInfo[i][hHeroin] += amount;
-						SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited %d Heroin to your house's safe.", amount);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da cat %d Heroin vao ket nha.", amount);
 						OnPlayerStatsUpdate(playerid);
 						SaveHouse(i);
 						format(string, sizeof(string), "%s (SQL: %d) has deposited %d heroin into their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
@@ -1239,9 +1239,9 @@ CMD:hdeposit(playerid, params[])
 				}
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not in a house that you own.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o trong nha cua minh.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu nha.");
 	return 1;
 }
 
@@ -1340,16 +1340,16 @@ CMD:hbalance(playerid, params[])
 		{
 			if(GetPlayerSQLId(playerid) == HouseInfo[i][hOwnerID] && IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[i][hIntIW])
 			{
-				SendClientMessageEx(playerid, COLOR_GREEN, "|___________________________________ House Safe ___________________________________|");
-				SendClientMessageEx(playerid, COLOR_WHITE, "Cash: $%s | Pot: %s | Crack: %s | Materials: %s | Meth: %s | Ecstasy: %s | Heroin: %s", number_format(HouseInfo[i][hSafeMoney]), number_format(HouseInfo[i][hPot]), number_format(HouseInfo[i][hCrack]), number_format(HouseInfo[i][hMaterials]), number_format(HouseInfo[i][hMeth]), number_format(HouseInfo[i][hEcstasy]), number_format(HouseInfo[i][hHeroin]));
+				SendClientMessageEx(playerid, COLOR_GREEN, "|___________________________________ Ket nha ___________________________________|");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Tien: $%s | Pot: %s | Crack: %s | Vat lieu: %s | Meth: %s | Ecstasy: %s | Heroin: %s", number_format(HouseInfo[i][hSafeMoney]), number_format(HouseInfo[i][hPot]), number_format(HouseInfo[i][hCrack]), number_format(HouseInfo[i][hMaterials]), number_format(HouseInfo[i][hMeth]), number_format(HouseInfo[i][hEcstasy]), number_format(HouseInfo[i][hHeroin]));
 				
 				SendClientMessageEx(playerid, COLOR_GREEN, "|__________________________________________________________________________________|");
 				return 1;
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not in a house that you own.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o trong nha cua minh.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu nha.");
 	return 1;
 }
 
@@ -1367,14 +1367,14 @@ CMD:closet(playerid, params[])
 					{
 						return DisplaySkins(playerid);
 					}
-					else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't near your closet!");
+					else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan tu quan ao!");
 				}
-				else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a closet in this house!");
+				else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu tu quan ao trong nha nay!");
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not in a house that you own.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o trong nha cua minh.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu nha.");
 	return 1;
 }
 
@@ -1395,19 +1395,19 @@ CMD:closetadd(playerid, params[])
 						{
 							new skinid = GetPlayerSkin(playerid);
 							AddSkin(playerid, skinid);
-							SendClientMessageEx(playerid, COLOR_WHITE, "You have added skin ID %d to your closet.", skinid);
+							SendClientMessageEx(playerid, COLOR_WHITE, "Da them skin ID %d vao tu quan ao.", skinid);
 							return 1;
 						}
-						else return SendClientMessageEx(playerid, COLOR_GREY, "Your closet doesn't have anymore space for clothes!");
+						else return SendClientMessageEx(playerid, COLOR_GREY, "Tu quan ao da het cho!");
 					}
-					else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't near your closet!");
+					else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan tu quan ao!");
 				}
-				else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a closet in this house!");
+				else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu tu quan ao trong nha nay!");
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not in a house that you own.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o trong nha cua minh.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu nha.");
 	return 1;
 }
 
@@ -1428,14 +1428,14 @@ CMD:closetremove(playerid, params[])
 						mysql_tquery(MainPipeline, query, "SkinQueryFinish", "ii", playerid, Skin_Query_Delete);
 						return 1;
 					}
-					else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't near your closet!");
+					else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan tu quan ao!");
 				}
-				else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a closet in this house!");
+				else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu tu quan ao trong nha nay!");
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not in a house that you own.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o trong nha cua minh.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong so huu nha.");
 	return 1;
 }
 
@@ -1444,122 +1444,122 @@ CMD:drop(playerid, params[])
 	new string[128], amount, choice[32];
 	if(sscanf(params, "s[32]D(0)", choice, amount))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /drop [name] [(optional) amount]");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Weapons, Materials, Packages, Radio, Pizza, Syringes, Backpack, Phone");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Pot, Crack, Meth, Ecstasy, Heroin");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /drop [name] [(optional) amount]");
+		SendClientMessageEx(playerid, COLOR_GREY, "Lua chon: Weapons, Materials, Packages, Radio, Pizza, Syringes, Backpack, Phone");
+		SendClientMessageEx(playerid, COLOR_GREY, "Lua chon: Pot, Crack, Meth, Ecstasy, Heroin");
 		return 1;
 	}
 	else if(strcmp(choice,"backpack",true) == 0)
 	{
 		if(PlayerInfo[playerid][pBackpack] > 0)
 		{
-			ShowPlayerDialogEx(playerid, DIALOG_BDROP, DIALOG_STYLE_MSGBOX, "Drop Backpack Confirmation", "{FFFFFF}Are you sure you would like to drop your backpack?\n{FF8000}Note{FFFFFF}: This will {FF0000}permanently{FFFFFF} remove the backpack and all of its contents!", "Yes", "No");
+			ShowPlayerDialogEx(playerid, DIALOG_BDROP, DIALOG_STYLE_MSGBOX, "Xac nhan bo ba lo", "{FFFFFF}Ban chac chan muon bo ba lo?\n{FF8000}Luu y{FFFFFF}: Ba lo va moi thu ben trong se bi xoa {FF0000}vinh vien{FFFFFF}!", "Co", "Khong");
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have a backpack!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co ba lo!");
 		}
 	}
 	else if(strcmp(choice,"syringes",true) == 0)
 	{
 		if(PlayerInfo[playerid][pSyringes] > 0)
 		{
-			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Please specify an amount.");
-			if(amount > PlayerInfo[playerid][pSyringes]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many syringes!");
+			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Hay nhap so luong.");
+			if(amount > PlayerInfo[playerid][pSyringes]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du ong tiem!");
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped %d syringes.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban bo %d ong tiem.", amount);
 			PlayerInfo[playerid][pSyringes] -= amount;
-			format(string, sizeof(string), "* %s has thrown away some syringes.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s bo ong tiem.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any syringes to throw away!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong mang ong tiem de bo!");
 		}
 	}
 	else if(strcmp(choice,"pot",true) == 0)
 	{
 		if(PlayerInfo[playerid][pDrugs][0] > 0)
 		{
-			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Please specify an amount.");
-			if(amount > PlayerInfo[playerid][pDrugs][0]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many grams of pot!");
+			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Hay nhap so luong.");
+			if(amount > PlayerInfo[playerid][pDrugs][0]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du grams pot!");
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped %d pot.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban bo %d pot.", amount);
 			PlayerInfo[playerid][pDrugs][0] -= amount;
-			format(string, sizeof(string), "* %s has thrown away some pot.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s bo pot.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any pot to throw away!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong mang pot de bo!");
 		}
 	}
 	else if(strcmp(choice,"crack",true) == 0)
 	{
 		if(PlayerInfo[playerid][pDrugs][1] > 0)
 		{
-			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Please specify an amount.");
-			if(amount > PlayerInfo[playerid][pDrugs][1]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many grams of crack!");
+			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Hay nhap so luong.");
+			if(amount > PlayerInfo[playerid][pDrugs][1]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du grams crack!");
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped %d crack.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban bo %d crack.", amount);
 			PlayerInfo[playerid][pDrugs][1] -= amount;
-			format(string, sizeof(string), "* %s has thrown away some crack.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s bo crack.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any crack to throw away!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong mang crack de bo!");
 		}
 	}
 	else if(strcmp(choice,"meth",true) == 0)
 	{
 		if(PlayerInfo[playerid][pDrugs][2] > 0)
 		{
-			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Please specify an amount.");
-			if(amount > PlayerInfo[playerid][pDrugs][2]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many grams of meth!");
+			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Hay nhap so luong.");
+			if(amount > PlayerInfo[playerid][pDrugs][2]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du grams meth!");
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped %d meth.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban bo %d meth.", amount);
 			PlayerInfo[playerid][pDrugs][2] -= amount;
-			format(string, sizeof(string), "* %s has thrown away some meth.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s bo meth.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any meth to throw away!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong mang meth de bo!");
 		}
 	}
 	else if(strcmp(choice,"ecstasy",true) == 0)
 	{
 		if(PlayerInfo[playerid][pDrugs][3] > 0)
 		{
-			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Please specify an amount.");
-			if(amount > PlayerInfo[playerid][pDrugs][3]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many grams of ecstasy!");
+			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Hay nhap so luong.");
+			if(amount > PlayerInfo[playerid][pDrugs][3]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du grams ecstasy!");
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped %d ecstasy.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban bo %d ecstasy.", amount);
 			PlayerInfo[playerid][pDrugs][3] -= amount;
-			format(string, sizeof(string), "* %s has thrown away some ecstasy.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s bo ecstasy.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any ecstasy to throw away!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong mang ecstasy de bo!");
 		}
 	}
 	else if(strcmp(choice,"heroin",true) == 0)
 	{
 		if(PlayerInfo[playerid][pDrugs][4] > 0)
 		{
-			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Please specify an amount.");
-			if(amount > PlayerInfo[playerid][pDrugs][4]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many grams of heroin!");
+			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Hay nhap so luong.");
+			if(amount > PlayerInfo[playerid][pDrugs][4]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du grams heroin!");
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped %d heroin.", amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban bo %d heroin.", amount);
 			PlayerInfo[playerid][pDrugs][4] -= amount;
-			format(string, sizeof(string), "* %s has thrown away some heroin.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s bo heroin.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any heroin to throw away!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong mang heroin de bo!");
 		}
 	}
 
@@ -1567,17 +1567,17 @@ CMD:drop(playerid, params[])
 	{
 		if(PlayerInfo[playerid][pMats] > 0)
 		{
-			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Please specify an amount.");
-			if(amount > PlayerInfo[playerid][pMats]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many materials!");
+			if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Hay nhap so luong.");
+			if(amount > PlayerInfo[playerid][pMats]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du vat lieu!");
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped %d materials.", amount);
-			format(string, sizeof(string), "* %s has thrown away some materials.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban bo %d vat lieu.", amount);
+			format(string, sizeof(string), "* %s bo vat lieu.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			PlayerInfo[playerid][pMats] -= amount;
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any materials to throw away!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong mang vat lieu de bo!");
 		}
 	}
 	else if(strcmp(choice,"radio",true) == 0)
@@ -1585,31 +1585,31 @@ CMD:drop(playerid, params[])
 		if(PlayerInfo[playerid][pRadio] != 0)
 		{
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			format(string, sizeof(string), "* %s has thrown away their portable radio.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s bo bo dam.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			PlayerInfo[playerid][pRadio] = 0;
 			PlayerInfo[playerid][pRadioFreq] = 0;
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying a portable radio to throw away!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong mang bo dam de bo!");
 		}
 	}
 	else if(strcmp(choice,"weapons",true) == 0)
 	{
 		if(GetPVarType(playerid, "IsInArena"))
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay khi dang o dau truong!");
 			return 1;
 		}
 		if(GetPVarInt( playerid, "EventToken") != 0)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung khi dang tham gia su kien.");
 			return 1;
 		}
 		PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 		ResetPlayerWeaponsEx(playerid);
-		format(string, sizeof(string), "* %s has thrown away their Weapons.", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "* %s bo vu khi.", GetPlayerNameEx(playerid));
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	}
 	else if(strcmp(choice,"packages",true) == 0)
@@ -1617,13 +1617,13 @@ CMD:drop(playerid, params[])
 		if(GetPVarInt(playerid, "Packages") > 0)
 		{
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			format(string, sizeof(string), "* %s has thrown away their material packages.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s bo cac kien vat lieu.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			DeletePVar(playerid, "Packages");
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any material packages to throw away!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong mang kien vat lieu de bo!");
 		}
 	}
 	else if(strcmp(choice,"pizza",true) == 0)
@@ -1631,13 +1631,13 @@ CMD:drop(playerid, params[])
 		if(GetPVarType(playerid, "Pizza"))
 		{
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			format(string, sizeof(string), "* %s has thrown away their pizza delivery.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s bo don pizza dang giao.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			Pizza_StopDelivery(playerid);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You are not delivering any pizzas!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong dang giao pizza!");
 		}
 	}
 	else if(strcmp(choice,"phone", true) == 0)
@@ -1645,20 +1645,20 @@ CMD:drop(playerid, params[])
 		if(PlayerInfo[playerid][pPnumber] != 0)
 		{
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			format(string, sizeof(string), "* %s throws away their phone.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s bo dien thoai.", GetPlayerNameEx(playerid));
 			ProxChatBubble(playerid, string);
 			PlayerInfo[playerid][pPnumber] = 0;
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You don't have a phone.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co dien thoai.");
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /drop [name] [(optional) amount]");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Weapons, Materials, Packages, Radio, Pizza, Syringes, Backpack, Phone");
-		return SendClientMessageEx(playerid, COLOR_GREY, "Available names: Pot, Crack, Meth, Ecstasy, Heroin");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /drop [name] [(optional) amount]");
+		SendClientMessageEx(playerid, COLOR_GREY, "Lua chon: Weapons, Materials, Packages, Radio, Pizza, Syringes, Backpack, Phone");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Lua chon: Pot, Crack, Meth, Ecstasy, Heroin");
 	}
 	return 1;
 }
@@ -1668,14 +1668,14 @@ CMD:show(playerid, params[])
 	new string[128], giveplayerid, choice[32];
 	if(sscanf(params, "us[32]", giveplayerid, choice))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /show [player] [name]");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Pot, Crack, Meth, Ecstasy, Heroin, Materials, Credits");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /show [player] [name]");
+		SendClientMessageEx(playerid, COLOR_GREY, "Lua chon: Pot, Crack, Meth, Ecstasy, Heroin, Materials, Credits");
 		return 1;
 	}
 
 	if(giveplayerid == playerid)
 	{
-	    SendClientMessageEx(playerid, COLOR_GREY, "You can not show this to yourself!");
+	    SendClientMessageEx(playerid, COLOR_GREY, "Khong the cho chinh minh xem!");
 		return 1;
 	}
 
@@ -1685,7 +1685,7 @@ CMD:show(playerid, params[])
 		{
 			if (!ProxDetectorS(5.0, playerid, giveplayerid))
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 				return 1;
 			}
 
@@ -1694,14 +1694,14 @@ CMD:show(playerid, params[])
 			    new amount = PlayerInfo[playerid][pMats];
 			    if(amount < 1)
 			    {
-			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any materials!");
+			        SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vat lieu!");
 					return 1;
 			    }
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s has shown you their %d materials.",  GetPlayerNameEx(playerid), amount);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s cho ban xem %d vat lieu.",  GetPlayerNameEx(playerid), amount);
 
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You have shown %s your %d materials.", GetPlayerNameEx(giveplayerid), amount);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Ban cho %s xem %d vat lieu.", GetPlayerNameEx(giveplayerid), amount);
 
-				format(string, sizeof(string), "* %s has shown %s some materials.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "* %s cho %s xem vat lieu.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
 			}
@@ -1710,14 +1710,14 @@ CMD:show(playerid, params[])
 			    new amount = PlayerInfo[playerid][pDrugs][0];
 			    if(amount < 1)
 			    {
-			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any pot!");
+			        SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co pot!");
 					return 1;
 			    }
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s has shown you their %d grams of pot.",  GetPlayerNameEx(playerid), amount);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s cho ban xem %d grams pot.",  GetPlayerNameEx(playerid), amount);
 
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You have shown %s your %d grams of pot.", GetPlayerNameEx(giveplayerid), amount);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Ban cho %s xem %d grams pot.", GetPlayerNameEx(giveplayerid), amount);
 
-				format(string, sizeof(string), "* %s has shown %s some pot.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "* %s cho %s xem pot.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
 			}
@@ -1726,14 +1726,14 @@ CMD:show(playerid, params[])
 			    new amount = PlayerInfo[playerid][pDrugs][1];
 			    if(amount < 1)
 			    {
-			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any crack!");
+			        SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co crack!");
 					return 1;
 			    }
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s has shown you their %d grams of crack.",  GetPlayerNameEx(playerid), amount);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s cho ban xem %d grams crack.",  GetPlayerNameEx(playerid), amount);
 
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You have shown %s your %d grams of crack.", GetPlayerNameEx(giveplayerid), amount);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Ban cho %s xem %d grams crack.", GetPlayerNameEx(giveplayerid), amount);
 
-				format(string, sizeof(string), "* %s has shown %s some crack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "* %s cho %s xem crack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
 			}
@@ -1742,14 +1742,14 @@ CMD:show(playerid, params[])
 			    new amount = PlayerInfo[playerid][pDrugs][2];
 			    if(amount < 1)
 			    {
-			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any meth!");
+			        SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co meth!");
 					return 1;
 			    }
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s has shown you their %d grams of meth.",  GetPlayerNameEx(playerid), amount);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s cho ban xem %d grams meth.",  GetPlayerNameEx(playerid), amount);
 
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You have shown %s your %d grams of meth.", GetPlayerNameEx(giveplayerid), amount);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Ban cho %s xem %d grams meth.", GetPlayerNameEx(giveplayerid), amount);
 
-				format(string, sizeof(string), "* %s has shown %s some meth.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "* %s cho %s xem meth.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
 			}
@@ -1758,14 +1758,14 @@ CMD:show(playerid, params[])
 			    new amount = PlayerInfo[playerid][pDrugs][3];
 			    if(amount < 1)
 			    {
-			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any ecstasy!");
+			        SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co ecstasy!");
 					return 1;
 			    }
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s has shown you their %d grams of ecstasy.",  GetPlayerNameEx(playerid), amount);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s cho ban xem %d grams ecstasy.",  GetPlayerNameEx(playerid), amount);
 
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You have shown %s your %d grams of ecstasy.", GetPlayerNameEx(giveplayerid), amount);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Ban cho %s xem %d grams ecstasy.", GetPlayerNameEx(giveplayerid), amount);
 
-				format(string, sizeof(string), "* %s has shown %s some ecstasy.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "* %s cho %s xem ecstasy.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
 			}
@@ -1774,14 +1774,14 @@ CMD:show(playerid, params[])
 			    new amount = PlayerInfo[playerid][pDrugs][4];
 			    if(amount < 1)
 			    {
-			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any heroin!");
+			        SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co heroin!");
 					return 1;
 			    }
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s has shown you their %d milligrams of heroin.",  GetPlayerNameEx(playerid), amount);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s cho ban xem %d milligrams heroin.",  GetPlayerNameEx(playerid), amount);
 
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You have shown %s your %d milligrams of heroin.", GetPlayerNameEx(giveplayerid), amount);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Ban cho %s xem %d milligrams heroin.", GetPlayerNameEx(giveplayerid), amount);
 
-				format(string, sizeof(string), "* %s has shown %s some heroin.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "* %s cho %s xem heroin.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
 			}
@@ -1790,14 +1790,14 @@ CMD:show(playerid, params[])
 			    new amount = PlayerInfo[playerid][pCredits];
 			    if(amount < 1)
 			    {
-			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any credits!");
+			        SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co credits!");
 					return 1;
 			    }
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s has shown you their %d credits.",  GetPlayerNameEx(playerid), amount);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "%s cho ban xem %d credits.",  GetPlayerNameEx(playerid), amount);
 
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You have shown %s your %d credits.", GetPlayerNameEx(giveplayerid), amount);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Ban cho %s xem %d credits.", GetPlayerNameEx(giveplayerid), amount);
 
-				format(string, sizeof(string), "* %s has shown %s some credits.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "* %s cho %s xem credits.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
 			}
@@ -1811,31 +1811,31 @@ CMD:sell(playerid, params[])
 	new string[128], giveplayerid, choice[32], amount, price;
     if(sscanf(params, "us[32]dd", giveplayerid, choice, amount, price))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sell [player] [name] [amount] [price]");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Pot, Crack, Materials, Firework, Syringes, Rawopium, Heroin, RimKit, Carvoucher, PVIPVoucher");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /sell [player] [name] [amount] [price]");
+		SendClientMessageEx(playerid, COLOR_GREY, "Lua chon: Pot, Crack, Materials, Firework, Syringes, Rawopium, Heroin, RimKit, Carvoucher, PVIPVoucher");
 		return 1;
 	}
-	if(PlayerCuffed[playerid] >= 1 || GetPVarInt(playerid, "pBagged") >= 1 ||PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
-	if(GetPVarInt(playerid, "WatchingTV")) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");
-	if(price < 50000) return SendClientMessageEx(playerid, COLOR_GREY, "Price can't be lower than $50,000. Use /give for deals below the scam limit.");
-	if(price > 500000000) return SendClientMessageEx(playerid, COLOR_GREY, "Price can't be lower than $50,000. Use /give for deals below the scam limit.");
+	if(PlayerCuffed[playerid] >= 1 || GetPVarInt(playerid, "pBagged") >= 1 ||PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban chua the lam viec nay.");
+	if(GetPVarInt(playerid, "WatchingTV")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the lam vay khi dang xem TV!");
+	if(price < 50000) return SendClientMessageEx(playerid, COLOR_GREY, "Gia khong the duoi $50,000. Dung /give cho giao dich duoi nguong chong lua dao.");
+	if(price > 500000000) return SendClientMessageEx(playerid, COLOR_GREY, "Gia khong the duoi $50,000. Dung /give cho giao dich duoi nguong chong lua dao.");
 	if(price > 100000000) 
 	{
-		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s is trying to sell %s to %s for $%d.", GetPlayerNameEx(playerid), choice, GetPlayerNameEx(giveplayerid), price);
+		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s dang chao ban %s cho %s gia $%d.", GetPlayerNameEx(playerid), choice, GetPlayerNameEx(giveplayerid), price);
 		ABroadCast(COLOR_YELLOW, string, 2);
 	}
-	if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Amount cannot be below 1.");
-	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-	if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "You can't sell to yourself!");
-	if(!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+	if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "So luong khong the duoi 1.");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
+	if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the ban cho chinh minh!");
+	if(!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 
     else if (strcmp(choice, "rimkit", true) == 0)
 	{
 		if(amount > PlayerInfo[playerid][pRimMod])
-			return SendClientMessageEx(playerid, COLOR_GREY, " You don't have that many rim kits.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co du rim kits.");
 
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to buy %d rim kits for $%s.", GetPlayerNameEx(giveplayerid), amount, number_format(price));
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s wants to sell you %d rim kits for $%s, (type /accept rimkit) to buy.", GetPlayerNameEx(playerid), amount, number_format(price));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban de nghi %s mua %d rim kits gia $%s.", GetPlayerNameEx(giveplayerid), amount, number_format(price));
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s muon ban %d rim kits gia $%s, (dung /accept rimkit) de mua.", GetPlayerNameEx(playerid), amount, number_format(price));
 	 	SetPVarInt(giveplayerid, "RimOffer", playerid);
 		SetPVarInt(giveplayerid, "RimOfferSession", g_arrQueryHandle[playerid]);
 	 	SetPVarInt(giveplayerid, "RimPrice", price);
@@ -1845,10 +1845,10 @@ CMD:sell(playerid, params[])
 	else if (strcmp(choice, "pvipvoucher", true) == 0)
 	{
 		if(amount > PlayerInfo[playerid][pPVIPVoucher])
-			return SendClientMessageEx(playerid, COLOR_GREY, " You don't have that many 1 month PVIP Vouchers.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co du 1 month PVIP Vouchers.");
 
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to buy %d 1 month PVIP Voucher(s) for $%s.", GetPlayerNameEx(giveplayerid), amount, number_format(price));
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s wants to sell you %d 1 month PVIP Voucher(s) for $%s, (type /accept pvipvoucher) to buy.", GetPlayerNameEx(playerid), amount, number_format(price));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban de nghi %s mua %d 1 month PVIP Voucher(s) gia $%s.", GetPlayerNameEx(giveplayerid), amount, number_format(price));
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s muon ban %d 1 month PVIP Voucher(s) gia $%s, (dung /accept pvipvoucher) de mua.", GetPlayerNameEx(playerid), amount, number_format(price));
 	 	SetPVarInt(giveplayerid, "PVIPVoucherOffer", playerid);
 	 	SetPVarInt(giveplayerid, "PVIPVoucherPrice", price);
 	 	SetPVarInt(giveplayerid, "PVIPVoucherCount", amount);

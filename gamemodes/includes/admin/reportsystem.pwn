@@ -67,7 +67,7 @@ stock SendReportToQue(reportfrom, const report[], reportlevel, reportpriority)
 				{
 					if(PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 0)
 					{
-						GameTextForPlayer(i, "~r~DM Alert", 1500, 1);
+						GameTextForPlayer(i, "~r~Canh bao DM", 1500, 1);
 					}
 				}	
     		}
@@ -77,7 +77,7 @@ stock SendReportToQue(reportfrom, const report[], reportlevel, reportpriority)
 				{
 					if(PlayerInfo[i][pAdmin] >= reportlevel && PlayerInfo[i][pTogReports] == 0)
 					{
-						GameTextForPlayer(i, "~p~Priority Report", 1500, 1);
+						GameTextForPlayer(i, "~p~Bao cao uu tien", 1500, 1);
 					}
 				}	
 			}
@@ -87,7 +87,7 @@ stock SendReportToQue(reportfrom, const report[], reportlevel, reportpriority)
 				{
 					if(PlayerInfo[i][pAdmin] >= reportlevel && PlayerInfo[i][pTogReports] == 0)
 					{
-						TextDrawSetString(PriorityReport[i], "~y~New Report");
+						TextDrawSetString(PriorityReport[i], "~y~Bao cao moi");
 						TextDrawShowForPlayer(i, PriorityReport[i]);
 						SetTimerEx("HideReportText", 2000, false, "d", i);
 					}
@@ -100,7 +100,7 @@ stock SendReportToQue(reportfrom, const report[], reportlevel, reportpriority)
 					if(PlayerInfo[i][pAdmin] >= reportlevel && PlayerInfo[i][pTogReports] == 0)
 					{
 						//GameTextForPlayer(i, "~w~~n~n~n~Priority 5 Item Pending", 1500, 3);
-						TextDrawSetString(PriorityReport[i], "~w~Priority 5 Item Pending");
+						TextDrawSetString(PriorityReport[i], "~w~Dang cho muc uu tien 5");
 						TextDrawShowForPlayer(i, PriorityReport[i]);
 						SetTimerEx("HideReportText", 2000, false, "d", i);
 					}
@@ -110,10 +110,10 @@ stock SendReportToQue(reportfrom, const report[], reportlevel, reportpriority)
      	foreach(new i: Player)
 		{
 			if(PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 0 && !GetPVarType(i, "TogReports")) {
-				SendClientMessageEx(i, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Pend: 0 mins | Pr: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
+				SendClientMessageEx(i, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Cho: 0 phut | UT: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
 			}
 			else if((reportpriority == 1 || reportpriority == 2) && PlayerInfo[i][pTogReports] == 0 && GetPVarType(i, "TogReports")) {
-				SendClientMessageEx(i, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Pend: 0 mins | Pr: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
+				SendClientMessageEx(i, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Cho: 0 phut | UT: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
 			}
 		}	
      	SetPVarInt(reportfrom, "HasReport", 1);
@@ -193,12 +193,12 @@ CMD:clearallreports(playerid, params[])
     if (PlayerInfo[playerid][pAdmin] >= 1337) {
         new string[128];
         ClearReports();
-        SendClientMessageEx(playerid,COLOR_GRAD1, "You have cleared all the active reports.");
-        format(string, sizeof(string), "AdmCmd: %s has cleared all the pending reports.", GetPlayerNameEx(playerid));
+        SendClientMessageEx(playerid,COLOR_GRAD1, "Ban da xoa tat ca bao cao dang cho.");
+        format(string, sizeof(string), "AdmCmd: %s da xoa tat ca bao cao dang cho.", GetPlayerNameEx(playerid));
         ABroadCast(COLOR_LIGHTRED, string, 2);
     }
     else {
-        SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+        SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
     }
     return 1;
 }
@@ -208,7 +208,7 @@ CMD:checkreportcount(playerid, params[])
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], adminname[MAX_PLAYER_NAME], tdate[11];
-		if(sscanf(params, "s[24]s[11]", adminname, tdate)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /checkreportcount [admin name] [date (YYYY-MM-DD)]");
+		if(sscanf(params, "s[24]s[11]", adminname, tdate)) return SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /checkreportcount [admin name] [date (YYYY-MM-DD)]");
 		new giveplayerid = ReturnUser(adminname);
 		if(IsPlayerConnected(giveplayerid) && PlayerInfo[giveplayerid][pAdmin] >= 2)
 		{
@@ -235,11 +235,11 @@ CMD:togchatreports(playerid, params[])
 	    if(GetPVarType(playerid, "TogReports")) {
 
 	        DeletePVar(playerid, "TogReports");
-	        SendClientMessageEx(playerid, COLOR_WHITE, "You will now see all reports.");
+	        SendClientMessageEx(playerid, COLOR_WHITE, "Ban se thay tat ca bao cao.");
 	    }
 	    else {
 	        SetPVarInt(playerid, "TogReports", 1);
-	        SendClientMessageEx(playerid, COLOR_WHITE, "You will now see priority reports only.");
+	        SendClientMessageEx(playerid, COLOR_WHITE, "Ban se chi thay bao cao uu tien.");
 	    }
 	}
 	return 1;
@@ -254,25 +254,25 @@ CMD:togreports(playerid, params[])
 			case 0:
 			{
 				PlayerInfo[playerid][pTogReports] = 1;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have went into spec ops mode, you will be unable to see admin messages.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da bat che do spec ops, ban se khong thay thong bao Admin.");
 			}
 			case 1:
 			{
 				PlayerInfo[playerid][pTogReports] = 0;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You are now out of spec ops mode, you will be able to see admin messages.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da tat che do spec ops, ban se thay lai thong bao Admin.");
 			}
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You aren't authorized to use this command.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
 
 CMD:reporttips(playerid, params[])
 {
-	ShowPlayerDialogEx(playerid,7955,DIALOG_STYLE_MSGBOX,"Report tips","Tips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
+	ShowPlayerDialogEx(playerid,7955,DIALOG_STYLE_MSGBOX,"Luu y khi bao cao","Luu y khi bao cao:\n- Neu ro viec can ho tro, khong yeu cau ten Admin.\n- Mo ta cu the van de.\n- Khong bao cao sai su that.\n- Khong xuc pham Admin.\n- Chi bao cao van de trong game.\n- Don hang shop dung lenh /shoporder","Dong", "");
 	return 1;
 }
 
@@ -288,16 +288,16 @@ CMD:reply(playerid, params[])
 	}
 	if(reportid == INVALID_REPORT_ID)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have any reports being reviewed at the moment.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co bao cao dang duoc xem xet.");
 		return 1;
 	}
 	if (IsPlayerConnected(Reports[reportid][CheckingReport]))
 	{
-		SendClientMessageEx(Reports[reportid][CheckingReport], COLOR_YELLOW, "%s(ID: %d) replies: %s", GetPlayerNameEx(playerid), playerid, params);
+		SendClientMessageEx(Reports[reportid][CheckingReport], COLOR_YELLOW, "%s(ID: %d) tra loi: %s", GetPlayerNameEx(playerid), playerid, params);
 
-		SendClientMessageEx(playerid,  COLOR_YELLOW, "Reply sent to %s: %s", GetPlayerNameEx(Reports[reportid][CheckingReport]), params);
+		SendClientMessageEx(playerid,  COLOR_YELLOW, "Da tra loi %s: %s", GetPlayerNameEx(Reports[reportid][CheckingReport]), params);
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "Player not connected.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi chua ket noi.");
 	return 1;
 }
 
@@ -306,26 +306,26 @@ CMD:rmute(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3)
 	{
 		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /rmute [player]");
-		if(PlayerInfo[giveplayerid][pAdmin] > 1) return SendClientMessageEx(playerid, COLOR_GREY, "You can't report mute an Admin.");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /rmute [player]");
+		if(PlayerInfo[giveplayerid][pAdmin] > 1) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the cam Admin gui bao cao.");
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if(PlayerInfo[giveplayerid][pRMuted] == 0)
 			{
 				PlayerInfo[giveplayerid][pRMuted] = 1;
-				format(string, sizeof(string), "AdmCmd: %s has indefinitely blocked %s from submitting reports.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "AdmCmd: %s da cam vo thoi han %s gui bao cao.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ABroadCast(COLOR_LIGHTRED,string,2);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been blocked from submitting /reports by %s.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You will not be able to submit reports until you are unblocked. To appeal this action contact hr@ng-gaming.net.");
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Ban bi %s cam gui /reports.", GetPlayerNameEx(playerid));
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Ban khong the gui bao cao cho den khi duoc go cam. Lien he hr@ng-gaming.net de khieu nai.");
 				format(string, sizeof(string), "AdmCmd: %s(%d) was blocked from /report by %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/mute.log", string);
 			}
 			else
 			{
 				PlayerInfo[giveplayerid][pRMuted] = 0;
-				format(string, sizeof(string), "AdmCmd: %s has been re-allowed to submit reports by %s",GetPlayerNameEx(giveplayerid),GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s da duoc %s cho phep gui bao cao tro lai",GetPlayerNameEx(giveplayerid),GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_LIGHTRED,string,2);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been re-allowed to submitting /reports again by %s.", GetPlayerNameEx(playerid));
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Ban duoc %s cho phep gui /reports tro lai.", GetPlayerNameEx(playerid));
 				format(string, sizeof(string), "AdmCmd: %s(%d) was unblocked from /report by %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/mute.log", string);
 			}
@@ -333,7 +333,7 @@ CMD:rmute(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -343,8 +343,8 @@ CMD:rto(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 3)
 	{
 		new string[512], giveplayerid, reason[64];
-		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /rto [player] [reason]");
-		if(PlayerInfo[giveplayerid][pAdmin] > 1) return SendClientMessageEx(playerid, COLOR_GREY, "You can't report mute an Admin.");
+		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /rto [player] [reason]");
+		if(PlayerInfo[giveplayerid][pAdmin] > 1) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the cam Admin gui bao cao.");
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if(PlayerInfo[giveplayerid][pRMuted] == 0)
@@ -352,11 +352,11 @@ CMD:rto(playerid, params[])
 			    if(PlayerInfo[giveplayerid][pRMutedTotal] == 0)
 			    {
   					PlayerInfo[giveplayerid][pRMutedTotal] = 1;
-					format(string, sizeof(string), "AdmCmd: %s has given %s their first warning about report abuse, reason: %s",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
+					format(string, sizeof(string), "AdmCmd: %s da canh bao %s lan dau vi lam dung bao cao, ly do: %s",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
 					ABroadCast(COLOR_LIGHTRED,string,2);
 
-					format(string, sizeof(string), "An admin warns you not to abuse /report.\n\nNote that future abuse of /report could result in a mute from /report or loss of that privilege altogether.");
-					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Report abuse warning", string,"Next", "");
+					format(string, sizeof(string), "Admin canh bao ban khong duoc lam dung /report.\n\nTai pham voi /report co the bi tam cam /report hoac mat han quyen nay.");
+					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Canh bao lam dung bao cao", string,"Tiep", "");
 
 					format(string, sizeof(string), "AdmCmd: %s has given %s(%d) their first warning about report abuse, reason: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);
 					Log("logs/mute.log", string);
@@ -367,11 +367,11 @@ CMD:rto(playerid, params[])
   					PlayerInfo[giveplayerid][pRMuted] = 2;
   					PlayerInfo[giveplayerid][pRMutedTotal] = 2;
 					PlayerInfo[giveplayerid][pRMutedTime] = 15*60;
-					format(string, sizeof(string), "AdmCmd: %s has temporarily blocked %s from submitting reports, reason: %s",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
+					format(string, sizeof(string), "AdmCmd: %s da tam cam %s gui bao cao, ly do: %s",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
 					ABroadCast(COLOR_LIGHTRED,string,2);
 
-					format(string, sizeof(string), "You have been temporarily blocked from submitting reports by %s, reason: %s.\n\nAs this is the second time you have been blocked from reporting, you will not be able to use /report for 15 minutes.\n\nNote that future abuse of /report could result in a longer mute from /report or loss of that privilege altogether.", GetPlayerNameEx(playerid), reason);
-					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
+					format(string, sizeof(string), "Ban bi %s tam cam gui bao cao, ly do: %s.\n\nDay la lan thu hai, ban khong the dung /report trong 15 phut.\n\nTai pham voi /report co the bi cam /report lau hon hoac mat han quyen nay.", GetPlayerNameEx(playerid), reason);
+					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Tam cam gui bao cao", string,"Tiep", "");
 
 					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 					Log("logs/mute.log", string);
@@ -381,11 +381,11 @@ CMD:rto(playerid, params[])
   					PlayerInfo[giveplayerid][pRMuted] = 2;
   					PlayerInfo[giveplayerid][pRMutedTotal] = 3;
 					PlayerInfo[giveplayerid][pRMutedTime] = 30*60;
-					format(string, sizeof(string), "AdmCmd: %s has temporarily blocked %s from submitting reports, reason: %s",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
+					format(string, sizeof(string), "AdmCmd: %s da tam cam %s gui bao cao, ly do: %s",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
 					ABroadCast(COLOR_LIGHTRED,string,2);
 
-					format(string, sizeof(string), "You have been temporarily blocked from submitting reports by %s, reason: %s.\n\nAs this is the third time you have been blocked from reporting, you will not be able to use /report for 30 minutes.\n\nNote that future abuse of /report could result in a longer mute from /report or loss of that privilege altogether.", GetPlayerNameEx(playerid), reason);
-					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
+					format(string, sizeof(string), "Ban bi %s tam cam gui bao cao, ly do: %s.\n\nDay la lan thu ba, ban khong the dung /report trong 30 phut.\n\nTai pham voi /report co the bi cam /report lau hon hoac mat han quyen nay.", GetPlayerNameEx(playerid), reason);
+					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Tam cam gui bao cao", string,"Tiep", "");
 
 					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 					Log("logs/mute.log", string);
@@ -395,11 +395,11 @@ CMD:rto(playerid, params[])
   					PlayerInfo[giveplayerid][pRMuted] = 2;
   					PlayerInfo[giveplayerid][pRMutedTotal] = 4;
 					PlayerInfo[giveplayerid][pRMutedTime] = 45*60;
-					format(string, sizeof(string), "AdmCmd: %s has temporarily blocked %s from submitting reports, reason: %s",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
+					format(string, sizeof(string), "AdmCmd: %s da tam cam %s gui bao cao, ly do: %s",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
 					ABroadCast(COLOR_LIGHTRED,string,2);
 
-					format(string, sizeof(string), "You have been temporarily blocked from submitting reports by %s, reason: %s.\n\nAs this is the fourth time you have been blocked from reporting, you will not be able to use /report for 45 minutes.\n\nNote that future abuse of /report could result in a longer mute from /report or loss of that privilege altogether.", GetPlayerNameEx(playerid), reason);
-					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
+					format(string, sizeof(string), "Ban bi %s tam cam gui bao cao, ly do: %s.\n\nDay la lan thu tu, ban khong the dung /report trong 45 phut.\n\nTai pham voi /report co the bi cam /report lau hon hoac mat han quyen nay.", GetPlayerNameEx(playerid), reason);
+					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Tam cam gui bao cao", string,"Tiep", "");
 
 					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 					Log("logs/mute.log", string);
@@ -409,11 +409,11 @@ CMD:rto(playerid, params[])
   					PlayerInfo[giveplayerid][pRMuted] = 2;
   					PlayerInfo[giveplayerid][pRMutedTotal] = 5;
 					PlayerInfo[giveplayerid][pRMutedTime] = 60*60;
-					format(string, sizeof(string), "AdmCmd: %s has temporarily blocked %s from submitting reports, reason: %s",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
+					format(string, sizeof(string), "AdmCmd: %s da tam cam %s gui bao cao, ly do: %s",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
 					ABroadCast(COLOR_LIGHTRED,string,2);
 
-					format(string, sizeof(string), "You have been temporarily blocked from submitting reports by %s, reason: %s.\n\nAs this is the fifth time you have been blocked from reporting, you will not be able to use /report for 60 minutes.\n\nNote that future abuse of /report could result in a loss of that privilege altogether.", GetPlayerNameEx(playerid), reason);
-					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
+					format(string, sizeof(string), "Ban bi %s tam cam gui bao cao, ly do: %s.\n\nDay la lan thu nam, ban khong the dung /report trong 60 phut.\n\nTai pham voi /report co the mat han quyen nay.", GetPlayerNameEx(playerid), reason);
+					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Tam cam gui bao cao", string,"Tiep", "");
 
 					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 					Log("logs/mute.log", string);
@@ -423,11 +423,11 @@ CMD:rto(playerid, params[])
   					PlayerInfo[giveplayerid][pRMuted] = 2;
   					PlayerInfo[giveplayerid][pRMutedTotal] = 6;
 					PlayerInfo[giveplayerid][pRMutedTime] = 300*60;
-					format(string, sizeof(string), "AdmCmd: %s has temporarily blocked %s from submitting reports, reason: %s",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
+					format(string, sizeof(string), "AdmCmd: %s da tam cam %s gui bao cao, ly do: %s",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
 					ABroadCast(COLOR_LIGHTRED,string,2);
 
-					format(string, sizeof(string), "You have been temporarily blocked from submitting reports by %s, reason: %s.\n\nAs this is the sixth time you have been blocked from reporting, you will not be able to use /report for 5 hours.\n\nNote that future abuse of /report could result in a loss of that privilege altogether.", GetPlayerNameEx(playerid), reason);
-					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
+					format(string, sizeof(string), "Ban bi %s tam cam gui bao cao, ly do: %s.\n\nDay la lan thu sau, ban khong the dung /report trong 5 gio.\n\nTai pham voi /report co the mat han quyen nay.", GetPlayerNameEx(playerid), reason);
+					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Tam cam gui bao cao", string,"Tiep", "");
 
 					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 					Log("logs/mute.log", string);
@@ -443,14 +443,14 @@ CMD:rto(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD2, "That person is already disabled from /reports.");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do da bi cam /reports.");
 			}
 
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -460,7 +460,7 @@ CMD:rtoreset(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 3)
 	{
 		new string[128], giveplayerid, reason[64];
-		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /rtoreset [player] [reason]");
+		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /rtoreset [player] [reason]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
@@ -469,23 +469,23 @@ CMD:rtoreset(playerid, params[])
 				PlayerInfo[giveplayerid][pRMuted] = 0;
 				PlayerInfo[giveplayerid][pRMutedTotal]--;
 				PlayerInfo[giveplayerid][pRMutedTime] = 0;
-				format(string, sizeof(string), "AdmCmd: %s has unblocked %s from reporting, reason: %s",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s da go cam gui bao cao cho %s, ly do: %s",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid), reason);
 				ABroadCast(COLOR_LIGHTRED,string,2);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been unblocked from submitting reports. You may now use the reporting system again.");
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Please accept our apologies for any error and inconvenience this may have caused.");
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Ban da duoc go cam va co the gui bao cao tro lai.");
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Chung toi xin loi ve sai sot va bat tien da gay ra.");
 				format(string, sizeof(string), "AdmCmd: %s(%d) was unblocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 				Log("logs/mute.log", string);
 			}
 			else
 			{
-			    SendClientMessageEx(playerid, COLOR_GRAD1, "That person is not blocked from reporting!");
+			    SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi do khong bi cam gui bao cao!");
 			}
 
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -493,16 +493,16 @@ CMD:rtoreset(playerid, params[])
 CMD:report(playerid, params[])
 {
     if(GetPVarType(playerid, "HasReport")) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
+		SendClientMessageEx(playerid, COLOR_GREY, "Chi duoc gui 1 bao cao cung luc. (/cancelreport)");
 	}
  	else if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can't submit reports as an administrator.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Admin khong duoc gui bao cao.");
 	}
 	else if(PlayerInfo[playerid][pRMuted] != 0) {
-	    ShowPlayerDialogEx(playerid, 7955, DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
+	    ShowPlayerDialogEx(playerid, 7955, DIALOG_STYLE_MSGBOX,"Da chan bao cao","Ban dang bi cam gui bao cao!\n\nLuu y khi bao cao:\n- Neu ro viec can ho tro, khong yeu cau ten Admin.\n- Mo ta cu the van de.\n- Khong bao cao sai su that.\n- Khong xuc pham Admin.\n- Chi bao cao van de trong game.\n- Don hang shop dung lenh /shoporder","Dong", "");
 	}
 	else {
-	    ShowPlayerDialogEx(playerid, DIALOG_REPORTMENU, DIALOG_STYLE_LIST, "Report Menu [1/2]", "Deathmatch\nFalling\nHacking\nChicken Running\nCar Ramming\nPower Gaming\nMeta Gaming\nGun Discharge Exploits (QS/CS)\nSpamming\nMoney Farming\nBan Evader\nGeneral Exploits\nReleasing Hitman Names\nRunning Man Exploiter\nCar Surfing\nNonRP Behavior\nNext Page","Select", "Exit");
+	    ShowPlayerDialogEx(playerid, DIALOG_REPORTMENU, DIALOG_STYLE_LIST, "Menu bao cao [1/2]", "Deathmatch\nBi roi\nGian lan\nChicken Running\nDam xe\nPower Gaming\nMeta Gaming\nLoi ban sung (QS/CS)\nSpam\nMoney Farming\nNe lenh cam\nLoi co the loi dung\nTiet lo ten Hitman\nLoi Running Man\nDung tren xe\nHanh vi NonRP\nTrang tiep","Chon", "Thoat");
 	}
 	return 1;
 }
@@ -533,11 +533,11 @@ CMD:cancelreport(playerid, params[])
 			DeletePVar(playerid, "HasReport");
 			DeletePVar(playerid, "_rAutoM");
 			DeletePVar(playerid, "_rRepID");
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully canceled your report." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da huy bao cao." );
 			return 1;
 		}
 	}
-	SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have any pending reports.");
+	SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co bao cao dang cho.");
 	return 1;
 }
 
@@ -545,14 +545,14 @@ CMD:reports(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
-		SendClientMessageEx(playerid, COLOR_GREEN, "____________________ REPORTS _____________________");
+		SendClientMessageEx(playerid, COLOR_GREEN, "____________________ BAO CAO _____________________");
 		for(new i = 999; i >= 0; i--)
 		{
 			if(Reports[i][BeingUsed] == 1 && Reports[i][ReportPriority] == 5)
 			{
 			    if(Reports[i][ReportLevel] == 2 || PlayerInfo[playerid][pAdmin] >= 2)
 			    {
-					SendClientMessageEx(playerid, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
+					SendClientMessageEx(playerid, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Cho: %d phut | UT: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
 				}
 			}
 		}
@@ -562,7 +562,7 @@ CMD:reports(playerid, params[])
 			{
 			    if(Reports[i][ReportLevel] == 2 || PlayerInfo[playerid][pAdmin] >= 2)
 			    {
-					SendClientMessageEx(playerid, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
+					SendClientMessageEx(playerid, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Cho: %d phut | UT: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
 				}
 			}
 		}
@@ -572,7 +572,7 @@ CMD:reports(playerid, params[])
 			{
 			    if(Reports[i][ReportLevel] == 2 || PlayerInfo[playerid][pAdmin] >= 2)
 			    {
-					SendClientMessageEx(playerid, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
+					SendClientMessageEx(playerid, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Cho: %d phut | UT: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
 				}
 			}
 		}
@@ -582,7 +582,7 @@ CMD:reports(playerid, params[])
 			{
 			    if(Reports[i][ReportLevel] == 2 || PlayerInfo[playerid][pAdmin] >= 2)
 			    {
-					SendClientMessageEx(playerid, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
+					SendClientMessageEx(playerid, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Cho: %d phut | UT: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
 				}
 			}
 		}
@@ -592,7 +592,7 @@ CMD:reports(playerid, params[])
 			{
 			    if(Reports[i][ReportLevel] == 2 || PlayerInfo[playerid][pAdmin] >= 2)
 			    {
-					SendClientMessageEx(playerid, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
+					SendClientMessageEx(playerid, COLOR_REPORT, "%s (ID: %i) | RID: %i | %s | Cho: %d phut | UT: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
 				}
 			}
 		}
@@ -606,24 +606,24 @@ CMD:sta(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], reportid;
-		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_WHITE,"USAGE: /sta [reportid]");
+		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_WHITE,"CACH DUNG: /sta [reportid]");
 
-		if(reportid < 0 || reportid > 999) { SendClientMessageEx(playerid, COLOR_GREY, "   Report ID not below 0 or above 999!"); return 1; }
+		if(reportid < 0 || reportid > 999) { SendClientMessageEx(playerid, COLOR_GREY, "   ID bao cao phai tu 0 den 999!"); return 1; }
 		if(Reports[reportid][BeingUsed] == 0)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   That report ID is not being used!");
+			SendClientMessageEx(playerid, COLOR_GREY, "   ID bao cao do khong ton tai!");
 			return 1;
 		}
 		if(!IsPlayerConnected(Reports[reportid][ReportFrom]))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   The reporter has disconnected !");
+			SendClientMessageEx(playerid, COLOR_GREY, "   Nguoi bao cao da thoat !");
 			Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
 			Reports[reportid][BeingUsed] = 0;
 			return 1;
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "RequestingAdP") == 1)
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the bo/dang quang cao nay, hay chap nhan bang /ar.");
 		}
 		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
@@ -633,32 +633,33 @@ CMD:sta(playerid, params[])
 		}
 		if(Advisors < 1)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "There are no Advisors On Duty at the moment, try again later!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Chua co Advisor dang truc, hay thu lai sau!");
 			return 1;
 		}
 
-		format(string, sizeof(string), "AdmCmd: %s has sent %s (ID: %i) report RID: %i) to the Advisors.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
+		format(string, sizeof(string), "AdmCmd: %s chuyen bao cao cua %s (ID: %i) RID: %i) den Advisor.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
+		format(string, sizeof(string), "AdmCmd: %s has sent %s (ID: %i) report RID: %i) to the Advisors.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 		Log("logs/report.log", string);
 		if(PlayerInfo[playerid][pAdmin] == 1)
 		{
-			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "An admin has reviewed your report and referred it to the Advisors.");
-			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "An Advisor should be with you shortly.");
-			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Newer players are encouraged to use /requesthelp for any questions you may have as opposed to using /report which is to report rule violations and get admin help.");
+			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Admin da xem va chuyen bao cao cua ban den Advisor.");
+			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Advisor se den ho tro ban som.");
+			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Nguoi moi nen dung /requesthelp de hoi dap. Lenh /report dung de bao cao vi pham va yeu cau Admin ho tro.");
 			SetPVarInt( Reports[reportid][ReportFrom], "COMMUNITY_ADVISOR_REQUEST", 1 );
-			format(string, sizeof(string), "An Admin has referred a report over to you. person %s (ID: %d) stated: %s", GetPlayerNameEx(Reports[reportid][ReportFrom]), Reports[reportid][ReportFrom], Reports[reportid][Report]);
+			format(string, sizeof(string), "Admin da chuyen bao cao den ban. %s (ID: %d) cho biet: %s", GetPlayerNameEx(Reports[reportid][ReportFrom]), Reports[reportid][ReportFrom], Reports[reportid][Report]);
 			SendDutyAdvisorMessage(TEAM_AZTECAS_COLOR, string);
-			SendDutyAdvisorMessage(TEAM_AZTECAS_COLOR, "Please type /accepthelp to teleport to the player.");
+			SendDutyAdvisorMessage(TEAM_AZTECAS_COLOR, "Dung /accepthelp de den cho nguoi choi.");
 		}
 		else
 		{
-			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s has reviewed your report and referred it to the Advisors.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "An Advisor should be with you shortly.");
-			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Newer players are encouraged to use /requesthelp for any questions you may have as opposed to using /report which is to report rule violations and get admin help.");
+			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s da xem va chuyen bao cao cua ban den Advisor.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Advisor se den ho tro ban som.");
+			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Nguoi moi nen dung /requesthelp de hoi dap. Lenh /report dung de bao cao vi pham va yeu cau Admin ho tro.");
 			SetPVarInt( Reports[reportid][ReportFrom], "COMMUNITY_ADVISOR_REQUEST", 1 );
-			format(string, sizeof(string), "Admin %s has referred a report over to you. person %s (ID: %d) stated: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), Reports[reportid][ReportFrom], Reports[reportid][Report]);
+			format(string, sizeof(string), "Admin %s da chuyen bao cao den ban. %s (ID: %d) cho biet: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), Reports[reportid][ReportFrom], Reports[reportid][Report]);
 			SendDutyAdvisorMessage(TEAM_AZTECAS_COLOR, string);
-			SendDutyAdvisorMessage(TEAM_AZTECAS_COLOR, "Please type /accepthelp to teleport to the player.");
+			SendDutyAdvisorMessage(TEAM_AZTECAS_COLOR, "Dung /accepthelp de den cho nguoi choi.");
 		}
 
 		PlayerInfo[playerid][pAcceptReport]++;
@@ -679,17 +680,17 @@ CMD:ar(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], reportid;
-		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ar [reportid]");
+		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /ar [reportid]");
 
-		if(reportid < 0 || reportid > 999) { SendClientMessageEx(playerid, COLOR_GREY, "   Report ID not below 0 or above 999!"); return 1; }
+		if(reportid < 0 || reportid > 999) { SendClientMessageEx(playerid, COLOR_GREY, "   ID bao cao phai tu 0 den 999!"); return 1; }
 		if(Reports[reportid][BeingUsed] == 0)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   That report ID is not being used!");
+			SendClientMessageEx(playerid, COLOR_GREY, "   ID bao cao do khong ton tai!");
 			return 1;
 		}
 		if(!IsPlayerConnected(Reports[reportid][ReportFrom]))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   The reporter has disconnected !");
+			SendClientMessageEx(playerid, COLOR_GREY, "   Nguoi bao cao da thoat !");
 			Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
 			Reports[reportid][BeingUsed] = 0;
 			return 1;
@@ -700,10 +701,11 @@ CMD:ar(playerid, params[])
 			GetPVarString(Reports[reportid][ReportFrom], "ReverseReason", reversereason, 24);
 			DeletePVar(Reports[reportid][ReportFrom], "ReverseReport");
 			SetPVarInt(playerid, "ReverseFromID", Reports[reportid][ReportFrom]);
-			format(string, 128, "%s would like to reverse their action on %s.\n\nReason: %s", GetPlayerNameEx(Reports[reportid][ReportFrom]), GetPlayerNameEx(GetPVarInt(Reports[reportid][ReportFrom], "ReverseID")), reversereason);
-			ShowPlayerDialogEx(playerid, DIALOG_REVERSE, DIALOG_STYLE_MSGBOX, "Reverse Action", string, "Allow", "Deny");
-			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
+			format(string, 128, "%s muon huy hinh phat da ap dung voi %s.\n\nLy do: %s", GetPlayerNameEx(Reports[reportid][ReportFrom]), GetPlayerNameEx(GetPVarInt(Reports[reportid][ReportFrom], "ReverseID")), reversereason);
+			ShowPlayerDialogEx(playerid, DIALOG_REVERSE, DIALOG_STYLE_MSGBOX, "Huy hinh phat", string, "Cho phep", "Tu choi");
+			format(string, sizeof(string), "AdmCmd: %s da nhan bao cao cua %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			ABroadCast(COLOR_ORANGE, string, 2);
+     		format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
      		Log("logs/report.log", string);
 			PlayerInfo[playerid][pAcceptReport]++;
 			ReportCount[playerid]++;
@@ -716,11 +718,11 @@ CMD:ar(playerid, params[])
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "AccountRestrictionReport") == 1)
 		{
-			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot accept this report!");
+			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong duoc nhan bao cao nay!");
 			SetPVarInt(playerid, "PendingAction4", GetPVarInt(Reports[reportid][ReportFrom], "AccountRestID"));
 			DeletePVar(Reports[reportid][ReportFrom], "AccountRestrictionReport");
 			DeletePVar(Reports[reportid][ReportFrom], "AccountRestID");
-			ShowPlayerDialogEx(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Account Restriction", "This player has 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+			ShowPlayerDialogEx(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Han che tai khoan", "Nguoi choi co 15+ diem Non RP, ban muon han che tai khoan nay khong?", "Co", "Khong");
 		}
 		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
@@ -737,10 +739,11 @@ CMD:ar(playerid, params[])
 			new advert[128];
 			GetPVarString(Reports[reportid][ReportFrom], "PriorityAdText", advert, 128);
 			SetPVarInt(playerid, "ReporterID", Reports[reportid][ReportFrom]);
-			ShowPlayerDialogEx(playerid, DIALOG_CONFIRMADP, DIALOG_STYLE_MSGBOX, "Advertisement Confirmation", advert, "Approve", "Deny");
+			ShowPlayerDialogEx(playerid, DIALOG_CONFIRMADP, DIALOG_STYLE_MSGBOX, "Xac nhan quang cao", advert, "Duyet", "Tu choi");
 			
-			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
+			format(string, sizeof(string), "AdmCmd: %s da nhan bao cao cua %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			ABroadCast(COLOR_ORANGE, string, 2);
+			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			Log("logs/report.log", string);
 			PlayerInfo[playerid][pAcceptReport]++;
 			ReportCount[playerid]++;
@@ -755,12 +758,13 @@ CMD:ar(playerid, params[])
 		    new newname[MAX_PLAYER_NAME];
 			GetPVarString(Reports[reportid][ReportFrom], "NewNameRequest", newname, MAX_PLAYER_NAME);
 
-			if(GetPVarInt(Reports[reportid][ReportFrom], "NameChangeCost") > 2) format(string, sizeof(string), "{00BFFF}Old Name: {FFFFFF}%s\n\n{00BFFF}New Name: {FFFFFF}%s\n\n{00BFFF}Price: ${FFFFFF}%s", GetPlayerNameExt(Reports[reportid][ReportFrom]), newname, number_format(GetPVarInt(Reports[reportid][ReportFrom], "NameChangeCost")));
-			else format(string, sizeof(string), "{00BFFF}Old Name: {FFFFFF}%s\n\n{00BFFF}New Name: {FFFFFF}%s\n\n{00BFFF}Price: {FFFFFF}Free", GetPlayerNameExt(Reports[reportid][ReportFrom]), newname);
-			ShowPlayerDialogEx(playerid, DIALOG_REPORTNAME,DIALOG_STYLE_MSGBOX,"{00BFFF}Name Change Request",string,"Approve","Deny");
+			if(GetPVarInt(Reports[reportid][ReportFrom], "NameChangeCost") > 2) format(string, sizeof(string), "{00BFFF}Ten cu: {FFFFFF}%s\n\n{00BFFF}Ten moi: {FFFFFF}%s\n\n{00BFFF}Gia: ${FFFFFF}%s", GetPlayerNameExt(Reports[reportid][ReportFrom]), newname, number_format(GetPVarInt(Reports[reportid][ReportFrom], "NameChangeCost")));
+			else format(string, sizeof(string), "{00BFFF}Ten cu: {FFFFFF}%s\n\n{00BFFF}Ten moi: {FFFFFF}%s\n\n{00BFFF}Gia: {FFFFFF}Mien phi", GetPlayerNameExt(Reports[reportid][ReportFrom]), newname);
+			ShowPlayerDialogEx(playerid, DIALOG_REPORTNAME,DIALOG_STYLE_MSGBOX,"{00BFFF}Yeu cau doi ten",string,"Duyet","Tu choi");
 
-			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
+			format(string, sizeof(string), "AdmCmd: %s da nhan bao cao cua %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			ABroadCast(COLOR_ORANGE, string, 2);
+			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			Log("logs/report.log", string);
 			PlayerInfo[playerid][pAcceptReport]++;
 			ReportCount[playerid]++;
@@ -778,11 +782,12 @@ CMD:ar(playerid, params[])
 			new gid = Reports[reportid][ReportFrom];
 			GetPVarString(Reports[reportid][ReportFrom], "NewRFLName", newname, MAX_PLAYER_NAME);
 
-			format(string, sizeof(string), "{00BFFF}Old Team Name: {FFFFFF}%s\n\n{00BFFF}New Team Name: {FFFFFF}%s", RFLInfo[PlayerInfo[gid][pRFLTeam]][RFLname], newname);
-			ShowPlayerDialogEx(playerid, DIALOG_REPORTTEAMNAME,DIALOG_STYLE_MSGBOX,"{00BFFF}Team Name Change Request",string,"Approve","Deny");
+			format(string, sizeof(string), "{00BFFF}Ten doi cu: {FFFFFF}%s\n\n{00BFFF}Ten doi moi: {FFFFFF}%s", RFLInfo[PlayerInfo[gid][pRFLTeam]][RFLname], newname);
+			ShowPlayerDialogEx(playerid, DIALOG_REPORTTEAMNAME,DIALOG_STYLE_MSGBOX,"{00BFFF}Yeu cau doi ten doi",string,"Duyet","Tu choi");
 
-			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
+			format(string, sizeof(string), "AdmCmd: %s da nhan bao cao cua %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			ABroadCast(COLOR_ORANGE, string, 2);
+			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			Log("logs/report.log", string);
 			PlayerInfo[playerid][pAcceptReport]++;
 			ReportCount[playerid]++;
@@ -798,10 +803,11 @@ CMD:ar(playerid, params[])
 		if(GetPVarInt(Reports[reportid][ReportFrom], "hSignRequest")) {
 			new hSignTxt[64];
 			GetPVarString(Reports[reportid][ReportFrom], "hSignRequestText", hSignTxt, 64);
-			ShowPlayerDialogEx(playerid, DIALOG_REPORT_HSIGN, DIALOG_STYLE_MSGBOX, "{00BFFF}House Sale Sign Text Change", hSignTxt, "Approve", "Deny");
+			ShowPlayerDialogEx(playerid, DIALOG_REPORT_HSIGN, DIALOG_STYLE_MSGBOX, "{00BFFF}Doi noi dung bien ban nha", hSignTxt, "Duyet", "Tu choi");
 
-			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
+			format(string, sizeof(string), "AdmCmd: %s da nhan bao cao cua %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			ABroadCast(COLOR_ORANGE, string, 2);
+			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			Log("logs/report.log", string);
 			PlayerInfo[playerid][pAcceptReport]++;
 			ReportCount[playerid]++;
@@ -813,27 +819,28 @@ CMD:ar(playerid, params[])
 			SetPVarInt(playerid, "hSignTextChange", Reports[reportid][ReportFrom]);
 			return 1;
 		}
-		format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
+		format(string, sizeof(string), "AdmCmd: %s da nhan bao cao cua %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
+		format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 		Log("logs/report.log", string);
 		AddReportToken(playerid); // Report Tokens
-		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s has accepted your report and is reviewing it, you can /reply to send messages to the admin reviewing your report.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s da nhan va dang xem bao cao cua ban, dung /reply de gui tin nhan cho Admin nay.", GetPlayerNameEx(playerid));
 		new giveplayerid;
 		if(GetPVarType(Reports[reportid][ReportFrom], "_rAutoM")) {
 			switch(GetPVarInt(Reports[reportid][ReportFrom], "_rAutoM")) {
 				case 1: { // Ad Unmute
 					ShowAdMuteFine(Reports[reportid][ReportFrom]);
-					SendClientMessageEx(playerid, COLOR_LIGHTRED, "You offered %s an unmute from /ads.", GetPlayerNameEx(Reports[reportid][ReportFrom]));
+					SendClientMessageEx(playerid, COLOR_LIGHTRED, "Ban da de nghi go cam /ads cho %s.", GetPlayerNameEx(Reports[reportid][ReportFrom]));
 				}
 				case 2: { // NUnmute
 					ShowNMuteFine(Reports[reportid][ReportFrom]);
-					SendClientMessageEx(playerid, COLOR_LIGHTRED, "You offered %s an unmute from /newb.", GetPlayerNameEx(Reports[reportid][ReportFrom]));
+					SendClientMessageEx(playerid, COLOR_LIGHTRED, "Ban da de nghi go cam /newb cho %s.", GetPlayerNameEx(Reports[reportid][ReportFrom]));
 				}
 				case 3: { // NRN
 					giveplayerid = GetPVarInt(Reports[reportid][ReportFrom], "_rRepID");
 					if(IsPlayerConnected(giveplayerid)) {
 						if (PlayerInfo[giveplayerid][pAdmin] < 2) {
-							format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has offered %s a free name change because their name is non-RP.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+							format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s da de nghi cho %s doi ten mien phi vi ten khong dung RP.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 							foreach(new i: Player)
 							{	
 								if(PlayerInfo[i][pSMod] == 1) {
@@ -841,11 +848,11 @@ CMD:ar(playerid, params[])
 								}
 							}	
 							ABroadCast( COLOR_YELLOW, string, 2);
-							ShowPlayerDialogEx(giveplayerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Free name change","This is a roleplay server where you must have a name in this format: Firstname_Lastname.\nFor example: John_Smith or Jimmy_Johnson\n\nAn admin has offered you to change your name to the correct format for free. Please enter your desired name below.\n\nNote: If you press cancel you will be kicked from the server.", "Change", "Cancel" );
+							ShowPlayerDialogEx(giveplayerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Doi ten mien phi","May chu roleplay yeu cau ten theo dang: Firstname_Lastname.\nVi du: John_Smith hoac Jimmy_Johnson\n\nAdmin cho phep ban doi ten dung dinh dang mien phi. Nhap ten mong muon ben duoi.\n\nLuu y: Nhan huy se bi ngat ket noi khoi may chu.", "Doi", "Huy" );
 						}
 						else
 						{
-							SendClientMessageEx(playerid, COLOR_GREY, "You cannot offer admins an nrn.");
+							SendClientMessageEx(playerid, COLOR_GREY, "Khong the de nghi Admin doi ten nrn.");
 						}
 					}
 				}
@@ -853,7 +860,7 @@ CMD:ar(playerid, params[])
 					giveplayerid = GetPVarInt(Reports[reportid][ReportFrom], "_rRepID");
 					if(IsPlayerConnected(giveplayerid)) {
 						SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-						SendClientMessageEx(playerid, COLOR_YELLOW, "<< Last 10 Kills/Deaths of %s >>", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_YELLOW, "<< 10 lan giet/chet moi cua %s >>", GetPlayerNameEx(giveplayerid));
 						GetLatestKills(playerid, giveplayerid);
 						SpectatePlayer(playerid, giveplayerid);
 					}
@@ -870,7 +877,7 @@ CMD:ar(playerid, params[])
 						SetPVarInt(playerid, "BigEar", 6);
 						SetPVarInt(playerid, "BigEarPlayer", giveplayerid);
 						rBigEarT[playerid] = 30;
-						SendClientMessageEx(playerid, COLOR_WHITE, "You will hear all messages from %s (ID: %d) for 30 seconds. Use /bigears if you want to disable it.", GetPlayerNameEx(giveplayerid), giveplayerid);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Ban se nghe moi tin nhan cua %s (ID: %d) trong 30 giay. Dung /bigears de tat.", GetPlayerNameEx(giveplayerid), giveplayerid);
 					}	
 				}
 			}
@@ -893,24 +900,24 @@ CMD:tr(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], reportid;
-		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_WHITE,"USAGE: /tr [reportid]");
+		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_WHITE,"CACH DUNG: /tr [reportid]");
 
-		if(reportid < 0 || reportid > 999) { SendClientMessageEx(playerid, COLOR_GREY, "   Report ID not below 0 or above 999!"); return 1; }
+		if(reportid < 0 || reportid > 999) { SendClientMessageEx(playerid, COLOR_GREY, "   ID bao cao phai tu 0 den 999!"); return 1; }
 		if(Reports[reportid][BeingUsed] == 0)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   That report ID is not being used!");
+			SendClientMessageEx(playerid, COLOR_GREY, "   ID bao cao do khong ton tai!");
 			return 1;
 		}
 		if(!IsPlayerConnected(Reports[reportid][ReportFrom]))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   The reporter has disconnected !");
+			SendClientMessageEx(playerid, COLOR_GREY, "   Nguoi bao cao da thoat !");
 			Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
 			Reports[reportid][BeingUsed] = 0;
 			return 1;
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "RequestingAdP") == 1)
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the bo/dang quang cao nay, hay chap nhan bang /ar.");
 		}
 		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
@@ -918,10 +925,11 @@ CMD:tr(playerid, params[])
 			DeletePVar(Reports[reportid][ReportFrom], "AlertType");
 			if(AlertTime[Reports[reportid][ReportFrom]] != 0) AlertTime[Reports[reportid][ReportFrom]] = 0;
 		}
-		format(string, sizeof(string), "AdmCmd: %s has trashed the report from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]));
+		format(string, sizeof(string), "AdmCmd: %s da loai bao cao cua %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]));
 		ABroadCast(COLOR_ORANGE, string, 2);
+		format(string, sizeof(string), "AdmCmd: %s has trashed the report from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]));
 		Log("logs/report.log", string);
-		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s has marked your report invalid. It will not be reviewed. Please check /reporttips", GetPlayerNameEx(playerid));
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s danh dau bao cao khong hop le, khong xem xet. Hay doc /reporttips", GetPlayerNameEx(playerid));
 		PlayerInfo[playerid][pTrashReport]++;
         DeletePVar(Reports[reportid][ReportFrom], "HasReport");
 		DeletePVar(Reports[reportid][ReportFrom], "_rAutoM");
@@ -938,35 +946,36 @@ CMD:dmr(playerid, params[])
     if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], reportid, giveplayerid;
-		if(sscanf(params, "du", reportid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_WHITE,"USAGE: /dmr [reportid] [DM'ers ID]");
+		if(sscanf(params, "du", reportid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_WHITE,"CACH DUNG: /dmr [reportid] [DM'ers ID]");
 
-		if(reportid < 0 || reportid > 999) { SendClientMessageEx(playerid, COLOR_GREY, "   Report ID not below 0 or above 999!"); return 1; }
+		if(reportid < 0 || reportid > 999) { SendClientMessageEx(playerid, COLOR_GREY, "   ID bao cao phai tu 0 den 999!"); return 1; }
 		if(Reports[reportid][BeingUsed] == 0)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   That report ID is not being used!");
+			SendClientMessageEx(playerid, COLOR_GREY, "   ID bao cao do khong ton tai!");
 			return 1;
 		}
 		if(!IsPlayerConnected(Reports[reportid][ReportFrom]))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   The reporter has disconnected !");
+			SendClientMessageEx(playerid, COLOR_GREY, "   Nguoi bao cao da thoat !");
 			Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
 			Reports[reportid][BeingUsed] = 0;
 			return 1;
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "RequestingAdP") == 1)
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the bo/dang quang cao nay, hay chap nhan bang /ar.");
 		}
 		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot forward a DM Alert to the Watch Dogs Team.");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the chuyen canh bao DM den Watch Dogs Team.");
 		}
-		format(string, sizeof(string), "AdmCmd: %s has forwarded the report from %s (RID: %d) to the DM Report system", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
+		format(string, sizeof(string), "AdmCmd: %s da chuyen bao cao cua %s (RID: %d) den he thong bao cao DM", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
+		format(string, sizeof(string), "AdmCmd: %s has forwarded the report from %s (RID: %d) to the DM Report system", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		Log("logs/report.log", string);
-		format(string, sizeof(string), "%s has acknowledged your report about death matching.", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "%s da tiep nhan bao cao DM cua ban.", GetPlayerNameEx(playerid));
 		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, string);
-		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "In the future please use the /dmreport command for all reports regarding DM.");
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Lan sau hay dung /dmreport de bao cao DM.");
 
 		if(PlayerInfo[Reports[reportid][ReportFrom]][pAdmin] >= 2 || PlayerInfo[Reports[reportid][ReportFrom]][pSMod] == 1) mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO dm_watchdog (id,reporter,timestamp,superwatch) VALUES (%d,%d,%d,1)", GetPlayerSQLId(giveplayerid), GetPlayerSQLId(Reports[reportid][ReportFrom]), gettime());
 		else mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO dm_watchdog (id,reporter,timestamp) VALUES (%d,%d,%d)", GetPlayerSQLId(giveplayerid), GetPlayerSQLId(Reports[reportid][ReportFrom]), gettime());
@@ -987,24 +996,24 @@ CMD:nao(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], reportid;
-		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_WHITE,"USAGE: /nao [reportid]");
+		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_WHITE,"CACH DUNG: /nao [reportid]");
 
-		if(reportid < 0 || reportid > 999) { SendClientMessageEx(playerid, COLOR_GREY, "   Report ID not below 0 or above 999!"); return 1; }
+		if(reportid < 0 || reportid > 999) { SendClientMessageEx(playerid, COLOR_GREY, "   ID bao cao phai tu 0 den 999!"); return 1; }
 		if(Reports[reportid][BeingUsed] == 0)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   That report ID is not being used!");
+			SendClientMessageEx(playerid, COLOR_GREY, "   ID bao cao do khong ton tai!");
 			return 1;
 		}
 		if(!IsPlayerConnected(Reports[reportid][ReportFrom]))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   The reporter has disconnected !");
+			SendClientMessageEx(playerid, COLOR_GREY, "   Nguoi bao cao da thoat !");
 			Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
 			Reports[reportid][BeingUsed] = 0;
 			return 1;
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "RequestingAdP") == 1)
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the bo/dang quang cao nay, hay chap nhan bang /ar.");
 		}
 		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
@@ -1012,11 +1021,12 @@ CMD:nao(playerid, params[])
 			DeletePVar(Reports[reportid][ReportFrom], "AlertType");
 			if(AlertTime[Reports[reportid][ReportFrom]] != 0) AlertTime[Reports[reportid][ReportFrom]] = 0;
 		}
-		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to not having admin of sufficient authority online.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
+		format(string, sizeof(string), "AdmCmd: %s da dong bao cao cua %s (RID: %d) vi khong co Admin du quyen online.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
+		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to not having admin of sufficient authority online.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		Log("logs/report.log", string);
-		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s has reviewed your report, however there is not an Admin presently online with sufficient authority to handle your request.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "You can post a request on the forums for additional assistance (www.ng-gaming.net/forums). Our apologies for the inconvenience. ");
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s da xem bao cao, nhung hien khong co Admin du quyen xu ly yeu cau cua ban.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Ban co the dang yeu cau tren dien dan (www.ng-gaming.net/forums) de duoc ho tro them. Xin loi ve su bat tien nay.");
         DeletePVar(Reports[reportid][ReportFrom], "HasReport");
 		DeletePVar(Reports[reportid][ReportFrom], "_rAutoM");
 		DeletePVar(Reports[reportid][ReportFrom], "_rRepID");	
@@ -1033,24 +1043,24 @@ CMD:post(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], reportid;
-		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_WHITE,"USAGE: /post [reportid]");
+		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_WHITE,"CACH DUNG: /post [reportid]");
 
-		if(reportid < 0 || reportid > 999) { SendClientMessageEx(playerid, COLOR_GREY, "   Report ID not below 0 or above 999!"); return 1; }
+		if(reportid < 0 || reportid > 999) { SendClientMessageEx(playerid, COLOR_GREY, "   ID bao cao phai tu 0 den 999!"); return 1; }
 		if(Reports[reportid][BeingUsed] == 0)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   That report ID is not being used!");
+			SendClientMessageEx(playerid, COLOR_GREY, "   ID bao cao do khong ton tai!");
 			return 1;
 		}
 		if(!IsPlayerConnected(Reports[reportid][ReportFrom]))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   The reporter has disconnected !");
+			SendClientMessageEx(playerid, COLOR_GREY, "   Nguoi bao cao da thoat !");
 			Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
 			Reports[reportid][BeingUsed] = 0;
 			return 1;
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "RequestingAdP") == 1)
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the bo/dang quang cao nay, hay chap nhan bang /ar.");
 		}
 		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
@@ -1058,11 +1068,12 @@ CMD:post(playerid, params[])
 			DeletePVar(Reports[reportid][ReportFrom], "AlertType");
 			if(AlertTime[Reports[reportid][ReportFrom]] != 0) AlertTime[Reports[reportid][ReportFrom]] = 0;
 		}
-		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to it needing to be handled on the forums", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
+		format(string, sizeof(string), "AdmCmd: %s da dong bao cao cua %s (RID: %d) vi can xu ly tren dien dan", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
+		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to it needing to be handled on the forums", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		Log("logs/report.log", string);
-		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s has reviewed your report and determined this report should be handled on the forums (i.e. complaint or request.)", GetPlayerNameEx(playerid));
-		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Please only report for items that are actively occuring in game. (www.ng-gaming.net/forums)");
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s da xem va xac dinh bao cao cua ban can xu ly tren dien dan (khieu nai hoac yeu cau).", GetPlayerNameEx(playerid));
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Chi bao cao su viec dang dien ra trong game. (www.ng-gaming.net/forums)");
         DeletePVar(Reports[reportid][ReportFrom], "HasReport");
 		DeletePVar(Reports[reportid][ReportFrom], "_rAutoM");
 		DeletePVar(Reports[reportid][ReportFrom], "_rRepID");		Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
@@ -1078,24 +1089,24 @@ CMD:st(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], reportid;
-		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_WHITE,"USAGE: /st [reportid]");
+		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_WHITE,"CACH DUNG: /st [reportid]");
 
-		if(reportid < 0 || reportid > 999) { SendClientMessageEx(playerid, COLOR_GREY, "   Report ID not below 0 or above 999!"); return 1; }
+		if(reportid < 0 || reportid > 999) { SendClientMessageEx(playerid, COLOR_GREY, "   ID bao cao phai tu 0 den 999!"); return 1; }
 		if(Reports[reportid][BeingUsed] == 0)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   That report ID is not being used!");
+			SendClientMessageEx(playerid, COLOR_GREY, "   ID bao cao do khong ton tai!");
 			return 1;
 		}
 		if(!IsPlayerConnected(Reports[reportid][ReportFrom]))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   The reporter has disconnected !");
+			SendClientMessageEx(playerid, COLOR_GREY, "   Nguoi bao cao da thoat !");
 			Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
 			Reports[reportid][BeingUsed] = 0;
 			return 1;
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "RequestingAdP") == 1)
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the bo/dang quang cao nay, hay chap nhan bang /ar.");
 		}
 		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
@@ -1103,11 +1114,12 @@ CMD:st(playerid, params[])
 			DeletePVar(Reports[reportid][ReportFrom], "AlertType");
 			if(AlertTime[Reports[reportid][ReportFrom]] != 0) AlertTime[Reports[reportid][ReportFrom]] = 0;
 		}
-		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to it needing to be handled via /shoporder", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
+		format(string, sizeof(string), "AdmCmd: %s da dong bao cao cua %s (RID: %d) vi can xu ly qua /shoporder", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
+		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to it needing to be handled via /shoporder", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		Log("logs/report.log", string);
-		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s has reviewed your report and determined it needs to be handled by a Shop Tech.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Please use /shoporder to get your order processed by a Shop Tech.");
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s da xem va xac dinh bao cao can duoc Shop Tech xu ly.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Hay dung /shoporder de Shop Tech xu ly don hang cua ban.");
         DeletePVar(Reports[reportid][ReportFrom], "HasReport");
 		DeletePVar(Reports[reportid][ReportFrom], "_rAutoM");
 		DeletePVar(Reports[reportid][ReportFrom], "_rRepID");			Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
@@ -1123,27 +1135,28 @@ CMD:ts(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], reportid;
-		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_WHITE,"USAGE: /ts [reportid]");
-		if(reportid < 0 || reportid > 999) return SendClientMessageEx(playerid, COLOR_GREY, "   Report ID not below 0 or above 999!");
-		if(Reports[reportid][BeingUsed] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   That report ID is not being used!");
+		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_WHITE,"CACH DUNG: /ts [reportid]");
+		if(reportid < 0 || reportid > 999) return SendClientMessageEx(playerid, COLOR_GREY, "   ID bao cao phai tu 0 den 999!");
+		if(Reports[reportid][BeingUsed] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   ID bao cao do khong ton tai!");
 		if(!IsPlayerConnected(Reports[reportid][ReportFrom]))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   The reporter has disconnected !");
+			SendClientMessageEx(playerid, COLOR_GREY, "   Nguoi bao cao da thoat !");
 			Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
 			Reports[reportid][BeingUsed] = 0;
 			return 1;
 		}
-		if(GetPVarInt(Reports[reportid][ReportFrom], "RequestingAdP") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/ts this advertisement, you must accept it with /ar.");
+		if(GetPVarInt(Reports[reportid][ReportFrom], "RequestingAdP") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the bo/ts quang cao nay, hay chap nhan bang /ar.");
 		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
 			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
 			DeletePVar(Reports[reportid][ReportFrom], "AlertType");
 			if(AlertTime[Reports[reportid][ReportFrom]] != 0) AlertTime[Reports[reportid][ReportFrom]] = 0;
 		}
-		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to it needing to be handled on TeamSpeak", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
+		format(string, sizeof(string), "AdmCmd: %s da dong bao cao cua %s (RID: %d) vi can xu ly tren TeamSpeak", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
+		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to it needing to be handled on TeamSpeak", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		Log("logs/report.log", string);
-		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s has reviewed your report and determined this report should be handled on TeamSpeak (Admin Assistance Channels)", GetPlayerNameEx(playerid));
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "%s da xem va xac dinh bao cao can xu ly tren TeamSpeak (Admin Assistance Channels)", GetPlayerNameEx(playerid));
         DeletePVar(Reports[reportid][ReportFrom], "HasReport");
 		DeletePVar(Reports[reportid][ReportFrom], "_rAutoM");
 		DeletePVar(Reports[reportid][ReportFrom], "_rRepID");

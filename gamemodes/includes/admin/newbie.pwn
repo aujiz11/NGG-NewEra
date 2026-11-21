@@ -4,24 +4,24 @@ CMD:newb(playerid, params[]) {
 
 	szMiscArray[0] = 0;
 
-	if(PlayerInfo[playerid][pNMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are muted from the newbie chat channel.");
-	if(PlayerInfo[playerid][pToggledChats][0]) return SendClientMessageEx(playerid, COLOR_GREY, "You have the channel toggled, /tog newbie to re-enable!");
-	if(PlayerInfo[playerid][pTut] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do that at this time.");
-	if(nonewbie) return SendClientMessageEx(playerid, COLOR_GRAD2, "The newbie chat channel has been disabled by an administrator!");
+	if(PlayerInfo[playerid][pNMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da bi cam chat tren kenh ho tro nguoi moi.");
+	if(PlayerInfo[playerid][pToggledChats][0]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da tat kenh nay, dung /tog newbie de bat lai!");
+	if(PlayerInfo[playerid][pTut] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the lam viec nay.");
+	if(nonewbie) return SendClientMessageEx(playerid, COLOR_GRAD2, "Admin da tat kenh ho tro nguoi moi!");
 
 	if(GetPVarType(playerid, "HasNewbQues")) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You have already asked a newbie question.");
-		return SendClientMessageEx(playerid, COLOR_GREY, "Type /cancelnewbie to submit a new one!");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban da co cau hoi dang cho tra loi.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Dung /cancelnewbie de huy va gui cau hoi moi!");
 	}
 
-	ShowPlayerDialogEx(playerid, SEND_NEWBIE, DIALOG_STYLE_INPUT, "Ask Newbie Question", "Please input your question\nPlease bare in mind only script/server related questions will be answered.", "Send", "Cancel");
+	ShowPlayerDialogEx(playerid, SEND_NEWBIE, DIALOG_STYLE_INPUT, "Gui cau hoi Newbie", "Nhap cau hoi cua ban\nKenh nay chi ho tro cau hoi ve tinh nang va may chu.", "Gui", "Huy");
 
 	return 1;
 }
 
 CMD:cancelnewbie(playerid, params[]) {
 
-	SendClientMessageEx(playerid, COLOR_WHITE, "You have cancelled your request");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Ban da huy cau hoi.");
 	ClearNewbVars(playerid);
 	return 1;
 }
@@ -41,18 +41,18 @@ CMD:an(playerid, params[]) {
 
 	new id;
 
-	if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /an [playerid]");
-	if(!IsPlayerConnected(id)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is no longer connected!");
-	if(!GetPVarType(id, "HasNewbQues")) return SendClientMessageEx(playerid, COLOR_GREY, "That player hasn't asked a newbie question!");
-	if(GetPVarType(id, "NewbBeingAnswered")) return SendClientMessageEx(playerid, COLOR_GREY, "Another helper is answering that request!");
+	if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /an [playerid]");
+	if(!IsPlayerConnected(id)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi do da ngat ket noi!");
+	if(!GetPVarType(id, "HasNewbQues")) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi do chua gui cau hoi!");
+	if(GetPVarType(id, "NewbBeingAnswered")) return SendClientMessageEx(playerid, COLOR_GREY, "Mot Helper khac dang tra loi cau hoi nay!");
 
 	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] > 0) {
 
 		SetPVarInt(playerid, "AnsweringNewb", id);
 		SetPVarInt(id, "NewbBeingAnswered", playerid);
 		GetPVarString(id, "HasNewbQues", szMiscArray, 128);
-		format(szMiscArray, sizeof(szMiscArray), "%s (ID:%d) Q: %s\nPlease type in your answer below!", GetPlayerNameEx(id), id, szMiscArray);
-		ShowPlayerDialogEx(playerid, ACCEPT_NEWBIE, DIALOG_STYLE_INPUT, "Newbie Answer", szMiscArray, "Answer", "");
+		format(szMiscArray, sizeof(szMiscArray), "%s (ID:%d) Hoi: %s\nNhap cau tra loi ben duoi!", GetPlayerNameEx(id), id, szMiscArray);
+		ShowPlayerDialogEx(playerid, ACCEPT_NEWBIE, DIALOG_STYLE_INPUT, "Tra loi Newbie", szMiscArray, "Tra loi", "");
 	}
 
 	return 1;
@@ -64,10 +64,10 @@ CMD:tn(playerid, params[]) {
 
 	new id;
 
-	if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /tn [playerid]");
-	if(!IsPlayerConnected(id)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is no longer connected!");
-	if(!GetPVarType(id, "HasNewbQues")) return SendClientMessageEx(playerid, COLOR_GREY, "That player hasn't asked a newbie question!");
-	if(GetPVarType(id, "NewbBeingAnswered")) return SendClientMessageEx(playerid, COLOR_GREY, "Another helper is answering that request!");
+	if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /tn [playerid]");
+	if(!IsPlayerConnected(id)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi do da ngat ket noi!");
+	if(!GetPVarType(id, "HasNewbQues")) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi do chua gui cau hoi!");
+	if(GetPVarType(id, "NewbBeingAnswered")) return SendClientMessageEx(playerid, COLOR_GREY, "Mot Helper khac dang tra loi cau hoi nay!");
 
 
 	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] > 0) {
@@ -76,7 +76,7 @@ CMD:tn(playerid, params[]) {
 		SetPVarInt(id, "NewbBeingAnswered", playerid);
 		GetPVarString(id, "HasNewbQues", szMiscArray, 128);
 		
-		ShowPlayerDialogEx(playerid, DENY_NEWBIE, DIALOG_STYLE_LIST, "Why is this not a valid request?", "Not a Question\nIC Matter\nSpam", "Select","");
+		ShowPlayerDialogEx(playerid, DENY_NEWBIE, DIALOG_STYLE_LIST, "Ly do tu choi cau hoi", "Khong phai cau hoi\nVan de IC\nSpam", "Chon","");
 	}
 
 	return 1;
@@ -88,7 +88,7 @@ SendNewbQuestionToQueue(iPlayerID, szQuestion[]) {
 
 	SetPVarString(iPlayerID, "HasNewbQues", szQuestion);
 
-	format(szMiscArray, sizeof(szMiscArray), "Newb: %s (ID:%d) Q: %s", GetPlayerNameEx(iPlayerID), iPlayerID, szQuestion);
+	format(szMiscArray, sizeof(szMiscArray), "Newb: %s (ID:%d) H: %s", GetPlayerNameEx(iPlayerID), iPlayerID, szQuestion);
 
 	foreach(new i : Player) {
 		if((PlayerInfo[i][pAdmin] >= 1 || PlayerInfo[i][pHelper] > 0))
@@ -96,7 +96,7 @@ SendNewbQuestionToQueue(iPlayerID, szQuestion[]) {
 			ChatTrafficProcess(i, COLOR_NEWBIE, szMiscArray, 0);
 	}
 
-	SendClientMessageEx(iPlayerID, COLOR_WHITE, "Your question was submitted");
+	SendClientMessageEx(iPlayerID, COLOR_WHITE, "Da gui cau hoi cua ban.");
 
 	return 1;
 }
@@ -114,7 +114,7 @@ AnswerNewbie(iPlayerID, iNewbieID, szAnswer[]) {
 
 	szMiscArray[0] = 0;
 
-	if(!GetPVarType(iNewbieID, "HasNewbQues")) return SendClientMessageEx(iPlayerID, COLOR_GREY, "That player does not have an active question!");
+	if(!GetPVarType(iNewbieID, "HasNewbQues")) return SendClientMessageEx(iPlayerID, COLOR_GREY, "Nguoi choi do khong co cau hoi dang cho!");
 
 	GetPVarString(iNewbieID, "HasNewbQues", szMiscArray, 128);
 
@@ -134,7 +134,7 @@ AnswerNewbie(iPlayerID, iNewbieID, szAnswer[]) {
 		AddCAReportToken(iPlayerID); // Advisor Tokens
 	}
 
-	SendClientMessageEx(iNewbieID, COLOR_NEWBIE, "Your question has been answered! If you have more questions or for additional assistance use [/requesthelp]");
+	SendClientMessageEx(iNewbieID, COLOR_NEWBIE, "Cau hoi da duoc tra loi! Can ho tro them, dung [/requesthelp].");
 
 	ClearNewbVars(iNewbieID);
 
@@ -159,7 +159,7 @@ GetNewbieQuestions(iPlayerID) {
 	foreach(new i : Player) {
 		if(GetPVarType(i, "HasNewbQues")) {
 			GetPVarString(i, "HasNewbQues", szMiscArray, 128);
-			format(szMiscArray, sizeof(szMiscArray), "Newb: %s (ID:%d) Q: %s", GetPlayerNameEx(i), i, szMiscArray);
+			format(szMiscArray, sizeof(szMiscArray), "Newb: %s (ID:%d) H: %s", GetPlayerNameEx(i), i, szMiscArray);
 			SendClientMessageEx(iPlayerID, COLOR_NEWBIE, szMiscArray);
 		}
 	}
@@ -176,8 +176,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(response) {
 				
-				if(isnull(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot send no question!");
-				if(strlen(inputtext) > 110) return SendClientMessageEx(playerid, COLOR_GRAD2, "That message is too long!");
+				if(isnull(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Noi dung khong duoc de trong!");
+				if(strlen(inputtext) > 110) return SendClientMessageEx(playerid, COLOR_GRAD2, "Noi dung qua dai!");
 
 				SendNewbQuestionToQueue(playerid, inputtext);
 			}
@@ -186,11 +186,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case ACCEPT_NEWBIE: {
 
 			if(response) {
-				if(isnull(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot send no question!");
+				if(isnull(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Noi dung khong duoc de trong!");
 				if(strlen(inputtext) > 110) {
 					DeletePVar(GetPVarInt(playerid, "AnsweringNewb"), "NewbBeingAnswered");
 					DeletePVar(playerid, "AnsweringNewb");
-					return SendClientMessageEx(playerid, COLOR_GRAD2, "That message is too long!");
+					return SendClientMessageEx(playerid, COLOR_GRAD2, "Noi dung qua dai!");
 				}
 
 				AnswerNewbie(playerid, GetPVarInt(playerid, "AnsweringNewb"), inputtext);
@@ -210,17 +210,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				switch(listitem) {
 				
 					case 0: {
-						SendClientMessageEx(id, COLOR_WHITE, "Your newbie message has not been answered due to it not being considered a question.");
+						SendClientMessageEx(id, COLOR_WHITE, "Tin nhan bi tu choi vi khong phai cau hoi.");
 					}
 
 					case 1: {
-						SendClientMessageEx(id, COLOR_WHITE, "Your newbie message has not been answered due to it being considered an IC matter.");
-						SendClientMessageEx(id, COLOR_WHITE, "We may only answer script/server related questions on /newb.");
+						SendClientMessageEx(id, COLOR_WHITE, "Cau hoi bi tu choi vi lien quan den van de IC.");
+						SendClientMessageEx(id, COLOR_WHITE, "Kenh /newb chi ho tro cau hoi ve tinh nang va may chu.");
 					}
 
 					case 2: {
-						SendClientMessageEx(id, COLOR_WHITE, "Your newbie message has not been answered due to it being considered spam.");
-						SendClientMessageEx(id, COLOR_WHITE, "Repeated abuse will result in a mute and/or further punishment.");
+						SendClientMessageEx(id, COLOR_WHITE, "Tin nhan bi tu choi vi bi xem la spam.");
+						SendClientMessageEx(id, COLOR_WHITE, "Tiep tuc lam dung se bi cam chat hoac xu ly them.");
 					}
 
 				}

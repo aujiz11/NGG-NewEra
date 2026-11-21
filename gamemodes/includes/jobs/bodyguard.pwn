@@ -70,12 +70,12 @@ CMD:frisk(playerid, params[])
 	{
 		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /frisk [player]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /frisk [player]");
 			return 1;
 		}
 		if(GetPVarType(playerid, "WatchingTV") || GetPVarType(playerid, "PreviewingTV") || Spectating[playerid])
-			return SendClientMessageEx(playerid, COLOR_GREY, "You cannot frisk players while watching TV or spectating.");
-		if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot frisk yourself!");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Khong the kham nguoi khi xem TV hoac theo doi.");
+		if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the kham chinh minh!");
 
 		if(0 <= giveplayerid < MAX_PLAYERS && IsPlayerConnected(giveplayerid) && gPlayerLogged{giveplayerid})
 		{
@@ -88,19 +88,19 @@ CMD:frisk(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 			}
 
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 			return 1;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "   You're not a law enforcement officer, or a bodyguard!");
+		SendClientMessageEx(playerid, COLOR_GREY, "   Ban khong phai nhan vien hanh phap hay bodyguard!");
 		return 1;
 	}
 	return 1;
@@ -114,28 +114,28 @@ PlayerFriskPlayer(playerid, giveplayerid)
 	new packages = GetPVarInt(giveplayerid, "Packages");
 	new crates = PlayerInfo[giveplayerid][pCrates];
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
-	SendClientMessageEx(playerid, COLOR_YELLOW, "Listing pocket for %s.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_WHITE, "** Items **");
-	format(szMiscArray, sizeof(szMiscArray), "* %s has frisked %s for any illegal items.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Do trong tui cua %s.", GetPlayerNameEx(giveplayerid));
+	SendClientMessageEx(playerid, COLOR_WHITE, "** Vat pham **");
+	format(szMiscArray, sizeof(szMiscArray), "* %s kham %s de tim hang cam.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
 	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	if(PlayerInfo[giveplayerid][pMats] > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d materials.", PlayerInfo[giveplayerid][pMats]);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Tui) %d vat lieu.", PlayerInfo[giveplayerid][pMats]);
 	}
 	if(PlayerInfo[giveplayerid][pSyringes] > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d syringes.", PlayerInfo[giveplayerid][pSyringes]);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Tui) %d ong tiem.", PlayerInfo[giveplayerid][pSyringes]);
 	}
     if(packages > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d material packages.", packages);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Tui) %d goi vat lieu.", packages);
 	}
 	if(crates > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d drug crates.", crates);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Tui) %d thung ma tuy.", crates);
 	}
 
-	SendClientMessageEx(playerid, COLOR_WHITE, "** Drugs **");
+	SendClientMessageEx(playerid, COLOR_WHITE, "** Ma tuy **");
 	for(new i = 0; i < sizeof(Drugs); ++i) {
 
 		if(PlayerInfo[giveplayerid][pDrugs][i] > 0) {
@@ -144,19 +144,19 @@ PlayerFriskPlayer(playerid, giveplayerid)
 	}
 	if(PlayerInfo[giveplayerid][pFishWeight] > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d lbs of fish.", PlayerInfo[giveplayerid][pFishWeight]);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Tui) %d lbs ca.", PlayerInfo[giveplayerid][pFishWeight]);
 	}
-	SendClientMessageEx(playerid, COLOR_WHITE, "** Misc **");
-	if(PlayerInfo[giveplayerid][pPhoneBook] > 0) SendClientMessageEx(playerid, COLOR_GREY, "Phone book.");
-	if(PlayerInfo[giveplayerid][pCDPlayer] > 0) SendClientMessageEx(playerid, COLOR_GREY, "Music player.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "** Khac **");
+	if(PlayerInfo[giveplayerid][pPhoneBook] > 0) SendClientMessageEx(playerid, COLOR_GREY, "Danh ba.");
+	if(PlayerInfo[giveplayerid][pCDPlayer] > 0) SendClientMessageEx(playerid, COLOR_GREY, "May nghe nhac.");
 	new weaponname[50];
-	SendClientMessageEx(playerid, COLOR_WHITE, "** Weapons **");
+	SendClientMessageEx(playerid, COLOR_WHITE, "** Vu khi **");
 	for (new i = 0; i < 12; i++)
 	{
 		if(PlayerInfo[giveplayerid][pGuns][i] > 0)
 		{
 			GetWeaponName(PlayerInfo[giveplayerid][pGuns][i], weaponname, sizeof(weaponname));
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Weapon: %s.", weaponname);
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Vu khi: %s.", weaponname);
 		}
 	}
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
@@ -166,24 +166,24 @@ PlayerFriskPlayer(playerid, giveplayerid)
 CMD:guard(playerid, params[])
 {
 	if(!Job_HasJob(playerid, JOB_BODYGUARD))
-		return SendClientMessageEx(playerid, COLOR_GREY, "You're not a bodyguard.");
-	if(!Bodyguard_CanTrade(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot offer protection right now.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai bodyguard.");
+	if(!Bodyguard_CanTrade(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the de nghi bao ve.");
 
 	new giveplayerid, money;
-	if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /guard [player] [price]");
+	if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /guard [player] [price]");
 	new now = gettime(), remaining = GetPVarInt(playerid, "GuardUntil") - now;
-	if(remaining > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before offering another vest.", remaining);
-	if(money < 2000 || money > 10000) return SendClientMessageEx(playerid, COLOR_GREY, "Specified price must be between $2,000 and $10,000.");
-	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You can't /guard yourself.");
-	if(!Bodyguard_CanTrade(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not available to receive protection.");
+	if(remaining > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Cho %d giay truoc khi ban ao giap tiep.", remaining);
+	if(money < 2000 || money > 10000) return SendClientMessageEx(playerid, COLOR_GREY, "Gia phai tu $2,000 den $10,000.");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the /guard chinh minh.");
+	if(!Bodyguard_CanTrade(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do chua the nhan bao ve.");
 	if(!Bodyguard_IsNear(playerid, giveplayerid, 8.0))
-		return SendClientMessageEx(playerid, COLOR_GREY, "You must be near each other in the same interior and world.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Hai nguoi phai o gan, cung interior va world.");
 
 	SetPVarInt(playerid, "GuardUntil", now + 10);
 	GuardOffer[giveplayerid] = playerid;
 	SetPVarInt(giveplayerid, "GuardOfferSession", g_arrQueryHandle[playerid]);
 	GuardPrice[giveplayerid] = money;
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered protection to %s for $%d.", GetPlayerNameEx(giveplayerid), money);
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Bodyguard %s wants to protect you for $%d, type /accept bodyguard to accept.", GetPlayerNameEx(playerid), money);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban de nghi bao ve %s voi gia $%d.", GetPlayerNameEx(giveplayerid), money);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Bodyguard %s muon bao ve ban voi gia $%d, dung /accept bodyguard de dong y.", GetPlayerNameEx(playerid), money);
 	return 1;
 }

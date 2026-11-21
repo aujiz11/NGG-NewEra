@@ -1,7 +1,7 @@
 stock SpectatePlayer(playerid, giveplayerid)
 {
 	if(IsPlayerConnected(giveplayerid)) {
-		if(PlayerInfo[giveplayerid][pAccountRestricted]) SendClientMessageEx(playerid, COLOR_WHITE, "NOTE: This person has their account restricted. Please consider this before assuming that they're health hacking.");
+		if(PlayerInfo[giveplayerid][pAccountRestricted]) SendClientMessageEx(playerid, COLOR_WHITE, "LUU Y: Tai khoan nay dang bi han che. Can luu y dieu nay truoc khi ket luan nguoi choi gian lan mau.");
 		if(Spectating[playerid] == 0) {
 			new Float: pPositions[3];
 			GetPlayerPos(playerid, pPositions[0], pPositions[1], pPositions[2]);
@@ -64,7 +64,7 @@ stock SpectatePlayer(playerid, giveplayerid)
 			Spectate[playerid] = giveplayerid;
 			Spectating[playerid] = 1;
 		}
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are spectating %s (ID: %d).", GetPlayerNameEx(giveplayerid), giveplayerid);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban dang theo doi %s (ID: %d).", GetPlayerNameEx(giveplayerid), giveplayerid);
 	}	
 	return 1;
 }

@@ -114,7 +114,7 @@ stock ShowCrimesDialog(iPlayerID, iSuspectID = INVALID_PLAYER_ID, iDialogID = DI
 	{
 		case DIALOG_SHOW_CRIMES:
 		{
-			format(szMiscArray, sizeof(szMiscArray), "----Misdemeanors----\n");
+			format(szMiscArray, sizeof(szMiscArray), "----Khinh toi----\n");
 			for(new i = 0; i < MAX_CRIMES; i++)
 			{
 				if(arrCrimeData[i][c_iNation] == arrGroupData[PlayerInfo[iPlayerID][pMember]][g_iAllegiance] && arrCrimeData[i][c_iType] == 1)
@@ -122,7 +122,7 @@ stock ShowCrimesDialog(iPlayerID, iSuspectID = INVALID_PLAYER_ID, iDialogID = DI
 					format(szMiscArray, sizeof(szMiscArray), "%s{FFFF00}%i\t%s\n", szMiscArray, arrCrimeData[i][c_iID], arrCrimeData[i][c_szName]);
 				}
 			}
-			format(szMiscArray, sizeof(szMiscArray), "%s----Felonies----\n", szMiscArray);
+			format(szMiscArray, sizeof(szMiscArray), "%s---Trong toi---\n", szMiscArray);
 			for(new i = 0; i < MAX_CRIMES; i++)
 			{
 				if(arrCrimeData[i][c_iNation] == arrGroupData[PlayerInfo[iPlayerID][pMember]][g_iAllegiance] && arrCrimeData[i][c_iType] == 2)
@@ -131,11 +131,11 @@ stock ShowCrimesDialog(iPlayerID, iSuspectID = INVALID_PLAYER_ID, iDialogID = DI
 				}
 			}
 			SetPVarInt(iPlayerID, "suspect_TargetID", iSuspectID);
-			ShowPlayerDialogEx(iPlayerID, iDialogID, DIALOG_STYLE_LIST, "Select a committed crime", szMiscArray, "Select", "Exit");
+			ShowPlayerDialogEx(iPlayerID, iDialogID, DIALOG_STYLE_LIST, "Chon toi da pham", szMiscArray, "Chon", "Thoat");
 		}
 		case DIALOG_EDIT_CRIMES:
 		{
-			ShowPlayerDialogEx(iPlayerID, iDialogID, DIALOG_STYLE_LIST, "Select a Nation.", "SA\nNE", "Select", "Exit");
+			ShowPlayerDialogEx(iPlayerID, iDialogID, DIALOG_STYLE_LIST, "Chon quoc gia.", "SA\nNE", "Chon", "Thoat");
 		}
 	}
 	return 1;
@@ -144,7 +144,7 @@ stock ShowCrimesDialog(iPlayerID, iSuspectID = INVALID_PLAYER_ID, iDialogID = DI
 stock ShowOfflineCrimesDialog(playerid)
 {
 	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "----Misdemeanors----\n");
+	format(szMiscArray, sizeof(szMiscArray), "----Khinh toi----\n");
 	for(new i = 0; i < MAX_CRIMES; i++)
 	{
 		if(arrCrimeData[i][c_iNation] == arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] && arrCrimeData[i][c_iType] == 1)
@@ -152,7 +152,7 @@ stock ShowOfflineCrimesDialog(playerid)
 			format(szMiscArray, sizeof(szMiscArray), "%s{FFFF00}%i\t%s\n", szMiscArray, arrCrimeData[i][c_iID], arrCrimeData[i][c_szName]);
 		}
 	}
-	format(szMiscArray, sizeof(szMiscArray), "%s----Felonies----\n", szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s---Trong toi---\n", szMiscArray);
 	for(new i = 0; i < MAX_CRIMES; i++)
 	{
 		if(arrCrimeData[i][c_iNation] == arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] && arrCrimeData[i][c_iType] == 2)
@@ -160,7 +160,7 @@ stock ShowOfflineCrimesDialog(playerid)
 			format(szMiscArray, sizeof(szMiscArray), "%s{AA3333}%i\t%s\n", szMiscArray, arrCrimeData[i][c_iID], arrCrimeData[i][c_szName]);
 		}
 	}
-	ShowPlayerDialogEx(playerid, DIALOG_SHOW_OFFLINE_CRIMES, DIALOG_STYLE_LIST, "Select a committed crime", szMiscArray, "Select", "Exit");
+	ShowPlayerDialogEx(playerid, DIALOG_SHOW_OFFLINE_CRIMES, DIALOG_STYLE_LIST, "Chon toi da pham", szMiscArray, "Chon", "Thoat");
 	return 1;
 }
 
@@ -210,15 +210,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						strcat(szCrime, arrCrimeData[i][c_szName]);
 						AddCrime(playerid, iTargetID, szCrime);
 
-						SendClientMessageEx(iTargetID, COLOR_LIGHTRED, "You've commited a crime ( %s ). Reporter: %s.", szCrime, GetPlayerNameEx(playerid));
+						SendClientMessageEx(iTargetID, COLOR_LIGHTRED, "Ban da pham toi ( %s ). Nguoi bao: %s.", szCrime, GetPlayerNameEx(playerid));
 
-						SendClientMessageEx(iTargetID, COLOR_YELLOW, "Current wanted level: %d", PlayerInfo[iTargetID][pWantedLevel]);
+						SendClientMessageEx(iTargetID, COLOR_YELLOW, "Muc truy na hien tai: %d", PlayerInfo[iTargetID][pWantedLevel]);
 
 						foreach(new p: Player)
 						{
 							if(IsACop(p) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[p][pMember]][g_iAllegiance]) {
-								SendClientMessageEx(p, TEAM_BLUE_COLOR, "HQ: All units APB (reporter: %s)",GetPlayerNameEx(playerid));
-								SendClientMessageEx(p, TEAM_BLUE_COLOR, "HQ: Crime: %s, suspect: %s", szCrime, GetPlayerNameEx(iTargetID));
+								SendClientMessageEx(p, TEAM_BLUE_COLOR, "HQ: Moi don vi APB (nguoi bao: %s)",GetPlayerNameEx(playerid));
+								SendClientMessageEx(p, TEAM_BLUE_COLOR, "HQ: Toi: %s, nghi pham: %s", szCrime, GetPlayerNameEx(iTargetID));
 							}
 						}
 						PlayerInfo[iTargetID][pDefendTime] = 60;
@@ -266,7 +266,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			szMiscArray[0] = 0;
 			SetPVarInt(playerid, "iEditCrime", strval(inputtext));
 			format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s", arrCrimeData[strval(inputtext)-1][c_szName]);
-			ShowPlayerDialogEx(playerid, DIALOG_CRIMES_EDIT, DIALOG_STYLE_LIST, szMiscArray, "Edit Type\nnEdit Nation\nEdit Name\nEdit Time\nEdit Fine", "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_CRIMES_EDIT, DIALOG_STYLE_LIST, szMiscArray, "Sua loai\nSua quoc gia\nSua ten\nSua thoi gian\nSua tien phat", "Chon", "Huy");
 		}
 		case DIALOG_CRIMES_EDIT:
 		{
@@ -277,28 +277,28 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				case 0:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s - {FF0000}EDIT TYPE", arrCrimeData[iEditCrime][c_szName]);
-					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_TYPE, DIALOG_STYLE_LIST, szMiscArray, "Misdemeanor\nFelony", "Select", "Cancel");
+					format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s - {FF0000}SUA LOAI", arrCrimeData[iEditCrime][c_szName]);
+					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_TYPE, DIALOG_STYLE_LIST, szMiscArray, "Khinh toi\nTrong toi", "Chon", "Huy");
 				}	
 				case 1:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s - {FF0000}EDIT NATION", arrCrimeData[iEditCrime][c_szName]);
-					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_NATION, DIALOG_STYLE_LIST, szMiscArray, "San Andreas\nNew Robada", "Select", "Cancel");
+					format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s - {FF0000}SUA NUOC", arrCrimeData[iEditCrime][c_szName]);
+					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_NATION, DIALOG_STYLE_LIST, szMiscArray, "San Andreas\nNew Robada", "Chon", "Huy");
 				}
 				case 2:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s - {FF0000}EDIT NAME", arrCrimeData[iEditCrime][c_szName]);
-					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_NAME, DIALOG_STYLE_INPUT, szMiscArray, "Please input a new name for the crime.", "Select", "Cancel");
+					format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s - {FF0000}SUA TEN", arrCrimeData[iEditCrime][c_szName]);
+					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_NAME, DIALOG_STYLE_INPUT, szMiscArray, "Nhap ten moi cho toi danh.", "Chon", "Huy");
 				}
 				case 3:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s - {FF0000}EDIT TIME", arrCrimeData[iEditCrime][c_szName]);
-					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_TIME, DIALOG_STYLE_INPUT, szMiscArray, "Please input a new time for the crime.", "Select", "Cancel");
+					format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s - {FF0000}SUA GIO", arrCrimeData[iEditCrime][c_szName]);
+					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_TIME, DIALOG_STYLE_INPUT, szMiscArray, "Nhap thoi gian moi cho toi danh.", "Chon", "Huy");
 				}
 				case 4:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s - {FF0000}EDIT FINE", arrCrimeData[iEditCrime][c_szName]);
-					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_FINE, DIALOG_STYLE_INPUT, szMiscArray, "Please input a new fine for the crime.", "Select", "Cancel");
+					format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s - {FF0000}SUA PHAT", arrCrimeData[iEditCrime][c_szName]);
+					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_FINE, DIALOG_STYLE_INPUT, szMiscArray, "Nhap tien phat moi cho toi danh.", "Chon", "Huy");
 				}
 			}
 		}
@@ -308,7 +308,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new iEditCrime = GetPVarInt(playerid, "iEditCrime")-1;
 			arrCrimeData[iEditCrime][c_iType] = listitem+1;
 			szMiscArray[0] = 0;
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have set %s's type to %s", arrCrimeData[iEditCrime][c_szName], inputtext);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da dat loai cua %s thanh %s", arrCrimeData[iEditCrime][c_szName], inputtext);
 			SaveCrime(iEditCrime);
 		}
 		case DIALOG_CRIMES_NATION:
@@ -317,16 +317,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new iEditCrime = GetPVarInt(playerid, "iEditCrime")-1;
 			arrCrimeData[iEditCrime][c_iNation] = listitem+1;
 			szMiscArray[0] = 0;
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have set %s's nation to %s", arrCrimeData[iEditCrime][c_szName], inputtext);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da dat nuoc cua %s thanh %s", arrCrimeData[iEditCrime][c_szName], inputtext);
 			SaveCrime(iEditCrime);
 		}
 		case DIALOG_CRIMES_NAME:
 		{
 			if(!response) return ShowCrimesList(playerid);
-			if(isnull(inputtext) || strlen(inputtext) > 32) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please enter a valid name no longer than 32 characters.");
+			if(isnull(inputtext) || strlen(inputtext) > 32) return SendClientMessageEx(playerid, COLOR_GRAD2, "Nhap ten hop le, khong qua 32 ky tu.");
 			new iEditCrime = GetPVarInt(playerid, "iEditCrime")-1;
 			szMiscArray[0] = 0;
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You updated crime %s's name to %s", arrCrimeData[iEditCrime][c_szName], inputtext);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da doi ten toi %s thanh %s", arrCrimeData[iEditCrime][c_szName], inputtext);
 			format(arrCrimeData[iEditCrime][c_szName], 32, "%s", inputtext);
 			SaveCrime(iEditCrime);
 		}
@@ -334,20 +334,20 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(!response) return ShowCrimesList(playerid);
 			new iEditCrime = GetPVarInt(playerid, "iEditCrime")-1;
-			if(strval(inputtext) < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please input a time above 0 minutes.");
+			if(strval(inputtext) < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Nhap thoi gian lon hon 0 phut.");
 			arrCrimeData[iEditCrime][c_iJTime] = strval(inputtext);
 			szMiscArray[0] = 0;
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You updated crime %s's time to %i minute(s)", arrCrimeData[iEditCrime][c_szName], strval(inputtext));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da doi thoi gian toi %s thanh %i phut", arrCrimeData[iEditCrime][c_szName], strval(inputtext));
 			SaveCrime(iEditCrime);
 		}
 		case DIALOG_CRIMES_FINE:
 		{
 			if(!response) return ShowCrimesList(playerid);
 			new iEditCrime = GetPVarInt(playerid, "iEditCrime")-1;
-			if(strval(inputtext) < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please input a fine above $0.");
+			if(strval(inputtext) < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Nhap tien phat lon hon $0.");
 			arrCrimeData[iEditCrime][c_iJFine] = strval(inputtext);
 			szMiscArray[0] = 0;
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You updated crime %s's fine to $%s dollars", arrCrimeData[iEditCrime][c_szName], number_format(strval(inputtext)));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da doi tien phat toi %s thanh $%s", arrCrimeData[iEditCrime][c_szName], number_format(strval(inputtext)));
 			SaveCrime(iEditCrime);
 		}
 	}
@@ -358,7 +358,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 alias:crimelist("clist")
 CMD:crimelist(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1337 && !PlayerInfo[playerid][pFactionModerator]) return SendClientMessageEx(playerid, COLOR_WHITE, "SERVER: You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 1337 && !PlayerInfo[playerid][pFactionModerator]) return SendClientMessageEx(playerid, COLOR_WHITE, "SERVER: Ban khong co quyen dung lenh nay.");
 	ShowCrimesList(playerid);
 	return 1;
 }
@@ -367,22 +367,22 @@ CMD:su(playerid, params[])
 {
 	if(IsACop(playerid)) 
 	{
-		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this in jail/prison.");
+		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the dung khi o tu.");
 
 		new iTargetID;
 
-		if(sscanf(params, "u", iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/su)spect [player]");
-		if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-		if(iTargetID == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot place charges on yourself.");
+		if(sscanf(params, "u", iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: (/su)spect [player]");
+		if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
+		if(iTargetID == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the tu buoc toi minh.");
 		if(IsACop(iTargetID) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[iTargetID][pMember]][g_iAllegiance]) 
 		{
-			if(arrGroupData[PlayerInfo[playerid][pMember]][gLEOArrest] == INVALID_RANK || arrGroupData[PlayerInfo[playerid][pMember]][gLEOArrest] > PlayerInfo[playerid][pRank]) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this command on a law enforcement officer.");
+			if(arrGroupData[PlayerInfo[playerid][pMember]][gLEOArrest] == INVALID_RANK || arrGroupData[PlayerInfo[playerid][pMember]][gLEOArrest] > PlayerInfo[playerid][pRank]) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung lenh nay voi nhan vien hanh phap.");
 		}
-		if(PlayerInfo[iTargetID][pWantedLevel] >= 6) return SendClientMessageEx(playerid, COLOR_GRAD2, "Target is already most wanted.");
+		if(PlayerInfo[iTargetID][pWantedLevel] >= 6) return SendClientMessageEx(playerid, COLOR_GRAD2, "Doi tuong da dat muc truy na cao nhat.");
 
 		ShowCrimesDialog(playerid, iTargetID);
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a law enforcement officer.");
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong phai nhan vien hanh phap.");
 	return 1;
 }
 
@@ -391,33 +391,33 @@ CMD:osu(playerid, params[])
 	if(IsACop(playerid)) 
 	{
 		if(PlayerInfo[playerid][pJailTime] > 0) {
-			return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this in jail/prison.");
+			return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the dung khi o tu.");
 		}
 
-		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /osu(spect) [player name]");
+		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /osu(spect) [player name]");
 
 		new PlayerName[MAX_PLAYER_NAME];
 		mysql_escape_string(params, PlayerName);
 
-		if(IsPlayerConnected(ReturnUser(PlayerName))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /su.");
+		if(IsPlayerConnected(ReturnUser(PlayerName))) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi do dang online, hay dung /su.");
 
 		SetPVarString(playerid, "OfflineSU", PlayerName);
 
 		ShowOfflineCrimesDialog(playerid);
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a law enforcement officer.");
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong phai nhan vien hanh phap.");
 	return 1;
 }
 
 ShowCrimesList(playerid)
 {
 	szMiscArray[0] = 0;
-	strcat(szMiscArray, "ID\tName\tTime (min)\tFine");
+	strcat(szMiscArray, "ID\tTen\tThoi gian (phut)\tTien phat");
 	for(new i = 0; i < MAX_CRIMES; i++)
 	{
 		format(szMiscArray, sizeof(szMiscArray), "%s\n%i\t%s\t%d\t$%s", szMiscArray, arrCrimeData[i][c_iID], arrCrimeData[i][c_szName], arrCrimeData[i][c_iJTime], number_format(arrCrimeData[i][c_iJFine]));
 	}
-	return ShowPlayerDialogEx(playerid, DIALOG_CRIMES_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Select a crime to edit.", szMiscArray, "Select", "Exit");
+	return ShowPlayerDialogEx(playerid, DIALOG_CRIMES_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Chon toi danh can sua.", szMiscArray, "Chon", "Thoat");
 }
 
 Crime_AddOffline(iPlayerID, szAddCrime[], szPName[], iExtra = 0) {
@@ -440,7 +440,7 @@ public OnCrimeAddOffline(iPlayerID, szAddCrime[], szPName[], iExtra)
 	switch(iExtra) {
 		case 0: {
 			
-			if(!iRows) return SendClientMessageEx(iPlayerID, 0xFFFFFF, "That player was not found!");
+			if(!iRows) return SendClientMessageEx(iPlayerID, 0xFFFFFF, "Khong tim thay nguoi choi do!");
 
 			cache_get_value_name_int(0, "id", iTempID);
 			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `mdc` (`id` ,`time` ,`issuer` ,`crime`, `origin`) VALUES ('%d',NOW(),'%s','%s','%d')", iTempID, GetPlayerNameEx(iPlayerID), szAddCrime, arrGroupData[PlayerInfo[iPlayerID][pMember]][g_iAllegiance]);
@@ -450,8 +450,8 @@ public OnCrimeAddOffline(iPlayerID, szAddCrime[], szPName[], iExtra)
 			foreach(new p: Player)
 			{
 				if(IsACop(p) && arrGroupData[PlayerInfo[iPlayerID][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[p][pMember]][g_iAllegiance]) {
-					SendClientMessageEx(p, TEAM_BLUE_COLOR, "(offline) HQ: All units APB (reporter: %s)",GetPlayerNameEx(iPlayerID));
-					SendClientMessageEx(p, TEAM_BLUE_COLOR, "(offline) HQ: Crime: %s, suspect: %s", szAddCrime, PlayerName);
+					SendClientMessageEx(p, TEAM_BLUE_COLOR, "(offline) HQ: Moi don vi APB (nguoi bao: %s)",GetPlayerNameEx(iPlayerID));
+					SendClientMessageEx(p, TEAM_BLUE_COLOR, "(offline) HQ: Toi: %s, nghi pham: %s", szAddCrime, PlayerName);
 				}
 			}
 			DeletePVar(iPlayerID, "OfflineSU");
@@ -459,9 +459,9 @@ public OnCrimeAddOffline(iPlayerID, szAddCrime[], szPName[], iExtra)
 
 		case 1: {
 			
-			if(!cache_affected_rows()) return SendClientMessageEx(iPlayerID, 0xFFFFFF, "There was an issue appending that crime!");
+			if(!cache_affected_rows()) return SendClientMessageEx(iPlayerID, 0xFFFFFF, "Khong the them toi danh do!");
 
-			format(szMiscArray, sizeof(szMiscArray), "Crime Added: %s - %s", szPName, szAddCrime);
+			format(szMiscArray, sizeof(szMiscArray), "Da them toi: %s - %s", szPName, szAddCrime);
 			SendClientMessage(iPlayerID, 0xFFFFFF, szMiscArray);
 		}
 	}

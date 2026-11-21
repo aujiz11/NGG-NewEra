@@ -99,22 +99,22 @@ stock Mechanic_ClearVehicleWork(playerid, vehicleid)
 CMD:fix(playerid, params[])
 {
 	if(!Mechanic_CanFix(playerid)) 
-		return SendClientMessageEx(playerid, COLOR_WHITE, "You are not a Mechanic!");
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong phai Mechanic!");
 
 	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) 
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not repair while inside the vehicle.");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the sua khi dang o trong xe.");
 	
 	if(gettime() < PlayerInfo[playerid][pMechTime]) 
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You must wait %d seconds!", PlayerInfo[playerid][pMechTime]-gettime());
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban phai cho %d giay!", PlayerInfo[playerid][pMechTime]-gettime());
 	
 	if(GetPVarType(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken"))
-	 	return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while in an arena or event.");
+	 	return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay trong dau truong hay su kien.");
 	
 	if(PlayerIsDead[playerid] || PlayerInfo[playerid][pHospital] > 0 || GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen"))
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do that at this time!");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua the lam viec nay!");
 	
 	if(GetPVarType(playerid, "FixVehicleTimer")) 
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You are already fixing a vehicle!");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban dang sua mot xe!");
 	
 	new closestcar = INVALID_VEHICLE_ID, world = GetPlayerVirtualWorld(playerid), interior = GetPlayerInterior(playerid);
 	new Float:nearest = 10.0, Float:X, Float:Y, Float:Z;
@@ -129,18 +129,18 @@ CMD:fix(playerid, params[])
 			nearest = distance;
 		}
 	}
-	if(closestcar == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not close enough to any vehicle.");
+	if(closestcar == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o du gan xe nao.");
 	new engine, lights, alarm, doors, bonnet, boot, objective;
 	GetVehicleParamsEx(closestcar, engine, lights, alarm, doors, bonnet, boot, objective);
 	if(!IsABike(closestcar) && !IsAPlane(closestcar) && bonnet != VEHICLE_PARAMS_ON)
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "The vehicle hood must be opened in order to repair it.");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Phai mo nap capo xe de sua.");
 	new repairDelay = PlayerInfo[playerid][pMechSkill] >= 400 ? 2000 : 15000;
 	SetPVarInt(playerid, "FixVehicleID", closestcar);
 	SetPVarInt(playerid, "FixVehicleTimer", SetTimerEx("FixVehicle", repairDelay, false, "iii", playerid, closestcar, g_arrQueryHandle[playerid]));
 	if(PlayerInfo[playerid][pMechSkill] < 400)
 	{
 		new string[128];
-		format(string, sizeof(string), "* %s has began repairing the vehicle.", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "* %s bat dau sua xe.", GetPlayerNameEx(playerid));
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		TogglePlayerControllable(playerid, false);
 		ApplyAnimation(playerid, "MISC", "Plunger_01", 4.1, true, true, true, true, 1, 1);
@@ -164,7 +164,7 @@ public FixVehicle(playerid, vehicleid, session)
 		if(!IsABike(vehicleid) && !IsAPlane(vehicleid) && bonnet != VEHICLE_PARAMS_ON) valid = false;
 	}
 	Mechanic_CancelFix(playerid);
-	if(!valid) return SendClientMessageEx(playerid, COLOR_GRAD1, "The repair was cancelled because you or the vehicle are no longer ready.");
+	if(!valid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Huy sua vi ban hoac xe khong con san sang.");
 	PlayerInfo[playerid][pMechTime] = gettime()+60;
 	SetVehicleHealth(vehicleid, 1000.0);
 	Vehicle_Armor(vehicleid);
@@ -176,7 +176,7 @@ public FixVehicle(playerid, vehicleid, session)
 			arr_Engine{vehicleid} = 1;
 		}
 	}
-	format(szMiscArray, sizeof(szMiscArray), "* %s has repaired the vehicle.", GetPlayerNameEx(playerid));
+	format(szMiscArray, sizeof(szMiscArray), "* %s da sua xe.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	return 1;
 }
@@ -187,21 +187,21 @@ CMD:mechduty(playerid, params[])
 	{
         if(GetPVarInt(playerid, "MechanicDuty") == 1)
 		{
-            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now off duty from your Car Mechanic job and will not receive calls anymore.");
+            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da het ca Car Mechanic va khong nhan cuoc goi nua.");
 			SetPVarInt(playerid, "MechanicDuty", 0);
             Mechanics -= 1;
         }
         else if(GetPVarInt(playerid, "MechanicDuty") == 0)
 		{
-            if (TransportDuty[playerid] != 0) return SendClientMessageEx(playerid,COLOR_GREY,"You need to get off duty as a transport driver first.");
-            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now on duty with your Car Mechanic job and will receive calls from people in need.");
+            if (TransportDuty[playerid] != 0) return SendClientMessageEx(playerid,COLOR_GREY,"Can roi ca lai xe cho khach truoc.");
+            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da vao ca Car Mechanic va se nhan cuoc goi can giup do.");
 			SetPVarInt(playerid, "MechanicDuty", 1);
             ++Mechanics;
         }
     }
     else
 	{
-        SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not a mechanic!");
+        SendClientMessageEx(playerid, COLOR_GRAD1, "   Ban khong phai mechanic!");
     }
     return 1;
 }
@@ -211,7 +211,7 @@ CMD:nos(playerid, params[])
     if(Job_HasJob(playerid, JOB_MECHANIC)) {
         if(IsPlayerInAnyVehicle(playerid)) {
 			if(GetPVarInt(playerid, "EventToken")) {
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung trong su kien.");
 			}
 			new vehicleid = GetPlayerVehicleID(playerid);
 			new component = GetVehicleComponentInSlot(vehicleid, GetVehicleComponentType(1010));
@@ -226,25 +226,25 @@ CMD:nos(playerid, params[])
 					else if(level < 400) nostogive = 1008;
 					else nostogive = 1010;
 					if(!VehicleCanHaveComponent(GetVehicleModel(vehicleid), nostogive) || !AddVehicleComponent(vehicleid, nostogive))
-						return SendClientMessageEx(playerid, COLOR_GREY, "Nitrous injection cannot be installed on this vehicle.");
+						return SendClientMessageEx(playerid, COLOR_GREY, "Khong the lap nitro cho xe nay.");
                 	PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
-                	format(string, sizeof(string), "* %s added nitrous injection to the vehicle.", GetPlayerNameEx(playerid));
+                	format(string, sizeof(string), "* %s lap he thong nitro cho xe.", GetPlayerNameEx(playerid));
                 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
             	}
             	else {
-            	    SendClientMessageEx(playerid, COLOR_GREY, "Nitrous injection cannot be installed on this vehicle.");
+            	    SendClientMessageEx(playerid, COLOR_GREY, "Khong the lap nitro cho xe nay.");
             	}
 			 }
 			 else {
-			    SendClientMessageEx(playerid, COLOR_GREY, "This vehicle already has nitrous.");
+			    SendClientMessageEx(playerid, COLOR_GREY, "Xe nay da co nitro.");
 		 	}
         }
         else {
-            SendClientMessageEx(playerid, COLOR_GREY, "You're not in a vehicle.");
+            SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o trong xe.");
         }
     }
     else {
-        SendClientMessageEx(playerid, COLOR_GREY, "You are not a Mechanic!" );
+        SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai Mechanic!" );
     }
     return 1;
 }
@@ -254,24 +254,24 @@ CMD:hyd(playerid, params[])
     if(Job_HasJob(playerid, JOB_MECHANIC)) {
         if(IsPlayerInAnyVehicle(playerid)) {
 			new vehicleid = GetPlayerVehicleID(playerid), dynid = DynVeh[vehicleid];
-			if(IsPlayerInInvalidNosVehicle(playerid) || !VehicleCanHaveComponent(GetVehicleModel(vehicleid), 1087)) return SendClientMessageEx(playerid, COLOR_WHITE, "Hydraulics cannot be installed in this vehicle.");
+			if(IsPlayerInInvalidNosVehicle(playerid) || !VehicleCanHaveComponent(GetVehicleModel(vehicleid), 1087)) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lap thuy luc cho xe nay.");
 			if(dynid != -1)
 			{
-				if(!(0 <= dynid < sizeof(DynVehicleInfo))) return SendClientMessageEx(playerid, COLOR_WHITE, "Hydraulics cannot be installed in this vehicle.");
+				if(!(0 <= dynid < sizeof(DynVehicleInfo))) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lap thuy luc cho xe nay.");
 				new groupid = DynVehicleInfo[dynid][gv_igID];
 				if(groupid != INVALID_GROUP_ID && (!(0 <= groupid < sizeof(arrGroupData)) || arrGroupData[groupid][g_iGroupType] != GROUP_TYPE_CRIMINAL))
-					return SendClientMessageEx(playerid, COLOR_WHITE, "Hydraulics cannot be installed in this vehicle.");
+					return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lap thuy luc cho xe nay.");
 			}
-			if(gettime() < PlayerInfo[playerid][pServiceTime]) return SendClientMessage(playerid, COLOR_GREY, "You must wait 20 seconds before using this command again.");
+			if(gettime() < PlayerInfo[playerid][pServiceTime]) return SendClientMessage(playerid, COLOR_GREY, "Cho 20 giay de dung lai lenh nay.");
 			new string[128];
-			if(!AddVehicleComponent(vehicleid, 1087)) return SendClientMessageEx(playerid, COLOR_WHITE, "Hydraulics cannot be installed in this vehicle.");
+			if(!AddVehicleComponent(vehicleid, 1087)) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lap thuy luc cho xe nay.");
 			PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
-			format(string, sizeof(string), "* %s added hydraulics to the vehicle.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s lap he thong thuy luc cho xe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			PlayerInfo[playerid][pServiceTime] = gettime()+20;
         }
-        else return SendClientMessageEx(playerid, COLOR_WHITE, "You're not in a vehicle.");
+        else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong o trong xe.");
     }
-    else return SendClientMessageEx(playerid, COLOR_WHITE, "You are not a Mechanic!");
+    else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong phai Mechanic!");
     return 1;
 }

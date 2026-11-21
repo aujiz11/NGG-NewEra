@@ -38,7 +38,7 @@ SetPlayerSpawn(playerid)
 				if(hgPlayerCount == 3)
 				{
 					new szmessage[128];
-					format(szmessage, sizeof(szmessage), "** %s has came in third place in the Hunger Games Event.", GetPlayerNameEx(playerid));
+					format(szmessage, sizeof(szmessage), "** %s dat hang ba trong Hunger Games Event.", GetPlayerNameEx(playerid));
 					SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 						
 					SetHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
@@ -53,7 +53,7 @@ SetPlayerSpawn(playerid)
 					hgPlayerCount--;
 					HideHungerGamesTextdraw(playerid);
 					PlayerInfo[playerid][pRewardDrawChance] += 10;
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "** You have been given 10 Draw Chances for the Fall Into Fun Event.");
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "** Ban nhan 10 Draw Chances cho Fall Into Fun Event.");
 					
 					for(new w = 0; w < 12; w++)
 					{
@@ -67,7 +67,7 @@ SetPlayerSpawn(playerid)
 				else if(hgPlayerCount == 2)
 				{
 					new szmessage[128];
-					format(szmessage, sizeof(szmessage), "** %s has came in second place in the Hunger Games Event.", GetPlayerNameEx(playerid));
+					format(szmessage, sizeof(szmessage), "** %s dat hang nhi trong Hunger Games Event.", GetPlayerNameEx(playerid));
 					SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 						
 					SetHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
@@ -82,7 +82,7 @@ SetPlayerSpawn(playerid)
 					hgPlayerCount--;
 					HideHungerGamesTextdraw(playerid);
 					PlayerInfo[playerid][pRewardDrawChance] += 25;
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "** You have been given 25 Draw Chances for the Fall Into Fun Event.");
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "** Ban nhan 25 Draw Chances cho Fall Into Fun Event.");
 						
 					for(new w = 0; w < 12; w++)
 					{
@@ -97,7 +97,7 @@ SetPlayerSpawn(playerid)
 					{
 						if(HungerPlayerInfo[i][hgInEvent] == 1)
 						{
-							format(szmessage, sizeof(szmessage), "** %s has came in first place in the Hunger Games Event.", GetPlayerNameEx(i));
+							format(szmessage, sizeof(szmessage), "** %s dat hang nhat trong Hunger Games Event.", GetPlayerNameEx(i));
 							SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 								
 							SetHealth(i, HungerPlayerInfo[i][hgLastHealth]);
@@ -112,7 +112,7 @@ SetPlayerSpawn(playerid)
 							hgPlayerCount--;
 							HideHungerGamesTextdraw(i);
 							PlayerInfo[i][pRewardDrawChance] += 50;
-							SendClientMessageEx(i, COLOR_LIGHTBLUE, "** You have been given 50 Draw Chances for the Fall Into Fun Event.");
+							SendClientMessageEx(i, COLOR_LIGHTBLUE, "** Ban nhan 50 Draw Chances cho Fall Into Fun Event.");
 							hgActive = 0;
 							
 							for(new w = 0; w < 12; w++)
@@ -151,7 +151,7 @@ SetPlayerSpawn(playerid)
 							
 					ResetPlayerWeapons(playerid);
 						
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have died and has been removed from the Hunger Games Event, better luck next time.");
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da chet va roi Hunger Games Event, chuc may man lan sau.");
 						
 					HungerPlayerInfo[playerid][hgInEvent] = 0;
 					hgPlayerCount--;
@@ -170,7 +170,7 @@ SetPlayerSpawn(playerid)
 				
 				
 				new string[128];
-				format(string, sizeof(string), "Players in event: %d", hgPlayerCount);
+				format(string, sizeof(string), "So nguoi trong su kien: %d", hgPlayerCount);
 				foreach(new i: Player) 
 				{
 					PlayerTextDrawSetString(i, HungerPlayerInfo[i][hgPlayerText], string);
@@ -267,7 +267,7 @@ SetPlayerSpawn(playerid)
 				SetPlayerPos(playerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
 				SetPlayerSkin(playerid, 50);
 				SetPlayerColor(playerid, TEAM_APRISON_COLOR);
-				SendClientMessageEx(playerid, COLOR_LIGHTRED, "You are in prison, reason: %s", PlayerInfo[playerid][pPrisonReason]);
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "Ban dang o tu, ly do: %s", PlayerInfo[playerid][pPrisonReason]);
 				ResetPlayerWeaponsEx(playerid);
 				KillEMSQueue(playerid);
 				Player_StreamPrep(playerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2], FREEZE_TIME);
@@ -281,41 +281,41 @@ SetPlayerSpawn(playerid)
 				case WEAPON_BRASSKNUCKLE, WEAPON_GOLFCLUB, WEAPON_BAT, WEAPON_SHOVEL, WEAPON_POOLSTICK, WEAPON_DILDO, WEAPON_DILDO2, WEAPON_VIBRATOR,
 					WEAPON_VIBRATOR2, WEAPON_FLOWER, WEAPON_CANE:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "Player brutally beaten with a %s.", Weapon_ReturnName(aLastShotWeapon[playerid]));
+					format(szMiscArray, sizeof(szMiscArray), "Bi danh dap tan bao bang %s.", Weapon_ReturnName(aLastShotWeapon[playerid]));
 				}
 				case WEAPON_KATANA, WEAPON_KNIFE:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "Player was brutally slashed with a %s.", Weapon_ReturnName(aLastShotWeapon[playerid]));
+					format(szMiscArray, sizeof(szMiscArray), "Bi chem tan bao bang %s.", Weapon_ReturnName(aLastShotWeapon[playerid]));
 				}
 				case WEAPON_GRENADE, WEAPON_ROCKETLAUNCHER, WEAPON_HEATSEEKER, 51:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "Player suffered critical damage from an explosive blast.");
+					format(szMiscArray, sizeof(szMiscArray), "Chan thuong nguy kich do vu no.");
 				}
 				case WEAPON_FIREEXTINGUISHER, WEAPON_SPRAYCAN:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "Player would appear suffocated and poisoned.");
+					format(szMiscArray, sizeof(szMiscArray), "Co dau hieu ngat tho va nhiem doc.");
 				}
 				case WEAPON_MOLTOV, WEAPON_FLAMETHROWER:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "Player suffered from critical severe burn injuries.");
+					format(szMiscArray, sizeof(szMiscArray), "Bong nang, tinh trang nguy kich.");
 				}
 				case WEAPON_COLT45, WEAPON_SILENCED, WEAPON_DEAGLE, WEAPON_SHOTGUN, WEAPON_SAWEDOFF, WEAPON_SHOTGSPA, WEAPON_UZI, WEAPON_MP5, WEAPON_AK47,
 					WEAPON_M4, WEAPON_TEC9, WEAPON_RIFLE, WEAPON_SNIPER, WEAPON_MINIGUN:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "Player was critically shot in the %s by a %s.", ReturnBoneName(aLastShotBone[playerid]), Weapon_ReturnName(aLastShotWeapon[playerid]));
+					format(szMiscArray, sizeof(szMiscArray), "Bi ban nguy kich vao %s bang %s.", ReturnBoneName(aLastShotBone[playerid]), Weapon_ReturnName(aLastShotWeapon[playerid]));
 				}
 				case WEAPON_VEHICLE, WEAPON_COLLISION:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "Player would appear to have multiple broken bones.");
+					format(szMiscArray, sizeof(szMiscArray), "Co dau hieu gay nhieu xuong.");
 				}
 				case WEAPON_DROWN:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "Player lost consciousness through drowning.");
+					format(szMiscArray, sizeof(szMiscArray), "Bat tinh do duoi nuoc.");
 				}
-				case 0: format(szMiscArray, sizeof(szMiscArray), "Player would appear to be brutally beaten by someone's fists.");
-				default: format(szMiscArray, sizeof(szMiscArray), "Player passed away from unknown causes.");
+				case 0: format(szMiscArray, sizeof(szMiscArray), "Co dau hieu bi danh dap tan bao bang tay khong.");
+				default: format(szMiscArray, sizeof(szMiscArray), "Tu vong khong ro nguyen nhan.");
 			}
-			strcat(szMiscArray, "\n{FF0000}(Player is critically injured).", sizeof(szMiscArray));
+			strcat(szMiscArray, "\n{FF0000}(Dang bi thuong nguy kich).", sizeof(szMiscArray));
 			new Float: mX, Float: mY, Float: mZ;
 			GetPlayerPos(playerid, mX, mY, mZ);
 			SetPVarInt(playerid, "InjuredTL", _:CreateDynamic3DTextLabel(szMiscArray, COLOR_LIGHTBLUE, mX, mY, mZ+0.1, 5, .attachedplayer = playerid, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = GetPlayerInterior(playerid), .streamdistance = 5));
@@ -384,7 +384,7 @@ SetPlayerSpawn(playerid)
 			   	SetPlayerPos(playerid, EventKernel[ EventPositionX ], EventKernel[ EventPositionY ], EventKernel[ EventPositionZ ] );
 				SetPlayerInterior(playerid, EventKernel[ EventInterior ] );
 				SetPlayerVirtualWorld(playerid, EventKernel[ EventWorld ] );
-				SendClientMessageEx(playerid, COLOR_WHITE, "You are a zombie! Use /bite to infect others");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ban la zombie! Dung /bite de lay nhiem nguoi khac");
 				SetHealth(playerid, 30);
 				RemoveArmor(playerid);
 				SetPlayerSkin(playerid, 134);

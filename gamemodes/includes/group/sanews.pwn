@@ -188,7 +188,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPVarInt(playerid, "ChannelID_FMEM", listitem+1);
 					GetPlayerPos(playerid,X,Y,Z);
 					new channel = GetPVarInt(playerid, "ChannelID_FMEM");
-					format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Broadcast Director %s signed in to Channel %i. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
+					format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Broadcast Director %s da vao kenh %i. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
 					SANShows[channel][SANews3DText][1] = CreateDynamic3DTextLabel(szMiscArray,COLOR_LIGHTBLUE,X,Y,Z,5.0);
 					UpdateSANewsBroadcast(channel);
 					SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
@@ -198,7 +198,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				else if(GetPVarType(playerid, "CameramanChannelID"))
 				{
 					SetPVarInt(playerid, "ChannelID_FMEM", listitem+1);
-					format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Cameraman %s signed in to Channel %i. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
+					format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Cameraman %s da vao kenh %i. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
 					SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 					DeletePVar(playerid, "CameramanChannelID");
 					pc_cmd_cameraman(playerid, "");
@@ -206,7 +206,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				else if(GetPVarType(playerid, "LoginChannelID"))
 				{
 					SetPVarInt(playerid, "ChannelID_FMEM", listitem+1);
-					format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Host %s signed in to Channel %i. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
+					format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Host %s da vao kenh %i. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
 					SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 					DeletePVar(playerid, "LoginChannelID");
 				}
@@ -242,23 +242,23 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					case 0:
 					{
-						ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_NAME, DIALOG_STYLE_INPUT, "SAN Shows | Name", "Type the new name of the show.", "Enter", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_NAME, DIALOG_STYLE_INPUT, "SAN Shows | Ten", "Nhap ten moi cho chuong trinh.", "Nhap", "Huy");
 					}
 					case 1:
 					{
-						ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_HOST, DIALOG_STYLE_INPUT, "SAN Shows | Host", "Type the name of the show's host(s).", "Enter", "Cancel");				
+						ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_HOST, DIALOG_STYLE_INPUT, "SAN Shows | Host", "Nhap ten Host cua chuong trinh.", "Nhap", "Huy");				
 					}
 					case 2:
 					{
-						ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_GLOBAL, DIALOG_STYLE_LIST, "SAN Shows | Global Channels", "Enable Global Channels\nDisable Global Channels", "Enter", "Cancel");				
+						ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_GLOBAL, DIALOG_STYLE_LIST, "SAN Shows | Kenh toan cau", "Bat kenh toan cau\nTat kenh toan cau", "Chon", "Huy");				
 					}
 					case 3:
 					{
-						ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_TYPE, DIALOG_STYLE_LIST, "SAN Shows | Show Type", "TV Show\nRadio Show\nCustom Show", "Enter", "Cancel");				
+						ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_TYPE, DIALOG_STYLE_LIST, "SAN Shows | Loai chuong trinh", "Chuong trinh TV\nChuong trinh radio\nChuong trinh tuy chinh", "Chon", "Huy");				
 					}
 					case 4:
 					{
-						ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_TOGGLE, DIALOG_STYLE_LIST, "SAN Shows | Start / Stop Broadcast", "{EEFFEE}START {FFFFFF}Broadcast\n{FFDDDD}STOP {FFFFFF}Broadcast", "Enter", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_TOGGLE, DIALOG_STYLE_LIST, "SAN Shows | Phat / Dung", "{EEFFEE}BAT {FFFFFF}phat song\n{FFDDDD}DUNG {FFFFFF}phat song", "Chon", "Huy");
 					}
 				}
 				return 1;
@@ -318,7 +318,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					case 0: 
 					{
-						if(isnull(SANShows[channel][szChannelType])) return ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_TYPE, DIALOG_STYLE_LIST, "SAN Shows | Show Type | FORGOTTEN!", "TV Show\nRadio Show\nCustom Show", "Enter", "Cancel");				
+						if(isnull(SANShows[channel][szChannelType])) return ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_TYPE, DIALOG_STYLE_LIST, "SAN Shows | Loai chuong trinh | CHUA CHON!", "Chuong trinh TV\nChuong trinh radio\nChuong trinh tuy chinh", "Chon", "Huy");				
 						if(SANShows[channel][Global] == 0 && strfind(SANShows[channel][szChannelType], "[G]", true) == -1) format(SANShows[channel][szChannelType], 32, "[G] %s", SANShows[channel][szChannelType]);
 						SANShows[channel][ChannelActive] = 1;
 						SAN_Broadcast(playerid, channel);
@@ -379,16 +379,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					case 2:
 					{
 
-						format(szMiscArray, sizeof(szMiscArray), "<----- Static Camera Menu\n\
-							----------- DYNAMIC CAMERA MENU -----------\n\
-							Preview Point A\n\
-							Set Point A\n\
-							Preview Point B\n\
-							Set Point B\n\
+						format(szMiscArray, sizeof(szMiscArray), "<----- Menu camera tinh\n\
+							----------- MENU CAMERA DONG -----------\n\
+							Xem truoc diem A\n\
+							Dat diem A\n\
+							Xem truoc diem B\n\
+							Dat diem B\n\
 							------------------------------------------\n\
-							Preview point-to-point camera\n\
-							Finish & Broadcast");
-						ShowPlayerDialogEx(playerid, DIALOG_SAN_DCAMERAMAN, DIALOG_STYLE_LIST, "SA News | Dynamic Camera Menu", szMiscArray, "Select", "Cancel");
+							Xem truoc camera giua hai diem\n\
+							Hoan tat va phat song");
+						ShowPlayerDialogEx(playerid, DIALOG_SAN_DCAMERAMAN, DIALOG_STYLE_LIST, "SA News | Camera dong", szMiscArray, "Chon", "Huy");
 					}
 					case 3:
 					{
@@ -563,9 +563,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new szTitle[32];
 
 				SetPVarInt(playerid, "ListItemID_Cameras", ListItemTrackID_Cameras[playerid][listitem]);
-				format(szTitle, sizeof(szTitle), "SAN | Camera List | Channel %i", GetPVarInt(playerid, "ChannelID_FMEM"));
-				format(szMiscArray, sizeof(szMiscArray), "Preview %s's camera\nBroadcast %s's camera", GetPlayerNameEx(ListItemTrackID_Cameras[playerid][listitem]), GetPlayerNameEx(ListItemTrackID_Cameras[playerid][listitem]));
-				ShowPlayerDialogEx(playerid, DIALOG_SAN_CAMLIST2, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
+				format(szTitle, sizeof(szTitle), "SAN | Camera | Kenh %i", GetPVarInt(playerid, "ChannelID_FMEM"));
+				format(szMiscArray, sizeof(szMiscArray), "Xem camera cua %s\nPhat camera cua %s", GetPlayerNameEx(ListItemTrackID_Cameras[playerid][listitem]), GetPlayerNameEx(ListItemTrackID_Cameras[playerid][listitem]));
+				ShowPlayerDialogEx(playerid, DIALOG_SAN_CAMLIST2, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Chon", "Huy");
 			}
 			else 
 			{
@@ -581,7 +581,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					case 0:
 					{
-						if(GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You are already previewing a camera angle.");
+						if(GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Ban dang xem truoc goc camera.");
 						SAN_Process_StartPreview(playerid, GetPVarInt(playerid, "ListItemID_Cameras"));					
 					}
 					case 1:
@@ -621,7 +621,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				GetPlayerPos(playerid, X, Y, Z);
 				format(SANShows[GetPVarInt(playerid, "ChannelID_FMEM")][szStream], 128, inputtext);
 				PlayAudioStreamForPlayer(playerid, inputtext);
-				SendClientMessage(playerid, COLOR_LIGHTBLUE, "Press 'N' to stop previewing the stream.");
+				SendClientMessage(playerid, COLOR_LIGHTBLUE, "Nhan 'N' de dung xem truoc luong phat.");
 				SetPVarInt(playerid, "SAN_PreviewingStream", 1);
 			}
 			pc_cmd_bdirector(playerid, "");
@@ -630,14 +630,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(response)
 			{
-				if(isnull(SANShows[GetPVarInt(playerid, "ChannelID_FMEM")][szStream]) || GetPVarInt(playerid, "SAN_PreviewingStream") == 0) return SendClientMessage(playerid, COLOR_GRAD1, "You haven't previewed your stream yet.");
+				if(isnull(SANShows[GetPVarInt(playerid, "ChannelID_FMEM")][szStream]) || GetPVarInt(playerid, "SAN_PreviewingStream") == 0) return SendClientMessage(playerid, COLOR_GRAD1, "Ban chua xem truoc luong phat.");
 				DeletePVar(playerid, "SAN_PreviewingStream");
 				foreach(new i : Player)
 				{
 					if(GetPVarType(i, "WatchingTV"))
 					{
 						PlayAudioStreamForPlayer(i, SANShows[GetPVarInt(playerid, "ChannelID")][szStream]);
-						SendClientMessage(i, COLOR_LIGHTBLUE, "[SAN] Stream started. Press 'N' to mute it.");
+						SendClientMessage(i, COLOR_LIGHTBLUE, "[SAN] Da bat luong phat. Nhan 'N' de tat tieng.");
 						SetPVarInt(i, "SAN_PlayingStream", 1);
 					}
 				}
@@ -750,8 +750,8 @@ public SAN_Viewers(playerid)
 			format(szMiscArray, sizeof(szMiscArray), "%s[CH. %i] || %s\n", szMiscArray, GetPVarInt(i, "ChannelID"), GetPlayerNameEx(i));
 		}
 	}
-	if(isnull(szMiscArray)) return SendClientMessage(playerid, COLOR_GRAD1, "There are no viewers.");
-	else ShowPlayerDialogEx(playerid, DIALOG_SAN_VIEWERS, DIALOG_STYLE_LIST, "SAN | Viewer List", szMiscArray, "--", "--");
+	if(isnull(szMiscArray)) return SendClientMessage(playerid, COLOR_GRAD1, "Chua co nguoi xem.");
+	else ShowPlayerDialogEx(playerid, DIALOG_SAN_VIEWERS, DIALOG_STYLE_LIST, "SAN | Nguoi xem", szMiscArray, "--", "--");
 	return 1;
 }
 
@@ -800,26 +800,26 @@ public SAN_ShowsDialog(playerid, choice)
 			{
 				if(shutdown == 1)
 				{
-					format(szMiscArray, sizeof(szMiscArray), "__________________________ {FF3232}SYSTEM OFFLINE {FFFFFF}________________\n");
+					format(szMiscArray, sizeof(szMiscArray), "__________________________ {FF3232}HE THONG TAT {FFFFFF}________________\n");
 				}
 				else
 				{
-					format(szMiscArray, sizeof(szMiscArray), "__________________________ {7CFC00}SYSTEM ONLINE {FFFFFF}__________________________\n");
+					format(szMiscArray, sizeof(szMiscArray), "__________________________ {7CFC00}HE THONG BAT {FFFFFF}__________________________\n");
 				}
-				format(szMiscArray, sizeof(szMiscArray),"%sLog in to Channel\nList Shows\nEdit Shows\nLog Out of System", szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray),"%sVao kenh\nChuong trinh\nSua chuong trinh\nDang xuat", szMiscArray);
 			}
 		}
 	}
 	switch(choice)
 	{
-		case 0: return ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS, DIALOG_STYLE_LIST, "SAN Shows | Tune in", szMiscArray, "Select", "Cancel");
-		case 1: return ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_EDIT, DIALOG_STYLE_LIST, "SAN Shows | Edit Console", szMiscArray, "Select", "Cancel");
-		case 2: return ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_MENU, DIALOG_STYLE_LIST, "SAN Shows | Menu", szMiscArray, "Select", "Cancel");
+		case 0: return ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS, DIALOG_STYLE_LIST, "SAN Shows | Chon kenh", szMiscArray, "Chon", "Huy");
+		case 1: return ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_EDIT, DIALOG_STYLE_LIST, "SAN Shows | Bang chinh sua", szMiscArray, "Chon", "Huy");
+		case 2: return ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_MENU, DIALOG_STYLE_LIST, "SAN Shows | Menu", szMiscArray, "Chon", "Huy");
 		case 3:
 		{
-			format(szTitle, sizeof(szTitle), "SAN | EDITING: Channel %i | %s", GetPVarInt(playerid, "SAN_EditingChannelID"), SANShows[GetPVarInt(playerid, "SAN_EditingChannelID")][ChannelName]);
-			format(szMiscArray, sizeof(szMiscArray), "Edit Show Name\nEdit Show Host\nEdit Global Channel Routing\nEdit Show Type\nStart / Stop Broadcast");
-			ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_EDIT2, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
+			format(szTitle, sizeof(szTitle), "SAN | SUA: Kenh %i | %s", GetPVarInt(playerid, "SAN_EditingChannelID"), SANShows[GetPVarInt(playerid, "SAN_EditingChannelID")][ChannelName]);
+			format(szMiscArray, sizeof(szMiscArray), "Sua ten chuong trinh\nSua Host\nSua dinh tuyen kenh toan cau\nSua loai chuong trinh\nPhat / Dung phat song");
+			ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_EDIT2, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Chon", "Huy");
 		}
 	}
 	return 1;
@@ -864,7 +864,7 @@ public SAN_Broadcast(playerid, channel)
 	szMiscArray[0] = 0;
 	if(IsAReporter(playerid) && PlayerInfo[playerid][pRank] > 1)
 	{
-		if(shutdown == 1) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "The news system is currently shut down." );
+		if(shutdown == 1) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "He thong tin tuc da tam dung." );
 		{
 			if(isnull(SANShows[channel][Hosts])) format(SANShows[channel][Hosts], 64, "%s", GetPlayerNameEx(playerid));
 			if(SANShows[channel][ChannelActive] == 1)
@@ -879,9 +879,9 @@ public SAN_Broadcast(playerid, channel)
 				// TVObjects_Spawn();
  				// SendClientMessage(playerid, COLOR_LIGHTBLUE, "* You're now broadcasting LIVE.");
  				broadcasting = 1;
- 				format(szMiscArray, sizeof(szMiscArray), "** %s has started the systems on Channel %i. **", GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
+ 				format(szMiscArray, sizeof(szMiscArray), "** %s da bat he thong tren kenh %i. **", GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
 				SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
-				format(szMiscArray, sizeof(szMiscArray), "[SAN]: We will broadcast %s LIVE with %s on Channel %i. (( Use /shows to tune in! ))", SANShows[channel][ChannelName], SANShows[channel][Hosts], channel); // This announces the broadcast to all players.
+				format(szMiscArray, sizeof(szMiscArray), "[SAN]: Phat TRUC TIEP %s voi %s tren kenh %i. (( Dung /shows de xem! ))", SANShows[channel][ChannelName], SANShows[channel][Hosts], channel); // This announces the broadcast to all players.
                 OOCNews(COLOR_NEWS,szMiscArray);
 				if(!SANShows[channel][SANews3DText][0])
 				{
@@ -893,7 +893,7 @@ public SAN_Broadcast(playerid, channel)
 			}
 			else
 			{
-				SendClientMessage(playerid, COLOR_LIGHTBLUE, "* No longer broadcasting");
+				SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Da dung phat song");
 				broadcasting = 0; // This makes sure we aren't broadcasting anymore.
 				SANShows[channel][san_iRatings] = 0;
 				UpdateSANewsBroadcast(channel);
@@ -914,8 +914,8 @@ public SAN_Broadcast(playerid, channel)
 						DeletePVar(i, "ChannelID");
 						Player_StreamPrep(i, BroadcastFloats[i][1],BroadcastFloats[i][2],BroadcastFloats[i][3], FREEZE_TIME);
 						DeletePVar(i, "WatchingTV");
-						SendClientMessage(playerid, COLOR_GRAD1, "The show has been ended by the producers.");
-						SendClientMessage(playerid, COLOR_GRAD1, "Fetching your character's old position...");
+						SendClientMessage(playerid, COLOR_GRAD1, "Chuong trinh da ket thuc boi nha san xuat.");
+						SendClientMessage(playerid, COLOR_GRAD1, "Dang khoi phuc vi tri cu cua nhan vat...");
 						SetTimerEx("SAN_SetPos", 5000, false, "i", i);
     				}
 				}
@@ -935,28 +935,28 @@ public SAN_ListenRadio(playerid, channel)
 	{
 		if(GetPVarType(playerid, "ChannelID"))
 		{
-			if(GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot use this command while previewing a camera angle.");
-			if(SANShows[channel][ChannelActive] == 0) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Nothing's on that TV Channel!"); // This makes sure that they can't do /watchtv when there's no one broadcasting.
-			format(szMiscArray, sizeof(szMiscArray), "* %s tunes in to %s on [SAN] Channel %i", GetPlayerNameEx(playerid), SANShows[GetPVarInt(playerid, "ChannelID")][ChannelName], GetPVarInt(playerid, "ChannelID"));
+			if(GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Khong the dung lenh nay khi dang xem truoc camera.");
+			if(SANShows[channel][ChannelActive] == 0) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Kenh TV nay chua co chuong trinh!"); // This makes sure that they can't do /watchtv when there's no one broadcasting.
+			format(szMiscArray, sizeof(szMiscArray), "* %s theo doi %s tren kenh [SAN] %i", GetPlayerNameEx(playerid), SANShows[GetPVarInt(playerid, "ChannelID")][ChannelName], GetPVarInt(playerid, "ChannelID"));
 			ProxDetector(20.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-			SendClientMessage(playerid, COLOR_LIGHTBLUE, "Type /shows again to stop listening to the radio broadcast.");
+			SendClientMessage(playerid, COLOR_LIGHTBLUE, "Dung /shows lan nua de dung nghe radio.");
 			SetPVarInt(playerid, "WatchingTV", 1);
 						
 			// Viewers
 			SANShows[channel][san_iRatings]++;
 			UpdateSANewsBroadcast(channel); // Updates the SANews3Dtext.
 			
-			format(szMiscArray, sizeof(szMiscArray), "[SAN Radio] presents %s, live on Channel %i.", SANShows[channel][Hosts], channel);
+			format(szMiscArray, sizeof(szMiscArray), "[SAN Radio] phat %s, truc tiep kenh %i.", SANShows[channel][Hosts], channel);
 			SendClientMessage(playerid, COLOR_SANRADIO, szMiscArray);
 		}
 		else
 		{
-			SendClientMessage(playerid, COLOR_GRAD1, "[SAN] Something went wrong. Please try again later.");
+			SendClientMessage(playerid, COLOR_GRAD1, "[SAN] Da xay ra loi. Vui long thu lai sau.");
 		}
 	}
 	else
 	{
-		format(szMiscArray, sizeof(szMiscArray), "* %s stops following %s on [SAN] Channel %i", GetPlayerNameEx(playerid), SANShows[GetPVarInt(playerid, "ChannelID")][ChannelName], GetPVarInt(playerid, "ChannelID"));
+		format(szMiscArray, sizeof(szMiscArray), "* %s dung theo doi %s tren kenh [SAN] %i", GetPlayerNameEx(playerid), SANShows[GetPVarInt(playerid, "ChannelID")][ChannelName], GetPVarInt(playerid, "ChannelID"));
 		ProxDetector(15.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		DeletePVar(playerid, "WatchingTV");
 		DeletePVar(playerid, "ChannelID");
@@ -981,11 +981,11 @@ public SAN_WatchTV(playerid, channel)
 		{
 			if(GetPVarType(playerid, "ChannelID"))
 			{
-				if(GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot use this command while previewing a camera angle.");
-				if(SANShows[channel][ChannelActive] == 0) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Nothing's on that TV Channel!"); // This makes sure that they can't do /watchtv when there's no one broadcasting.
-				format(szMiscArray, sizeof(szMiscArray), "* %s starts watching TV.", GetPlayerNameEx(playerid));
+				if(GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Khong the dung lenh nay khi dang xem truoc camera.");
+				if(SANShows[channel][ChannelActive] == 0) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Kenh TV nay chua co chuong trinh!"); // This makes sure that they can't do /watchtv when there's no one broadcasting.
+				format(szMiscArray, sizeof(szMiscArray), "* %s bat dau xem TV.", GetPlayerNameEx(playerid));
 				ProxDetector(15.0, playerid, szMiscArray, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
-				SendClientMessage(playerid, COLOR_LIGHTBLUE, "Type /shows again to stop watching TV.");
+				SendClientMessage(playerid, COLOR_LIGHTBLUE, "Dung /shows lan nua de dung xem TV.");
 				Character_Actor(playerid, 0);
 				BroadcastLastVW[playerid] = GetPlayerVirtualWorld(playerid);
 				BroadcastLastInt[playerid] = GetPlayerInterior(playerid);
@@ -998,7 +998,7 @@ public SAN_WatchTV(playerid, channel)
 				SANShows[channel][san_iRatings]++;
 				UpdateSANewsBroadcast(channel); // Updates the SANews3Dtext.
 				
-				format(szMiscArray, sizeof(szMiscArray), "[SAN Television] presents %s, live on Channel %i.", SANShows[channel][Hosts], channel);
+				format(szMiscArray, sizeof(szMiscArray), "[SAN Television] phat %s, truc tiep kenh %i.", SANShows[channel][Hosts], channel);
 				SendClientMessage(playerid, COLOR_ORANGE, szMiscArray);
 
 				SAN_Process_WatchTV(playerid, channel);
@@ -1011,7 +1011,7 @@ public SAN_WatchTV(playerid, channel)
 			}
 		}
 	}
-	SendClientMessage(playerid, COLOR_GRAD1, "You must be in a house to watch television.");
+	SendClientMessage(playerid, COLOR_GRAD1, "Ban phai o trong nha de xem TV.");
 	return 1;
 }
 
@@ -1028,11 +1028,11 @@ SAN_StopWatching(playerid)
 	DeletePVar(playerid, "SAN_INT");
 	SetPlayerFacingAngle(playerid, BroadcastFloats[playerid][0]);
 	SetCameraBehindPlayer(playerid);
-	format(szMiscArray, sizeof(szMiscArray), "* %s stops following %s on [SAN] Channel %i", GetPlayerNameEx(playerid), SANShows[GetPVarInt(playerid, "ChannelID")][ChannelName], GetPVarInt(playerid, "ChannelID"));
+	format(szMiscArray, sizeof(szMiscArray), "* %s dung theo doi %s tren kenh [SAN] %i", GetPlayerNameEx(playerid), SANShows[GetPVarInt(playerid, "ChannelID")][ChannelName], GetPVarInt(playerid, "ChannelID"));
 	ProxDetector(15.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	DeletePVar(playerid, "WatchingTV");
 	DeletePVar(playerid, "ChannelID");
-	SendClientMessage(playerid, COLOR_GRAD1, "Fetching your character's old position...");
+	SendClientMessage(playerid, COLOR_GRAD1, "Dang khoi phuc vi tri cu cua nhan vat...");
 	SetTimerEx("SAN_SetPos", 5000, false, "i", playerid);
 }
 
@@ -1042,7 +1042,7 @@ public SAN_Process_WatchTV(playerid, channel)
 	// Camera angles. They're constantly updated when someone's using /cameraman [choice]. (The "TextDrawHideForPlayer" is used so that the "Technical Difficulties" textdraw isn't displayed).
 	TogglePlayerSpectating(playerid, 1);
 
-	format(szMiscArray, sizeof(szMiscArray), "Channel %d", channel);
+	format(szMiscArray, sizeof(szMiscArray), "Kenh %d", channel);
 	TextDrawSetString(TV_text[6], szMiscArray);
 	TextDrawSetString(TV_text[4], SANShows[GetPVarInt(playerid, "ChannelID")][ChannelName]);
 
@@ -1184,8 +1184,8 @@ public SAN_Process_Login(playerid)
 {
 	if(!GetPVarType(playerid, "ChannelID_FMEM"))
 	{
-		format(szMiscArray, sizeof(szMiscArray), "___________________________ {32CD80} SAN | LOGIN {FFFFFF}____________________\nClick Here to log in to a channel.");
-		ShowPlayerDialogEx(playerid, DIALOG_SAN_LOGIN, DIALOG_STYLE_LIST, "SAN | Channel Login Panel", szMiscArray, "Select", "Cancel");
+		format(szMiscArray, sizeof(szMiscArray), "___________________________ {32CD80} SAN | DANG NHAP {FFFFFF}____________________\nNhan vao day de dang nhap kenh.");
+		ShowPlayerDialogEx(playerid, DIALOG_SAN_LOGIN, DIALOG_STYLE_LIST, "SAN | Dang nhap kenh", szMiscArray, "Chon", "Huy");
 		return 0;
 	}
 	return 1;
@@ -1199,7 +1199,7 @@ public SAN_Process_Logout(playerid)
 	if(GetPVarType(playerid, "ChannelID_FMEM"))
 	{
 		
-		format(szMiscArray, sizeof(szMiscArray), "** %s signed out from Channel %i. **", GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
+		format(szMiscArray, sizeof(szMiscArray), "** %s da roi kenh %i. **", GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
 		SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 		DeletePVar(playerid, "ChannelID");
 		DeletePVar(playerid, "ChannelID_FMEM");
@@ -1207,7 +1207,7 @@ public SAN_Process_Logout(playerid)
 	}
 	else
 	{
-		SendClientMessage(playerid, COLOR_GRAD1, "You are not signed into a channel.");
+		SendClientMessage(playerid, COLOR_GRAD1, "Ban chua dang nhap kenh.");
 	}
 }
 
@@ -1228,21 +1228,21 @@ public SAN_Process_ListCameras(playerid, channel)
 				{
 					case 1:
 					{
-						format(szMiscArray, sizeof(szMiscArray), "%s Name: %s || {FFFF99}STATIC\n", szMiscArray, GetPlayerNameEx(i));
+						format(szMiscArray, sizeof(szMiscArray), "%s Ten: %s || {FFFF99}TINH\n", szMiscArray, GetPlayerNameEx(i));
 					}
 					case 2:
 					{
-						format(szMiscArray, sizeof(szMiscArray), "%s Name: %s || {CCFFCC}DYNAMIC{FFFFFF}\n", szMiscArray, GetPlayerNameEx(i));
+						format(szMiscArray, sizeof(szMiscArray), "%s Ten: %s || {CCFFCC}DONG{FFFFFF}\n", szMiscArray, GetPlayerNameEx(i));
 					}
 					case 3:
 					{
-						format(szMiscArray, sizeof(szMiscArray), "%s Name: %s || {BBEEFF}VEHICLE{FFFFFF}\n", szMiscArray, GetPlayerNameEx(i));
+						format(szMiscArray, sizeof(szMiscArray), "%s Ten: %s || {BBEEFF}XE{FFFFFF}\n", szMiscArray, GetPlayerNameEx(i));
 					}
 				}
 			}
 			if(i == iLastCameraman[channel])
 			{
-				format(szMiscArray, sizeof(szMiscArray), "%s Name: %s || {4C4CFF}BROADCASTING\n", szMiscArray, GetPlayerNameEx(i));
+				format(szMiscArray, sizeof(szMiscArray), "%s Ten: %s || {4C4CFF}DANG PHAT\n", szMiscArray, GetPlayerNameEx(i));
 			}
 			ListItemTrackID_Cameras[playerid][GetPVarInt(playerid, "ListItemID_Cameras")] = i;
 			SetPVarInt(playerid, "ListItemID_Cameras", GetPVarInt(playerid, "ListItemID_Cameras") + 1);
@@ -1251,10 +1251,10 @@ public SAN_Process_ListCameras(playerid, channel)
 	}
 	if(!isnull(szMiscArray))
 	{
-		format(szTitle, sizeof(szTitle), "SAN | Camera List | Channel %i", GetPVarInt(playerid, "ChannelID_FMEM"));
-		ShowPlayerDialogEx(playerid, DIALOG_SAN_CAMLIST, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
+		format(szTitle, sizeof(szTitle), "SAN | Camera | Kenh %i", GetPVarInt(playerid, "ChannelID_FMEM"));
+		ShowPlayerDialogEx(playerid, DIALOG_SAN_CAMLIST, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Chon", "Huy");
 	}
-	else SendClientMessage(playerid, COLOR_GRAD1, "There are no active camera's right now.");
+	else SendClientMessage(playerid, COLOR_GRAD1, "Hien chua co camera hoat dong.");
 	return 1;
 }
 
@@ -1267,7 +1267,7 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 	{
 		case SAN_CAMERAMAN_SET:
 		{
-			if(GetPVarInt(playerid, "WatchingTV") == 1) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot set an angle when you are already watching the TV.");
+			if(GetPVarInt(playerid, "WatchingTV") == 1) return SendClientMessage(playerid, COLOR_GRAD1, "Khong the dat goc camera khi dang xem TV.");
 			TogglePlayerControllable(playerid, false);
 			if(!GetPVarType(playerid, "PreviewingTV"))
 			{
@@ -1284,15 +1284,15 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 			GetPlayerFacingAngle(playerid, BroadcastFloats[playerid][0]);
 			SAN_ShowTextDraws(playerid);
 			SetPVarInt(playerid, "iCameraman_Type", 1);
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Cameraman %s is setting the camera angle... **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Cameraman %s dang dat goc camera... **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
-			SendClientMessage(playerid, COLOR_LIGHTBLUE, "Use 'N' to cancel. Use -- '/cameraman' -> Broadcast -- to broadcast the current angle.");
+			SendClientMessage(playerid, COLOR_LIGHTBLUE, "Nhan 'N' de huy. Dung -- '/cameraman' -> Broadcast -- de phat goc hien tai.");
 		}
 		case SAN_CAMERAMAN_PREVIEW:
 		{
 			if(iLastCameraman[channel] == -1)
 			{
-				SendClientMessage(playerid, COLOR_LIGHTBLUE, "* There is no cameraman active.");
+				SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Chua co Cameraman hoat dong.");
 				return 1;
 			}
 			playerid = iLastCameraman[channel];
@@ -1307,17 +1307,17 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 			{
 				SAN_Process_StopPreview(playerid);
 			}
-			else return SendClientMessage(playerid, COLOR_GRAD1, "You were not previewing a camera angle.");
+			else return SendClientMessage(playerid, COLOR_GRAD1, "Ban chua xem truoc goc camera.");
 		}
 		case SAN_CAMERAMAN_BROADCAST:
 		{
-			if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot set an angle when you are already watching the TV.");
+			if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Khong the dat goc camera khi dang xem TV.");
 			// SAN_CreateCamera(playerid, channel);
 			iLastCameraman[channel] = playerid;
 			SANShows[channel][san_iVehicleID] = 0;
 			cameraangle = 1;
 			SetPVarInt(playerid, "iCameraman_Type", 1);
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s is broadcasting his/her camera angle. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s dang phat goc camera cua minh. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 			SAN_Process_Camera(playerid, channel);
 			SAN_Process_StopPreview(playerid);
@@ -1326,7 +1326,7 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 		{
 			SANShows[channel][san_iVehicleID] = 0;
 			SetPVarInt(playerid, "iCameraman_Type", 4);
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s changes the camera angle to the 'Bird's Eye' view. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s doi camera sang goc nhin tu tren cao. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 			cameraangle = 2;
 			SAN_Process_Camera(playerid, channel);
@@ -1338,16 +1338,16 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 				iLastCameraman[channel] = playerid;
 				SetPVarInt(iLastCameraman[channel], "SAN_iVehCam", GetPlayerVehicleID(playerid));
 				SetPVarInt(playerid, "iCameraman_Type", 3);
-				SendClientMessage(playerid, 0xFFFFFFAA, "Your camera is now attached to the vehicle.");
+				SendClientMessage(playerid, 0xFFFFFFAA, "Camera da gan vao xe.");
 				SANShows[channel][san_iVehicleID] = 1;
 				cameraangle = 7;
-				format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s is broadcasting from the &s  **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetVehicleName(GetVehicleModel(GetPVarInt(iLastCameraman[channel], "SAN_iVehCam"))));
+				format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s dang phat tu &s  **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetVehicleName(GetVehicleModel(GetPVarInt(iLastCameraman[channel], "SAN_iVehCam"))));
 				SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 				SAN_Process_Camera(playerid, channel);
 			}
 			else
 			{
-				SendClientMessage(playerid, COLOR_LIGHTBLUE, "* You must be in a vehicle to use this command!");
+				SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Ban phai o trong xe de dung lenh nay!");
 				return 1;
 			}
 		}
@@ -1357,8 +1357,8 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 		}
 		case SAN_CAMERAMAN_SETPOINTA: // This allows the cameraman to preview POINT A of the interpolate-camera function.
 		{
-			if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot set an angle when you are already watching the TV.");
-			if(GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You are already previewing the camera angle.");
+			if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Khong the dat goc camera khi dang xem TV.");
+			if(GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Ban dang xem truoc goc camera.");
 			GetPlayerPos(playerid, BroadcastFloats[playerid][1], BroadcastFloats[playerid][2], BroadcastFloats[playerid][3]);
 			BroadcastLastVW[playerid] = GetPlayerVirtualWorld(playerid);
 			BroadcastLastInt[playerid] = GetPlayerInterior(playerid);
@@ -1375,21 +1375,21 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 		}
 		case SAN_CAMERAMAN_POINTA:
 		{
-			if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot set an angle when you are already watching the TV.");
+			if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Khong the dat goc camera khi dang xem TV.");
 			SetPVarInt(playerid, "iCameraman_Type", 2);
 			if(!GetPVarType(playerid, "PreviewingTV"))
 			{
 				GetPlayerPos(playerid,ICCameramanFloats[channel][playerid][0], ICCameramanFloats[channel][playerid][1], ICCameramanFloats[channel][playerid][2]);
 				GetPlayerCameraFrontVector(playerid, ICCameramanFVFloats[channel][playerid][0], ICCameramanFVFloats[channel][playerid][1], ICCameramanFVFloats[channel][playerid][2]);
 			}
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s has set the first interpolate of the camera angle. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s da dat diem dau cho camera chuyen dong. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 			SAN_Process_StopPreview(playerid);
 		}
 		case SAN_CAMERAMAN_SETPOINTB:
 		{
-			if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot set an angle when you are already watching the TV.");
-			if(GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You are already previewing the camera angle.");
+			if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Khong the dat goc camera khi dang xem TV.");
+			if(GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Ban dang xem truoc goc camera.");
 			GetPlayerPos(playerid, BroadcastFloats[playerid][1], BroadcastFloats[playerid][2], BroadcastFloats[playerid][3]);
 			BroadcastLastVW[playerid] = GetPlayerVirtualWorld(playerid);
 			BroadcastLastInt[playerid] = GetPlayerInterior(playerid);
@@ -1405,21 +1405,21 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 		}
 		case SAN_CAMERAMAN_POINTB: // This allows the cameraman to finish POINT B of the interpolate-camera function and store the data for the players using /watchtv.
 		{
-			if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot set an angle when you are already watching the TV.");
+			if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Khong the dat goc camera khi dang xem TV.");
 			SetPVarInt(playerid, "iCameraman_Type", 2);
 			if(!GetPVarType(playerid, "PreviewingTV"))
 			{
 				GetPlayerPos(playerid,ICCameramanFloats[channel][playerid][3], ICCameramanFloats[channel][playerid][4], ICCameramanFloats[channel][playerid][5]);
 				GetPlayerCameraFrontVector(playerid, ICCameramanFVFloats[channel][playerid][3], ICCameramanFVFloats[channel][playerid][4], ICCameramanFVFloats[channel][playerid][5]);
 			}
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s has set the last interpolate of the camera angle. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s da dat diem cuoi cho camera chuyen dong. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 			SAN_Process_StopPreview(playerid);
 		}
 		case SAN_CAMERAMAN_PINTERPOLATE: // The camerman can preview his interpolate settings.
 		{
-			if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot set an angle when you are already watching the TV.");
-			if(GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You are already previewing the camera angle.");
+			if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Khong the dat goc camera khi dang xem TV.");
+			if(GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Ban dang xem truoc goc camera.");
 			GetPlayerPos(playerid, BroadcastFloats[playerid][1], BroadcastFloats[playerid][2], BroadcastFloats[playerid][3]);
 			BroadcastLastVW[playerid] = GetPlayerVirtualWorld(playerid);
 			BroadcastLastInt[playerid] = GetPlayerInterior(playerid);
@@ -1442,11 +1442,11 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 		}
 		case SAN_CAMERAMAN_INTERPOLATE: // This will finalize the interpolate-camera settings of the cameraman, and stream it to the broadcast (the players using /watchtv).
 		{
-			if(ICCameramanFloats[channel][playerid][0] == 0.0 || ICCameramanFloats[channel][playerid][3] == 0.0) return SendClientMessage(playerid, COLOR_GRAD1, "To broadcast, you must set up point A and B first.");
+			if(ICCameramanFloats[channel][playerid][0] == 0.0 || ICCameramanFloats[channel][playerid][3] == 0.0) return SendClientMessage(playerid, COLOR_GRAD1, "Phai dat diem A va B truoc khi phat song.");
 			SetPVarInt(playerid, "iCameraman_Type", 2);
 			SANShows[channel][san_iVehicleID] = 0;
 			cameraangle = 4;
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s is broadcasting the dynamic (point A-B / interpolate) camera. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s dang phat camera dong (diem A-B / noi suy). **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 			if(GetPVarType(playerid, "PreviewingTV")) SAN_Process_StopPreview(playerid);
 			SAN_Process_Camera(playerid, channel);
@@ -1485,7 +1485,7 @@ public SAN_Process_Director(playerid, choice, channel)
 		{
 			if(iLastCameraman[channel] == -1)
 			{
-				SendClientMessage(playerid, COLOR_LIGHTBLUE, "* There is no cameraman active.");
+				SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Chua co Cameraman hoat dong.");
 				return 1;
 			}
 			SAN_Process_StartPreview(playerid, iLastCameraman[channel]);
@@ -1494,14 +1494,14 @@ public SAN_Process_Director(playerid, choice, channel)
 		{
 			if(GetPVarType(playerid, "PreviewingTV"))
 			{
-				if(iLastCameraman[channel] == -1) SendClientMessage(playerid, COLOR_LIGHTBLUE, "* There is no cameraman active.");
+				if(iLastCameraman[channel] == -1) SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Chua co Cameraman hoat dong.");
 				SAN_Process_StopPreview(playerid);
 			}
-			else return SendClientMessage(playerid, COLOR_GRAD1, "You were not previewing a camera angle.");
+			else return SendClientMessage(playerid, COLOR_GRAD1, "Ban chua xem truoc goc camera.");
 		}
 		case SAN_DIRECTOR_PSTREAM:
 		{
-			ShowPlayerDialogEx(playerid, DIALOG_SAN_PSTREAM, DIALOG_STYLE_INPUT, "SAN | Preview Stream", "Paste the link of the stream here.", "Listen", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_SAN_PSTREAM, DIALOG_STYLE_INPUT, "SAN | Xem truoc luong phat", "Dan lien ket luong phat vao day.", "Nghe", "Huy");
 		}
 		case SAN_DIRECTOR_BROADCAST:
 		{
@@ -1511,35 +1511,35 @@ public SAN_Process_Director(playerid, choice, channel)
 		{
 			if(GetPlayerInterior(iLastCameraman[channel]) == 0)
 			{
-				if(iLastCameraman[channel] == -1) SendClientMessage(playerid, COLOR_LIGHTBLUE, "* There is no cameraman active.");
-				format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Broadcast Director %s changes the camera angle to the 'Bird's Eye' angle. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+				if(iLastCameraman[channel] == -1) SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Chua co Cameraman hoat dong.");
+				format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Broadcast Director %s doi camera sang goc nhin tu tren cao. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 				SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 				SANShows[channel][san_iVehicleID] = 0;
 				cameraangle = 2;
 				DestroyDynamic3DTextLabel(SANShows[channel][camera]);
-				SANShows[channel][camera] = CreateDynamic3DTextLabel("*The Camera*",COLOR_RED,CameramanFloats[channel][iLastCameraman[channel]][1], CameramanFloats[channel][iLastCameraman[channel]][1], CameramanFloats[channel][iLastCameraman[channel]][2],15.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+				SANShows[channel][camera] = CreateDynamic3DTextLabel("*Camera*",COLOR_RED,CameramanFloats[channel][iLastCameraman[channel]][1], CameramanFloats[channel][iLastCameraman[channel]][1], CameramanFloats[channel][iLastCameraman[channel]][2],15.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
 				SAN_Process_Camera(iLastCameraman[channel], channel);
 			}
-			else return SendClientMessage(playerid, COLOR_GRAD1, "This camera angle can only be used outside.");
+			else return SendClientMessage(playerid, COLOR_GRAD1, "Chi dung goc camera nay o ngoai troi.");
 		}
 		case SAN_DIRECTOR_INTERPOLATE:
 		{
 			if(ICCameramanFloats[channel][iLastCameraman[channel]][0] != 0.0)
 			{
-				format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Broadcast Director %s is broadcasting the point-to-point camera. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+				format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Broadcast Director %s dang phat camera giua hai diem. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 				SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 				SANShows[channel][san_iVehicleID] = 0;
 				cameraangle = 4;
 				DestroyDynamic3DTextLabel(SANShows[channel][camera]);
-				SANShows[channel][camera] = CreateDynamic3DTextLabel("*The Camera*",COLOR_RED,ICCameramanFloats[channel][iLastCameraman[channel]][1],ICCameramanFloats[channel][iLastCameraman[channel]][2],ICCameramanFloats[channel][iLastCameraman[channel]][3],15.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+				SANShows[channel][camera] = CreateDynamic3DTextLabel("*Camera*",COLOR_RED,ICCameramanFloats[channel][iLastCameraman[channel]][1],ICCameramanFloats[channel][iLastCameraman[channel]][2],ICCameramanFloats[channel][iLastCameraman[channel]][3],15.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
 				SAN_Process_Camera(iLastCameraman[channel], channel);
 			}
-			else return SendClientMessage(playerid, COLOR_GRAD1, "No one set up a point-to-point camera yet.");
+			else return SendClientMessage(playerid, COLOR_GRAD1, "Chua co ai dat camera giua hai diem.");
 		}
 		case SAN_DIRECTOR_VEHICLE:
 		{
-			if(SANShows[channel][san_iVehicleID] == 0) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "* There is no vehicle camera active!");
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s: The camera is now broadcasting from the %s. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetVehicleName(GetPVarInt(iLastCameraman[channel], "SAN_iVehCam")));
+			if(SANShows[channel][san_iVehicleID] == 0) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Chua co camera xe hoat dong!");
+			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s: Camera dang phat tu %s. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetVehicleName(GetPVarInt(iLastCameraman[channel], "SAN_iVehCam")));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 			cameraangle = 7;
 			SANShows[channel][san_iVehicleID] = 1;
@@ -1547,7 +1547,7 @@ public SAN_Process_Director(playerid, choice, channel)
 		}
 		case SAN_DIRECTOR_BSTREAM:
 		{
-			ShowPlayerDialogEx(playerid, DIALOG_SAN_BSTREAM, DIALOG_STYLE_INPUT, "SAN | Preview Stream", "Paste the link of the stream here.", "Listen", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_SAN_BSTREAM, DIALOG_STYLE_INPUT, "SAN | Xem truoc luong phat", "Dan lien ket luong phat vao day.", "Nghe", "Huy");
 		}
 		case SAN_DIRECTOR_STARTCAM:
 		{
@@ -1556,9 +1556,9 @@ public SAN_Process_Director(playerid, choice, channel)
 			SANShows[channel][san_iVehicleID] = 0;
 			broadcasting = 1;
 			SANShows[channel][ChannelActive] = 1;
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s has started all current cameras. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s da bat tat ca camera hien co. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
-			SendClientMessage(playerid, COLOR_LIGHTBLUE, "The TV is now back on air. Use '/cameraangle cameraman' to start setting a camera position.");
+			SendClientMessage(playerid, COLOR_LIGHTBLUE, "TV da phat lai. Dung '/cameraangle cameraman' de dat vi tri camera.");
 			TextDrawHideForAll(TV_text[11]);
 			TextDrawHideForAll(TV_text[12]);
 			TextDrawHideForAll(TV_text[13]);
@@ -1568,9 +1568,9 @@ public SAN_Process_Director(playerid, choice, channel)
 		{
 			cameraangle = -1;
 			SANShows[channel][san_iVehicleID] = INVALID_VEHICLE_ID;
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s has stopped the broadcast. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s da dung phat song. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
-			SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Broadcasting has just been shutdown..");
+			SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Da dung phat song..");
 			broadcasting = 0;
 			SANShows[channel][ChannelActive] = 0;
 			for(new ichannel; ichannel < MAX_SANCHANNELS; ++ichannel)
@@ -1597,16 +1597,16 @@ public SAN_Process_Director(playerid, choice, channel)
 SAN_Process_StartPreview(playerid, giveplayerid)
 {
 	szMiscArray[0] = 0;
-	if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot preview an angle when you are already watching the TV.");
-	if(GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You are already previewing a camera angle.");
+	if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Khong the xem truoc camera khi dang xem TV.");
+	if(GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Ban dang xem truoc goc camera.");
 	BroadcastLastVW[playerid] = GetPlayerVirtualWorld(playerid);
 	BroadcastLastInt[playerid] = GetPlayerInterior(playerid);
 	SetPVarInt(playerid, "PreviewingTV", 1);
-	format(szMiscArray, sizeof(szMiscArray), "You are viewing %s's camera angle.", GetPlayerNameEx(giveplayerid));
+	format(szMiscArray, sizeof(szMiscArray), "Ban dang xem goc camera cua %s.", GetPlayerNameEx(giveplayerid));
 	SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
 	GetPlayerPos(playerid, BroadcastFloats[playerid][1], BroadcastFloats[playerid][2], BroadcastFloats[playerid][3]);
 	GetPlayerFacingAngle(playerid, BroadcastFloats[playerid][0]);
-	SendClientMessage(playerid, COLOR_LIGHTBLUE, "Use 'N' to cancel. Use -- '/bdirector' or '/cameraman' -> Broadcast -- to broadcast the current angle.");
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, "Nhan 'N' de huy. Dung -- '/bdirector' hoac '/cameraman' -> Broadcast -- de phat goc hien tai.");
 	SAN_ShowTextDraws(playerid);
 	DeletePVar(playerid, "ListItemID_Cameras");
 	TogglePlayerControllable(playerid, false);
@@ -1700,7 +1700,7 @@ public SAN_Process_Camera(playerid, channel)
 	if(cameraangle == 6 || cameraangle == 7) SetPVarInt(iLastCameraman[channel], "SAN_iVehCam", GetPlayerVehicleID(playerid));
 	
 	DeletePVar(playerid, "ListItemID_Cameras");
-	format(szMiscArray, sizeof(szMiscArray), "*SAN | Camera*\n {FFFFFF}Channel: %i\nOperator: %s", channel, GetPlayerNameEx(iLastCameraman[channel]));
+	format(szMiscArray, sizeof(szMiscArray), "*SAN | Camera*\n {FFFFFF}Kenh: %i\nNguoi dung: %s", channel, GetPlayerNameEx(iLastCameraman[channel]));
 	DestroyDynamic3DTextLabel(SANShows[channel][camera]);
 	SANShows[channel][camera] = CreateDynamic3DTextLabel(szMiscArray, COLOR_NEWS, CameramanFloats[channel][iLastCameraman[channel]][0], CameramanFloats[channel][iLastCameraman[channel]][1], CameramanFloats[channel][iLastCameraman[channel]][2],15.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
 	// SAN_Create_Camera(playerid, 1);
@@ -1729,20 +1729,20 @@ UpdateSANewsBroadcast(channel, ishutdown = 0)
 	szMiscArray[0] = 0;
 	if(SANShows[channel][ChannelActive] == 0)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}MAIN SYSTEM MONITOR\n{32CD80}SAN | Channel {FFFFFF}%i\n{32CD80}Name: {FFFFFF}%s\n{32CD80}Host: {FFFFFF}%s\n{32CD80}View: {FF4C4C}Not Broadcasting\n{32CD80}Viewer Rating: {FFFFFF}- **", channel, SANShows[channel][ChannelName], SANShows[channel][Hosts], SANShows[channel][Hosts]);
+		format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}GIAM SAT HE THONG\n{32CD80}SAN | Kenh {FFFFFF}%i\n{32CD80}Ten: {FFFFFF}%s\n{32CD80}Host: {FFFFFF}%s\n{32CD80}Hien tai: {FF4C4C}Chua phat\n{32CD80}Luot xem: {FFFFFF}- **", channel, SANShows[channel][ChannelName], SANShows[channel][Hosts], SANShows[channel][Hosts]);
 	}
 	else
 	{
-		format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}MAIN SYSTEM MONITOR\n{32CD80}SAN | Channel {FFFFFF}%i\n{32CD80}Name: {FFFFFF}%s\n{32CD80}Host: {FFFFFF}%s\n{32CD80}Currently: {7CFC00}Broadcasting\n{32CD80}Viewer Rating: {FFFFFF}%i", channel, SANShows[channel][ChannelName], SANShows[channel][Hosts], SANShows[channel][san_iRatings]);
+		format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}GIAM SAT HE THONG\n{32CD80}SAN | Kenh {FFFFFF}%i\n{32CD80}Ten: {FFFFFF}%s\n{32CD80}Host: {FFFFFF}%s\n{32CD80}Hien tai: {7CFC00}Dang phat\n{32CD80}Luot xem: {FFFFFF}%i", channel, SANShows[channel][ChannelName], SANShows[channel][Hosts], SANShows[channel][san_iRatings]);
 	}
 	UpdateDynamic3DTextLabelText(SANShows[channel][SANews3DText][0], COLOR_LIGHTBLUE, szMiscArray);
 	if(broadcasting == 0)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "{32CD80}SAN | Channel {FFFFFF}%i\n{32CD80}Name: {FFFFFF}%s\n{32CD80}Currently: {FF4C4C}Not Broadcasting\n{32CD80}Viewer Rating: {FFFFFF} **", channel, SANShows[channel][ChannelName]);
+		format(szMiscArray, sizeof(szMiscArray), "{32CD80}SAN | Kenh {FFFFFF}%i\n{32CD80}Ten: {FFFFFF}%s\n{32CD80}Hien tai: {FF4C4C}Chua phat\n{32CD80}Luot xem: {FFFFFF} **", channel, SANShows[channel][ChannelName]);
 	}
 	else
 	{
-		format(szMiscArray, sizeof(szMiscArray), "{32CD80}SAN | Channel {FFFFFF}%i\n{32CD80}Name: {FFFFFF}%s\n{32CD80}Currently: {7CFC00}Broadcasting\n{32CD80}Viewer Rating: {FFFFFF}%i", channel, SANShows[channel][ChannelName], SANShows[channel][san_iRatings]);
+		format(szMiscArray, sizeof(szMiscArray), "{32CD80}SAN | Kenh {FFFFFF}%i\n{32CD80}Ten: {FFFFFF}%s\n{32CD80}Hien tai: {7CFC00}Dang phat\n{32CD80}Luot xem: {FFFFFF}%i", channel, SANShows[channel][ChannelName], SANShows[channel][san_iRatings]);
 	}
 	UpdateDynamic3DTextLabelText(SANShows[channel][SANews3DText][1], COLOR_LIGHTBLUE, szMiscArray);
 }
@@ -1762,7 +1762,7 @@ SAN_Stop(i)
 		SetPlayerFacingAngle(i, BroadcastFloats[i][0]);
 		DeletePVar(i, "WatchingTV");
 		DeletePVar(i, "ChannelID");
-		SendClientMessage(i, COLOR_GRAD1, "Fetching your character's old position...");
+		SendClientMessage(i, COLOR_GRAD1, "Dang khoi phuc vi tri cu cua nhan vat...");
 		SetTimerEx("SAN_SetPos", 5000, false, "i", i);
 		for(new channel; channel < MAX_SANCHANNELS; channel ++)
 		{
@@ -1845,8 +1845,8 @@ CMD:acceptshow(playerid, params[])
 	if(GetPVarInt(playerid, "TVOffer") < MAX_PLAYERS) {
 		if(IsPlayerConnected(GetPVarInt(playerid, "TVOffer"))) {
 			if (ProxDetectorS(5.0, playerid, GetPVarInt(playerid, "TVOffer"))) {
-				SendClientMessage(GetPVarInt(playerid, "TVOffer"), COLOR_LIGHTBLUE, "* The player accepted your invite.");
-				SendClientMessage(playerid, COLOR_LIGHTBLUE, "* The show has begun! Use '/mic' to talk. (Use /shows to stop).");
+				SendClientMessage(GetPVarInt(playerid, "TVOffer"), COLOR_LIGHTBLUE, "* Nguoi choi da nhan loi moi cua ban.");
+				SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Chuong trinh bat dau! Dung '/mic' de noi. (Dung /shows de dung).");
 				SetPVarInt(playerid, "ChannelID", GetPVarInt(GetPVarInt(playerid, "TVOffer"), "ChannelID_FMEM"));
 				DeletePVar(playerid, "ChannelID_FMEM");
 				SetPVarInt(playerid, "TalkingTV", GetPVarInt(playerid, "TVOffer"));
@@ -1855,7 +1855,7 @@ CMD:acceptshow(playerid, params[])
 				return 1;
 			}
 			else {
-				SendClientMessage(playerid, COLOR_GREY, "   You are too far away from the News Reporter!");
+				SendClientMessage(playerid, COLOR_GREY, "   Ban o qua xa News Reporter!");
 				return 1;
 			}
 		}
@@ -1865,14 +1865,14 @@ CMD:acceptshow(playerid, params[])
 
 CMD:showkick(playerid, params[])
 {
-	if(!IsAReporter(playerid)) return SendClientMessage(playerid, COLOR_GRAD1, "     You are not a News Reporter.");
+	if(!IsAReporter(playerid)) return SendClientMessage(playerid, COLOR_GRAD1, "     Ban khong phai News Reporter.");
 	if(!SAN_RankCheck(playerid, 1)) return 1;
 	new giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessage(playerid, COLOR_WHITE, "USAGE: /showkick [playerid]");
-	if(GetPVarInt(giveplayerid, "TalkingTV") == GetPVarInt(playerid, "TalkingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "That player is not on the show.");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessage(playerid, COLOR_WHITE, "CACH DUNG: /showkick [playerid]");
+	if(GetPVarInt(giveplayerid, "TalkingTV") == GetPVarInt(playerid, "TalkingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Nguoi do khong tham gia chuong trinh.");
 	SetPVarInt(giveplayerid, "TalkingTV", INVALID_PLAYER_ID);
-	SendClientMessage(playerid, COLOR_LIGHTBLUE, "You have successfully kicked the player from the show.");
-	SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, "You have been kicked from the show.");
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, "Ban da loai nguoi choi khoi chuong trinh.");
+	SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, "Ban da bi loai khoi chuong trinh.");
 	return 1;
 }
 
@@ -1884,10 +1884,10 @@ CMD:stopnews(playerid, params[])
 		if(shutdown == 0)
 		{
 			shutdown = 1;
-			SendClientMessage(playerid, COLOR_WHITE, "You have just shutdown the whole news system and are ending anything in progres..." );
+			SendClientMessage(playerid, COLOR_WHITE, "Ban da tat toan bo he thong tin tuc va ket thuc moi hoat dong..." );
 			if(broadcasting == 1)
 			{
-				SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Broadcasting has just been shutdown..");
+				SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Da dung phat song..");
 				broadcasting = 0;
 				for(new channel; channel < MAX_SANCHANNELS; channel ++)
 				{
@@ -1902,28 +1902,28 @@ CMD:stopnews(playerid, params[])
 			{
 				if(TalkingLive[i] != INVALID_PLAYER_ID)
 				{
-					SendClientMessage(i, COLOR_LIGHTBLUE, "* Live conversation ended.");
-					SendClientMessage(TalkingLive[i], COLOR_LIGHTBLUE, "* Live conversation ended.");
+					SendClientMessage(i, COLOR_LIGHTBLUE, "* Phong van truc tiep da ket thuc.");
+					SendClientMessage(TalkingLive[i], COLOR_LIGHTBLUE, "* Phong van truc tiep da ket thuc.");
 					TogglePlayerControllable(i, true);
 					TogglePlayerControllable(TalkingLive[i], true);
 					TalkingLive[TalkingLive[i]] = INVALID_PLAYER_ID;
 					TalkingLive[i] = INVALID_PLAYER_ID;
-					SendClientMessage(i, COLOR_LIGHTBLUE, "* Live has just been shutdown..");
+					SendClientMessage(i, COLOR_LIGHTBLUE, "* Da dung phong van truc tiep..");
 				}
 				else if(GetPVarInt(i, "TalkingTV") != INVALID_PLAYER_ID)
 				{
-					SendClientMessage(i, COLOR_LIGHTBLUE, "* Show ended.");
-					SendClientMessage(GetPVarInt(i, "TalkingTV"), COLOR_LIGHTBLUE, "* Show ended.");
+					SendClientMessage(i, COLOR_LIGHTBLUE, "* Chuong trinh da ket thuc.");
+					SendClientMessage(GetPVarInt(i, "TalkingTV"), COLOR_LIGHTBLUE, "* Chuong trinh da ket thuc.");
 					SetPVarInt(GetPVarInt(i, "TalkingTV"), "TalkingTV", INVALID_PLAYER_ID);
 					SetPVarInt(i, "TalkingTV", INVALID_PLAYER_ID);
-					SendClientMessage(i, COLOR_LIGHTBLUE, "* The show has just been shutdown...");
+					SendClientMessage(i, COLOR_LIGHTBLUE, "* Chuong trinh vua bi dung...");
 				}
 			}
 		}
 		else
 		{
 			shutdown = 0;
-			SendClientMessage(playerid, COLOR_WHITE, "You have just turned the news system back on. " );
+			SendClientMessage(playerid, COLOR_WHITE, "Ban da bat lai he thong tin tuc. " );
 		}
 	}
 	return 1;
@@ -1953,7 +1953,7 @@ CMD:broadcast(playerid, params[])
 	}
 	else
 	{
-		SendClientMessage(playerid, COLOR_GRAD1, "     You are not a News Reporter.");
+		SendClientMessage(playerid, COLOR_GRAD1, "     Ban khong phai News Reporter.");
 	}
 	return 1;
 }
@@ -1965,15 +1965,15 @@ CMD:news(playerid, params[])
 	if(IsAReporter(playerid))
 	{
 		if(!SAN_RankCheck(playerid, 0)) return 1;
-		if(shutdown == 1) return SendClientMessage(playerid, COLOR_WHITE, "The news system is currently shut down." );
-		if(isnull(params)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /news [text]");
+		if(shutdown == 1) return SendClientMessage(playerid, COLOR_WHITE, "He thong tin tuc da tam dung." );
+		if(isnull(params)) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /news [text]");
 
 		new newcar = GetPlayerVehicleID(playerid);
 		if(IsANewsCar(newcar) || IsPlayerInRangeOfPoint(playerid, 35.0, 664.6821,-2.3673,1101.2085) || IsPlayerInRangeOfPoint(playerid, 35.0, 651.1910,-19.9795,1101.2200) || IsPlayerInRangeOfPoint(playerid, 35.0, 646.7300,-6.6966,1101.2085))
 		{
 			if(PlayerInfo[playerid][pRank] < 1)
 			{
-				SendClientMessage(playerid, COLOR_GRAD2, "You must be at least rank 1.");
+				SendClientMessage(playerid, COLOR_GRAD2, "Ban can it nhat rank 1.");
 			}
 			else
 			{
@@ -1985,13 +1985,13 @@ CMD:news(playerid, params[])
 		}
 		else
 		{
-			SendClientMessage(playerid, COLOR_GREY, "You're not in a news van or chopper or in the studio.");
+			SendClientMessage(playerid, COLOR_GREY, "Ban khong o tren xe tin tuc, truc thang hoac trong studio.");
 			return 1;
 		}
 	}
 	else
 	{
-		SendClientMessage(playerid, COLOR_GREY, "     You are not a News Reporter.");
+		SendClientMessage(playerid, COLOR_GREY, "     Ban khong phai News Reporter.");
 	}
 	return 1;
 }
@@ -2006,7 +2006,7 @@ CMD:setchannel(playerid, const params[])
 		SetPVarInt(playerid, "LoginChannelID", 1);
 		SAN_ShowsDialog(playerid, 0);
 	}
-	else SendClientMessage(playerid, COLOR_GREY, "     You are not a News Reporter.");
+	else SendClientMessage(playerid, COLOR_GREY, "     Ban khong phai News Reporter.");
 	return 1;
 }
 
@@ -2022,7 +2022,7 @@ CMD:watchtv(playerid, params[])
 CMD:viewers(playerid, params[])
 {
 	if(IsAReporter(playerid)) SAN_Viewers(playerid);
-	else SendClientMessage(playerid, COLOR_GREY, "     You are not a News Reporter.");	
+	else SendClientMessage(playerid, COLOR_GREY, "     Ban khong phai News Reporter.");	
 	return 1;
 }
 
@@ -2058,9 +2058,9 @@ CMD:shows(playerid, const params[])
 CMD:mic(playerid, const params[])
 {
 	szMiscArray[0] = 0;
-	if(shutdown == 1) return SendClientMessage(playerid, COLOR_WHITE, "The news system is currently shut down." );
-	if(broadcasting == 0) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "* No one is broadcasting!");
-	if(isnull(params)) return SendClientMessage(playerid, COLOR_WHITE, "USAGE: /mic [text]");
+	if(shutdown == 1) return SendClientMessage(playerid, COLOR_WHITE, "He thong tin tuc da tam dung." );
+	if(broadcasting == 0) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Chua co ai phat song!");
+	if(isnull(params)) return SendClientMessage(playerid, COLOR_WHITE, "CACH DUNG: /mic [text]");
 	if(GetPVarInt(playerid, "ChannelID_FMEM"))
 	{
 		switch(SANShows[GetPVarInt(playerid, "ChannelID_FMEM")][Global])
@@ -2108,7 +2108,7 @@ CMD:mic(playerid, const params[])
 	}
 	if(IsAReporter(playerid) && !GetPVarInt(playerid, "ChannelID_FMEM"))
 	{
-		SendClientMessage(playerid, COLOR_GRAD1, "You are not logged in to a channel. Please login now."); 
+		SendClientMessage(playerid, COLOR_GRAD1, "Ban chua dang nhap kenh. Hay dang nhap ngay."); 
 		return pc_cmd_setchannel(playerid, "");
 	}
 	if(GetPVarInt(playerid, "ChannelID"))
@@ -2158,7 +2158,7 @@ CMD:mic(playerid, const params[])
 			}
 			return 1;
 		}
-		else return SendClientMessage(playerid, COLOR_GRAD1, "You are not on a show.");
+		else return SendClientMessage(playerid, COLOR_GRAD1, "Ban khong tham gia chuong trinh.");
 	}
 	return 1;
 }
@@ -2167,38 +2167,38 @@ CMD:mic(playerid, const params[])
 CMD:showinvite(playerid, params[])
 {
 	szMiscArray[0] = 0;
-	if(!IsAReporter(playerid)) return SendClientMessage(playerid, COLOR_GREY, "     You are not a News Reporter."); 
+	if(!IsAReporter(playerid)) return SendClientMessage(playerid, COLOR_GREY, "     Ban khong phai News Reporter."); 
 	if(!SAN_RankCheck(playerid, 1)) return 1;
-	if(shutdown == 1) return SendClientMessage(playerid, COLOR_WHITE, "The news system is currently shut down." );
+	if(shutdown == 1) return SendClientMessage(playerid, COLOR_WHITE, "He thong tin tuc da tam dung." );
 	if(GetPVarType(playerid, "ChannelID_FMEM"))
 	{
 		new giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessage(playerid, COLOR_WHITE, "USAGE: /showinvite [playerid]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessage(playerid, COLOR_WHITE, "CACH DUNG: /showinvite [playerid]");
 		if (IsPlayerConnected(giveplayerid))
 		{
 			if (ProxDetectorS(5.0, playerid, giveplayerid))
 			{
-				if(PlayerInfo[giveplayerid][pLiveBanned] == 1) return SendClientMessage(playerid, COLOR_GREY, "That player is banned from the air.");
+				if(PlayerInfo[giveplayerid][pLiveBanned] == 1) return SendClientMessage(playerid, COLOR_GREY, "Nguoi do bi cam len song.");
 				if(PlayerCuffed[giveplayerid] >= 1 || PlayerCuffed[playerid] >= 1)
 				{
-					SendClientMessage(playerid, COLOR_GRAD2, "You are unable to do this right now.");
+					SendClientMessage(playerid, COLOR_GRAD2, "Ban chua the lam viec nay.");
 				}
 				else
 				{
 					if(SANShows[GetPVarInt(playerid, "ChannelID_FMEM")][ChannelType] != 1)
 					{
-						if(giveplayerid == playerid) return SendClientMessage(playerid, COLOR_GREY, "USAGE: '/mic' to talk on the TV Show!");
-						format(szMiscArray, sizeof(szMiscArray), "* You offered %s to participate in the TV Show.", GetPlayerNameEx(giveplayerid));
+						if(giveplayerid == playerid) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: '/mic' de noi trong chuong trinh TV!");
+						format(szMiscArray, sizeof(szMiscArray), "* Ban da moi %s tham gia chuong trinh TV.", GetPlayerNameEx(giveplayerid));
 						SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
-						format(szMiscArray, sizeof(szMiscArray), "* %s offered you to participate in the TV Show, type /acceptshow to accept.", GetPlayerNameEx(playerid));
+						format(szMiscArray, sizeof(szMiscArray), "* %s moi ban tham gia chuong trinh TV, dung /acceptshow de nhan.", GetPlayerNameEx(playerid));
 						SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, szMiscArray);
 					}
 					else
 					{
-						if(giveplayerid == playerid) return SendClientMessage(playerid, COLOR_GREY, "USAGE: '/mic' to talk on the Radio Show!");
-						format(szMiscArray, sizeof(szMiscArray), "* You offered %s to participate in the Radio Show.", GetPlayerNameEx(giveplayerid));
+						if(giveplayerid == playerid) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: '/mic' de noi trong chuong trinh radio!");
+						format(szMiscArray, sizeof(szMiscArray), "* Ban da moi %s tham gia chuong trinh radio.", GetPlayerNameEx(giveplayerid));
 						SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
-						format(szMiscArray, sizeof(szMiscArray), "* %s offered you to participate in the Radio Show, type /acceptshow to accept.", GetPlayerNameEx(playerid));
+						format(szMiscArray, sizeof(szMiscArray), "* %s moi ban tham gia chuong trinh radio, dung /acceptshow de nhan.", GetPlayerNameEx(playerid));
 						SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, szMiscArray);
 					}
 					SetPVarInt(giveplayerid, "TVOffer", playerid);
@@ -2206,21 +2206,21 @@ CMD:showinvite(playerid, params[])
 			}
 			else
 			{
-				SendClientMessage(playerid, COLOR_GREY, "That player isn't near you.");
+				SendClientMessage(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 			}
 		}
 		else
 		{
-			SendClientMessage(playerid, COLOR_GREY, "Invalid player specified.");
+			SendClientMessage(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 		}
 	}
-	else SendClientMessage(playerid, COLOR_GRAD1, "You have not logged in to a channel. (Use '/setchannel' to login).");
+	else SendClientMessage(playerid, COLOR_GRAD1, "Ban chua dang nhap kenh. (Dung '/setchannel' de dang nhap).");
 	return 1;
 }
 
 CMD:showmenu(playerid, params[])
 {
-	if(!IsAReporter(playerid)) return SendClientMessage(playerid, COLOR_GREY, "     You are not a News Reporter."); 
+	if(!IsAReporter(playerid)) return SendClientMessage(playerid, COLOR_GREY, "     Ban khong phai News Reporter."); 
 	if(!SAN_RankCheck(playerid, 0)) return 1;
 	SAN_ShowsDialog(playerid, 2);
 	return 1;
@@ -2229,7 +2229,7 @@ CMD:showmenu(playerid, params[])
 
 CMD:editshow(playerid, params[])
 {
-	if(!IsAReporter(playerid)) return SendClientMessage(playerid, COLOR_GREY, "     You are not a News Reporter."); 
+	if(!IsAReporter(playerid)) return SendClientMessage(playerid, COLOR_GREY, "     Ban khong phai News Reporter."); 
 	if(!SAN_RankCheck(playerid, 2)) return 1;
 	SAN_ShowsDialog(playerid, 1);
 	return 1;
@@ -2242,7 +2242,7 @@ CMD:togshow(playerid, params[])
 
 CMD:listcameras(playerid, params[])
 {
-	if(!IsAReporter(playerid)) return SendClientMessage(playerid, COLOR_GREY, "     You are not a News Reporter."); 
+	if(!IsAReporter(playerid)) return SendClientMessage(playerid, COLOR_GREY, "     Ban khong phai News Reporter."); 
 	if(!SAN_RankCheck(playerid, 0)) return 1;
 	SAN_Process_ListCameras(playerid, GetPVarInt(playerid, "ChannelID_FMEM"));
 	return 1;
@@ -2251,7 +2251,7 @@ CMD:listcameras(playerid, params[])
 SAN_RankCheck(playerid, slot) {
 
 	if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iWithdrawRank][slot]) return 1;
-	SendClientMessage(playerid, COLOR_GRAD1, "You do not have the permissions to use this command.");
+	SendClientMessage(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 0;
 }
 
@@ -2268,38 +2268,38 @@ CMD:cameraman(playerid, const params[])
 		{
 			if(shutdown == 1)
 			{
-				format(szMiscArray, sizeof(szMiscArray), "__________________________ {FF3232}SYSTEM OFFLINE {FFFFFF}________________\nActive: {FFA500}--- {FFFFFF}|| {32CD80}Channel ---{FFFFFF} (click to change)\n");
+				format(szMiscArray, sizeof(szMiscArray), "__________________________ {FF3232}HE THONG TAT {FFFFFF}________________\nHien tai: {FFA500}--- {FFFFFF}|| {32CD80}Kenh ---{FFFFFF} (nhan de doi)\n");
 				break;
 			}
 			if(GetPVarInt(playerid, "ChannelID_FMEM") == channel)
 			{
 				if(SANShows[channel][ChannelActive] == 1)
 				{
-					format(szMiscArray, sizeof(szMiscArray), "______________________________ {FF4C4C}ON AIR {FFFFFF}______________________________\nActive: {FFA500}%s {FFFFFF}|| {32CD80}Channel %i{FFFFFF} (click to change)\n", SANShows[channel][ChannelName], GetPVarInt(playerid, "ChannelID_FMEM"));
+					format(szMiscArray, sizeof(szMiscArray), "______________________________ {FF4C4C}DANG PHAT {FFFFFF}______________________________\nHien tai: {FFA500}%s {FFFFFF}|| {32CD80}Kenh %i{FFFFFF} (nhan de doi)\n", SANShows[channel][ChannelName], GetPVarInt(playerid, "ChannelID_FMEM"));
 					break;
 				}
 				if(SANShows[channel][ChannelActive] == 0)
 				{
-					format(szMiscArray, sizeof(szMiscArray), "__________________________ {7CFC00}SYSTEM ONLINE {FFFFFF}__________________________\nActive: {FFA500}%s {FFFFFF}|| {32CD80}Channel %i{FFFFFF} (click to change)\n", SANShows[channel][ChannelName], GetPVarInt(playerid, "ChannelID_FMEM"));
+					format(szMiscArray, sizeof(szMiscArray), "__________________________ {7CFC00}HE THONG BAT {FFFFFF}__________________________\nHien tai: {FFA500}%s {FFFFFF}|| {32CD80}Kenh %i{FFFFFF} (nhan de doi)\n", SANShows[channel][ChannelName], GetPVarInt(playerid, "ChannelID_FMEM"));
 					break;
 				}
 			}
 		}
-		format(szMiscArray, sizeof(szMiscArray), "%s--> Dynamic Camera Menu\n\
-			_______________________  STATIC CAMERA MENU _______________________ \n\
-			Set Camera Position\n\
-			Stop viewing current camera\n\
-			Preview SET camera\n\
+		format(szMiscArray, sizeof(szMiscArray), "%s--> Menu camera dong\n\
+			_______________________  MENU CAMERA TINH _______________________ \n\
+			Dat vi tri camera\n\
+			Dung xem camera hien tai\n\
+			Xem truoc camera da dat\n\
 			------------------------------------------\n\
-			Broadcast Camera Position\n\
-			Birdseye View\n\
-			Vehicle Camera\n\
-			Log out out of camera system", szMiscArray);
-		ShowPlayerDialogEx(playerid, DIALOG_SAN_CAMERAMAN, DIALOG_STYLE_LIST, "SA News | Cameraman Menu", szMiscArray, "Select", "Cancel");
+			Phat vi tri camera\n\
+			Goc nhin tu tren cao\n\
+			Camera xe\n\
+			Dang xuat camera", szMiscArray);
+		ShowPlayerDialogEx(playerid, DIALOG_SAN_CAMERAMAN, DIALOG_STYLE_LIST, "SA News | Menu Cameraman", szMiscArray, "Chon", "Huy");
 	}
 	else
 	{
-		SendClientMessage(playerid, COLOR_GRAD1, "     You are not a News Reporter.");
+		SendClientMessage(playerid, COLOR_GRAD1, "     Ban khong phai News Reporter.");
 	}
 	return 1;
 }
@@ -2309,9 +2309,9 @@ CMD:bdirector(playerid, const params[])
 {
 	szMiscArray[0] = 0;
 
- 	if(!IsAReporter(playerid)) return SendClientMessage(playerid, COLOR_GRAD1, "	You are not a News Reporter.");
+ 	if(!IsAReporter(playerid)) return SendClientMessage(playerid, COLOR_GRAD1, "\tBan khong phai News Reporter.");
  	if(!SAN_RankCheck(playerid, 2)) return 1;
-	if(PlayerInfo[playerid][pRank] < 3) return SendClientMessage(playerid, COLOR_GRAD1, "You must be at least Rank 3 to use the Broadcast Director system.");
+	if(PlayerInfo[playerid][pRank] < 3) return SendClientMessage(playerid, COLOR_GRAD1, "Ban can it nhat Rank 3 de dung he thong Broadcast Director.");
 	{
 		SetPVarInt(playerid, "DirectorChannelID", 1);
 		if(!SAN_Process_Login(playerid)) return 1;
@@ -2321,45 +2321,45 @@ CMD:bdirector(playerid, const params[])
 		{
 			if(shutdown == 1)
 			{
-				format(szMiscArray, sizeof(szMiscArray), "__________________________ {FF3232}SYSTEM OFFLINE {FFFFFF}________________\nActive: {FFA500}--- {FFFFFF}|| {32CD80}Channel ---{FFFFFF} (click to change)\n");
+				format(szMiscArray, sizeof(szMiscArray), "__________________________ {FF3232}HE THONG TAT {FFFFFF}________________\nHien tai: {FFA500}--- {FFFFFF}|| {32CD80}Kenh ---{FFFFFF} (nhan de doi)\n");
 				break;
 			}
 			if(GetPVarInt(playerid, "ChannelID_FMEM") == channel)
 			{
 				if(SANShows[channel][ChannelActive] == 1)
 				{
-					format(szMiscArray, sizeof(szMiscArray), "______________________________ {FF4C4C}ON AIR {FFFFFF}______________________________\nActive: {FFA500}%s {FFFFFF}|| {32CD80}Channel %i{FFFFFF} (click to change)\n", SANShows[channel][ChannelName], GetPVarInt(playerid, "ChannelID_FMEM"));
+					format(szMiscArray, sizeof(szMiscArray), "______________________________ {FF4C4C}DANG PHAT {FFFFFF}______________________________\nHien tai: {FFA500}%s {FFFFFF}|| {32CD80}Kenh %i{FFFFFF} (nhan de doi)\n", SANShows[channel][ChannelName], GetPVarInt(playerid, "ChannelID_FMEM"));
 					break;
 				}
 				if(SANShows[channel][ChannelActive] == 0)
 				{
-					format(szMiscArray, sizeof(szMiscArray), "__________________________ {7CFC00}SYSTEM ONLINE {FFFFFF}__________________________\nActive: {FFA500}%s {FFFFFF}|| {32CD80}Channel %i{FFFFFF} (click to change)\n", SANShows[channel][ChannelName], GetPVarInt(playerid, "ChannelID_FMEM"));
+					format(szMiscArray, sizeof(szMiscArray), "__________________________ {7CFC00}HE THONG BAT {FFFFFF}__________________________\nHien tai: {FFA500}%s {FFFFFF}|| {32CD80}Kenh %i{FFFFFF} (nhan de doi)\n", SANShows[channel][ChannelName], GetPVarInt(playerid, "ChannelID_FMEM"));
 					break;
 				}
 			}
 		}
 	
 		strcat(szMiscArray, "\n\
-			----> {32CD80}TV MENU{FFFFFF} (edit channel)\n\
-			Preview SET camera\n\
-			List all camera's\n\
-			Stop viewing current camera\n\
-			Preview Stream\n\
+			----> {32CD80}MENU TV{FFFFFF} (sua kenh)\n\
+			Xem truoc camera da dat\n\
+			Danh sach camera\n\
+			Dung xem camera hien tai\n\
+			Xem truoc luong phat\n\
 			----------------------------------\n\
-			Broadcast Cameraman's Camera (list)\n\
-			Broadcast Birdseye View\n\
-			Broadcast Point-to-Point Camera\n\
-			Broadcast Vehicle Camera\n\
-			Broadcast Stream\n\
+			Phat camera cua Cameraman (danh sach)\n\
+			Phat goc nhin tu tren cao\n\
+			Phat camera giua hai diem\n\
+			Phat camera xe\n\
+			Phat luong truc tiep\n\
 			----------------------------------\n", sizeof(szMiscArray));
 
 		strcat(szMiscArray, "\
-			Start System\n\
-			Shutdown/Stop System \n\
+			Bat he thong\n\
+			Tat/Dung he thong \n\
 			----------------------------------\n\
-			Log out of the system", sizeof(szMiscArray));
+			Dang xuat he thong", sizeof(szMiscArray));
 
-		ShowPlayerDialogEx(playerid, DIALOG_SAN_DIRECTOR, DIALOG_STYLE_LIST, "SA News | Broadcast Director Menu", szMiscArray, "Select", "Cancel");
+		ShowPlayerDialogEx(playerid, DIALOG_SAN_DIRECTOR, DIALOG_STYLE_LIST, "SA News | Menu Broadcast Director", szMiscArray, "Chon", "Huy");
 	}
 	return 1;
 }
@@ -2373,18 +2373,18 @@ CMD:channeldesc(playerid, params[])
 		if(!SAN_RankCheck(playerid, 2)) return 1;
 		if(!isnull(params))
 		{
-			format(szMiscArray, sizeof(szMiscArray), "TV Channel line set to: %s", params);
+			format(szMiscArray, sizeof(szMiscArray), "Da dat mo ta kenh TV: %s", params);
 			SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 			TextDrawSetString(TV_text[4], params);
 		}
 		else
 		{
-			SendClientMessage(playerid, COLOR_WHITE, "Usage: /channeldesc [description]");
+			SendClientMessage(playerid, COLOR_WHITE, "Cach dung: /channeldesc [description]");
 		}
 	}
 	else
 	{
-		SendClientMessage(playerid, COLOR_GRAD1, "     You are not a News Reporter.");
+		SendClientMessage(playerid, COLOR_GRAD1, "     Ban khong phai News Reporter.");
 	}
 	return 1;
 }
@@ -2485,7 +2485,7 @@ public SAN_InitTextDraws()
 	TextDrawTextSize(TV_text[5], 11.000000, 51.000000);
 	TextDrawSetSelectable(TV_text[5], false);
 
-	TV_text[6] = TextDrawCreate(317.000000, 438.000000, "Channel 1");
+	TV_text[6] = TextDrawCreate(317.000000, 438.000000, "Kenh 1");
 	TextDrawAlignment(TV_text[6], 2);
 	TextDrawBackgroundColor(TV_text[6], 255);
 	TextDrawFont(TV_text[6], 1);
@@ -2530,7 +2530,7 @@ public SAN_InitTextDraws()
 	TextDrawBackgroundColor(TV_text[11], 255);
 	TextDrawFont(TV_text[11], 4);
 
-	TV_text[12] = TextDrawCreate(251.999984, 218.312500, "Please wait...");
+	TV_text[12] = TextDrawCreate(251.999984, 218.312500, "Vui long cho...");
 	TextDrawLetterSize(TV_text[12], 0.449999, 1.600000);
 	TextDrawAlignment(TV_text[12], 1);
 	TextDrawColor(TV_text[12], -1);
@@ -2540,7 +2540,7 @@ public SAN_InitTextDraws()
 	TextDrawFont(TV_text[12], 1);
 	TextDrawSetProportional(TV_text[12], true);
 
-	TV_text[13] = TextDrawCreate(190.800003, 205.187500, "We are currently experiencing technical difficulties.");
+	TV_text[13] = TextDrawCreate(190.800003, 205.187500, "He thong dang gap su co ky thuat.");
 	TextDrawLetterSize(TV_text[13], 0.249999, 1.302500);
 	TextDrawAlignment(TV_text[13], 1);
 	TextDrawColor(TV_text[13], -1);

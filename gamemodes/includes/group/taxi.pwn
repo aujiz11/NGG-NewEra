@@ -49,7 +49,7 @@ stock Taxi_StopDuty(playerid)
 	if(TransportDuty[playerid] == 0) return 1;
 	new payment = TransportMoney[playerid] / 100 * 50;
 	if(GetPlayerCash(playerid) > cellmax - payment)
-		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot carry your outstanding fare payment."), 0;
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the nhan so tien cuoc con lai."), 0;
 
 	if(TransportDuty[playerid] == 1)
 	{
@@ -61,7 +61,7 @@ stock Taxi_StopDuty(playerid)
 	}
 
 	TransportDuty[playerid] = 0;
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now off duty and earned $%d.", TransportMoney[playerid]);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da nghi truc va kiem duoc $%d.", TransportMoney[playerid]);
 	GivePlayerCash(playerid, payment);
 	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI))
 	{
@@ -78,32 +78,32 @@ CMD:fare(playerid, params[])
 	if(IsATaxiDriver(playerid))
 	{
 		new string[128], fare;
-		if(sscanf(params, "d", fare)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /fare [price]");
+		if(sscanf(params, "d", fare)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /fare [price]");
 
-		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this at this time.");
+		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the lam viec nay.");
 
 		if(TransportDuty[playerid] > 0) return Taxi_StopDuty(playerid);
-		if(GetPVarInt(playerid, "MechanicDuty") == 1 || GetPVarInt(playerid, "LawyerDuty") == 1) return SendClientMessageEx(playerid,COLOR_GREY,"You need to get off duty with your mechanic/lawyer job first.");
-		if(GetPlayerState(playerid) != 2) return SendClientMessageEx(playerid, COLOR_GREY, "   You are not the driver!");
-		if(fare < 1 || fare > 2000) return SendClientMessageEx(playerid, COLOR_GREY, "   Fare price must be between $1 and $2000!");
+		if(GetPVarInt(playerid, "MechanicDuty") == 1 || GetPVarInt(playerid, "LawyerDuty") == 1) return SendClientMessageEx(playerid,COLOR_GREY,"Ban can nghi truc Mechanic/Lawyer truoc.");
+		if(GetPlayerState(playerid) != 2) return SendClientMessageEx(playerid, COLOR_GREY, "   Ban khong phai nguoi lai!");
+		if(fare < 1 || fare > 2000) return SendClientMessageEx(playerid, COLOR_GREY, "   Gia cuoc phai tu $1 den $2000!");
 		new newcar = GetPlayerVehicleID(playerid);
 		if(IsAnBus(newcar))
 		{
 			fare = 1500;
 			BusDrivers += 1; TransportDuty[playerid] = 2; TransportValue[playerid] = fare;
-			format(string, sizeof(string), "You are now on-duty as Bus Driver, fare: $%d.", TransportValue[playerid]);
+			format(string, sizeof(string), "Ban da truc Bus Driver, gia cuoc: $%d.", TransportValue[playerid]);
 		}
 		else
 		{
 			TaxiDrivers += 1; TransportDuty[playerid] = 1; TransportValue[playerid] = fare;
-			format(string, sizeof(string), "You are now on-duty as Taxi Driver, fare: $%d.", TransportValue[playerid]);
+			format(string, sizeof(string), "Ban da truc Taxi Driver, gia cuoc: $%d.", TransportValue[playerid]);
 		}
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 		if(IsATaxiDriver(playerid)) SetPlayerColor(playerid, COLOR_TAXI); else SetPlayerColor(playerid,TEAM_TAXI_COLOR);
 	}
 	else
 	{
-		return SendClientMessageEx(playerid,COLOR_GREY,"You're not a licensed taxi/bus driver!");
+		return SendClientMessageEx(playerid,COLOR_GREY,"Ban khong phai tai xe taxi/bus duoc cap phep!");
 	}
 	return 1;
 }
@@ -121,17 +121,17 @@ CMD:emergencybutton(playerid, params[]) {
 			szLocation[MAX_ZONE_NAME];
 				
         if(PlayerCuffed[playerid] >= 1 || PlayerInfo[playerid][pJailTime] > 0 || PlayerInfo[playerid][pHospital] > 0 || PlayerTied[playerid] > 0 ) {
-			return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+			return SendClientMessageEx(playerid, COLOR_WHITE, "Ban chua the lam viec nay.");
 		}
 
 		if(GetPVarType(playerid, "UsedEBA")) {
 
 			if(!IsAReporter(playerid)) {
-				format(szMiscArray, sizeof(szMiscArray), "HQ: The SA News distress signal from %s has been cancelled", GetPlayerNameEx(playerid));
+				format(szMiscArray, sizeof(szMiscArray), "HQ: Tin hieu cau cuu SA News cua %s da bi huy", GetPlayerNameEx(playerid));
 				SendGroupMessage(GROUP_TYPE_NEWS, TEAM_BLUE_COLOR, szMiscArray);
 			}
 			else {
-				format(szMiscArray, sizeof(szMiscArray), "HQ: The taxi co. distress signal from %s has been cancelled", GetPlayerNameEx(playerid));
+				format(szMiscArray, sizeof(szMiscArray), "HQ: Tin hieu cau cuu hang taxi cua %s da bi huy", GetPlayerNameEx(playerid));
 				SendTaxiMessage(TEAM_AZTECAS_COLOR, szMiscArray);
 			}
 			foreach(new i: Player) {
@@ -139,7 +139,7 @@ CMD:emergencybutton(playerid, params[]) {
 				if(IsACop(i)) SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
 			}
 			
-			SendClientMessage(playerid, COLOR_WHITE, "You have cancelled the emergency button.");
+			SendClientMessage(playerid, COLOR_WHITE, "Ban da huy nut khan cap.");
 			DeletePVar(playerid, "UsedEBA");
 			return 1;
 		}
@@ -148,18 +148,18 @@ CMD:emergencybutton(playerid, params[]) {
 	    foreach(new i: Player) {
 
 	    	if(IsACop(i)) {
-				if(!IsAReporter(playerid)) SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: All Units APB: Reporter: Taxi Company Office");
-				else SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: All Units APB: Reporter: SA News");
+				if(!IsAReporter(playerid)) SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Moi don vi APB: Nguoi bao: Taxi Company Office");
+				else SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Moi don vi APB: Nguoi bao: SA News");
 
-				if(!IsAReporter(playerid)) format(szMiscArray, sizeof(szMiscArray), "HQ: A distress signal is forwarded from the Taxi Company Office for %s at %s",GetPlayerNameEx(playerid), szLocation);
-				else format(szMiscArray, sizeof szMiscArray, "HQ: A distress signal is forwarded from SA News for %s at %s", GetPlayerNameEx(playerid), szLocation);
+				if(!IsAReporter(playerid)) format(szMiscArray, sizeof(szMiscArray), "HQ: Taxi Company Office chuyen tin hieu cau cuu cua %s tai %s",GetPlayerNameEx(playerid), szLocation);
+				else format(szMiscArray, sizeof szMiscArray, "HQ: SA News chuyen tin hieu cau cuu cua %s tai %s", GetPlayerNameEx(playerid), szLocation);
 
 				SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
 			}
 		}
-		format(szMiscArray, sizeof(szMiscArray), "* An alarm engages in %s's vehicle at %s. A message is dispatched to the company's office.", GetPlayerNameEx(playerid), szLocation);
+		format(szMiscArray, sizeof(szMiscArray), "* Bao dong xe %s vang len tai %s. Tin nhan duoc gui ve van phong cong ty.", GetPlayerNameEx(playerid), szLocation);
 		SendTaxiMessage(TEAM_AZTECAS_COLOR, szMiscArray);
-		SendClientMessage(playerid, COLOR_WHITE, "You have pressed the emergency button. The police have been informed.");
+		SendClientMessage(playerid, COLOR_WHITE, "Ban da nhan nut khan cap. Canh sat da duoc thong bao.");
 		SetPVarInt(playerid, "UsedEBA", 1);
 	}
 	return 1;
@@ -170,40 +170,40 @@ alias:ataxi("abus")
 CMD:ataxi(playerid, params[])
 {
 	if(!IsATaxiDriver(playerid)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You are not a taxi/bus driver!");
-	if(TransportDuty[playerid] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You are currently not on duty.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai tai xe taxi/bus!");
+	if(TransportDuty[playerid] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua truc.");
 
 	new
 		szMessage[128],
 		iTarget;
 	if(TransportDuty[playerid] == 1)
 	{
-		if(sscanf(params, "u", iTarget)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ataxi [player]");
-		if(!IsPlayerConnected(iTarget)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-		if(iTarget == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You can't accept your own taxi call.");
-		if(TaxiCallTime[playerid] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You have already accepted a call.");
-		if(!GetPVarType(iTarget, "TaxiCall")) return SendClientMessageEx(playerid, COLOR_GREY, "That person has not called for a taxi.");
+		if(sscanf(params, "u", iTarget)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /ataxi [player]");
+		if(!IsPlayerConnected(iTarget)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
+		if(iTarget == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the nhan cuoc goi taxi cua minh.");
+		if(TaxiCallTime[playerid] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da nhan mot cuoc goi.");
+		if(!GetPVarType(iTarget, "TaxiCall")) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong goi taxi.");
 
-		format(szMessage, sizeof(szMessage), "** Taxi Driver %s has accepted the Taxi Call from %s(%d)" , GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget), iTarget);
+		format(szMessage, sizeof(szMessage), "** Taxi Driver %s da nhan cuoc goi Taxi tu %s(%d)" , GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget), iTarget);
 		SendTaxiMessage(TEAM_AZTECAS_COLOR, szMessage);
-		SendClientMessageEx(iTarget, COLOR_LIGHTBLUE, "* Taxi Driver %s has accepted your Taxi Call, please wait at your current position.", GetPlayerNameEx(playerid));
-		GameTextForPlayer(playerid, "~w~Taxi Caller~n~~r~Go to the red marker.", 5000, 1);
+		SendClientMessageEx(iTarget, COLOR_LIGHTBLUE, "* Taxi Driver %s da nhan cuoc goi Taxi, hay cho tai vi tri hien tai.", GetPlayerNameEx(playerid));
+		GameTextForPlayer(playerid, "~w~Nguoi goi Taxi~n~~r~Den diem do.", 5000, 1);
 		TaxiCallTime[playerid] = 1;
 		TaxiAccepted[playerid] = iTarget;
 		DeletePVar(iTarget, "TaxiCall");
 	}
 	if(TransportDuty[playerid] == 2)
 	{
-		if(sscanf(params, "u", iTarget)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /abus [player]");
-		if(!IsPlayerConnected(iTarget)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-		if(iTarget == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You can't accept your own bus call.");
-		if(BusCallTime[playerid] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You have already accepted a call.");
-		if(!GetPVarType(iTarget, "BusCall")) return SendClientMessageEx(playerid, COLOR_GREY, "That person has not called for a bus.");
+		if(sscanf(params, "u", iTarget)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /abus [player]");
+		if(!IsPlayerConnected(iTarget)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
+		if(iTarget == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the nhan cuoc goi bus cua minh.");
+		if(BusCallTime[playerid] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da nhan mot cuoc goi.");
+		if(!GetPVarType(iTarget, "BusCall")) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong goi bus.");
 		
-		format(szMessage, sizeof(szMessage), "** Bus Driver %s has accepted the Bus Call from %s(%d)" , GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget), iTarget);
+		format(szMessage, sizeof(szMessage), "** Bus Driver %s da nhan cuoc goi Bus tu %s(%d)" , GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget), iTarget);
 		SendTaxiMessage(TEAM_AZTECAS_COLOR, szMessage);
-		SendClientMessageEx(iTarget, COLOR_LIGHTBLUE, "* Bus Driver %s has accepted your Bus Call, please wait at your current position.", GetPlayerNameEx(playerid));
-		GameTextForPlayer(playerid, "~w~Bus Caller~n~~r~Goto redmarker", 5000, 1);
+		SendClientMessageEx(iTarget, COLOR_LIGHTBLUE, "* Bus Driver %s da nhan cuoc goi Bus, hay cho tai vi tri hien tai.", GetPlayerNameEx(playerid));
+		GameTextForPlayer(playerid, "~w~Nguoi goi Bus~n~~r~Den diem do", 5000, 1);
 		BusCallTime[playerid] = 1;
 		BusAccepted[playerid] = iTarget;
 		DeletePVar(iTarget, "BusCall");

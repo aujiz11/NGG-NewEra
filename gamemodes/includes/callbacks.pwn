@@ -94,7 +94,7 @@ public OnVehicleSpawn(vehicleid) {
 			new zyear, zmonth, zday;
 			getdate(zyear, zmonth, zday);
 			if(zombieevent || (zmonth == 10 && zday == 31) || (zmonth == 11 && zday == 1)) SetVehicleHealth(iVehicleID, PlayerVehicleInfo[i][v][pvHealth]);
-			SendClientMessageEx(i, COLOR_GRAD1, "Your %s has been sent to the location at which you last parked it.", GetVehicleName(iVehicleID));
+			SendClientMessageEx(i, COLOR_GRAD1, "Xe %s cua ban da duoc dua ve vi tri do gan nhat.", GetVehicleName(iVehicleID));
 		}
 	}
 	// Make sure no one is in the vehicle window if plane.
@@ -116,7 +116,7 @@ public OnVehicleSpawn(vehicleid) {
 			PlayerInfo[i][pInt] = 0;
 			SetPlayerInterior(i, 0);
 			InsidePlane[i] = INVALID_VEHICLE_ID;
-			SendClientMessageEx(i, COLOR_WHITE, "The airplane has been damaged, you cannot be inside it!");
+			SendClientMessageEx(i, COLOR_WHITE, "May bay da hu hong, ban khong the o ben trong!");
 		}
 	}
 }
@@ -132,7 +132,7 @@ public OnVehicleMod(playerid, vehicleid, componentid)
 				if(HackingMods[playerid] < 3)
 				{
 					new szMessage[128];
-					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be hacking vehicle mods (%s (%d) %s to a %s (ID: %d))", GetPlayerNameEx(playerid), playerid, partName(componentid), componentid, partType(GetVehicleComponentType(componentid)), GetVehicleName(vehicleid), GetPlayerVehicleID(playerid));
+					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) co the hack do xe (%s (%d) %s vao %s (ID: %d))", GetPlayerNameEx(playerid), playerid, partName(componentid), componentid, partType(GetVehicleComponentType(componentid)), GetVehicleName(vehicleid), GetPlayerVehicleID(playerid));
 					ABroadCast(COLOR_YELLOW, szMessage, 2);
 					format(szMessage, sizeof(szMessage), "%s(%d) may be hacking vehicle mods (%s (%d) %s to a %s (ID: %d))", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), partName(componentid), componentid, partType(GetVehicleComponentType(componentid)), GetVehicleName(vehicleid), GetPlayerVehicleID(playerid));
 					Log("logs/hack.log", szMessage);
@@ -156,7 +156,7 @@ public OnVehicleMod(playerid, vehicleid, componentid)
 
 		if(HackingMods[playerid] < 3)
 		{
-			format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be hacking vehicle mods (%s (%d) %s to a %s (ID: %d))", GetPlayerNameEx(playerid), playerid, partName(componentid), componentid, partType(GetVehicleComponentType(componentid)), GetVehicleName(vehicleid), GetPlayerVehicleID(playerid));
+			format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) co the hack do xe (%s (%d) %s vao %s (ID: %d))", GetPlayerNameEx(playerid), playerid, partName(componentid), componentid, partType(GetVehicleComponentType(componentid)), GetVehicleName(vehicleid), GetPlayerVehicleID(playerid));
 			ABroadCast(COLOR_YELLOW, szMessage, 2);
 			format(szMessage, sizeof(szMessage), "%s(%d) may be hacking vehicle mods (%s (%d) %s to a %s (ID: %d))", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), partName(componentid), componentid, partType(GetVehicleComponentType(componentid)), GetVehicleName(vehicleid), GetPlayerVehicleID(playerid));
 			Log("logs/hack.log", szMessage);
@@ -216,7 +216,7 @@ public OnDynamicObjectMoved(objectid)
 	    Floor_OpenDoors(ElevatorFloor);
 
 	    GetDynamicObjectPos(Obj_Elevator, x, y, z);
-	    Label_Elevator	= CreateDynamic3DTextLabel("Press '~k~~GROUP_CONTROL_BWD~' to use elevator", COLOR_YELLOW, 1784.9822, -1302.0426, z - 0.9, 4.0);
+	    Label_Elevator	= CreateDynamic3DTextLabel("Nhan '~k~~GROUP_CONTROL_BWD~' de dung thang may", COLOR_YELLOW, 1784.9822, -1302.0426, z - 0.9, 4.0);
 
 	    ElevatorState 	= ELEVATOR_STATE_WAITING;
 	    SetTimer("Elevator_TurnToIdle", ELEVATOR_WAIT_TIME, false);
@@ -453,39 +453,39 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid,
 	    if(fOffsetX > 1.4)
 		{
 			fOffsetX = 1.4;
-			SendClientMessage(playerid, COLOR_WHITE, "Maximum X Offset exeeded, damped to maximum");
+			SendClientMessage(playerid, COLOR_WHITE, "Vuot do lech X toi da, da gioi han lai");
 		}
 	    if(fOffsetY > 1.4) {
 			fOffsetY = 1.4;
-			SendClientMessage(playerid, COLOR_WHITE, "Maximum Y Offset exeeded, damped to maximum");
+			SendClientMessage(playerid, COLOR_WHITE, "Vuot do lech Y toi da, da gioi han lai");
 		}
 	    if(fOffsetZ > 1.4) {
 			fOffsetZ = 1.4;
-			SendClientMessage(playerid, COLOR_WHITE, "Maximum Z Offset exeeded, damped to maximum");
+			SendClientMessage(playerid, COLOR_WHITE, "Vuot do lech Z toi da, da gioi han lai");
 		}
 	    if(fOffsetX < -1.4) {
 			fOffsetX = -1.4;
-			SendClientMessage(playerid, COLOR_WHITE, "Maximum X Offset exeeded, damped to maximum");
+			SendClientMessage(playerid, COLOR_WHITE, "Vuot do lech X toi da, da gioi han lai");
 		}
 	    if(fOffsetY < -1.4) {
 			fOffsetY = -1.4;
-			SendClientMessage(playerid, COLOR_WHITE, "Maximum Y Offset exeeded, damped to maximum");
+			SendClientMessage(playerid, COLOR_WHITE, "Vuot do lech Y toi da, da gioi han lai");
 		}
 	    if(fOffsetZ < -1.4) {
 			fOffsetZ = -1.4;
-			SendClientMessage(playerid, COLOR_WHITE, "Maximum Z Offset exeeded, damped to maximum");
+			SendClientMessage(playerid, COLOR_WHITE, "Vuot do lech Z toi da, da gioi han lai");
 		}
 	    if(fScaleX > 1.5) {
 			fScaleX = 1.5;
-			SendClientMessage(playerid, COLOR_WHITE, "Maximum X Scale exeeded, damped to maximum");
+			SendClientMessage(playerid, COLOR_WHITE, "Vuot ti le X toi da, da gioi han lai");
 		}
 	    if(fScaleY > 1.5) {
 			fScaleY = 1.5;
-			SendClientMessage(playerid, COLOR_WHITE, "Maximum Y Scale exeeded, damped to maximum");
+			SendClientMessage(playerid, COLOR_WHITE, "Vuot ti le Y toi da, da gioi han lai");
 		}
 		if(fScaleZ > 1.5) {
 			fScaleZ = 1.5;
-			SendClientMessage(playerid, COLOR_WHITE, "Maximum Z Scale exeeded, damped to maximum");
+			SendClientMessage(playerid, COLOR_WHITE, "Vuot ti le Z toi da, da gioi han lai");
 		}
 		if(GetPVarType(playerid, "EditGToy")) {
 
@@ -506,7 +506,7 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid,
 
 			DeletePVar(playerid, "EditGToy");
 			g_mysql_SaveGroupToy(playerid);
-			SendClientMessageEx(playerid, COLOR_GRAD1, "You have edited your group toy.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da sua toy to chuc.");
 		}
 		else {
 		    new slotid = GetPVarInt(playerid, "ToySlot");
@@ -528,11 +528,11 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid,
 	{
 		if(GetPVarType(playerid, "EditGToy")) {
 			DeletePVar(playerid, "EditGToy");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "You have stopped editing your group toy.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da dung sua toy to chuc.");
 		}
 		else {
 		    ShowEditMenu(playerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have stopped yourself from editing the toy.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da dung chinh sua toy.");
 		}
 	}
 	return 1;
@@ -572,7 +572,7 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY," Access denied.");
+			SendClientMessageEx(playerid, COLOR_GREY," Khong co quyen truy cap.");
 			return 1;
 		}
 	}
@@ -586,7 +586,7 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY," Access denied.");
+			SendClientMessageEx(playerid, COLOR_GREY," Khong co quyen truy cap.");
 			return 1;
 		}
 	}
@@ -602,7 +602,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	    }
 	    else
 	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
+	        SendClientMessageEx(playerid,COLOR_GREY,"Khong co quyen truy cap.");
 			return 1;
 		}
 	}
@@ -618,7 +618,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	    }
 	    else
 	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
+	        SendClientMessageEx(playerid,COLOR_GREY,"Khong co quyen truy cap.");
 			return 1;
 		}
 	}
@@ -632,7 +632,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	    }
 	    else
 	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
+	        SendClientMessageEx(playerid,COLOR_GREY,"Khong co quyen truy cap.");
 			return 1;
 		}
 	}
@@ -646,7 +646,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	    }
 	    else
 	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
+	        SendClientMessageEx(playerid,COLOR_GREY,"Khong co quyen truy cap.");
 			return 1;
 		}
 	}
@@ -660,7 +660,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	    }
 	    else
 	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
+	        SendClientMessageEx(playerid,COLOR_GREY,"Khong co quyen truy cap.");
 			return 1;
 		}
 	}
@@ -668,7 +668,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	{
 		if(!IsACop(playerid))
 		{
-			SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
+			SendClientMessageEx(playerid,COLOR_GREY,"Khong co quyen truy cap.");
 			return 1;
 		}
 		MoveDynamicObject(westlobby1,239.71582031,115.09179688,1002.21502686,4);
@@ -679,7 +679,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	{
 		if(!IsACop(playerid))
 		{
-			SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
+			SendClientMessageEx(playerid,COLOR_GREY,"Khong co quyen truy cap.");
 			return 1;
 		}
  		MoveDynamicObject(eastlobby1,253.14941406,111.59960938,1002.21502686,4);
@@ -690,7 +690,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	{
 		if(!IsACop(playerid))
 		{
-			SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
+			SendClientMessageEx(playerid,COLOR_GREY,"Khong co quyen truy cap.");
 			return 1;
 		}
 		MoveDynamicObject(locker1,268.29980469,112.56640625,1003.61718750,4);
@@ -701,7 +701,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	{
 		if(!IsACop(playerid))
 		{
-			SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
+			SendClientMessageEx(playerid,COLOR_GREY,"Khong co quyen truy cap.");
 			return 1;
 		}
 		MoveDynamicObject(cctv1,263.44921875,115.79980469,1003.61718750,4);
@@ -712,7 +712,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	{
 		if(!IsACop(playerid) || PlayerInfo[playerid][pRank] < 6)
 		{
-			SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
+			SendClientMessageEx(playerid,COLOR_GREY,"Khong co quyen truy cap.");
 			return 1;
 		}
 		MoveDynamicObject(chief1,228.0,119.50000000,1009.21875000,4);
@@ -723,31 +723,31 @@ public OnPlayerPressButton(playerid, buttonid)
 	{
 		if(!IsACop(playerid))
 		{
-			SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
+			SendClientMessageEx(playerid,COLOR_GREY,"Khong co quyen truy cap.");
 			return 1;
 		}
 		//else ShowPlayerDialogEx( playerid, ELEVATOR3, DIALOG_STYLE_LIST, "Elevator", "Rooftop\nGarage", "Select", "Cancel");
-		else SendClientMessageEx(playerid, COLOR_GRAD1, "This elevator is out of service.");
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "Thang may nay dang ngung hoat dong.");
 	}
 	if(buttonid == garagekey)
 	{
 		if(!IsACop(playerid))
 		{
-			SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
+			SendClientMessageEx(playerid,COLOR_GREY,"Khong co quyen truy cap.");
 			return 1;
 		}
 		//else ShowPlayerDialogEx( playerid, ELEVATOR2, DIALOG_STYLE_LIST, "Elevator", "Rooftop\nInterior", "Select", "Cancel");
-		else SendClientMessageEx(playerid, COLOR_GRAD1, "This elevator is out of service.");
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "Thang may nay dang ngung hoat dong.");
 	}
 	if(buttonid == roofkey)
 	{
 		if(!IsACop(playerid))
 		{
-			SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
+			SendClientMessageEx(playerid,COLOR_GREY,"Khong co quyen truy cap.");
 			return 1;
 		}
 		//else ShowPlayerDialogEx( playerid, ELEVATOR, DIALOG_STYLE_LIST, "Elevator", "Interior\nGarage", "Select", "Cancel");
-		else SendClientMessageEx(playerid, COLOR_GRAD1, "This elevator is out of service.");
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "Thang may nay dang ngung hoat dong.");
 	}
 	if(buttonid == westin)
 	{
@@ -769,43 +769,43 @@ public OnPlayerPressButton(playerid, buttonid)
 
 			}
 			else {
-				SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+				SendClientMessageEx(playerid, COLOR_GREY, "Khong co quyen truy cap");
 				break;
 			}
 		}
 	}
 	if(buttonid == DocCPButton[0] || buttonid == DocCPButton[1])
 	{
-		if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+		if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Khong co quyen truy cap");
 		ShowDocPrisonControls(playerid, 0);
 	}
 	if(buttonid == SFPDHighCMDButton[0]) // Chief
 	{
-		if(PlayerInfo[playerid][pLeader] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+		if(PlayerInfo[playerid][pLeader] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong co quyen truy cap");
 		SFPDDoors(0, 1);
 		SetTimerEx("SFPDDoors", 3000, false, "ii", 0, 0);
 	}
 	if(buttonid == SFPDHighCMDButton[1]) // Deputy Chief
 	{
-		if(PlayerInfo[playerid][pLeader] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+		if(PlayerInfo[playerid][pLeader] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong co quyen truy cap");
 		SFPDDoors(1, 1);
 		SetTimerEx("SFPDDoors", 3000, false, "ii", 1, 0);
 	}
 	if(buttonid == SFPDHighCMDButton[2]) // Commander
 	{
-		if(PlayerInfo[playerid][pLeader] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+		if(PlayerInfo[playerid][pLeader] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong co quyen truy cap");
 		SFPDDoors(2, 1);
 		SetTimerEx("SFPDDoors", 3000, false, "ii", 2, 0);
 	}
 	if(buttonid == SFPDLobbyButton[0])
 	{
-		if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+		if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Khong co quyen truy cap");
 		SFPDDoors(3, 1);
 		SetTimerEx("SFPDDoors", 3000, false, "ii", 3, 0);
 	}
 	if(buttonid == SFPDLobbyButton[1])
 	{
-		if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+		if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Khong co quyen truy cap");
 		SFPDDoors(4, 1);
 		SetTimerEx("SFPDDoors", 3000, false, "ii", 4, 0);
 	}
@@ -927,7 +927,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 	    {
 	        if(modelid == 18647)
 	        {
-				ShowPlayerDialogEx(playerid, DIALOG_SHOPNEON, DIALOG_STYLE_LIST, "Neon Tubes", "Red Neon Tube\nBlue Neon Tube\nGreen Neon Tube\nYellow Neon Tube\nPink Neon Tube\nWhite Neon Tube", "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_SHOPNEON, DIALOG_STYLE_LIST, "Neon Tubes", "Red Neon Tube\nBlue Neon Tube\nGreen Neon Tube\nYellow Neon Tube\nPink Neon Tube\nWhite Neon Tube", "Chon", "Huy");
 	        }
 	        else
 	        {
@@ -947,14 +947,14 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 					}
 
 					strunpack(boneName, HoldingBones[PlayerToyInfo[playerid][z][ptBone]], sizeof(boneName));
-					format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, z, name, boneName);
+					format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Gan: %s)\n", szMiscArray, z, name, boneName);
 				}
 				printf("MODELID: %d", modelid);
-				ShowPlayerDialogEx(playerid, DIALOG_SHOPBUYTOYS, DIALOG_STYLE_LIST, "Select a Slot", szMiscArray, "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_SHOPBUYTOYS, DIALOG_STYLE_LIST, "Chon mot Slot", szMiscArray, "Chon", "Huy");
 	  			SetPVarInt(playerid, "ToyID", modelid);
 			}
 	    }
-	    else SendClientMessage(playerid, COLOR_GREY, "You have closed the toy shop.");
+	    else SendClientMessage(playerid, COLOR_GREY, "Ban da dong Toy Shop.");
     	return 1;
 	}
 	if(listid == BoatList)
@@ -964,8 +964,8 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			new string[128];
 			SetPVarInt(playerid, "VehicleID", modelid), SetPVarInt(playerid, "BoatShop", 1);
 			strunpack(vehicleName, VehicleName[modelid-400], sizeof(vehicleName));
-			format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", vehicleName, number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[5][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[5][sItemPrice]));
-			ShowPlayerDialogEx(playerid, DIALOG_CARSHOP, DIALOG_STYLE_MSGBOX, "Vehicle Shop", string, "Purchase", "Cancel");
+			format(string, sizeof(string), "Vat pham: %s\nCredits: %s\nGia: {FFD700}%s{A9C4E4}\nCon lai: %s", vehicleName, number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[5][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[5][sItemPrice]));
+			ShowPlayerDialogEx(playerid, DIALOG_CARSHOP, DIALOG_STYLE_MSGBOX, "Vehicle Shop", string, "Mua", "Huy");
 		}
 	}
 	if(listid == PlaneList)
@@ -975,8 +975,8 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			new string[128];
 			SetPVarInt(playerid, "VehicleID", modelid);
 			strunpack(vehicleName, VehicleName[modelid-400], sizeof(vehicleName));
-			format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", vehicleName, number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[5][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[5][sItemPrice]));
-			ShowPlayerDialogEx(playerid, DIALOG_CARSHOP, DIALOG_STYLE_MSGBOX, "Vehicle Shop", string, "Purchase", "Cancel");
+			format(string, sizeof(string), "Vat pham: %s\nCredits: %s\nGia: {FFD700}%s{A9C4E4}\nCon lai: %s", vehicleName, number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[5][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[5][sItemPrice]));
+			ShowPlayerDialogEx(playerid, DIALOG_CARSHOP, DIALOG_STYLE_MSGBOX, "Vehicle Shop", string, "Mua", "Huy");
 		}
 	}
 	if(listid == CarList2 || listid == CarList)
@@ -987,13 +987,13 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			{
 				DeletePVar(playerid, "voucherdialog");
 				DeletePVar(playerid, "WhoIsThis");
-				return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this while being cuffed or tazed.");
+				return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the dung khi dang bi cong hoac chich dien.");
 			}
 			if(IsPlayerInAnyVehicle(playerid))
 			{
 				DeletePVar(playerid, "voucherdialog");
 				DeletePVar(playerid, "WhoIsThis");
-				return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this while being inside a vehicle.");
+				return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the dung tinh nang nay khi dang trong xe.");
 			}
 			if(GetPVarInt(playerid, "voucherdialog") == 0)
 			{
@@ -1002,23 +1002,23 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 					new string[128];
 					SetPVarInt(playerid, "VehicleID", modelid);
 					strunpack(vehicleName, VehicleName[modelid-400], sizeof(vehicleName));
-					format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", vehicleName, number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[5][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[5][sItemPrice]));
-					ShowPlayerDialogEx(playerid, DIALOG_CARSHOP, DIALOG_STYLE_MSGBOX, "Vehicle Shop", string, "Purchase", "Cancel");
+					format(string, sizeof(string), "Vat pham: %s\nCredits: %s\nGia: {FFD700}%s{A9C4E4}\nCon lai: %s", vehicleName, number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[5][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[5][sItemPrice]));
+					ShowPlayerDialogEx(playerid, DIALOG_CARSHOP, DIALOG_STYLE_MSGBOX, "Vehicle Shop", string, "Mua", "Huy");
 				}
 				else
 				{
 					new string[128];
 					SetPVarInt(playerid, "VehicleID", modelid);
 					strunpack(vehicleName, VehicleName[modelid-400], sizeof(vehicleName));
-					format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", vehicleName, number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[20][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[20][sItemPrice]));
-					ShowPlayerDialogEx(playerid, DIALOG_RENTACAR, DIALOG_STYLE_MSGBOX, "Rent a Car", string, "Purchase", "Cancel");
+					format(string, sizeof(string), "Vat pham: %s\nCredits: %s\nGia: {FFD700}%s{A9C4E4}\nCon lai: %s", vehicleName, number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[20][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[20][sItemPrice]));
+					ShowPlayerDialogEx(playerid, DIALOG_RENTACAR, DIALOG_STYLE_MSGBOX, "Rent a Car", string, "Mua", "Huy");
 				}
 			}
 			else if(GetPVarInt(playerid, "voucherdialog") == 1)
 			{
-				if(!vehicleCountCheck(playerid)) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot own anymore vehicles - You may purchase additional vehicle slots through /vstorage.");
-				if(!vehicleSpawnCountCheck(playerid)) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "You have too many spawned vehicles, please despawn one.");
-				if(PlayerInfo[playerid][pVehVoucher] <= 0) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "You don't have a car voucher.");
+				if(!vehicleCountCheck(playerid)) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "Ban da so huu toi da so xe, co the mua them o xe qua /vstorage.");
+				if(!vehicleSpawnCountCheck(playerid)) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "Ban da lay ra qua nhieu xe, hay cat bot mot xe.");
+				if(PlayerInfo[playerid][pVehVoucher] <= 0) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co Car Voucher.");
 				new Float: arr_fPlayerPos[4], szLog[128];
 				GetPlayerPos(playerid, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2]);
 				GetPlayerFacingAngle(playerid, arr_fPlayerPos[3]);
@@ -1026,7 +1026,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 				SetPlayerVirtualWorld(playerid, 0);
 
 				PlayerInfo[playerid][pVehVoucher]--;
-				SendClientMessageEx(playerid, COLOR_CYAN, "You have successfully used one of your car voucher(s), you have %d car voucher(s) left.", PlayerInfo[playerid][pVehVoucher]);
+				SendClientMessageEx(playerid, COLOR_CYAN, "Ban da dung mot Car Voucher, con %d Car Voucher.", PlayerInfo[playerid][pVehVoucher]);
 				format(szLog, sizeof(szLog), "%s(%d) has used one of his car voucher(s) and has %d left.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pVehVoucher]);
 				Log("logs/vouchers.log", szLog);
 				DeletePVar(playerid, "voucherdialog");
@@ -1045,8 +1045,8 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 	        new string[128];
        		SetPVarInt(playerid, "VehicleID", modelid);
 			strunpack(vehicleName, VehicleName[modelid-400], sizeof(vehicleName));
-			format(string, sizeof(string), "Item: %s\nCost: 1 Restricted Car Voucher", vehicleName);
-   			ShowPlayerDialogEx(playerid, DIALOG_CARSHOP2, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Shop", string, "Purchase", "Cancel");
+			format(string, sizeof(string), "Vat pham: %s\nGia: 1 Restricted Car Voucher", vehicleName);
+   			ShowPlayerDialogEx(playerid, DIALOG_CARSHOP2, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Shop", string, "Mua", "Huy");
 	    }
 	}
 	if(listid == SkinList)
@@ -1057,36 +1057,36 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			if(PlayerInfo[playerid][pDonateRank] >= 2)
 			{
 				if (PlayerInfo[playerid][pModel] == modelid)
-					return SendClientMessageEx(playerid, COLOR_GREY, "You're already wearing those clothes.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Ban dang mac bo quan ao nay.");
 
 				PlayerInfo[playerid][pModel] = modelid;
 				SetPlayerSkin(playerid, modelid);
-				return SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have changed your clothes for free.");
+				return SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: Da thay quan ao mien phi.");
 			}
 			if(IsValidSkin(modelid) == 0)
 			{
 				if(PlayerInfo[playerid][mInventory][13])
 				{
-					if(PlayerInfo[playerid][pModel] == modelid) return SendClientMessageEx(playerid, COLOR_GREY, "You're already wearing those clothes.");
+					if(PlayerInfo[playerid][pModel] == modelid) return SendClientMessageEx(playerid, COLOR_GREY, "Ban dang mac bo quan ao nay.");
 					PlayerInfo[playerid][mInventory][13]--;
 					PlayerInfo[playerid][pModel] = modelid;
 					SetPlayerSkin(playerid, modelid);
-					return SendClientMessageEx(playerid, COLOR_YELLOW, "You have used a Restricted Skin token to change your clothes.");
+					return SendClientMessageEx(playerid, COLOR_YELLOW, "Da dung the Restricted Skin de thay quan ao.");
 				}
 				if(GetPVarInt(playerid, "freeSkin") == 1)
 			    {
-					SendClientMessageEx(playerid, COLOR_GREY, "That skin ID is either invalid or restricted to a group / VIP!");
-	            	ShowModelSelectionMenu(playerid, SkinList, "Change your skin.");
+					SendClientMessageEx(playerid, COLOR_GREY, "Skin khong hop le hoac chi danh cho to chuc / VIP!");
+	            	ShowModelSelectionMenu(playerid, SkinList, "Doi skin.");
 				}
 				else {
-					SendClientMessageEx(playerid, COLOR_GREY, "That skin ID is either invalid or restricted to a group / VIP!");
-	            	ShowModelSelectionMenu(playerid, SkinList, "Change your skin.");
+					SendClientMessageEx(playerid, COLOR_GREY, "Skin khong hop le hoac chi danh cho to chuc / VIP!");
+	            	ShowModelSelectionMenu(playerid, SkinList, "Doi skin.");
 				}
 			}
 			else {
 				if (PlayerInfo[playerid][pModel] == modelid)
 				{
-					return SendClientMessageEx(playerid, COLOR_GREY, "You're already wearing those clothes.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Ban dang mac bo quan ao nay.");
 				}
 			    if(GetPVarInt(playerid, "freeSkin") == 1)
 			    {
@@ -1100,9 +1100,9 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 						string[128],
 						iBusiness = InBusiness(playerid);
 
-					if(iBusiness == INVALID_BUSINESS_ID || Businesses[iBusiness][bType] != BUSINESS_TYPE_CLOTHING) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not inside of a clothing shop!");
-			        if(GetPlayerCash(playerid) < GetPVarInt(playerid, "SkinChangeCost")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't afford these clothes!");
-					GameTextForPlayer(playerid, "~g~Clothes purchased!", 2000, 1);
+					if(iBusiness == INVALID_BUSINESS_ID || Businesses[iBusiness][bType] != BUSINESS_TYPE_CLOTHING) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o trong cua hang quan ao!");
+			        if(GetPlayerCash(playerid) < GetPVarInt(playerid, "SkinChangeCost")) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong du tien mua quan ao!");
+					GameTextForPlayer(playerid, "~g~Da mua quan ao!", 2000, 1);
 					PlayerInfo[playerid][pModel] = modelid;
 					SetPlayerSkin(playerid, modelid);
 
@@ -1155,7 +1155,7 @@ public OnPlayerStreamIn(playerid, forplayerid)
 	            if(GetPVarInt(playerid, "InRangeBackup") < 1)
 	            {
 		            SetPVarInt(playerid, "InRangeBackup", 30);
-		            SendClientMessageEx(forplayerid, DEPTRADIO, "You are in range of %s's backup call (Code 3) (Blue marker on minimap)", GetPlayerNameEx(playerid));
+		            SendClientMessageEx(forplayerid, DEPTRADIO, "Ban o gan cuoc goi cua %s (Code 3) (Dau xanh duong tren minimap)", GetPlayerNameEx(playerid));
 				}
 	  			SetPlayerMarkerForPlayer(forplayerid, playerid, 0x2641FEAA);
 			}
@@ -1166,7 +1166,7 @@ public OnPlayerStreamIn(playerid, forplayerid)
 	            if(GetPVarInt(playerid, "InRangeBackup") < 1)
 	            {
 		            SetPVarInt(playerid, "InRangeBackup", 30);
-		            SendClientMessageEx(forplayerid, DEPTRADIO, "You are in range of %s's backup call (Code 2) (Green marker on minimap)", GetPlayerNameEx(playerid));
+		            SendClientMessageEx(forplayerid, DEPTRADIO, "Ban o gan diem goi ho tro cua %s (Code 2) (Dau xanh la tren minimap)", GetPlayerNameEx(playerid));
 				}
 	  			SetPlayerMarkerForPlayer(forplayerid, playerid, 0x00FF33AA);
 			}
@@ -1177,7 +1177,7 @@ public OnPlayerStreamIn(playerid, forplayerid)
 	            if(GetPVarInt(playerid, "InRangeBackup") < 1)
 	            {
 		            SetPVarInt(playerid, "InRangeBackup", 30);
-		            SendClientMessageEx(forplayerid, DEPTRADIO, "You are in range of %s's backup call (Code 3) (Blue marker on minimap)", GetPlayerNameEx(playerid));
+		            SendClientMessageEx(forplayerid, DEPTRADIO, "Ban o gan cuoc goi cua %s (Code 3) (Dau xanh duong tren minimap)", GetPlayerNameEx(playerid));
 				}
 	  			SetPlayerMarkerForPlayer(forplayerid, playerid, 0x2641FEAA);
 			}
@@ -1564,7 +1564,7 @@ public OnPlayerConnect(playerid)
 	SetPlayerVirtualWorld(playerid, 1);
 
 	SetPlayerColor(playerid,TEAM_HIT_COLOR);
-	SendClientMessage( playerid, COLOR_WHITE, "SERVER: Welcome to Next Generation Roleplay." );
+	SendClientMessage( playerid, COLOR_WHITE, "SERVER: Chao mung den Next Generation Roleplay." );
 
 	SyncPlayerTime(playerid);
 
@@ -1632,11 +1632,11 @@ public OnPlayerDisconnect(playerid, reason)
 			GettingSpectated[playerid] = INVALID_PLAYER_ID;
 			TogglePlayerSpectating(i, false);
 			SetCameraBehindPlayer(i);
-			SendClientMessageEx(i, COLOR_WHITE, "The player you were spectating has left the server.");
+			SendClientMessageEx(i, COLOR_WHITE, "Nguoi ban dang theo doi da roi may chu.");
 		}
 		if(GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
 			DeletePVar(i, "_dCheck");
-			SendClientMessageEx(i, COLOR_WHITE, "The player you were damage checking has left the server.");
+			SendClientMessageEx(i, COLOR_WHITE, "Nguoi ban dang kiem tra sat thuong da roi may chu.");
 		}
 		if(GetPVarType(i, "sellbackpack") && GetPVarInt(i, "sellbackpack") == playerid) DeletePVar(i, "sellbackpack");
 		if(HouseOffer[i] == playerid) HouseOffer[i] = INVALID_PLAYER_ID;
@@ -1685,7 +1685,7 @@ public OnPlayerDisconnect(playerid, reason)
 				if(hgPlayerCount == 3)
 				{
 					new szmessage[128];
-					format(szmessage, sizeof(szmessage), "** %s has came in third place in the Hunger Games Event.", GetPlayerNameEx(playerid));
+					format(szmessage, sizeof(szmessage), "** %s dat hang ba trong Hunger Games Event.", GetPlayerNameEx(playerid));
 					SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 
 					SetHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
@@ -1700,7 +1700,7 @@ public OnPlayerDisconnect(playerid, reason)
 					hgPlayerCount--;
 					HideHungerGamesTextdraw(playerid);
 					PlayerInfo[playerid][pRewardDrawChance] += 10;
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "** You have been given 10 Draw Chances for the Fall Into Fun Event.");
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "** Ban duoc tang 10 Draw Chances cho Fall Into Fun Event.");
 
 					for(new w = 0; w < 12; w++)
 					{
@@ -1714,7 +1714,7 @@ public OnPlayerDisconnect(playerid, reason)
 				else if(hgPlayerCount == 2)
 				{
 					new szmessage[128];
-					format(szmessage, sizeof(szmessage), "** %s has came in second place in the Hunger Games Event.", GetPlayerNameEx(playerid));
+					format(szmessage, sizeof(szmessage), "** %s dat hang nhi trong Hunger Games Event.", GetPlayerNameEx(playerid));
 					SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 
 					SetHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
@@ -1729,7 +1729,7 @@ public OnPlayerDisconnect(playerid, reason)
 					hgPlayerCount--;
 					HideHungerGamesTextdraw(playerid);
 					PlayerInfo[playerid][pRewardDrawChance] += 25;
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "** You have been given 25 Draw Chances for the Fall Into Fun Event.");
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "** Ban duoc tang 25 Draw Chances cho Fall Into Fun Event.");
 
 					for(new w = 0; w < 12; w++)
 					{
@@ -1744,7 +1744,7 @@ public OnPlayerDisconnect(playerid, reason)
 					{
 						if(HungerPlayerInfo[i][hgInEvent] == 1)
 						{
-							format(szmessage, sizeof(szmessage), "** %s has came in first place in the Hunger Games Event.", GetPlayerNameEx(i));
+							format(szmessage, sizeof(szmessage), "** %s dat hang nhat trong Hunger Games Event.", GetPlayerNameEx(i));
 							SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 
 							SetHealth(i, HungerPlayerInfo[i][hgLastHealth]);
@@ -1759,7 +1759,7 @@ public OnPlayerDisconnect(playerid, reason)
 							hgPlayerCount--;
 							HideHungerGamesTextdraw(i);
 							PlayerInfo[i][pRewardDrawChance] += 50;
-							SendClientMessageEx(i, COLOR_LIGHTBLUE, "** You have been given 50 Draw Chances for the Fall Into Fun Event.");
+							SendClientMessageEx(i, COLOR_LIGHTBLUE, "** Ban duoc tang 50 Draw Chances cho Fall Into Fun Event.");
 							hgActive = 0;
 
 							for(new w = 0; w < 12; w++)
@@ -1797,7 +1797,7 @@ public OnPlayerDisconnect(playerid, reason)
 
 					ResetPlayerWeapons(playerid);
 
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have died and has been removed from the Hunger Games Event, better luck next time.");
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da chet va roi Hunger Games Event, chuc may man lan sau.");
 
 					HungerPlayerInfo[playerid][hgInEvent] = 0;
 					hgPlayerCount--;
@@ -1815,7 +1815,7 @@ public OnPlayerDisconnect(playerid, reason)
 				}
 
 				new string[128];
-				format(string, sizeof(string), "Players in event: %d", hgPlayerCount);
+				format(string, sizeof(string), "Tham gia: %d", hgPlayerCount);
 				foreach(new i: Player)
 				{
 					PlayerTextDrawSetString(i, HungerPlayerInfo[i][hgPlayerText], string);
@@ -1877,7 +1877,7 @@ public OnPlayerDisconnect(playerid, reason)
 		{
 			new fighterid = GetPVarInt(playerid, "_BoxingFight") - 1;
 			DeletePVar(fighterid, "_BoxingFight");
-			SendClientMessageEx(fighterid, COLOR_GREY, "The person you were fighting left the arena.");
+			SendClientMessageEx(fighterid, COLOR_GREY, "Doi thu cua ban da roi san dau.");
 			SetPVarInt(fighterid, "_BoxingFightOver", gettime() + 1);
 			new biz = InBusiness(fighterid);
 
@@ -1910,7 +1910,7 @@ public OnPlayerDisconnect(playerid, reason)
 		    if(GetPVarType(playerid, "pBoomBoxArea"))
 		    {
 		        new string[128];
-				format(string, sizeof(string), "The boombox owner (%s) has logged off", GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "Chu boombox (%s) da thoat game", GetPlayerNameEx(playerid));
 		        foreach(new i: Player)
 				{
 					if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
@@ -1974,7 +1974,7 @@ public OnPlayerDisconnect(playerid, reason)
 		}
 		if(GetPVarType(playerid, "ttSeller"))
 		{
-			SendClientMessageEx(GetPVarInt(playerid, "ttSeller"), COLOR_GRAD2, "The buyer has disconnected from the server.");
+			SendClientMessageEx(GetPVarInt(playerid, "ttSeller"), COLOR_GRAD2, "Nguoi mua da ngat ket noi voi may chu.");
 			DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttBuyer");
 			DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttCost");
 			DeletePVar(playerid, "ttSeller");
@@ -2029,7 +2029,7 @@ public OnPlayerDisconnect(playerid, reason)
 				}
 				else
 				{
-					format(string, sizeof(string), "%s has left the server (timeout).", GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "%s da roi may chu (mat ket noi).", GetPlayerNameEx(playerid));
 					ProxDetector(30.0, playerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
 				}
 				format(string, sizeof(string), "%s (ID: %d | SQL ID: %d | Level: %d | IP: %s) has timed out.", GetPlayerNameExt(playerid), playerid, GetPlayerSQLId(playerid), PlayerInfo[playerid][pLevel], PlayerInfo[playerid][pIP]);
@@ -2065,7 +2065,7 @@ public OnPlayerDisconnect(playerid, reason)
 					{
 						if(PlayerInfo[playerid][pDuty])
 						{
-							format(string, sizeof(string), "** %s%s %s is code 0 **", badge, rank, GetPlayerNameEx(playerid));
+							format(string, sizeof(string), "** %s%s %s dang code 0 **", badge, rank, GetPlayerNameEx(playerid));
 							foreach(new i: Player)
 							{
 								if(PlayerInfo[i][pToggledChats][CHAT_GROUP_RADIO] == 0)
@@ -2081,7 +2081,7 @@ public OnPlayerDisconnect(playerid, reason)
 					{
 						if(PlayerInfo[playerid][pDuty] || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 						{
-							format(string, sizeof(string), "** %s%s %s is no longer available (( lost connection )) **", badge, rank, GetPlayerNameEx(playerid));
+							format(string, sizeof(string), "** %s%s %s khong con kha dung (( mat ket noi )) **", badge, rank, GetPlayerNameEx(playerid));
 							foreach(new i: Player)
 							{
 								if(PlayerInfo[i][pToggledChats][CHAT_GROUP_RADIO] == 0)
@@ -2115,7 +2115,7 @@ public OnPlayerDisconnect(playerid, reason)
 				}
 				else
 				{
-					format(string, sizeof(string), "%s has left the server (leaving).", GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "%s da roi may chu (thoat game).", GetPlayerNameEx(playerid));
 					ProxDetector(30.0, playerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
 				}
 				format(string, sizeof(string), "%s (ID: %d | SQL ID: %d | Level: %d | IP: %s) has disconnected.", GetPlayerNameExt(playerid), playerid, GetPlayerSQLId(playerid), PlayerInfo[playerid][pLevel], PlayerInfo[playerid][pIP]);
@@ -2135,7 +2135,7 @@ public OnPlayerDisconnect(playerid, reason)
 					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
 
 					new szMessage[80+MAX_PLAYER_NAME];
-					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s has left (/q) the server while being cuffed.", GetPlayerNameEx(playerid));
+					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s da thoat may chu (/q) khi dang bi cong.", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_YELLOW, szMessage, 2);
 
 					format(string, sizeof(string), "%s has left (/q) while cuffed. (ID: %d | SQLID: %D | JT: %d | F: %d | IP: %s)", GetPlayerNameExt(playerid), playerid, GetPlayerSQLId(playerid), PlayerInfo[playerid][pWantedJailTime], PlayerInfo[playerid][pWantedJailFine], PlayerInfo[playerid][pIP]);
@@ -2162,7 +2162,7 @@ public OnPlayerDisconnect(playerid, reason)
 					PlayerInfo[playerid][pWantedLevel] = 0;
 
 					new szMessage[80+MAX_PLAYER_NAME];
-					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s has left (/q) the server while being tackled.", GetPlayerNameEx(playerid));
+					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s da thoat may chu (/q) khi dang bi vat nga.", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_YELLOW, szMessage, 2);
 				}
 				if(((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) && (PlayerInfo[playerid][pAdmin] < 2 || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports])))
@@ -2174,7 +2174,7 @@ public OnPlayerDisconnect(playerid, reason)
 					{
 						if(PlayerInfo[playerid][pDuty])
 						{
-							format(string, sizeof(string), "** %s%s %s is out of service **", badge, rank, GetPlayerNameEx(playerid));
+							format(string, sizeof(string), "** %s%s %s da ngung lam nhiem vu **", badge, rank, GetPlayerNameEx(playerid));
 							foreach(new i: Player)
 							{
 								if(PlayerInfo[i][pToggledChats][CHAT_GROUP_RADIO] == 0)
@@ -2190,7 +2190,7 @@ public OnPlayerDisconnect(playerid, reason)
 					{
 						if(PlayerInfo[playerid][pDuty] || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 						{
-							format(string, sizeof(string), "** %s%s %s is no longer available **", badge, rank, GetPlayerNameEx(playerid));
+							format(string, sizeof(string), "** %s%s %s khong con kha dung **", badge, rank, GetPlayerNameEx(playerid));
 							foreach(new i: Player)
 							{
 								if(PlayerInfo[i][pToggledChats][CHAT_GROUP_RADIO] == 0)
@@ -2224,7 +2224,7 @@ public OnPlayerDisconnect(playerid, reason)
 				}
 				else
 				{
-					format(string, sizeof(string), "%s has left the server (kicked/banned).", GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "%s da roi may chu (bi kick/ban).", GetPlayerNameEx(playerid));
 					ProxDetector(30.0, playerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
 				}
 				format(string, sizeof(string), "%s (ID: %d | SQL ID: %d | Level: %d | IP: %s) has been kicked/banned.", GetPlayerNameExt(playerid), playerid, GetPlayerSQLId(playerid), PlayerInfo[playerid][pLevel], PlayerInfo[playerid][pIP]);
@@ -2234,7 +2234,7 @@ public OnPlayerDisconnect(playerid, reason)
 			{
 				if(PlayerInfo[playerid][pAdmin] < 2 && Spectating[playerid] != 1)
 				{
-					format(string, sizeof(string), "%s has left the server (Force Relog).", GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "%s da roi may chu (Force Relog).", GetPlayerNameEx(playerid));
 					ProxDetector(30.0, playerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
 				}
 				format(string, sizeof(string), "%s (ID: %d | SQL ID: %d | Level: %d | IP: %s) has been force relogged", GetPlayerNameExt(playerid), playerid, GetPlayerSQLId(playerid), PlayerInfo[playerid][pLevel], PlayerInfo[playerid][pIP]);
@@ -2244,12 +2244,12 @@ public OnPlayerDisconnect(playerid, reason)
 		if(EventKernel[EventRequest] == playerid)
 		{
 			EventKernel[EventRequest] = INVALID_PLAYER_ID;
-			ABroadCastText( COLOR_YELLOW, "{AA3333}AdmWarning{FFFF00}: The player that was requesting an event has disconnected/crashed.", 4 );
+			ABroadCastText( COLOR_YELLOW, "{AA3333}AdmWarning{FFFF00}: Nguoi yeu cau su kien da ngat ket noi/crash.", 4 );
 		}
 		if(EventKernel[EventCreator] == playerid)
 		{
 			EventKernel[EventCreator] = INVALID_PLAYER_ID;
-			ABroadCastText( COLOR_YELLOW, "{AA3333}AdmWarning{FFFF00}: The player that was creating an event has disconnected/crashed.", 4 );
+			ABroadCastText( COLOR_YELLOW, "{AA3333}AdmWarning{FFFF00}: Nguoi tao su kien da ngat ket noi/crash.", 4 );
 		}
 		for(new x; x < sizeof(EventKernel[EventStaff]); x++) {
 			if(EventKernel[EventStaff][x] == playerid) {
@@ -2417,40 +2417,40 @@ public OnPlayerDisconnect(playerid, reason)
 		{
 			if (GetPVarType(i, "hFind") && GetPVarInt(i, "hFind") == playerid)
 			{
-				SendClientMessageEx(i, COLOR_GREY, "The person you were tracking has disconnected.");
+				SendClientMessageEx(i, COLOR_GREY, "Nguoi ban dang theo dau da ngat ket noi.");
 				DeletePVar(i, "hFind");
 				DisablePlayerCheckpoint(i);
 			}
 			if (GetPVarType(i, "Backup") && GetPVarInt(i, "Backup") == playerid)
 			{
-				SendClientMessageEx(i, COLOR_GREY, "The person who called for backup has disconnected.");
+				SendClientMessageEx(i, COLOR_GREY, "Nguoi goi ho tro da ngat ket noi.");
 				DeletePVar(i, "Backup");
 			}
 			if(TaxiAccepted[i] == playerid)
 			{
 				TaxiAccepted[i] = INVALID_PLAYER_ID;
-				GameTextForPlayer(i, "~w~Taxi Caller~n~~r~Left the game", 5000, 1);
+				GameTextForPlayer(i, "~w~Nguoi goi Taxi~n~~r~Da thoat", 5000, 1);
 				TaxiCallTime[i] = 0;
 				DisablePlayerCheckpoint(i);
 			}
 			if(EMSAccepted[i] == playerid)
 			{
 				EMSAccepted[i] = INVALID_PLAYER_ID;
-				GameTextForPlayer(i, "~w~EMS Caller~n~~r~Left the game", 5000, 1);
+				GameTextForPlayer(i, "~w~Nguoi goi EMS~n~~r~Da thoat", 5000, 1);
 				EMSCallTime[i] = 0;
 				DisablePlayerCheckpoint(i);
 			}
 			if(BusAccepted[i] == playerid)
 			{
 				BusAccepted[i] = INVALID_PLAYER_ID;
-				GameTextForPlayer(i, "~w~Bus Caller~n~~r~Left the game", 5000, 1);
+				GameTextForPlayer(i, "~w~Nguoi goi Bus~n~~r~Da thoat", 5000, 1);
 				BusCallTime[i] = 0;
 				DisablePlayerCheckpoint(i);
 			}
 			if(MedicAccepted[i] == playerid)
 			{
 				TaxiAccepted[playerid] = INVALID_PLAYER_ID; BusAccepted[playerid] = INVALID_PLAYER_ID; MedicAccepted[playerid] = INVALID_PLAYER_ID;
-				GameTextForPlayer(i, "~w~Medic Caller~n~~r~Left the game", 5000, 1);
+				GameTextForPlayer(i, "~w~Nguoi goi Medic~n~~r~Da thoat", 5000, 1);
 				MedicCallTime[i] = 0;
 				DisablePlayerCheckpoint(i);
 			}
@@ -2466,7 +2466,7 @@ public OnPlayerDisconnect(playerid, reason)
 				TransportMoney[TransportDriver[playerid]] += TransportCost[playerid];
 				TransportTime[TransportDriver[playerid]] = 0;
 				TransportCost[TransportDriver[playerid]] = 0;
-				format(string, sizeof(string), "~w~Passenger left~n~~g~Earned $%d",TransportCost[playerid]);
+				format(string, sizeof(string), "~w~Khach da roi xe~n~~g~Thu nhap $%d",TransportCost[playerid]);
 				GameTextForPlayer(TransportDriver[playerid], string, 5000, 1);
 				GivePlayerCashEx(playerid, TYPE_ONHAND, -TransportCost[playerid]);
 				TransportDriver[playerid] = INVALID_PLAYER_ID;
@@ -2478,7 +2478,7 @@ public OnPlayerDisconnect(playerid, reason)
 			{
 				if(IsPlayerConnected(GetChased[playerid]))
 				{
-					SendClientMessageEx(GetChased[playerid], COLOR_YELLOW, "Your hit has left the server.");
+					SendClientMessageEx(GetChased[playerid], COLOR_YELLOW, "Muc tieu cua ban da roi may chu.");
 					GoChase[GetChased[playerid]] = INVALID_PLAYER_ID;
 				}
 			}
@@ -2574,7 +2574,7 @@ public OnRconLoginAttempt(ip[], password[], success)
 				{
 					CreateBan(INVALID_PLAYER_ID, PlayerInfo[i][pId], i, PlayerInfo[i][pIP], "Successful RCON Login - Not Head Admin", 9999);
 
-					format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s(%s) has successfully logged into RCON without being a Head Admin, and has been perma-banned.", GetPlayerNameEx(i), ip);
+					format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s(%s) dang nhap RCON khi khong phai Head Admin va da bi cam vinh vien.", GetPlayerNameEx(i), ip);
 					ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 				}
 			}
@@ -2628,7 +2628,7 @@ public OnVehicleDeath(vehicleid) {
 			PlayerInfo[i][pInt] = 0;
 			SetPlayerInterior(i, 0);
 			InsidePlane[i] = INVALID_VEHICLE_ID;
-			SendClientMessageEx(i, COLOR_WHITE, "The airplane has been damaged, you cannot be inside it!");
+			SendClientMessageEx(i, COLOR_WHITE, "May bay da bi hong, ban khong the ngoi trong do!");
 		}
 		if(GetPVarInt(i, "NGPassengerVeh") == vehicleid)
 		{
@@ -2650,7 +2650,7 @@ public OnPlayerSpawn(playerid)
 
     if(!gPlayerLogged{playerid})
     {
-        SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You are not logged in!");
+        SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Ban chua dang nhap!");
         SetTimerEx("KickEx", 1000, false, "i", playerid);
         return 1;
 	}
@@ -2881,7 +2881,7 @@ public OnPlayerSpawn(playerid)
 		AdvanceTutorial(playerid);
 	}
 
-	if(PlayerInfo[playerid][pTut] == -1 && PlayerInfo[playerid][pNation] != 0 && PlayerInfo[playerid][pNation] != 1) ShowPlayerDialogEx(playerid, DIALOG_NATION_CHECK, DIALOG_STYLE_LIST, "Please chose a nation.", "San Andreas\nNew Robada", "Select", "<<");
+	if(PlayerInfo[playerid][pTut] == -1 && PlayerInfo[playerid][pNation] != 0 && PlayerInfo[playerid][pNation] != 1) ShowPlayerDialogEx(playerid, DIALOG_NATION_CHECK, DIALOG_STYLE_LIST, "Vui long chon quoc gia.", "San Andreas\nNew Robada", "Chon", "<<");
 	return 1;
 }
 
@@ -2904,7 +2904,7 @@ public OnPlayerLeaveCheckpoint(playerid)
 		    DisablePlayerCheckpoint(playerid);
 		    SetPlayerCheckpoint(playerid, EventRCPX[RCPIdCurrent[playerid]], EventRCPY[RCPIdCurrent[playerid]], EventRCPZ[RCPIdCurrent[playerid]], EventRCPS[RCPIdCurrent[playerid]]);
 		}
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have exited the checkpoint, you are no longer getting rehydrated.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da roi checkpoint, qua trinh tiep nuoc da dung.");
 		return 1;
 	}
     if(GetPVarType(playerid,"IsInArena"))
@@ -2930,11 +2930,11 @@ public OnPlayerEnterCheckpoint(playerid)
 	{
 	    if(EventKernel[EventFootRace] == 1 && IsPlayerInAnyVehicle(playerid))
 	    {
-			return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot be inside vehicles and participate in this event at the same time.");
+			return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the o trong xe khi tham gia su kien nay.");
 	    }
 	    if(EventRCPT[RCPIdCurrent[playerid]] == 3 && PlayerInfo[playerid][pHydration] < 60) {
-		    SendClientMessageEx(playerid, COLOR_WHITE, "You have entered a Watering Station checkpoint, you need to stay here in order to get rehydrated again.");
-		    SendClientMessageEx(playerid, COLOR_WHITE, "You may choose to leave at any point or wait until you get the message of fully rehydrated.");
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Ban da vao checkpoint tiep nuoc, hay o lai de bu nuoc.");
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Ban co the roi di bat cu luc nao hoac cho thong bao da uong du nuoc.");
             SetPVarInt(playerid, "WSRCPTimerId", SetTimerEx("WateringStation", 4000, true, "i", playerid));
             SetPVarInt(playerid, "InWaterStationRCP", 1);
             return 1;
@@ -2948,7 +2948,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			}
 			else if(PlayerInfo[playerid][pRacePlayerLaps] == 25) {
 			    PlayerInfo[playerid][pEXPToken]++;
-			    SendClientMessageEx(playerid, COLOR_YELLOW, "You have been given a Double EXP Token for completing 25 laps");
+			    SendClientMessageEx(playerid, COLOR_YELLOW, "Ban duoc tang Double EXP Token vi hoan thanh 25 vong");
 			}
 			if(toglapcount == 0 && rflstatus > 0) {
 				RaceTotalLaps++;
@@ -2966,10 +2966,10 @@ public OnPlayerEnterCheckpoint(playerid)
 			}
 			new string[128];
 			if(PlayerInfo[playerid][pRFLTeam] != -1) {
-				format(string, sizeof(string), "Lap successfully completed. Laps Completed: %d | Team Laps Completed: %d | Total Laps Completed: %d", PlayerInfo[playerid][pRacePlayerLaps], RFLInfo[PlayerInfo[playerid][pRFLTeam]][RFLlaps], RaceTotalLaps);
+				format(string, sizeof(string), "Da xong vong. Vong ca nhan: %d | Vong doi: %d | Tong vong: %d", PlayerInfo[playerid][pRacePlayerLaps], RFLInfo[PlayerInfo[playerid][pRFLTeam]][RFLlaps], RaceTotalLaps);
 			}
 			else {
-				format(string, sizeof(string), "Lap successfully completed. Laps Completed: %d | Total Laps Completed: %d", PlayerInfo[playerid][pRacePlayerLaps], RaceTotalLaps);
+				format(string, sizeof(string), "Da xong vong. Vong ca nhan: %d | Tong vong: %d", PlayerInfo[playerid][pRacePlayerLaps], RaceTotalLaps);
 			}
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 		}
@@ -2980,19 +2980,19 @@ public OnPlayerEnterCheckpoint(playerid)
 		}
         if(PlayerInfo[playerid][pHydration] > 60)
         {
-			SendClientMessageEx(playerid, COLOR_GREEN, "Hydration level normal(%d)", PlayerInfo[playerid][pHydration]);
+			SendClientMessageEx(playerid, COLOR_GREEN, "Luong nuoc binh thuong(%d)", PlayerInfo[playerid][pHydration]);
 		}
 		else if(PlayerInfo[playerid][pHydration] < 61 && PlayerInfo[playerid][pHydration] > 30)
 		{
-			SendClientMessageEx(playerid, COLOR_YELLOW, "Hydration level low(%d)", PlayerInfo[playerid][pHydration]);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Luong nuoc thap(%d)", PlayerInfo[playerid][pHydration]);
 		}
 		else if(PlayerInfo[playerid][pHydration] < 31 && PlayerInfo[playerid][pHydration] > 0)
 		{
-			SendClientMessageEx(playerid, COLOR_RED, "Hydration level very low(%d)", PlayerInfo[playerid][pHydration]);
+			SendClientMessageEx(playerid, COLOR_RED, "Luong nuoc rat thap(%d)", PlayerInfo[playerid][pHydration]);
 		}
 		else if(PlayerInfo[playerid][pHydration] < 0)
 		{
-		    SendClientMessageEx(playerid, COLOR_WHITE, "You have fallen to the ground due to being dehydrated, FDSA is going to rescue you and take you to the First Aid Station.");
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Ban nga vi mat nuoc, FDSA se cuu va dua ban den First Aid Station.");
             DeletePVar(playerid, "EventToken");
 			DisablePlayerCheckpoint(playerid);
 			PlayerInfo[playerid][pHydration] = 100;
@@ -3042,7 +3042,7 @@ public OnPlayerEnterCheckpoint(playerid)
 	if(GetPVarType(playerid,"DeliveringVehicleTime"))
 	{
 		if(!IsPlayerInVehicle(playerid, GetPVarInt(playerid, "LockPickVehicle")))
-			return SendClientMessageEx(playerid, COLOR_WHITE, "You need to be inside the vehicle you are delivering!");
+			return SendClientMessageEx(playerid, COLOR_WHITE, "Ban phai ngoi trong xe dang giao!");
 		new szMessage[140];
 		new RandAmount;
 		switch(PlayerInfo[playerid][pCarLockPickSkill]) {
@@ -3053,7 +3053,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			default: RandAmount = Random(27000, 33000);
 		}
 		PlayerInfo[playerid][pAccount] += RandAmount;
-		format(szMessage, sizeof(szMessage), "SMS: Thank you for delivering a %s(%d) your reward is $%s, money will be transferred to your account, sender: Unknown", GetVehicleName(GetPVarInt(playerid, "LockPickVehicle")), GetPVarInt(playerid, "LockPickVehicle"), number_format(RandAmount));
+		format(szMessage, sizeof(szMessage), "SMS: Cam on ban da giao %s(%d), thuong $%s se duoc chuyen vao tai khoan, nguoi gui: Unknown", GetVehicleName(GetPVarInt(playerid, "LockPickVehicle")), GetPVarInt(playerid, "LockPickVehicle"), number_format(RandAmount));
 		SendClientMessageEx(playerid, COLOR_YELLOW, szMessage);
 		PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 		new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
@@ -3134,21 +3134,21 @@ public OnPlayerEnterCheckpoint(playerid)
 				case 4: drugname = "Ecstasy";
 			}
 			if(DynPoints[MatDeliver[playerid]][poBoat] && !IsABoat(GetPlayerVehicleID(playerid))) {
-				GameTextForPlayer(playerid, "~r~You are not in a boat!", 3000, 1);
+				GameTextForPlayer(playerid, "~r~Ban khong o tren thuyen!", 3000, 1);
 				return 1;
 			}
 			if(DynPoints[MatDeliver[playerid]][poType] == 0) { // Materials
 				if(!TransferStorage(playerid, 0, -1, -1, 4, MatsAmount[playerid], -1, 2)) return 1;
-				SendClientMessageEx(playerid, COLOR_WHITE, "* The factory gave you %s materials for your materials packages.", number_format(MatsAmount[playerid]));
+				SendClientMessageEx(playerid, COLOR_WHITE, "* Nha may da doi cac goi vat lieu cua ban lay %s vat lieu.", number_format(MatsAmount[playerid]));
 			}
 			if((1 <= DynPoints[MatDeliver[playerid]][poType] < 5)) {
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have delivered the packages and gained %sg of %s", number_format(MatsAmount[playerid]), drugname);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ban da giao goi hang va nhan %sg %s", number_format(MatsAmount[playerid]), drugname);
 				PlayerInfo[playerid][pDrugs][DynPoints[MatDeliver[playerid]][poType]-1] += MatsAmount[playerid];
 				IncreaseSmugglerLevel(playerid);
 			}
 			if(GetPVarInt(playerid, "tpMatRunTimer") != 0)
 		    {
-		    	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport material/drug runs.", GetPlayerNameEx(playerid), playerid);
+		    	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) co the da dich chuyen khi giao vat lieu/ma tuy.", GetPlayerNameEx(playerid), playerid);
 		    	ABroadCast(COLOR_YELLOW, string, 2);
 			}
 			if(DynPoints[MatDeliver[playerid]][poType] == 0) {
@@ -3165,26 +3165,26 @@ public OnPlayerEnterCheckpoint(playerid)
 	    new vehicleid = GetPlayerVehicleID(playerid);
 	    if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
 	    {
-	        SendClientMessageEx(playerid, COLOR_WHITE, "You are not in a Truck!");
+	        SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong o trong xe tai!");
 	        return 1;
 	    }
 	    if(!(0 < vehicleid < MAX_VEHICLES) || TruckUsed[playerid] != vehicleid)
 	    {
-	        SendClientMessageEx(playerid, COLOR_WHITE, "This is not your Truck with the goods you are suppose to deliver!");
+	        SendClientMessageEx(playerid, COLOR_WHITE, "Day khong phai xe tai chua hang ban can giao!");
 	        return 1;
 	    }
 
 		if(!IsAtTruckDeliveryPoint(playerid))
  		{// In the case the player finds a way to exploit the checkpoint to different location
 			CancelTruckDelivery(playerid);
-			SendClientMessageEx(playerid, COLOR_REALRED, "ERROR: Wrong checkpoint entered. Truck delivery canceled completely.");
+			SendClientMessageEx(playerid, COLOR_REALRED, "LOI: Vao sai checkpoint. Da huy hoan toan chuyen giao hang.");
 			return 1;
    		}
 
 		if(GetPVarInt(playerid, "TruckRunDeadline") > gettime())
 		{
   			new string[128];
-			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport truck/boat running.", GetPlayerNameEx(playerid), playerid);
+			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) co dau hieu teleport khi giao hang bang xe tai/thuyen.", GetPlayerNameEx(playerid), playerid);
   			ABroadCast( COLOR_YELLOW, string, 2 );
     		// format(string, sizeof(string), "%s (ID %d) is possibly teleport truckrunning.", GetPlayerNameEx(playerid), playerid);
 	    	// Log("logs/hack.log", string);
@@ -3195,31 +3195,31 @@ public OnPlayerEnterCheckpoint(playerid)
 
 		if(truckdeliver == 1)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You delivered the food & beverages, return the vehicle to the Docks to collect your pay.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Da giao thuc pham va do uong, hay tra xe ve Docks de nhan tien.");
 		}
 		else if(truckdeliver == 2)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You delivered the clothing, return the vehicle to the Docks to collect your pay.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Da giao quan ao, hay tra xe ve Docks de nhan tien.");
 		}
 		else if(truckdeliver == 3)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You delivered the materials, return the vehicle to the Docks to collect your pay.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Da giao vat lieu, hay tra xe ve Docks de nhan tien.");
 		}
 		else if(truckdeliver == 4)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You delivered the 24/7 items, return the vehicle to the Docks to collect your pay.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Da giao hang 24/7, hay tra xe ve Docks de nhan tien.");
 		}
 		else if(truckdeliver == 5)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You delivered the weapons, return the vehicle to the Docks to collect your pay.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Da giao vu khi, hay tra xe ve Docks de nhan tien.");
 		}
 		else if(truckdeliver == 6)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You delivered the drugs, return the vehicle to the Docks to collect your pay.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Da giao ma tuy, hay tra xe ve Docks de nhan tien.");
 		}
 		else if(truckdeliver == 7)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You delivered the illegal materials, return the vehicle to the Docks to collect your pay.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Da giao vat lieu trai phep, hay tra xe ve Docks de nhan tien.");
 		}
 		DisablePlayerCheckpoint(playerid);
 
@@ -3227,14 +3227,14 @@ public OnPlayerEnterCheckpoint(playerid)
 		if(!IsABoat(vehicleid))
 		{
 			SetPlayerCheckpoint(playerid, -1548.087524, 123.590423, 3.554687, 5);
-			GameTextForPlayer(playerid, "~w~Waypoint set ~r~San Fierro Docks", 5000, 1);
-			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Return to the San Fierro Docks (see checkpoint on radar).");
+			GameTextForPlayer(playerid, "~w~Da danh dau ~r~San Fierro Docks", 5000, 1);
+			SendClientMessageEx(playerid, COLOR_WHITE, "GOI Y: Quay ve San Fierro Docks (xem checkpoint tren radar).");
 		}
 		else
 		{
 			SetPlayerCheckpoint(playerid, 2098.6543,-104.3568,-0.4820, 5);
-			GameTextForPlayer(playerid, "~w~Waypoint set ~r~Palamino Docks", 5000, 1);
-			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Return to the Palamino Docks (see checkpoint on radar).");
+			GameTextForPlayer(playerid, "~w~Da danh dau ~r~Palamino Docks", 5000, 1);
+			SendClientMessageEx(playerid, COLOR_WHITE, "GOI Y: Quay ve Palamino Docks (xem checkpoint tren radar).");
 		}
 
 		SetPVarInt(playerid, "TruckRunDeadline", gettime() + 30);
@@ -3245,12 +3245,12 @@ public OnPlayerEnterCheckpoint(playerid)
 	    new vehicleid = GetPlayerVehicleID(playerid);
 	    if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
 	    {
-	        SendClientMessageEx(playerid, COLOR_WHITE, "You are not in a truck!");
+	        SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong o trong xe tai!");
 	        return 1;
 	    }
 	    if(!(0 < vehicleid < MAX_VEHICLES) || TruckUsed[playerid] != vehicleid)
 	    {
-	        SendClientMessageEx(playerid, COLOR_WHITE, "This is not your vehicle with the goods you are suppose to deliver!");
+	        SendClientMessageEx(playerid, COLOR_WHITE, "Day khong phai xe chua hang ban can giao!");
 	        return 1;
 	    }
 
@@ -3263,7 +3263,7 @@ public OnPlayerEnterCheckpoint(playerid)
 		if(GetPVarInt(playerid, "TruckRunDeadline") > gettime())
 		{
   			new string[128];
-			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport truck/boat running.", GetPlayerNameEx(playerid), playerid);
+			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) co dau hieu teleport khi giao hang bang xe tai/thuyen.", GetPlayerNameEx(playerid), playerid);
   			ABroadCast( COLOR_YELLOW, string, 2 );
     		// format(string, sizeof(string), "%s (ID %d) is possibly teleport truckrunning.", GetPlayerNameEx(playerid), playerid);
 	    	// Log("logs/hack.log", string);
@@ -3273,10 +3273,10 @@ public OnPlayerEnterCheckpoint(playerid)
 		if(Businesses[business][bOrderAmount] < 0 || Businesses[business][bInventory] > cellmax - Businesses[business][bOrderAmount]) return CancelTruckDelivery(playerid, false);
 		Businesses[business][bOrderState] = 3;
 		Businesses[business][bInventory] += Businesses[business][bOrderAmount];
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have delivered %s to %s. Return the truck to the San Fierro Docks to collect your pay.", GetInventoryType(business), Businesses[business][bName]);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Da giao %s cho %s. Tra xe tai ve San Fierro Docks de nhan tien.", GetInventoryType(business), Businesses[business][bName]);
 		foreach (new i: Player)
 		{
-			if (PlayerInfo[i][pBusiness] == business) SendClientMessageEx(i, COLOR_WHITE, "An order has just been delivered to your business.");
+			if (PlayerInfo[i][pBusiness] == business) SendClientMessageEx(i, COLOR_WHITE, "Don hang vua duoc giao den doanh nghiep cua ban.");
 		}
 
 		/*if (Businesses[business][bType] == BUSINESS_TYPE_NEWCARDEALERSHIP)
@@ -3305,8 +3305,8 @@ public OnPlayerEnterCheckpoint(playerid)
 
 		gPlayerCheckpointStatus[playerid] = CHECKPOINT_RETURNTRUCK;
 		SetPlayerCheckpoint(playerid, -1548.087524, 123.590423, 3.554687, 5);
-		GameTextForPlayer(playerid, "~w~Waypoint set ~r~San Fierro Docks", 5000, 1);
-		SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Return to the San Fierro Docks (see checkpoint on radar).");
+		GameTextForPlayer(playerid, "~w~Da danh dau ~r~San Fierro Docks", 5000, 1);
+		SendClientMessageEx(playerid, COLOR_WHITE, "GOI Y: Quay ve San Fierro Docks (xem checkpoint tren radar).");
 
 		return 1;
 	}
@@ -3318,12 +3318,12 @@ public OnPlayerEnterCheckpoint(playerid)
 	{
 	    DeletePVar(playerid, "Finding");
 	    DisablePlayerCheckpoint(playerid);
-	    GameTextForPlayer(playerid, "~w~Reached destination", 5000, 1);
+	    GameTextForPlayer(playerid, "~w~Da den noi", 5000, 1);
 	}
 	if(TaxiCallTime[playerid] > 0 && TaxiAccepted[playerid] != INVALID_PLAYER_ID)
 	{
 		TaxiAccepted[playerid] = INVALID_PLAYER_ID;
-		GameTextForPlayer(playerid, "~w~Reached destination", 5000, 1);
+		GameTextForPlayer(playerid, "~w~Da den noi", 5000, 1);
 		TaxiCallTime[playerid] = 0;
 		DisablePlayerCheckpoint(playerid);
 	}
@@ -3343,14 +3343,14 @@ public OnPlayerEnterCheckpoint(playerid)
 	    {
 	    	SendEMSQueue(EMSAccepted[playerid],2);
 	    	EMSAccepted[playerid] = INVALID_PLAYER_ID;
-	    	GameTextForPlayer(playerid, "~w~Reached destination", 5000, 1);
+	    	GameTextForPlayer(playerid, "~w~Da den noi", 5000, 1);
 	    	EMSCallTime[playerid] = 0;
 	    	DisablePlayerCheckpoint(playerid);
 		}
 		else
 		{
             EMSAccepted[playerid] = INVALID_PLAYER_ID;
-		    GameTextForPlayer(playerid, "~r~Patient has died", 5000, 1);
+		    GameTextForPlayer(playerid, "~r~Benh nhan da chet", 5000, 1);
 		    EMSCallTime[playerid] = 0;
 	    	DisablePlayerCheckpoint(playerid);
 		}
@@ -3358,14 +3358,14 @@ public OnPlayerEnterCheckpoint(playerid)
 	else if(BusCallTime[playerid] > 0 && BusAccepted[playerid] != INVALID_PLAYER_ID)
 	{
 		BusAccepted[playerid] = INVALID_PLAYER_ID;
-		GameTextForPlayer(playerid, "~w~Reached destination", 5000, 1);
+		GameTextForPlayer(playerid, "~w~Da den noi", 5000, 1);
 		BusCallTime[playerid] = 0;
 		DisablePlayerCheckpoint(playerid);
 	}
 	else if(MedicCallTime[playerid] > 0 && MedicAccepted[playerid] != INVALID_PLAYER_ID)
 	{
 		MedicAccepted[playerid] = INVALID_PLAYER_ID;
-		GameTextForPlayer(playerid, "~w~Reached patient", 5000, 1);
+		GameTextForPlayer(playerid, "~w~Da den cho benh nhan", 5000, 1);
 		MedicCallTime[playerid] = 0;
 		DisablePlayerCheckpoint(playerid);
 	}
@@ -3387,7 +3387,7 @@ public OnPlayerEnterCheckpoint(playerid)
 				gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 				SetPlayerInterior(playerid,HouseInfo[i][hIntIW]);
 				SetPlayerPos(playerid,HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ]);
-				GameTextForPlayer(playerid, "~w~Welcome Home", 5000, 1);
+				GameTextForPlayer(playerid, "~w~Chao mung ve nha", 5000, 1);
 				PlayerInfo[playerid][pInt] = HouseInfo[i][hIntIW];
 				PlayerInfo[playerid][pVW] = HouseInfo[i][hIntVW];
 				SetPlayerVirtualWorld(playerid,HouseInfo[i][hIntVW]);
@@ -3409,7 +3409,7 @@ public OnPlayerEnterCheckpoint(playerid)
 						SetPVarInt(playerid, "IsFrozen", 1);
 						DisplayOrders(playerid);
 					}
-					else return SendClientMessageEx(playerid, COLOR_GREY, "You are not driving the correct Boat or Truck!");
+					else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong lai dung thuyen hoac xe tai!");
 				}
 			}
 			case CHECKPOINT_RETURNTRUCK:
@@ -3417,13 +3417,13 @@ public OnPlayerEnterCheckpoint(playerid)
 			    if(!IsPlayerInRangeOfPoint(playerid, 6, -1548.087524, 123.590423, 3.554687) && !IsPlayerInRangeOfPoint(playerid, 6, 2098.6543,-104.3568,-0.4820))
 			    {// In the case the person finds a way to exploit the checkpoint to different location
                     CancelTruckDelivery(playerid);
-                    SendClientMessageEx(playerid, COLOR_REALRED, "ERROR: Wrong checkpoint entered. Truck delivery canceled completely.");
+                    SendClientMessageEx(playerid, COLOR_REALRED, "LOI: Vao sai checkpoint. Da huy hoan toan chuyen giao hang.");
 					return 1;
 			    }
 				if(GetPVarInt(playerid, "TruckRunDeadline") > gettime())
 				{
   					new string[128];
-					format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport truck/boat running.", GetPlayerNameEx(playerid), playerid);
+					format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) co dau hieu teleport khi giao hang bang xe tai/thuyen.", GetPlayerNameEx(playerid), playerid);
   					ABroadCast( COLOR_YELLOW, string, 2 );
     				// format(string, sizeof(string), "%s (ID %d) is possibly teleport truckrunning.", GetPlayerNameEx(playerid), playerid);
 	    			// Log("logs/hack.log", string);
@@ -3431,12 +3431,12 @@ public OnPlayerEnterCheckpoint(playerid)
    				new vehicleid = GetPlayerVehicleID(playerid);
 				if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
 	    		{
-	        		SendClientMessageEx(playerid, COLOR_WHITE, "You are not in a Shipment Transport Vehicle!");
+	        		SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong o trong Shipment Transport Vehicle!");
 	        		return 1;
 	    		}
 				if(!(0 < vehicleid < MAX_VEHICLES) || TruckUsed[playerid] != vehicleid || GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0)
 	    		{
-	        		SendClientMessageEx(playerid, COLOR_WHITE, "This is not the vehicle you used, return the vehicle you used in order to receive your pay!");
+	        		SendClientMessageEx(playerid, COLOR_WHITE, "Khong dung xe ban dau, hay tra dung xe de nhan tien!");
 	        		return 1;
 	    		}
 
@@ -3482,7 +3482,7 @@ public OnPlayerEnterCheckpoint(playerid)
 					if(GetPlayerCash(playerid) > cellmax - payment) return CancelTruckDelivery(playerid, false);
 					GivePlayerCash(playerid, payment);
 
-				    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were paid $%d for delivering the goods and returning the vehicle.", payment);
+				    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban nhan $%d vi giao hang va tra xe.", payment);
 				    SetVehicleToRespawn(vehicleid);
 				}
 				else {
@@ -3494,14 +3494,14 @@ public OnPlayerEnterCheckpoint(playerid)
 					if(truckdeliver >= 1 && truckdeliver <= 5)
 					{
 						GivePlayerCash(playerid, payment);
-						format(string, sizeof(string), "* You were paid $%d for delivering the goods and returning the vehicle.", payment);
+						format(string, sizeof(string), "* Ban nhan $%d vi giao hang va tra xe.", payment);
 					}
 					else if(truckdeliver >= 5 && truckdeliver <= 7)
 					{
 						payment = floatround(payment * 1.25);
 						GivePlayerCash(playerid, payment);
-		    			format(string, sizeof(string), "* You were paid $%d for delivering the goods and returning the vehicle.", payment);
-		    			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You received a 25 percent bonus for the additional risk from the cops.");
+		    			format(string, sizeof(string), "* Ban nhan $%d vi giao hang va tra xe.", payment);
+		    			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban duoc thuong 25 phan tram vi rui ro them tu canh sat.");
 
 					}
 				    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
@@ -3519,7 +3519,7 @@ public OnPlayerEnterCheckpoint(playerid)
 						}
 						else
 						{
-							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were not given a free weapon due to your weapon restriction.");
+							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban khong duoc tang vu khi vi dang bi han che vu khi.");
 						}
 					}
 					if(truckdeliver == 6) // Drugs
@@ -3527,31 +3527,31 @@ public OnPlayerEnterCheckpoint(playerid)
 
 						if(level >= 0 && level <= 50)
 						{
-		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 2 pot & 1 crack as a bonus for taking the risk of transporting illegal drugs.");
+		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban duoc thuong them 2 pot va 1 crack vi rui ro cho ma tuy.");
 						    PlayerInfo[playerid][pDrugs][0] += 2;
 						    PlayerInfo[playerid][pDrugs][1] += 1;
 						}
 						else if(level >= 51 && level <= 100)
 						{
-		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 4 pot & 2 crack as a bonus for taking the risk of transporting illegal drugs.");
+		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban duoc thuong them 4 pot va 2 crack vi rui ro cho ma tuy.");
 					    	PlayerInfo[playerid][pDrugs][0] += 4;
 						    PlayerInfo[playerid][pDrugs][1] += 2;
 						}
 						else if(level >= 101 && level <= 200)
 						{
-		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 6 pot & 3 crack as a bonus for taking the risk of transporting illegal drugs.");
+		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban duoc thuong them 6 pot va 3 crack vi rui ro cho ma tuy.");
 					    	PlayerInfo[playerid][pDrugs][0] += 6;
 						    PlayerInfo[playerid][pDrugs][1] += 3;
 						}
 						else if(level >= 201 && level <= 400)
 						{
-		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 8 pot & 4 crack as a bonus for taking the risk of transporting illegal drugs.");
+		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban duoc thuong them 8 pot va 4 crack vi rui ro cho ma tuy.");
 					  	  	PlayerInfo[playerid][pDrugs][0] += 8;
 						    PlayerInfo[playerid][pDrugs][1] += 4;
 						}
 						else if(level >= 401)
 						{
-		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 10 pot & 5 crack as a bonus for taking the risk of transporting illegal drugs.");
+		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban duoc thuong them 10 pot va 5 crack vi rui ro cho ma tuy.");
 					   	 	PlayerInfo[playerid][pDrugs][0] += 10;
 						    PlayerInfo[playerid][pDrugs][1] += 5;
 						}
@@ -3560,27 +3560,27 @@ public OnPlayerEnterCheckpoint(playerid)
 					{
 						if(level >= 0 && level <= 50)
 						{
-		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 100 materials as a bonus for taking the risk of transporting illegal materials.");
+		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban duoc thuong them 100 vat lieu vi rui ro cho vat lieu trai phep.");
 							PlayerInfo[playerid][pMats] += 100;
 						}
 						else if(level >= 51 && level <= 100)
 						{
-		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 200 materials as a bonus for taking the risk of transporting illegal materials.");
+		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban duoc thuong them 200 vat lieu vi rui ro cho vat lieu trai phep.");
 							PlayerInfo[playerid][pMats] += 200;
 						}
 						else if(level >= 101 && level <= 200)
 						{
-		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 400 materials as a bonus for taking the risk of transporting illegal materials.");
+		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban duoc thuong them 400 vat lieu vi rui ro cho vat lieu trai phep.");
 							PlayerInfo[playerid][pMats] += 400;
 						}
 						else if(level >= 201 && level <= 400)
 						{
-		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 600 materials as a bonus for taking the risk of transporting illegal materials.");
+		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban duoc thuong them 600 vat lieu vi rui ro cho vat lieu trai phep.");
 							PlayerInfo[playerid][pMats] += 600;
 						}
 						else if(level >= 401)
 						{
-		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 1000 materials as a bonus for taking the risk of transporting illegal materials.");
+		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban duoc thuong them 1000 vat lieu vi rui ro cho vat lieu trai phep.");
 							PlayerInfo[playerid][pMats] += 1000;
 						}
 					}
@@ -3589,7 +3589,7 @@ public OnPlayerEnterCheckpoint(playerid)
 
 				if(PlayerInfo[playerid][pDoubleEXP] > 0)
 				{
-					SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 truck skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Ban nhan 2 diem xe tai thay vi 1. Double EXP token con %d gio.", PlayerInfo[playerid][pDoubleEXP]);
 					PlayerInfo[playerid][pTruckSkill] += 2;
 				}
 				else
@@ -3659,11 +3659,11 @@ public OnPlayerEnterCheckpoint(playerid)
 
 			case 6:
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "Lap completed! Your fitness has increased slightly.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Hoan thanh mot vong! The luc tang nhe.");
 				if(PlayerInfo[playerid][mCooldown][4]) PlayerInfo[playerid][pFitness] += 5;
 				else PlayerInfo[playerid][pFitness] += 3;
 				if (PlayerInfo[playerid][pFitness] > 100) PlayerInfo[playerid][pFitness] = 100;
-				SendClientMessageEx(playerid, COLOR_WHITE, "If you have finished exercising, type /stopswimming.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Dung /stopswimming neu da tap xong.");
 				SetPVarInt(playerid, "_SwimmingActivity", 3);
 				SetPlayerCheckpoint(playerid, 2839.7312, -2268.6123, -0.9815, 2.0);
 			}
@@ -3691,33 +3691,33 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	        {
 		        if(GetPVarInt(playerid, "CopTackleCooldown") != 0)
 		        {
-		            return SendClientMessageEx(playerid, COLOR_GRAD2, "You are exhausted! It will be %d seconds before you can tackle again.", GetPVarInt(playerid, "CopTackleCooldown"));
+		            return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da kiet suc! Cho %d giay truoc khi vat nga tiep.", GetPVarInt(playerid, "CopTackleCooldown"));
 		        }
 	            if(PlayerInfo[GetPlayerTargetPlayer(playerid)][pAdmin] >= 2 && PlayerInfo[GetPlayerTargetPlayer(playerid)][pTogReports] != 1)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "Admins can not be tackled!");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the vat nga Admins!");
 					return 1;
 				}
 				if(IsPlayerInAnyVehicle(GetPlayerTargetPlayer(playerid)))
 				{
-					return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot tackle someone who is in a vehicle!");
+					return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the vat nga nguoi dang ngoi trong xe!");
 				}
 				if(IsPlayerInAnyVehicle(playerid))
 				{
-					return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot tackle someone while in a vehicle!");
+					return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the vat nga nguoi khac khi dang ngoi trong xe!");
 				}
 				if(GetPVarType(GetPlayerTargetPlayer(playerid), "IsTackled"))
 				{
-					return SendClientMessageEx(playerid, COLOR_GRAD2, "That person has already been tackled, stand next to them to assist!");
+					return SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do da bi vat nga, dung ben canh de ho tro!");
 				}
 				if(GetPVarInt(GetPlayerTargetPlayer(playerid), "CantBeTackledCount") > 0)
 				{
-		            return SendClientMessageEx(playerid, COLOR_GRAD2, "That player cannot be tackled for another %d seconds.", GetPVarInt(GetPlayerTargetPlayer(playerid), "CantBeTackledCount"));
+		            return SendClientMessageEx(playerid, COLOR_GRAD2, "Chua the vat nga nguoi do trong %d giay nua.", GetPVarInt(GetPlayerTargetPlayer(playerid), "CantBeTackledCount"));
 				}
 				#if defined zombiemode
 				if(GetPVarInt(GetPlayerTargetPlayer(playerid), "pIsZombie"))
 				{
-				    SendClientMessageEx(playerid, COLOR_GRAD2, "Zombies can not be tackled!");
+				    SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the vat nga Zombies!");
 					return 1;
 				}
 				#endif
@@ -3730,7 +3730,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					}
 					default: // fail
 					{
-						format(string, sizeof(string), "** %s leaps at %s attempting to tackle them but is not able.", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPlayerTargetPlayer(playerid)));
+						format(string, sizeof(string), "** %s lao vao %s de vat nga nhung khong thanh cong.", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPlayerTargetPlayer(playerid)));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						TogglePlayerControllable(playerid, false);
 						SetTimerEx("FinishCopGetUp", 2500, false, "ii", playerid, g_arrQueryHandle[playerid]);
@@ -3746,8 +3746,8 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(IsPlayerConnected(GetPVarInt(playerid, "ttSeller")))
 			{
-				SendClientMessageEx(GetPVarInt(playerid, "ttSeller"), COLOR_LIGHTBLUE, "%s has declined the toy offer.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(playerid, COLOR_LIGHTRED, "You have declined the toy offer.");
+				SendClientMessageEx(GetPVarInt(playerid, "ttSeller"), COLOR_LIGHTBLUE, "%s da tu choi de nghi mua toy.", GetPlayerNameEx(playerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "Ban da tu choi de nghi mua toy.");
 
 				DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttBuyer");
 				DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttCost");
@@ -3757,7 +3757,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				return 1;
 			}
 			else {
-				SendClientMessageEx(playerid, COLOR_LIGHTRED, "The seller has disconnected from the server, therefore you cannot proceed the trade.");
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "Nguoi ban da ngat ket noi, khong the tiep tuc giao dich.");
 				DeletePVar(playerid, "ttSeller");
 
 				HideTradeToysGUI(playerid);
@@ -3770,10 +3770,10 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(IsPlayerConnected(GetPVarInt(playerid, "ttSeller")))
 			{
-				ShowPlayerDialogEx(playerid, CONFIRMSELLTOY, DIALOG_STYLE_MSGBOX, "Please confirm your choice", "Are you sure you want to purchase this toy for the amount specified?", "Yes", "No");
+				ShowPlayerDialogEx(playerid, CONFIRMSELLTOY, DIALOG_STYLE_MSGBOX, "Vui long xac nhan lua chon", "Ban chac chan muon mua toy nay voi gia da chon?", "Co", "Khong");
 			}
 			else {
-				SendClientMessageEx(playerid, COLOR_LIGHTRED, "The seller has disconnected from the server, therefore you cannot proceed the trade.");
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "Nguoi ban da ngat ket noi, khong the tiep tuc giao dich.");
 				DeletePVar(playerid, "ttSeller");
 
 				HideTradeToysGUI(playerid);
@@ -3811,9 +3811,9 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					if(IsPlayerAimingAt(playerid,x,y,z,10))
 					{
 						new string[68];
-						format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~b~License Plate: ~w~%d~n~~b~Speed: ~w~%.0f MPH", GetPlayerVehicleID(i), fVehSpeed[i]);
+						format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~b~Bien so: ~w~%d~n~~b~Toc do: ~w~%.0f MPH", GetPlayerVehicleID(i), fVehSpeed[i]);
 						GameTextForPlayer(playerid, string,3500, 3);
-						SendClientMessageEx(playerid, COLOR_GRAD4, "License Plate: %d. Speed: %.0f MPH", GetPlayerVehicleID(i), fVehSpeed[i]);
+						SendClientMessageEx(playerid, COLOR_GRAD4, "Bien so: %d. Toc do: %.0f MPH", GetPlayerVehicleID(i), fVehSpeed[i]);
 						SetPVarInt(playerid, "RadarTimeout", 1);
 						SetTimerEx("RadarCooldown", 3000, false, "i", playerid);
 						return 1;
@@ -3839,7 +3839,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		    }
 		    else
 		    {
-		        SendClientMessageEx(playerid, COLOR_GREY, "* You finish up the drink and throw it away.");
+		        SendClientMessageEx(playerid, COLOR_GREY, "* Ban uong het va bo lon di.");
 		        SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 				SetHealth(playerid, 100);
 		    }
@@ -3860,7 +3860,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		    }
 		    else
 		    {
-		        SendClientMessageEx(playerid, COLOR_GREY, "* You finish up the drink and throw it away.");
+		        SendClientMessageEx(playerid, COLOR_GREY, "* Ban uong het va bo lon di.");
 		        SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 				SetHealth(playerid, 100);
 		    }
@@ -3883,7 +3883,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			else
 			{
 				DeletePVar(playerid, "UsingSprunk");
-				SendClientMessageEx(playerid, COLOR_GREY, "* You finish up the drink and throw it away.");
+				SendClientMessageEx(playerid, COLOR_GREY, "* Ban uong het va bo lon di.");
 				SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 				SetHealth(playerid, 100);
 			}
@@ -3987,8 +3987,8 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		    TogglePlayerControllable(playerid, false);
 		    new string[92], Float: x, Float: y, Float: z;
 			GetPlayerPos(playerid, x, y, z);
-		    format(string, sizeof(string), "Position: X = %f.3 Y = %f.3 Z = %f.3", x, y, z);
-		    SendClientMessageEx(playerid, COLOR_WHITE, "Are you sure this is the correct position? Please press the fire button again to confirm this, you can cancel by simply pressing the AIM button.");
+		    format(string, sizeof(string), "Vi tri: X = %f.3 Y = %f.3 Z = %f.3", x, y, z);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Day la vi tri dung? Nhan nut ban lan nua de xac nhan, nhan nut AIM de huy.");
             SendClientMessageEx(playerid, COLOR_YELLOW, string);
             ConfigEventCPs[playerid][1] = 2;
 		}
@@ -3996,7 +3996,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		    TogglePlayerControllable(playerid, true);
 		    new string[298];
 			GetPlayerPos(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]]);
-		    SendClientMessageEx(playerid, COLOR_WHITE, "You have successfuly created a race checkpoint. Position: X = %f.3 Y = %f.3 Z = %f.3 - ID:%d", EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], ConfigEventCPId[playerid]);
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Da tao checkpoint dua. Vi tri: X = %f.3 Y = %f.3 Z = %f.3 - ID:%d", EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], ConfigEventCPId[playerid]);
 			if(ConfigEventCPs[playerid][2] == 1)
 			{
 			    EventRCPU[ConfigEventCPId[playerid]] = 1;
@@ -4010,8 +4010,8 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
 				}
 				ConfigEventCPs[playerid][1] = 3;
-            	format(string,sizeof(string),"Race Checkpoint %d Size", ConfigEventCPId[playerid]);
-				ShowPlayerDialogEx(playerid,RCPSIZE,DIALOG_STYLE_INPUT,string,"You are now in stage 3, which means you will need to choose the size of the checkpoint\nYou now have a preview of the checkpoint(Step outside the checkpoint so you can see it)\nNote: Checkpoint is now made with the default settings,\nyou may choose not to continue checkpoint won't be affected.","Ok","Cancel");
+            	format(string,sizeof(string),"Kich co checkpoint %d", ConfigEventCPId[playerid]);
+				ShowPlayerDialogEx(playerid,RCPSIZE,DIALOG_STYLE_INPUT,string,"Ban dang o buoc 3, hay chon kich thuoc checkpoint\nDa bat xem truoc checkpoint(Buoc ra ngoai de xem ro)\nLuu y: Checkpoint da duoc tao voi cau hinh mac dinh,\nban co the dung tai day ma khong anh huong checkpoint.","Dong y","Huy");
 			}
 			else
 			{
@@ -4040,9 +4040,9 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							new takemoney = PlayerInfo[GoChase[playerid]][pHeadValue];
 							GivePlayerCash(playerid, floatround(takemoney * 0.9));
 							GivePlayerCash(GoChase[playerid], -takemoney);
-							format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d",GetPlayerNameEx(playerid),GetPlayerNameEx(GoChase[playerid]),takemoney);
+							format(string,sizeof(string),"Hitman %s da hoan tat hop dong voi %s va nhan $%d",GetPlayerNameEx(playerid),GetPlayerNameEx(GoChase[playerid]),takemoney);
 							foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_YELLOW, string);
-							format(string,sizeof(string),"You have been critically injured by a Hitman and lost $%d!",takemoney);
+							format(string,sizeof(string),"Ban bi Hitman gay trong thuong va mat $%d!",takemoney);
 							ResetPlayerWeaponsEx(GoChase[playerid]);
 						    // SpawnPlayer(GoChase[playerid]);
 							SendClientMessageEx(GoChase[playerid], COLOR_YELLOW, string);
@@ -4065,7 +4065,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
  	        PlayerInfo[playerid][pC4Used] = 0;
 			CreateExplosion(GetPVarFloat(playerid, "DYN_C4_FLOAT_X"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Y"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Z"), 7, 8);
 			PickUpC4(playerid);
-			SendClientMessageEx(playerid, COLOR_YELLOW, " Bomb has been detonated!");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "  Bom da duoc kich no!");
 			PlayerInfo[playerid][pC4Used] = 0;
 			return 1;
  	    }
@@ -4077,7 +4077,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
  	    }
 		if(GetPVarType(playerid, "DraggingPlayer")) {
 			StopDragging(playerid);
-			SendClientMessageEx(playerid, COLOR_GRAD2, "You have stopped dragging the suspect.");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da dung keo nghi pham.");
 		}
 	}
 	else if((newkeys & KEY_SPRINT) && GetPlayerState(playerid) == 2)// Pressing the gas, detonates the bomb.
@@ -4097,9 +4097,9 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					new takemoney = PlayerInfo[playerid][pHeadValue];//(PlayerInfo[playerid][pHeadValue] / 4) * 2;
 					GivePlayerCash(GetChased[playerid], floatround(takemoney * 0.9));
 					GivePlayerCash(playerid, -takemoney);
-					format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(GetChased[playerid]),GetPlayerNameEx(playerid),takemoney);
+					format(string,sizeof(string),"Hitman %s da hoan tat hop dong voi %s va nhan $%d.",GetPlayerNameEx(GetChased[playerid]),GetPlayerNameEx(playerid),takemoney);
 					foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_YELLOW, string);
-					format(string,sizeof(string),"You have been critically injured by a hitman and lost $%d!",takemoney);
+					format(string,sizeof(string),"Ban bi Hitman gay trong thuong va mat $%d!",takemoney);
 					ResetPlayerWeaponsEx(playerid);
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
 					PlayerInfo[playerid][pHeadValue] = 0;
@@ -4139,7 +4139,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		{
 			if(GetPVarInt(playerid, "TeleportWarnings") == 3) {
 				new string[128];
-		    	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may have just teleported into a vehicle.", GetPlayerNameEx(playerid), playerid);
+		    	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) co the vua dich chuyen vao xe.", GetPlayerNameEx(playerid), playerid);
 				ABroadCast(COLOR_YELLOW, string, 2);
 				DeletePVar(playerid, "TeleportWarnings");
 				if(!gPlayerLogged{playerid})
@@ -4182,7 +4182,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					if (GetPVarInt(playerid, "_BikeParkourSlot") != it)
 					{
 						RemovePlayerFromVehicle(playerid);
-						SendClientMessageEx(playerid, COLOR_GRAD2, "That is not your bike!");
+						SendClientMessageEx(playerid, COLOR_GRAD2, "Day khong phai xe dap cua ban!");
 					}
 				}
 			}
@@ -4322,14 +4322,14 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			}
 			TransportDuty[playerid] = 0;
 			new string[70]; // increased buf size as full message wasn't getting shown
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now off duty and earned $%d.", TransportMoney[playerid]);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da tan ca va kiem duoc $%d.", TransportMoney[playerid]);
 
 			foreach(new i: Player)
 			{
 				if (TransportDriver[i] == playerid)
 				{
 					GivePlayerCash(i, -TransportCost[i]);
-					format(string, sizeof(string), "* Your driver left the vehicle and so you paid $%d.", TransportCost[i]);
+					format(string, sizeof(string), "* Nguoi lai roi xe, ban da tra $%d.", TransportCost[i]);
 					TransportCost[i] = 0; // I've not used either of these two variables before, could be more that resetting
 					TransportDriver[i] = INVALID_PLAYER_ID;
 					SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
@@ -4348,9 +4348,9 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		{
 			new string[128];
 			TransportMoney[TransportDriver[playerid]] += TransportCost[playerid];
-			format(string, sizeof(string), "~w~The ride cost~n~~r~$%d",TransportCost[playerid]);
+			format(string, sizeof(string), "~w~Chuyen di ton~n~~r~$%d",TransportCost[playerid]);
 			GameTextForPlayer(playerid, string, 5000, 3);
-			format(string, sizeof(string), "~w~Passenger left the taxi.~n~~g~Earned $%d",TransportCost[playerid]);
+			format(string, sizeof(string), "~w~Khach da roi taxi.~n~~g~Thu nhap $%d",TransportCost[playerid]);
 			GameTextForPlayer(TransportDriver[playerid], string, 5000, 3);
 			GivePlayerCash(playerid, -TransportCost[playerid]);
 
@@ -4372,7 +4372,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	    #if defined zombiemode
    		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie"))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't go into cars.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Zombies khong the vao xe.");
 			new Float:X, Float:Y, Float:Z;
 			GetPlayerPos(playerid, X, Y, Z);
 			SetPlayerPos(playerid, X, Y, Z);
@@ -4415,7 +4415,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			{
 				if(GetPlayerCash(playerid) < TransportValue[i])
 				{
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You need $%d to enter.", TransportValue[i]);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban can $%d de vao.", TransportValue[i]);
 					RemovePlayerFromVehicle(playerid);
 					new Float:X, Float:Y, Float:Z;
 					GetPlayerPos(playerid, X, Y, Z);
@@ -4426,8 +4426,8 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				{
 					if(TransportDuty[i] == 1)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You paid $%d to the taxi driver.", TransportValue[i]);
-						SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Passenger %s has entered your taxi.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da tra $%d cho tai xe taxi.", TransportValue[i]);
+						SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Hanh khach %s da len taxi cua ban.", GetPlayerNameEx(playerid));
 						TransportTime[i] = 1;
 						TransportTime[playerid] = 1;
 						TransportCost[playerid] = TransportValue[i];
@@ -4436,8 +4436,8 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					}
 					else if(TransportDuty[i] == 2)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You paid $%d to the Taxi Driver.", TransportValue[i]);
-						SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Passenger %s has entered your Taxi.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da tra $%d cho Taxi Driver.", TransportValue[i]);
+						SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Hanh khach %s da len Taxi cua ban.", GetPlayerNameEx(playerid));
 					}
 					GivePlayerCash(playerid, - TransportValue[i]);
 					TransportMoney[i] += TransportValue[i];
@@ -4473,7 +4473,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	    #if defined zombiemode
     	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie"))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't drive.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Zombies khong the lai xe.");
 			new Float:X, Float:Y, Float:Z;
 			GetPlayerPos(playerid, X, Y, Z);
 			SetPlayerPos(playerid, X, Y, Z);
@@ -4499,7 +4499,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				new Float:X, Float:Y, Float:Z;
 				GetPlayerPos(playerid, X, Y, Z);
 				SetPlayerPos(playerid, X, Y, Z+1.3);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You cannot be inside vehicles and participate in this event at the same time.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Khong the ngoi trong xe khi dang tham gia su kien nay.");
 				return 1;
 			}
 		}
@@ -4510,17 +4510,17 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				if(i == playerid) {
 
 
-					SendClientMessageEx(playerid, COLOR_GREY, "You are the owner of this %s.", GetVehicleName(newcar));
+					SendClientMessageEx(playerid, COLOR_GREY, "Ban la chu so huu %s nay.", GetVehicleName(newcar));
 					if(PlayerVehicleInfo[i][v][pvTicket] != 0)
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "This vehicle has $%d unpaid tickets. You must pay the ticket at the DMV in Dilimore.", PlayerVehicleInfo[i][v][pvTicket]);
-						SendClientMessageEx(playerid, COLOR_GREY, "Failure to pay these tickets as soon as possible will result in further fines, vehicle impounding, or even an arrest.");
+						SendClientMessageEx(playerid, COLOR_GREY, "Xe nay con $%d tien phat chua nop. Hay nop phat tai DMV o Dilimore.", PlayerVehicleInfo[i][v][pvTicket]);
+						SendClientMessageEx(playerid, COLOR_GREY, "Cham nop phat co the bi phat them, tam giu xe hoac bat giam.");
 					}
 				}
 				else if(i == PlayerInfo[playerid][pVehicleKeysFrom] && v == PlayerInfo[playerid][pVehicleKeys]) {
 
 
-					SendClientMessageEx(playerid, COLOR_GREY, "You have the keys for this %s from owner %s.", GetVehicleName(newcar), GetPlayerNameEx(i));
+					SendClientMessageEx(playerid, COLOR_GREY, "Ban co chia khoa %s nay tu chu xe %s.", GetVehicleName(newcar), GetPlayerNameEx(i));
 				}
 				else if(PlayerVehicleInfo[i][v][pvLocked] == 1 && PlayerVehicleInfo[i][v][pvLock] == 1) {
 					GetVehicleParamsEx(newcar,engine,lights,alarm,doors,bonnet,boot,objective);
@@ -4540,7 +4540,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					}
 					else
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "Warning: This %s is owned by %s.", GetVehicleName(newcar), GetPlayerNameEx(i));
+						SendClientMessageEx(playerid, COLOR_GREY, "Canh bao: Xe %s nay thuoc ve %s.", GetVehicleName(newcar), GetPlayerNameEx(i));
 					}
 				}
 				return 1;
@@ -4556,11 +4556,11 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				GetPlayerPos(playerid, slx, sly, slz);
 				SetPlayerPos(playerid, slx, sly, slz);
 				defer NOPCheck(playerid);
-				return SendClientMessageEx(playerid, -1, "You can't use this vehicle during the Zombie Event!");
+				return SendClientMessageEx(playerid, -1, "Ban khong the dung xe nay trong Zombie Event!");
 			}
 		    if(PlayerInfo[playerid][pDonateRank] > 0)
 			{
-				SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: This is a VIP vehicle from the VIP garage, therefore it has unlimited fuel.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: Xe VIP tu VIP garage co nhien lieu khong gioi han.");
 			}
 		    else
 			{
@@ -4570,7 +4570,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
 			    RemovePlayerFromVehicle(playerid);
 			    defer NOPCheck(playerid);
-			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a VIP, this is a vehicle from the VIP Garage!");
+			    SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong phai VIP, day la xe cua VIP Garage!");
 			}
 		}
 		else if(IsFamedVeh(vehicleid))
@@ -4583,10 +4583,10 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
 			    RemovePlayerFromVehicle(playerid);
 			    defer NOPCheck(playerid);
-			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Famed Member, this is a vehicle from the Famed Garage!");
+			    SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong phai Famed Member, day la xe cua Famed Garage!");
 			 }
 			 else {
-			    SendClientMessageEx(playerid, COLOR_YELLOW, "Famed: This is a Famed vehicle from the Famed garage, therefore it has unlimited fuel.");
+			    SendClientMessageEx(playerid, COLOR_YELLOW, "Famed: Xe Famed tu Famed garage co nhien lieu khong gioi han.");
 			}
 		}
 		else if(DynVeh[vehicleid] != -1)
@@ -4600,7 +4600,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				defer NOPCheck(playerid);
 				if(arrGroupData[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][g_iGroupType] != 2)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be in %s to drive this vehicle.", arrGroupData[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][g_szGroupName]);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ban phai thuoc %s de lai xe nay.", arrGroupData[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][g_szGroupName]);
 				}
 			}
 			else if(DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID] != 0 && PlayerInfo[playerid][pDivision] != DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID] && PlayerInfo[playerid][pMember] != PlayerInfo[playerid][pLeader])
@@ -4609,7 +4609,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				RemovePlayerFromVehicle(playerid);
 				SetPlayerPos(playerid, slx, sly, slz+1.3);
 				defer NOPCheck(playerid);
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be in %s's %s division to drive this vehicle.",
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Ban phai thuoc %s, don vi %s de lai xe nay.",
 				arrGroupData[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][g_szGroupName],
 				arrGroupDivisions[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID]]);
 			}
@@ -4618,7 +4618,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				RemovePlayerFromVehicle(playerid);
 				SetPlayerPos(playerid, slx, sly, slz+1.3);
 				defer NOPCheck(playerid);
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be rank %s(%d) or above to drive this vehicle.",
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Ban can hang %s(%d) tro len de lai xe nay.",
 				arrGroupRanks[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][DynVehicleInfo[DynVeh[vehicleid]][gv_irID]],
 				DynVehicleInfo[DynVeh[vehicleid]][gv_irID]);
 			}
@@ -4634,7 +4634,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					GetPlayerPos(playerid, slx, sly, slz);
 					SetPlayerPos(playerid, slx, sly, slz);
 					defer NOPCheck(playerid);
-					SendClientMessageEx(playerid,COLOR_GREY,"You don't have a pilot license!");
+					SendClientMessageEx(playerid,COLOR_GREY,"Ban khong co bang lai may bay!");
 				}
 	  		}
 		}
@@ -4655,7 +4655,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					if(IsAnTaxi(PlayerVehicleInfo[playerid][i][pvModelId]))
 					return 1;
 				}
-				SendClientMessageEx(playerid,COLOR_GREY,"   You are not a Taxi/Bus Driver!");
+				SendClientMessageEx(playerid,COLOR_GREY,"   Ban khong phai Taxi/Bus Driver!");
 				RemovePlayerFromVehicle(playerid);
 				new Float:slx, Float:sly, Float:slz;
 				GetPlayerPos(playerid, slx, sly, slz);
@@ -4673,7 +4673,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				GetPlayerPos(playerid, slx, sly, slz);
 				SetPlayerPos(playerid, slx, sly, slz);
 				defer NOPCheck(playerid);
-				return SendClientMessageEx(playerid, -1, "You can't purchase a vehicle at any dealership during the Zombie Event!");
+				return SendClientMessageEx(playerid, -1, "Khong the mua xe tai dai ly trong Zombie Event!");
 			}
             new
 				iBusiness = GetCarBusiness(newcar),
@@ -4681,7 +4681,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				string[128];
 
 			if(Businesses[iBusiness][bInventory] == 0) {
-			    SendClientMessageEx(playerid,COLOR_GREY,"This dealership is out of stock.");
+			    SendClientMessageEx(playerid,COLOR_GREY,"Dai ly nay da het hang.");
 		        RemovePlayerFromVehicle(playerid);
 		        new Float:slx, Float:sly, Float:slz;
 				GetPlayerPos(playerid, slx, sly, slz);
@@ -4689,23 +4689,23 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				defer NOPCheck(playerid);
 				return 1;
 			}
-			format(string, sizeof(string), "Would you like to purchase this %s\nThis vehicle costs $%s.", GetVehicleName(newcar), number_format(Businesses[iBusiness][bPrice][iSlot]));
-		    ShowPlayerDialogEx(playerid,DIALOG_CDBUY,DIALOG_STYLE_MSGBOX,"Buy Vehicle",string,"Buy","Cancel");
+			format(string, sizeof(string), "Ban muon mua %s nay khong?\nGia xe la $%s.", GetVehicleName(newcar), number_format(Businesses[iBusiness][bPrice][iSlot]));
+		    ShowPlayerDialogEx(playerid,DIALOG_CDBUY,DIALOG_STYLE_MSGBOX,"Mua xe",string,"Mua","Huy");
 		    TogglePlayerControllable(playerid, false);
 		    return 1;
         }
 	    if(DynVeh[vehicleid] != -1 && DynVehicleInfo[DynVeh[vehicleid]][gv_iType] == 1)
 	    {
-	        SendClientMessageEx(playerid, COLOR_GRAD1, "Crate Related Commands: /loadforklift /(un)loadplane /cargo /announcetakeoff /cgun /crates /destroycrate /cratelimit");
+	        SendClientMessageEx(playerid, COLOR_GRAD1, "Lenh ve thung: /loadforklift /(un)loadplane /cargo /announcetakeoff /cgun /crates /destroycrate /cratelimit");
 	        SendClientMessageEx(playerid, COLOR_GRAD1, " /(un)loadcrate /delivercrate");
 	    }
 		GetVehicleParamsEx(newcar,engine,lights,alarm,doors,bonnet,boot,objective);
 		if((engine == VEHICLE_PARAMS_UNSET || engine == VEHICLE_PARAMS_OFF) && GetVehicleModel(newcar) != 509 && GetVehicleModel(newcar) != 481 && GetVehicleModel(newcar) != 510 && (DynVeh[newcar] != -1 && GetVehicleModel(newcar) == 592 && DynVehicleInfo[DynVeh[newcar]][gv_iType] != 1) ) {
-			SendClientMessageEx(playerid, COLOR_WHITE, "This vehicle's engine is not running - if you wish to start it, press ~k~~CONVERSATION_YES~.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Dong co xe chua chay, nhan ~k~~CONVERSATION_YES~ de khoi dong.");
 		}
 		else if((engine == VEHICLE_PARAMS_UNSET || engine == VEHICLE_PARAMS_OFF) && (DynVeh[newcar] != -1 && GetVehicleModel(newcar) == 592 && DynVehicleInfo[DynVeh[newcar]][gv_iType] == 1))
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "You must request clearance to take off. /announcetakeoff to put in the request.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban phai xin phep cat canh. Dung /announcetakeoff de gui yeu cau.");
 		}
 	}
 	if((newstate == 2 || newstate == 3 || newstate == 7 || newstate == 9) && pTazer{playerid} == 1)
@@ -4758,16 +4758,16 @@ public OnPlayerExitVehicle(playerid, vehicleid)
 	    case 1:
 	    {
 			new string[128];
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have taken off your seatbelt.");
-			format(string, sizeof(string), "* %s reaches for their seatbelt and unbuckles it.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da thao day an toan.");
+			format(string, sizeof(string), "* %s dua tay thao day an toan.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
   			Seatbelt[playerid] = 0;
 	    }
 		case 2:
 	    {
 			new string[128];
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have taken off your helmet.");
-			format(string, sizeof(string), "* %s reaches for their helmet and takes it off.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da thao mu bao hiem.");
+			format(string, sizeof(string), "* %s dua tay len mu bao hiem va thao ra.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			if(GetPVarType(playerid, "HelmetOn"))
 			{
@@ -4830,7 +4830,7 @@ public OnPlayerCommandReceived(playerid, cmd[], params[], flags) {
 	else format(cmdtext, sizeof(cmdtext), "/%s %s", cmd, params);
 
 	if(gPlayerLogged{playerid} != 1) {
-		SendClientMessageEx(playerid, COLOR_RED, "You are not logged in.");
+		SendClientMessageEx(playerid, COLOR_RED, "Ban chua dang nhap.");
 		return 0;
 	}
 /*
@@ -4850,19 +4850,19 @@ public OnPlayerCommandReceived(playerid, cmd[], params[], flags) {
 	else printf("[Pawn.CMD] [%s]: %s", GetPlayerNameEx(playerid), cmdtext);
 	if(PlayerInfo[playerid][pForcePasswordChange] == 1) return ShowLoginDialogs(playerid, 0), 0;
 	if(PlayerInfo[playerid][pMuted] == 1) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You cannot speak, you have been silenced!");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the noi, ban dang bi cam noi!");
 		return 0;
 	}
 	if(CommandSpamUnmute[playerid] != 0) {
-		SendClientMessage(playerid, COLOR_WHITE, "You are muted from submitting commands right now.");
+		SendClientMessage(playerid, COLOR_WHITE, "Ban dang bi cam gui lenh.");
 		return 0;
 	}
 
 	if(GetPVarInt(playerid, "voucherdialog"))
 	{
-		if(GetPVarInt(playerid, "voucherdialog") == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please finalize your voucher transaction."), 0;
+		if(GetPVarInt(playerid, "voucherdialog") == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Vui long hoan tat giao dich voucher."), 0;
 		new string[128];
-		format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be attempting to exploit the voucher system. (CMD)", GetPlayerNameEx(playerid), playerid);
+		format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s (ID: %d) co the dang loi dung he thong voucher. (CMD)", GetPlayerNameEx(playerid), playerid);
 		ABroadCast(COLOR_YELLOW, string, 2);
 		format(string,sizeof(string),"AdmWarning: %s(%d) (ID: %d) may be attempting to exploit the voucher system. (CMD)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerid);
 		Log("logs/vouchers.log", string);
@@ -4874,14 +4874,14 @@ public OnPlayerCommandReceived(playerid, cmd[], params[], flags) {
 		if(++CommandSpamTimes[playerid] >= 5) {
 			CommandSpamTimes[playerid] = 0;
 			CommandSpamUnmute[playerid] = 10;
-			SendClientMessageEx(playerid, COLOR_YELLOW, "You have been muted automatically for spamming. Please wait 10 seconds and try again.");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Ban bi tu dong cam chat vi spam. Hay cho 10 giay va thu lai.");
 			SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_FLOODPROTECTION);
 			return 0;
 		}
 	}
 
 	if(strfind(cmdtext, "|") != -1 || strfind(cmdtext, "\n") != -1 || strfind(cmdtext, "\r") != -1) {
-	    SendClientMessageEx(playerid, COLOR_GREY, "You cannot use non-standard characters in commands.");
+	    SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung ky tu khong chuan trong lenh.");
 		return 0;
 	}
 
@@ -4889,7 +4889,7 @@ public OnPlayerCommandReceived(playerid, cmd[], params[], flags) {
     {
 		if(strfind(cmdtext, GiftCode) != -1)
 		{
-		    SendClientMessageEx(playerid, COLOR_GREY, "You can't tell other people the gift code.");
+		    SendClientMessageEx(playerid, COLOR_GREY, "Ban khong duoc noi ma qua tang cho nguoi khac.");
 		    return 0;
 		}
 	}
@@ -4897,7 +4897,7 @@ public OnPlayerCommandReceived(playerid, cmd[], params[], flags) {
 	if(PlayerInfo[playerid][pAdmin] < 2 && CheckServerAd(cmdtext))
 	{
 		new string[128];
-		format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be server advertising: '{AA3333}%s{FFFF00}'.", GetPlayerNameEx(playerid), playerid, cmdtext);
+		format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s (ID: %d) co the quang cao may chu: '{AA3333}%s{FFFF00}'.", GetPlayerNameEx(playerid), playerid, cmdtext);
 		ABroadCast(COLOR_YELLOW, string, 2);
 		format(string,sizeof(string),"%s(%d) (IP: %s) may be server advertising: '%s'.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), cmdtext);
 		Log("logs/hack.log", string);
@@ -4921,10 +4921,10 @@ public OnPlayerText(playerid, text[])
 
 	if(gPlayerLogged{playerid} != 1)
 	{
-		SendClientMessageEx(playerid, COLOR_RED, "You are not logged in.");
+		SendClientMessageEx(playerid, COLOR_RED, "Ban chua dang nhap.");
 		return 0;
 	}
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b"), 0;
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b"), 0;
 	new sendername[MAX_PLAYER_NAME];
 	new giveplayer[MAX_PLAYER_NAME];
 	new string[128];
@@ -4936,7 +4936,7 @@ public OnPlayerText(playerid, text[])
 	{
 		if(PlayerInfo[playerid][pAdmin] < 2)
 		{
-			SendClientMessage(playerid, COLOR_WHITE, "You are muted from submitting text right now.");
+			SendClientMessage(playerid, COLOR_WHITE, "Ban dang bi cam gui van ban.");
 			return 0;
 		}
 	}
@@ -4947,7 +4947,7 @@ public OnPlayerText(playerid, text[])
 		{
 			TextSpamTimes[playerid] = 0;
 			TextSpamUnmute[playerid] = 10;
-			SendClientMessageEx(playerid, COLOR_YELLOW, "You have been muted automatically for spamming. Please wait 10 seconds and try again.");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Ban bi tu dong cam chat vi spam. Hay cho 10 giay va thu lai.");
 			SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_FLOODPROTECTION);
 			return 0;
 		}
@@ -4973,13 +4973,13 @@ public OnPlayerText(playerid, text[])
 	}*/
 
 	if(strfind(text, "|", true) != -1) {
-	    SendClientMessageEx(playerid, COLOR_RED, "You cannot use the '|' character in text.");
+	    SendClientMessageEx(playerid, COLOR_RED, "Ban khong duoc dung ky tu '|' trong van ban.");
 		return 0;
 	}
 
 	if(PlayerInfo[playerid][pMuted] == 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You cannot speak, you have been silenced!");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the noi, ban dang bi cam noi!");
 		return 0;
 	}
 
@@ -4987,14 +4987,14 @@ public OnPlayerText(playerid, text[])
     {
 		if(strfind(text, GiftCode) != -1)
 		{
-		    SendClientMessageEx(playerid, COLOR_GREY, "You can't tell other people the gift code.");
+		    SendClientMessageEx(playerid, COLOR_GREY, "Ban khong duoc noi ma qua tang cho nguoi khac.");
 		    return 0;
 		}
 	}
 
 	if(PlayerInfo[playerid][pAdmin] < 2 && CheckServerAd(text))
 	{
-		format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be server advertising: '{AA3333}%s{FFFF00}'.", GetPlayerNameEx(playerid), playerid, text);
+		format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s (ID: %d) co the quang cao may chu: '{AA3333}%s{FFFF00}'.", GetPlayerNameEx(playerid), playerid, text);
 		ABroadCast(COLOR_YELLOW, string, 2);
 		format(string,sizeof(string),"%s(%d) (IP: %s) may be server advertising: '%s'.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), text);
 		Log("logs/hack.log", string);
@@ -5011,7 +5011,7 @@ public OnPlayerText(playerid, text[])
 				{
 					GetPlayerName(playerid, sendername, sizeof(sendername));
 					GetPlayerName(GotProposedBy[playerid], giveplayer, sizeof(giveplayer));
-					SendClientMessageEx(GotProposedBy[playerid], COLOR_WHITE, "Priest: %s do you take %s as your lovely wife? (Type 'yes' - anything else will reject the marriage).", giveplayer,sendername);
+					SendClientMessageEx(GotProposedBy[playerid], COLOR_WHITE, "Priest: %s, ban co dong y lay %s lam vo khong? (Go 'yes', noi dung khac se tu choi hon nhan).", giveplayer,sendername);
 					MarriageCeremoney[GotProposedBy[playerid]] = 1;
 					MarriageCeremoney[playerid] = 0;
 					GotProposedBy[playerid] = INVALID_PLAYER_ID;
@@ -5032,23 +5032,23 @@ public OnPlayerText(playerid, text[])
 					GetPlayerName(ProposedTo[playerid], giveplayer, sizeof(giveplayer));
 					if(PlayerInfo[playerid][pSex] == 1 && PlayerInfo[ProposedTo[playerid]][pSex] == 2)
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "Priest: %s and %s i pronounce you now... Husband & Wife, you may kiss the bride.", sendername, giveplayer);
-						SendClientMessageEx(ProposedTo[playerid], COLOR_WHITE, "Priest: %s and %s i pronounce you now... Husband & Wife, you may kiss the groom.", giveplayer, sendername);
-						format(string, sizeof(string), "Marriage News: We have a new lovely couple! %s & %s have been married.", sendername, giveplayer);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Priest: %s va %s, ta tuyen bo hai con la... Vo & Chong, con co the hon co dau.", sendername, giveplayer);
+						SendClientMessageEx(ProposedTo[playerid], COLOR_WHITE, "Priest: %s va %s, ta tuyen bo hai con la... Vo & Chong, con co the hon chu re.", giveplayer, sendername);
+						format(string, sizeof(string), "Marriage News: Chuc mung cap doi %s & %s da ket hon.", sendername, giveplayer);
 						OOCNews(COLOR_WHITE, string);
 					}
 					else if(PlayerInfo[playerid][pSex] == 1 && PlayerInfo[ProposedTo[playerid]][pSex] == 1)
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "Priest: %s and %s i pronounce you now... Husband & Husband, you may kiss the bride.", sendername, giveplayer);
-						SendClientMessageEx(ProposedTo[playerid], COLOR_WHITE, "Priest: %s and %s i pronounce you now... Husband & Husband, you may kiss the groom.", giveplayer, sendername);
-						format(string, sizeof(string), "Marriage News: We have a new gay couple! %s & %s have been married.", sendername, giveplayer);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Priest: %s va %s, ta tuyen bo hai con la... Chong & Chong, con co the hon co dau.", sendername, giveplayer);
+						SendClientMessageEx(ProposedTo[playerid], COLOR_WHITE, "Priest: %s va %s, ta tuyen bo hai con la... Chong & Chong, con co the hon chu re.", giveplayer, sendername);
+						format(string, sizeof(string), "Marriage News: Chuc mung cap doi dong tinh nam %s & %s da ket hon.", sendername, giveplayer);
 						OOCNews(COLOR_WHITE, string);
 					}
 					else if(PlayerInfo[playerid][pSex] == 2 && PlayerInfo[ProposedTo[playerid]][pSex] == 2)
 					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "Priest: %s and %s i pronounce you now... Wife & Wife, you may kiss the Bride.", sendername, giveplayer);
-						SendClientMessageEx(ProposedTo[playerid], COLOR_WHITE, "Priest: %s and %s i pronounce you now... Wife & Wife, you may kiss the Groom.", giveplayer, sendername);
-						format(string, sizeof(string), "Marriage News: We have a new lesbian couple! %s & %s have been married.", sendername, giveplayer);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Priest: %s va %s, ta tuyen bo hai con la... Vo & Vo, con co the hon co dau.", sendername, giveplayer);
+						SendClientMessageEx(ProposedTo[playerid], COLOR_WHITE, "Priest: %s va %s, ta tuyen bo hai con la... Vo & Vo, con co the hon chu re.", giveplayer, sendername);
+						format(string, sizeof(string), "Marriage News: Chuc mung cap doi dong tinh nu %s & %s da ket hon.", sendername, giveplayer);
 						OOCNews(COLOR_WHITE, string);
 					}
 					if(GetPVarInt(playerid, "marriagelastname") == 2)
@@ -5095,8 +5095,8 @@ public OnPlayerText(playerid, text[])
 			{
 				if(IsPlayerConnected(GotProposedBy[playerid]))
 				{
-					SendClientMessageEx(playerid, COLOR_YELLOW, "* You didn't want to marry %s, no 'yes' was said.", GetPlayerNameEx(GotProposedBy[playerid]));
-					SendClientMessageEx(GotProposedBy[playerid], COLOR_YELLOW, "* %s didn't want to marry you, no 'yes' was said.",GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_YELLOW, "* Ban khong muon ket hon voi %s vi khong tra loi 'yes'.", GetPlayerNameEx(GotProposedBy[playerid]));
+					SendClientMessageEx(GotProposedBy[playerid], COLOR_YELLOW, "* %s khong muon ket hon voi ban vi khong tra loi 'yes'.",GetPlayerNameEx(playerid));
 					return 0;
 				}
 				else
@@ -5110,8 +5110,8 @@ public OnPlayerText(playerid, text[])
 			{
 				if(IsPlayerConnected(ProposedTo[playerid]))
 				{
-					SendClientMessageEx(playerid, COLOR_YELLOW, "* You didn't want to marry %s, no 'yes' was said.",GetPlayerNameEx(ProposedTo[playerid]));
-					SendClientMessageEx(ProposedTo[playerid], COLOR_YELLOW, "* %s didn't want to marry you, no 'yes' was said.",GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_YELLOW, "* Ban khong muon ket hon voi %s vi khong tra loi 'yes'.",GetPlayerNameEx(ProposedTo[playerid]));
+					SendClientMessageEx(ProposedTo[playerid], COLOR_YELLOW, "* %s khong muon ket hon voi ban vi khong tra loi 'yes'.",GetPlayerNameEx(playerid));
 					return 0;
 				}
 				else
@@ -5128,17 +5128,17 @@ public OnPlayerText(playerid, text[])
 	{
 		if (strcmp("yes", text, true) == 0)
 		{
-			format(string, sizeof(string), "** %s is in jail, and needs a lawyer. Go to the Police Station.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "** %s dang o tu va can lawyer. Hay den Police Station.", GetPlayerNameEx(playerid));
 			SendJobMessage(JOB_LAWYER, TEAM_AZTECAS_COLOR, string);
-			SendJobMessage(JOB_LAWYER, TEAM_AZTECAS_COLOR, "* When you are at the Police Station, ask an officer to approve you with /accept lawyer.");
-			SendClientMessageEx(playerid, COLOR_LIGHTRED, "A message has been sent to all available lawyers, please wait.");
+			SendJobMessage(JOB_LAWYER, TEAM_AZTECAS_COLOR, "* Khi den Police Station, hay nho officer chap nhan ban bang /accept lawyer.");
+			SendClientMessageEx(playerid, COLOR_LIGHTRED, "Da gui thong bao den tat ca lawyer, vui long cho.");
 			WantLawyer[playerid] = 0;
 			CallLawyer[playerid] = 0;
 			return 0;
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTRED, "There is no lawyer available to you anymore. Jail time has started.");
+			SendClientMessageEx(playerid, COLOR_LIGHTRED, "Khong con lawyer nao kha dung. Thoi gian thu an da bat dau.");
 			WantLawyer[playerid] = 0;
 			CallLawyer[playerid] = 0;
 			return 0;
@@ -5165,9 +5165,9 @@ public OnPlayerText(playerid, text[])
 	if(Mobile[playerid] != INVALID_PLAYER_ID)
 	{
 		if(GetPVarType(playerid, "PayPhone")) {
-			format(string, sizeof(string), "(payphone)(unknown) says: %s", text);
+			format(string, sizeof(string), "(DTCC)(an danh) noi: %s", text);
 		}
-		else format(string, sizeof(string), "(cellphone) %s says: %s", GetPlayerNameEx(playerid), text);
+		else format(string, sizeof(string), "(dien thoai) %s noi: %s", GetPlayerNameEx(playerid), text);
 
 
 		ProxDetector(20.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
@@ -5177,7 +5177,7 @@ public OnPlayerText(playerid, text[])
 			{
 				if(PlayerInfo[Mobile[playerid]][pSpeakerPhone] != 0)
 				{
-				    format(string, sizeof(string), "(speakerphone) Unknown says: %s",  text);
+				    format(string, sizeof(string), "(loa ngoai) Unknown noi: %s",  text);
 					ProxDetector(20.0, Mobile[playerid], string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
 				}
 				else
@@ -5186,10 +5186,10 @@ public OnPlayerText(playerid, text[])
 				}
 				if(PlayerInfo[playerid][pBugged] != INVALID_GROUP_ID)
 			    {
-			    	format(string, sizeof(string), "{8D8DFF}(BUGGED) {CBCCCE}Unknown (cellphone): %s",  text);
+			    	format(string, sizeof(string), "{8D8DFF}(NGHE LEN) {CBCCCE}Unknown (DT): %s",  text);
 			    }
 			    else if(PlayerInfo[Mobile[playerid]][pBugged] != INVALID_GROUP_ID){
-			    	format(string, sizeof(string), "{8D8DFF}(BUG ID %d) {CBCCCE}Unknown (cellphone): %s", Mobile[playerid], text);
+			    	format(string, sizeof(string), "{8D8DFF}(BUG ID %d) {CBCCCE}Unknown (DT): %s", Mobile[playerid], text);
 			    }
 				SendBugMessage(playerid, PlayerInfo[playerid][pBugged], string);
 			}
@@ -5198,9 +5198,9 @@ public OnPlayerText(playerid, text[])
 				if(PlayerInfo[Mobile[playerid]][pSpeakerPhone] != 0)
 				{
 				    if(GetPVarType(playerid, "PayPhone")) {
-						format(string, sizeof(string), "(speakerphone)(unknown) says: %s", text);
+						format(string, sizeof(string), "(loa ngoai)(an danh) noi: %s", text);
 					}
-				    else format(string, sizeof(string), "(speakerphone) %s says: %s", GetPlayerNameEx(playerid), text);
+				    else format(string, sizeof(string), "(loa ngoai) %s noi: %s", GetPlayerNameEx(playerid), text);
 					ProxDetector(20.0, Mobile[playerid], string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
 				}
 				else
@@ -5209,17 +5209,17 @@ public OnPlayerText(playerid, text[])
 				}
 				if(PlayerInfo[playerid][pBugged] != INVALID_GROUP_ID)
 			    {
-			    	format(string, sizeof(string), "{8D8DFF}(BUGGED) {CBCCCE}%s (cellphone): %s", GetPlayerNameEx(playerid), text);
+			    	format(string, sizeof(string), "{8D8DFF}(NGHE LEN) {CBCCCE}%s (DT): %s", GetPlayerNameEx(playerid), text);
 			    }
 			    else if(PlayerInfo[Mobile[playerid]][pBugged] != INVALID_GROUP_ID){
-			    	format(string, sizeof(string), "{8D8DFF}(BUG ID %d) {CBCCCE}%s (cellphone): %s", Mobile[playerid], GetPlayerNameEx(playerid), text);
+			    	format(string, sizeof(string), "{8D8DFF}(BUG ID %d) {CBCCCE}%s (DT): %s", Mobile[playerid], GetPlayerNameEx(playerid), text);
 			    }
 				SendBugMessage(playerid, PlayerInfo[playerid][pBugged], string);
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_YELLOW,"There's nobody there!");
+			SendClientMessageEx(playerid, COLOR_YELLOW,"Khong co ai o do!");
 			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
 			RemovePlayerAttachedObject(playerid, 8);
 			Mobile[playerid] = INVALID_PLAYER_ID;
@@ -5236,16 +5236,16 @@ public OnPlayerText(playerid, text[])
 		{
 			if(PlayerInfo[playerid][pPaintTeam] == 1)
 			{
-				format(string, sizeof(string), "[Paintball Arena] ({FF0000}Red Team{FFFFFF}) %s says: %s", sendername, text);
+				format(string, sizeof(string), "[Paintball Arena] ({FF0000}Doi do{FFFFFF}) %s noi: %s", sendername, text);
 			}
 			if(PlayerInfo[playerid][pPaintTeam] == 2)
 			{
-				format(string, sizeof(string), "[Paintball Arena] ({0000FF}Blue Team{FFFFFF}) %s says: %s", sendername, text);
+				format(string, sizeof(string), "[Paintball Arena] ({0000FF}Doi xanh{FFFFFF}) %s noi: %s", sendername, text);
 			}
 		}
 		else
 		{
-			format(string, sizeof(string), "[Paintball Arena] %s says: %s", sendername, text);
+			format(string, sizeof(string), "[Paintball Arena] %s noi: %s", sendername, text);
 		}
 		SendPaintballArenaMessage(a, COLOR_WHITE, string);
 		return 0;
@@ -5256,35 +5256,35 @@ public OnPlayerText(playerid, text[])
 	switch(PlayerInfo[playerid][pAccent])
 	{
 		case 0, 1: accent = "";
-		case 2: accent = "(British accent) ";
-		case 3: accent = "(Japanese accent) ";
-		case 4: accent = "(Chinese accent) ";
-		case 5: accent = "(Korean accent) ";
-		case 6: accent = "(Scottish accent) ";
-		case 7: accent = "(Irish accent) ";
-		case 8: accent = "(Russian accent) ";
-		case 9: accent = "(American accent) ";
-		case 10, 12: accent = "(Spanish accent) ";
-		case 11: accent = "(Southern accent) ";
-		case 13: accent = "(Italian accent) ";
-		case 14: accent = "(Gangster accent) ";
-		case 15: accent = "(Australian accent) ";
-		case 16: accent = "(Arabic accent) ";
-		case 17: accent = "(Balkan accent) ";
-		case 18: accent = "(Canadian accent) ";
-		case 19: accent = "(Jamaican accent) ";
-		case 20: accent = "(Israeli accent) ";
-		case 21: accent = "(Dutch accent) ";
-		case 22: accent = "(Brazilian accent) ";
-		case 23: accent = "(German accent) ";
-		case 24: accent = "(Turkish accent) ";
-		case 25: accent = "(Kiwi accent) ";
-		case 26: accent = "(French accent) ";
-		case 27: accent = "(Korean accent) ";
-		case 28: accent = "(Thai accent) ";
-		case 29: accent = "(Swedish accent) ";
-		case 30: accent = "(Danish accent) ";
-		case 31: accent = "(Norwegian accent) ";
+		case 2: accent = "(giong British) ";
+		case 3: accent = "(giong Japanese) ";
+		case 4: accent = "(giong Chinese) ";
+		case 5: accent = "(giong Korean) ";
+		case 6: accent = "(giong Scottish) ";
+		case 7: accent = "(giong Irish) ";
+		case 8: accent = "(giong Russian) ";
+		case 9: accent = "(giong American) ";
+		case 10, 12: accent = "(giong Spanish) ";
+		case 11: accent = "(giong Southern) ";
+		case 13: accent = "(giong Italian) ";
+		case 14: accent = "(giong Gangster) ";
+		case 15: accent = "(giong Australian) ";
+		case 16: accent = "(giong Arabic) ";
+		case 17: accent = "(giong Balkan) ";
+		case 18: accent = "(giong Canadian) ";
+		case 19: accent = "(giong Jamaican) ";
+		case 20: accent = "(giong Israeli) ";
+		case 21: accent = "(giong Dutch) ";
+		case 22: accent = "(giong Brazilian) ";
+		case 23: accent = "(giong German) ";
+		case 24: accent = "(giong Turkish) ";
+		case 25: accent = "(giong Kiwi) ";
+		case 26: accent = "(giong French) ";
+		case 27: accent = "(giong Korean) ";
+		case 28: accent = "(giong Thai) ";
+		case 29: accent = "(giong Swedish) ";
+		case 30: accent = "(giong Danish) ";
+		case 31: accent = "(giong Norwegian) ";
 	}
 
 	if(!GetPVarType(playerid, "WatchingTV")) {
@@ -5296,18 +5296,18 @@ public OnPlayerText(playerid, text[])
 		{
 			if((InsidePlane[playerid] == GetPlayerVehicleID(i) && GetPlayerState(i) == 2) || (InsidePlane[i] == GetPlayerVehicleID(playerid) && GetPlayerState(playerid) == 2) || (InsidePlane[playerid] != INVALID_VEHICLE_ID && InsidePlane[playerid] == InsidePlane[i])) {
 				//if(PlayerInfo[playerid][pDuty] || IsAHitman(playerid)) format(string, sizeof(string), "%s{%06x}%s{E6E6E6} says: %s", accent, GetPlayerColor(playerid), sendername, text);
-				SendClientMessageEx(i, COLOR_FADE1, "%s%s says: %s", accent, sendername, text);
+				SendClientMessageEx(i, COLOR_FADE1, "%s%s noi: %s", accent, sendername, text);
 			}
 			else if(GetPlayerVirtualWorld(i) == GetPlayerVirtualWorld(playerid)) {
 				if(IsPlayerInRangeOfPoint(i, 20.0 * 0.6, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && PlayerInfo[i][pBugged] >= 0)
 				{
 					if(playerid == i)
 					{
-						format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
+						format(string, sizeof(string), "%s%s noi: %s", accent, sendername, text);
 						format(str, sizeof(str), "{8D8DFF}(BUGGED) {CBCCCE}%s", string);
 					}
 					else {
-						format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
+						format(string, sizeof(string), "%s%s noi: %s", accent, sendername, text);
 						format(str, sizeof(str), "{8D8DFF}(BUG ID %d) {CBCCCE}%s", i,string);
 					}
 					if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports] == 1 || PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 1 || PlayerInfo[i][pAdmin] < 2) SendBugMessage(i, PlayerInfo[i][pBugged], str);
@@ -5317,23 +5317,23 @@ public OnPlayerText(playerid, text[])
 					SendClientMessageEx(i, COLOR_FADE5, "[Restricted] %s: %s", GetPlayerNameEx(playerid), text);
 				}
 				else if(IsPlayerInRangeOfPoint(i, 20.0 / 16, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
-					SendClientMessageEx(i, COLOR_FADE1, "%s%s says: %s", accent, sendername, text);
+					SendClientMessageEx(i, COLOR_FADE1, "%s%s noi: %s", accent, sendername, text);
 				}
 				else if(IsPlayerInRangeOfPoint(i, 20.0 / 8, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
-					SendClientMessageEx(i, COLOR_FADE2, "%s%s says: %s", accent, sendername, text);
+					SendClientMessageEx(i, COLOR_FADE2, "%s%s noi: %s", accent, sendername, text);
 				}
 				else if(IsPlayerInRangeOfPoint(i, 20.0 / 4, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
-					SendClientMessageEx(i, COLOR_FADE3, "%s%s says: %s", accent, sendername, text);
+					SendClientMessageEx(i, COLOR_FADE3, "%s%s noi: %s", accent, sendername, text);
 				}
 				else if(IsPlayerInRangeOfPoint(i, 20.0 / 2, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
-					SendClientMessageEx(i, COLOR_FADE4, "%s%s says: %s", accent, sendername, text);
+					SendClientMessageEx(i, COLOR_FADE4, "%s%s noi: %s", accent, sendername, text);
 				}
 				else if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
-					SendClientMessageEx(i, COLOR_FADE5, "%s%s says: %s", accent, sendername, text);
+					SendClientMessageEx(i, COLOR_FADE5, "%s%s noi: %s", accent, sendername, text);
 				}
 			}
 			if(GetPVarInt(i, "BigEar") == 1 || GetPVarInt(i, "BigEar") == 6 && GetPVarInt(i, "BigEarPlayer") == playerid) {
-				format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
+				format(string, sizeof(string), "%s%s noi: %s", accent, sendername, text);
 				new string2[128] = "(BE) ";
 				strcat(string2,string, sizeof(string2));
 				SendClientMessageEx(i, COLOR_FADE1, string);
@@ -5436,7 +5436,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 				Barricades[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
 				if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Barricades[iGroup][i][sDeployedByStatus] = 1;
 				else Barricades[iGroup][i][sDeployedByStatus] = 0;
-				SendClientMessageEx(playerid, COLOR_WHITE, "Barricade ID: %d successfully created.", i);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da tao thanh cong Barricade ID: %d.", i);
 				/*format(string, sizeof(string), "** HQ: A barricade has been deployed by %s at %s **", GetPlayerNameEx(playerid), Barricades[iGroup][i][sDeployedAt]);
 				foreach(new x: Player)
 				{
@@ -5454,7 +5454,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 				return 1;
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more barricades, limit is " #MAX_BARRICADES# ".");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Khong the tao them rao chan, gioi han la" #MAX_BARRICADES# ".");
 		return 1;
 	}
 	/*
@@ -5476,10 +5476,10 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		{
 			PlayerInfo[playerid][pModel] = modelid;
 			SetPlayerSkin(playerid, modelid);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have changed your clothes.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da thay quan ao.");
 		}
 		else
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You exit the clothes selection menu.");
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da thoat menu chon quan ao.");
 	}
 	else if(extraid == 1338)
 	{
@@ -5491,11 +5491,11 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 			ApplyAnimation(playerid,"BOMBER","BOM_Plant",4.0,false,false,false,false,0);
 			PlayerInfo[playerid][pBombs]--;
 			PlayerInfo[playerid][pC4Used] = 1;
-			SendClientMessageEx(playerid, COLOR_GREEN, "You have placed C4 on the ground, /pickupbomb to remove it.");
+			SendClientMessageEx(playerid, COLOR_GREEN, "Ban da dat C4 xuong dat, dung /pickupbomb de go bo.");
 		}
 		else
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the bomb selection menu.");
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da thoat menu chon bom.");
 		}
 	}
 	else if(extraid == 1339)
@@ -5503,7 +5503,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		if(response)
 		{
 			if(GetSpecialPlayerToyCountEx(playerid, 2) > 7)
-				return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only own up to 8 helmets.");
+				return SendClientMessageEx(playerid, COLOR_GRAD2, "Chi duoc so huu toi da 8 mu bao hiem.");
 			new i, string[144];
 			for(i = 0; i < MAX_PLAYERTOYS; i++)
 			{
@@ -5541,11 +5541,11 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 					PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 					if (PlayerInfo[playerid][pDonateRank] >= 1)
 					{
-						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][iItem]), number_format(cost));
+						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: Ban duoc giam 20 phan tram. Thay vi $%s, ban chi tra $%s.", number_format(Businesses[iBusiness][bItemPrices][iItem]), number_format(cost));
 					}
 					format(string,sizeof(string),"%s(%d) (IP: %s) has bought a Helmet in %s (%d) for $%s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), Businesses[iBusiness][bName], iBusiness, number_format(cost));
 					Log("logs/business.log", string);
-					SendClientMessageEx(playerid, COLOR_GRAD2, "* You have purchased a Helmet from %s for $%s, you can now put on your helmet with /helmet(/hm).", Businesses[iBusiness][bName], number_format(cost));
+					SendClientMessageEx(playerid, COLOR_GRAD2, "* Da mua Helmet tai %s voi gia $%s, dung /helmet(/hm) de doi.", Businesses[iBusiness][bName], number_format(cost));
 					new playersold = GetPVarInt(playerid, "playersold");
 					if(playersold)
 					{
@@ -5554,14 +5554,14 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 						DeletePVar(playerid, "Business_ItemOfferer");
 						DeletePVar(playerid, "Business_ItemOffererSQLId");
 					}
-					SendClientMessageEx(playerid, COLOR_RED, "Note: Please take note that this is an actual toy but with functionality, it does not affect your toy count and you may own multiple helmets.");
+					SendClientMessageEx(playerid, COLOR_RED, "Luu y: Day la toy co chuc nang rieng, khong tinh vao gioi han toy va ban co the so huu nhieu mu.");
 					break;
 				}
 			}
-			if(i == MAX_PLAYERTOYS) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot have anymore toys, please delete one.");
+			if(i == MAX_PLAYERTOYS) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the them toy, hay xoa bot mot cai.");
 		}
 		else
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the helmet selection menu.");
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da thoat menu chon mu bao hiem.");
 	}
 	else if(extraid == 2000)
 	{
@@ -5569,8 +5569,8 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		{
 			new boneName[16];
 			new toycount = GetFreeToySlot(playerid), string[144];
-			if(toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot attach more than 10 objects, please detach one in order to use helmet.");
-			if(toycount == 9 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach another toy to slot 10 since you have a backpack equipped.");
+			if(toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the gan qua 10 object, hay thao bot de doi mu bao hiem.");
+			if(toycount == 9 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the gan them toy vao o 10 khi dang deo ba lo.");
 
 			if(PlayerToyInfo[playerid][extralist_id][ptScaleX] == 0) {
 				PlayerToyInfo[playerid][extralist_id][ptScaleX] = 1.0;
@@ -5588,19 +5588,19 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 				}
 			}
 			strunpack(boneName, HoldingBones[PlayerToyInfo[playerid][extralist_id][ptBone]], sizeof(boneName));
-			SendClientMessageEx(playerid, COLOR_RED, "Successfully attached %s(%d) (Bone: %s) (Slot: %d)", name, PlayerToyInfo[playerid][extralist_id][ptModelID], boneName, extralist_id);
+			SendClientMessageEx(playerid, COLOR_RED, "Da gan %s(%d) (Xuong: %s) (O: %d)", name, PlayerToyInfo[playerid][extralist_id][ptModelID], boneName, extralist_id);
 			SetPVarInt(playerid, "HelmetOn", extralist_id);
 			PlayerHoldingObject[playerid][toycount] = extralist_id;
 			SetPlayerAttachedObject(playerid, toycount, PlayerToyInfo[playerid][extralist_id][ptModelID], PlayerToyInfo[playerid][extralist_id][ptBone], PlayerToyInfo[playerid][extralist_id][ptPosX], PlayerToyInfo[playerid][extralist_id][ptPosY], PlayerToyInfo[playerid][extralist_id][ptPosZ],
 			PlayerToyInfo[playerid][extralist_id][ptRotX], PlayerToyInfo[playerid][extralist_id][ptRotY], PlayerToyInfo[playerid][extralist_id][ptRotZ], PlayerToyInfo[playerid][extralist_id][ptScaleX], PlayerToyInfo[playerid][extralist_id][ptScaleY], PlayerToyInfo[playerid][extralist_id][ptScaleZ]);
 
 			Seatbelt[playerid] = 2;
-			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s reaches for their helmet and puts it on.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s dua tay lay mu bao hiem va doi len.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-            SendClientMessageEx(playerid, COLOR_WHITE, "You have put on your helmet.");
+            SendClientMessageEx(playerid, COLOR_WHITE, "Ban da doi mu bao hiem.");
 		}
 		else
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the helmet selection menu.");
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da thoat menu chon mu bao hiem.");
 	}
 	else if(extraid == DIALOG_STPATRICKSSHOP) // St Patrick's Day
 	{
@@ -5614,9 +5614,9 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 				break;
 			}
 		}
-		format(szMiscArray, sizeof(szMiscArray),"Item: %s\nYour Credits: %s\nCost: {FFD700}150{A9C4E4}\nCredits Left: %s", name, number_format(PlayerInfo[playerid][pCredits]), number_format(PlayerInfo[playerid][pCredits]-150));
+		format(szMiscArray, sizeof(szMiscArray),"Vat pham: %s\nCredits: %s\nGia: {FFD700}150{A9C4E4}\nCon lai: %s", name, number_format(PlayerInfo[playerid][pCredits]), number_format(PlayerInfo[playerid][pCredits]-150));
 		SetPVarInt(playerid, "StPatrickToy", modelid);
-		ShowPlayerDialogEx(playerid, DIALOG_STPATRICKSSHOP, DIALOG_STYLE_MSGBOX, "St Patrick's Day Shop", szMiscArray, "Purchase", "Exit");
+		ShowPlayerDialogEx(playerid, DIALOG_STPATRICKSSHOP, DIALOG_STYLE_MSGBOX, "St Patrick's Day Shop", szMiscArray, "Mua", "Thoat");
 	}
 	else if(extraid == 0525) // Memorial's Day
 	{
@@ -5630,9 +5630,9 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 				break;
 			}
 		}
-		format(szMiscArray, sizeof(szMiscArray),"Item: %s\nYour Credits: %s\nCost: {FFD700}150{A9C4E4}\nCredits Left: %s", name, number_format(PlayerInfo[playerid][pCredits]), number_format(PlayerInfo[playerid][pCredits]-150));
+		format(szMiscArray, sizeof(szMiscArray),"Vat pham: %s\nCredits: %s\nGia: {FFD700}150{A9C4E4}\nCon lai: %s", name, number_format(PlayerInfo[playerid][pCredits]), number_format(PlayerInfo[playerid][pCredits]-150));
 		SetPVarInt(playerid, "MemorialToy", modelid);
-		ShowPlayerDialogEx(playerid, 0525, DIALOG_STYLE_MSGBOX, "Memorial's Day Shop", szMiscArray, "Purchase", "Exit");
+		ShowPlayerDialogEx(playerid, 0525, DIALOG_STYLE_MSGBOX, "Memorial's Day Shop", szMiscArray, "Mua", "Thoat");
 	}
 	if(extraid == PRISON_SKINSELECT)
 	{
@@ -5647,9 +5647,9 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 					SetPlayerSkin(playerid, modelid);
 					SetPVarInt(playerid, "pPrisonSelectingSkin", 0);
 
-					SendClientMessageEx(playerid, COLOR_GREY, "You have purchased a pair of clothes from the prison shop for 500 credits.");
+					SendClientMessageEx(playerid, COLOR_GREY, "Ban da mua quan ao tai prison shop voi gia 500 credits.");
 				}
-				else return SendClientMessageEx(playerid, COLOR_GREY, "  You do not have enough prison credits!");
+				else return SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong du prison credits!");
 			}
 			else return 1;
 		}
@@ -5664,9 +5664,9 @@ public OnPlayerClickPlayer(playerid, clickedplayerid, source)
 	{
 		new szString[5], string[MAX_PLAYER_NAME+82];
 		format(szString, sizeof(szString), "%i", clickedplayerid);
-		format(string, sizeof(string), "Are you sure you want to offer %s a free namechange?", GetPlayerNameEx(clickedplayerid));
+		format(string, sizeof(string), "Ban chac chan muon tang %s mot lan doi ten mien phi?", GetPlayerNameEx(clickedplayerid));
 		SetPVarString(playerid, "nrn", szString);
-		ShowPlayerDialogEx(playerid, DIALOG_NRNCONFIRM, DIALOG_STYLE_MSGBOX, "Confirm this NRN", string, "Yes", "No");
+		ShowPlayerDialogEx(playerid, DIALOG_NRNCONFIRM, DIALOG_STYLE_MSGBOX, "Xac nhan NRN nay", string, "Co", "Khong");
 	}
 	return true;
 }

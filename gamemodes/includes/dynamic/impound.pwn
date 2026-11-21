@@ -42,14 +42,14 @@ CMD:impoundedit(playerid, params[])
 		new string[128], choice[32], id, amount;
 		if(sscanf(params, "s[32]dD", choice, id, amount))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /impoundedit [name] [id] [amount]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Position, Delete");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /impoundedit [name] [id] [amount]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: Position, Delete");
 			return 1;
 		}
 
 		if(id >= MAX_IMPOUNDPOINTS)
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "Invalid Impound Points ID!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "ID diem tam giu xe khong hop le!");
 			return 1;
 		}
 
@@ -58,9 +58,9 @@ CMD:impoundedit(playerid, params[])
 			GetPlayerPos(playerid, ImpoundPoints[id][impoundPosX], ImpoundPoints[id][impoundPosY], ImpoundPoints[id][impoundPosZ]);
 			ImpoundPoints[id][impoundInt] = GetPlayerInterior(playerid);
 			ImpoundPoints[id][impoundVW] = GetPlayerVirtualWorld(playerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the position on impound Point #%d.", id);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri diem tam giu xe #%d.", id);
 			DestroyDynamic3DTextLabel(ImpoundPoints[id][impoundTextID]);
-			format(string, sizeof(string), "Impound Yard #%d\nType /impound to impound a vehicle", id);
+			format(string, sizeof(string), "Bai tam giu xe #%d\nDung /impound de tam giu xe", id);
 			ImpoundPoints[id][impoundTextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, ImpoundPoints[id][impoundPosX], ImpoundPoints[id][impoundPosY], ImpoundPoints[id][impoundPosZ]+0.6, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ImpoundPoints[id][impoundVW], ImpoundPoints[id][impoundInt], -1);
 			SaveImpoundPoint(id);
 			format(string, sizeof(string), "%s has edited Impound Point ID %d's position.", GetPlayerNameEx(playerid), id);
@@ -71,7 +71,7 @@ CMD:impoundedit(playerid, params[])
 		{
 			if(ImpoundPoints[id][impoundPosX] == 0)
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "Impound Point #%d does not exist.", id);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Diem giu xe #%d khong ton tai.", id);
 				return 1;
 			}
 			DestroyDynamic3DTextLabel(ImpoundPoints[id][impoundTextID]);
@@ -81,13 +81,13 @@ CMD:impoundedit(playerid, params[])
 			ImpoundPoints[id][impoundVW] = 0;
 			ImpoundPoints[id][impoundInt] = 0;
 			SaveImpoundPoint(id);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted Impound Point #%d.", id);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa diem tam giu xe #%d.", id);
 			format(string, sizeof(string), "%s has deleted Impound Point ID %d.", GetPlayerNameEx(playerid), id);
 			Log("logs/impoundedit.log", string);
 			return 1;
 		}
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -96,17 +96,17 @@ CMD:impoundstatus(playerid, params[])
 	new id;
 	if(sscanf(params, "i", id))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /impoundstatus [id]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /impoundstatus [id]");
 		return 1;
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Impound Point Status (ID: %d) ___________|", id);
+		SendClientMessageEx(playerid, COLOR_GREEN, "|_____ Trang thai diem giu xe (ID: %d) _____|", id);
 		SendClientMessageEx(playerid, COLOR_WHITE, "[Position] X: %f | Y: %f | Z: %f | VW: %d | Int: %d", ImpoundPoints[id][impoundPosX], ImpoundPoints[id][impoundPosY], ImpoundPoints[id][impoundPosZ], ImpoundPoints[id][impoundVW], ImpoundPoints[id][impoundInt]);
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -115,19 +115,19 @@ CMD:impoundnext(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
-		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available Impound Point...");
+		SendClientMessageEx(playerid, COLOR_RED, "* Dang tim diem tam giu xe trong tiep theo...");
 		for(new x = 0; x < MAX_IMPOUNDPOINTS; x++)
 		{
 			if(ImpoundPoints[x][impoundPosX] == 0)
 		    {
-		        SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", x);
+		        SendClientMessageEx(playerid, COLOR_WHITE, "%d co the su dung.", x);
 		        break;
 			}
 		}
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	    SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 	return 1;
@@ -138,7 +138,7 @@ CMD:gotoimpoundpoint(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
 		new id;
-		if(sscanf(params, "d", id)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotoimpoundpoint [id]");
+		if(sscanf(params, "d", id)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gotoimpoundpoint [id]");
 
 		SetPlayerPos(playerid, ImpoundPoints[id][impoundPosX], ImpoundPoints[id][impoundPosY], ImpoundPoints[id][impoundPosZ]);
 		SetPlayerInterior(playerid, ImpoundPoints[id][impoundInt]);
@@ -245,7 +245,7 @@ public OnLoadImpoundPoint(index)
 		cache_get_value_name_int(row, "Int", ImpoundPoints[index][impoundInt]);
 		if(ImpoundPoints[index][impoundPosX] != 0)
 		{
-			format(szMiscArray, sizeof(szMiscArray), "Impound Yard #%d\nType /impound to impound a vehicle", index);
+			format(szMiscArray, sizeof(szMiscArray), "Bai tam giu xe #%d\nDung /impound de tam giu xe", index);
 			ImpoundPoints[index][impoundTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_YELLOW, ImpoundPoints[index][impoundPosX], ImpoundPoints[index][impoundPosY], ImpoundPoints[index][impoundPosZ]+0.6, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ImpoundPoints[index][impoundVW], ImpoundPoints[index][impoundInt], -1);
 		}
 	}

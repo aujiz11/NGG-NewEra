@@ -2,21 +2,21 @@ CMD:watch(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 2)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not authorised to use this command.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not do this while spectating.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the lam vay khi dang theo doi.");
 		return 1;
 	}
 	if(isnull(params))
 	{
 	    // VIP gold room needs to be fixed
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /watch [location] (or /watch off)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "General locations: gym, lspd, allsaints, countygen, grove, tgb, bank, motel, cityhall, mall");
-        SendClientMessageEx(playerid, COLOR_GRAD2, "VIP locations: lsvip, sfvip, loungeview1, loungeview2, goldlounge, vipgarage");
-        SendClientMessageEx(playerid, COLOR_GRAD2, "Point locations: mp1, df, mf1, dh, mp2, cl, mf2, sfd, ffc");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /watch [location] (hoac /watch off)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Vi tri chung: gym, lspd, allsaints, countygen, grove, tgb, bank, motel, cityhall, mall");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Vi tri VIP: lsvip, sfvip, loungeview1, loungeview2, goldlounge, vipgarage");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Cac Point: mp1, df, mf1, dh, mp2, cl, mf2, sfd, ffc");
 	}
 
 	new Float: Pos[3], int, vw;
@@ -38,7 +38,7 @@ CMD:watch(playerid, params[])
 	// GENERAL LOCATIONS
 	if(strcmp(params, "gym", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching Ganton gym.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi Ganton gym.");
 		SetPlayerPos(playerid, 2212.61, -1730.57, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -50,7 +50,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "lspd", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching the LSPD.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi LSPD.");
 		SetPlayerPos(playerid, 1504.23, -1700.17, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -62,7 +62,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "allsaints", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching All Saints General Hospital.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi All Saints General Hospital.");
 		SetPlayerPos(playerid, 1201.12, -1324, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -74,7 +74,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "countygen", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching County General Hospital.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi County General Hospital.");
 		SetPlayerPos(playerid, 1989.24, -1461.38, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -86,7 +86,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "grove", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching Grove Street.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi Grove Street.");
 		SetPlayerPos(playerid, 2489.09, -1669.88, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -98,7 +98,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "tgb", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching Ten Green Bottles.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi Ten Green Bottles.");
 		SetPlayerPos(playerid, 2319.09, -1650.90, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -110,7 +110,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "bank", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching the Los Santos bank.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi Los Santos bank.");
 		SetPlayerPos(playerid, 1466.24, -1023.05, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -122,7 +122,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "motel", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching Jefferson motel.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi Jefferson motel.");
 		SetPlayerPos(playerid, 2215.73, -1163.39, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -134,7 +134,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "cityhall", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching Los Santos City Hall.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi Los Santos City Hall.");
 		SetPlayerPos(playerid, 1478.936035, -1746.446655, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -146,7 +146,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "mall", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching Los Santos Mall.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi Los Santos Mall.");
 		SetPlayerPos(playerid, 1127.245483, -1451.613891, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -161,7 +161,7 @@ CMD:watch(playerid, params[])
 	// VIP LOCATIONS
 	else if(strcmp(params, "lsvip", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching the Los Santos VIP entrance.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi Los Santos VIP entrance.");
 		SetPlayerPos(playerid, 1809.888427, -1570.615844, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -173,7 +173,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "sfvip", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching the San Fierro VIP entrance.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi San Fierro VIP entrance.");
 		SetPlayerPos(playerid, -2437.302490, 508.727020, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -185,7 +185,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "loungeview1", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching the VIP Lounge.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi VIP Lounge.");
 		SetPlayerPos(playerid, 2526.647949, 1431.128417, 7754.650390);
 		SetPlayerInterior(playerid, 1);
 		PlayerInfo[playerid][pInt] = 1;
@@ -197,7 +197,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "loungeview2", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching the VIP Lounge.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi VIP Lounge.");
 		SetPlayerPos(playerid, 2526.647949, 1431.128417, 7754.650390);
 		SetPlayerInterior(playerid, 1);
 		PlayerInfo[playerid][pInt] = 1;
@@ -209,7 +209,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "goldlounge", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching the VIP Gold+ Lounge.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi VIP Gold+ Lounge.");
   		SetPlayerPos(playerid, 2864.634277, 2290.584960, 1272.007568);
 		SetPlayerInterior(playerid, 1);
 		PlayerInfo[playerid][pInt] = 1;
@@ -221,7 +221,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "vipgarage", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching the VIP Garage.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi VIP Garage.");
   		SetPlayerPos(playerid, -4412.440429, 867.361694, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -236,7 +236,7 @@ CMD:watch(playerid, params[])
 	// Points (mp1, df, mf1, dh, mp2, cl, mf2, sfd, ffc)
 	else if(strcmp(params, "mp1", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching Materials Pickup 1.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi Materials Pickup 1.");
   		SetPlayerPos(playerid, 1423.773437, -1320.386962, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -248,7 +248,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "df", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching Drug Factory.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi Drug Factory.");
   		SetPlayerPos(playerid, 2206.402587, 1582.398681, -80.0);
 		SetPlayerInterior(playerid, 1);
 		PlayerInfo[playerid][pInt] = 1;
@@ -260,7 +260,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "mf1", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching Materials Factory 1.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi Materials Factory 1.");
   		SetPlayerPos(playerid, 2172.315185, -2263.781250, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -272,7 +272,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "dh", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching the Drug House.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi Drug House.");
   		SetPlayerPos(playerid, 323.577026, 1118.344116, -80.0);
 		SetPlayerInterior(playerid, 5);
 		PlayerInfo[playerid][pInt] = 5;
@@ -284,7 +284,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "mp2", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching Materials Pickup 2.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi Materials Pickup 2.");
   		SetPlayerPos(playerid, 2390.212402, -2008.328491, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -296,7 +296,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "cl", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching Crack Lab.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi Crack Lab.");
   		SetPlayerPos(playerid, 2346.013916, -1185.367065, -80.0);
 		SetPlayerInterior(playerid, 5);
 		PlayerInfo[playerid][pInt] = 5;
@@ -308,7 +308,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "mf2", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching Materials Factory 2.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi Materials Factory 2.");
   		SetPlayerPos(playerid, 2282.298828, -1110.143798, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -320,7 +320,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "sfd", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching the San Fierro Docks.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi San Fierro Docks.");
   		SetPlayerPos(playerid, -1576.488159, 50.301193, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -332,7 +332,7 @@ CMD:watch(playerid, params[])
 	}
 	else if(strcmp(params, "ffc", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now watching Fossil Fuel Company.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang theo doi Fossil Fuel Company.");
   		SetPlayerPos(playerid, -2139.215087, -248.235076, -80.0);
 		SetPlayerInterior(playerid, 0);
 		PlayerInfo[playerid][pInt] = 0;
@@ -347,7 +347,7 @@ CMD:watch(playerid, params[])
 	// OFF
 	else if(strcmp(params, "off", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are no longer watching any area.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da dung theo doi khu vuc.");
 		SetPlayerPos(playerid, GetPVarFloat(playerid, "WatchLastx"), GetPVarFloat(playerid, "WatchLasty"), GetPVarFloat(playerid, "WatchLastz"));
 		SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "WatchLastVW"));
 		PlayerInfo[playerid][pVW] = GetPVarInt(playerid, "WatchLastVW");

@@ -238,7 +238,7 @@ stock LoadPlayerVehicles(playerid, logoff = 0) {
 						PlayerVehicleInfo[playerid][v][pvCrashY] = 0.0;
 						PlayerVehicleInfo[playerid][v][pvCrashZ] = 0.0;
 						PlayerVehicleInfo[playerid][v][pvCrashAngle] = 0.0;
-						SendClientMessageEx(playerid, COLOR_WHITE, "Your vehicles have been restored to their last known location from your previous timeout.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Xe cua ban da duoc dua ve vi tri gan nhat truoc khi mat ket noi.");
 					}
 				}
 				else if(PlayerVehicleInfo[playerid][v][pvSpawned] != 0) {
@@ -283,10 +283,10 @@ stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 				case 1:	rsMessage = "logged off";
 				case 2: rsMessage = "been kicked/banned";
 			}
-			SendClientMessageEx(extraid, COLOR_YELLOW, "The player (%s) that owns this vehicle (%s) has %s.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), rsMessage);
+			SendClientMessageEx(extraid, COLOR_YELLOW, "Chu xe (%s), xe (%s), da %s.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), reason == 0 ? ("mat ket noi") : reason == 1 ? ("thoat game") : ("bi kick/ban"));
 			new ip2[MAX_PLAYER_NAME];
 			GetPlayerIp(extraid, ip2, sizeof(ip2));
-			SendClientMessageEx(extraid, COLOR_YELLOW, "(( The vehicle will de-spawn once you complete or fail the deliver. ))");
+			SendClientMessageEx(extraid, COLOR_YELLOW, "(( Xe se bien mat khi ban giao xe thanh cong hoac that bai. ))");
 			format(szMessage, sizeof(szMessage), "[LOCK PICK] %s(%d) (IP:%s) has %s while his %s(VID:%d Slot %d) was lock picked by %s(IP:%s SQLId: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pIP], rsMessage, GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(extraid), ip2, GetPlayerSQLId(extraid));
 			Log("logs/playervehicle.log", szMessage);
 			DeletePVar(extraid, "LockPickPlayer");
@@ -548,8 +548,8 @@ public ParkVehicle(playerid, ownerid, vehicleid, d, Float:X, Float:Y, Float:Z)
 	{
 	    new Float:x, Float:y, Float:z, Float:angle, Float:health, string[29 + (MAX_PLAYER_NAME * 2)];
 	    GetVehicleHealth(vehicleid, health);
-     	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "You must be in the driver seat.");
-     	if(health < 800) return SendClientMessageEx(playerid, COLOR_GREY, " Your vehicle is too damaged to park it.");
+     	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai ngoi ghe lai.");
+     	if(health < 800) return SendClientMessageEx(playerid, COLOR_GREY, " Xe hong qua nang, khong the do.");
 		if(ownerid != INVALID_PLAYER_ID)
 	    {
 			GetVehiclePos(vehicleid, x, y, z);
@@ -559,7 +559,7 @@ public ParkVehicle(playerid, ownerid, vehicleid, d, Float:X, Float:Y, Float:Z)
 			IsPlayerEntering{playerid} = true;
 			PutPlayerInVehicle(playerid, vehicleid, 0);
 			SetPlayerArmedWeapon(playerid, 0);
-			format(string, sizeof(string), "* %s has parked %s's vehicle.", GetPlayerNameEx(playerid), GetPlayerNameEx(ownerid));
+			format(string, sizeof(string), "* %s da do xe cua %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(ownerid));
 		}
 		else
 		{
@@ -570,13 +570,13 @@ public ParkVehicle(playerid, ownerid, vehicleid, d, Float:X, Float:Y, Float:Z)
 			IsPlayerEntering{playerid} = true;
 			PutPlayerInVehicle(playerid, vehicleid, 0);
 			SetPlayerArmedWeapon(playerid, 0);
-			format(string, sizeof(string), "* %s has parked their vehicle.", GetPlayerNameEx(playerid), GetPlayerNameEx(ownerid));
+			format(string, sizeof(string), "* %s da do xe cua minh.", GetPlayerNameEx(playerid), GetPlayerNameEx(ownerid));
 		}
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	}
 	else
 	{
-	    SendClientMessage(playerid, COLOR_WHITE, "Vehicle did not park because you moved!");
+	    SendClientMessage(playerid, COLOR_WHITE, "Khong the do xe vi ban da di chuyen!");
 	}
 	return 1;
 }

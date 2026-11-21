@@ -175,20 +175,20 @@ CMD:toghma(playerid, params[])
 	if(GetPVarInt(playerid, "DisableHMAChat")) 
 	{
 		DeletePVar(playerid, "DisableHMAChat");
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled the Hitman Agency chats.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da bat kenh chat Hitman Agency.");
 	}
 	else 
 	{
 		SetPVarInt(playerid, "DisableHMAChat", 1);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the Hitman Agency chats.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da tat kenh chat Hitman Agency.");
 	}
 	return 1;
 }
 CMD:hr(playerid, params[])
 {
 	if(!IsAHitman(playerid)) return 0;
-	else if(GetPVarInt(playerid, "DisableHMAChat")) return SendClientMessageEx(playerid, COLOR_WHITE, "Your Hitman Agency chats are disabled. Please re-enable it using /toghma.");
-	else if(isnull(params)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /hr [text]");
+	else if(GetPVarInt(playerid, "DisableHMAChat")) return SendClientMessageEx(playerid, COLOR_WHITE, "Kenh chat Hitman Agency dang tat. Dung /toghma de bat lai.");
+	else if(isnull(params)) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /hr [text]");
 
 	foreach(new i: Player) if(IsAHitman(i) && !GetPVarInt(playerid, "DisableHMAChat")) SendClientMessageEx(i, COLOR_HMARADIO, "** [IC] %s %s: %s **", GetHitmanRank(playerid), GetPlayerNameEx(playerid), params);
 	return 1;
@@ -197,8 +197,8 @@ CMD:hr(playerid, params[])
 CMD:hg(playerid, params[])
 {
 	if(!IsAHitman(playerid)) return 0;
-	else if(GetPVarInt(playerid, "DisableHMAChat")) return SendClientMessageEx(playerid, COLOR_WHITE, "Your Hitman Agency chats are disabled. Please re-enable it using /toghma.");
-	else if(isnull(params)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /hg [text]");
+	else if(GetPVarInt(playerid, "DisableHMAChat")) return SendClientMessageEx(playerid, COLOR_WHITE, "Kenh chat Hitman Agency dang tat. Dung /toghma de bat lai.");
+	else if(isnull(params)) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /hg [text]");
 
 	format(szMiscArray, sizeof szMiscArray,  "** [OOC] %s (%d) %s: %s **", GetHitmanRank(playerid), PlayerInfo[playerid][pHitman], GetPlayerNameEx(playerid), params);
 	foreach(new i: Player) if(IsAHitman(i) && !GetPVarInt(playerid, "DisableHMAChat")) SendClientMessageEx(i, COLOR_HMAOOC, szMiscArray);
@@ -222,39 +222,39 @@ CMD:pcb(playerid, params[])
 				{
 					if(VehicleBomb{closestcar} == 1)
 					{
-						SendClientMessageEx(playerid, COLOR_GRAD2, "There is already a C4 on the vehicle engine!");
+						SendClientMessageEx(playerid, COLOR_GRAD2, "Dong co xe da co C4!");
 						return 1;
 					}
 					VehicleBomb{closestcar} = 1;
 					PlacedVehicleBomb[playerid] = closestcar;
 					ApplyAnimation(playerid,"BOMBER","BOM_Plant",4.0,false,false,false,false,0);
 					ApplyAnimation(playerid,"BOMBER","BOM_Plant",4.0,false,false,false,false,0);
-					SendClientMessageEx(playerid, COLOR_GREEN, "You have placed C4 on the vehicle engine, /pickupbomb to remove it.");
+					SendClientMessageEx(playerid, COLOR_GREEN, "Ban da dat C4 len dong co xe, dung /pickupbomb de go.");
 					PlayerInfo[playerid][pC4] = 1;
 					PlayerInfo[playerid][pBombs]--;
 					PlayerInfo[playerid][pC4Used] = 2;
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "You are not close enough to any vehicle!");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o du gan xe nao!");
 					return 1;
 				}
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have C4!");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co C4!");
 				return 1;
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD2, " You can only deploy 1 C4 at a time.");
+			SendClientMessageEx(playerid, COLOR_GRAD2, " Chi duoc trien khai 1 C4 moi lan.");
 			return 1;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, " You are not a member of the Hitman Agency");
+		SendClientMessageEx(playerid, COLOR_GRAD2, " Ban khong thuoc Hitman Agency");
 	}
 	return 1;
 }
@@ -263,10 +263,10 @@ CMD:gotohmasafe(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pFactionModerator] != 0 && PlayerInfo[playerid][pAdmin] >= 4)
 	{
-		if(!iFileLoaded) return SendClientMessage(playerid, COLOR_GREY, "There was an error loading the Hitman Agency safe. A server restart is needed.");
+		if(!iFileLoaded) return SendClientMessage(playerid, COLOR_GREY, "Loi tai ket Hitman Agency. Can khoi dong lai may chu.");
 
 		SetPlayerPos(playerid, fHMASafe_Loc[0], fHMASafe_Loc[1], fHMASafe_Loc[2]);
-		SendClientMessage(playerid, COLOR_GRAD2, "	You have been teleported to the Hitman Agency's safe.");
+		SendClientMessage(playerid, COLOR_GRAD2, "\tBan da dich chuyen den ket Hitman Agency.");
 	}
 	else return 0;
 	return 1;
@@ -276,7 +276,7 @@ CMD:edithmasafepos(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pFactionModerator] != 0 && PlayerInfo[playerid][pAdmin] >= 4)
 	{
-		if(!iFileLoaded) return SendClientMessage(playerid, COLOR_GREY, "There was an error loading the Hitman Agency safe. A server restart is needed.");
+		if(!iFileLoaded) return SendClientMessage(playerid, COLOR_GREY, "Loi tai ket Hitman Agency. Can khoi dong lai may chu.");
 
 		new Float:fPos[3];
 		GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
@@ -284,7 +284,7 @@ CMD:edithmasafepos(playerid, params[])
 		for(new i = 0; i < 3; i++) fHMASafe_Loc[i] = fPos[i];
 
 		SaveHitmanSafe();
-		SendClientMessage(playerid, COLOR_GRAD2, "	Hitman agency safe position edited successfully.");
+		SendClientMessage(playerid, COLOR_GRAD2, "\tDa doi vi tri ket Hitman Agency.");
 
 		format(szMiscArray, sizeof szMiscArray, "Administrator %s has edited the safe position to X: %f, Y: %f, Z: %f.", GetPlayerNameEx(playerid), fHMASafe_Loc[0], fHMASafe_Loc[1], fHMASafe_Loc[2]);
 		new file[256], month, day, year;
@@ -292,7 +292,7 @@ CMD:edithmasafepos(playerid, params[])
 		format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
 		Log(file, szMiscArray);
 	}
-	else return SendClientMessage(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
+	else return SendClientMessage(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 
 	return 1;
 }
@@ -301,21 +301,21 @@ CMD:hmasafedeposit(playerid, params[])
 {
 	if(IsAHitmanLeader(playerid))
 	{
-		if(!iFileLoaded) return SendClientMessage(playerid, COLOR_GREY, "There was an error loading the Hitman Agency safe. A server restart is needed.");
+		if(!iFileLoaded) return SendClientMessage(playerid, COLOR_GREY, "Loi tai ket Hitman Agency. Can khoi dong lai may chu.");
 
-		if(!IsPlayerInRangeOfPoint(playerid, 5.0, fHMASafe_Loc[0], fHMASafe_Loc[1], fHMASafe_Loc[2])) return SendClientMessage(playerid, COLOR_GRAD2, "You are not in range of the Agency's safe.");
+		if(!IsPlayerInRangeOfPoint(playerid, 5.0, fHMASafe_Loc[0], fHMASafe_Loc[1], fHMASafe_Loc[2])) return SendClientMessage(playerid, COLOR_GRAD2, "Ban khong o gan ket Agency.");
 
 		new iVal;
-		if(sscanf(params, "d", iVal)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /hmasafedeposit [amount]");
+		if(sscanf(params, "d", iVal)) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /hmasafedeposit [amount]");
 
-		if(iVal < 1 || iVal > 99999999) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid amount specified. Valid amounts are between $1 and $99,999,999.");
-		if(iVal > GetPlayerCash(playerid)) return SendClientMessage(playerid, COLOR_GRAD2, "You do not have that much money.");
+		if(iVal < 1 || iVal > 99999999) return SendClientMessage(playerid, COLOR_GRAD2, "So tien khong hop le. Phai tu $1 den $99,999,999.");
+		if(iVal > GetPlayerCash(playerid)) return SendClientMessage(playerid, COLOR_GRAD2, "Ban khong co du tien.");
 
 		iHMASafe_Val += iVal;
 		GivePlayerCash(playerid, -iVal);
 		SaveHitmanSafe();
 
-		format(szMiscArray, sizeof szMiscArray, "$%s has been deposited into the Agency's safe. Current balance: $%s.", number_format(iVal), number_format(iHMASafe_Val));
+		format(szMiscArray, sizeof szMiscArray, "Da gui $%s vao ket Agency. So du: $%s.", number_format(iVal), number_format(iHMASafe_Val));
 		SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
 
 		format(szMiscArray, sizeof szMiscArray, "[SAFE DEPOSIT] %s %s | $%s deposited (total balance: $%s)", GetHitmanRank(playerid), GetPlayerNameEx(playerid), number_format(iVal), number_format(iHMASafe_Val));
@@ -332,22 +332,22 @@ CMD:hmasafewithdraw(playerid, params[])
 {
 	if(IsAHitmanLeader(playerid))
 	{
-		if(!iFileLoaded) return SendClientMessage(playerid, COLOR_GREY, "There was an error loading the Hitman Agency safe. A server restart is needed.");
+		if(!iFileLoaded) return SendClientMessage(playerid, COLOR_GREY, "Loi tai ket Hitman Agency. Can khoi dong lai may chu.");
 
-		if(!IsPlayerInRangeOfPoint(playerid, 5.0, fHMASafe_Loc[0], fHMASafe_Loc[1], fHMASafe_Loc[2])) return SendClientMessage(playerid, COLOR_GRAD2, "You are not in range of the Agency's safe.");
+		if(!IsPlayerInRangeOfPoint(playerid, 5.0, fHMASafe_Loc[0], fHMASafe_Loc[1], fHMASafe_Loc[2])) return SendClientMessage(playerid, COLOR_GRAD2, "Ban khong o gan ket Agency.");
 
 		new iVal;
-		if(sscanf(params, "d", iVal)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /hmasafewithdraw [amount]");
+		if(sscanf(params, "d", iVal)) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /hmasafewithdraw [amount]");
 
-		if(iVal < 1 || iVal > 99999999) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid amount specified. Valid amounts are between $1 and $99,999,999.");
+		if(iVal < 1 || iVal > 99999999) return SendClientMessage(playerid, COLOR_GRAD2, "So tien khong hop le. Phai tu $1 den $99,999,999.");
 
-		if(iHMASafe_Val < iVal) return SendClientMessage(playerid, COLOR_GRAD2, "The Agency's safe does not have that much money.");
+		if(iHMASafe_Val < iVal) return SendClientMessage(playerid, COLOR_GRAD2, "Ket Agency khong co du tien.");
 
 		iHMASafe_Val -= iVal;
 		GivePlayerCash(playerid, iVal);
 		SaveHitmanSafe();
 
-		format(szMiscArray, sizeof szMiscArray, "$%s has been withdrawn from the Agency's safe. Current balance: $%s.", number_format(iVal), number_format(iHMASafe_Val));
+		format(szMiscArray, sizeof szMiscArray, "Da rut $%s tu ket Agency. So du: $%s.", number_format(iVal), number_format(iHMASafe_Val));
 		SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
 
 		format(szMiscArray, sizeof szMiscArray, "[SAFE WITHDRAW] %s %s | $%s withdrawn (total balance: $%s)", GetHitmanRank(playerid), GetPlayerNameEx(playerid), number_format(iVal), number_format(iHMASafe_Val));
@@ -365,13 +365,13 @@ CMD:hmasafe(playerid, params[])
 {
 	if(IsAHitmanLeader(playerid))
 	{
-		if(!iFileLoaded) return SendClientMessage(playerid, COLOR_GREY, "There was an error loading the Hitman Agency safe. A server restart is needed.");
+		if(!iFileLoaded) return SendClientMessage(playerid, COLOR_GREY, "Loi tai ket Hitman Agency. Can khoi dong lai may chu.");
 
-		if(!IsPlayerInRangeOfPoint(playerid, 5.0, fHMASafe_Loc[0], fHMASafe_Loc[1], fHMASafe_Loc[2])) return SendClientMessage(playerid, COLOR_GRAD2, "You are not in range of the Agency's safe.");
+		if(!IsPlayerInRangeOfPoint(playerid, 5.0, fHMASafe_Loc[0], fHMASafe_Loc[1], fHMASafe_Loc[2])) return SendClientMessage(playerid, COLOR_GRAD2, "Ban khong o gan ket Agency.");
 
 		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 
-		format(szMiscArray, sizeof szMiscArray, "Hitman Agency - Safe Balance: $%s", number_format(iHMASafe_Val));
+		format(szMiscArray, sizeof szMiscArray, "Hitman Agency - So du ket: $%s", number_format(iHMASafe_Val));
 		SendClientMessage(playerid, COLOR_GRAD3, szMiscArray);
 
 		SendClientMessage(playerid, COLOR_GRAD2, "/hmasafewithdraw, /hmasafedeposit");
@@ -386,11 +386,11 @@ CMD:sethmamotd(playerid, params[])
 {
 	if(!IsAHitmanLeader(playerid)) return 0;
 
-	if(isnull(params)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /sethmamotd [motd]");
+	if(isnull(params)) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /sethmamotd [motd]");
 
 	format(HMAMOTD, sizeof HMAMOTD, params);
 
-	format(szMiscArray, sizeof szMiscArray, "Agency MOTD changed! The new MOTD is: {FFFFFF}%s", HMAMOTD);
+	format(szMiscArray, sizeof szMiscArray, "Da doi MOTD Agency! MOTD moi: {FFFFFF}%s", HMAMOTD);
 	foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_GRAD1, szMiscArray);
 
 	SaveHitmanSafe();
@@ -403,30 +403,30 @@ CMD:givehit(playerid, params[])
 	{
 
 		new giveplayerid, targetid;
-		if(sscanf(params, "uu", giveplayerid, targetid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givehit [player] [targetid]");
+		if(sscanf(params, "uu", giveplayerid, targetid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /givehit [player] [targetid]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if(GoChase[giveplayerid] != INVALID_PLAYER_ID)
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "   That Hitman is already busy with a Contract!");
+				SendClientMessageEx(playerid, COLOR_GREY, "   Hitman do dang ban hop dong khac!");
 				return 1;
 			}
 			if(GotHit[targetid] == 1)
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "   Another hitman has already assigned this target!");
+				SendClientMessageEx(playerid, COLOR_GREY, "   Hitman khac da nhan muc tieu nay!");
 				return 1;
 			}
 			if(IsPlayerConnected(targetid))
 			{
 				if(PlayerInfo[targetid][pHeadValue] == 0)
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "   That target doesn't have a contract on them!");
+					SendClientMessageEx(playerid, COLOR_GREY, "   Muc tieu do khong co hop dong!");
 					return 1;
 				}
 
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s a contract to kill %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(targetid));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Hitman %s has offered you a contract to kill %s (type /accept contract), to accept it.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban de nghi %s nhan hop dong giet %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(targetid));
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Hitman %s de nghi ban nhan hop dong giet %s, dung (/accept contract) de dong y.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid));
 				HitOffer[giveplayerid] = playerid;
 				SetPVarInt(giveplayerid, "HitOfferSession", g_arrQueryHandle[playerid]);
 				HitToGet[giveplayerid] = targetid;
@@ -435,13 +435,13 @@ CMD:givehit(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "   The contracted person is offline, use /contracts!");
+				SendClientMessageEx(playerid, COLOR_GREY, "   Nguoi co hop dong dang offline, dung /contracts!");
 				return 1;
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   That Hitman is not Online!");
+			SendClientMessageEx(playerid, COLOR_GREY, "   Hitman do khong Online!");
 			return 1;
 		}
 	}
@@ -449,9 +449,9 @@ CMD:givehit(playerid, params[])
 }
 CMD:ranks(playerid, params[])
 {
-	if ((!IsAHitman(playerid)) && PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Member of the Hitman Agency!");
+	if ((!IsAHitman(playerid)) && PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong thuoc Hitman Agency!");
 
-	SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Hitman Agency Online Members __________________|");
+	SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Thanh vien Hitman Agency online __________________|");
 
 	foreach(new i: Player)
 	{
@@ -459,11 +459,11 @@ CMD:ranks(playerid, params[])
 		{
 			if( GoChase[playerid] == INVALID_PLAYER_ID )
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "* Name: %s | Rank: %s (%d) | Completed Hits: %d | Failed Hits: %d", GetPlayerNameEx(i), GetHitmanRank(i), PlayerInfo[i][pHitman], PlayerInfo[i][pCHits], PlayerInfo[i][pFHits]);
+				SendClientMessageEx(playerid, COLOR_GREY, "* Ten: %s | Rank: %s (%d) | Hoan thanh: %d | That bai: %d", GetPlayerNameEx(i), GetHitmanRank(i), PlayerInfo[i][pHitman], PlayerInfo[i][pCHits], PlayerInfo[i][pFHits]);
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "* Name: %s | Rank: %s (%d) | Completed Hits: %d | Failed Hits: %d | Chasing: %s", GetPlayerNameEx(i), GetHitmanRank(i), PlayerInfo[i][pHitman], PlayerInfo[i][pCHits], PlayerInfo[i][pFHits], GetPlayerNameEx(GoChase[i]));
+				SendClientMessageEx(playerid, COLOR_GREY, "* Ten: %s | Rank: %s (%d) | Hoan thanh: %d | That bai: %d | Dang duoi: %s", GetPlayerNameEx(i), GetHitmanRank(i), PlayerInfo[i][pHitman], PlayerInfo[i][pCHits], PlayerInfo[i][pFHits], GetPlayerNameEx(GoChase[i]));
 			}
 		}
 
@@ -477,7 +477,7 @@ CMD:profile(playerid, params[])
     if(IsAHitman(playerid))
     {
         new string[600], giveplayerid, employer[GROUP_MAX_NAME_LEN], rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN];
-        if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /profile [player]");
+        if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /profile [player]");
 
         if(IsPlayerConnected(giveplayerid))
         {
@@ -490,13 +490,13 @@ CMD:profile(playerid, params[])
             else str2 = "None";
 
             format(string, sizeof(string),
-            "{FF6347}Name: {BFC0C2}%s\n\
-            {FF6347}Date of Birth: {BFC0C2}%s\n\
-            {FF6347}Phone Number: {BFC0C2}%d\n\n\
-            {FF6347}Organization: {BFC0C2}%s\n\
-            {FF6347}Bounty: {BFC0C2}$%d\n\
-            {FF6347}Bounty Reason: {BFC0C2}%s", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pBirthDate], PlayerInfo[giveplayerid][pPnumber], str2, PlayerInfo[giveplayerid][pHeadValue], PlayerInfo[giveplayerid][pContractDetail]);
-            ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Target Profile", string, "OK", "");
+            "{FF6347}Ten: {BFC0C2}%s\n\
+            {FF6347}Ngay sinh: {BFC0C2}%s\n\
+            {FF6347}So dien thoai: {BFC0C2}%d\n\n\
+            {FF6347}To chuc: {BFC0C2}%s\n\
+            {FF6347}Tien thuong: {BFC0C2}$%d\n\
+            {FF6347}Ly do treo thuong: {BFC0C2}%s", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pBirthDate], PlayerInfo[giveplayerid][pPnumber], str2, PlayerInfo[giveplayerid][pHeadValue], PlayerInfo[giveplayerid][pContractDetail]);
+            ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Ho so muc tieu", string, "Dong y", "");
         }
     }
     return 1;
@@ -507,7 +507,7 @@ CMD:viewblacklist(playerid, params[])
 	if(IsAHitmanLeader(playerid))
 	{
 		SendClientMessage(playerid, COLOR_GREEN,"_______________________________________");
-		SendClientMessage(playerid, COLOR_GRAD1, "Hitman Agency Blacklist:");
+		SendClientMessage(playerid, COLOR_GRAD1, "Danh sach cam Hitman Agency:");
 
 		mysql_tquery(MainPipeline, "SELECT `Username`, `BlacklistReason` FROM `accounts` WHERE `HitmanBlacklisted`=1", "ShowBlacklistedPlayers", "d", playerid);
 	}
@@ -520,7 +520,7 @@ CMD:givehitmanrank(playerid, params[])
 	if(IsAHitmanLeader(playerid))
 	{
 		new iTarget, iRank;
-		if(sscanf(params, "ud", iTarget, iRank)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /givehitmanrank [playerid] [rank 0-6]");
+		if(sscanf(params, "ud", iTarget, iRank)) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /givehitmanrank [playerid] [rank 0-6]");
 
 		new szRank[25];
 		switch(iRank)
@@ -534,15 +534,15 @@ CMD:givehitmanrank(playerid, params[])
 			case 6: format(szRank, sizeof szRank, "Director");
 		}
 
-		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid player specified.");
+		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi khong hop le.");
 
-		if(!IsAHitman(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not a hitman.");
+		if(!IsAHitman(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do khong phai Hitman.");
 
-		if(iRank < 0 || iRank > 6) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid rank specified. Valid ranks are between 0 and 6.");
+		if(iRank < 0 || iRank > 6) return SendClientMessage(playerid, COLOR_GRAD2, "Rank khong hop le. Phai tu 0 den 6.");
 
-		if(PlayerInfo[iTarget][pHitman] > PlayerInfo[playerid][pHitman]) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot edit the rank of a higher ranking hitman.");
+		if(PlayerInfo[iTarget][pHitman] > PlayerInfo[playerid][pHitman]) return SendClientMessage(playerid, COLOR_GRAD2, "Khong the sua rank cua Hitman cap cao hon.");
 
-		if(iRank == PlayerInfo[playerid][pHitman]) return SendClientMessage(playerid, COLOR_GRAD2, "That player is already the specified rank.");
+		if(iRank == PlayerInfo[playerid][pHitman]) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do da co rank nay.");
 
 		new szChange[12];
 		if(iRank > PlayerInfo[iTarget][pHitman]) format(szChange, sizeof szChange, "promoted");
@@ -553,15 +553,16 @@ CMD:givehitmanrank(playerid, params[])
 		getdate(year,month,day);
 		format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
 		Log(file, szMiscArray);
+		format(szChange, sizeof szChange, !strcmp(szChange, "promoted") ? "thang cap" : "ha cap");
 		PlayerInfo[iTarget][pHitman] = iRank;
 
 
-		format(szMiscArray, sizeof szMiscArray, "* (hitman) You have %s %s to the rank of %s (%d).", szChange, GetPlayerNameEx(iTarget), szRank, iRank);
+		format(szMiscArray, sizeof szMiscArray, "* (hitman) Thao tac %s voi %s, rank moi %s (%d).", szChange, GetPlayerNameEx(iTarget), szRank, iRank);
 		SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
 
-		if(iRank >= 5 && PlayerInfo[iTarget][pHitmanLeader] == 0) SendClientMessage(playerid, COLOR_LIGHTBLUE, "* The rank you have given is a leadership rank. Please contact an administrator to have it issued if necessary.");
+		if(iRank >= 5 && PlayerInfo[iTarget][pHitmanLeader] == 0) SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Rank vua cap la rank lanh dao. Lien he Admin de cap neu can.");
 
-		format(szMiscArray, sizeof szMiscArray, "* (hitman) %s %s has %s you to the rank of %s (%d).", GetHitmanRank(playerid), GetPlayerNameEx(playerid), szChange, szRank, iRank);
+		format(szMiscArray, sizeof szMiscArray, "* (hitman) %s %s da %s ban thanh rank %s (%d).", GetHitmanRank(playerid), GetPlayerNameEx(playerid), szChange, szRank, iRank);
 		SendClientMessage(iTarget, COLOR_LIGHTBLUE, szMiscArray);
 	}
 	else return 0;
@@ -575,7 +576,7 @@ CMD:quithma(playerid, params[])
 	PlayerInfo[playerid][pHitman] = -1;
 	PlayerInfo[playerid][pHitmanLeader] = 0;
 
-	SendClientMessage(playerid, COLOR_LIGHTBLUE, "*	You have quit the Hitman Agency. Your knife has been removed.");
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, "*\tBan da roi Hitman Agency. Dao cua ban da bi thu hoi.");
 
 	if(PlayerInfo[playerid][pGuns][1] == 4) RemovePlayerLoadoutWeapon(playerid, 4);
 	return 1;
@@ -586,16 +587,16 @@ CMD:makehitman(playerid, params[])
 	if(IsAHitmanLeader(playerid))
 	{
 		new iTarget;
-		if(sscanf(params, "u", iTarget)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /makehitman [playerid]");
+		if(sscanf(params, "u", iTarget)) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /makehitman [playerid]");
 
-		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid player specified.");
+		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi khong hop le.");
 
-		if(IsAHitman(iTarget) || IsAHitmanLeader(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "That player is already a hitman. To revoke it, use /removehitman.");
+		if(IsAHitman(iTarget) || IsAHitmanLeader(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do da la Hitman. Dung /removehitman de xoa.");
 
 		if(IsBlacklisted(iTarget))
 		{
-			SendClientMessage(playerid, COLOR_GRAD2, "That player cannot be invited to the Hitman Agency as they are blacklisted.");
-			format(szMiscArray, sizeof szMiscArray, "Reason:{FFFFFF} %s", PlayerInfo[iTarget][pBlacklistReason]);
+			SendClientMessage(playerid, COLOR_GRAD2, "Khong the moi nguoi choi do vao Hitman Agency vi nam trong danh sach cam.");
+			format(szMiscArray, sizeof szMiscArray, "Ly do:{FFFFFF} %s", PlayerInfo[iTarget][pBlacklistReason]);
 			SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
 			return 1;
 		}
@@ -603,10 +604,10 @@ CMD:makehitman(playerid, params[])
 		PlayerInfo[iTarget][pHitman] = 0;
 		PlayerInfo[iTarget][pHitmanLeader] = 0;
 
-		format(szMiscArray, sizeof szMiscArray, "* You have made %s a hitman.", GetPlayerNameEx(iTarget));
+		format(szMiscArray, sizeof szMiscArray, "* Ban da them %s lam Hitman.", GetPlayerNameEx(iTarget));
 		SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
 
-		format(szMiscArray, sizeof szMiscArray, "* %s %s has made you a hitman. Use /hmahelp to see your new commands.", GetHitmanRank(playerid), GetPlayerNameEx(playerid));
+		format(szMiscArray, sizeof szMiscArray, "* %s %s da them ban lam Hitman. Dung /hmahelp de xem lenh moi.", GetHitmanRank(playerid), GetPlayerNameEx(playerid));
 		SendClientMessage(iTarget, COLOR_LIGHTBLUE, szMiscArray);
 
 		format(szMiscArray, sizeof szMiscArray, "%s %s has made %s a hitman.", GetHitmanRank(playerid), GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget));
@@ -618,16 +619,16 @@ CMD:makehitman(playerid, params[])
 	else if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pFactionModerator] != 0 && PlayerInfo[playerid][pAdmin] >= 4) // They're either a HA+ or a Senior Admin w/ FMod.
 	{
 		new iTarget;
-		if(sscanf(params, "u", iTarget)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /makehitman [playerid]");
+		if(sscanf(params, "u", iTarget)) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /makehitman [playerid]");
 
-		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid player specified.");
+		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi khong hop le.");
 
-		if(IsAHitman(iTarget) || IsAHitmanLeader(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "That player is already a hitman. To revoke it, use /removehitman.");
+		if(IsAHitman(iTarget) || IsAHitmanLeader(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do da la Hitman. Dung /removehitman de xoa.");
 
 		if(IsBlacklisted(iTarget))
 		{
-			SendClientMessage(playerid, COLOR_GRAD2, "That player cannot be invited to the Hitman Agency as they are blacklisted.");
-			format(szMiscArray, sizeof szMiscArray, "Reason:{FFFFFF} %s", PlayerInfo[iTarget][pBlacklistReason]);
+			SendClientMessage(playerid, COLOR_GRAD2, "Khong the moi nguoi choi do vao Hitman Agency vi nam trong danh sach cam.");
+			format(szMiscArray, sizeof szMiscArray, "Ly do:{FFFFFF} %s", PlayerInfo[iTarget][pBlacklistReason]);
 			SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
 			return 1;
 		}
@@ -635,10 +636,10 @@ CMD:makehitman(playerid, params[])
 		PlayerInfo[iTarget][pHitman] = 0;
 		PlayerInfo[iTarget][pHitmanLeader] = 0;
 
-		format(szMiscArray, sizeof szMiscArray, "* You have made %s a hitman.", GetPlayerNameEx(iTarget));
+		format(szMiscArray, sizeof szMiscArray, "* Ban da them %s lam Hitman.", GetPlayerNameEx(iTarget));
 		SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
 
-		format(szMiscArray, sizeof szMiscArray, "* Administrator %s has admin invited you to the Hitman Agency. Use /hmahelp to see your new commands.", GetPlayerNameEx(playerid));
+		format(szMiscArray, sizeof szMiscArray, "* Administrator %s da moi ban vao Hitman Agency. Dung /hmahelp de xem lenh moi.", GetPlayerNameEx(playerid));
 		SendClientMessage(iTarget, COLOR_LIGHTBLUE, szMiscArray);
 
 		format(szMiscArray, sizeof szMiscArray, "Administrator %s has admin invited %s to the Hitman Agency.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget));
@@ -657,21 +658,21 @@ CMD:removehitman(playerid, params[])
 	if(IsAHitmanLeader(playerid))
 	{
 		new iTarget;
-		if(sscanf(params, "u", iTarget)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /removehitman [playerid]");
+		if(sscanf(params, "u", iTarget)) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /removehitman [playerid]");
 
-		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid player specified.");
+		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi khong hop le.");
 
-		if(!IsAHitman(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not a hitman. If you wish to invite them, use /makehitman.");
+		if(!IsAHitman(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do khong phai Hitman. Dung /makehitman de moi.");
 
-		if(PlayerInfo[iTarget][pHitman] > PlayerInfo[playerid][pHitman]) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot kick higher ranked hitmen.");
+		if(PlayerInfo[iTarget][pHitman] > PlayerInfo[playerid][pHitman]) return SendClientMessage(playerid, COLOR_GRAD2, "Khong the duoi Hitman co rank cao hon.");
 
 		PlayerInfo[iTarget][pHitman] = -1;
 		PlayerInfo[iTarget][pHitmanLeader] = 0;
 
-		format(szMiscArray, sizeof szMiscArray, "* You have kicked %s from the Hitman Agency.", GetPlayerNameEx(iTarget));
+		format(szMiscArray, sizeof szMiscArray, "* Ban da duoi %s khoi Hitman Agency.", GetPlayerNameEx(iTarget));
 		SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
 
-		format(szMiscArray, sizeof szMiscArray, "* %s %s has kicked you from the Hitman Agency. Your knife has been removed.", GetHitmanRank(playerid), GetPlayerNameEx(playerid));
+		format(szMiscArray, sizeof szMiscArray, "* %s %s da duoi ban khoi Hitman Agency. Dao da bi thu hoi.", GetHitmanRank(playerid), GetPlayerNameEx(playerid));
 		SendClientMessage(iTarget, COLOR_LIGHTBLUE, szMiscArray);
 		if(PlayerInfo[iTarget][pGuns][1] == 4) RemovePlayerLoadoutWeapon(iTarget, 4);
 
@@ -684,19 +685,19 @@ CMD:removehitman(playerid, params[])
 	else if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pFactionModerator] != 0 && PlayerInfo[playerid][pAdmin] >= 4)
 	{
 		new iTarget;
-		if(sscanf(params, "u", iTarget)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /removehitman [playerid]");
+		if(sscanf(params, "u", iTarget)) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /removehitman [playerid]");
 
-		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid player specified.");
+		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi khong hop le.");
 
-		if(!IsAHitman(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not a hitman. If you wish to invite them, use /makehitman.");
+		if(!IsAHitman(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do khong phai Hitman. Dung /makehitman de moi.");
 
 		PlayerInfo[iTarget][pHitman] = -1;
 		PlayerInfo[iTarget][pHitmanLeader] = 0;
 
-		format(szMiscArray, sizeof szMiscArray, "* You have kicked %s from the Hitman Agency.", GetPlayerNameEx(iTarget));
+		format(szMiscArray, sizeof szMiscArray, "* Ban da duoi %s khoi Hitman Agency.", GetPlayerNameEx(iTarget));
 		SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
 
-		format(szMiscArray, sizeof szMiscArray, "* Administrator %s has kicked you from the Hitman Agency. Your knife has been removed.",  GetPlayerNameEx(playerid));
+		format(szMiscArray, sizeof szMiscArray, "* Administrator %s da duoi ban khoi Hitman Agency. Dao da bi thu hoi.",  GetPlayerNameEx(playerid));
 		SendClientMessage(iTarget, COLOR_LIGHTBLUE, szMiscArray);
 		if(PlayerInfo[iTarget][pGuns][1] == 4) RemovePlayerLoadoutWeapon(iTarget, 4);
 
@@ -716,16 +717,16 @@ CMD:makehitmanleader(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pFactionModerator] != 0 && PlayerInfo[playerid][pAdmin] >= 4)
 	{
 		new iTarget;
-		if(sscanf(params, "u", iTarget)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /makehitmanleader [playerid]");
+		if(sscanf(params, "u", iTarget)) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /makehitmanleader [playerid]");
 
-		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid player specified.");
+		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi khong hop le.");
 
-		if(IsAHitmanLeader(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "That player is already a hitman leader. To revoke it, use /removehitmanleader.");
+		if(IsAHitmanLeader(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do da la lanh dao Hitman. Dung /removehitmanleader de xoa.");
 
 		if(IsBlacklisted(iTarget))
 		{
-			SendClientMessage(playerid, COLOR_GRAD2, "That player cannot be made a Hitman Leader as they are blacklisted.");
-			format(szMiscArray, sizeof szMiscArray, "Reason:{FFFFFF} %s", PlayerInfo[iTarget][pBlacklistReason]);
+			SendClientMessage(playerid, COLOR_GRAD2, "Khong the cap Hitman Leader cho nguoi choi nam trong danh sach cam.");
+			format(szMiscArray, sizeof szMiscArray, "Ly do:{FFFFFF} %s", PlayerInfo[iTarget][pBlacklistReason]);
 			SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
 			return 1;
 		}
@@ -733,10 +734,10 @@ CMD:makehitmanleader(playerid, params[])
 		PlayerInfo[iTarget][pHitmanLeader] = 1;
 		PlayerInfo[iTarget][pHitman] = 6;
 
-		format(szMiscArray, sizeof szMiscArray, "* You have made %s a hitman leader.", GetPlayerNameEx(iTarget));
+		format(szMiscArray, sizeof szMiscArray, "* Da dat %s lam Hitman Leader.", GetPlayerNameEx(iTarget));
 		SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
 
-		format(szMiscArray, sizeof szMiscArray, "* Administrator %s has made you a hitman leader. Use /hmahelp to see your new commands.", GetPlayerNameEx(playerid));
+		format(szMiscArray, sizeof szMiscArray, "* Administrator %s da cap quyen lanh dao Hitman cho ban. Dung /hmahelp de xem lenh moi.", GetPlayerNameEx(playerid));
 		SendClientMessage(iTarget, COLOR_LIGHTBLUE, szMiscArray);
 
 		format(szMiscArray, sizeof szMiscArray, "Administrator %s has made %s a hitman leader.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget));
@@ -755,18 +756,18 @@ CMD:removehitmanleader(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pFactionModerator] != 0 && PlayerInfo[playerid][pAdmin] >= 4)
 	{
 		new iTarget;
-		if(sscanf(params, "u", iTarget)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /removehitmanleader [playerid]");
+		if(sscanf(params, "u", iTarget)) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /removehitmanleader [playerid]");
 
-		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid player specified.");
+		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi khong hop le.");
 
-		if(!IsAHitmanLeader(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not a hitman leader. If you wish to make them, use /makehitmanleader.");
+		if(!IsAHitmanLeader(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do khong la lanh dao Hitman. Dung /makehitmanleader de cap.");
 
 		PlayerInfo[iTarget][pHitmanLeader] = 0;
 
-		format(szMiscArray, sizeof szMiscArray, "* You have removed %s's hitman leadership.", GetPlayerNameEx(iTarget));
+		format(szMiscArray, sizeof szMiscArray, "* Ban da go quyen lanh dao Hitman cua %s.", GetPlayerNameEx(iTarget));
 		SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
 
-		format(szMiscArray, sizeof szMiscArray, "* Administrator %s has revoked your hitman leadership.",  GetPlayerNameEx(playerid));
+		format(szMiscArray, sizeof szMiscArray, "* Administrator %s da go quyen Hitman Leader cua ban.",  GetPlayerNameEx(playerid));
 		SendClientMessage(iTarget, COLOR_LIGHTBLUE, szMiscArray);
 
 		format(szMiscArray, sizeof szMiscArray, "Administrator %s has removed %s's hitman leadership.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget));
@@ -784,13 +785,13 @@ CMD:hmahelp(playerid, params[])
 	if(IsAHitman(playerid))
 	{
 		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Hitman Agency Commands *** /hr /hg /toghma /ranks /contracts /givemehit /order /profile");
-		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Hitman Agency Commands *** /hfind /setmylevel /tempnum /pb /pcb /pub /myc4 /quithma");
+		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Lenh Hitman Agency *** /hr /hg /toghma /ranks /contracts /givemehit /order /profile");
+		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Lenh Hitman Agency *** /hfind /setmylevel /tempnum /pb /pcb /pub /myc4 /quithma");
 
 		if(IsAHitmanLeader(playerid))
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD3, "*** Leadership Commands *** /makehitman /givehitmanrank /(o)removehitman /hmasafe");
-			SendClientMessageEx(playerid, COLOR_GRAD3, "*** Leadership Commands *** /(o)blacklist /(o)unblacklist /viewblacklist");
+			SendClientMessageEx(playerid, COLOR_GRAD3, "*** Lenh lanh dao *** /makehitman /givehitmanrank /(o)removehitman /hmasafe");
+			SendClientMessageEx(playerid, COLOR_GRAD3, "*** Lenh lanh dao *** /(o)blacklist /(o)unblacklist /viewblacklist");
 		}
 
 		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
@@ -798,8 +799,8 @@ CMD:hmahelp(playerid, params[])
 	else if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pFactionModerator] != 0 && PlayerInfo[playerid][pAdmin] >= 4)
 	{
 		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Administrator Commands *** /makehitmanleader, /removehitmanleader, /oremovehitmanleader");
-		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Administrator Commands *** /gotohmasafe, /edithmasafepos");
+		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Lenh Administrator *** /makehitmanleader, /removehitmanleader, /oremovehitmanleader");
+		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Lenh Administrator *** /gotohmasafe, /edithmasafepos");
 		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	}
 	else return 0;
@@ -813,24 +814,24 @@ CMD:blacklist(playerid, params[])
 		new iTarget, szReason[64];
 		if(sscanf(params, "us[64]", iTarget, szReason))
 		{
-			SendClientMessage(playerid, COLOR_GREY, "USAGE: /blacklist [playerid] [reason]");
-			SendClientMessage(playerid, COLOR_GREY, "NOTE: This will prevent them from joining the Agency.");
+			SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /blacklist [playerid] [reason]");
+			SendClientMessage(playerid, COLOR_GREY, "LUU Y: Viec nay ngan ho gia nhap Agency.");
 			return 1;
 		}
 		else
 		{
-			if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid player specified. To offline blacklist a user, use /oblacklist.");
+			if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi khong hop le. Dung /oblacklist de cam tai khoan offline.");
 
-			if(IsBlacklisted(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "That player is already blacklisted. If you wish to remove it, use /unblacklist.");
+			if(IsBlacklisted(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do da bi cam. Dung /unblacklist de go.");
 
-			if(IsAHitmanLeader(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot blacklist Hitman Leadership.");
+			if(IsAHitmanLeader(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Khong the cam Hitman Leadership.");
 
-			if(IsAHitman(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "That player is in the Hitman Agency. Please use /removehitman first.");
+			if(IsAHitman(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do thuoc Hitman Agency. Dung /removehitman truoc.");
 
 			PlayerInfo[iTarget][pHitmanBlacklisted] = 1;
 			format(PlayerInfo[iTarget][pBlacklistReason], 64, szReason);
 
-			format(szMiscArray, sizeof szMiscArray, "* You have blacklisted %s from the Hitman Agency, reason: %s.", GetPlayerNameEx(iTarget), szReason);
+			format(szMiscArray, sizeof szMiscArray, "* Ban da cam %s gia nhap Hitman Agency, ly do: %s.", GetPlayerNameEx(iTarget), szReason);
 			SendClientMessage(playerid, COLOR_GREY, szMiscArray);
 
 			format(szMiscArray, sizeof szMiscArray, "%s %s has blacklisted %s, reason: %s.", GetHitmanRank(playerid), GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget), szReason);
@@ -853,20 +854,20 @@ CMD:unblacklist(playerid, params[])
 		new iTarget;
 		if(sscanf(params, "u", iTarget))
 		{
-			SendClientMessage(playerid, COLOR_GREY, "USAGE: /unblacklist [playerid]");
-			SendClientMessage(playerid, COLOR_GREY, "NOTE: This will allow the player to join the Hitman Agency again.");
+			SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /unblacklist [playerid]");
+			SendClientMessage(playerid, COLOR_GREY, "LUU Y: Viec nay cho phep nguoi choi gia nhap lai Hitman Agency.");
 			return 1;
 		}
 		else
 		{
-			if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid player specified. To offline un-blacklist a user, use /ounblacklist.");
+			if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi khong hop le. Dung /ounblacklist de go cam tai khoan offline.");
 
-			if(!IsBlacklisted(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not blacklisted. If you wish to blacklist them, use /blacklist.");
+			if(!IsBlacklisted(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do khong bi cam. Dung /blacklist de cam.");
 
 			PlayerInfo[iTarget][pHitmanBlacklisted] = 0;
 			format(PlayerInfo[iTarget][pBlacklistReason], 64, "");
 
-			format(szMiscArray, sizeof szMiscArray, "* You have removed %s from the Hitman Agency blacklist.", GetPlayerNameEx(iTarget));
+			format(szMiscArray, sizeof szMiscArray, "* Ban da xoa %s khoi danh sach cam Hitman Agency.", GetPlayerNameEx(iTarget));
 			SendClientMessage(playerid, COLOR_GREY, szMiscArray);
 
 			format(szMiscArray, sizeof szMiscArray, "%s %s has unblacklisted %s.", GetHitmanRank(playerid), GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget));
@@ -965,11 +966,11 @@ public ShowBlacklistedPlayers(playerid)
 			for(new i = 0; i < MAX_PLAYER_NAME; i++) if(szName[i] == '_') szName[i] = ' ';
 			cache_get_value_name(row, "BlacklistReason", szBlacklistReason);
 
-			format(szMiscArray, sizeof szMiscArray, "{A9C4E4}Name: {FFFFFF}%s {A9C4E4}| Reason: {FFFFFF}%s", szName, szBlacklistReason);
+			format(szMiscArray, sizeof szMiscArray, "{A9C4E4}Ten: {FFFFFF}%s {A9C4E4}| Ly do: {FFFFFF}%s", szName, szBlacklistReason);
 			SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 		}
 	}
-	else SendClientMessage(playerid, COLOR_GRAD3, "The blacklist is empty. To add a player, use /blacklist or /oblacklist.");
+	else SendClientMessage(playerid, COLOR_GRAD3, "Danh sach cam trong. Dung /blacklist hoac /oblacklist de them.");
 
 	SendClientMessage(playerid, COLOR_GREEN,"_______________________________________");
 	return 1;
@@ -990,21 +991,21 @@ public OfflineBlacklistAccountFetch(playerid, reason[], account[])
 			cache_get_value_name(row, "BlacklistReason", szBlacklistReason);
 		}
 
-		if(iHitman == 1) return SendClientMessage(playerid, COLOR_GRAD2, "That player is in the Hitman Agency. Please use /oremovehitman first.");
-		if(iHitmanLeader == 1) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot blacklist Hitman Leadership.");
-		if(iBlacklisted == 1) return SendClientMessage(playerid, COLOR_GRAD2, "That player is already blacklisted. If you wish to unblacklist them, use /ounblacklist.");
+		if(iHitman == 1) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do thuoc Hitman Agency. Dung /oremovehitman truoc.");
+		if(iHitmanLeader == 1) return SendClientMessage(playerid, COLOR_GRAD2, "Khong the cam Hitman Leadership.");
+		if(iBlacklisted == 1) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do da bi cam. Dung /ounblacklist de go.");
 
 		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `accounts` SET `HitmanBlacklisted`=1, `BlacklistReason`='%e' WHERE `Username`='%s'", reason, account);
 		mysql_tquery(MainPipeline, szMiscArray, "OfflineBlacklisted", "dss", playerid, reason, account);
 	}
-	else return SendClientMessage(playerid, COLOR_GRAD2, "That account does not exist.");
+	else return SendClientMessage(playerid, COLOR_GRAD2, "Tai khoan do khong ton tai.");
 	return 1;
 }
 
 forward OfflineBlacklisted(playerid, reason[], account[]);
 public OfflineBlacklisted(playerid, reason[], account[])
 {
-	format(szMiscArray, sizeof szMiscArray, "%s has been blacklisted successfully.", account);
+	format(szMiscArray, sizeof szMiscArray, "Da cam %s.", account);
 	SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 
 	format(szMiscArray, sizeof szMiscArray, "%s %s has offline-blacklisted %s, reason: %s.", GetHitmanRank(playerid), GetPlayerNameEx(playerid), account, reason);
@@ -1032,21 +1033,21 @@ public OfflineUnBlacklistAccountFetch(playerid, account[])
 			cache_get_value_name(row, "BlacklistReason", szBlacklistReason);
 		}
 
-		if(iHitman == 1) return SendClientMessage(playerid, COLOR_GRAD2, "That player is in the Hitman Agency. Please use /oremovehitman first.");
-		if(iHitmanLeader == 1) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot blacklist Hitman Leadership.");
-		if(iBlacklisted == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not blacklisted. If you wish to blacklist them, use /oblacklist.");
+		if(iHitman == 1) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do thuoc Hitman Agency. Dung /oremovehitman truoc.");
+		if(iHitmanLeader == 1) return SendClientMessage(playerid, COLOR_GRAD2, "Khong the cam Hitman Leadership.");
+		if(iBlacklisted == 0) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do khong bi cam. Dung /oblacklist de cam.");
 
 		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `accounts` SET `HitmanBlacklisted`=0, `BlacklistReason`='' WHERE `Username`='%s'", account);
 		mysql_tquery(MainPipeline, szMiscArray, "OfflineUnBlacklisted", "ds", playerid, account);
 	}
-	else return SendClientMessage(playerid, COLOR_GRAD2, "That account does not exist.");
+	else return SendClientMessage(playerid, COLOR_GRAD2, "Tai khoan do khong ton tai.");
 	return 1;
 }
 
 forward OfflineUnBlacklisted(playerid, account[]);
 public OfflineUnBlacklisted(playerid, account[])
 {
-	format(szMiscArray, sizeof szMiscArray, "%s has been unblacklisted successfully.", account);
+	format(szMiscArray, sizeof szMiscArray, "Da go cam %s.", account);
 	SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 
 	format(szMiscArray, sizeof szMiscArray, "%s %s has offline-unblacklisted %s.", GetHitmanRank(playerid), GetPlayerNameEx(playerid), account);
@@ -1071,19 +1072,19 @@ public OfflineRemoveHitman(playerid, account[])
 			cache_get_value_name_int(row, "Hitman", iHitman);
 		}
 
-		if(iHitman == -1) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not a hitman.");
+		if(iHitman == -1) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do khong phai Hitman.");
 
 		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `accounts` SET `Hitman`=-1, `HitmanLeader`=0 WHERE `Username`='%s'", account);
 		mysql_tquery(MainPipeline, szMiscArray, "OfflineHitmanRemoved", "ds", playerid, account);
 	}
-	else return SendClientMessage(playerid, COLOR_GRAD2, "That account does not exist.");
+	else return SendClientMessage(playerid, COLOR_GRAD2, "Tai khoan do khong ton tai.");
 	return 1;
 }
 
 forward OfflineHitmanRemoved(playerid, account[]);
 public OfflineHitmanRemoved(playerid, account[])
 {
-	format(szMiscArray, sizeof szMiscArray, "%s has been removed from the Hitman Agency successfully.", account);
+	format(szMiscArray, sizeof szMiscArray, "Da xoa %s khoi Hitman Agency.", account);
 	SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 
 	format(szMiscArray, sizeof szMiscArray, "%s %s has offline-removed %s.", GetHitmanRank(playerid), GetPlayerNameEx(playerid), account);
@@ -1108,21 +1109,21 @@ public OfflineRemoveHitmanLeader(playerid, account[])
 			cache_get_value_name_int(row, "Hitman", iHitman);
 			cache_get_value_name_int(row, "HitmanLeader", iHitmanLeader);
 		}
-		if(iHitman > PlayerInfo[playerid][pHitman]) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot remove a higher ranking hitman's leadership.");
+		if(iHitman > PlayerInfo[playerid][pHitman]) return SendClientMessage(playerid, COLOR_GRAD2, "Khong the go quyen lanh dao Hitman rank cao hon.");
 
-		if(iHitmanLeader == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not a hitman leader.");
+		if(iHitmanLeader == 0) return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do khong phai lanh dao Hitman.");
 
 		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `accounts` SET `HitmanLeader`=0 WHERE `Username`='%s'", account);
 		mysql_tquery(MainPipeline, szMiscArray, "OfflineHitmanLeaderRemoved", "ds", playerid, account);
 	}
-	else return SendClientMessage(playerid, COLOR_GRAD2, "That account does not exist.");
+	else return SendClientMessage(playerid, COLOR_GRAD2, "Tai khoan do khong ton tai.");
 	return 1;
 }
 
 forward OfflineHitmanLeaderRemoved(playerid, account[]);
 public OfflineHitmanLeaderRemoved(playerid, account[])
 {
-	format(szMiscArray, sizeof szMiscArray, "%s's hitman leadership has been removed.", account);
+	format(szMiscArray, sizeof szMiscArray, "Da go quyen lanh dao Hitman cua %s.", account);
 	SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 
 	format(szMiscArray, sizeof szMiscArray, "Administrator %s has offline-removed %s's hitman leadership.", GetHitmanRank(playerid), GetPlayerNameEx(playerid), account);
@@ -1194,16 +1195,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             C4\t\t\t $50,000"
                             );
                         }
-                        ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMAWPS, DIALOG_STYLE_LIST, "Weapon Select", szMiscArray, "Select", "Back");
+                        ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMAWPS, DIALOG_STYLE_LIST, "Chon vu khi", szMiscArray, "Chon", "Quay lai");
                     }
                     case 2: {
-                        ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMASKIN, DIALOG_STYLE_INPUT, "Uniform", "Choose a skin (by ID).", "Change", "Back");
+                        ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMASKIN, DIALOG_STYLE_INPUT, "Dong phuc", "Chon skin (theo ID).", "Doi", "Quay lai");
                     }
                     case 3: {
                         if(gettime()-GetPVarInt(playerid, "LastNameChange") < 120) {
-                            return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only request a name change every two minutes.");
+                            return SendClientMessageEx(playerid, COLOR_GRAD2, "Chi duoc yeu cau doi ten moi hai phut.");
                         }
-                        ShowPlayerDialogEx(playerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Back");
+                        ShowPlayerDialogEx(playerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Doi ten","Nhap ten moi ban muon!\n\nLuu y: To chuc ban duoc doi ten mien phi.", "Doi", "Quay lai");
                     }
                 }
             }
@@ -1211,8 +1212,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
         case DIALOG_ORDER_HMAWPS:
         {
             if(!response) {
-                format(szMiscArray, sizeof(szMiscArray), "Health and Armour\t\t $2000\nWeapons\nUniform\nName Change");
-                ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMA1, DIALOG_STYLE_LIST, "HMA Order Weapons", szMiscArray, "Order", "Cancel");
+                format(szMiscArray, sizeof(szMiscArray), "Mau va giap\t\t $2000\nVu khi\nDong phuc\nDoi ten");
+                ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMA1, DIALOG_STYLE_LIST, "HMA Dat vu khi", szMiscArray, "Dat hang", "Huy");
             }
             else {
                 switch(listitem) {
@@ -1446,7 +1447,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							getdate(year,month,day);
 							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
 							Log(file, szMiscArray);
-                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased one block of C4!");
+                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   Ban da mua mot khoi C4!");
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1458,14 +1459,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
             if(response)    {
                 new skin = strval(inputtext);
                 if(IsInvalidSkin(skin)) {
-                    return ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMASKIN, DIALOG_STYLE_INPUT, "Uniform","Invalid skin specified. Choose another.", "Select", "Cancel");
+                    return ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMASKIN, DIALOG_STYLE_INPUT, "Dong phuc","Skin khong hop le. Hay chon skin khac.", "Chon", "Huy");
                 }
                 PlayerInfo[playerid][pModel] = skin;
                 SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
             }
             else {
-                format(szMiscArray, sizeof(szMiscArray), "Health and Armour\t\t $2000\nWeapons\nUniform\nName Change");
-                ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMA1, DIALOG_STYLE_LIST, "HMA Order Weapons", szMiscArray, "Order", "Cancel");
+                format(szMiscArray, sizeof(szMiscArray), "Mau va giap\t\t $2000\nVu khi\nDong phuc\nDoi ten");
+                ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMA1, DIALOG_STYLE_LIST, "HMA Dat vu khi", szMiscArray, "Dat hang", "Huy");
             }
         }
     }
@@ -1475,7 +1476,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 stock SearchingHit(playerid)
 {
-    SendClientMessageEx(playerid, COLOR_WHITE, "Available Contracts:");
+    SendClientMessageEx(playerid, COLOR_WHITE, "Cac hop dong hien co:");
     new hits;
     foreach(new i: Player)
     {
@@ -1484,25 +1485,25 @@ stock SearchingHit(playerid)
             if(GotHit[i] == 0)
             {
                 hits++;
-                SendClientMessageEx(playerid, COLOR_GRAD2, "%s (ID %d) | $%s | Placed By: %s | Reason: %s | Chased By: Nobody", GetPlayerNameEx(i), i, number_format(PlayerInfo[i][pHeadValue]), PlayerInfo[i][pContractBy], PlayerInfo[i][pContractDetail]);
+                SendClientMessageEx(playerid, COLOR_GRAD2, "%s (ID %d) | $%s | Nguoi dat: %s | Ly do: %s | Dang duoi: Chua co", GetPlayerNameEx(i), i, number_format(PlayerInfo[i][pHeadValue]), PlayerInfo[i][pContractBy], PlayerInfo[i][pContractDetail]);
             }
             else
             {
-                SendClientMessageEx(playerid, COLOR_GRAD2, "%s (ID %d) | $%s | Placed By: %s | Reason: %s | Chased By: %s", GetPlayerNameEx(i), i, number_format(PlayerInfo[i][pHeadValue]), PlayerInfo[i][pContractBy], PlayerInfo[i][pContractDetail], GetPlayerNameEx(GetChased[i]));
+                SendClientMessageEx(playerid, COLOR_GRAD2, "%s (ID %d) | $%s | Nguoi dat: %s | Ly do: %s | Dang duoi: %s", GetPlayerNameEx(i), i, number_format(PlayerInfo[i][pHeadValue]), PlayerInfo[i][pContractBy], PlayerInfo[i][pContractDetail], GetPlayerNameEx(GetChased[i]));
             }
         }
     }
     if(hits && PlayerInfo[playerid][pHitman] <= 4 && IsAHitman(playerid))
     {
-        SendClientMessageEx(playerid, COLOR_YELLOW, "Use /givemehit to assign a contract to yourself.");
+        SendClientMessageEx(playerid, COLOR_YELLOW, "Dung /givemehit de tu nhan hop dong.");
     }
     if(hits && IsAHitmanLeader(playerid))
     {
-        SendClientMessageEx(playerid, COLOR_YELLOW, "Use /givehit to assign a contract to one of the hitmen.");
+        SendClientMessageEx(playerid, COLOR_YELLOW, "Dung /givehit de giao hop dong cho Hitman.");
     }
     if(hits == 0)
     {
-        SendClientMessageEx(playerid, COLOR_GREY, "There are no hits available.");
+        SendClientMessageEx(playerid, COLOR_GREY, "Khong co hop dong nao.");
     }
     return 0;
 }
@@ -1522,13 +1523,13 @@ CMD:execute(playerid, params[])
     if(IsAHitman(playerid))
     {
         if(GoChase[playerid] != INVALID_PLAYER_ID || HitToGet[playerid] != INVALID_PLAYER_ID) {
-            if(GetPVarInt(playerid, "KillShotCooldown") != 0 && gettime() < GetPVarInt(playerid, "KillShotCooldown") + 300) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait 5 minutes between execution shots.");
+            if(GetPVarInt(playerid, "KillShotCooldown") != 0 && gettime() < GetPVarInt(playerid, "KillShotCooldown") + 300) return SendClientMessageEx(playerid, COLOR_GRAD2, "Phai cho 5 phut giua cac phat ban hanh quyet.");
 
             SetPVarInt(playerid, "ExecutionMode", 1);
-            SendClientMessageEx(playerid, COLOR_GRAD2, " You have loaded a Hollow point round.  Aim for the Head when executing your target. ");
+            SendClientMessageEx(playerid, COLOR_GRAD2, " Ban da nap dan Hollow point. Nham vao dau khi hanh quyet muc tieu.");
             SetPVarInt(playerid, "KillShotCooldown", gettime());
         }
-        else return SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have an active contract!");
+        else return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co hop dong dang hoat dong!");
     }
     return 1;
 }
@@ -1555,7 +1556,7 @@ CMD:pb(playerid, params[])
             {
                 if(IsPlayerInAnyVehicle(playerid))
                 {
-                    SendClientMessageEx(playerid, COLOR_LIGHTRED,"You can't plant C4 while in a vehicle!");
+                    SendClientMessageEx(playerid, COLOR_LIGHTRED,"Khong the dat C4 khi o trong xe!");
                     return 1;
                 }
                 GetPlayerPos(playerid, Positions[0][0], Positions[0][1], Positions[0][2]);
@@ -1563,23 +1564,23 @@ CMD:pb(playerid, params[])
                 SetPVarFloat(playerid, "DYN_C4_FLOAT_Y", Positions[0][1]);
                 SetPVarFloat(playerid, "DYN_C4_FLOAT_Z", Positions[0][2]);
                 new models[9] = {1654, 1230, 1778, 2814, 1271, 1328, 2919, 2770, 1840};
-                ShowModelSelectionMenuEx(playerid, models, sizeof(models), "Bomb Model Selector", 1338, 0.0, 0.0, 180.0);
+                ShowModelSelectionMenuEx(playerid, models, sizeof(models), "Chon model bom", 1338, 0.0, 0.0, 180.0);
             }
             else
             {
-                SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have C4!");
+                SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co C4!");
                 return 1;
             }
         }
         else
         {
-            SendClientMessageEx(playerid, COLOR_GRAD2, "You can only deploy 1 C4 at a time!");
+            SendClientMessageEx(playerid, COLOR_GRAD2, "Chi duoc trien khai 1 C4 moi lan!");
             return 1;
         }
     }
     else
     {
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a member of the Hitman Agency!");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong thuoc Hitman Agency!");
     }
     return 1;
 }
@@ -1588,23 +1589,23 @@ CMD:order(playerid, params[])
 {
 	if (IsAHitman(playerid))
 	{
-	    if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this right now.");
+	    if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the lam viec nay.");
 		if(IsPlayerInRangeOfPoint(playerid, 4.0, 63.973995, 1973.618774, -68.786064) || IsPlayerInRangeOfPoint(playerid, 6.0, 1415.727905, -1299.371093, 15.054657) || IsPlayerInRangeOfPoint(playerid, 2.0, 1666.3503, -1576.5717, 2195.8643))
 		{
-			if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
+			if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the dung vi ban dang bi cam so huu vu khi!");
 			new string[128];
-			format(string, sizeof(string), "Health and Armour\t\t $2000\nWeapons\nUniform\nName Change");
-			ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMA1, DIALOG_STYLE_LIST, "HMA Order Weapons", string, "Order", "Cancel");
+			format(string, sizeof(string), "Mau va giap\t\t $2000\nVu khi\nDong phuc\nDoi ten");
+			ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMA1, DIALOG_STYLE_LIST, "HMA Dat vu khi", string, "Dat hang", "Huy");
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD2, " You are not at the gun shack!");
+			SendClientMessageEx(playerid, COLOR_GRAD2, " Ban khong o gun shack!");
 			return 1;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a member of the hitman agency!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong thuoc hitman agency!");
 		return 1;
 	}
 	return 1;
@@ -1617,12 +1618,12 @@ CMD:pickupbomb(playerid, params[])
 {
     if (!IsAHitman(playerid))
     {
-        SendClientMessageEx(playerid, COLOR_GREY, "You are not a Hitman!");
+        SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai Hitman!");
         return 1;
     }
     if (PlayerInfo[playerid][pC4] == 0)
     {
-        SendClientMessageEx(playerid, COLOR_GREY, "You haven't planted a bomb!");
+        SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dat bom!");
         return 1;
     }
     new carid = GetPlayerVehicleID(playerid);
@@ -1632,7 +1633,7 @@ CMD:pickupbomb(playerid, params[])
         VehicleBomb{closestcar} = 0;
         PlacedVehicleBomb[playerid] = INVALID_VEHICLE_ID;
         PickUpC4(playerid);
-        SendClientMessageEx(playerid, COLOR_GREEN, "Bomb picked up successfully.");
+        SendClientMessageEx(playerid, COLOR_GREEN, "Da nhat lai bom.");
         PlayerInfo[playerid][pBombs]++;
         PlayerInfo[playerid][pC4Used] = 0;
         PlayerInfo[playerid][pC4Get] = 1;
@@ -1641,7 +1642,7 @@ CMD:pickupbomb(playerid, params[])
     if(IsPlayerInRangeOfPoint(playerid, 3.0, GetPVarFloat(playerid, "DYN_C4_FLOAT_X"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Y"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Z")))
     {
         PickUpC4(playerid);
-        SendClientMessageEx(playerid, COLOR_GREEN, "Bomb picked up successfully.");
+        SendClientMessageEx(playerid, COLOR_GREEN, "Da nhat lai bom.");
         PlayerInfo[playerid][pBombs]++;
         PlayerInfo[playerid][pC4Used] = 0;
         PlayerInfo[playerid][pC4Get] = 1;
@@ -1658,11 +1659,11 @@ CMD:myc4(playerid, params[])
 
         if (PlayerInfo[playerid][pBombs] > 0)
         {
-            format(string, sizeof(string), "You currently have %i C4 in your inventory.", PlayerInfo[playerid][pBombs]);
+            format(string, sizeof(string), "Ban co %i C4 trong hanh trang.", PlayerInfo[playerid][pBombs]);
         }
         else
         {
-            format(string, sizeof(string), "You do not have any C4 in your inventory.");
+            format(string, sizeof(string), "Ban khong co C4 trong hanh trang.");
         }
 
         SendClientMessageEx(playerid, COLOR_GRAD2, string);
@@ -1673,15 +1674,15 @@ CMD:myc4(playerid, params[])
 
 CMD:setmylevel(playerid, params[])
 {
-    if (!IsAHitman(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this command.");
+    if (!IsAHitman(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the dung lenh nay.");
     new level;
-    if(sscanf(params, "d", level)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmylevel [level]");
-    if(PlayerInfo[playerid][pLevel] < level)  return SendClientMessageEx(playerid, COLOR_GREY, "The new level can't be greater than your current level.");
-    if(level < 1 || level > 80) return SendClientMessage(playerid, COLOR_GREY, "The new level cannot be below 1 or above 80.");
+    if(sscanf(params, "d", level)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /setmylevel [level]");
+    if(PlayerInfo[playerid][pLevel] < level)  return SendClientMessageEx(playerid, COLOR_GREY, "Cap moi khong duoc vuot cap hien tai.");
+    if(level < 1 || level > 80) return SendClientMessage(playerid, COLOR_GREY, "Cap moi khong duoc duoi 1 hoac tren 80.");
     DeletePVar(playerid, "TempLevel");
     SetPVarInt(playerid, "TempLevel", level);
     SetPlayerScore(playerid, level);
-    format(szMiscArray, sizeof(szMiscArray), "You have set your level to %d", level);
+    format(szMiscArray, sizeof(szMiscArray), "Da dat cap cua ban la %d", level);
     return SendClientMessage(playerid, COLOR_LIGHTRED, szMiscArray);
 }
 
@@ -1690,26 +1691,26 @@ CMD:givemehit(playerid, params[])
     if (IsAHitman(playerid))
     {
         new targetid;
-        if(sscanf(params, "u", targetid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givemehit [targetid]");
+        if(sscanf(params, "u", targetid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /givemehit [targetid]");
 
         if(IsPlayerConnected(targetid))
         {
             if(GoChase[playerid] != INVALID_PLAYER_ID)
             {
-                SendClientMessageEx(playerid, COLOR_GREY, "   You are already busy with another contract!");
+                SendClientMessageEx(playerid, COLOR_GREY, "   Ban dang ban hop dong khac!");
                 return 1;
             }
             if(GotHit[targetid] == 1)
             {
-                SendClientMessageEx(playerid, COLOR_GREY, "   Another hitman has already assigned this target!");
+                SendClientMessageEx(playerid, COLOR_GREY, "   Hitman khac da nhan muc tieu nay!");
                 return 1;
             }
             if(PlayerInfo[targetid][pHeadValue] == 0)
             {
-                SendClientMessageEx(playerid, COLOR_GREY, "   That target doesn't have a contract on them!");
+                SendClientMessageEx(playerid, COLOR_GREY, "   Muc tieu do khong co hop dong!");
                 return 1;
             }
-            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have offered yourself a contract to kill %s. (type /accept contract)", GetPlayerNameEx(targetid));
+            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban de nghi tu nhan hop dong giet %s. (dung /accept contract)", GetPlayerNameEx(targetid));
             HitOffer[playerid] = playerid;
             SetPVarInt(playerid, "HitOfferSession", g_arrQueryHandle[playerid]);
             HitToGet[playerid] = targetid;
@@ -1718,7 +1719,7 @@ CMD:givemehit(playerid, params[])
         }
         else
         {
-            SendClientMessageEx(playerid, COLOR_GREY, "   The contracted person is offline, use /contracts!");
+            SendClientMessageEx(playerid, COLOR_GREY, "   Nguoi co hop dong dang offline, dung /contracts!");
             return 1;
         }
     }
@@ -1730,11 +1731,11 @@ CMD:deletehit(playerid, params[])
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || IsAHitmanLeader(playerid))
     {
         new string[128], giveplayerid;
-        if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deletehit [player]");
+        if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /deletehit [player]");
 
         if(!IsPlayerConnected(giveplayerid))
         {
-            SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+            SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
             return 1;
         }
 
@@ -1743,7 +1744,7 @@ CMD:deletehit(playerid, params[])
             PlayerInfo[giveplayerid][pHeadValue] = 0;
             format(string, sizeof(string), "<< %s(%d) has removed the contract on %s(%d) >>", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
             Log("logs/contracts.log", string);
-            SendClientMessageEx(playerid, COLOR_WHITE, "You have removed the contract which was on %s's head.", GetPlayerNameEx(giveplayerid));
+            SendClientMessageEx(playerid, COLOR_WHITE, "Ban da xoa hop dong treo tren dau %s.", GetPlayerNameEx(giveplayerid));
             GoChase[giveplayerid] = INVALID_PLAYER_ID;
 
             foreach(new i: Player)
@@ -1757,7 +1758,7 @@ CMD:deletehit(playerid, params[])
         }
         else
         {
-            SendClientMessageEx( playerid, COLOR_WHITE, "There's not an active contract on that player!" );
+            SendClientMessageEx( playerid, COLOR_WHITE, "Nguoi choi do khong co hop dong dang hoat dong!" );
         }
     }
     return 1;
@@ -1765,63 +1766,63 @@ CMD:deletehit(playerid, params[])
 
 CMD:contract(playerid, params[])
 {
-    if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't place contracts while in cuffs.");
-    if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't place contracts while in jail.");
+    if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dat hop dong khi bi cong tay.");
+    if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dat hop dong khi o tu.");
 
     new string[128], giveplayerid, moneys, detail[32];
     if(sscanf(params, "uds[32]", giveplayerid, moneys, detail))
-        return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /contract [player] [amount] [details]");
+        return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /contract [player] [amount] [details]");
 
     if (IsPlayerConnected(giveplayerid) && giveplayerid != INVALID_PLAYER_ID)
     {
         if(giveplayerid == playerid)
-            return SendClientMessageEx(playerid, COLOR_GREY, "You can't contract yourself.");
+            return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dat hop dong len chinh minh.");
 
         if(PlayerInfo[playerid][pLevel] < 3 || PlayerInfo[giveplayerid][pLevel] < 3)
-            return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot place a contract unless both you and the hit are at least level 3.");
+            return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban va muc tieu phai it nhat cap 3 de dat hop dong.");
 
         if(moneys < 50000 || moneys > 3000000)
-            return SendClientMessageEx(playerid, COLOR_GREY, "You can't place contracts that are less than $50,000 or more than $3,000,000.");
+            return SendClientMessageEx(playerid, COLOR_GREY, "Hop dong khong duoc duoi $50,000 hoac tren $3,000,000.");
 
         if((moneys < 50000 || moneys > 3000000) && IsACop(giveplayerid))
-            return SendClientMessageEx(playerid, COLOR_GREY, "The minimum hit amount for a law enforcement officer is $150,000.");
+            return SendClientMessageEx(playerid, COLOR_GREY, "Tien treo thuong toi thieu cho nhan vien hanh phap la $150,000.");
 
         if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT)
-            return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this to that person.");
+            return SendClientMessageEx(playerid, COLOR_GREY, "Khong the lam viec nay voi nguoi do.");
 
         if(PlayerInfo[giveplayerid][pHeadValue] >= 3000000 || moneys + PlayerInfo[giveplayerid][pHeadValue] > 3000000)
-            return SendClientMessageEx(playerid, COLOR_GREY, "That person has the maximum on their head.");
+            return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da dat muc treo thuong toi da.");
 
         if(PlayerInfo[playerid][pJailTime] > 0 || PlayerCuffed[playerid] > 0)
-            return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now.");
+            return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the lam viec nay.");
 
         if(IsAHitman(playerid))
-        	return SendClientMessageEx(playerid, COLOR_GREY, "Hitmen cannot place contracts.");
+        	return SendClientMessageEx(playerid, COLOR_GREY, "Hitman khong duoc dat hop dong.");
 
         if (moneys > 0 && GetPlayerCash(playerid) >= moneys)
         {
-            if(strlen(detail) > 32) return SendClientMessageEx(playerid, COLOR_GRAD1, "Contract details may not be longer than 32 characters in length.");
+            if(strlen(detail) > 32) return SendClientMessageEx(playerid, COLOR_GRAD1, "Chi tiet hop dong khong duoc qua 32 ky tu.");
             GivePlayerCash(playerid, (0 - moneys));
             PlayerInfo[giveplayerid][pHeadValue] += moneys;
             strmid(PlayerInfo[giveplayerid][pContractBy], GetPlayerNameEx(playerid), 0, strlen(GetPlayerNameEx(playerid)), MAX_PLAYER_NAME);
             strmid(PlayerInfo[giveplayerid][pContractDetail], detail, 0, strlen(detail), 32);
-            format(string, sizeof(string), "%s has placed a contract on %s for $%s, details: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
+            format(string, sizeof(string), "%s da dat hop dong len %s voi $%s, chi tiet: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
             foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_YELLOW, string);
-            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You placed a contract on %s for $%s, details: %s", GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
+            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban dat hop dong len %s voi $%s, chi tiet: %s", GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
             format(string, sizeof(string), "<< %s has placed a contract on %s for $%s, details: %s >>", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
             Log("logs/contracts.log", string);
-            format(string, sizeof(string), "%s has placed a contract on %s for $%s, details: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
+            format(string, sizeof(string), "%s da dat hop dong len %s gia $%s, chi tiet: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
             ABroadCast(COLOR_YELLOW, string, 2);
             PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
         }
         else
         {
-            SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have enough money for this.");
+            SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong du tien.");
         }
     }
     else
     {
-        SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+        SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
     }
     return 1;
 }
@@ -1832,16 +1833,16 @@ CMD:knife(playerid, params[])
         if(GetPVarInt(playerid, "HidingKnife") == 1) {
             GivePlayerValidWeapon(playerid, 4);
             DeletePVar(playerid, "HidingKnife");
-            SendClientMessageEx(playerid, COLOR_YELLOW, "You have pulled out your knife.");
+            SendClientMessageEx(playerid, COLOR_YELLOW, "Ban da rut dao.");
         }
         else {
             if(PlayerInfo[playerid][pGuns][1] == WEAPON_KNIFE) {
                 RemovePlayerLoadoutWeapon(playerid, 4); // Remove Knife
                 SetPVarInt(playerid, "HidingKnife", 1);
-                SendClientMessageEx(playerid, COLOR_YELLOW, "You have hidden your knife.");
+                SendClientMessageEx(playerid, COLOR_YELLOW, "Ban da giau dao.");
             }
             else {
-                SendClientMessageEx(playerid, COLOR_WHITE, "You do not have a knife available.");
+                SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong co dao de dung.");
             }
         }
     }

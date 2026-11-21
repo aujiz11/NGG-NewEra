@@ -48,19 +48,19 @@ stock ClearMarriage(playerid)
 
 CMD:divorce(playerid, params[])
 {
-	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
-	if(PlayerInfo[playerid][pRank] < 5) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 5+ can do this.");
+	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 5) return SendClientMessageEx(playerid, COLOR_GRAD1, "Chi cap bac 5+ duoc dung lenh nay.");
 	new targets[2];
-	if(sscanf(params, "uu", targets[0], targets[1])) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /divorce [Part Of Name/ ID] [Part Of Name/ ID]");
-	if(!IsPlayerConnected(targets[0]) || !IsPlayerConnected(targets[1])) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player(s) specified.");
-	if(strcmp(GetPlayerNameEx(targets[0]), PlayerInfo[targets[1]][pMarriedName], true) != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "The two players specified aren't married to one another.");
-	if(!ProxDetectorS(25.0, playerid, targets[0]) || !ProxDetectorS(25.0, playerid, targets[1])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You aren't near the couple you are attempting to divorce.");
+	if(sscanf(params, "uu", targets[0], targets[1])) return SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /divorce [Part Of Name/ ID] [Part Of Name/ ID]");
+	if(!IsPlayerConnected(targets[0]) || !IsPlayerConnected(targets[1])) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
+	if(strcmp(GetPlayerNameEx(targets[0]), PlayerInfo[targets[1]][pMarriedName], true) != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Hai nguoi do khong ket hon voi nhau.");
+	if(!ProxDetectorS(25.0, playerid, targets[0]) || !ProxDetectorS(25.0, playerid, targets[1])) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o gan cap doi can ly hon.");
 	ClearMarriage(targets[0]);
 	ClearMarriage(targets[1]);
 	szMiscArray[0] = 0;
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have divorced %s and %s.", GetPlayerNameEx(targets[0]), GetPlayerNameEx(targets[1]));
-	SendClientMessageEx(targets[0], COLOR_LIGHTBLUE, "You have been divorced from %s by %s.", GetPlayerNameEx(targets[1]), GetPlayerNameEx(playerid));
-	SendClientMessageEx(targets[1], COLOR_LIGHTBLUE, "You have been divorced from %s by %s.", GetPlayerNameEx(targets[0]), GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da cho %s va %s ly hon.", GetPlayerNameEx(targets[0]), GetPlayerNameEx(targets[1]));
+	SendClientMessageEx(targets[0], COLOR_LIGHTBLUE, "Ban da ly hon voi %s boi %s.", GetPlayerNameEx(targets[1]), GetPlayerNameEx(playerid));
+	SendClientMessageEx(targets[1], COLOR_LIGHTBLUE, "Ban da ly hon voi %s boi %s.", GetPlayerNameEx(targets[0]), GetPlayerNameEx(playerid));
 	format(szMiscArray, sizeof(szMiscArray), "%s has divorced %s and %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targets[0]), GetPlayerNameEx(targets[1]));
 	GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
 	return 1;
@@ -119,7 +119,7 @@ CMD:adivorce(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 3)
 	{
 		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /adivorce [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /adivorce [player]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
@@ -133,81 +133,81 @@ CMD:adivorce(playerid, params[])
 				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 			ClearMarriage(giveplayerid);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You've admin divorced %s.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been admin divorced by an admin.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Admin cho %s ly hon.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Ban da duoc Admin cho ly hon.", GetPlayerNameEx(playerid));
 			return 1;
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 			return 1;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 }
 
 CMD:propose(playerid, params[])
 {
-	if(GetPlayerCash(playerid) < 100000) return SendClientMessageEx(playerid, COLOR_GREY, "   The marriage and reception costs $100,000!");
-	if(PlayerInfo[playerid][pMarriedID] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "   You're already married!");
+	if(GetPlayerCash(playerid) < 100000) return SendClientMessageEx(playerid, COLOR_GREY, "Le cuoi va tiec cuoi co gia $100,000!");
+	if(PlayerInfo[playerid][pMarriedID] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da ket hon!");
 
 	new giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /propose [player]");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /propose [player]");
 
 	if(IsPlayerConnected(giveplayerid))
 	{
-		if(PlayerInfo[giveplayerid][pMarriedID] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "   That person is already married!");
-		else if(MarryWitness[playerid] == giveplayerid || MarryWitnessOffer[giveplayerid] == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "   You can't marry the witness!");
+		if(PlayerInfo[giveplayerid][pMarriedID] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da ket hon!");
+		else if(MarryWitness[playerid] == giveplayerid || MarryWitnessOffer[giveplayerid] == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the ket hon voi nguoi lam chung!");
 
 		if(ProxDetectorS(8.0, playerid, giveplayerid))
 		{
-			if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot Propose to yourself!"); return 1; }
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You proposed to %s.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s just proposed to you (type /accept marriage) to accept.", GetPlayerNameEx(playerid));
+			if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "Khong the tu cau hon minh!"); return 1; }
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban cau hon %s.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s cau hon ban, dung /accept marriage de dong y.", GetPlayerNameEx(playerid));
 			ProposeOffer[giveplayerid] = playerid;
 			SetPVarInt(giveplayerid, "ProposeOfferSession", g_arrQueryHandle[playerid]);
-			ShowPlayerDialogEx(playerid, DIALOG_MARRIAGE, DIALOG_STYLE_MSGBOX, "Marriage Last Name", 
-			"As the proposer you have the initial option to keep your last name or use your spouse's.\n\
-			If you decide to keep your last name, your spouse will be given same option.\n\
-			Please use the buttons below to make your decision.", "Keep", "Use Their's");
+			ShowPlayerDialogEx(playerid, DIALOG_MARRIAGE, DIALOG_STYLE_MSGBOX, "Ho sau khi ket hon", 
+			"La nguoi cau hon, ban duoc chon giu ho hoac lay ho ban doi.\n\
+			Neu giu ho, ban doi cung duoc lua chon tuong tu.\n\
+			Dung cac nut ben duoi de chon.", "Giu", "Dung cua ho");
 		}
-		else return SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+		else return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 	return 1;
 }
 
 CMD:witness(playerid, params[])
 {
 	new giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /witness [player]");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /witness [player]");
 
 	if(IsPlayerConnected(giveplayerid))
 	{
 		if (ProxDetectorS(8.0, playerid, giveplayerid))
 		{
-			if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot Propose to yourself!"); return 1; }
-			if(ProposeOffer[giveplayerid] == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "Your spouse can't be the marriage witness!"); return 1; }
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You requested %s to be your Marriage Witness.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s just requested you to be their Marriage Witness (type /accept witness) to accept.", GetPlayerNameEx(playerid));
+			if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "Khong the tu cau hon minh!"); return 1; }
+			if(ProposeOffer[giveplayerid] == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "Ban doi khong the lam chung le cuoi!"); return 1; }
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban moi %s lam chung le cuoi.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s moi ban lam chung le cuoi, dung /accept witness de dong y.", GetPlayerNameEx(playerid));
 			MarryWitnessOffer[giveplayerid] = playerid;
 			SetPVarInt(giveplayerid, "MarryWitnessOfferSession", g_arrQueryHandle[playerid]);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 			return 1;
 		}
 
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 		return 1;
 	}
 	return 1;

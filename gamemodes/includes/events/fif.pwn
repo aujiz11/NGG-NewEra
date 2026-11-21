@@ -53,16 +53,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(FIFEnabled == 0)
 					{
 						FIFEnabled = 1; 
-						SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled the Fall Into Fun hours.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da bat gio Fall Into Fun.");
 						if(IsValidDynamicPickup(FIFPickup)) DestroyDynamicPickup(FIFPickup);
 						if(IsValidDynamic3DTextLabel(FIFText)) DestroyDynamic3DTextLabel(FIFText);
 						FIFPickup = CreateDynamicPickup(1239, 23, FIFGamble[0], FIFGamble[1], FIFGamble[2], 0);
-						FIFText = CreateDynamic3DTextLabel("Chance Gambler\n/gamblechances to risk all of your chances or double them", COLOR_RED, FIFGamble[0], FIFGamble[1], FIFGamble[2]+0.5,10.0);
+						FIFText = CreateDynamic3DTextLabel("Chance Gambler\n/gamblechances de cuoc het luot hoac nhan doi", COLOR_RED, FIFGamble[0], FIFGamble[1], FIFGamble[2]+0.5,10.0);
 					}
 					else if(FIFEnabled == 1)
 					{
 						FIFEnabled = 0; 
-						SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the Fall Into Fun hours.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da tat gio Fall Into Fun.");
 						if(IsValidDynamicPickup(FIFPickup)) DestroyDynamicPickup(FIFPickup);
 						if(IsValidDynamic3DTextLabel(FIFText)) DestroyDynamic3DTextLabel(FIFText);
 					}
@@ -73,15 +73,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					{
 						case 1:
 						{
-							ShowPlayerDialogEx(playerid, DIALOG_FIFMENU2, DIALOG_STYLE_LIST, "FIF Mode Edit", "{00FF00}Normal Mode (1 chance / 3 hours){FFFFFF}\nDouble Mode (2 chances / 3 hours)\nTriple Mode(3 chances / 3 hours)", "Select", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_FIFMENU2, DIALOG_STYLE_LIST, "Sua che do FIF", "{00FF00}Che do thuong (1 luot / 3 gio){FFFFFF}\nChe do doi (2 luot / 3 gio)\nChe do ba(3 luot / 3 gio)", "Chon", "Huy");
 						}
 						case 2:
 						{
-							ShowPlayerDialogEx(playerid, DIALOG_FIFMENU2, DIALOG_STYLE_LIST, "FIF Mode Edit", "Normal Mode (1 chance / 3 hours)\n{00FF00}Double Mode (2 chances / 3 hours){FFFFFF}\nTriple Mode(3 chances / 3 hours)", "Select", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_FIFMENU2, DIALOG_STYLE_LIST, "Sua che do FIF", "Che do thuong (1 luot / 3 gio)\n{00FF00}Che do doi (2 luot / 3 gio){FFFFFF}\nChe do ba(3 luot / 3 gio)", "Chon", "Huy");
 						}
 						case 3:
 						{
-							ShowPlayerDialogEx(playerid, DIALOG_FIFMENU2, DIALOG_STYLE_LIST, "FIF Mode Edit", "Normal Mode (1 chance / 3 hours)\nDouble Mode (2 chances / 3 hours)\n{00FF00}Triple Mode(3 chances / 3 hours){FFFFFF}", "Select", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_FIFMENU2, DIALOG_STYLE_LIST, "Sua che do FIF", "Che do thuong (1 luot / 3 gio)\nChe do doi (2 luot / 3 gio)\n{00FF00}Che do ba(3 luot / 3 gio){FFFFFF}", "Chon", "Huy");
 						}
 					}
 				}
@@ -90,12 +90,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(FIFGP3 == 0)
 					{
 						FIFGP3 = 1;
-						SendClientMessageEx(playerid, COLOR_WHITE, "Gold & Platinum VIP x3 Enabled.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da bat Gold & Platinum VIP x3.");
 					}
 					else
 					{
 						FIFGP3 = 0;
-						SendClientMessageEx(playerid, COLOR_WHITE, "Gold & Platinum VIP x3 Disabled.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da tat Gold & Platinum VIP x3.");
 					}
 				}
 				case 3:
@@ -103,12 +103,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(FIFTimeWarrior == 0)
 					{
 						FIFTimeWarrior = 1;
-						SendClientMessageEx(playerid, COLOR_WHITE, "Time Warrior Enabled.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da bat Time Warrior.");
 					}
 					else
 					{
 						FIFTimeWarrior = 0;
-						SendClientMessageEx(playerid, COLOR_WHITE, "Time Warrior Disabled.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da tat Time Warrior.");
 					}
 				}
 				case 4:
@@ -116,12 +116,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(FIFGThurs == 0)
 					{
 						FIFGThurs = 1;
-						SendClientMessageEx(playerid, COLOR_WHITE, "Golden Thursday Enabled.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da bat Golden Thursday.");
 					}
 					else
 					{
 						FIFGThurs = 0;
-						SendClientMessageEx(playerid, COLOR_WHITE, "Golden Thursday Disabled.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "Da tat Golden Thursday.");
 					}
 				}
 				case 5:
@@ -130,8 +130,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(IsValidDynamicPickup(FIFPickup)) DestroyDynamicPickup(FIFPickup);
 					if(IsValidDynamic3DTextLabel(FIFText)) DestroyDynamic3DTextLabel(FIFText);
 					FIFPickup = CreateDynamicPickup(1239, 23, FIFGamble[0], FIFGamble[1], FIFGamble[2], -1, -1, -1, 100.0);
-					FIFText = CreateDynamic3DTextLabel("Chance Gambler\n/gamblechances to risk all of your chances or double them", COLOR_RED, FIFGamble[0], FIFGamble[1], FIFGamble[2]+0.5,10.0);  
-					SendClientMessageEx(playerid, COLOR_WHITE, "FIF Gamble Position Updated");
+					FIFText = CreateDynamic3DTextLabel("Chance Gambler\n/gamblechances de cuoc het luot hoac nhan doi", COLOR_RED, FIFGamble[0], FIFGamble[1], FIFGamble[2]+0.5,10.0);  
+					SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri cuoc FIF");
 				}
 			}
 			Misc_Save();
@@ -145,17 +145,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				case 0:
 				{
 					FIFType = 1;
-					SendClientMessageEx(playerid, COLOR_WHITE, "FIF Mode set to x1");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Da dat che do FIF la x1");
 				}
 				case 1:
 				{
 					FIFType = 2;
-					SendClientMessageEx(playerid, COLOR_WHITE, "FIF Mode set to x2");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Da dat che do FIF la x2");
 				}
 				case 2:
 				{
 					FIFType = 3;
-					SendClientMessageEx(playerid, COLOR_WHITE, "FIF Mode set to x3");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Da dat che do FIF la x3");
 				}
 			}
 			Misc_Save();
@@ -172,15 +172,15 @@ CMD:togchancegambler(playerid, params[])
 		if(chancegambler == 0)
 		{
 			chancegambler = 1;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled the chance gambler event.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da bat su kien Chance Gambler.");
 		}
 		else
 		{
 			chancegambler = 0;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the chance gambler event.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da tat su kien Chance Gambler.");
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -190,10 +190,10 @@ CMD:gamblechances(playerid, params[])
 	{
 		new iChances = FIFInfo[playerid][FIFChances];
 		if(iChances < 1)
-			return SendClientMessageEx(playerid, COLOR_GREY, "You don't have any chances to gamble.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co luot de cuoc.");
 		if(!IsPlayerInRangeOfPoint(playerid, 20, FIFGamble[0], FIFGamble[1], FIFGamble[2]))
-			return SendClientMessageEx(playerid, COLOR_GREY, "You aren't at the chance gambler location.");
-		ShowPlayerDialogEx(playerid, DIALOG_ROLL, DIALOG_STYLE_MSGBOX, "Chance Gambler! - All or Nothing","You must roll a number greater than 4 to double your chances.", "Roll", "Cancel");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o vi tri Chance Gambler.");
+		ShowPlayerDialogEx(playerid, DIALOG_ROLL, DIALOG_STYLE_MSGBOX, "Chance Gambler! - Duoc an ca, nga ve khong","Ban phai do duoc so lon hon 4 de nhan doi luot.", "Do", "Huy");
 	}
 	else return 0;
 	return 1;
@@ -205,7 +205,7 @@ CMD:chances(playerid, params[])
 	if(chancegambler == 1)
 	{
 		new iChances = PlayerInfo[playerid][pRewardDrawChance] / 3;
-		SendClientMessageEx(playerid, COLOR_CYAN, "Chances: %d", iChances);
+		SendClientMessageEx(playerid, COLOR_CYAN, "Luot: %d", iChances);
 	}
 	else return 0;
 	return 1;
@@ -218,41 +218,41 @@ CMD:fifmenu(playerid, params[])
 		new FIFString[256];
 		if(FIFEnabled == 0)
 		{
-			format(FIFString, sizeof(FIFString), "{00FF00}Enable Fall Into Fun{FFFFFF}\nSet Hour Type");
+			format(FIFString, sizeof(FIFString), "{00FF00}Bat Fall Into Fun{FFFFFF}\nDat loai gio");
 		}
 		else 
 		{
-			format(FIFString, sizeof(FIFString), "{B70000}Disable Fall Into Fun{FFFFFF}\nSet Hour Type");
+			format(FIFString, sizeof(FIFString), "{B70000}Tat Fall Into Fun{FFFFFF}\nDat loai gio");
 		}
 		if(FIFGP3 == 0)
 		{
-			format(FIFString, sizeof(FIFString), "%s\n{00FF00}Enable GVIP & PVIP x3{FFFFFF}", FIFString);
+			format(FIFString, sizeof(FIFString), "%s\n{00FF00}Bat GVIP & PVIP x3{FFFFFF}", FIFString);
 		}
 		else
 		{
-			format(FIFString, sizeof(FIFString), "%s\n{B70000}Enable GVIP & PVIP x3{FFFFFF}", FIFString);
+			format(FIFString, sizeof(FIFString), "%s\n{B70000}Bat GVIP & PVIP x3{FFFFFF}", FIFString);
 	
 		}
 		if(FIFTimeWarrior == 0)
 		{
-			format(FIFString, sizeof(FIFString), "%s\n{00FF00}Enable Time Warrior{FFFFFF}", FIFString);
+			format(FIFString, sizeof(FIFString), "%s\n{00FF00}Bat Time Warrior{FFFFFF}", FIFString);
 		}
 		else
 		{
-			format(FIFString, sizeof(FIFString), "%s\n{B70000}Disable Time Warrior{FFFFFF}", FIFString);
+			format(FIFString, sizeof(FIFString), "%s\n{B70000}Tat Time Warrior{FFFFFF}", FIFString);
 	
 		}
 		if(FIFGThurs == 0)
 		{
-			format(FIFString, sizeof(FIFString), "%s\n{00FF00}Enable Golden Thursday{FFFFFF}", FIFString);
+			format(FIFString, sizeof(FIFString), "%s\n{00FF00}Bat Golden Thursday{FFFFFF}", FIFString);
 		}
 		else
 		{
-			format(FIFString, sizeof(FIFString), "%s\n{B70000}Disable Golden Thursday{FFFFFF}", FIFString);
+			format(FIFString, sizeof(FIFString), "%s\n{B70000}Tat Golden Thursday{FFFFFF}", FIFString);
 	
 		}
-		format(FIFString,sizeof(FIFString), "%s\nSet Chance Gambler Position", FIFString);
-		ShowPlayerDialogEx(playerid, DIALOG_FIFMENU, DIALOG_STYLE_LIST, "Fall Into Fun Menu", FIFString, "Select", "Cancel");
+		format(FIFString,sizeof(FIFString), "%s\nDat vi tri Chance Gambler", FIFString);
+		ShowPlayerDialogEx(playerid, DIALOG_FIFMENU, DIALOG_STYLE_LIST, "Menu Fall Into Fun", FIFString, "Chon", "Huy");
 	}
 	return 1;
 }
@@ -264,13 +264,13 @@ CMD:festivalload(playerid, params[]) {
 	if(!GetGVarType("FallLoaded")) {
 		SendRconCommand("loadfs FallFestival2014");
 		SendRconCommand("loadfs FallFestival2014mapping");
-		SendClientMessageEx(playerid, COLOR_GREY, "Fall Festival Loaded");
+		SendClientMessageEx(playerid, COLOR_GREY, "Da tai Fall Festival");
 		SetGVarInt("FallLoaded", 1);
 	}
 	else {
 		SendRconCommand("unloadfs FallFestival2014");
 		SendRconCommand("unloadfs FallFestival2014mapping");
-		SendClientMessageEx(playerid, COLOR_GREY, "Fall Festival unloaded");
+		SendClientMessageEx(playerid, COLOR_GREY, "Da go Fall Festival");
 		DeleteGVar("FallLoaded");
 	}
 

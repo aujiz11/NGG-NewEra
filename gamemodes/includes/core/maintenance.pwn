@@ -4,7 +4,7 @@ new SystemUpdate, SystemTimer;
 new Text:UpdateIn[2];
 
 hook OnGameModeInit() {
-	UpdateIn[0] = TextDrawCreate(483.999969, 431.007720, "Server_update_in:");
+	UpdateIn[0] = TextDrawCreate(483.999969, 431.007720, "Bao_tri_sau:");
 	TextDrawLetterSize(UpdateIn[0], 0.424666, 1.612444);
 	TextDrawAlignment(UpdateIn[0], 1);
 	TextDrawColor(UpdateIn[0], -1);
@@ -43,12 +43,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case DIALOG_MAINTENANCE:
 		{
 			if(response) {
-				if(isnull(inputtext)) return ShowPlayerDialogEx(playerid, DIALOG_MAINTENANCE, DIALOG_STYLE_INPUT, "How long should the timer run?", "Please specify in seconds how long before the server kicks all users & shuts down?\n\nWARNING: This action can't be undone!", "Shutdown", "Exit");
-				if(!(30 <= strval(inputtext) < 3541)) return ShowPlayerDialogEx(playerid, DIALOG_MAINTENANCE, DIALOG_STYLE_INPUT, "How long should the timer run?", "Please specify in seconds how long before the server kicks all users & shuts down?\n\nWARNING: This action can't be undone!", "Shutdown", "Exit");
-				if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to perform this action!");
+				if(isnull(inputtext)) return ShowPlayerDialogEx(playerid, DIALOG_MAINTENANCE, DIALOG_STYLE_INPUT, "Bo dem se chay bao lau?", "Nhap so giay truoc khi may chu kick tat ca va tat?\n\nCANH BAO: Khong the hoan tac!", "Tat may chu", "Thoat");
+				if(!(30 <= strval(inputtext) < 3541)) return ShowPlayerDialogEx(playerid, DIALOG_MAINTENANCE, DIALOG_STYLE_INPUT, "Bo dem se chay bao lau?", "Nhap so giay truoc khi may chu kick tat ca va tat?\n\nCANH BAO: Khong the hoan tac!", "Tat may chu", "Thoat");
+				if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen thuc hien viec nay!");
 
-			    SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* The server will be going down for Scheduled Maintenance. (See bottom right screen)");
-			    GameTextForAll("~n~~n~~n~~n~~y~] Scheduled Maintenance Alert ]", 5000, 3);
+			    SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* May chu sap bao tri theo lich. (Xem goc duoi ben phai)");
+			    GameTextForAll("~n~~n~~n~~n~~y~] Canh bao lich bao tri ]", 5000, 3);
 			    SystemUpdate = strval(inputtext);
 			    format(string, sizeof(string), "%s", STimeConvert(SystemUpdate));
 			    TextDrawShowForAll(UpdateIn[0]);
@@ -57,7 +57,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			    if(SystemUpdate != 0) KillTimer(SystemTimer);
 			    SystemTimer = SetTimer("MaintenanceTimer", 1000, true);
 			}
-			else SendClientMessageEx(playerid, COLOR_WHITE, "You have cancelled doing a maintenance restart.");
+			else SendClientMessageEx(playerid, COLOR_WHITE, "Da huy khoi dong lai de bao tri.");
 
 		}
 	}
@@ -66,8 +66,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 CMD:announcem(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
-    ShowPlayerDialogEx(playerid, DIALOG_MAINTENANCE, DIALOG_STYLE_INPUT, "How long should the timer run?", "Please specify in seconds how long before the server kicks all users & shuts down?\n\nWARNING: This action can't be undone!", "Shutdown", "Exit");
+    if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
+    ShowPlayerDialogEx(playerid, DIALOG_MAINTENANCE, DIALOG_STYLE_INPUT, "Bo dem se chay bao lau?", "Nhap so giay truoc khi may chu kick tat ca va tat?\n\nCANH BAO: Khong the hoan tac!", "Tat may chu", "Thoat");
     return 1;
 }
 
@@ -75,7 +75,7 @@ forward MaintenanceTimer();
 public MaintenanceTimer() {
 	new string[6];
 	if(--SystemUpdate == 0) KillTimer(SystemTimer), Maintenance();
-	if(SystemUpdate == 15) GameTextForAll("~n~~n~~n~~n~~w~Please ~r~log out ~w~now to ensure ~y~account data ~w~has been ~g~saved~w~!", 5000, 3);
+	if(SystemUpdate == 15) GameTextForAll("~n~~n~~n~~n~~w~Hay ~r~dang xuat ~w~ngay de dam bao ~y~du lieu tai khoan ~w~da duoc ~g~luu~w~!", 5000, 3);
 	if(SystemUpdate < 0) SystemUpdate = 0;
 	format(string, sizeof(string), "%s", STimeConvert(SystemUpdate));
 	TextDrawSetString(UpdateIn[1], string);
@@ -104,14 +104,14 @@ STimeConvert(time) {
 forward Maintenance();
 public Maintenance()
 {
-    ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Freezing Accounts...", 1);
+    ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang khoa tai khoan...", 1);
 
     foreach(new i: Player)
 	{
 		TogglePlayerControllable(i, false);
 	}
 
-    ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Locking Paintball Arenas...", 1);
+    ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang khoa dau truong Paintball...", 1);
 
     for(new i = 0; i < MAX_ARENAS; i++)
     {
@@ -124,7 +124,7 @@ public Maintenance()
 				if(PaintBallArena[arenaid][pbBidMoney] > 0)
 				{
 					GivePlayerCash(p,PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
-					SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of $%d because of premature closure.",PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
+					SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan $%d do dong som.",PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
 				}
 				if(arenaid == GetPVarInt(p, "ArenaNumber"))
 				{
@@ -135,7 +135,7 @@ public Maintenance()
 							if(PlayerInfo[p][pDonateRank] < 3)
 							{
 								PlayerInfo[p][pPaintTokens] += 3;
-								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
+								SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",3);
 							}
 						}
 						case 2:
@@ -143,7 +143,7 @@ public Maintenance()
 							if(PlayerInfo[p][pDonateRank] < 3)
 							{
 								PlayerInfo[p][pPaintTokens] += 4;
-								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
+								SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",4);
 							}
 						}
 						case 3:
@@ -151,7 +151,7 @@ public Maintenance()
 							if(PlayerInfo[p][pDonateRank] < 3)
 							{
 								PlayerInfo[p][pPaintTokens] += 5;
-								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+								SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",5);
 							}
 						}
 						case 4:
@@ -159,7 +159,7 @@ public Maintenance()
 							if(PlayerInfo[p][pDonateRank] < 3)
 							{
 								PlayerInfo[p][pPaintTokens] += 5;
-								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+								SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",5);
 							}
 						}
 						case 5:
@@ -167,7 +167,7 @@ public Maintenance()
 							if(PlayerInfo[p][pDonateRank] < 3)
 							{
 								PlayerInfo[p][pPaintTokens] += 6;
-								SendClientMessageEx(p, COLOR_WHITE, "You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
+								SendClientMessageEx(p, COLOR_WHITE, "Ban duoc hoan %d Paintball Tokens do dong som.",6);
 							}
 						}
 					}
@@ -180,11 +180,11 @@ public Maintenance()
     }
     foreach(new i: Player)
 	{
-		GameTextForPlayer(i, "Scheduled Maintenance..", 5000, 5);
+		GameTextForPlayer(i, "Bao tri theo lich..", 5000, 5);
 	}	
 
 
-    ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Accounts...", 1);
+    ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang luu tai khoan...", 1);
 	SendRconCommand("password asdatasdhwda");
 	SendRconCommand("hostname Next Generation Roleplay [Restarting for Maintenance]");
 	SaveAllAccountsUpdate(true);
@@ -202,41 +202,41 @@ public FinishMaintenance()
 	if(gAccountSaveErrors || gAccountSaveBatch != ACCOUNT_SAVE_NONE) return 0;
 	gAccountSaveBatch = ACCOUNT_SAVE_WORLD;
     foreach(new i: Player) Kick(i);
-    ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Houses...", 1);
+    ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang luu nha...", 1);
 	SaveHouses();
-	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Dynamic Doors...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang luu Dynamic Doors...", 1);
 	SaveDynamicDoors();
-	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Garages...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang luu garage...", 1);
 	SaveGarages();
-	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Map Icons...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang luu bieu tuong ban do...", 1);
 	SaveDynamicMapIcons();
-	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Gates...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang luu cong...", 1);
 	SaveGates();
-	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Event Points...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang luu Event Points...", 1);
 	SaveEventPoints();
-	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Paintball Arenas...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang luu dau truong Paintball...", 1);
 	SavePaintballArenas();
-	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Server Configuration", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang luu cau hinh may chu", 1);
     Misc_Save();
-    ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Office Elevator...", 1);
+    ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang luu thang may van phong...", 1);
 	SaveElevatorStuff();
-	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Mail Boxes...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang luu hop thu...", 1);
 	SaveMailboxes();
-	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Speed Cameras...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang luu camera toc do...", 1);
 	SaveSpeedCameras();
-	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Points...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang luu Points...", 1);
 	for (new i=0; i<MAX_POINTS; i++)
 	{
 		SavePoint(i);	
 	}
 	if(rflstatus > 0) {
-		ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving RFL Teams...", 1);
+		ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang luu doi RFL...", 1);
 		SaveRelayForLifeTeams();
 	}
 	g_mysql_SavePrices();
-	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Turfs...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang luu Turfs...", 1);
 	SaveTurfWars();
-	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Streamer Plugin Shutting Down...", 1);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Dang tat Streamer Plugin...", 1);
 	DestroyAllDynamicObjects();
 	DestroyAllDynamic3DTextLabels();
 	DestroyAllDynamicCPs();

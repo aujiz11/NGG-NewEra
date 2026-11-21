@@ -328,7 +328,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					}
 					cache_get_value_name_int(row,  "id", PlayerInfo[extraid][pId]);
                     if(PlayerInfo[extraid][pId] == gPropertySaleUncertain[0] || PlayerInfo[extraid][pId] == gPropertySaleUncertain[1]) {
-                        SendClientMessageEx(extraid, COLOR_RED, "Your property trade requires administrator verification and a server restart.");
+                        SendClientMessageEx(extraid, COLOR_RED, "Giao dich tai san can Admin xac minh va khoi dong lai may chu.");
                         Kick(extraid);
                         return 0;
                     }
@@ -860,7 +860,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 			SetPVarInt(extraid, "AuthAccount", cache_insert_id());
 			AdvanceTutorial(extraid);
 			g_mysql_LoadAccount(extraid);
-			format(szMiscArray, sizeof(szMiscArray), "WARNING: %s (ID: %d) has registered from %s", GetPlayerNameEx(extraid), extraid, GetPlayerCountry(extraid));
+			format(szMiscArray, sizeof(szMiscArray), "CANH BAO: %s (ID: %d) dang ky tu %s", GetPlayerNameEx(extraid), extraid, GetPlayerCountry(extraid));
 			ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 			TotalRegister++;
 			return 1;
@@ -1046,7 +1046,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 		{
 		    if(rows > 0)
 			{
-				SendClientMessage(extraid, COLOR_RED, "Your IP is banned! You can appeal this at http://www.ng-gaming.net/forums");
+				SendClientMessage(extraid, COLOR_RED, "IP cua ban bi cam! Khieu nai tai http://www.ng-gaming.net/forums");
 				SetTimerEx("KickEx", 1000, false, "i", extraid);
 			}
 			else
@@ -1064,7 +1064,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 		    {
 		        format(szMiscArray, sizeof(szMiscArray), "Nobody");
 				strmid(PlayerInfo[extraid][pReferredBy], szMiscArray, 0, strlen(szMiscArray), MAX_PLAYER_NAME);
-		        ShowPlayerDialogEx(extraid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Player", "There is no player registered to our server with such name.\nPlease enter the full name of the player who referred you.\nExample: FirstName_LastName", "Enter", "Cancel");
+		        ShowPlayerDialogEx(extraid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Loi - Nguoi choi khong hop le", "Khong co nguoi choi dang ky voi ten nay.\nHay nhap day du ten nguoi gioi thieu.\nVi du: FirstName_LastName", "Nhap", "Huy");
 			}
 			else {
 			    mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `IP` FROM `accounts` WHERE `Username` = '%s'", PlayerInfo[extraid][pReferredBy]);
@@ -1079,7 +1079,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 			if(newrows != 0)
 			{
-			    SendClientMessageEx(extraid, COLOR_YELLOW, "The player who referred you does not have a account on our server anymore, therefore he has not received any credits");
+			    SendClientMessageEx(extraid, COLOR_YELLOW, "Nguoi gioi thieu ban khong con tai khoan tren may chu nen khong nhan duoc credits");
 			}
 		}
 		case OFFLINE_FAMED_THREAD:
@@ -1090,7 +1090,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 		    if(newrows == 0)
 		    {
-		        SendClientMessageEx(extraid, COLOR_RED, "Error - This account does not exist.");
+		        SendClientMessageEx(extraid, COLOR_RED, "Loi - Tai khoan nay khong ton tai.");
 		    }
 		    else {
 		        new
@@ -1101,9 +1101,10 @@ public OnQueryFinish(resultid, extraid, handleid)
 		        mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Famed` = %d WHERE `Username` = '%s'", ilevel, szName);
 				mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-				format(string, sizeof(string), "AdmCmd: %s has offline set %s to a level %d famed", GetPlayerNameEx(extraid), szName, ilevel);
+				format(string, sizeof(string), "AdmCmd: %s da dat %s thanh famed cap %d khi ngoai tuyen", GetPlayerNameEx(extraid), szName, ilevel);
 				SendFamedMessage(COLOR_LIGHTRED, string);
 				ABroadCast(COLOR_LIGHTRED, string, 2);
+				format(string, sizeof(string), "AdmCmd: %s has offline set %s to a level %d famed", GetPlayerNameEx(extraid), szName, ilevel);
 				Log("logs/setfamed.log", string);
 				DeletePVar(extraid, "Offline_Famed");
 				DeletePVar(extraid, "Offline_Name");
@@ -1132,13 +1133,13 @@ public OnQueryFinish(resultid, extraid, handleid)
 				{
 					if(isnull(secureip) || strcmp(GetPlayerIpEx(extraid), secureip, false, strlen(secureip)) != 0)
 					{
-						SendClientMessage(extraid, COLOR_WHITE, "SERVER: Your IP does not match the whitelisted IP of that account. Contact a Senior+ Admin to whitelist your current IP.");
+						SendClientMessage(extraid, COLOR_WHITE, "SERVER: IP cua ban khong khop IP duoc phep cua tai khoan. Lien he Senior+ Admin de cho phep IP hien tai.");
 						foreach(new x: Player)
 						{
 							{
 								if(PlayerInfo[x][pAdmin] < 1337 && (PlayerInfo[x][pAdmin] >= 2 || PlayerInfo[x][pWatchdog] >= 2))
 								{
-									SendClientMessageEx(x, COLOR_YELLOW, "{AA3333}AdmWarning{FFFF00}: %s has been auto kicked for logging in with a non-whitelisted IP.", GetPlayerNameEx(extraid));
+									SendClientMessageEx(x, COLOR_YELLOW, "{AA3333}AdmWarning{FFFF00}: %s bi tu dong kick vi dang nhap tu IP khong duoc phep.", GetPlayerNameEx(extraid));
 								}
 								else if(PlayerInfo[x][pAdmin] >= 1337)
 								{
@@ -1148,7 +1149,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 									}
 									else
 									{
-										SendClientMessageEx(x, COLOR_YELLOW, "{AA3333}AdmWarning{FFFF00}: %s has been auto kicked for logging in with a non-whitelisted IP.", GetPlayerNameEx(extraid));
+										SendClientMessageEx(x, COLOR_YELLOW, "{AA3333}AdmWarning{FFFF00}: %s bi tu dong kick vi dang nhap tu IP khong duoc phep.", GetPlayerNameEx(extraid));
 									}
 								}
 							}
@@ -1283,16 +1284,17 @@ public OnQueryFinish(resultid, extraid, handleid)
 		        mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `pDedicatedPlayer` = %d WHERE `Username` = '%s'", ilevel, szName);
 				mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-				format(string, sizeof(string), "AdmCmd: %s has offline set %s to a level %d Dedicated", GetPlayerNameEx(extraid), szName, ilevel);
+				format(string, sizeof(string), "AdmCmd: %s da dat %s thanh Dedicated cap %d khi ngoai tuyen", GetPlayerNameEx(extraid), szName, ilevel);
 				SendDedicatedMessage(COLOR_LIGHTRED, string);
 				ABroadCast(COLOR_LIGHTRED, string, 2);
+				format(string, sizeof(string), "AdmCmd: %s has offline set %s to a level %d Dedicated", GetPlayerNameEx(extraid), szName, ilevel);
 				Log("logs/dedicated.log", string);
 				DeletePVar(extraid, "Offline_Dedicated");
 				DeletePVar(extraid, "Offline_DName");
 		    }
 		    else
 		    {
-				SendClientMessageEx(extraid, COLOR_RED, "Error - This account does not exist.");
+				SendClientMessageEx(extraid, COLOR_RED, "Loi - Tai khoan nay khong ton tai.");
 			}
 		}
 		case LOADFIF_THREAD:
@@ -1457,7 +1459,7 @@ Password_IsHash(const hash[])
 Password_Begin(playerid)
 {
 	if(playerid < 0 || playerid >= MAX_PLAYERS || !IsPlayerConnected(playerid)) return 0;
-	if(gPasswordPending[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "A credential request is already in progress."), 0;
+	if(gPasswordPending[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Dang co yeu cau xac thuc duoc xu ly."), 0;
 	gPasswordPending[playerid] = true;
 	if(++gPasswordRequest[playerid] <= 0) gPasswordRequest[playerid] = 1;
 	SetPVarString(playerid, "BcryptName", GetPlayerNameExt(playerid));
@@ -1490,7 +1492,7 @@ public OnCredentialTimeout(playerid, session, request)
 	DeletePVar(playerid, "AuthAccount");
 	DeletePVar(playerid, "BcryptName");
 	HideNoticeGUIFrame(playerid);
-	SendClientMessageEx(playerid, COLOR_RED, "Your credential request timed out. Its result could not be confirmed. Please try again.");
+	SendClientMessageEx(playerid, COLOR_RED, "Yeu cau xac thuc het thoi gian. Chua xac nhan duoc ket qua, hay thu lai.");
 	if(!gPlayerLogged{playerid}) ShowMainMenuDialog(playerid, 1);
 	return 1;
 }
@@ -1527,7 +1529,7 @@ public OnAccountPasswordVerified(playerid, bool:success, session, request, accou
 		HideNoticeGUIFrame(playerid);
 		ShowMainMenuDialog(playerid, 3);
 		if(++gPlayerLogTries[playerid] >= 2) {
-			SendClientMessageEx(playerid, COLOR_RED, "SERVER: Wrong password, you have been kicked out automatically.");
+			SendClientMessageEx(playerid, COLOR_RED, "MAY CHU: Sai mat khau, ban da bi tu dong kick.");
 			SetTimerEx("OnLoginRejectedKick", 1000, false, "ii", playerid, session);
 		}
 		return 0;
@@ -1556,9 +1558,9 @@ StartPasswordChange(playerid, const password[])
 	if(!request) return 0;
 	if(!bcrypt_hash(playerid, "OnPlayerPasswordHashed", password, BCRYPT_COST, "iii", g_arrQueryHandle[playerid], request, PlayerInfo[playerid][pId])) {
 		gPasswordPending[playerid] = false;
-		return SendClientMessageEx(playerid, COLOR_RED, "Unable to process your password change."), 0;
+		return SendClientMessageEx(playerid, COLOR_RED, "Khong the xu ly doi mat khau."), 0;
 	}
-	return SendClientMessageEx(playerid, COLOR_YELLOW, "Processing your request...");
+	return SendClientMessageEx(playerid, COLOR_YELLOW, "Dang xu ly yeu cau...");
 }
 
 forward OnPlayerPasswordHashed(playerid, session, request, account);
@@ -1591,8 +1593,8 @@ public OnPlayerPinSaved(playerid, session, request, account)
 	if(!Password_IsCurrent(playerid, session, request, account)) return 0;
 	gPasswordPending[playerid] = false;
 	DeletePVar(playerid, "ChangePin");
-	if(cache_affected_rows() != 1) return SendClientMessageEx(playerid, COLOR_RED, "Unable to save your PIN. Please try again."), 0;
-	return SendClientMessageEx(playerid, COLOR_CYAN, "Your PIN has been changed.");
+	if(cache_affected_rows() != 1) return SendClientMessageEx(playerid, COLOR_RED, "Khong the luu PIN. Hay thu lai."), 0;
+	return SendClientMessageEx(playerid, COLOR_CYAN, "PIN cua ban da duoc doi.");
 }
 
 forward OnAdminCredentialHashed(playerid, session, request, account, pin);
@@ -2023,16 +2025,16 @@ public OnRequestDeleteFlag(playerid, flagid)
 	new FlagText[64], FlagIssuer[MAX_PLAYER_NAME], FlagDate[24];
 	cache_get_row_count(rows);
 	cache_get_field_count(fields);
-	if(!rows) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Flag does not exist!", "Close", "");
+	if(!rows) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Loi Flag:", "Flag khong ton tai!", "Dong", "");
 	cache_get_value_name_int(0, "type", value);
-	if(value == 2 && PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Only Senior Admins+ can remove administrative flags!", "Close", "");
+	if(value == 2 && PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Loi Flag:", "Chi Senior Admins+ duoc xoa admin flag!", "Dong", "");
 	cache_get_value_name(0, "flag", FlagText, 64);
 	cache_get_value_name(0, "issuer", FlagIssuer, MAX_PLAYER_NAME);
 	cache_get_value_name(0, "time", FlagDate, 24);
 	SetPVarInt(playerid, "Flag_Delete_ID", flagid);
 	SetPVarString(playerid, "FlagText", FlagText);
-	format(string, sizeof(string), "Are you sure you want to delete:\n{FF6347}Flag ID:{BFC0C2} %d\n{FF6347}Flag:{BFC0C2} %s\n{FF6347}Issued by:{BFC0C2} %s\n{FF6347}Date Issued: {BFC0C2}%s", flagid, FlagText, FlagIssuer, FlagDate);
-	return ShowPlayerDialogEx(playerid, FLAG_DELETE2, DIALOG_STYLE_MSGBOX, "FLAG DELETION", string, "Yes", "No");
+	format(string, sizeof(string), "Xac nhan xoa:\n{FF6347}Flag ID:{BFC0C2} %d\n{FF6347}Flag:{BFC0C2} %s\n{FF6347}Nguoi them:{BFC0C2} %s\n{FF6347}Ngay them: {BFC0C2}%s", flagid, FlagText, FlagIssuer, FlagDate);
+	return ShowPlayerDialogEx(playerid, FLAG_DELETE2, DIALOG_STYLE_MSGBOX, "XOA FLAG", string, "Co", "Khong");
 }
 
 stock DeleteFlag(flagid, adminid)
@@ -2303,11 +2305,11 @@ AccountSave_Finish(bool:success)
 	new bool:maintenance = gAccountSaveBatch == ACCOUNT_SAVE_MAINTENANCE;
 	gAccountSaveBatch = ACCOUNT_SAVE_NONE;
 	if(gAccountSaveErrors) {
-		ABroadCastText(COLOR_RED, "Account saving failed. Check database errors before retrying; automatic shutdown was cancelled.", 1);
+		ABroadCastText(COLOR_RED, "Luu tai khoan that bai. Hay kiem tra loi database truoc khi thu lai, da huy tu dong tat may chu.", 1);
 		printf("[MySQL] Account save batch failed (%d errors).", gAccountSaveErrors);
 		return 0;
 	}
-	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Account saving finished!", maintenance ? 1 : 2);
+	ABroadCastText(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Da luu xong tai khoan!", maintenance ? 1 : 2);
 	print("Account Saving Complete");
 	if(maintenance) SetTimer("FinishMaintenance", 1500, false);
 	return 1;
@@ -2881,7 +2883,7 @@ public OnPhoneNumberCheck(index, extraid)
 			case 1: {
 				if(rows)
 				{
-					SendClientMessageEx(index, COLOR_WHITE, "That phone number has already been taken.");
+					SendClientMessageEx(index, COLOR_WHITE, "So dien thoai nay da co nguoi dung.");
 					DeletePVar(index, "PhChangerId");
 					DeletePVar(index, "WantedPh");
 					DeletePVar(index, "PhChangeCost");
@@ -2889,23 +2891,23 @@ public OnPhoneNumberCheck(index, extraid)
 				}
 				else
 				{
-					format(string,sizeof(string),"The phone number requested, %d, will cost a total of $%s.\n\nTo confirm, press OK.", GetPVarInt(index, "WantedPh"), number_format(GetPVarInt(index, "PhChangeCost")));
-					ShowPlayerDialogEx(index, VIPNUMMENU2, DIALOG_STYLE_MSGBOX, "Confirmation", string, "OK", "Cancel");
+					format(string,sizeof(string),"So dien thoai %d co gia $%s.\n\nNhan Dong y de xac nhan.", GetPVarInt(index, "WantedPh"), number_format(GetPVarInt(index, "PhChangeCost")));
+					ShowPlayerDialogEx(index, VIPNUMMENU2, DIALOG_STYLE_MSGBOX, "Xac nhan", string, "Dong y", "Huy");
 				}
 			}
 			case 2: {
 				if(rows)
 				{
-					SendClientMessageEx(index, COLOR_WHITE, "That phone number has already been taken.");
+					SendClientMessageEx(index, COLOR_WHITE, "So dien thoai nay da co nguoi dung.");
 				}
 				else
 				{
 					PlayerInfo[index][pPnumber] = GetPVarInt(index, "WantedPh");
 					GivePlayerCash(index, -GetPVarInt(index, "PhChangeCost"));
-					format(string, sizeof(string), "Cellphone purchased, your new phone number is %d.", GetPVarInt(index, "WantedPh"));
+					format(string, sizeof(string), "Da mua dien thoai, so moi cua ban la %d.", GetPVarInt(index, "WantedPh"));
 					SendClientMessageEx(index, COLOR_GRAD4, string);
-					SendClientMessageEx(index, COLOR_GRAD5, "You can check this any time you wish by typing /stats.");
-					SendClientMessageEx(index, COLOR_WHITE, "HINT: You can now type /cellphonehelp to see your cellphone commands.");
+					SendClientMessageEx(index, COLOR_GRAD5, "Dung /stats bat cu luc nao de xem lai.");
+					SendClientMessageEx(index, COLOR_WHITE, "GOI Y: Dung /cellphonehelp de xem lenh dien thoai.");
 					mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `PhoneNr` = %d WHERE `id` = '%d'", PlayerInfo[index][pPnumber], GetPlayerSQLId(index));
 					mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
 					DeletePVar(index, "PhChangerId");
@@ -2917,7 +2919,7 @@ public OnPhoneNumberCheck(index, extraid)
 			case 3: {
 				if(rows && GetPVarInt(index, "WantedPh") != 0)
 				{
-					SendClientMessageEx(index, COLOR_WHITE, "That phone number has already been taken.");
+					SendClientMessageEx(index, COLOR_WHITE, "So dien thoai nay da co nguoi dung.");
 				}
 				else
 				{
@@ -2926,7 +2928,7 @@ public OnPhoneNumberCheck(index, extraid)
 
 					format(string, sizeof(string), "%s by %s", string, GetPlayerNameEx(index));
 					Log("logs/undercover.log", string);
-					SendClientMessageEx(index, COLOR_GRAD1, string);
+					SendClientMessageEx(index, COLOR_GRAD1, "Da dat so dien thoai cua %s(%d) thanh %d boi %s.", GetPlayerNameEx(index), GetPlayerSQLId(index), GetPVarInt(index, "WantedPh"), GetPlayerNameEx(index));
 					mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `PhoneNr` = %d WHERE `id` = '%d'", PlayerInfo[index][pPnumber], GetPlayerSQLId(index));
 					mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
 					DeletePVar(index, "PhChangerId");
@@ -2940,7 +2942,7 @@ public OnPhoneNumberCheck(index, extraid)
 				{
 					if(rows)
 					{
-						SendClientMessageEx(GetPVarInt(index, "PhChangerId"), COLOR_WHITE, "That phone number has already been taken.");
+						SendClientMessageEx(GetPVarInt(index, "PhChangerId"), COLOR_WHITE, "So dien thoai nay da co nguoi dung.");
 					}
 					else
 					{
@@ -2949,7 +2951,7 @@ public OnPhoneNumberCheck(index, extraid)
 
 						format(string, sizeof(string), "%s by %s", string, GetPlayerNameEx(GetPVarInt(index, "PhChangerId")));
 						Log("logs/stats.log", string);
-						SendClientMessageEx(GetPVarInt(index, "PhChangerId"), COLOR_GRAD1, string);
+						SendClientMessageEx(GetPVarInt(index, "PhChangerId"), COLOR_GRAD1, "Da dat so dien thoai cua %s(%d) thanh %d boi %s.", GetPlayerNameEx(index), GetPlayerSQLId(index), GetPVarInt(index, "WantedPh"), GetPlayerNameEx(GetPVarInt(index, "PhChangerId")));
 						mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `PhoneNr` = %d WHERE `id` = '%d'", PlayerInfo[index][pPnumber], GetPlayerSQLId(index));
 						mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
 						DeletePVar(index, "PhChangerId");
@@ -2961,12 +2963,12 @@ public OnPhoneNumberCheck(index, extraid)
 			}
 			case 5: {
                 if(rows) {
-                    SendClientMessageEx(index, COLOR_WHITE, "That phone number has already been taken.");
+                    SendClientMessageEx(index, COLOR_WHITE, "So dien thoai nay da co nguoi dung.");
                     DeletePVar(index, "oldnum");
                     DeletePVar(index, "tempnum");
                 }
                 else {
-                    format(string, sizeof(string), "You have set your temporary number to %d, type /tempnum to disable it.", GetPVarInt(index, "tempnum"));
+                    format(string, sizeof(string), "Da dat so tam la %d, dung /tempnum de tat.", GetPVarInt(index, "tempnum"));
                     SendClientMessage(index, COLOR_WHITE, string);
                     PlayerInfo[index][pPnumber] = GetPVarInt(index, "tempnum");
                     TempNumber[index] = 1;
@@ -2998,7 +3000,7 @@ public AddingBan(index, type)
     		{
     		    DeletePVar(index, "BanningPlayer");
     		    DeletePVar(index, "BanningReason");
-    		    SendClientMessageEx(index, COLOR_GREY, "That player is already banned.");
+    		    SendClientMessageEx(index, COLOR_GREY, "Nguoi choi do da bi cam.");
     		}
     		else
     		{
@@ -3041,7 +3043,7 @@ public AddingBan(index, type)
 		    cache_get_row_count(rows);
 		    if(rows)
 		    {
-		        SendClientMessageEx(index, COLOR_GREY, "That IP address is already banned.");
+		        SendClientMessageEx(index, COLOR_GREY, "Dia chi IP do da bi cam.");
 				DeletePVar(index, "BanIP");
 		    }
 		    else
@@ -3051,7 +3053,7 @@ public AddingBan(index, type)
 		        mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%s', '%s')", ip, "/banip", GetPlayerNameEx(index));
 				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-		        SendClientMessageEx(index, COLOR_WHITE, "That IP address was successfully banned.");
+		        SendClientMessageEx(index, COLOR_WHITE, "Da cam dia chi IP do.");
 				DeletePVar(index, "BanIP");
 			}
 		}
@@ -3067,7 +3069,7 @@ public MailsQueryFinish(playerid)
 	cache_get_row_count(rows);
 
 	if (rows == 0) {
-		ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, " ", "Your mailbox is empty.", "OK", "");
+		ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, " ", "Hop thu cua ban trong.", "Dong y", "");
 		return 1;
 	}
 
@@ -3085,7 +3087,7 @@ public MailsQueryFinish(playerid)
 		ListItemTrackId[playerid][i] = id;
 	}
 
-    ShowPlayerDialogEx(playerid, DIALOG_POMAILS, DIALOG_STYLE_LIST, "Your mails", string, "Read", "Close");
+    ShowPlayerDialogEx(playerid, DIALOG_POMAILS, DIALOG_STYLE_LIST, "Thu cua ban", string, "Doc", "Dong");
 
 	return 1;
 }
@@ -3108,14 +3110,14 @@ public MailDetailsQueryFinish(playerid)
 
 	if (strlen(message) > 80) strins(message, "\n", 70);
 
-	format(string, sizeof(string), "{EEEEEE}%s\n\n{BBBBBB}Sender: {FFFFFF}%s\n{BBBBBB}Date: {EEEEEE}%s", message, sender,Date);
-	ShowPlayerDialogEx(playerid, DIALOG_PODETAIL, DIALOG_STYLE_MSGBOX, "Mail Content", string, "Back", "Trash");
+	format(string, sizeof(string), "{EEEEEE}%s\n\n{BBBBBB}Nguoi gui: {FFFFFF}%s\n{BBBBBB}Ngay: {EEEEEE}%s", message, sender,Date);
+	ShowPlayerDialogEx(playerid, DIALOG_PODETAIL, DIALOG_STYLE_MSGBOX, "Noi dung thu", string, "Quay lai", "Bo");
 
 	if (notify && !read) {
 		foreach(new i: Player)
 		{
 			if (GetPlayerSQLId(i) == senderid)	{
-				format(string, sizeof(string), "Your message has just been read by %s!", GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "%s vua doc thu cua ban!", GetPlayerNameEx(playerid));
 				SendClientMessageEx(i, COLOR_YELLOW, string);
 				break;
 			}
@@ -3144,7 +3146,7 @@ public MailDeliveryQueryFinish()
 		{
 			if (GetPlayerSQLId(j) == id) {
 				if (PlayerInfo[j][pDonateRank] >= 4 && HasMailbox(j))	{
-					SendClientMessageEx(j, COLOR_YELLOW, "Mail has just been delivered to your mailbox.");
+					SendClientMessageEx(j, COLOR_YELLOW, "Vua co thu duoc giao den hop thu cua ban.");
 					SetPVarInt(j, "UnreadMails", 1);
 					break;
 				}
@@ -3171,7 +3173,7 @@ public MDCQueryFinish(playerid, suspectid)
 		default: nation = "None";
 	}
 
-	format(resultline, sizeof(resultline), "{FF6347}Name:{BFC0C2} %s\t{FF6347}Phone Number:{BFC0C2} %d\n{FF6347}Total Previous Crimes: {BFC0C2}%d\t {FF6347}Total Arrests: {BFC0C2}%d \n{FF6347}Citizenship: {BFC0C2}%s \n{FF6347}Crime Key: {FF7D7D}Currently Wanted/{BFC0C2}Past Crime\n\n", GetPlayerNameEx(suspectid),PlayerInfo[suspectid][pPnumber], crimes, arrests, nation);
+	format(resultline, sizeof(resultline), "{FF6347}Ten:{BFC0C2} %s\t{FF6347}So dien thoai:{BFC0C2} %d\n{FF6347}Tong tien an: {BFC0C2}%d\t {FF6347}Tong lan bi bat: {BFC0C2}%d \n{FF6347}Quoc tich: {BFC0C2}%s \n{FF6347}Chu thich: {FF7D7D}Dang truy na/{BFC0C2}Tien an\n\n", GetPlayerNameEx(suspectid),PlayerInfo[suspectid][pPnumber], crimes, arrests, nation);
 
 	for(new i; i < rows; i++)
 	{
@@ -3180,12 +3182,12 @@ public MDCQueryFinish(playerid, suspectid)
 	    cache_get_value_name_int(i, "active", MDCInfo[i][mdcActive]);
 	    if(MDCInfo[i][mdcActive] == 1)
 	    {
-	        format(resultline, sizeof(resultline),"%s{FF6347}Crime: {FF7D7D}%s \t{FF6347}Charged by:{BFC0C2} %s\n",resultline, MDCInfo[i][mdcCrime], MDCInfo[i][mdcIssuer]);
+	        format(resultline, sizeof(resultline),"%s{FF6347}Toi danh: {FF7D7D}%s \t{FF6347}Boi:{BFC0C2} %s\n",resultline, MDCInfo[i][mdcCrime], MDCInfo[i][mdcIssuer]);
 		} else {
-			format(resultline, sizeof(resultline),"%s{FF6347}Crime: {BFC0C2}%s \t{FF6347}Charged by:{BFC0C2} %s\n",resultline, MDCInfo[i][mdcCrime], MDCInfo[i][mdcIssuer]);
+			format(resultline, sizeof(resultline),"%s{FF6347}Toi danh: {BFC0C2}%s \t{FF6347}Boi:{BFC0C2} %s\n",resultline, MDCInfo[i][mdcCrime], MDCInfo[i][mdcIssuer]);
 		}
 	}
-	ShowPlayerDialogEx(playerid, MDC_SHOWCRIMES, DIALOG_STYLE_MSGBOX, "MDC - Criminal History", resultline, "Back", "");
+	ShowPlayerDialogEx(playerid, MDC_SHOWCRIMES, DIALOG_STYLE_MSGBOX, "MDC - Tien an", resultline, "Quay lai", "");
 	return 1;
 }
 
@@ -3201,10 +3203,10 @@ public MDCReportsQueryFinish(playerid, suspectid)
 		cache_get_value_name(i, "id", str, 12); reportsid = strval(str);
 	    cache_get_value_name(i, "Username", copname, MAX_PLAYER_NAME);
 	    cache_get_value_name(i, "datetime", datetime, 64);
-	    format(resultline, sizeof(resultline),"%s{FF6347}Report (%d) {FF7D7D}Arrested by: %s on %s\n",resultline, reportsid, copname,datetime);
+	    format(resultline, sizeof(resultline),"%s{FF6347}Bao cao (%d) {FF7D7D}Nguoi bat: %s vao %s\n",resultline, reportsid, copname,datetime);
 	}
-	if(!resultline[0]) format(resultline, sizeof(resultline),"No Arrest Reports on record.",resultline, reportsid, copname,datetime);
-	ShowPlayerDialogEx(playerid, MDC_SHOWREPORTS, DIALOG_STYLE_LIST, "MDC - Criminal History", resultline, "Back", "");
+	if(!resultline[0]) format(resultline, sizeof(resultline),"Khong co bao cao bat giu.",resultline, reportsid, copname,datetime);
+	ShowPlayerDialogEx(playerid, MDC_SHOWREPORTS, DIALOG_STYLE_LIST, "MDC - Tien an", resultline, "Quay lai", "");
 	return 1;
 }
 
@@ -3220,9 +3222,9 @@ public MDCReportQueryFinish(playerid, reportid)
 	    cache_get_value_name(i, "Username", copname, MAX_PLAYER_NAME);
 	    cache_get_value_name(i, "datetime", datetime, 64);
 	    cache_get_value_name(i, "shortreport", shortreport, 200);
-	    format(resultline, sizeof(resultline),"{FF6347}Report #%d\n{FF7D7D}Arrested by: %s on %s\n{FF6347}Report:{BFC0C2} %s\n",reportid, copname,datetime, shortreport);
+	    format(resultline, sizeof(resultline),"{FF6347}Bao cao #%d\n{FF7D7D}Nguoi bat: %s vao %s\n{FF6347}Bao cao:{BFC0C2} %s\n",reportid, copname,datetime, shortreport);
 	}
-	ShowPlayerDialogEx(playerid, MDC_SHOWCRIMES, DIALOG_STYLE_MSGBOX, "MDC - Arrest Report", resultline, "Back", "");
+	ShowPlayerDialogEx(playerid, MDC_SHOWCRIMES, DIALOG_STYLE_MSGBOX, "MDC - Bao cao bat giu", resultline, "Quay lai", "");
 	return 1;
 }
 
@@ -3242,13 +3244,13 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 			cache_get_value_name(0, "issuer", FlagIssuer, MAX_PLAYER_NAME);
 			cache_get_value_name(0, "flag", FlagText, 64);
 			cache_get_value_name(0, "time", FlagDate, 24);
-			format(resultline, sizeof(resultline),"{FF6347}FlagID: {BFC0C2}%d\n{FF6347}Flag: {BFC0C2}%s\n{FF6347}Issued by:{BFC0C2} %s \n{FF6347}Date: {BFC0C2}%s", FlagID, FlagText, FlagIssuer, FlagDate);
-			ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_MSGBOX, "Viewing Flag Info", resultline, "Close", "");
+			format(resultline, sizeof(resultline),"{FF6347}FlagID: {BFC0C2}%d\n{FF6347}Flag: {BFC0C2}%s\n{FF6347}Nguoi ghi:{BFC0C2} %s \n{FF6347}Ngay: {BFC0C2}%s", FlagID, FlagText, FlagIssuer, FlagDate);
+			ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_MSGBOX, "Thong tin flag", resultline, "Dong", "");
 		}
 	    case Flag_Query_Display:
 	    {
-			format(header, sizeof(header), "{FF6347}Flag History for{BFC0C2} %s", GetPlayerNameEx(suspectid));
-			if(!rows) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, header, "{FF6347}No Flags on this account", "Close", "");
+			format(header, sizeof(header), "{FF6347}Lich su flag cua{BFC0C2} %s", GetPlayerNameEx(suspectid));
+			if(!rows) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, header, "{FF6347}Tai khoan khong co flag", "Dong", "");
 			for(new i; i < rows; i++)
 			{
 				cache_get_value_name(i, "fid", sResult); FlagID = strval(sResult);
@@ -3256,7 +3258,7 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 				if(strlen(FlagText) > 60) strmid(FlagText, FlagText, 0, 58), format(FlagText, sizeof(FlagText), "%s[...]", FlagText);
 				format(resultline, sizeof(resultline),"%s{FF6347}(ID: %d): {BFC0C2}%s\n", resultline, FlagID, FlagText);
 			}
-			ShowPlayerDialogEx(playerid, FLAG_LIST, DIALOG_STYLE_LIST, header, resultline, "Select", "Close");
+			ShowPlayerDialogEx(playerid, FLAG_LIST, DIALOG_STYLE_LIST, header, resultline, "Chon", "Dong");
 		}
 		case Flag_Query_Offline:
 		{
@@ -3264,9 +3266,9 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 			GetPVarString(playerid, "OnAddFlag", name, 24);
 			GetPVarString(playerid, "OnAddFlagReason", reason, 64);
 			if(rows > 0) {
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have appended %s's flag.", name);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da them flag cho %s.", name);
 
-				format(string, sizeof(string), "AdmCmd: %s was offline flagged by %s, reason: %s.", name, GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s duoc %s them flag offline, ly do: %s.", name, GetPlayerNameEx(playerid), reason);
 				ABroadCast(COLOR_LIGHTRED, string, 2);
 
 				format(string, sizeof(string), "%s was offline flagged by %s (%s).", name, GetPlayerNameEx(playerid), reason);
@@ -3277,7 +3279,7 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 				AddOFlag(strval(psqlid), playerid, reason);
 			}
 			else {
-				SendClientMessageEx(playerid, COLOR_WHITE, "There was a problem with appending %s's flag.", name);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Khong the them flag cho %s.", name);
 			}
 			DeletePVar(playerid, "OnAddFlagReason");
 		}
@@ -3291,7 +3293,7 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 			if(value)
 			{
 				new string[128];
-				format(string, sizeof(string), "SERVER: %s has logged in with %d outstanding admin flags /aviewflag to view!", GetPlayerNameEx(playerid), value);
+				format(string, sizeof(string), "SERVER: %s dang nhap voi %d admin flag chua xu ly, dung /aviewflag de xem!", GetPlayerNameEx(playerid), value);
 				ABroadCast(COLOR_LIGHTRED, string, 2);
 			}
 		}
@@ -3309,16 +3311,16 @@ public SkinQueryFinish(playerid, queryid)
 	{
 	    case Skin_Query_Display:
 	    {
-			if(PlayerInfo[playerid][pDonateRank] <= 0) format(header, sizeof(header), "Closet -- Space: %d/10", PlayerInfo[playerid][pSkins]);
-			else if(PlayerInfo[playerid][pDonateRank] > 0) format(header, sizeof(header), "Closet -- Space: %d/25", PlayerInfo[playerid][pSkins]);
+			if(PlayerInfo[playerid][pDonateRank] <= 0) format(header, sizeof(header), "Tu quan ao: %d/10", PlayerInfo[playerid][pSkins]);
+			else if(PlayerInfo[playerid][pDonateRank] > 0) format(header, sizeof(header), "Tu quan ao: %d/25", PlayerInfo[playerid][pSkins]);
 
-			if(rows == 0) return SendClientMessageEx(playerid, COLOR_GREY, "There are no clothes in this closet!");
+			if(rows == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Tu quan ao khong co quan ao nao!");
 			for(new i; i < rows; i++)
 			{
 			    cache_get_value_name(i, "skinid", sResult); skinid = strval(sResult);
 				format(resultline, sizeof(resultline),"%sSkin ID: %d\n",resultline, skinid);
 			}
-			ShowPlayerDialogEx(playerid, SKIN_LIST, DIALOG_STYLE_LIST, header, resultline, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, SKIN_LIST, DIALOG_STYLE_LIST, header, resultline, "Chon", "Huy");
 		}
 		case Skin_Query_Count:
 		{
@@ -3333,22 +3335,22 @@ public SkinQueryFinish(playerid, queryid)
 				{
 					SetPVarInt(playerid, "closetskinid", skinid);
 					SetPlayerSkin(playerid, skinid);
-					ShowPlayerDialogEx(playerid, SKIN_CONFIRM, DIALOG_STYLE_MSGBOX, "Closet", "Do you want to wear these clothes?", "Yes", "Go Back");
+					ShowPlayerDialogEx(playerid, SKIN_CONFIRM, DIALOG_STYLE_MSGBOX, "Tu quan ao", "Ban muon mac bo quan ao nay khong?", "Co", "Quay lai");
 				}
 			}
 		}
 		case Skin_Query_Delete:
 	    {
-			if(PlayerInfo[playerid][pDonateRank] <= 0) format(header, sizeof(header), "Closet -- Space: %d/10", PlayerInfo[playerid][pSkins]);
-			else if(PlayerInfo[playerid][pDonateRank] > 0) format(header, sizeof(header), "Closet -- Space: %d/25", PlayerInfo[playerid][pSkins]);
+			if(PlayerInfo[playerid][pDonateRank] <= 0) format(header, sizeof(header), "Tu quan ao: %d/10", PlayerInfo[playerid][pSkins]);
+			else if(PlayerInfo[playerid][pDonateRank] > 0) format(header, sizeof(header), "Tu quan ao: %d/25", PlayerInfo[playerid][pSkins]);
 
-			if(rows == 0) return SendClientMessageEx(playerid, COLOR_GREY, "There are no clothes in this closet!");
+			if(rows == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Tu quan ao khong co quan ao nao!");
 			for(new i; i < rows; i++)
 			{
 			    cache_get_value_name(i, "skinid", sResult); skinid = strval(sResult);
 				format(resultline, sizeof(resultline),"%sSkin ID: %d\n",resultline, skinid);
 			}
-			ShowPlayerDialogEx(playerid, SKIN_DELETE, DIALOG_STYLE_LIST, header, resultline, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, SKIN_DELETE, DIALOG_STYLE_LIST, header, resultline, "Chon", "Huy");
 		}
 		case Skin_Query_Delete_ID:
 		{
@@ -3358,7 +3360,7 @@ public SkinQueryFinish(playerid, queryid)
 				if(i == GetPVarInt(playerid, "closetchoiceid"))
 				{
 					SetPVarInt(playerid, "closetskinid", skinid);
-					ShowPlayerDialogEx(playerid, SKIN_DELETE2, DIALOG_STYLE_MSGBOX, "Closet", "Are you sure you want to remove these clothes?", "Yes", "Cancel");
+					ShowPlayerDialogEx(playerid, SKIN_DELETE2, DIALOG_STYLE_MSGBOX, "Tu quan ao", "Ban chac chan muon xoa bo quan ao nay?", "Co", "Huy");
 				}
 			}
 		}
@@ -3399,11 +3401,11 @@ public NationQueueQueryFinish(playerid, nation, queryid)
 			{
 				mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, '%s', NOW(), %d, 1)", GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), nation);
 				mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
-				SendClientMessageEx(playerid, COLOR_GREY, "You have been added to the nation's application queue. The nation's leader can now choose to accept or deny your application.");
+				SendClientMessageEx(playerid, COLOR_GREY, "Ban da duoc them vao hang cho don quoc tich. Lanh dao quoc gia co the chap nhan hoac tu choi don.");
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "You are already in queue to join a nation.");
+				SendClientMessageEx(playerid, COLOR_GREY, "Ban da o trong hang cho gia nhap quoc gia.");
 			}
 		}
 		case UpdateQueue:
@@ -3417,14 +3419,14 @@ public NationQueueQueryFinish(playerid, nation, queryid)
 		case AppQueue:
 	    {
 			new sDate[32];
-			if(rows == 0) return SendClientMessageEx(playerid, COLOR_GREY, "There are currently no pending applications.");
+			if(rows == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Hien khong co don dang cho.");
 			for(new i; i < rows; i++)
 			{
 				cache_get_value_name(i, "name", sResult, MAX_PLAYER_NAME);
 				cache_get_value_name(i, "date", sDate, 32);
-				format(resultline, sizeof(resultline), "%s%s -- Date Submitted: %s\n", resultline, sResult, sDate);
+				format(resultline, sizeof(resultline), "%s%s -- Ngay nop: %s\n", resultline, sResult, sDate);
 			}
-			ShowPlayerDialogEx(playerid, NATION_APP_LIST, DIALOG_STYLE_LIST, "Nation Applications", resultline, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, NATION_APP_LIST, DIALOG_STYLE_LIST, "Don xin quoc tich", resultline, "Chon", "Huy");
 		}
 	    case AddQueue:
 	    {
@@ -3471,7 +3473,7 @@ public NationAppFinish(playerid, queryid)
 							if(IsPlayerConnected(giveplayerid))
 							{
 								PlayerInfo[giveplayerid][pNation] = 0;
-								SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your application for San Andreas citizenship has been approved!");
+								SendClientMessageEx(giveplayerid, COLOR_WHITE, "Don xin quoc tich San Andreas cua ban da duoc duyet!");
 							}
 							else
 							{
@@ -3485,7 +3487,7 @@ public NationAppFinish(playerid, queryid)
 							if(IsPlayerConnected(giveplayerid))
 							{
 								PlayerInfo[giveplayerid][pNation] = 1;
-								SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your application for New Robada citizenship has been approved!");
+								SendClientMessageEx(giveplayerid, COLOR_WHITE, "Don xin quoc tich New Robada cua ban da duoc duyet!");
 							}
 							else
 							{
@@ -3496,7 +3498,7 @@ public NationAppFinish(playerid, queryid)
 						}
 					}
 					Log("logs/gov.log", string);
-					format(string, sizeof(string), "You have successfully approved %s's application.", sResult);
+					format(string, sizeof(string), "Ban da duyet don cua %s.", sResult);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					DeletePVar(playerid, "Nation_App_ID");
 				}
@@ -3517,17 +3519,17 @@ public NationAppFinish(playerid, queryid)
 					{
 						case 1:
 						{
-							if(IsPlayerConnected(giveplayerid)) SendClientMessageEx(giveplayerid, COLOR_GREY, "Your application for San Andreas citizenship has been denied.");
+							if(IsPlayerConnected(giveplayerid)) SendClientMessageEx(giveplayerid, COLOR_GREY, "Don xin quoc tich San Andreas cua ban da bi tu choi.");
 							format(string, sizeof(string), "%s has denied %s's application for San Andreas citizenship", GetPlayerNameEx(playerid), sResult);
 						}
 						case 2:
 						{
-							if(IsPlayerConnected(giveplayerid)) SendClientMessageEx(giveplayerid, COLOR_GREY, "Your application for San Andreas citizenship has been denied.");
+							if(IsPlayerConnected(giveplayerid)) SendClientMessageEx(giveplayerid, COLOR_GREY, "Don xin quoc tich San Andreas cua ban da bi tu choi.");
 							format(string, sizeof(string), "%s has denied %s's application for New Robada citizenship", GetPlayerNameEx(playerid), sResult);
 						}
 					}
 					Log("logs/gov.log", string);
-					format(string, sizeof(string), "You have successfully denied %s's application.", sResult);
+					format(string, sizeof(string), "Ban da tu choi don cua %s.", sResult);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					DeletePVar(playerid, "Nation_App_ID");
 				}
@@ -3553,7 +3555,7 @@ public UnreadMailsNotificationQueryFin(playerid)
 	cache_get_value_name(0, "Unread_Count", szResult);
 	if (strval(szResult) > 0) {
 		SetPVarInt(playerid, "UnreadMails", 1);
-		SendClientMessageEx(playerid, COLOR_YELLOW, "You have unread items in your mailbox.");
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Ban co thu chua doc trong hop thu.");
 	}
 	return 1;
 }
@@ -3565,16 +3567,16 @@ public RecipientLookupFinish(playerid)
 	new rows, szResult[16], admin, undercover, id;
 	cache_get_row_count(rows);
 
-	if (!rows) return ShowPlayerDialogEx(playerid, DIALOG_PORECEIVER, DIALOG_STYLE_INPUT, "Recipient", "{FF3333}Error: {FFFFFF}Invalid Recipient - Account does not exist!\n\nPlease type the name of the recipient (online or offline)", "Next", "Cancel");
+	if (!rows) return ShowPlayerDialogEx(playerid, DIALOG_PORECEIVER, DIALOG_STYLE_INPUT, "Nguoi nhan", "{FF3333}Loi: {FFFFFF}Tai khoan nguoi nhan khong ton tai!\n\nNhap ten nguoi nhan (online hoac offline)", "Tiep", "Huy");
 
 	cache_get_value_name(0, "AdminLevel", szResult); admin = strval(szResult);
 	cache_get_value_name(0, "TogReports", szResult); undercover = strval(szResult);
 	cache_get_value_name(0, "id", szResult); id = strval(szResult);
 
-	if (admin >= 2 && undercover == 0) return ShowPlayerDialogEx(playerid, DIALOG_PORECEIVER, DIALOG_STYLE_INPUT, "Recipient", "{FF3333}Error: {FFFFFF}You can't send a letter to admins!\n\nPlease type the name of the recipient (online or offline)", "Next", "Cancel");
+	if (admin >= 2 && undercover == 0) return ShowPlayerDialogEx(playerid, DIALOG_PORECEIVER, DIALOG_STYLE_INPUT, "Nguoi nhan", "{FF3333}Loi: {FFFFFF}Khong the gui thu cho Admin!\n\nNhap ten nguoi nhan (online hoac offline)", "Tiep", "Huy");
 
 	SetPVarInt(playerid, "LetterRecipient", id);
-	ShowPlayerDialogEx(playerid, DIALOG_POMESSAGE, DIALOG_STYLE_INPUT, "Send Letter", "{FFFFFF}Please type the message.", "Send", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_POMESSAGE, DIALOG_STYLE_INPUT, "Gui thu", "{FFFFFF}Hay nhap noi dung thu.", "Gui", "Huy");
 
 	return 1;
 
@@ -3597,11 +3599,11 @@ public CheckSales(index)
    				format(szDialog, sizeof(szDialog), "%s\n%s ", szDialog, szResult);
    				Selected[index][i] = id;
 			}
-			ShowPlayerDialogEx(index, DIALOG_VIEWSALE, DIALOG_STYLE_LIST, "Select a time frame", szDialog, "View", "Exit");
+			ShowPlayerDialogEx(index, DIALOG_VIEWSALE, DIALOG_STYLE_LIST, "Chon khoang thoi gian", szDialog, "View", "Thoat");
 		}
 		else
 		{
-		    SendClientMessageEx(index, COLOR_WHITE, "There was an issue with checking the table.");
+		    SendClientMessageEx(index, COLOR_WHITE, "Gap loi khi kiem tra bang.");
 		}
 	}
 }
@@ -3628,63 +3630,63 @@ public CheckSales2(index)
 			}
 
      	    format(szDialog, sizeof(szDialog),"\
-		 	Gold VIP Sold: %d | Total Credits: %s\n\
-		 	Gold VIP Renew Sold: %d | Total Credits: %s\n\
-		 	Silver VIP Sold: %d | Total Credits: %s\n\
-		 	Bronze VIP Sold: %d | Total Credits: %s\n\
-		 	Toys Sold: %d | Total Credits: %s\n\
-		 	Cars Sold: %d | Total Credits: %s\n", Solds[0], number_format(Amount[0]), Solds[1], number_format(Amount[1]), Solds[2], number_format(Amount[2]), Solds[3], number_format(Amount[3]), Solds[4], number_format(Amount[4]),
+		 	Gold VIP ban: %d | Tong Credits: %s\n\
+		 	Gold VIP Renew ban: %d | Tong Credits: %s\n\
+		 	Silver VIP ban: %d | Tong Credits: %s\n\
+		 	Bronze VIP ban: %d | Tong Credits: %s\n\
+		 	Toys ban: %d | Tong Credits: %s\n\
+		 	Cars ban: %d | Tong Credits: %s\n", Solds[0], number_format(Amount[0]), Solds[1], number_format(Amount[1]), Solds[2], number_format(Amount[2]), Solds[3], number_format(Amount[3]), Solds[4], number_format(Amount[4]),
 			 Solds[5], number_format(Amount[5]));
 
 		 	format(szDialog, sizeof(szDialog), "%s\
-		 	Pokertables Sold: %d | Total Credits: %s\n\
-		 	Boomboxes Sold: %d | Total Credits: %s\n\
-		 	Paintball Tokens Sold: %d | Total Credits: %s\n\
-		 	EXP Tokens Sold: %d | Total Credits: %s\n\
-		 	Fireworks Sold: %d | Total Credits: %s\n", szDialog, Solds[6], number_format(Amount[6]), Solds[7], number_format(Amount[7]), Solds[8], number_format(Amount[8]), Solds[9], number_format(Amount[9]), Solds[10], number_format(Amount[10]));
+		 	Pokertables ban: %d | Tong Credits: %s\n\
+		 	Boomboxes ban: %d | Tong Credits: %s\n\
+		 	Paintball Tokens ban: %d | Tong Credits: %s\n\
+		 	EXP Tokens ban: %d | Tong Credits: %s\n\
+		 	Fireworks ban: %d | Tong Credits: %s\n", szDialog, Solds[6], number_format(Amount[6]), Solds[7], number_format(Amount[7]), Solds[8], number_format(Amount[8]), Solds[9], number_format(Amount[9]), Solds[10], number_format(Amount[10]));
 
-			format(szDialog, sizeof(szDialog), "%sBusiness Renew Regular Sold: %d | Total Credits: %s\n\
-		 	Business Renew Standard Sold: %d | Total Credits: %s\n\
-		 	Business Renew Premium Sold: %d | Total Credits: %s\n\
-		 	Houses Sold: %d | Total Credits: %s\n", szDialog, Solds[11], number_format(Amount[11]), Solds[12], number_format(Amount[12]), Solds[13], number_format(Amount[13]), Solds[14], number_format(Amount[14]));
+			format(szDialog, sizeof(szDialog), "%sBusiness Renew Regular ban: %d | Tong Credits: %s\n\
+		 	Business Renew Standard ban: %d | Tong Credits: %s\n\
+		 	Business Renew Premium ban: %d | Tong Credits: %s\n\
+		 	Houses ban: %d | Tong Credits: %s\n", szDialog, Solds[11], number_format(Amount[11]), Solds[12], number_format(Amount[12]), Solds[13], number_format(Amount[13]), Solds[14], number_format(Amount[14]));
 
-		 	format(szDialog, sizeof(szDialog), "%sHouse Moves Sold: %d | Total Credits: %s\n\
-		 	House Interiors Sold: %d | Total Credits: %s\n\
-			Reset Gift Timer Sold: %d | Total Credits: %s\n\
-			Advanced Health Care Sold: %d | Total Credits: %s\n",szDialog, Solds[15], number_format(Amount[15]), Solds[16], number_format(Amount[16]), Solds[17], number_format(Amount[17]), Solds[18], number_format(Amount[18]));
+		 	format(szDialog, sizeof(szDialog), "%sHouse Moves ban: %d | Tong Credits: %s\n\
+		 	House Interiors ban: %d | Tong Credits: %s\n\
+			Reset Gift Timer ban: %d | Tong Credits: %s\n\
+			Advanced Health Care ban: %d | Tong Credits: %s\n",szDialog, Solds[15], number_format(Amount[15]), Solds[16], number_format(Amount[16]), Solds[17], number_format(Amount[17]), Solds[18], number_format(Amount[18]));
 
-			format(szDialog, sizeof(szDialog), "%sSuper Health Car Sold: %d | Total Credits: %s\n\
-			Rented Cars Sold: %d | Total Credits: %s\n\
-			Custom License Sold: %d | Total Credits: %s\n\
-			Additional Vehicle Slot Sold: %d | Total Credits: %s\n",szDialog, Solds[19], number_format(Amount[19]), Solds[20], number_format(Amount[20]),Solds[22], number_format(Amount[22]), Solds[23], number_format(Amount[23]));
+			format(szDialog, sizeof(szDialog), "%sSuper Health Car ban: %d | Tong Credits: %s\n\
+			Rented Cars ban: %d | Tong Credits: %s\n\
+			Custom License ban: %d | Tong Credits: %s\n\
+			Additional Vehicle Slot ban: %d | Tong Credits: %s\n",szDialog, Solds[19], number_format(Amount[19]), Solds[20], number_format(Amount[20]),Solds[22], number_format(Amount[22]), Solds[23], number_format(Amount[23]));
 
-			format(szDialog, sizeof(szDialog), "%sGarage - Small Sold: %d | Total Credits: %s\n\
-			Garage - Medium Sold: %d | Total Credits: %s\n\
-			Garage - Large Sold: %d | Total Credits: %s\n\
-			Garage - Extra Large Sold: %d | Total Credits: %s\n", szDialog, Solds[24], number_format(Amount[24]), Solds[25], number_format(Amount[25]), Solds[26], number_format(Amount[26]), Solds[27], number_format(Amount[27]));
+			format(szDialog, sizeof(szDialog), "%sGarage - Small ban: %d | Tong Credits: %s\n\
+			Garage - Medium ban: %d | Tong Credits: %s\n\
+			Garage - Large ban: %d | Tong Credits: %s\n\
+			Garage - Extra Large ban: %d | Tong Credits: %s\n", szDialog, Solds[24], number_format(Amount[24]), Solds[25], number_format(Amount[25]), Solds[26], number_format(Amount[26]), Solds[27], number_format(Amount[27]));
 
-			format(szDialog, sizeof(szDialog), "%sAdditional Toy Slot Sold: %d | Total Credits: %s\n\
-			Hunger Voucher: %d | Total Credits: %s\n\
-			Spawn at Gold VIP+: %d | Total Credits: %s\n\
-			Restricted Last Name (NEW): %d | Total Credits: %s\n\
-			Restricted Last Name (CHANGE): %d | Total Credits: %s\n", szDialog, Solds[28], number_format(Amount[28]), Solds[29], number_format(Amount[29]), Solds[30], number_format(Amount[30]), Solds[31], number_format(Amount[31]), Solds[32], number_format(Amount[32]));
+			format(szDialog, sizeof(szDialog), "%sAdditional Toy Slot ban: %d | Tong Credits: %s\n\
+			Hunger Voucher: %d | Tong Credits: %s\n\
+			Spawn at Gold VIP+: %d | Tong Credits: %s\n\
+			Restricted Last Name (NEW): %d | Tong Credits: %s\n\
+			Restricted Last Name (CHANGE): %d | Tong Credits: %s\n", szDialog, Solds[28], number_format(Amount[28]), Solds[29], number_format(Amount[29]), Solds[30], number_format(Amount[30]), Solds[31], number_format(Amount[31]), Solds[32], number_format(Amount[32]));
 
-			format(szDialog, sizeof(szDialog), "%sCustom User Title (NEW): %d | Total Credits: %s\n\
-			Custom User Title (CHANGE): %d | Total Credits: %s\n\
-			Teamspeak User Channel: %d | Total Credits: %s\n\
-			Small Backpack: %d | Total Credits: %s\n\
-			Medium Backpack: %d | Total Credits: %s\n\
-			Large Backpack: %d | Total Credits: %s\n\
-			Deluxe Car Alarm: %d | Total Credits: %s\n\
-			Name Changes: %d | Total Credits: %s\n",
+			format(szDialog, sizeof(szDialog), "%sCustom User Title (NEW): %d | Tong Credits: %s\n\
+			Custom User Title (CHANGE): %d | Tong Credits: %s\n\
+			Teamspeak User Channel: %d | Tong Credits: %s\n\
+			Small Backpack: %d | Tong Credits: %s\n\
+			Medium Backpack: %d | Tong Credits: %s\n\
+			Large Backpack: %d | Tong Credits: %s\n\
+			Deluxe Car Alarm: %d | Tong Credits: %s\n\
+			Name Changes: %d | Tong Credits: %s\n",
 			szDialog, Solds[33], number_format(Amount[33]), Solds[34], number_format(Amount[34]), Solds[35], number_format(Amount[35]), Solds[36], number_format(Amount[36]), Solds[37], number_format(Amount[37]), Solds[38], number_format(Amount[38]), Solds[39], number_format(Amount[39]), Solds[40], number_format(Amount[40]));
 
-			format(szDialog, sizeof(szDialog), "%sCredits Transactions: %d | Total Credits %s", szDialog, Solds[21], number_format(Amount[21]));
-		 	ShowPlayerDialogEx(index, DIALOG_VIEWSALE2, DIALOG_STYLE_MSGBOX, "Shop Statistics", szDialog, "Next", "Exit");
+			format(szDialog, sizeof(szDialog), "%sGiao dich Credits: %d | Tong Credits %s", szDialog, Solds[21], number_format(Amount[21]));
+		 	ShowPlayerDialogEx(index, DIALOG_VIEWSALE2, DIALOG_STYLE_MSGBOX, "Thong ke Shop", szDialog, "Tiep", "Thoat");
 		}
 		else
 		{
-		    SendClientMessageEx(index, COLOR_GREY, "There was an issue with checking the table.");
+		    SendClientMessageEx(index, COLOR_GREY, "Gap loi khi kiem tra bang.");
 		}
 	}
 }
@@ -3713,15 +3715,15 @@ public CheckSales3(index)
 			{
 				new microItemName[36];
 				strunpack(microItemName, mItemName[m], sizeof(microItemName));
-				format(szDialog, sizeof(szDialog), "%s%s: %s | Total Credits: %s\n", szDialog, microItemName, number_format(mSolds[m]), number_format(mAmount[m]));
+				format(szDialog, sizeof(szDialog), "%s%s: %s | Tong Credits: %s\n", szDialog, microItemName, number_format(mSolds[m]), number_format(mAmount[m]));
 				mTotal += mAmount[m];
 			}
-			format(szDialog, sizeof(szDialog), "%sTotal Amount of Credits spent: %s", szDialog, number_format(Total+mTotal));
-			ShowPlayerDialogEx(index, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Shop Statistics", szDialog, "Exit", "");
+			format(szDialog, sizeof(szDialog), "%sTong Credits da tieu: %s", szDialog, number_format(Total+mTotal));
+			ShowPlayerDialogEx(index, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Thong ke Shop", szDialog, "Thoat", "");
 		}
 		else
 		{
-			SendClientMessageEx(index, COLOR_GREY, "There was an issue with checking the table.");
+			SendClientMessageEx(index, COLOR_GREY, "Gap loi khi kiem tra bang.");
 		}
 	}
 }
@@ -3748,7 +3750,7 @@ public LoadRentedCar(index)
 			SetPVarInt(index, "RentedHours", Info[1]);
 			SetPVarInt(index, "RentedVehicle", CreateVehicle(Info[0],pos[0],pos[1], pos[2], pos[3], random(128), random(128), 2000000));
 
-			SendClientMessageEx(index, COLOR_CYAN, "Your rented vehicle has been spawned and has %d minute(s) left.", Info[1]);
+			SendClientMessageEx(index, COLOR_CYAN, "Xe thue cua ban da duoc lay ra va con %d phut.", Info[1]);
 		}
 	}
 }
@@ -4118,8 +4120,8 @@ public ParkRentedVehicle(playerid, vehicleid, modelid, Float:X, Float:Y, Float:Z
 	{
 	    new Float:x, Float:y, Float:z, Float:angle, Float:health, string[180], Float: oldfuel, arrDamage[4];
 	    GetVehicleHealth(vehicleid, health);
-     	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "You must be in the driver seat.");
-     	if(health < 800) return SendClientMessageEx(playerid, COLOR_GREY, " Your vehicle is too damaged to park it.");
+     	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai ngoi ghe lai.");
+     	if(health < 800) return SendClientMessageEx(playerid, COLOR_GREY, " Xe hong qua nang, khong the do.");
 
 		GetVehiclePos(vehicleid, x, y, z);
 		GetVehicleZAngle(vehicleid, angle);
@@ -4140,13 +4142,13 @@ public ParkRentedVehicle(playerid, vehicleid, modelid, Float:X, Float:Y, Float:Z
 		IsPlayerEntering{playerid} = true;
 		PutPlayerInVehicle(playerid, vehicleid, 0);
 		SetPlayerArmedWeapon(playerid, 0);
-		format(string, sizeof(string), "* %s has parked their vehicle.", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "* %s da do xe cua minh.", GetPlayerNameEx(playerid));
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
 	}
 	else
 	{
-	    SendClientMessage(playerid, COLOR_WHITE, "Vehicle did not park because you moved!");
+	    SendClientMessage(playerid, COLOR_WHITE, "Khong the do xe vi ban da di chuyen!");
 	}
 	return 1;
 }
@@ -4157,13 +4159,13 @@ public OnPlayerChangePass(index, session, request, account)
 	if(!Password_IsCurrent(index, session, request, account)) return 0;
 	gPasswordPending[index] = false;
 	if(cache_affected_rows() != 1) {
-		SendClientMessageEx(index, COLOR_RED, "There was an issue with processing your request. Your password will remain as it is.");
+		SendClientMessageEx(index, COLOR_RED, "Gap loi khi xu ly yeu cau. Mat khau cua ban duoc giu nguyen.");
 		if(PlayerInfo[index][pForcePasswordChange]) ShowLoginDialogs(index, 0);
 		return 0;
 	}
 	new message[144], bool:required = PlayerInfo[index][pForcePasswordChange] != 0;
 	PlayerInfo[index][pForcePasswordChange] = 0;
-	SendClientMessageEx(index, COLOR_YELLOW, "Your password has been changed.");
+	SendClientMessageEx(index, COLOR_YELLOW, "Mat khau cua ban da duoc doi.");
 	format(message, sizeof(message), "%s(%d) (IP: %s) has changed their password.", GetPlayerNameEx(index), account, PlayerInfo[index][pIP]);
 	Log("logs/password.log", message);
 	if(required) {
@@ -4183,9 +4185,9 @@ public OnChangeUserPassword(index, session, request, account, pin)
 	GetPVarString(index, "OnChangeUserPassword", name, sizeof(name));
 	DeletePVar(index, "OnChangeUserPassword");
 	if(cache_affected_rows() != 1) {
-		return SendClientMessageEx(index, COLOR_WHITE, "There was an issue with changing %s's %s.", name, pin ? ("pin") : ("password")), 0;
+		return SendClientMessageEx(index, COLOR_WHITE, "Gap loi khi doi cho %s muc %s.", name, pin ? ("pin") : ("password")), 0;
 	}
-	SendClientMessageEx(index, COLOR_WHITE, "You have successfully changed %s's %s.", name, pin ? ("pin") : ("password"));
+	SendClientMessageEx(index, COLOR_WHITE, "Ban da doi cho %s muc %s thanh cong.", name, pin ? ("pin") : ("password"));
 	format(message, sizeof(message), "AdmCmd: %s's credential was reset by %s.", name, GetPlayerNameEx(index));
 	Log(pin ? ("logs/pin.log") : ("logs/password.log"), message);
 	return 1;
@@ -4204,18 +4206,18 @@ public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 			cache_get_value_name(0, "SUM(count)", sResult); tcount = strval(sResult);
 			if(tcount > 0)
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "%s accepted {%06x}%d {%06x}reports on %s.", giveplayername, COLOR_GREEN >>> 8, tcount, COLOR_WHITE >>> 8, tdate);
+				SendClientMessageEx(playerid, COLOR_WHITE, "%s da nhan {%06x}%d {%06x}bao cao vao %s.", giveplayername, COLOR_GREEN >>> 8, tcount, COLOR_WHITE >>> 8, tdate);
 			}
 			else
 			{
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "%s did not accept any reports on %s.", giveplayername, tdate);
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "%s khong nhan bao cao nao vao %s.", giveplayername, tdate);
 			}
 		}
 		case 1:
 		{
 			if(rows > 0)
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "By hour:");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Theo gio:");
 				for(new i; i < rows; i++)
 				{
 					cache_get_value_name(i, "count", sResult); new hcount = strval(sResult);
@@ -4231,18 +4233,18 @@ public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 			cache_get_value_name(0, "SUM(count)", sResult); tcount = strval(sResult);
 			if(tcount > 0)
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "%s accepted {%06x}%d {%06x}help requests on %s.", giveplayername, COLOR_GREEN >>> 8, tcount, COLOR_WHITE >>> 8, tdate);
+				SendClientMessageEx(playerid, COLOR_WHITE, "%s nhan {%06x}%d {%06x}yeu cau ho tro vao %s.", giveplayername, COLOR_GREEN >>> 8, tcount, COLOR_WHITE >>> 8, tdate);
 			}
 			else
 			{
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "%s did not accept any help requests on %s.", giveplayername, tdate);
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "%s khong nhan yeu cau ho tro nao vao %s.", giveplayername, tdate);
 			}
 		}
 		case 3:
 		{
 			if(rows > 0)
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "By hour:");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Theo gio:");
 				for(new i; i < rows; i++)
 				{
 					cache_get_value_name(i, "count", sResult); new hcount = strval(sResult);
@@ -4258,18 +4260,18 @@ public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 			cache_get_value_name(0, "SUM(count)", sResult); tcount = strval(sResult);
 			if(tcount > 0)
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "%s watched {%06x}%d {%06x}people on %s.", giveplayername, COLOR_GREEN >>> 8, tcount, COLOR_WHITE >>> 8, tdate);
+				SendClientMessageEx(playerid, COLOR_WHITE, "%s theo doi {%06x}%d {%06x}nguoi vao %s.", giveplayername, COLOR_GREEN >>> 8, tcount, COLOR_WHITE >>> 8, tdate);
 			}
 			else
 			{
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "%s did not watch anyone on %s.", giveplayername, tdate);
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "%s khong theo doi ai vao %s.", giveplayername, tdate);
 			}
 		}
 		case 5:
 		{
 			if(rows > 0)
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "By hour:");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Theo gio:");
 				for(new i; i < rows; i++)
 				{
 					cache_get_value_name(i, "count", sResult); new hcount = strval(sResult);
@@ -4323,7 +4325,7 @@ public QueryUsernameCheck(playerid, tdate[], type)
 			}
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "That account doesn't exist!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Tai khoan do khong ton tai!");
 	return 1;
 }
 
@@ -4337,16 +4339,17 @@ public OnBanPlayer(index)
 	if(IsPlayerConnected(index))
 	{
 		if(cache_affected_rows()) {
-			SendClientMessageEx(index, COLOR_WHITE, "You have successfully banned %s's account.", name);
+			SendClientMessageEx(index, COLOR_WHITE, "Ban da cam tai khoan cua %s.", name);
 
 			format(string, sizeof(string), "AdmCmd: %s was offline banned by %s, reason: %s", name, GetPlayerNameEx(index), reason);
 			Log("logs/ban.log", string);
-			format(string, 128, "AdmCmd: %s was offline banned by %s, reason: %s", name, GetPlayerNameEx(index), reason);
+			format(string, 128, "AdmCmd: %s bi cam offline boi %s, ly do: %s", name, GetPlayerNameEx(index), reason);
 			ABroadCast(COLOR_LIGHTRED,string,2);
+			format(string, 128, "AdmCmd: %s was offline banned by %s, reason: %s", name, GetPlayerNameEx(index), reason);
 			print(string);
 		}
 		else {
-			SendClientMessageEx(index, COLOR_WHITE, "There was an issue with banning %s's account.", name);
+			SendClientMessageEx(index, COLOR_WHITE, "Gap loi khi cam tai khoan cua %s.", name);
 		}
   		DeletePVar(index, "OnBanPlayer");
 		DeletePVar(index, "OnBanPlayerReason");
@@ -4383,16 +4386,16 @@ public OnUnbanPlayer(index)
 	GetPVarString(index, "OnUnbanPlayer", name, 24);
 
 	if(cache_affected_rows()) {
-		SendClientMessageEx(index, COLOR_WHITE, "You have successfully unbanned %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Da go cam tai khoan %s.", name);
 
-		format(string, 128, "AdmCmd: %s was unbanned by %s.", name, GetPlayerNameEx(index));
+		format(string, 128, "AdmCmd: %s da duoc %s go cam.", name, GetPlayerNameEx(index));
 		ABroadCast(COLOR_LIGHTRED,string,2);
 		format(string, sizeof(string), "AdmCmd: %s was unbanned by %s.", name, GetPlayerNameEx(index));
 		Log("logs/ban.log", string);
 		print(string);
 	}
 	else {
-		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with unbanning %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Khong the go cam tai khoan %s.", name);
 	}
 	DeletePVar(index, "OnUnbanPlayer");
 
@@ -4427,10 +4430,10 @@ public Query_OnExecution(iTargetID) {
 
 	GetPVarString(iTargetID, "QueryEx_Name", szName, sizeof szName);
 	if(cache_affected_rows()) {
-		SendClientMessageEx(iTargetID, COLOR_WHITE, "The query on %s's account was successful.", szName);
+		SendClientMessageEx(iTargetID, COLOR_WHITE, "Da cap nhat tai khoan %s.", szName);
 	}
 	else {
-		SendClientMessageEx(iTargetID, COLOR_WHITE, "The query on %s's account was unsuccessful.", szName);
+		SendClientMessageEx(iTargetID, COLOR_WHITE, "Khong the cap nhat tai khoan %s.", szName);
 	}
 	return DeletePVar(iTargetID, "QueryEx_Name");
 }
@@ -4442,13 +4445,13 @@ public OnSetSuspended(index, value)
 	GetPVarString(index, "OnSetSuspended", name, 24);
 
 	if(cache_affected_rows()) {
-		SendClientMessageEx(index, COLOR_WHITE, "You have successfully %s %s's account.", ((value) ? ("suspended") : ("unsuspended")), name);
+		SendClientMessageEx(index, COLOR_WHITE, "Da %s tai khoan %s.", ((value) ? ("dinh chi") : ("go dinh chi")), name);
 
 		format(string, sizeof(string), "AdmCmd: %s was offline %s by %s.", name, ((value) ? ("suspended") : ("unsuspended")), GetPlayerNameEx(index));
 		Log("logs/admin.log", string);
 	}
 	else {
-		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with %s %s's account.", ((value) ? ("suspending") : ("unsuspending")), name);
+		SendClientMessageEx(index, COLOR_WHITE, "Co loi khi %s tai khoan %s.", ((value) ? ("dinh chi") : ("go dinh chi")), name);
 	}
 	DeletePVar(index, "OnSetSuspended");
 
@@ -4462,10 +4465,10 @@ public OnSetCrime(index)
 	GetPVarString(index, "OfflineSU", name, 24);
 
 	if(cache_affected_rows()) {
-		SendClientMessageEx(index, COLOR_WHITE, "You have successfully added a crime to %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Ban da them toi danh vao tai khoan cua %s.", name);
 	}
 	else {
-		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with adding a crime to %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Gap loi khi them toi danh vao tai khoan cua %s.", name);
 	}
 	DeletePVar(index, "OfflineSU");
 
@@ -4494,14 +4497,14 @@ public OnSetMyName(index)
 				Log("logs/undercover.log", string);
 				DeletePVar(index, "OnSetMyName");
 
-				SendClientMessageEx(index, COLOR_YELLOW, "You have temporarily set your name to %s.", tmpName);
-				SendClientMessageEx(index, COLOR_GRAD2, "NOTE: None of your stats will save until you type this command again.");
+				SendClientMessageEx(index, COLOR_YELLOW, "Da tam doi ten cua ban thanh %s.", tmpName);
+				SendClientMessageEx(index, COLOR_GRAD2, "LUU Y: Du lieu se khong duoc luu cho den khi ban dung lai lenh nay.");
 				SetPVarInt(index, "TempName", 1);
 			}
 		}
 		else
 		{
-			SendClientMessageEx(index, COLOR_WHITE, "This name is already registered.");
+			SendClientMessageEx(index, COLOR_WHITE, "Ten nay da duoc dang ky.");
 		}
 	}
 	else
@@ -4581,8 +4584,8 @@ public OnSetName(index, extraid)
 
 				if(strlen(tmpName) > 0)
 				{
-					SendClientMessageEx(extraid,COLOR_YELLOW," Your name has been changed from %s to %s.", GetPlayerNameEx(extraid), tmpName);
-					SendClientMessageEx(index,COLOR_YELLOW," You have changed %s's name to %s.", GetPlayerNameEx(extraid), tmpName);
+					SendClientMessageEx(extraid,COLOR_YELLOW," Ten cua ban da doi tu %s thanh %s.", GetPlayerNameEx(extraid), tmpName);
+					SendClientMessageEx(index,COLOR_YELLOW," Da doi ten cua %s thanh %s.", GetPlayerNameEx(extraid), tmpName);
 					format(string, sizeof(string), "%s changed %s's name to %s",GetPlayerNameEx(index),GetPlayerNameExt(extraid),tmpName);
 					Log("logs/stats.log", string);
 					if(SetPlayerName(extraid, tmpName) == 1)
@@ -4592,8 +4595,8 @@ public OnSetName(index, extraid)
 					}
 					else
 					{
-					    SendClientMessage(extraid, COLOR_REALRED, "There was an issue with your name change.");
-					    format(string, sizeof(string), "%s's name change has failed due to incorrect size or characters.", GetPlayerNameExt(extraid));
+					    SendClientMessage(extraid, COLOR_REALRED, "Co loi khi doi ten.");
+					    format(string, sizeof(string), "Doi ten cho %s that bai vi do dai hoac ky tu khong hop le.", GetPlayerNameExt(extraid));
 					    SendClientMessage(extraid, COLOR_REALRED, string);
 					    format(string, sizeof(string), "Error changing %s's name to %s", GetPlayerNameExt(extraid), tmpName);
 					    Log("logs/stats.log", string);
@@ -4696,11 +4699,11 @@ public OnApproveName(index, extraid)
 						mysql_tquery(MainPipeline, string, "OnApproveSetName", "ii", index, extraid);
 						format(string, sizeof(string), "%s last name has been changed upon marriage. New Name: \"%s\" (id: %i).", oldname, newname, GetPlayerSQLId(extraid));
 						Log("logs/stats.log", string);
-						SendClientMessageEx(extraid, -1, "Upon a successful marriage your last name has been changed to match your spouse's at your own request.");
+						SendClientMessageEx(extraid, -1, "Theo yeu cau cua ban, ho cua ban da doi theo nguoi phoi ngau sau khi ket hon thanh cong.");
 					}
 					else
 					{
-						SendClientMessage(extraid, COLOR_REALRED, "There was an issue with your name change.");
+						SendClientMessage(extraid, COLOR_REALRED, "Co loi khi doi ten.");
 						format(string, sizeof(string), "Error changing %s's(%d) name to %s", GetPlayerNameExt(extraid), GetPlayerSQLId(extraid), newname);
 						Log("logs/stats.log", string);
 						return 1;
@@ -4712,11 +4715,11 @@ public OnApproveName(index, extraid)
 			{
 				if(strlen(newname) > 0)
 				{
-					SendClientMessageEx(extraid,COLOR_YELLOW," Your name has been changed from %s to %s for free.", GetPlayerNameEx(extraid), newname);
-					SendClientMessageEx(index,COLOR_YELLOW," You have changed %s's name to %s at no cost.", GetPlayerNameEx(extraid), newname);
+					SendClientMessageEx(extraid,COLOR_YELLOW," Ten cua ban da duoc doi tu %s thanh %s mien phi.", GetPlayerNameEx(extraid), newname);
+					SendClientMessageEx(index,COLOR_YELLOW," Ban da doi ten %s thanh %s mien phi.", GetPlayerNameEx(extraid), newname);
 					format(string, sizeof(string), "%s changed \"%s\"s name to \"%s\" (id: %i)  for free.",GetPlayerNameEx(index),GetPlayerNameEx(extraid),newname, GetPlayerSQLId(extraid));
 					Log("logs/stats.log", string);
-					format(string, sizeof(string), "%s has approved %s's name change to %s at no cost.",GetPlayerNameEx(index),GetPlayerNameEx(extraid), newname);
+					format(string, sizeof(string), "%s da duyet doi ten %s thanh %s mien phi.",GetPlayerNameEx(index),GetPlayerNameEx(extraid), newname);
 					ABroadCast(COLOR_YELLOW, string, 3);
 
 
@@ -4727,8 +4730,8 @@ public OnApproveName(index, extraid)
 					}
 					else
 					{
-					    SendClientMessage(extraid, COLOR_REALRED, "There was an issue with your name change.");
-					    format(string, sizeof(string), "%s's name change has failed due to incorrect size or characters.", GetPlayerNameExt(extraid));
+					    SendClientMessage(extraid, COLOR_REALRED, "Co loi khi doi ten.");
+					    format(string, sizeof(string), "Doi ten cho %s that bai vi do dai hoac ky tu khong hop le.", GetPlayerNameExt(extraid));
 					    SendClientMessage(index, COLOR_REALRED, string);
 					    format(string, sizeof(string), "Error changing %s's(%d) name to %s", GetPlayerNameExt(extraid), GetPlayerSQLId(extraid), newname);
 					    Log("logs/stats.log", string);
@@ -4742,11 +4745,11 @@ public OnApproveName(index, extraid)
 			{
 				if(strlen(newname) > 0)
 				{
-					SendClientMessageEx(extraid,COLOR_YELLOW," Your name has been changed from %s to %s for free (Senior Mod).", GetPlayerNameEx(extraid), newname);
-					SendClientMessageEx(index,COLOR_YELLOW," You have changed %s's name to %s at no cost.", GetPlayerNameEx(extraid), newname);
+					SendClientMessageEx(extraid,COLOR_YELLOW," Ten cua ban da duoc doi tu %s thanh %s mien phi (Senior Mod).", GetPlayerNameEx(extraid), newname);
+					SendClientMessageEx(index,COLOR_YELLOW," Ban da doi ten %s thanh %s mien phi.", GetPlayerNameEx(extraid), newname);
 					format(string, sizeof(string), "%s changed \"%s\"s name to \"%s\" (id: %i) for free (Senior Mod).",GetPlayerNameEx(index),GetPlayerNameEx(extraid),newname, GetPlayerSQLId(extraid));
 					Log("logs/stats.log", string);
-					format(string, sizeof(string), "%s has approved %s's name change to %s at no cost (Senior Mod).",GetPlayerNameEx(index),GetPlayerNameEx(extraid), newname);
+					format(string, sizeof(string), "%s da duyet doi ten %s thanh %s mien phi (Senior Mod).",GetPlayerNameEx(index),GetPlayerNameEx(extraid), newname);
 					ABroadCast(COLOR_YELLOW, string, 3);
 
 					if(SetPlayerName(extraid, newname) == 1)
@@ -4756,8 +4759,8 @@ public OnApproveName(index, extraid)
 					}
 					else
 					{
-					    SendClientMessage(extraid, COLOR_REALRED, "There was an issue with your name change.");
-					    format(string, sizeof(string), "%s's name change has failed due to incorrect size or characters.", GetPlayerNameExt(extraid));
+					    SendClientMessage(extraid, COLOR_REALRED, "Co loi khi doi ten.");
+					    format(string, sizeof(string), "Doi ten cho %s that bai vi do dai hoac ky tu khong hop le.", GetPlayerNameExt(extraid));
 					    SendClientMessage(index, COLOR_REALRED, string);
 					    format(string, sizeof(string), "Error changing %s's(%d) name to %s", GetPlayerNameExt(extraid), GetPlayerSQLId(extraid), newname);
 					    Log("logs/stats.log", string);
@@ -4773,11 +4776,11 @@ public OnApproveName(index, extraid)
 				{
 					if(strlen(newname) > 0)
 					{
-						SendClientMessageEx(extraid,COLOR_YELLOW," Your name has been changed from %s to %s for free (non-RP name).", GetPlayerNameEx(extraid), newname);
-						SendClientMessageEx(index,COLOR_YELLOW," You have changed %s's name to %s for free (non-RP name).", GetPlayerNameEx(extraid), newname);
+						SendClientMessageEx(extraid,COLOR_YELLOW," Ten cua ban da duoc doi tu %s thanh %s mien phi (ten non-RP).", GetPlayerNameEx(extraid), newname);
+						SendClientMessageEx(index,COLOR_YELLOW," Ban da doi ten %s thanh %s mien phi (ten non-RP).", GetPlayerNameEx(extraid), newname);
 						format(string, sizeof(string), "%s changed \"%s\"s name to \"%s\" (id: %i) for free (non-RP name).",GetPlayerNameEx(index),GetPlayerNameEx(extraid),newname, GetPlayerSQLId(extraid));
 						Log("logs/stats.log", string);
-						format(string, sizeof(string), "%s has approved %s's name change to %s for free (non-RP name).",GetPlayerNameEx(index),GetPlayerNameEx(extraid), newname);
+						format(string, sizeof(string), "%s da duyet doi ten %s thanh %s mien phi (ten non-RP).",GetPlayerNameEx(index),GetPlayerNameEx(extraid), newname);
 						ABroadCast(COLOR_YELLOW, string, 3);
 
 						if(SetPlayerName(extraid, newname) == 1)
@@ -4787,8 +4790,8 @@ public OnApproveName(index, extraid)
 						}
 						else
 						{
-						    SendClientMessage(extraid, COLOR_REALRED, "There was an issue with your name change.");
-						    format(string, sizeof(string), "%s's name change has failed due to incorrect size or characters.", GetPlayerNameExt(extraid));
+						    SendClientMessage(extraid, COLOR_REALRED, "Co loi khi doi ten.");
+						    format(string, sizeof(string), "Doi ten cho %s that bai vi do dai hoac ky tu khong hop le.", GetPlayerNameExt(extraid));
 						    SendClientMessage(index, COLOR_REALRED, string);
 						    format(string, sizeof(string), "Error changing %s's(%d) name to %s", GetPlayerNameExt(extraid), GetPlayerSQLId(extraid), newname);
 						    Log("logs/stats.log", string);
@@ -4806,18 +4809,18 @@ public OnApproveName(index, extraid)
 							mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
 							mysql_tquery(MainPipeline, string, "OnApproveSetName", "ii", index, extraid);
 							PlayerInfo[extraid][pNextNameChange] = gettime()+10368000;
-							SendClientMessageEx(extraid, COLOR_YELLOW, " Your name has been changed from %s to %s for free.", oldname, newname);
-							SendClientMessageEx(extraid, COLOR_CYAN, " Your next free name change will be on %s", date(PlayerInfo[extraid][pNextNameChange], 4));
-							SendClientMessageEx(index,COLOR_YELLOW," You have changed %s's name to %s for %s for free.", oldname, newname);
+							SendClientMessageEx(extraid, COLOR_YELLOW, " Ten cua ban da duoc doi tu %s thanh %s mien phi.", oldname, newname);
+							SendClientMessageEx(extraid, COLOR_CYAN, " Lan doi ten mien phi tiep theo cua ban la %s", date(PlayerInfo[extraid][pNextNameChange], 4));
+							SendClientMessageEx(index,COLOR_YELLOW," Ban da doi ten %s thanh %s cho %s mien phi.", oldname, newname);
 							format(string, sizeof(string), "%s changed \"%s\"s name to \"%s\" (id: %i) for free. (Next Free N/C: %s)", GetPlayerNameEx(index), oldname, newname, GetPlayerSQLId(extraid), date(PlayerInfo[extraid][pNextNameChange], 4));
 							Log("logs/stats.log", string);
-							format(string, sizeof(string), "%s has approved %s's name change to %s for free.", GetPlayerNameEx(index), oldname, newname);
+							format(string, sizeof(string), "%s da duyet doi ten %s thanh %s mien phi.", GetPlayerNameEx(index), oldname, newname);
 							ABroadCast(COLOR_YELLOW, string, 3);
 						}
 						else
 						{
-							SendClientMessage(extraid, COLOR_REALRED, "There was an issue with your name change.");
-							format(string, sizeof(string), "%s's name change has failed due to incorrect size or characters.", GetPlayerNameExt(extraid));
+							SendClientMessage(extraid, COLOR_REALRED, "Co loi khi doi ten.");
+							format(string, sizeof(string), "Doi ten cho %s that bai vi do dai hoac ky tu khong hop le.", GetPlayerNameExt(extraid));
 							SendClientMessage(index, COLOR_REALRED, string);
 							format(string, sizeof(string), "Error changing %s's(%d) name to %s", GetPlayerNameExt(extraid), GetPlayerSQLId(extraid), newname);
 							Log("logs/stats.log", string);
@@ -4858,17 +4861,17 @@ public OnApproveName(index, extraid)
 							mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
 							mysql_tquery(MainPipeline, string, "OnApproveSetName", "ii", index, extraid);
 
-							SendClientMessageEx(extraid, COLOR_CYAN, " Your name has been changed from %s to %s for $%s.", oldname, newname, number_format(GetPVarInt(extraid, "NameChangeCost")));
-							SendClientMessageEx(index,COLOR_YELLOW," You have changed %s's name to %s for $%s.", oldname, newname, number_format(GetPVarInt(extraid, "NameChangeCost")));
+							SendClientMessageEx(extraid, COLOR_CYAN, " Ten cua ban da duoc doi tu %s thanh %s voi gia $%s.", oldname, newname, number_format(GetPVarInt(extraid, "NameChangeCost")));
+							SendClientMessageEx(index,COLOR_YELLOW," Ban da doi ten %s thanh %s voi gia $%s.", oldname, newname, number_format(GetPVarInt(extraid, "NameChangeCost")));
 							format(string, sizeof(string), "%s changed \"%s\"s name to \"%s\" (id: %i) for $%s.", GetPlayerNameEx(index), oldname, newname, GetPlayerSQLId(extraid), number_format(GetPVarInt(extraid, "NameChangeCost")));
 							Log("logs/stats.log", string);
-							format(string, sizeof(string), "%s has approved %s's name change to %s for $%s.", GetPlayerNameEx(index), oldname, newname, number_format(GetPVarInt(extraid, "NameChangeCost")));
+							format(string, sizeof(string), "%s da duyet doi ten %s thanh %s voi gia $%s.", GetPlayerNameEx(index), oldname, newname, number_format(GetPVarInt(extraid, "NameChangeCost")));
 							ABroadCast(COLOR_YELLOW, string, 3);
 						}
 						else
 						{
-							SendClientMessage(extraid, COLOR_REALRED, "There was an issue with your name change.");
-							format(string, sizeof(string), "%s's name change has failed due to incorrect size or characters.", GetPlayerNameExt(extraid));
+							SendClientMessage(extraid, COLOR_REALRED, "Co loi khi doi ten.");
+							format(string, sizeof(string), "Doi ten cho %s that bai vi do dai hoac ky tu khong hop le.", GetPlayerNameExt(extraid));
 							SendClientMessage(index, COLOR_REALRED, string);
 							format(string, sizeof(string), "Error changing %s's(%d) name to %s", GetPlayerNameExt(extraid), GetPlayerSQLId(extraid), newname);
 							Log("logs/stats.log", string);
@@ -4883,12 +4886,12 @@ public OnApproveName(index, extraid)
 		{
 			if(GetPVarType(extraid, "marriagelastname"))
 			{
-				SendClientMessageEx(extraid, COLOR_GRAD2, "There was a error changing your name after marriage, the name already exists.");
+				SendClientMessageEx(extraid, COLOR_GRAD2, "Doi ten sau ket hon gap loi, ten da ton tai.");
 			}
 			else
 			{
-				SendClientMessageEx(extraid, COLOR_GRAD2, "That name already exists, please choose a different one.");
-				SendClientMessageEx(index, COLOR_GRAD2, "That name already exists.");
+				SendClientMessageEx(extraid, COLOR_GRAD2, "Ten da ton tai, hay chon ten khac.");
+				SendClientMessageEx(index, COLOR_GRAD2, "Ten da ton tai.");
 			}
 			DeletePVar(extraid, "RequestingNameChange");
 			DeletePVar(extraid, "marriagelastname");
@@ -4905,12 +4908,12 @@ public OnIPWhitelist(index)
 	GetPVarString(index, "OnIPWhitelist", name, 24);
 
 	if(cache_affected_rows()) {
-		SendClientMessageEx(index, COLOR_WHITE, "You have successfully whitelisted %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Da cho phep IP truy cap tai khoan %s.", name);
 		format(string, sizeof(string), "%s has IP Whitelisted %s", GetPlayerNameEx(index), name);
 		Log("logs/whitelist.log", string);
 	}
 	else {
-		SendClientMessageEx(index, COLOR_WHITE, "There was a issue with whitelisting %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Co loi khi cho phep IP truy cap tai khoan %s.", name);
 	}
 	DeletePVar(index, "OnIPWhitelist");
 
@@ -4932,7 +4935,7 @@ public OnIPCheck(index)
 			if(AdminLvL <= 1 || (AdminLvL <= PlayerInfo[index][pAdmin] && PlayerInfo[index][pAdmin] >= 1338))
 			{
 				cache_get_value_name(0, "IP", ip, 16);
-				SendClientMessageEx(index, COLOR_WHITE, "%s's IP: %s", name, ip);
+				SendClientMessageEx(index, COLOR_WHITE, "IP %s: %s", name, ip);
 				format(string, sizeof(string), "%s has offline IP Checked %s", GetPlayerNameEx(index), name);
 				if(AdminLvL >= 2) Log("logs/adminipcheck.log", string); else Log("logs/ipcheck.log", string);
 				return 1;
@@ -4941,20 +4944,20 @@ public OnIPCheck(index)
 			{
 				if(AdminLvL > PlayerInfo[index][pAdmin])
 				{
-					format(string, sizeof(string), "%s has tried to offline check the IP address of a higher admin\nPlease report this to SIU/OED or an EA", GetPlayerNameEx(index));
+					format(string, sizeof(string), "%s da thu xem IP offline cua Admin cap cao hon\nHay bao ngay cho SIU/OED hoac EA", GetPlayerNameEx(index));
 					foreach(new i: Player)
 					{
-						if(PlayerInfo[i][pAdmin] >= 4) ShowPlayerDialogEx(i, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FFFF00}AdminWarning - {FF0000}Report ASAP", string, "Close", "");
+						if(PlayerInfo[i][pAdmin] >= 4) ShowPlayerDialogEx(i, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FFFF00}AdminWarning - {FF0000}Bao cao ngay", string, "Dong", "");
 					}
 				}
 				format(string, sizeof(string), "%s tried to offline IP check %s", GetPlayerNameEx(index), name);
 				Log("logs/adminipcheck.log", string);
 			}
-			SendClientMessageEx(index, COLOR_WHITE, "There was an issue with checking the account's IP.");
+			SendClientMessageEx(index, COLOR_WHITE, "Co loi khi kiem tra IP tai khoan.");
 		}
 		else
 		{
-			SendClientMessageEx(index, COLOR_WHITE, "There was an issue with checking the account's IP.");
+			SendClientMessageEx(index, COLOR_WHITE, "Co loi khi kiem tra IP tai khoan.");
 		}
 	}
 	return 1;
@@ -4969,13 +4972,13 @@ public OnFine(index)
 	GetPVarString(index, "OnFineReason", reason, 64);
 
 	if(cache_affected_rows()) {
-		SendClientMessageEx(index, COLOR_WHITE, "You have successfully fined %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Da phat tien tai khoan %s.", name);
 
 		format(string, sizeof(string), "AdmCmd: %s was offline fined $%d by %s, reason: %s", name, amount, GetPlayerNameEx(index), reason);
 		Log("logs/admin.log", string);
 	}
 	else {
-		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with fining %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Co loi khi phat tien tai khoan %s.", name);
 	}
 	DeletePVar(index, "OnFine");
 	DeletePVar(index, "OnFineAmount");
@@ -4992,13 +4995,13 @@ public OnPrisonAccount(index)
 	GetPVarString(index, "OnPrisonAccountReason", reason, 64);
 
 	if(cache_affected_rows()) {
-		SendClientMessageEx(index, COLOR_WHITE, "You have successfully prisoned %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Da giam tai khoan %s.", name);
 
 		format(string, sizeof(string), "AdmCmd: %s was offline prisoned by %s, reason: %s ", name, GetPlayerNameEx(index), reason);
 		Log("logs/admin.log", string);
 	}
 	else {
-		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with prisoning %s's account.");
+		SendClientMessageEx(index, COLOR_WHITE, "Co loi khi giam tai khoan %s.");
 	}
 	DeletePVar(index, "OnPrisonAccount");
 	DeletePVar(index, "OnPrisonAccountReason");
@@ -5014,13 +5017,13 @@ public OnJailAccount(index)
 	GetPVarString(index, "OnJailAccountReason", reason, 64);
 
 	if(cache_affected_rows()) {
-		SendClientMessageEx(index, COLOR_WHITE, "You have successfully jailed %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Da giam tai khoan %s.", name);
 
 		format(string, sizeof(string), "AdmCmd: %s was offline jailed by %s, reason: %s", name, GetPlayerNameEx(index), reason);
 		Log("logs/admin.log", string);
 	}
 	else {
-		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with jailing %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Co loi khi giam tai khoan %s.", name);
 	}
 
 	DeletePVar(index, "OnJailAccount");
@@ -5044,13 +5047,13 @@ public OnGetLatestKills(playerid, giveplayerid)
 			cache_get_value_name(i, "killedid", string); new killed = strval(string);
 			cache_get_value_name(i, "date", kDate, sizeof(kDate));
 			cache_get_value_name(i, "weapon", weapon, sizeof(weapon));
-			if(GetPlayerSQLId(giveplayerid) == killer && GetPlayerSQLId(giveplayerid) == killed) format(string, sizeof(string), "[%s] %s killed themselves (%s)", kDate, StripUnderscore(killedname), weapon);
-			else if(GetPlayerSQLId(giveplayerid) == killer && GetPlayerSQLId(giveplayerid) != killed) format(string, sizeof(string), "[%s] %s killed %s with %s", kDate, StripUnderscore(killername), StripUnderscore(killedname), weapon);
-			else if(GetPlayerSQLId(giveplayerid) != killer && GetPlayerSQLId(giveplayerid) == killed) format(string, sizeof(string), "[%s] %s was killed by %s with %s", kDate, StripUnderscore(killedname), StripUnderscore(killername), weapon);
+			if(GetPlayerSQLId(giveplayerid) == killer && GetPlayerSQLId(giveplayerid) == killed) format(string, sizeof(string), "[%s] %s tu sat (%s)", kDate, StripUnderscore(killedname), weapon);
+			else if(GetPlayerSQLId(giveplayerid) == killer && GetPlayerSQLId(giveplayerid) != killed) format(string, sizeof(string), "[%s] %s ha %s bang %s", kDate, StripUnderscore(killername), StripUnderscore(killedname), weapon);
+			else if(GetPlayerSQLId(giveplayerid) != killer && GetPlayerSQLId(giveplayerid) == killed) format(string, sizeof(string), "[%s] %s bi %s ha bang %s", kDate, StripUnderscore(killedname), StripUnderscore(killername), weapon);
 			SendClientMessageEx(playerid, COLOR_YELLOW, string);
 		}
 	}
-	else SendClientMessageEx(playerid, COLOR_YELLOW, "No kills recorded on this player.");
+	else SendClientMessageEx(playerid, COLOR_YELLOW, "Khong co du lieu ha guc cua nguoi choi nay.");
 	return 1;
 }
 
@@ -5068,7 +5071,7 @@ public OnGetOKills(playerid, giveplayername[])
 			mysql_format(MainPipeline, string, sizeof(string), "SELECT Killer.Username, Killed.Username, k.* FROM kills k LEFT JOIN accounts Killed ON k.killedid = Killed.id LEFT JOIN accounts Killer ON Killer.id = k.killerid WHERE k.killerid = %d OR k.killedid = %d ORDER BY `date` DESC LIMIT 10", giveplayerid, giveplayerid);
 			mysql_tquery(MainPipeline, string, "OnGetLatestOKills", "iis", playerid, giveplayerid, giveplayername);
 		}
-		else return SendClientMessageEx(playerid, COLOR_GREY, "This account does not exist.");
+		else return SendClientMessageEx(playerid, COLOR_GREY, "Tai khoan nay khong ton tai.");
 	}
 	return 1;
 }
@@ -5081,7 +5084,7 @@ public OnGetLatestOKills(playerid, giveplayerid, giveplayername[])
 	if(rows)
 	{
 		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-		format(string, sizeof(string), "<< Last 10 Kills/Deaths of %s >>", StripUnderscore(giveplayername));
+		format(string, sizeof(string), "<< 10 lan ha guc/bi ha gan nhat cua %s >>", StripUnderscore(giveplayername));
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 		for(new i; i < rows; i++)
 		{
@@ -5091,13 +5094,13 @@ public OnGetLatestOKills(playerid, giveplayerid, giveplayername[])
 			cache_get_value_name(i, "killedid", string); new killed = strval(string);
 			cache_get_value_name(i, "date", kDate, sizeof(kDate));
 			cache_get_value_name(i, "weapon", weapon, sizeof(weapon));
-			if(giveplayerid == killer && giveplayerid == killed) format(string, sizeof(string), "[%s] %s killed themselves (%s)", kDate, StripUnderscore(killedname), weapon);
-			else if(giveplayerid == killer && giveplayerid != killed) format(string, sizeof(string), "[%s] %s killed %s with %s", kDate, StripUnderscore(killername), StripUnderscore(killedname), weapon);
-			else if(giveplayerid != killer && giveplayerid == killed) format(string, sizeof(string), "[%s] %s was killed by %s with %s", kDate, StripUnderscore(killedname), StripUnderscore(killername), weapon);
+			if(giveplayerid == killer && giveplayerid == killed) format(string, sizeof(string), "[%s] %s tu sat (%s)", kDate, StripUnderscore(killedname), weapon);
+			else if(giveplayerid == killer && giveplayerid != killed) format(string, sizeof(string), "[%s] %s ha %s bang %s", kDate, StripUnderscore(killername), StripUnderscore(killedname), weapon);
+			else if(giveplayerid != killer && giveplayerid == killed) format(string, sizeof(string), "[%s] %s bi %s ha bang %s", kDate, StripUnderscore(killedname), StripUnderscore(killername), weapon);
 			SendClientMessageEx(playerid, COLOR_YELLOW, string);
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_YELLOW, "No kills recorded on this player.");
+	else return SendClientMessageEx(playerid, COLOR_YELLOW, "Khong co du lieu ha guc cua nguoi choi nay.");
 	return 1;
 }
 
@@ -5105,7 +5108,7 @@ forward OnDMStrikeReset(playerid, giveplayerid);
 public OnDMStrikeReset(playerid, giveplayerid)
 {
 	new string[128];
-	format(string, sizeof(string), "Deleted %d strikes against %s", cache_affected_rows(), GetPlayerNameEx(giveplayerid));
+	format(string, sizeof(string), "Da xoa %d strikes cua %s", cache_affected_rows(), GetPlayerNameEx(giveplayerid));
 	SendClientMessage(playerid, COLOR_WHITE, string);
 	return 1;
 }
@@ -5115,9 +5118,9 @@ public OnDMRLookup(playerid, giveplayerid)
 {
 	new string[128], rows;
 	cache_get_row_count(rows);
-	format(string, sizeof(string), "Showing the last %d /dmreports by %s", rows, GetPlayerNameEx(giveplayerid));
+	format(string, sizeof(string), "Hien thi %d /dmreports gan nhat boi %s", rows, GetPlayerNameEx(giveplayerid));
 	SendClientMessage(playerid, COLOR_WHITE, string);
-	SendClientMessage(playerid, COLOR_WHITE, "| Reported | Time |");
+	SendClientMessage(playerid, COLOR_WHITE, "| Nguoi bi bao cao | Thoi gian |");
 	for(new i;i < rows;i++)
 	{
  		new szResult[32], name[MAX_PLAYER_NAME], timestamp;
@@ -5134,9 +5137,9 @@ public OnDMTokenLookup(playerid, giveplayerid)
 {
 	new string[128], rows;
 	cache_get_row_count(rows);
-	format(string, sizeof(string), "Showing the %d active /dmreports on %s", rows, GetPlayerNameEx(giveplayerid));
+	format(string, sizeof(string), "Hien thi %d /dmreports dang hoat dong ve %s", rows, GetPlayerNameEx(giveplayerid));
 	SendClientMessage(playerid, COLOR_WHITE, string);
-	SendClientMessage(playerid, COLOR_WHITE, "| Reporter | Time |");
+	SendClientMessage(playerid, COLOR_WHITE, "| Nguoi bao cao | Thoi gian |");
 	for(new i;i < rows;i++)
 	{
  		new szResult[32], name[MAX_PLAYER_NAME], timestamp;
@@ -5153,7 +5156,7 @@ public OnDMWatchListLookup(playerid)
 {
 	new string[128], rows;
 	cache_get_row_count(rows);
-	format(string, sizeof(string), "Showing %d active people to watch", rows);
+	format(string, sizeof(string), "Hien thi %d nguoi dang can theo doi", rows);
 	SendClientMessage(playerid, COLOR_WHITE, string);
 	for(new i;i < rows;i++)
 	{
@@ -5186,17 +5189,17 @@ public OnDMWatch(playerid)
 					{
 						if(GetPVarInt(x, "pWatchdogWatching") == i)
 						{
-							return SendClientMessage(playerid, COLOR_WHITE, "The random person selected for you is already being watched, please try again!");
+							return SendClientMessage(playerid, COLOR_WHITE, "Nguoi duoc chon ngau nhien da co nguoi theo doi, hay thu lai!");
 						}
 					}
-					format(string, sizeof(string), "You now have access to /spec %s (ID: %i). Use /dmalert if this person deathmatches.", name, i);
+					format(string, sizeof(string), "Ban co the dung /spec %s (ID: %i). Dung /dmalert neu nguoi nay deathmatch.", name, i);
 					SendClientMessage(playerid, COLOR_WHITE, string);
 					return SetPVarInt(playerid, "pWatchdogWatching", i);
 				}
 			}
 		}
 	}
-	return SendClientMessageEx(playerid, COLOR_WHITE, "There is no one online to DM Watch!");
+	return SendClientMessageEx(playerid, COLOR_WHITE, "Khong ai online de DM Watch!");
 }
 
 forward OnWarnPlayer(index);
@@ -5207,13 +5210,13 @@ public OnWarnPlayer(index)
 	GetPVarString(index, "OnWarnPlayerReason", reason, 64);
 
 	if(cache_affected_rows()) {
-		SendClientMessageEx(index, COLOR_WHITE, "You have successfully warned %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Da canh bao tai khoan %s.", name);
 
 		format(string, sizeof(string), "AdmCmd: %s was offline warned by %s, reason: %s", name, GetPlayerNameEx(index), reason);
 		Log("logs/admin.log", string);
 	}
 	else {
-		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with warning %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Co loi khi canh bao tai khoan %s.", name);
 	}
 	DeletePVar(index, "OnWarnPlayer");
 	DeletePVar(index, "OnWarnPlayerReason");
@@ -5229,15 +5232,15 @@ public OnPinCheck2(index, session, request, account)
 	cache_get_row_count(rows);
 	GetPVarString(index, "PinNumber", pin, sizeof(pin));
 	DeletePVar(index, "PinNumber");
-	if(rows != 1) return gPasswordPending[index] = false, SendClientMessageEx(index, COLOR_WHITE, "There was an issue, please try again.");
+	if(rows != 1) return gPasswordPending[index] = false, SendClientMessageEx(index, COLOR_WHITE, "Co loi, hay thu lai.");
 	cache_get_value_name(0, "Pin", hash, sizeof(hash));
 	if(isnull(hash)) {
 		gPasswordPending[index] = false;
-		return ShowPlayerDialogEx(index, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Pin Number", "Create a pin number so you can secure your account credits.", "Create", "Exit");
+		return ShowPlayerDialogEx(index, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Ma PIN", "Tao PIN de bao ve credits tai khoan.", "Tao", "Thoat");
 	}
 	if(!Password_IsHash(hash) || !bcrypt_verify(index, "OnPlayerPinVerified", pin, hash, "iii", session, request, account)) {
 		gPasswordPending[index] = false;
-		return ShowPlayerDialogEx(index, DIALOG_ENTERPIN, DIALOG_STYLE_INPUT, "Pin Number", "(INVALID PIN)\n\nEnter your pin number to access credit shops.", "Confirm", "Exit");
+		return ShowPlayerDialogEx(index, DIALOG_ENTERPIN, DIALOG_STYLE_INPUT, "Ma PIN", "(SAI PIN)\n\nNhap PIN de vao cua hang credits.", "Xac nhan", "Thoat");
 	}
 	return 1;
 }
@@ -5247,9 +5250,9 @@ public OnPlayerPinVerified(index, bool:success, session, request, account)
 {
 	if(!Password_IsCurrent(index, session, request, account)) return 0;
 	gPasswordPending[index] = false;
-	if(!success) return ShowPlayerDialogEx(index, DIALOG_ENTERPIN, DIALOG_STYLE_INPUT, "Pin Number", "(INVALID PIN)\n\nEnter your pin number to access credit shops.", "Confirm", "Exit");
+	if(!success) return ShowPlayerDialogEx(index, DIALOG_ENTERPIN, DIALOG_STYLE_INPUT, "Ma PIN", "(SAI PIN)\n\nNhap PIN de vao cua hang credits.", "Xac nhan", "Thoat");
 	SetPVarInt(index, "PinConfirmed", 1);
-	SendClientMessageEx(index, COLOR_CYAN, "Pin confirmed, you will now be able to spend credits.");
+	SendClientMessageEx(index, COLOR_CYAN, "Da xac nhan PIN, ban co the dung credits.");
 	switch(GetPVarInt(index, "OpenShop"))
 	{
 		case 1:
@@ -5260,13 +5263,13 @@ public OnPlayerPinVerified(index, bool:success, session, request, account)
 			number_format(ShopItems[10][sItemPrice]), number_format(ShopItems[22][sItemPrice]));
 			format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (NEW) (Credits: {FFD700}%s{A9C4E4})\nRestricted Last Name (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (NEW) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})\nBackpacks\nDeluxe Car Alarm (Credits: {FFD700}%s{A9C4E4})",
 			szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]), number_format(ShopItems[35][sItemPrice]), number_format(ShopItems[39][sItemPrice]));
-			ShowPlayerDialogEx(index, DIALOG_MISCSHOP, DIALOG_STYLE_LIST, "Misc Shop", szDialog, "Select", "Cancel");
+			ShowPlayerDialogEx(index, DIALOG_MISCSHOP, DIALOG_STYLE_LIST, "Misc Shop", szDialog, "Chon", "Huy");
 		}
-		case 2: SetPVarInt(index, "RentaCar", 1), ShowModelSelectionMenu(index, CarList2, "Rent a Car!");
+		case 2: SetPVarInt(index, "RentaCar", 1), ShowModelSelectionMenu(index, CarList2, "Thue xe!");
 		case 3: ShowModelSelectionMenu(index, CarList2, "Car Shop");
-		case 4: ShowPlayerDialogEx( index, DIALOG_HOUSESHOP, DIALOG_STYLE_LIST, "House Shop", "Purchase House\nHouse Interior Change\nHouse Move\nGarage - Small\nGarage - Medium\nGarage - Large\nGarage - Extra Large","Select", "Exit" );
-		case 5: ShowPlayerDialogEx( index, DIALOG_VIPSHOP, DIALOG_STYLE_LIST, "VIP Shop", "Purchase VIP\nRenew Gold VIP","Continue", "Exit" );
-		case 6: ShowPlayerDialogEx(index, DIALOG_SHOPBUSINESS, DIALOG_STYLE_LIST, "Businesses Shop", "Purchase Business\nRenew Business", "Select", "Exit");
+		case 4: ShowPlayerDialogEx( index, DIALOG_HOUSESHOP, DIALOG_STYLE_LIST, "House Shop", "Mua nha\nHouse Interior Change\nHouse Move\nGarage - Small\nGarage - Medium\nGarage - Large\nGarage - Extra Large","Chon", "Thoat" );
+		case 5: ShowPlayerDialogEx( index, DIALOG_VIPSHOP, DIALOG_STYLE_LIST, "VIP Shop", "Mua VIP\nGia han Gold VIP","Tiep tuc", "Thoat" );
+		case 6: ShowPlayerDialogEx(index, DIALOG_SHOPBUSINESS, DIALOG_STYLE_LIST, "Businesses Shop", "Mua doanh nghiep\nGia han doanh nghiep", "Chon", "Thoat");
 		case 7: ShowModelSelectionMenu(index, PlaneList, "Plane Shop");
 		case 8: ShowModelSelectionMenu(index, BoatList, "Boat Shop");
 		case 9: ShowModelSelectionMenu(index, CarList3, "Restricted Car Shop");
@@ -5289,16 +5292,16 @@ public OnPinCheck(index)
 		    new Pin[128];
    			cache_get_value_name(0, "Pin", Pin);
    			if(isnull(Pin)) {
-   			    ShowPlayerDialogEx(index, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Pin Number", "Create a pin number so you can secure your account credits.", "Create", "Exit");
+   			    ShowPlayerDialogEx(index, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Ma PIN", "Tao PIN de bao ve credits tai khoan.", "Tao", "Thoat");
    			}
    			else
    			{
-   			    ShowPlayerDialogEx(index, DIALOG_ENTERPIN, DIALOG_STYLE_INPUT, "Pin Number", "Enter your pin number to access credit shops.", "Confirm", "Exit");
+   			    ShowPlayerDialogEx(index, DIALOG_ENTERPIN, DIALOG_STYLE_INPUT, "Ma PIN", "Nhap PIN de vao cua hang credits.", "Xac nhan", "Thoat");
    			}
 		}
 		else
 		{
-			SendClientMessageEx(index, COLOR_WHITE, "There was an issue, please try again.");
+			SendClientMessageEx(index, COLOR_WHITE, "Co loi, hay thu lai.");
 		}
 	}
 	return 1;
@@ -5312,19 +5315,19 @@ public OnGetSMSLog(playerid)
 	if(rows)
 	{
 		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-		SendClientMessageEx(playerid, COLOR_YELLOW, "<< Last 10 SMS Received >>");
+		SendClientMessageEx(playerid, COLOR_YELLOW, "<< 10 SMS nhan gan nhat >>");
 		for(new i; i < rows; i++)
 		{
 			cache_get_value_name(i, "sender", sender, MAX_PLAYER_NAME);
 			cache_get_value_name(i, "sendernumber", string); new sendernumber = strval(string);
 			cache_get_value_name(i, "message", message, sizeof(message));
 			cache_get_value_name(i, "date", sDate, sizeof(sDate));
-			if(sendernumber != 0) format(string, sizeof(string), "[%s] SMS: %s, Sender: %d (( %s ))", sDate, message, sendernumber, sender);
+			if(sendernumber != 0) format(string, sizeof(string), "[%s] SMS: %s, Gui: %d (( %s ))", sDate, message, sendernumber, sender);
 			else format(string, sizeof(string), "[%s] SMS: %s, Sender: Unknown", sDate, message);
 			SendClientMessageEx(playerid, COLOR_YELLOW, string);
 		}
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You have not received any SMS messages.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Ban chua nhan tin nhan SMS nao.");
 	return 1;
 }
 
@@ -5339,14 +5342,14 @@ public OnGroupInviteChecked(iExtraID, session, target, targetSession, group) {
         || GetPVarInt(iExtraID, "GroupTargetSession") != targetSession || PlayerInfo[iExtraID][pLeader] != group) return 0;
     if(!iRows) {
         if(0 <= PlayerInfo[target][pMember] < MAX_GROUPS || 0 <= PlayerInfo[target][pLeader] < MAX_GROUPS) return 0;
-        SendClientMessageEx(target, COLOR_LIGHTBLUE, "%s has invited you to %s (type /accept group to join).", GetPlayerNameEx(iExtraID), arrGroupData[group][g_szGroupName]);
-        SendClientMessageEx(iExtraID, COLOR_LIGHTBLUE, "You offered %s a group invitation.", GetPlayerNameEx(target));
+        SendClientMessageEx(target, COLOR_LIGHTBLUE, "%s moi ban vao %s (dung /accept group de gia nhap).", GetPlayerNameEx(iExtraID), arrGroupData[group][g_szGroupName]);
+        SendClientMessageEx(iExtraID, COLOR_LIGHTBLUE, "Ban da moi %s vao to chuc.", GetPlayerNameEx(target));
         SetPVarInt(target, "Group_Inviter", iExtraID);
         SetPVarInt(target, "GroupInviteSession", session);
         SetPVarInt(target, "GroupInviteID", group);
     }
     else {
-        SendClientMessage(iExtraID, COLOR_GREY, "That person is banned from joining this group.");
+        SendClientMessage(iExtraID, COLOR_GREY, "Nguoi do bi cam gia nhap to chuc nay.");
         DeletePVar(iExtraID, "Group_Invited");
         DeletePVar(iExtraID, "GroupTargetSession");
     }
@@ -5449,7 +5452,7 @@ public Group_QueryFinish(iType, iExtraID) {
 
 			if(arrGroupLockers[iGroup][iLocker][g_fLockerPos][0] != 0.0)
 			{
-				format(szResult, sizeof szResult, "%s Locker\n{1FBDFF}Press ~k~~CONVERSATION_YES~ {FFFF00} to use\n ID: %i", arrGroupData[iGroup][g_szGroupName], arrGroupLockers[iGroup][iLocker]);
+				format(szResult, sizeof szResult, "%s Tu do\n{1FBDFF}Nhan ~k~~CONVERSATION_YES~ {FFFF00} de dung\n ID: %i", arrGroupData[iGroup][g_szGroupName], arrGroupLockers[iGroup][iLocker]);
 				arrGroupLockers[iGroup][iLocker][g_tLocker3DLabel] = CreateDynamic3DTextLabel(szResult, arrGroupData[iGroup][g_hDutyColour] * 256 + 0xFF, arrGroupLockers[iGroup][iLocker][g_fLockerPos][0], arrGroupLockers[iGroup][iLocker][g_fLockerPos][1], arrGroupLockers[iGroup][iLocker][g_fLockerPos][2], 15.0, .testlos = 1, .worldid = arrGroupLockers[iGroup][iLocker][g_iLockerVW]);
 
 				arrGroupLockers[iGroup][iLocker][g_iLockerAreaID] = CreateDynamicSphere(arrGroupLockers[iGroup][iLocker][g_fLockerPos][0], arrGroupLockers[iGroup][iLocker][g_fLockerPos][1], arrGroupLockers[iGroup][iLocker][g_fLockerPos][2], 3.0, .worldid = arrGroupLockers[iGroup][iLocker][g_iLockerVW]);
@@ -5582,7 +5585,7 @@ public Group_QueryFinish(iType, iExtraID) {
 				{
 					format(szResult, sizeof szResult, "%s Crate Delivery Point\n{1FBDFF}/delivercrate", arrGroupData[iIndex][g_szGroupName]);
 				}*/
-				format(szResult, sizeof szResult, "%s Crate Delivery Point\n{1FBDFF}/delivercrate", arrGroupData[iIndex][g_szGroupName]);
+				format(szResult, sizeof szResult, "%s Diem giao thung\n{1FBDFF}/delivercrate", arrGroupData[iIndex][g_szGroupName]);
 				arrGroupData[iIndex][g_tCrate3DLabel] = CreateDynamic3DTextLabel(szResult, arrGroupData[iIndex][g_hDutyColour] * 256 + 0xFF, arrGroupData[iIndex][g_fCratePos][0], arrGroupData[iIndex][g_fCratePos][1], arrGroupData[iIndex][g_fCratePos][2], 10.0, .testlos = 1, .streamdistance = 20.0);
 			}
 			iIndex++;
@@ -5592,8 +5595,8 @@ public Group_QueryFinish(iType, iExtraID) {
 		    new string[128];
 		    new otherplayer = GetPVarInt(iExtraID, "GroupBanningPlayer");
 		    new group = GetPVarInt(iExtraID, "GroupBanningGroup");
-			SendClientMessageEx(iExtraID, COLOR_WHITE, "You have group-banned %s from group %d.", GetPlayerNameEx(otherplayer), group);
-			SendClientMessageEx(otherplayer, COLOR_LIGHTBLUE, "You have been group-banned, by %s.", GetPlayerNameEx(iExtraID));
+			SendClientMessageEx(iExtraID, COLOR_WHITE, "Da cam %s gia nhap to chuc %d.", GetPlayerNameEx(otherplayer), group);
+			SendClientMessageEx(otherplayer, COLOR_LIGHTBLUE, "Ban da bi %s cam gia nhap to chuc.", GetPlayerNameEx(iExtraID));
 			format(string, sizeof(string), "Administrator %s has group-banned %s (%d) from %s (%d)", GetPlayerNameEx(iExtraID), GetPlayerNameEx(otherplayer), GetPlayerSQLId(otherplayer), arrGroupData[PlayerInfo[otherplayer][pMember]][g_szGroupName], PlayerInfo[otherplayer][pMember]);
 			GroupLog(PlayerInfo[otherplayer][pMember], string);
 			PlayerInfo[otherplayer][pMember] = INVALID_GROUP_ID;
@@ -5617,14 +5620,14 @@ public Group_QueryFinish(iType, iExtraID) {
 			new group = GetPVarInt(iExtraID, "GroupUnBanningGroup");
 			if(cache_affected_rows())
 			{
-				SendClientMessageEx(iExtraID, COLOR_WHITE, "You have group-unbanned %s from group %s (%d).", GetPlayerNameEx(otherplayer), arrGroupData[group][g_szGroupName], group);
-				SendClientMessageEx(otherplayer, COLOR_LIGHTBLUE, "You have been group-unbanned from %s, by %s.", arrGroupData[group][g_szGroupName], GetPlayerNameEx(iExtraID));
+				SendClientMessageEx(iExtraID, COLOR_WHITE, "Da go cam %s khoi to chuc %s (%d).", GetPlayerNameEx(otherplayer), arrGroupData[group][g_szGroupName], group);
+				SendClientMessageEx(otherplayer, COLOR_LIGHTBLUE, "Ban da duoc go cam khoi %s, boi %s.", arrGroupData[group][g_szGroupName], GetPlayerNameEx(iExtraID));
 				format(string, sizeof(string), "Administrator %s has group-unbanned %s (%d) from %s (%d)", GetPlayerNameEx(iExtraID), GetPlayerNameEx(otherplayer), GetPlayerSQLId(otherplayer), arrGroupData[group][g_szGroupName], group);
 				GroupLog(group, string);
 			}
 			else
 			{
-				SendClientMessageEx(iExtraID, COLOR_WHITE, "There was an issue group-unbanning %s from %s (%d)", GetPlayerNameEx(otherplayer), arrGroupData[group][g_szGroupName], group);
+				SendClientMessageEx(iExtraID, COLOR_WHITE, "Co loi khi go cam %s khoi %s (%d)", GetPlayerNameEx(otherplayer), arrGroupData[group][g_szGroupName], group);
 			}
 			DeletePVar(iExtraID, "GroupUnBanningPlayer");
 			DeletePVar(iExtraID, "GroupUnBanningGroup");
@@ -5639,13 +5642,13 @@ public Group_QueryFinish(iType, iExtraID) {
 						mysql_format(MainPipeline, szResult, sizeof szResult, "UPDATE `accounts` SET `Model` = "#NOOB_SKIN", `Member` = "#INVALID_GROUP_ID", `Rank` = "#INVALID_RANK", `Leader` = "#INVALID_GROUP_ID", `Division` = -1 WHERE `id` = %i", strval(szResult));
 						mysql_tquery(MainPipeline, szResult, "Group_QueryFinish", "ii", GROUP_QUERY_UNINVITE, iExtraID);
 					}
-					else SendClientMessage(iExtraID, COLOR_GREY, "You can't do this to a person of equal or higher rank.");
+					else SendClientMessage(iExtraID, COLOR_GREY, "Khong the lam vay voi nguoi ngang hoac cao cap hon.");
 				}
-				else SendClientMessage(iExtraID, COLOR_GREY, "That person is not in your group.");
+				else SendClientMessage(iExtraID, COLOR_GREY, "Nguoi do khong thuoc to chuc cua ban.");
 
 			}
 			else {
-				SendClientMessage(iExtraID, COLOR_GREY, "That account does not exist.");
+				SendClientMessage(iExtraID, COLOR_GREY, "Tai khoan do khong ton tai.");
 				DeletePVar(iExtraID, "Group_Uninv");
 			}
 		}
@@ -5659,14 +5662,14 @@ public Group_QueryFinish(iType, iExtraID) {
 			if(cache_affected_rows()) {
 
 				i = PlayerInfo[iExtraID][pRank];
-				format(szResult, sizeof szResult, "You have successfully removed %s from your group.", szName);
+				format(szResult, sizeof szResult, "Da loai %s khoi to chuc cua ban.", szName);
 				SendClientMessage(iExtraID, COLOR_GREY, szResult);
 
 				format(szResult, sizeof szResult, "%s %s (rank %i) has offline uninvited %s from %s (%i).", arrGroupRanks[iGroupID][i], GetPlayerNameEx(iExtraID), i + 1, szName, arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 				GroupLog(iGroupID, szResult);
 			}
 			else {
-				format(szResult, sizeof szResult, "An error was encountered while attempting to remove %s from your group.", szName);
+				format(szResult, sizeof szResult, "Co loi khi loai %s khoi to chuc cua ban.", szName);
 				SendClientMessage(iExtraID, COLOR_GREY, szResult);
 			}
 			DeletePVar(iExtraID, "Group_Uninv");
@@ -5756,7 +5759,7 @@ public ReturnMoney(index)
 			Auctions[AuctionItem][Bidder] = GetPlayerSQLId(index);
 			strcpy(Auctions[AuctionItem][Wining], GetPlayerNameExt(index), MAX_PLAYER_NAME);
 
-			SendClientMessageEx(index, COLOR_WHITE, "You have placed a bid of %i on %s.", GetPVarInt(index, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
+			SendClientMessageEx(index, COLOR_WHITE, "Ban da tra %i cho %s.", GetPVarInt(index, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
 
 			format(string, sizeof(string), "%s(%d) (IP:%s) has placed a bid of %i on %s(%i)", GetPlayerNameEx(index), GetPlayerSQLId(index), GetPlayerIpEx(index), GetPVarInt(index, "BidPlaced"), Auctions[AuctionItem][BiddingFor], AuctionItem);
 			Log("logs/auction.log", string);
@@ -5797,7 +5800,7 @@ public CheckAccounts(playerid)
 		cache_get_row_count(rows);
 		if(rows)
 		{
-		    format(szString, sizeof(szString), "{AA3333}AdmWarning{FFFF00}: Moderator %s has logged into the server with s0beit installed.", GetPlayerNameEx(playerid));
+		    format(szString, sizeof(szString), "{AA3333}AdmWarning{FFFF00}: Moderator %s da dang nhap voi s0beit.", GetPlayerNameEx(playerid));
    			ABroadCast(COLOR_YELLOW, szString, 2);
 
     		format(szString, sizeof(szString), "Admin %s(%d) (IP: %s) has logged into the server with s0beit installed.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
@@ -5811,7 +5814,7 @@ public CheckAccounts(playerid)
 		    mysql_format(MainPipeline, szString, sizeof(szString), "INSERT INTO `sobeitkicks` (sqlID, Kicks) VALUES (%d, 1) ON DUPLICATE KEY UPDATE Kicks = Kicks + 1", GetPlayerSQLId(playerid));
 			mysql_tquery(MainPipeline, szString, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 
-		    SendClientMessageEx(playerid, COLOR_RED, "The hacking tool 's0beit' is not allowed on this server, please uninstall it.");
+		    SendClientMessageEx(playerid, COLOR_RED, "May chu cam cong cu gian lan 's0beit', vui long go bo.");
    			format(szString, sizeof(szString), "%s(%d) (IP: %s) has logged into the server with s0beit installed.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
    			Log("logs/sobeit.log", szString);
             sobeitCheckvar[playerid] = 1;
@@ -5838,7 +5841,7 @@ public ReferralSecurity(playerid)
 	    {
 	        format(szMiscArray, sizeof(szMiscArray), "Nobody");
 			strmid(PlayerInfo[playerid][pReferredBy], szMiscArray, 0, strlen(szMiscArray), MAX_PLAYER_NAME);
-            ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error", "This person has the same IP as you.\nPlease choose another player that is not on your network.\n\nIf you haven't been referred, press 'Skip'.\n\nExample: FirstName_LastName (20 Characters Max)", "Enter", "Skip");
+            ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Loi", "Nguoi nay cung IP voi ban.\nHay chon nguoi choi khac khong cung mang.\n\nNeu khong ai gioi thieu, nhan 'Bo qua'.\n\nVi du: FirstName_LastName (Toi da 20 ky tu)", "Nhap", "Bo qua");
     	}
     	else {
     	    format(szMiscArray, sizeof(szMiscArray), " %s(%d) (IP:%s) has been referred by (Referred Account: %s (IP:%s))", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), currentIP, PlayerInfo[playerid][pReferredBy], newresult);
@@ -5847,7 +5850,7 @@ public ReferralSecurity(playerid)
 			SetPlayerVirtualWorld(playerid, 0);
 			ClearChatbox(playerid);
 
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Thanks for filling in all the information!");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Cam on ban da dien day du thong tin!");
 			PlayerInfo[playerid][pTut] = 14;
 			AdvanceTutorial(playerid);
 		}
@@ -5875,7 +5878,7 @@ public OnStaffAccountCheck(playerid)
 	cache_get_row_count(rows);
 	if(rows > 0)
 	{
-		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) was punished and has a staff account associated with their IP address.", GetPlayerNameEx(playerid), playerid);
+		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) vua bi phat va co tai khoan Staff dung chung IP.", GetPlayerNameEx(playerid), playerid);
 		ABroadCast(COLOR_YELLOW, string, 2);
 	}
 	return 1;
@@ -5968,23 +5971,23 @@ public OnRFLPScore(index, id)
 				cache_get_value_name(i, "name", name);
 				cache_get_value_name(i, "leader", leader);
 				cache_get_value_name(i, "laps", tmp); laps = strval(tmp);
-				format(string, sizeof(string), "%s\nTeam: %s | Leader: %s | Laps: %d",string, name, leader, laps);
+				format(string, sizeof(string), "%s\nDoi: %s | Truong: %s | Vong: %d",string, name, leader, laps);
 				i++;
 			}
 			if(i < 1) {
 				DeletePVar(index, "rflTemp");
-				SendClientMessageEx(index, COLOR_GREY, "No teams found.");
+				SendClientMessageEx(index, COLOR_GREY, "Khong tim thay doi nao.");
 				return 1;
 			}
 			if(i >= 15) {
 				SetPVarInt(index, "rflTemp", GetPVarInt(index, "rflTemp") + i);
-				ShowPlayerDialogEx(index, DIALOG_RFL_TEAMS, DIALOG_STYLE_LIST, "Relay For Life Teams", string, "Next", "Close");
+				ShowPlayerDialogEx(index, DIALOG_RFL_TEAMS, DIALOG_STYLE_LIST, "Cac doi Relay For Life", string, "Tiep", "Dong");
 				return 1;
 			}
 			else
 			{
 				DeletePVar(index, "rflTemp");
-				ShowPlayerDialogEx(index, DIALOG_RFL_TEAMS, DIALOG_STYLE_LIST, "Relay For Life Teams", string, "Close", "");
+				ShowPlayerDialogEx(index, DIALOG_RFL_TEAMS, DIALOG_STYLE_LIST, "Cac doi Relay For Life", string, "Dong", "");
 				return 1;
 			}
 		}
@@ -5993,14 +5996,14 @@ public OnRFLPScore(index, id)
 			{
 				cache_get_value_name(i, "Username", name);
 				cache_get_value_name(i, "RacePlayerLaps", tmp); laps = strval(tmp);
-				format(string, sizeof(string), "%s\n%s | Laps: %d",string, name, laps);
+				format(string, sizeof(string), "%s\n%s | Vong: %d",string, name, laps);
 				i++;
 			}
 			if(i > 0) {
-				ShowPlayerDialogEx(index, DIALOG_RFL_PLAYERS, DIALOG_STYLE_LIST, "Relay For Life Player Top 25", string, "Close", "");
+				ShowPlayerDialogEx(index, DIALOG_RFL_PLAYERS, DIALOG_STYLE_LIST, "Top 25 nguoi choi Relay For Life", string, "Dong", "");
 			}
 			else {
-				SendClientMessageEx(index, COLOR_GREY, "No player has run any laps yet.");
+				SendClientMessageEx(index, COLOR_GREY, "Chua co nguoi choi hoan thanh vong nao.");
 			}
 		}
 	}
@@ -6014,17 +6017,17 @@ public OnCheckRFLName(playerid, Player)
 	{
 		if(cache_affected_rows())
 		{
-			SendClientMessageEx(Player, COLOR_YELLOW, "This team name already exists.");
-			SendClientMessageEx(playerid, COLOR_YELLOW, "This team name already exists.");
+			SendClientMessageEx(Player, COLOR_YELLOW, "Ten doi nay da ton tai.");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Ten doi nay da ton tai.");
 		}
 		else
 		{
 			new newname[25], string[128];
 			GetPVarString(Player, "NewRFLName", newname, sizeof(newname));
 			format(RFLInfo[PlayerInfo[Player][pRFLTeam]][RFLname], 25, "%s", newname);
-			SendClientMessageEx(Player, COLOR_YELLOW, "* Your team name has been changed to %s.", newname);
-			SendClientMessageEx(playerid, COLOR_YELLOW, "* You have changed %s's team name to %s.", GetPlayerNameEx(playerid), newname);
-			format(string, sizeof(string), "%s has accepted %s's team name change request",GetPlayerNameEx(playerid),GetPlayerNameEx(Player));
+			SendClientMessageEx(Player, COLOR_YELLOW, "* Ten doi cua ban da duoc doi thanh %s.", newname);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "* Ban da doi ten doi cua %s thanh %s.", GetPlayerNameEx(playerid), newname);
+			format(string, sizeof(string), "%s da chap nhan yeu cau doi ten doi cua %s",GetPlayerNameEx(playerid),GetPlayerNameEx(Player));
 			ABroadCast(COLOR_YELLOW, string, 3);
 			SaveRelayForLifeTeam(PlayerInfo[Player][pRFLTeam]);
 			foreach(new i: Player)
@@ -6033,7 +6036,7 @@ public OnCheckRFLName(playerid, Player)
 					if( EventKernel[ EventStatus ] == 1 || EventKernel[ EventStatus ] == 2 ) {
 						if(EventKernel[EventType] == 3) {
 							if(PlayerInfo[i][pRFLTeam] == PlayerInfo[Player][pRFLTeam]) {
-								format(string, sizeof(string), "Team: %s", newname);
+								format(string, sizeof(string), "Doi: %s", newname);
 								UpdateDynamic3DTextLabelText(RFLTeamN3D[i], 0x008080FF, string);
 							}
 						}
@@ -6044,7 +6047,7 @@ public OnCheckRFLName(playerid, Player)
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "This user has logged off.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Nguoi dung nay da thoat game.");
 	}
 	DeletePVar(Player, "RFLNameRequest");
 	DeletePVar(playerid, "RFLNameChange");
@@ -6082,15 +6085,15 @@ public OnStaffPrize(playerid)
 		GetPVarString(playerid, "OnSPrizeType", type, 16);
 		GetPVarString(playerid, "OnSPrizeName", name, 24);
 		amount = GetPVarInt(playerid, "OnSPrizeAmount");
-		format(string, sizeof(string), "AdmCmd: %s has offline-given %s %d free %s.", GetPlayerNameEx(playerid), name, amount, type);
+		format(string, sizeof(string), "AdmCmd: %s tang offline %s %d %s mien phi.", GetPlayerNameEx(playerid), name, amount, type);
 		ABroadCast(COLOR_LIGHTRED, string, 2);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given %s %d %s.", name, amount, type);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da tang %s %d %s.", name, amount, type);
 		format(string, sizeof(string), "[Admin] %s(IP:%s) has offline-given %s %d free %s.", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), name, amount, type);
 		Log("logs/adminrewards.log", string);
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_RED, "Failed to give the prize..");
+		SendClientMessageEx(playerid, COLOR_RED, "Khong the trao phan thuong..");
 	}
 	DeletePVar(playerid, "OnSPrizeType");
 	DeletePVar(playerid, "OnSPrizeName");
@@ -6145,7 +6148,7 @@ public OnLoadHGBackpacks()
 		HungerBackpackInfo[index][hgActiveEx] = 1;
 
 		HungerBackpackInfo[index][hgBackpackPickupId] = CreateDynamicPickup(371, 23, HungerBackpackInfo[index][hgBackpackPos][0], HungerBackpackInfo[index][hgBackpackPos][1], HungerBackpackInfo[index][hgBackpackPos][2], 2039);
-		format(string, sizeof(string), "Hunger Games Backpack\nType: %s\n{FF0000}(ID: %d){FFFFFF}", GetHungerBackpackName(index), index);
+		format(string, sizeof(string), "Hunger Games Backpack\nLoai: %s\n{FF0000}(ID: %d){FFFFFF}", GetHungerBackpackName(index), index);
 		HungerBackpackInfo[index][hgBackpack3DText] = CreateDynamic3DTextLabel(string, COLOR_ORANGE, HungerBackpackInfo[index][hgBackpackPos][0], HungerBackpackInfo[index][hgBackpackPos][1], HungerBackpackInfo[index][hgBackpackPos][2]+1, 20.0, .worldid = 2039, .interiorid = 0);
 
 		index++;
@@ -6236,7 +6239,7 @@ Shop_CommitOrder(playerid, orderid, const quantities[7]) {
 	cache_delete(result);
 	if(affected < 1 || affected > 2) return 0;
 	for(new i; i < 8; ++i) PlayerInfo[playerid][playerFields[i]] = after[i];
-	SendClientMessageEx(playerid, COLOR_CYAN, "Shop order delivered. Use /myvouchers to view your vouchers.");
+	SendClientMessageEx(playerid, COLOR_CYAN, "Don hang Shop da duoc giao. Dung /myvouchers de xem phieu cua ban.");
 	return 1;
 }
 
@@ -6492,12 +6495,12 @@ public OnWDWhitelist(index)
 	GetPVarString(index, "OnWDWhitelist", name, 24);
 
 	if(cache_affected_rows()) {
-		SendClientMessageEx(index, COLOR_WHITE, "You have successfully whitelisted %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Da cho phep IP truy cap tai khoan %s.", name);
 		format(string, sizeof(string), "%s has IP Whitelisted %s", GetPlayerNameEx(index), name);
 		Log("logs/wdwhitelist.log", string);
 	}
 	else {
-		SendClientMessageEx(index, COLOR_WHITE, "There was a issue with whitelisting %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Co loi khi cho phep IP truy cap tai khoan %s.", name);
 	}
 	DeletePVar(index, "OnWDWhitelist");
 
@@ -6519,7 +6522,7 @@ public FetchWatchlist(index)
 		{
 			if(PlayerInfo[x][pId] == sqlid)
 			{
-				format(PublicSQLString, sizeof(PublicSQLString), "%s %s (ID: %d) | Points: %d - Manually Added\n", PublicSQLString, GetPlayerNameEx(x), x, points);
+				format(PublicSQLString, sizeof(PublicSQLString), "%s %s (ID: %d) | Diem: %d - Them thu cong\n", PublicSQLString, GetPlayerNameEx(x), x, points);
 				break;
 			}
 		}
@@ -6544,13 +6547,13 @@ public FetchWatchlist2(index, input[])
 		{
 			if(PlayerInfo[x][pId] == sqlid)
 			{
-				format(PublicSQLString, sizeof(PublicSQLString), "%s %s (ID: %d) | Points: %d - Automatically Added\n", PublicSQLString, GetPlayerNameEx(x), x, points);
+				format(PublicSQLString, sizeof(PublicSQLString), "%s %s (ID: %d) | Diem: %d - Them tu dong\n", PublicSQLString, GetPlayerNameEx(x), x, points);
 				break;
 			}
 		}
 	}
 
-	ShowPlayerDialogEx(index, DIALOG_WATCHLIST, DIALOG_STYLE_LIST, "Current Watchlist", PublicSQLString, "Exit", "");
+	ShowPlayerDialogEx(index, DIALOG_WATCHLIST, DIALOG_STYLE_LIST, "Danh sach theo doi", PublicSQLString, "Thoat", "");
 	FetchingWatchlist = 0;
 	return true;
 }
@@ -6565,11 +6568,12 @@ public OnSetVMute(playerid, task)
 	{
 		format(string, sizeof(string), "AdmCmd: %s has offline vip %s %s.", GetPlayerNameEx(playerid), (task==1)?("muted"):("unmuted"), tmpName);
 		Log("logs/mute.log", string);
+		format(string, sizeof(string), "AdmCmd: %s da %s VIP Chat cua %s khi ngoai tuyen.", GetPlayerNameEx(playerid), (task==1)?("cam"):("go cam"), tmpName);
 		ABroadCast(COLOR_LIGHTRED, string, 3);
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_YELLOW, "Could not vip %s %s..", (task==1)?("mute"):("unmute"), tmpName);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Khong the %s VIP Chat cua %s.", (task==1)?("cam"):("go cam"), tmpName);
 	}
 	return 1;
 }
@@ -6600,7 +6604,7 @@ public WatchWatchlist(index)
 			{
 				SpectatePlayer(index, x);
 				SetPVarInt(x, "BeingSpectated", 1);
-				SendClientMessageEx(index, -1, "WATCHDOG: You have started watching, you may skip to another player in 3 minutes (/nextwatch).");
+				SendClientMessageEx(index, -1, "WATCHDOG: Da bat dau theo doi, co the chuyen nguoi sau 3 phut (/nextwatch).");
 				if(PlayerInfo[index][pWatchdog] == 2) SetPVarInt(index, "NextWatch", gettime()+120); else SetPVarInt(index, "NextWatch", gettime()+180);
 				SetPVarInt(index, "SpectatingWatch", x);
 				SetPVarInt(index, "StartedWatching", 1);
@@ -6615,7 +6619,7 @@ public WatchWatchlist(index)
 	}
 	if(result == 0)
 	{
-		SendClientMessageEx(index, COLOR_GRAD1, "No-one is available to spectate!");
+		SendClientMessageEx(index, COLOR_GRAD1, "Khong co ai de theo doi!");
 	}
 	return true;
 }
@@ -6636,9 +6640,9 @@ public CheckTrunkContents(playerid)
 	{
 		i++;
 	}
-	if (i == 3) return SendClientMessageEx(playerid, COLOR_YELLOW, "Warning{FFFFFF}: There was nothing inside the trunk.");
+	if (i == 3) return SendClientMessageEx(playerid, COLOR_YELLOW, "Canh bao{FFFFFF}: Khong co gi trong cop xe.");
 	else {
-		format(string, sizeof(string), "You found a %s.", GetWeaponNameEx(TrunkWeaps[i]));
+		format(string, sizeof(string), "Ban tim thay %s.", GetWeaponNameEx(TrunkWeaps[i]));
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 		GivePlayerValidWeapon(playerid, TrunkWeaps[i]);
 		mysql_format(MainPipeline, string, sizeof(string), "UPDATE `vehicles` SET `pvWeapon%d` = '0' WHERE `id` = '%d' AND `sqlID` = '%d'", i, GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPVarInt(playerid, "LockPickPlayerSQLId"));
@@ -6657,13 +6661,13 @@ public OnRequestTransferFlag(playerid, flagid, to, from)
 	new rows, value, string[512];
 	new FlagText[64], FlagIssuer[MAX_PLAYER_NAME], FlagDate[24];
 	cache_get_row_count(rows);
-	if(!rows) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Flag does not exist!", "Close", "");
+	if(!rows) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Loi Flag:", "Flag khong ton tai!", "Dong", "");
 	cache_get_value_name_int(0, "type", value);
 	if(value == 2)
-		return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Administrative flags cannot be transferred!", "Close", "");
+		return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Loi Flag:", "Khong the chuyen admin flag!", "Dong", "");
 	cache_get_value_name_int(0, "id", value);
 	if(value != GetPlayerSQLId(from))
-		return format(string, sizeof(string), "Flag is not owned by %s!", GetPlayerNameEx(from)), ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", string, "Close", "");
+		return format(string, sizeof(string), "Flag khong thuoc ve %s!", GetPlayerNameEx(from)), ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Loi Flag:", string, "Dong", "");
 	cache_get_value_name(0, "flag", FlagText);
 	cache_get_value_name(0, "issuer", FlagIssuer, MAX_PLAYER_NAME);
 	cache_get_value_name(0, "time", FlagDate);
@@ -6671,8 +6675,8 @@ public OnRequestTransferFlag(playerid, flagid, to, from)
 	SetPVarInt(playerid, "Flag_Transfer_To", to);
 	SetPVarInt(playerid, "Flag_Transfer_From", from);
 	SetPVarString(playerid, "FlagText", FlagText);
-	format(string, sizeof(string), "Are you sure you want to transfer:\n{FF6347}Flag ID:{BFC0C2} %d\n{FF6347}Flag:{BFC0C2} %s\n{FF6347}Issued by:{BFC0C2} %s\n{FF6347}Date Issued: {BFC0C2}%s\n{FF6347}To: {BFC0C2}%s\n{FF6347}From: {BFC0C2}%s", flagid, FlagText, FlagIssuer, FlagDate, GetPlayerNameEx(to), GetPlayerNameEx(from));
-	return ShowPlayerDialogEx(playerid, FLAG_TRANSFER, DIALOG_STYLE_MSGBOX, "FLAG TRANSFER", string, "Yes", "No");
+	format(string, sizeof(string), "Xac nhan chuyen:\n{FF6347}Flag ID:{BFC0C2} %d\n{FF6347}Flag:{BFC0C2} %s\n{FF6347}Nguoi them:{BFC0C2} %s\n{FF6347}Ngay them: {BFC0C2}%s\n{FF6347}Den: {BFC0C2}%s\n{FF6347}Tu: {BFC0C2}%s", flagid, FlagText, FlagIssuer, FlagDate, GetPlayerNameEx(to), GetPlayerNameEx(from));
+	return ShowPlayerDialogEx(playerid, FLAG_TRANSFER, DIALOG_STYLE_MSGBOX, "CHUYEN FLAG", string, "Co", "Khong");
 }
 
 forward GetShiftInfo(playerid, szMessage[]);
@@ -6689,13 +6693,13 @@ public GetShiftInfo(playerid, szMessage[])
 		cache_get_value_name(0, "ShiftCount", szResult); signedup = strval(szResult);
 	}
 
-	if(needs - signedup > 0) format(string, sizeof(string), "The current shift is %s. We have {FF0000}%d/%d {FFFFFF}Admins signed up for the shift.", shift, signedup, needs);
-	else format(string, sizeof(string), "The current shift is %s. We have {00FF00}%d/%d {FFFFFF}Admins signed up for the shift.", shift, signedup, needs);
+	if(needs - signedup > 0) format(string, sizeof(string), "Ca hien tai la %s. Co {FF0000}%d/%d {FFFFFF}Admins dang ky ca.", shift, signedup, needs);
+	else format(string, sizeof(string), "Ca hien tai la %s. Co {00FF00}%d/%d {FFFFFF}Admins dang ky ca.", shift, signedup, needs);
 
 	if(playerid == INVALID_PLAYER_ID)
 	{
-		if(needs - signedup > 0) format(string, sizeof(string), "The current shift is %s. We have {FF0000}%d/%d {FFFFFF}Admins signed up for the shift.", shift, signedup, needs);
-		else format(string, sizeof(string), "The current shift is %s. We have {00FF00}%d/%d {FFFFFF}Admins signed up for the shift.", shift, signedup, needs);
+		if(needs - signedup > 0) format(string, sizeof(string), "Ca hien tai la %s. Co {FF0000}%d/%d {FFFFFF}Admins dang ky ca.", shift, signedup, needs);
+		else format(string, sizeof(string), "Ca hien tai la %s. Co {00FF00}%d/%d {FFFFFF}Admins dang ky ca.", shift, signedup, needs);
 		foreach(new i: Player)
 		{
 			if(PlayerInfo[i][pAdmin] >= 2) SendClientMessageEx(i, COLOR_WHITE, string);
@@ -6703,8 +6707,8 @@ public GetShiftInfo(playerid, szMessage[])
 	}
 	else if(playerid != INVALID_PLAYER_ID)
 	{
-		if(needs - signedup > 0) format(string, sizeof(string), "The current shift is %s. We have {FF0000}%d/%d {FFFFFF}Admins signed up for the shift.", shift, signedup, needs);
-		else format(string, sizeof(string), "The current shift is %s. We have {00FF00}%d/%d {FFFFFF}Admins signed up for the shift.", shift, signedup, needs);
+		if(needs - signedup > 0) format(string, sizeof(string), "Ca hien tai la %s. Co {FF0000}%d/%d {FFFFFF}Admins dang ky ca.", shift, signedup, needs);
+		else format(string, sizeof(string), "Ca hien tai la %s. Co {00FF00}%d/%d {FFFFFF}Admins dang ky ca.", shift, signedup, needs);
 		SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 	}

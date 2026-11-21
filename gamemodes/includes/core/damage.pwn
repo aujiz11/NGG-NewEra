@@ -133,11 +133,11 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 			if(iShots < 1) {
 				TazerTimeout[playerid] = 12;
 				SetTimerEx("TazerTimer",1000,false,"ii",playerid,g_arrQueryHandle[playerid]);
-				SendClientMessageEx(playerid, COLOR_WHITE, "Your tazer is recharging!");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Sung dien dang hoi!");
 				
 				RemovePlayerLoadoutWeapon(playerid, 23);
 				GivePlayerValidWeapon(playerid, pTazerReplace{playerid});
-				format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
+				format(szMiscArray, sizeof(szMiscArray), "* %s cat sung dien.", GetPlayerNameEx(playerid));
 				ProxDetector(4.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				pTazer{playerid} = 0;
 			}
@@ -154,8 +154,9 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
     {
         if(!(-1000.0 <= fX <= 1000.0) || !(-1000.0 <= fY <= 1000.0) || !(-1000.0 <= fZ <= 1000.0)) // a valid offset, it's impossible that a offset bigger than 1000 is legit (also less than -1000.0 is impossible, not used by this hack, but still, let's check for it, just for the future, who knows what hacks will appear). The object with biggest offset is having ~700-800 radius.
         {
-			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s was kicked for a possiable invalid hit type!", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s bi kick vi kieu trung dan co the sai!", GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_YELLOW, string, 2);
+			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s was kicked for a possiable invalid hit type!", GetPlayerNameEx(playerid));
             Kick(playerid);
             Log("logs/bulletcrasher.log", string);
             return 0; // let's desynchronize that bullet, so players won't crash
@@ -169,7 +170,7 @@ public CheckBulletAmount(playerid) {
 	new szMessage[128];
 	if(GhostHacker[playerid][2] > 8) {
 		if(++GhostHacker[playerid][3] > 2) {
-			format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may possibly be using aim assist.", GetPlayerNameEx(playerid), playerid);
+			format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) co the dang dung aim assist.", GetPlayerNameEx(playerid), playerid);
 			ABroadCast(COLOR_YELLOW, szMessage, 2);
 		}
 	}
@@ -240,7 +241,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	if(gPlayerLogged{playerid} == 0) {
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) [%s] has moved from the login screen position.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
 		Log("logs/security.log", szMiscArray);
-		SendClientMessage(playerid, COLOR_WHITE, "SERVER: You attempted to deal damage to someone when not logged in.");
+		SendClientMessage(playerid, COLOR_WHITE, "MAY CHU: Ban thu gay sat thuong khi chua dang nhap.");
 		SetTimerEx("KickEx", 1000, false, "i", playerid);
 		return 1;
 	}
@@ -262,7 +263,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		if(IsPlayerPaused(playerid) || IsDoingAnim[playerid] || IsInvalidGunAnim(playerid)) {
 			if(GhostHacker[playerid][1] < gettime()) {
 				if(++GhostHacker[playerid][0] > 1) {
-					format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s may possibly be Ghost Hacking, damage was denied.", GetPlayerNameEx(playerid));
+					format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s co the dang Ghost Hacking, da chan sat thuong.", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 					GhostHacker[playerid][1] = gettime()+3;
 					format(szMiscArray, sizeof(szMiscArray), "%s may possibly be Ghost Hacking.", GetPlayerNameEx(playerid));
@@ -274,7 +275,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				if(IsPlayerConnected(i))
 				{
 					if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
-						SendClientMessageEx(i, COLOR_WHITE, "[Dmgcheck] %s: Dmgd: %s (%d) | Wp: %s | CSDmg: %.2f | SSDmg: Denied | %s (GIVE)", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid), damagedid, GetWeaponNameEx(weaponid), amount, ReturnBoneName(bodypart));
+						SendClientMessageEx(i, COLOR_WHITE, "[Dmgcheck] %s: Dich: %s (%d) | Wp: %s | CSDmg: %.2f | SSDmg: Chan | %s (GIVE)", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid), damagedid, GetWeaponNameEx(weaponid), amount, ReturnBoneName(bodypart));
 					}
 				}
 			}
@@ -358,7 +359,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 			{
 				if(gettime() > GetPVarInt(playerid, "NopeWepWarn"))
 				{
-					format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) has been denied issuing damage. Possible weapon hack: Server Weapon: %d | Used Weapon: %d", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(weaponid)], weaponid);
+					format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: Chan sat thuong cua %s (ID: %d). Nghi hack vu khi: May chu: %d | Da dung: %d", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(weaponid)], weaponid);
 					ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 					format(szMiscArray, sizeof(szMiscArray), "%s (%d) has been denied issuing damage. Possible weapon hack: Server Weapon: %d | Used Weapon: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(weaponid)], weaponid);
 					Log("logs/hack.log", szMiscArray);
@@ -370,7 +371,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 			{
 				if(gettime() > GetPVarInt(playerid, "WepResWarn"))
 				{
-					format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) has been denied issuing damage while being weapon restricted. WeaponID: %d", GetPlayerNameEx(playerid), playerid, weaponid);
+					format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: Chan sat thuong cua %s (ID: %d) khi bi cam vu khi. WeaponID: %d", GetPlayerNameEx(playerid), playerid, weaponid);
 					ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 					format(szMiscArray, sizeof(szMiscArray), "%s (%d) has been denied issuing damage while being weapon restricted. WeaponID: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), weaponid);
 					Log("logs/hack.log", szMiscArray);
@@ -406,7 +407,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 			else
 			{
 				SetPVarInt(playerid, "ExecutionMode", 0);
-				SendClientMessage(playerid, COLOR_RED, "You missed the target, wait 5 minutes before re-loading a HP Round.");
+				SendClientMessage(playerid, COLOR_RED, "Ban ban truot, cho 5 phut de nap lai HP Round.");
 				SetPVarInt(playerid, "KillShotCooldown", gettime());
 			}
 		}
@@ -415,33 +416,33 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 			if(weaponid !=  23) {
 				RemovePlayerLoadoutWeapon(playerid, 23);
 				GivePlayerValidWeapon(playerid, pTazerReplace{playerid});
-				format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
+				format(szMiscArray, sizeof(szMiscArray), "* %s cat sung dien.", GetPlayerNameEx(playerid));
 				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				pTazer{playerid} = 0;
 				return 1;
 			}
 			if(!ProxDetectorS(20.0, playerid, damagedid)) {
-				format(szMiscArray, sizeof(szMiscArray), "* %s fires their tazer at %s, missing them.", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid));
+				format(szMiscArray, sizeof(szMiscArray), "* %s ban sung dien vao %s nhung truot.", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid));
 				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
 			}
 			if(TazerTimeout[playerid] > 0 && !GetPVarType(damagedid, "IsFrozen")) return 1;
 			if(GetPlayerState(damagedid) == PLAYER_STATE_ONFOOT && PlayerCuffed[damagedid] == 0 && PlayerInfo[playerid][pHasTazer] == 1)
 			{
-				if((PlayerInfo[damagedid][pAdmin] >= 2 || PlayerInfo[damagedid][pWatchdog] >= 2) && PlayerInfo[damagedid][pTogReports] != 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Admins can not be tazed!");
-				if(HelpingNewbie[damagedid] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot taze an advisor while they are helping someone.");
-				if(PlayerInfo[damagedid][pHospital] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Players in hospital cannot be tazed!");
+				if((PlayerInfo[damagedid][pAdmin] >= 2 || PlayerInfo[damagedid][pWatchdog] >= 2) && PlayerInfo[damagedid][pTogReports] != 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the chich dien Admin!");
+				if(HelpingNewbie[damagedid] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the chich dien Advisor dang ho tro nguoi khac.");
+				if(PlayerInfo[damagedid][pHospital] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the chich dien nguoi trong benh vien!");
 				new newkeys, dir1, dir2;
 				GetPlayerKeys(damagedid, newkeys, dir1, dir2);
-				if(GetPlayerCameraMode(damagedid) == 53 || GetPlayerCameraMode(damagedid) == 7 || GetPlayerCameraMode(damagedid) == 8 || GetPlayerCameraMode(damagedid) == 51) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot taze players that are actively aiming.");
+				if(GetPlayerCameraMode(damagedid) == 53 || GetPlayerCameraMode(damagedid) == 7 || GetPlayerCameraMode(damagedid) == 8 || GetPlayerCameraMode(damagedid) == 51) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the chich dien nguoi dang ngam ban.");
 				//if(ActiveKey(KEY_HANDBRAKE) && (!IsNotAGun(GetPlayerWeapon(damagedid)))) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot taze players that are actively aiming.");
 				//if(ActiveKey(KEY_FIRE) && (!IsNotAGun(GetPlayerWeapon(damagedid)))) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot taze players that are actively shooting.");
 				#if defined zombiemode
-				if(GetPVarInt(damagedid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GRAD2, "Zombies can not be tazed!");
+				if(GetPVarInt(damagedid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the chich dien zombie!");
 				#endif
 				new Float:X, Float:Y, Float:Z;
 				GetPlayerPos(playerid, X, Y, Z);
-				format(szMiscArray, sizeof(szMiscArray), "* %s fires their tazer at %s, stunning them.", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid));
+				format(szMiscArray, sizeof(szMiscArray), "* %s ban sung dien vao %s, khien ho choang.", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid));
 				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				//GameTextForPlayer(damagedid, "~r~Tazed", 3500, 3);
 				ClearAnimationsEx(damagedid);
@@ -459,7 +460,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				SetTimerEx("TurnOffFlash", 800, false, "i", damagedid);
 				Mechanic_CancelFix(damagedid, false);
 				CancelTruckDelivery(damagedid, false, false);
-				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~r~Tazer reloading... ~w~12", 1500,3);
+				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~r~Dang nap Tazer... ~w~12", 1500,3);
 				return 1;
 			}
 		}
@@ -468,10 +469,10 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 			if(GetPVarInt(damagedid, "pBagged") >= 1) return 0;
 	    	else if(GetPlayerState(damagedid) == PLAYER_STATE_ONFOOT)
 			{
-				if(GetPlayerCameraMode(damagedid) == 53 || GetPlayerCameraMode(damagedid) == 7 || GetPlayerCameraMode(damagedid) == 8 || GetPlayerCameraMode(damagedid) == 51) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot bag players that are actively aiming.");
-				if((PlayerInfo[damagedid][pAdmin] >= 2 || PlayerInfo[damagedid][pWatchdog] >= 2) && PlayerInfo[damagedid][pTogReports] != 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Admins can not be bagged!");
-				if(HelpingNewbie[damagedid] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot bag an advisor while they are helping someone.");
-				if(PlayerInfo[damagedid][pHospital] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Players in hospital cannot be bagged!");
+				if(GetPlayerCameraMode(damagedid) == 53 || GetPlayerCameraMode(damagedid) == 7 || GetPlayerCameraMode(damagedid) == 8 || GetPlayerCameraMode(damagedid) == 51) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the trum bao nguoi dang ngam ban.");
+				if((PlayerInfo[damagedid][pAdmin] >= 2 || PlayerInfo[damagedid][pWatchdog] >= 2) && PlayerInfo[damagedid][pTogReports] != 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the trum bao Admin!");
+				if(HelpingNewbie[damagedid] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the trum bao Advisor dang ho tro nguoi khac.");
+				if(PlayerInfo[damagedid][pHospital] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the trum bao nguoi trong benh vien!");
 				new Float:fHealth, Float:fArmour;
 
 				GetHealth(damagedid, fHealth);
@@ -489,8 +490,8 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 
      			SetPVarInt(damagedid, "pBagged", 1);
 
-	    		GameTextForPlayer(damagedid, "~r~Bagged!", 7000, 3);
-	    		format(szMiscArray, sizeof(szMiscArray), "* %s fires their beanbag shotgun at %s, stunning them.", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid));
+	    		GameTextForPlayer(damagedid, "~r~Da bi trum dau!", 7000, 3);
+	    		format(szMiscArray, sizeof(szMiscArray), "* %s ban sung dan cao su vao %s, khien ho choang.", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid));
 				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				Mechanic_CancelFix(damagedid, false);
 				CancelTruckDelivery(damagedid, false, false);
@@ -501,10 +502,10 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		{
 			RemovePlayerLoadoutWeapon(damagedid, 23);
 			GivePlayerValidWeapon(damagedid, pTazerReplace{damagedid});
-			format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(damagedid));
+			format(szMiscArray, sizeof(szMiscArray), "* %s cat sung dien.", GetPlayerNameEx(damagedid));
 			ProxDetector(4.0, damagedid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			pTazer{damagedid} = 0;
-			SendClientMessageEx(damagedid, COLOR_WHITE, "Your tazer has been holstered as you have taken damage from bullets.");
+			SendClientMessageEx(damagedid, COLOR_WHITE, "Sung dien da duoc cat vi ban trung dan.");
 		}
 		// Apply Ending Result
 		if(armour < 0.1)
@@ -538,7 +539,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 			if(IsPlayerConnected(i))
 			{
 				if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
-					SendClientMessageEx(i, COLOR_WHITE, "[Dmgcheck] %s: Dmgd: %s (%d) | Wp: %s | CSDmg: %.2f | SSDmg: %.2f | %s (GIVE)", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid), damagedid, GetWeaponNameEx(weaponid), realdam, amount, ReturnBoneName(bodypart));
+					SendClientMessageEx(i, COLOR_WHITE, "[Dmgcheck] %s: Dich: %s (%d) | Wp: %s | CSDmg: %.2f | SSDmg: %.2f | %s (GIVE)", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid), damagedid, GetWeaponNameEx(weaponid), realdam, amount, ReturnBoneName(bodypart));
 				}
 			}
 		}
@@ -660,10 +661,10 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 				}
 				DeletePVar(playerid, "LockPickVehicle");
 				DeletePVar(playerid, "LockPickPlayer");
-				format(szMiscArray, sizeof(szMiscArray), "(( You took damage from %s(%d) using %s.))", GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid));
-				SendClientMessageEx(playerid, COLOR_RED, "(( You failed to pick lock this vehicle because you took damage. ))");
+				format(szMiscArray, sizeof(szMiscArray), "(( Ban bi %s(%d) gay sat thuong bang %s.))", GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid));
+				SendClientMessageEx(playerid, COLOR_RED, "(( Mo khoa xe that bai vi ban bi thuong. ))");
 				SendClientMessageEx(playerid, COLOR_RED, szMiscArray);
-				SendClientMessageEx(playerid, COLOR_RED, "(( If this was DM, visit ng-gaming.net and make a Player Complaint. ))");
+				SendClientMessageEx(playerid, COLOR_RED, "(( Neu la DM, vao ng-gaming.net va gui Player Complaint. ))");
 				ClearAnimationsEx(playerid, 1);
 			}
 			if(GetPVarType(playerid, "AttemptingCrackTrunk")) {
@@ -671,10 +672,10 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 				DeletePVar(playerid, "CrackTrunkCountdown");
 				DestroyVLPTextDraws(playerid);
 				ClearAnimationsEx(playerid, 1);
-				format(szMiscArray, sizeof(szMiscArray), "(( You took damage from %s(%d) using %s.))", GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid));
-				SendClientMessageEx(playerid, COLOR_RED, "(( You failed to crack this vehicle's trunk because you took damage. ))");
+				format(szMiscArray, sizeof(szMiscArray), "(( Ban bi %s(%d) gay sat thuong bang %s.))", GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid));
+				SendClientMessageEx(playerid, COLOR_RED, "(( Pha cop xe that bai vi ban bi thuong. ))");
 				SendClientMessageEx(playerid, COLOR_RED, szMiscArray);
-				SendClientMessageEx(playerid, COLOR_RED, "(( If this was DM, visit ng-gaming.net and make a Player Complaint. ))");
+				SendClientMessageEx(playerid, COLOR_RED, "(( Neu la DM, vao ng-gaming.net va gui Player Complaint. ))");
 			}
 
 			if(GetPVarInt(playerid, "commitSuicide") == 1) SetPVarInt(playerid, "commitSuicide", 0);
@@ -683,7 +684,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 				DeletePVar(playerid, "BackpackProt");
 				if(GetPVarInt(playerid, "BackpackOpen") == 1)
 				{
-					SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the backpack menu, your backpack is disabled for 3 minutes.");
+					SendClientMessageEx(playerid, COLOR_RED, "Ban bi thuong khi dang mo menu ba lo. Ba lo bi khoa trong 3 phut.");
 					ShowPlayerDialogEx(playerid, -1, 0, "", "", "", "");
 					SetPVarInt(playerid, "BackpackDisabled", 180);
 					DeletePVar(playerid, "BackpackOpen");
@@ -743,7 +744,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			if(IsPlayerConnected(i))
 			{
 				if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
-					SendClientMessageEx(i, COLOR_WHITE, "[Dmgcheck] %s: Issuer: %s (%d) | Wp: %s (%d) | CSDmg: %.2f | SSDmg: %.2f | %s (TAKE)", GetPlayerNameEx(playerid), GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid), weaponid, realdam, amount, ReturnBoneName(bodypart));
+					SendClientMessageEx(i, COLOR_WHITE, "[Dmgcheck] %s: Gay: %s (%d) | Wp: %s (%d) | CSDmg: %.2f | SSDmg: %.2f | %s (TAKE)", GetPlayerNameEx(playerid), GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid), weaponid, realdam, amount, ReturnBoneName(bodypart));
 				}
 			}
 		}
@@ -848,8 +849,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 		if (GetPVarInt(playerid, "_BoxingFight") != 0)
 		{
 			new winner = GetPVarInt(playerid, "_BoxingFight") - 1;
-			SendClientMessageEx(winner, COLOR_GREEN, "You have won the fight!");
-			SendClientMessageEx(playerid, COLOR_RED, "You have lost the fight!");
+			SendClientMessageEx(winner, COLOR_GREEN, "Ban thang tran dau!");
+			SendClientMessageEx(playerid, COLOR_RED, "Ban thua tran dau!");
 
 			DeletePVar(winner, "_BoxingFight");
 			DeletePVar(playerid, "_BoxingFight");
@@ -864,10 +865,10 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 			if(killerid == GetPVarInt(playerid, "_JailBoxingChallenger"))
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have lost the boxing fight. You may now leave the arena.");
-				SendClientMessageEx(killerid, COLOR_WHITE, "You have won the boxing fight. You may now leave the arena.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ban thua tran quyen Anh. Co the roi san dau.");
+				SendClientMessageEx(killerid, COLOR_WHITE, "Ban thang tran quyen Anh. Co the roi san dau.");
 
-				format(string, sizeof(string), "** [Boxing News (Arena:%d)] %s has won! **", (GetPVarInt(playerid, "_InJailBoxing") - 1), GetPlayerNameEx(killerid));
+				format(string, sizeof(string), "** [Boxing News (Arena:%d)] %s chien thang! **", (GetPVarInt(playerid, "_InJailBoxing") - 1), GetPlayerNameEx(killerid));
 				ProxDetector(10.0, playerid, string, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000);
 
 				arrJailBoxingData[GetPVarInt(playerid, "_InJailBoxing") - 1][bInProgress] = false;
@@ -885,8 +886,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 		{
 			if(killerid == GetPVarInt(playerid, "_InJailBrawl") - 1)
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have lost the brawl.");
-				SendClientMessageEx(killerid, COLOR_WHITE, "You have won the brawl.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ban thua tran au da.");
+				SendClientMessageEx(killerid, COLOR_WHITE, "Ban thang tran au da.");
 			}
 			DeletePVar(playerid, "_InJailBrawl");
 			DeletePVar(killerid, "_InJailBrawl");
@@ -944,8 +945,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 			iCaller = Mobile[playerid],
 			szMessage[64];
 
-		SendClientMessageEx(iCaller, COLOR_GRAD2, "The line went dead.");
-		format(szMessage, sizeof(szMessage), "* %s puts away their cellphone.", GetPlayerNameEx(iCaller));
+		SendClientMessageEx(iCaller, COLOR_GRAD2, "Cuoc goi bi ngat.");
+		format(szMessage, sizeof(szMessage), "* %s cat dien thoai.", GetPlayerNameEx(iCaller));
 		ProxDetector(30.0, iCaller, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		CellTime[iCaller] = 0;
 		Mobile[iCaller] = INVALID_PLAYER_ID;
@@ -969,12 +970,12 @@ public OnPlayerDeath(playerid, killerid, reason)
 			if(EMSAccepted[i] == playerid)
 			{
 				EMSAccepted[i] = INVALID_PLAYER_ID;
-				GameTextForPlayer(i, "~w~EMS Caller~n~~r~Has Died", 5000, 1);
+				GameTextForPlayer(i, "~w~Nguoi goi EMS~n~~r~Da chet", 5000, 1);
 				EMSCallTime[i] = 0;
 				DisablePlayerCheckpoint(i);
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_WHITE, "You appear to be stuck in limbo, medics are trying to revive you.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban co ve bi ket, Medic dang co gang cuu ban.");
 		KillEMSQueue(playerid);
 		ResetPlayerWeaponsEx(playerid);
 		return 1;
@@ -1038,7 +1039,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 					PlayerInfo[killerid][pKills] -= 2;
 					++PlayerInfo[killerid][pDeaths];
 					--PlayerInfo[playerid][pDeaths];
-					SendClientMessageEx(killerid, COLOR_WHITE, "You have been warned, do not team-kill!");
+					SendClientMessageEx(killerid, COLOR_WHITE, "Canh cao, khong giet dong doi!");
 				}
 				else
 				{
@@ -1056,7 +1057,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 					PlayerInfo[killerid][pKills] -= 2;
 					++PlayerInfo[killerid][pDeaths];
 					--PlayerInfo[playerid][pDeaths];
-					SendClientMessageEx(killerid, COLOR_WHITE, "You have been warned, do not team-kill!");
+					SendClientMessageEx(killerid, COLOR_WHITE, "Canh cao, khong giet dong doi!");
 				}
 				++PaintBallArena[iKiller][pbTeamBlueKills];
 				++PaintBallArena[iPlayer][pbTeamRedDeaths];
@@ -1065,17 +1066,17 @@ public OnPlayerDeath(playerid, killerid, reason)
 			if(PaintBallArena[iKiller][pbTimeLeft] < 12)
 			{
 				GivePlayerCash(killerid, 1000);
-				format(szMessage,sizeof(szMessage),"[Paintball Arena] %s has earned $1000 bonus for a sudden death kill!",GetPlayerNameEx(killerid));
+				format(szMessage,sizeof(szMessage),"[Paintball Arena] %s nhan thuong $1000 vi ha guc trong sudden death!",GetPlayerNameEx(killerid));
 				SendPaintballArenaMessage(iKiller, COLOR_YELLOW, szMessage);
 				////SendAudioToPlayer(killerid, 19, 100);
 			}
-			if(reason == 0) format(szMessage,sizeof(szMessage),"[Paintball Arena] %s has killed %s with their bare hands!",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid));
-			else format(szMessage,sizeof(szMessage),"[Paintball Arena] %s has killed %s with a %s.",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid),weapon);
+			if(reason == 0) format(szMessage,sizeof(szMessage),"[Paintball Arena] %s ha guc %s bang tay khong!",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid));
+			else format(szMessage,sizeof(szMessage),"[Paintball Arena] %s ha guc %s bang %s.",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid),weapon);
 		}
 		else
 		{
 			++PlayerInfo[playerid][pDeaths];
-			format(szMessage,sizeof(szMessage),"[Paintball Arena] %s has died.",GetPlayerNameEx(playerid));
+			format(szMessage,sizeof(szMessage),"[Paintball Arena] %s da chet.",GetPlayerNameEx(playerid));
 		}
 		SendPaintballArenaMessage(iPlayer, COLOR_RED, szMessage);
 	}
@@ -1099,18 +1100,18 @@ public OnPlayerDeath(playerid, killerid, reason)
 		{
 			case 49: {
 				new szMessage[128];
-				format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) has possibly just car-rammed %s (ID %d) to death.", GetPlayerNameEx(killerid), killerid, GetPlayerNameEx(playerid), playerid);
+				format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) co the da can chet %s (ID %d).", GetPlayerNameEx(killerid), killerid, GetPlayerNameEx(playerid), playerid);
 				ABroadCast(COLOR_YELLOW, szMessage, 2);
 			}
 			case 50: if(IsAHelicopter(GetPlayerVehicleID(killerid))) {
 				new szMessage[128];
-				format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) has possibly just blade-killed %s (ID %d).", GetPlayerNameEx(killerid), killerid, GetPlayerNameEx(playerid), playerid);
+				format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) co the da dung canh quat giet %s (ID %d).", GetPlayerNameEx(killerid), killerid, GetPlayerNameEx(playerid), playerid);
 				ABroadCast(COLOR_YELLOW, szMessage, 2);
 			}
 			default: switch(GetPlayerWeapon(killerid)) {
 				case 32, 28, 29: {
 					new szMessage[128];
-					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) has possibly just driver-shot %s (ID %d) to death.", GetPlayerNameEx(killerid), killerid, GetPlayerNameEx(playerid), playerid);
+					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) co the da ban chet %s (ID %d) khi lai xe.", GetPlayerNameEx(killerid), killerid, GetPlayerNameEx(playerid), playerid);
 					ABroadCast(COLOR_YELLOW, szMessage, 2);
 				}
 			}
@@ -1133,9 +1134,9 @@ public OnPlayerDeath(playerid, killerid, reason)
 				new takemoney = PlayerInfo[playerid][pHeadValue];//floatround((PlayerInfo[playerid][pHeadValue] / 4) * 2);
 				GivePlayerCash(killerid, floatround(takemoney * 0.9));
 				GivePlayerCash(playerid, -takemoney);
-				format(szMessage, sizeof(szMessage),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid),takemoney);
+				format(szMessage, sizeof(szMessage),"Hitman %s hoan thanh hop dong tren %s va nhan $%d.",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid),takemoney);
 				foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_YELLOW, szMessage);
-				format(szMessage, sizeof(szMessage),"You have been critically injured by a hitman and lost $%d.",takemoney);
+				format(szMessage, sizeof(szMessage),"Ban bi Hitman gay thuong nguy kich va mat $%d.",takemoney);
 				PlayerInfo[playerid][pContractDetail][0] = 0;
 				ResetPlayerWeaponsEx(playerid);
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMessage);
@@ -1158,10 +1159,10 @@ public OnPlayerDeath(playerid, killerid, reason)
 			new szMessage[86 + MAX_PLAYER_NAME];
 			new takemoney = PlayerInfo[killerid][pHeadValue]; //floatround((PlayerInfo[killerid][pHeadValue] / 4) * 2);
 			GivePlayerCash(killerid, takemoney);
-			format(szMessage, sizeof(szMessage),"Hitman %s has failed the contract on %s and lost $%s.", GetPlayerNameEx(playerid), GetPlayerNameEx(killerid), number_format(takemoney));
+			format(szMessage, sizeof(szMessage),"Hitman %s that bai hop dong tren %s va mat $%s.", GetPlayerNameEx(playerid), GetPlayerNameEx(killerid), number_format(takemoney));
 			foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_YELLOW, szMessage);
 			GivePlayerCash(playerid, -takemoney);
-			format(szMessage, sizeof(szMessage),"You have just killed a hitman and gained $%s, removing the contract on your head.", number_format(takemoney));
+			format(szMessage, sizeof(szMessage),"Ban giet Hitman, nhan $%s va huy hop dong truy sat minh.", number_format(takemoney));
 			PlayerInfo[killerid][pContractDetail][0] = 0;
 			SendClientMessageEx(killerid, COLOR_YELLOW, szMessage);
 			PlayerInfo[killerid][pHeadValue] = 0;

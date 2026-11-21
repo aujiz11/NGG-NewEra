@@ -243,7 +243,7 @@ NationSel_HandleNationSelection(playerid)
 stock NationCheck(playerid, giveplayerid) {
 
 	if(PlayerInfo[playerid][pNation] != PlayerInfo[giveplayerid][pNation]) {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "This person is not part of your nation and can therefore not be processed.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi nay khong thuoc quoc gia cua ban nen khong the xu ly.");
 		return 0;
 	}
 	return 1;
@@ -265,21 +265,21 @@ CMD:apply(playerid, params[])
 	new choice[3];
 	if(sscanf(params, "s[3]", choice))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /apply [SA|NR]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /apply [SA|NR]");
 		return 1;
 	}
 	if(PlayerInfo[playerid][pFreezeBank] || PlayerInfo[playerid][pFreezeHouse] || PlayerInfo[playerid][pFreezeCar]) {
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "The current nation you're in has frozen your assets. Therefore, you cannot apply.");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Quoc gia cua ban da dong bang tai san, ban khong the nop don.");
 	}
 
 	if(strcmp(choice, "sa", true) == 0)
 	{
-		if(PlayerInfo[playerid][pNation] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're currently part of San Andreas.");
+		if(PlayerInfo[playerid][pNation] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da thuoc San Andreas.");
 		CheckNationQueue(playerid, 0);
 	}
 	else if(strcmp(choice, "nr", true) == 0)
 	{
-		if(PlayerInfo[playerid][pNation] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You're currently part of New Robada.");
+		if(PlayerInfo[playerid][pNation] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da thuoc New Robada.");
 		CheckNationQueue(playerid, 1);
 	}
 	return 1;
@@ -295,7 +295,7 @@ CMD:checkapps(playerid, params[])
 			case 2: mysql_tquery(MainPipeline, "SELECT `playerid`, `name`, `date` FROM `nation_queue` WHERE `nation` = 1 AND `status` = 1 ORDER BY `id` ASC", "NationQueueQueryFinish", "iii", playerid, 1, AppQueue);
 		}
 	}
-	else SendClientMessage(playerid, COLOR_GREY, "You are not the leader of a Government agency.");
+	else SendClientMessage(playerid, COLOR_GREY, "Ban khong phai lanh dao co quan Government.");
 	return 1;
 }
 
@@ -304,13 +304,13 @@ CMD:deport(playerid, params[])
 	if((0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV)
 	{
 		new giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deport [player]");
-		if(!IsPlayerConnected(giveplayerid)) SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-		else if(!ProxDetectorS(5.0, playerid, giveplayerid)) SendClientMessageEx(playerid, COLOR_GREY, "You are not close enough to the deportee.");
-		else if(PlayerInfo[playerid][pNation] == 0 && PlayerInfo[giveplayerid][pNation] == 0) SendClientMessageEx(playerid, COLOR_GREY, "You can't deport a citizen of San Andreas!");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /deport [player]");
+		if(!IsPlayerConnected(giveplayerid)) SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
+		else if(!ProxDetectorS(5.0, playerid, giveplayerid)) SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o du gan nguoi bi truc xuat.");
+		else if(PlayerInfo[playerid][pNation] == 0 && PlayerInfo[giveplayerid][pNation] == 0) SendClientMessageEx(playerid, COLOR_GREY, "Khong the truc xuat cong dan San Andreas!");
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You deported %s!", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da truc xuat %s!", GetPlayerNameEx(giveplayerid));
 			DeletePVar(giveplayerid, "IsFrozen");
 			TogglePlayerControllable(giveplayerid, true);
 			ClearAnimationsEx(giveplayerid);
@@ -333,7 +333,7 @@ CMD:deport(playerid, params[])
 						SetPlayerFacingAngle(giveplayerid, 180.0);
 					}
 				}
-				SendClientMessageEx(giveplayerid, COLOR_RED, "You have been deported back to New Robada.");
+				SendClientMessageEx(giveplayerid, COLOR_RED, "Ban da bi truc xuat ve New Robada.");
 			}
 			else if(PlayerInfo[playerid][pNation] == 1 && PlayerInfo[giveplayerid][pNation] == 0)
 			{
@@ -350,7 +350,7 @@ CMD:deport(playerid, params[])
 						SetPlayerFacingAngle(giveplayerid, 90.0);
 					}
 				}
-				SendClientMessageEx(giveplayerid, COLOR_RED, "You have been deported back to San Andreas.");
+				SendClientMessageEx(giveplayerid, COLOR_RED, "Ban da bi truc xuat ve San Andreas.");
 			}
 			else if(PlayerInfo[playerid][pNation] == 0 && PlayerInfo[giveplayerid][pNation] == 0)
 			{
@@ -368,7 +368,7 @@ CMD:deport(playerid, params[])
 					}
 				}
 				PlayerInfo[giveplayerid][pNation] = 2;
-				SendClientMessageEx(giveplayerid, COLOR_RED, "You were deported from your country. You have lost your citizenship.");
+				SendClientMessageEx(giveplayerid, COLOR_RED, "Ban bi truc xuat khoi quoc gia va mat quoc tich.");
 			}
 			else if(PlayerInfo[playerid][pNation] == 1 && PlayerInfo[giveplayerid][pNation] == 1)
 			{
@@ -386,11 +386,11 @@ CMD:deport(playerid, params[])
 					}
 				}
 				PlayerInfo[giveplayerid][pNation] = 2;
-				SendClientMessageEx(giveplayerid, COLOR_RED, "You were deported from your country. You have lost your citizenship.");
+				SendClientMessageEx(giveplayerid, COLOR_RED, "Ban bi truc xuat khoi quoc gia va mat quoc tich.");
 			}
 	    }
 	}
-	else SendClientMessage(playerid, COLOR_GREY, "You are not the leader of a Government agency.");
+	else SendClientMessage(playerid, COLOR_GREY, "Ban khong phai lanh dao co quan Government.");
 	return 1;
 }
 

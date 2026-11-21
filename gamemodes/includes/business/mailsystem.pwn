@@ -66,7 +66,7 @@ stock IsNearPublicMailbox(playerid)
 
 stock DisplayStampDialog(playerid)
 {
-	ShowPlayerDialogEx(playerid, DIALOG_POSTAMP, DIALOG_STYLE_LIST, "Buy a stamp", "Regular Mail		$100\nPriority Mail		$250\nPremium Mail		$500 (Gold VIP+)\nGovernment Mail	Free", "Next", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_POSTAMP, DIALOG_STYLE_LIST, "Mua tem", "Thu thuong		$100\nThu uu tien		$250\nThu cao cap		$500 (Gold VIP+)\nThu cong vu	Mien phi", "Tiep", "Huy");
 }
 
 stock RenderHouseMailbox(h)
@@ -90,7 +90,7 @@ stock RenderStreetMailbox(id)
 	{
 	    new string[128];
 		MailBoxes[id][mbObjectId] = CreateDynamicObject(1258, MailBoxes[id][mbPosX], MailBoxes[id][mbPosY], MailBoxes[id][mbPosZ], 0.0, 0.0, MailBoxes[id][mbAngle], MailBoxes[id][mbVW], MailBoxes[id][mbInt], .streamdistance = 100.0);
-		format(string,sizeof(string),"Mailbox (ID: %d)\nType /sendmail to send a letter.", id);
+		format(string,sizeof(string),"Hop thu (ID: %d)\nDung /sendmail de gui thu.", id);
 		MailBoxes[id][mbTextId] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, MailBoxes[id][mbPosX], MailBoxes[id][mbPosY], MailBoxes[id][mbPosZ] + 0.5, 10.0, .worldid = MailBoxes[id][mbVW], .testlos = 0, .streamdistance = 25.0);
 	}
 }
@@ -142,17 +142,17 @@ CMD:mailhelp(playerid, params[])
 
 CMD:omailhelp(playerid, params[])
 {
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Mail System Help");
-	SendClientMessageEx(playerid, COLOR_GRAD2, "You can purchase writing paper from any 24/7 and send letters to your friends");
-	SendClientMessageEx(playerid, COLOR_GRAD2, "and colleagues regardless of whether they are online or not. Letters can be sent");
-	SendClientMessageEx(playerid, COLOR_GRAD2, "from your nearest Street Posting Box, or from your own mail box (at your own house)");
-	SendClientMessageEx(playerid, COLOR_GRAD2, "and these will be delivered; time depending on which service you have purchased.");
-	SendClientMessageEx(playerid, COLOR_GRAD3, "Mail System Commands: /sendmail /getmail /placemailbox /movemailbox /destroymailbox /postdirectory");
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Huong dan gui thu");
+	SendClientMessageEx(playerid, COLOR_GRAD2, "Ban co the mua giay viet tai bat ky 24/7 nao de gui thu cho ban be");
+	SendClientMessageEx(playerid, COLOR_GRAD2, "va dong nghiep du ho co online hay khong. Ban co the gui thu");
+	SendClientMessageEx(playerid, COLOR_GRAD2, "tu hop thu cong cong gan nhat hoac hop thu tai nha cua minh.");
+	SendClientMessageEx(playerid, COLOR_GRAD2, "Thoi gian chuyen thu tuy thuoc dich vu ban da chon.");
+	SendClientMessageEx(playerid, COLOR_GRAD3, "Lenh gui thu: /sendmail /getmail /placemailbox /movemailbox /destroymailbox /postdirectory");
 	if(PlayerInfo[playerid][pAdmin] > 3)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "Admin Commands");
-	    SendClientMessageEx(playerid, COLOR_GRAD1, "/createmailbox (Creates a street posting box)   /removemailbox [id] (Removes a street posting box)");
-	    SendClientMessageEx(playerid, COLOR_GRAD1, "/gotomailbox [id] (Teleports to a street posting box)    /adestroymailbox [houseid] (Deletes a players mailbox)");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Lenh Admin");
+	    SendClientMessageEx(playerid, COLOR_GRAD1, "/createmailbox (Tao hop thu cong cong)   /removemailbox [id] (Xoa hop thu cong cong)");
+	    SendClientMessageEx(playerid, COLOR_GRAD1, "/gotomailbox [id] (Dich chuyen den hop thu cong cong)    /adestroymailbox [houseid] (Xoa hop thu tai nha)");
 	}
 	return 1;
 }
@@ -160,13 +160,13 @@ CMD:omailhelp(playerid, params[])
 CMD:sendmail(playerid, params[])
 {
 	if (!IsNearHouseMailbox(playerid) && !IsAtPostOffice(playerid) && !IsNearPublicMailbox(playerid)) {
-    	return SendClientMessageEx(playerid, COLOR_GREY, "You need to be at a post office, near a street mailbox, or your house mailbox.");
+    	return SendClientMessageEx(playerid, COLOR_GREY, "Can o buu dien, gan hop thu cong cong hoac hop thu nha ban.");
     }
 	if (PlayerInfo[playerid][pPaper] < 1) {
-		return SendClientMessageEx(playerid, COLOR_GREY, "You don't have any papers left. You can buy some at a 24/7.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban da het giay viet. Hay mua them tai 24/7.");
 	}
 	if(GetPVarInt(playerid, "MailTime") > 0) {
-		return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before sending more mail.", GetPVarInt(playerid, "MailTime"));
+		return SendClientMessageEx(playerid, COLOR_GREY, "Can cho %d giay truoc khi gui thu tiep.", GetPVarInt(playerid, "MailTime"));
 	}
 	DisplayStampDialog(playerid);
 	return 1;
@@ -175,7 +175,7 @@ CMD:sendmail(playerid, params[])
 CMD:getmail(playerid, params[])
 {
 	if (!IsNearHouseMailbox(playerid) && !IsAtPostOffice(playerid)) {
-	 	return SendClientMessageEx(playerid, COLOR_GREY, "You need to be near at a post office or near your house mailbox.");
+	 	return SendClientMessageEx(playerid, COLOR_GREY, "Can o gan buu dien hoac hop thu nha ban.");
 	}
 	DeletePVar(playerid, "UnreadMails");
 	DisplayMails(playerid);
@@ -185,15 +185,15 @@ CMD:getmail(playerid, params[])
 CMD:createmailbox(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
-        return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+        return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
     }
 
 	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)	{
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not do this while spectating.");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the lam vay khi dang theo doi.");
 	}
 
     new i = GetFreeMailboxId();
-	if (i == -1) return	SendClientMessageEx(playerid, COLOR_GRAD1, "The maximum number of street mailboxes has been reached.");
+	if (i == -1) return	SendClientMessageEx(playerid, COLOR_GRAD1, "Da dat gioi han hop thu cong cong.");
 
 	GetPlayerPos(playerid, MailBoxes[i][mbPosX], MailBoxes[i][mbPosY], MailBoxes[i][mbPosZ]);
 	GetPlayerFacingAngle(playerid, MailBoxes[i][mbAngle]);
@@ -205,7 +205,7 @@ CMD:createmailbox(playerid, params[])
 	RenderStreetMailbox(i);
 
 	new string[128], area[MAX_ZONE_NAME];
-	SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully created a street mailbox with ID %d.", i);
+	SendClientMessageEx(playerid, COLOR_GRAD2, "Da tao hop thu cong cong ID %d.", i);
 	GetPlayer2DZone(playerid, area, MAX_ZONE_NAME);
 	format(string, sizeof(string), "Admin %s has placed street mailbox %d at %s", GetPlayerNameEx(playerid), i, area);
 	Log("logs/mail.log", string);
@@ -219,24 +219,24 @@ CMD:createmailbox(playerid, params[])
 CMD:removemailbox(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
-        return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+        return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
     }
 	new id;
 	if(sscanf(params, "d", id)) {
-        return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /removemailbox [street mailbox id]");
+        return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /removemailbox [street mailbox id]");
     }
     if(id < 0 || id >= MAX_MAILBOXES) {
-        return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid street mailbox ID.");
+        return SendClientMessageEx(playerid, COLOR_GRAD2, "ID hop thu cong cong khong hop le.");
     }
     if(MailBoxes[id][mbPosX] == 0.0) {
-        return SendClientMessageEx(playerid, COLOR_GRAD2, "No street mailbox found with that ID.");
+        return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong tim thay hop thu cong cong co ID nay.");
     }
 
 	ClearStreetMailbox(id);
 	RenderStreetMailbox(id);
 
 	new string[128], area[MAX_ZONE_NAME];
-	SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully removed the street mailbox with ID %d.", id);
+	SendClientMessageEx(playerid, COLOR_GRAD2, "Da xoa hop thu cong cong ID %d.", id);
 	GetPlayer2DZone(playerid, area, MAX_ZONE_NAME);
 	format(string, sizeof(string), "Administrator %s has removed a street mailbox %d, at %s", GetPlayerNameEx(playerid), id, area);
 	Log("logs/mail.log", string);
@@ -247,21 +247,21 @@ CMD:removemailbox(playerid, params[])
 CMD:gotomailbox(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
-        return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+        return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
     }
 	new id;
 	if(sscanf(params, "d", id)) {
-        SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotomailbox [street mailbox id]");
+        SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gotomailbox [street mailbox id]");
         return 1;
     }
     if(id < 0 || id >= MAX_MAILBOXES) {
-        return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid street mailbox ID.");
+        return SendClientMessageEx(playerid, COLOR_GRAD2, "ID hop thu cong cong khong hop le.");
     }
     if(MailBoxes[id][mbPosX] == 0.0) {
-        return SendClientMessageEx(playerid, COLOR_GRAD2, "No street mailbox found with that ID.");
+        return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong tim thay hop thu cong cong co ID nay.");
     }
 
-	GameTextForPlayer(playerid, "~w~Teleporting", 5000, 1);
+	GameTextForPlayer(playerid, "~w~Dang dich chuyen", 5000, 1);
 	SetPlayerVirtualWorld(playerid, MailBoxes[id][mbVW]);
 	SetPlayerInterior(playerid, MailBoxes[id][mbInt]);
 	SetPlayerPos(playerid,MailBoxes[id][mbPosX],MailBoxes[id][mbPosY] - 2.5,MailBoxes[id][mbPosZ]);
@@ -274,29 +274,29 @@ CMD:gotomailbox(playerid, params[])
 CMD:placemailbox(playerid, params[])
 {
 	if (PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID && PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID && PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID) {
-	    return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't own a house!");
+	    return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong so huu nha!");
 	}
 	if (PlayerInfo[playerid][pMailbox] < 1) {
-	    return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a mailbox item!");
+	    return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co vat pham hop thu!");
 	}
 	new style;
 	if (sscanf(params, "d", style)) {
-		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /placemailbox [1 or 2] (1=wooden 2=steel)");
+		return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /placemailbox [1 or 2] (1=go 2=thep)");
     }
 	if (HasMailbox(playerid)) {
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You already have a mailbox placed. You cannot place more.");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da dat hop thu, khong the dat them.");
 	}
 	if (GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) {
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be on foot to use this command!");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Can di bo de dung lenh nay!");
 	}
 	new h = InRangeOfWhichHouse(playerid, MAILBOX_RANGE);
 	if (h == INVALID_HOUSE_ID) {
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not at your house!");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o nha minh!");
 	}
 
 	new Float: f_ZOffset;
 	if (style == 1) f_ZOffset = -0.38; else if (style == 2) f_ZOffset = -0.95;
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid number!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "So khong hop le!");
 
 	PlayerInfo[playerid][pMailbox]--;
 
@@ -308,8 +308,8 @@ CMD:placemailbox(playerid, params[])
 
 	RenderHouseMailbox(h);
 
-	SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully placed your mailbox!");
-	SendClientMessageEx(playerid, COLOR_GRAD2, "HINT: If you need to change the location of your mailbox, you can type /movemailbox" );
+	SendClientMessageEx(playerid, COLOR_WHITE, "Da dat hop thu thanh cong!");
+	SendClientMessageEx(playerid, COLOR_GRAD2, "GOI Y: Dung /movemailbox de doi vi tri hop thu." );
 
 	new szLog[128];
 	format(szLog, sizeof(szLog), "%s(%d) has placed a mailbox for their house (House ID: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), h);
@@ -321,17 +321,17 @@ CMD:placemailbox(playerid, params[])
 CMD:destroymailbox(playerid, params[])
 {
 	if (!HasMailbox(playerid)) {
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a placed mailbox.");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua dat hop thu.");
 	}
 	new h;
 	if (PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID && IsPlayerInRangeOfPoint(playerid,3.0,HouseInfo[PlayerInfo[playerid][pPhousekey]][hMailX], HouseInfo[PlayerInfo[playerid][pPhousekey]][hMailY], HouseInfo[PlayerInfo[playerid][pPhousekey]][hMailZ])) h = PlayerInfo[playerid][pPhousekey];
 	else if (PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && IsPlayerInRangeOfPoint(playerid,3.0,HouseInfo[PlayerInfo[playerid][pPhousekey2]][hMailX], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hMailY], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hMailZ])) h = PlayerInfo[playerid][pPhousekey2];
 	else if (PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && IsPlayerInRangeOfPoint(playerid,3.0,HouseInfo[PlayerInfo[playerid][pPhousekey3]][hMailX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hMailY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hMailZ])) h = PlayerInfo[playerid][pPhousekey3];
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You need to be near your mailbox.");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Can dung gan hop thu cua ban.");
 
 	ClearHouseMailbox(h);
 	RenderHouseMailbox(h);
-	SendClientMessageEx(playerid, COLOR_WHITE, "You have destroyed your mailbox.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Ban da pha huy hop thu.");
 
 	new szLog[128];
 	format(szLog, sizeof(szLog), "%s(%d) has destroyed their house mailbox (House ID: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), h);
@@ -343,11 +343,11 @@ CMD:destroymailbox(playerid, params[])
 CMD:movemailbox(playerid, params[])
 {
 	if (!HasMailbox(playerid)) {
-   		return SendClientMessageEx(playerid, COLOR_GREY, "You don't have a placed mailbox!");
+   		return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dat hop thu.");
    	}
 	new h = InRangeOfWhichHouse(playerid, MAILBOX_RANGE);
 	if (h == INVALID_HOUSE_ID || HouseInfo[h][hMailX] == 0.0) {
-		return SendClientMessageEx(playerid, COLOR_GREY, "You are too far away from your house door for the new location of your mailbox!");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Vi tri moi cua hop thu qua xa cua nha ban!");
 	}
 	GetPlayerPos(playerid, HouseInfo[h][hMailX], HouseInfo[h][hMailY], HouseInfo[h][hMailZ]);
 	GetPlayerFacingAngle(playerid, HouseInfo[h][hMailA]);
@@ -356,35 +356,35 @@ CMD:movemailbox(playerid, params[])
 	HouseInfo[h][hMailZ] += f_ZOffset;
 	SaveHouse(h);
     RenderHouseMailbox(h);
-	SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully moved your mailbox to its new position!");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Da di chuyen hop thu thanh cong!");
 	return 1;
 }
 
 CMD:adestroymailbox(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
-        return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+        return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
     }
     new houseid;
     if(sscanf(params,"d",houseid)) {
-        return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /adestroymailbox [houseid]");
+        return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /adestroymailbox [houseid]");
     }
     if (houseid < 0 || houseid >= MAX_HOUSES) {
-    	return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid house ID!");
+    	return SendClientMessageEx(playerid, COLOR_GRAD2, "ID nha khong hop le!");
 	}
     if (HouseInfo[houseid][hMailX] == 0.0) {
-    	return SendClientMessageEx(playerid, COLOR_GRAD2, "That house does not have a mailbox.");
+    	return SendClientMessageEx(playerid, COLOR_GRAD2, "Nha nay khong co hop thu.");
 	}
 
     ClearHouseMailbox(houseid);
 	RenderHouseMailbox(houseid);
 
 	new string[64];
-	SendClientMessageEx(playerid, COLOR_GREY, "You have destroyed the mailbox of house %d.", houseid);
+	SendClientMessageEx(playerid, COLOR_GREY, "Da xoa hop thu cua nha %d.", houseid);
 	foreach(new i: Player)
 	{
 		if(PlayerInfo[i][pPhousekey] == houseid || PlayerInfo[i][pPhousekey2] == houseid || PlayerInfo[i][pPhousekey3] == houseid)	{
-			SendClientMessageEx(i, COLOR_GREY, "Administrator %s has destroyed your mailbox.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(i, COLOR_GREY, "Admin %s da xoa hop thu cua ban.", GetPlayerNameEx(playerid));
 			break;
 		}
 	}	
@@ -398,31 +398,31 @@ CMD:adestroymailbox(playerid, params[])
 CMD:postdirectory(playerid, params[])
 {
 	if (!IsAtPostOffice(playerid)) {
-		return SendClientMessageEx(playerid, COLOR_GREY, "You're not at a post office!");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o buu dien!");
 	}
 	if(strcmp(params, "on", true) == 0)	{
 	    PlayerInfo[playerid][pMailEnabled] = 1;
-		SendClientMessage(playerid, COLOR_WHITE, "You have enabled look up in the postal directory.");
+		SendClientMessage(playerid, COLOR_WHITE, "Da cho phep tra ten ban trong danh ba buu dien.");
     }
     else if(strcmp(params, "off", true) == 0)	{
 	    PlayerInfo[playerid][pMailEnabled] = 0;
-        SendClientMessage(playerid, COLOR_WHITE, "You have disabled look up in the postal directory.");
+        SendClientMessage(playerid, COLOR_WHITE, "Da an ten ban khoi danh ba buu dien.");
     }
     else {
-	    SendClientMessage(playerid, COLOR_GREY, "USAGE: /postdirectory [on/off]");
+	    SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /postdirectory [on/off]");
     }
 	return 1;
 }
 
 CMD:mnear(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
-	SendClientMessageEx(playerid, COLOR_RED, "* Listing all mailboxes within 30 meters of you...");
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
+	SendClientMessageEx(playerid, COLOR_RED, "* Liet ke hop thu trong ban kinh 30 met...");
 	for(new i, szMessage[32]; i < MAX_HOUSES; i++)
 	{
 		if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hMailX], HouseInfo[i][hMailY], HouseInfo[i][hMailZ]))
 		{
-			format(szMessage, sizeof(szMessage), "ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hMailX], HouseInfo[i][hMailY], HouseInfo[i][hMailZ]));
+			format(szMessage, sizeof(szMessage), "ID %d | Cach %f", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hMailX], HouseInfo[i][hMailY], HouseInfo[i][hMailZ]));
 			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 		}
 	}

@@ -47,8 +47,8 @@ hook OnGameModeInit() {
 	InsurancePoint[0] = CreateDynamicSphere(2383.0728,2662.0520,8001.1479, 2.0); // regular hospital interior
 	InsurancePoint[1] = CreateDynamicSphere(564.54, 1437.02, 6000.47, 2.0); // doc hospital
 
-	CreateDynamic3DTextLabel("Insurance Point\nPress ~k~~CONVERSATION_YES~", COLOR_YELLOW, 2383.0728,2662.0520,8001.1479, 10); // Main Hospital Interior
-	CreateDynamic3DTextLabel("Insurance Point\nPress ~k~~CONVERSATION_YES~", COLOR_YELLOW, 564.54, 1437.02, 6000.47, 10); // Doc Hospital Interior
+	CreateDynamic3DTextLabel("Diem bao hiem\nNhan ~k~~CONVERSATION_YES~", COLOR_YELLOW, 2383.0728,2662.0520,8001.1479, 10); // Main Hospital Interior
+	CreateDynamic3DTextLabel("Diem bao hiem\nNhan ~k~~CONVERSATION_YES~", COLOR_YELLOW, 564.54, 1437.02, 6000.47, 10); // Doc Hospital Interior
 	CreateDynamicPickup(1240, 23, 2383.0728,2662.0520,8001.1479, -1); // Main hospital interior pickup
 	CreateDynamicPickup(1240, 23, 564.54, 1437.02, 6000.47, -1); // Doc hospital interior pickup
 
@@ -58,8 +58,8 @@ hook OnGameModeInit() {
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 	if(newkeys & KEY_YES && (IsPlayerInDynamicArea(playerid, InsurancePoint[0]) || IsPlayerInDynamicArea(playerid, InsurancePoint[1]))) {
-		format(szMiscArray, sizeof(szMiscArray), "Level 1 Healthcare\t\t$1000\nLevel 2 Healthcare\t\t$2000\nLevel 3 Healthcare\t\t$3000\nLevel 4 Healthcare\t\t$4000\nBuy Insurance");
-		ShowPlayerDialogEx(playerid, DIALOG_HOSPITAL_MENU, DIALOG_STYLE_LIST, "Hospital Menu", szMiscArray, "Select", "Cancel");
+		format(szMiscArray, sizeof(szMiscArray), "Cham soc cap 1\t\t$1000\nCham soc cap 2\t\t$2000\nCham soc cap 3\t\t$3000\nCham soc cap 4\t\t$4000\nMua bao hiem");
+		ShowPlayerDialogEx(playerid, DIALOG_HOSPITAL_MENU, DIALOG_STYLE_LIST, "Menu benh vien", szMiscArray, "Chon", "Huy");
 	}
 
 	return 1;
@@ -115,14 +115,14 @@ DeliverPlayerToHospital(playerid, iHospital)
 	if(GetPVarInt(playerid, "_HospitalBeingDelivered") == 1) // if player is delivered
 	{
 		arrHospitalBedData[iHospital][iCountDown][index] = 10;
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have been delivered to the hospital by an ambulance.");
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You will now be treated at the hospital for your injuries.");
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban duoc xe cap cuu dua den benh vien.");
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban se duoc dieu tri vet thuong tai benh vien.");
 	}
 	else if(PlayerInfo[playerid][pWantedLevel] >= 1) // if player wanted
 	{
 		arrHospitalBedData[iHospital][iCountDown][index] = 60;
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You are wanted and thus the authorities have been informed.");
-		format(string, sizeof(string), " %s Hospital has reported %s as a wanted person.", GetHospitalName(iHospital), GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban dang bi truy na, nha chuc trach da duoc thong bao.");
+		format(string, sizeof(string), "Benh vien %s bao %s la nguoi bi truy na.", GetHospitalName(iHospital), GetPlayerNameEx(playerid));
 		if(PlayerInfo[playerid][pSHealth] > 0) {SetArmour(playerid, PlayerInfo[playerid][pSHealth]);}
 		SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
 	}
@@ -156,7 +156,7 @@ DeliverPlayerToHospital(playerid, iHospital)
 			{
 				arrHospitalBedData[iHospital][iCountDown][index] = 40;
 				DeletePVar(playerid, "HealthCareActive");
-				SendClientMessageEx(playerid, COLOR_CYAN, "You didn't have enough credits for advanced health care.");
+				SendClientMessageEx(playerid, COLOR_CYAN, "Khong du credits cho advanced health care.");
 			}
 		}
 		else if(PlayerInfo[playerid][pHealthCare] == 2)
@@ -175,13 +175,13 @@ DeliverPlayerToHospital(playerid, iHospital)
 
 				format(string, sizeof(string), "[AHC] [User: %s(%i)][IP: %s][Credits: %s][Super][Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[19][sItemPrice]));
 				Log("logs/credits.log", string), print(string);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have advanced healthcare toggled, you will spawn faster as a result.");
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bat advanced healthcare, se hoi sinh nhanh hon.");
 			}
 			else
 			{
 				arrHospitalBedData[iHospital][iCountDown][index] = 40;
 				DeletePVar(playerid, "HealthCareActive");
-				SendClientMessageEx(playerid, COLOR_CYAN, "You didn't have enough credits for super advanced health care.");
+				SendClientMessageEx(playerid, COLOR_CYAN, "Khong du credits cho super advanced health care.");
 			}
 		}
 		if(PlayerInfo[playerid][pSHealth] > 0) {SetArmour(playerid, PlayerInfo[playerid][pSHealth]);}
@@ -189,10 +189,10 @@ DeliverPlayerToHospital(playerid, iHospital)
 	else // if player has regular insurance
 	{
 		arrHospitalBedData[iHospital][iCountDown][index] = 40;
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Want to spawn faster? Enable advanced healthcare using /togglehealthcare.");
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Muon hoi sinh nhanh? Bat advanced healthcare qua /togglehealthcare.");
 		if(PlayerInfo[playerid][pSHealth] > 0) {SetArmour(playerid, PlayerInfo[playerid][pSHealth]);}
 	}
-	format(string, sizeof(string), "Time Left: ~r~%d ~w~seconds", arrHospitalBedData[iHospital][iCountDown][index]);
+	format(string, sizeof(string), "Con lai: ~r~%d ~w~giay", arrHospitalBedData[iHospital][iCountDown][index]);
 	PlayerTextDrawHide(playerid, HospTime[playerid]);
 	PlayerTextDrawSetString(playerid, HospTime[playerid], string);
 	PlayerTextDrawShow(playerid, HospTime[playerid]);
@@ -309,13 +309,13 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 			{
 				// set them to their house entrance location....
 				// using house spawn system from previous insurance system
-				ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
+				ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Chon nha cua ban", "Nha 1\nNha 2\nNha 3", "Xuat hien", "");
 
-				SendClientMessageEx(playerid, COLOR_RED, "Medical: You have been charged $%d for your hospital bill and transported to your home.", HospitalSpawnInfo[iHospital][0]);
+				SendClientMessageEx(playerid, COLOR_RED, "Vien phi $%d da duoc thu, ban duoc dua ve nha.", HospitalSpawnInfo[iHospital][0]);
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_RED, "Medical: You have been charged $%d for your hospital bill at %s", HospitalSpawnInfo[iHospital][0], GetHospitalName(iHospital));
+				SendClientMessageEx(playerid, COLOR_RED, "Vien phi $%d da duoc thu tai %s", HospitalSpawnInfo[iHospital][0], GetHospitalName(iHospital));
 			}
 			
 			PlayerInfo[playerid][pHospital] = 0;
@@ -336,11 +336,11 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		} else {
 			if(PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE && PlayerInfo[playerid][pWantedLevel] < 1) // if they have homecare, set them at home for free
 			{
-				SendClientMessageEx(playerid, COLOR_RED, "Medical: You have been charged $%d for your hospital bill and transported to your home.", HospitalSpawnInfo[iHospital][0]);
+				SendClientMessageEx(playerid, COLOR_RED, "Vien phi $%d da duoc thu, ban duoc dua ve nha.", HospitalSpawnInfo[iHospital][0]);
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_RED, "Medical: You have been charged $%d for your hospital bill at %s", HospitalSpawnInfo[iHospital][0], GetHospitalName(iHospital));
+				SendClientMessageEx(playerid, COLOR_RED, "Vien phi $%d da duoc thu tai %s", HospitalSpawnInfo[iHospital][0], GetHospitalName(iHospital));
 			}
 			PlayerInfo[playerid][pHospital] = 0;
 			GivePlayerCash(playerid, -HospitalSpawnInfo[iHospital][0]);
@@ -372,7 +372,7 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 				PlayerInfo[playerid][pVW] = iHospital;
 			}
 		}
-		format(string, sizeof(string), "Time Left: ~r~%d ~w~seconds", arrHospitalBedData[iHospital][iCountDown][iBed]);
+		format(string, sizeof(string), "Con lai: ~r~%d ~w~giay", arrHospitalBedData[iHospital][iCountDown][iBed]);
 		PlayerTextDrawHide(playerid, HospTime[playerid]);
 		PlayerTextDrawSetString(playerid, HospTime[playerid], string);
 		PlayerTextDrawShow(playerid, HospTime[playerid]);
@@ -466,22 +466,22 @@ CMD:setinsurance(playerid, params[])
 		new giveplayerid, insurance;
 		if(sscanf(params, "ud", giveplayerid, insurance))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setinsurance [player] [insurance]");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "Available Insurances: 0 - %d", MAX_HOSPITALS-1);
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /setinsurance [player] [insurance]");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Bao hiem kha dung: 0 - %d", MAX_HOSPITALS-1);
 			return 1;
 		}
 
 		if(insurance >= 0 && insurance <= MAX_HOSPITALS-1)
 		{
-			SendClientMessageEx(giveplayerid,COLOR_YELLOW," Your insurance has been changed to %s.", GetHospitalName(insurance));
-			SendClientMessageEx(playerid,COLOR_YELLOW," You have changed %s's insurance to %s.", GetPlayerNameEx(giveplayerid), GetHospitalName(insurance));
+			SendClientMessageEx(giveplayerid,COLOR_YELLOW,"Bao hiem cua ban da doi thanh %s.", GetHospitalName(insurance));
+			SendClientMessageEx(playerid,COLOR_YELLOW,"Da doi bao hiem cua %s thanh %s.", GetPlayerNameEx(giveplayerid), GetHospitalName(insurance));
 			PlayerInfo[giveplayerid][pInsurance] = insurance;
 			return 1;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -493,17 +493,17 @@ HospHeal(playerid)
 		if(GetPVarType(playerid, "STD"))
 		{
 			DeletePVar(playerid, "STD");
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are no longer infected with a STD anymore because of the Hospital's help!");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Benh vien da dieu tri khoi benh lay qua duong tinh duc!");
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   Your STD results also came back negative!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ket qua xet nghiem benh lay qua duong tinh duc cung am tinh!");
 			return 1;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "   You are not at a Hospital!");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o benh vien!");
 	}
 	return 1;
 }
@@ -515,11 +515,11 @@ CMD:buyinsurance(playerid, params[])
 		
 	if(IsPlayerInRangeOfPoint(playerid, 2.00, 2383.0728,2662.0520,8001.1479)) // all regular hospital points
 	{
-		if(iHospitalVW >= MAX_HOSPITALS) return SendClientMessageEx(playerid, -1, "No hospital has been setup for this Virtual World!");
-		if(PlayerInfo[playerid][pInsurance] == iHospitalVW) return SendClientMessageEx(playerid, -1, "You already have insurance at this hospital!");
+		if(iHospitalVW >= MAX_HOSPITALS) return SendClientMessageEx(playerid, -1, "Virtual World nay chua duoc cau hinh benh vien!");
+		if(PlayerInfo[playerid][pInsurance] == iHospitalVW) return SendClientMessageEx(playerid, -1, "Ban da co bao hiem tai benh vien nay!");
 		if(GetPlayerCash(playerid) < HospitalSpawnInfo[iHospitalVW][1]) return SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
 		PlayerInfo[playerid][pInsurance] = iHospitalVW;
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(iHospitalVW), HospitalSpawnInfo[iHospitalVW][1]);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da mua bao hiem tai %s voi gia $%d.", GetHospitalName(iHospitalVW), HospitalSpawnInfo[iHospitalVW][1]);
 		GivePlayerCash(playerid, - HospitalSpawnInfo[iHospitalVW][1]);
 		switch(iHospitalVW) {
 
@@ -533,21 +533,21 @@ CMD:buyinsurance(playerid, params[])
 	{
 		if(GetPlayerCash(playerid) < HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]) return SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
 		PlayerInfo[playerid][pInsurance] = HOSPITAL_DOCJAIL;
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(HOSPITAL_DOCJAIL), HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da mua bao hiem tai %s voi gia $%d.", GetHospitalName(HOSPITAL_DOCJAIL), HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
 		GivePlayerCash(playerid, - HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
 		Tax += HospitalSpawnInfo[HOSPITAL_DOCJAIL][1];
 		format(string, sizeof(string), "%s has purchased their medical insurance for $%d", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospitalVW][0]);
 		GroupPayLog(9, string);
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "ERROR: You are not in range of a hospital counter.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "LOI: Ban khong o gan quay benh vien.");
 	return 1;
 }
 
 CMD:kill(playerid, params[]) {
 	
-	if(!IsPlayerConnected(playerid)) return SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
-	else if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
-    else if(GetPVarInt( playerid, "EventToken" ) == 1 || PlayerInfo[playerid][pBeingSentenced] != 0 || GetPVarInt(playerid, "Injured") != 0 || GetPVarInt(playerid, "IsFrozen") != 0 || PlayerCuffed[playerid] != 0 || PlayerTied[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0 || PlayerInfo[playerid][pJailTime] != 0) return SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
+	if(!IsPlayerConnected(playerid)) return SendClientMessageEx (playerid, COLOR_GRAD2, "Ban chua the lam viec nay.");
+	else if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   Khong the lam vay trong Hunger Games Event!");
+    else if(GetPVarInt( playerid, "EventToken" ) == 1 || PlayerInfo[playerid][pBeingSentenced] != 0 || GetPVarInt(playerid, "Injured") != 0 || GetPVarInt(playerid, "IsFrozen") != 0 || PlayerCuffed[playerid] != 0 || PlayerTied[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0 || PlayerInfo[playerid][pJailTime] != 0) return SendClientMessageEx (playerid, COLOR_GRAD2, "Ban chua the lam viec nay.");
 	else
 	{
 		if(GetPVarInt(playerid, "EventToken") >= 1 || GetPVarType(playerid, "IsInArena"))
@@ -558,7 +558,7 @@ CMD:kill(playerid, params[]) {
 				{
 				    if(GetPVarInt(playerid, "AOSlotPaintballFlag") != -1)
 				    {
-				        SendClientMessageEx(playerid, COLOR_WHITE, "You can not kill yourself while holding a flag.");
+				        SendClientMessageEx(playerid, COLOR_WHITE, "Khong the tu sat khi dang giu co.");
 				        return 1;
 				    }
 				}
@@ -567,12 +567,12 @@ CMD:kill(playerid, params[]) {
 		}
 		
 		if(GetPVarInt(playerid, "commitSuicide") == 1) {
-		    return SendClientMessageEx(playerid, COLOR_GRAD2, "You have already requested to commit suicide.");
+		    return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da yeu cau tu sat.");
 		}
 		else {
 			SetTimerEx("killPlayer", 10000, false, "i", playerid);
 			SetPVarInt(playerid, "commitSuicide", 1);
-			SendClientMessageEx(playerid, COLOR_YELLOW, "You requested to commit suicide, please wait 10 seconds...");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Da yeu cau tu sat, vui long cho 10 giay...");
 		}
 	}
 	return 1;
@@ -651,11 +651,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					
 					if(IsPlayerInRangeOfPoint(playerid, 2.00, 2383.0728,2662.0520,8001.1479)) // all regular hospital points
 					{
-						if(iHospitalVW >= MAX_HOSPITALS) return SendClientMessageEx(playerid, -1, "No hospital has been setup for this Virtual World!");
-						if(PlayerInfo[playerid][pInsurance] == iHospitalVW) return SendClientMessageEx(playerid, -1, "You already have insurance at this hospital!");
+						if(iHospitalVW >= MAX_HOSPITALS) return SendClientMessageEx(playerid, -1, "Virtual World nay chua duoc cau hinh benh vien!");
+						if(PlayerInfo[playerid][pInsurance] == iHospitalVW) return SendClientMessageEx(playerid, -1, "Ban da co bao hiem tai benh vien nay!");
 						if(GetPlayerCash(playerid) < HospitalSpawnInfo[iHospitalVW][1]) return SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
 						PlayerInfo[playerid][pInsurance] = iHospitalVW;
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(iHospitalVW), HospitalSpawnInfo[iHospitalVW][1]);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da mua bao hiem tai %s voi gia $%d.", GetHospitalName(iHospitalVW), HospitalSpawnInfo[iHospitalVW][1]);
 						GivePlayerCash(playerid, - HospitalSpawnInfo[iHospitalVW][1]);
 						switch(iHospitalVW) {
 
@@ -669,7 +669,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					{
 						if(GetPlayerCash(playerid) < HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]) return SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
 						PlayerInfo[playerid][pInsurance] = HOSPITAL_DOCJAIL;
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(HOSPITAL_DOCJAIL), HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da mua bao hiem tai %s voi gia $%d.", GetHospitalName(HOSPITAL_DOCJAIL), HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
 						GivePlayerCash(playerid, - HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
 						Tax += HospitalSpawnInfo[HOSPITAL_DOCJAIL][1];
 						format(szMiscArray, sizeof(szMiscArray), "%s has purchased their medical insurance for $%d", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospitalVW][0]);
@@ -680,23 +680,23 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		case SPAWNATHOME_CHOICE: {
 
-			if(!response) return ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
+			if(!response) return ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Chon nha cua ban", "Nha 1\nNha 2\nNha 3", "Xuat hien", "");
 
 			new i = INVALID_HOUSE_ID;
 
 			switch(listitem) {
 				case 0: {
-					if(PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID) return ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
+					if(PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID) return ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Chon nha cua ban", "Nha 1\nNha 2\nNha 3", "Xuat hien", "");
 
 					i = PlayerInfo[playerid][pPhousekey];
 				}
 				case 1: {
-					if(PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID) return ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
+					if(PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID) return ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Chon nha cua ban", "Nha 1\nNha 2\nNha 3", "Xuat hien", "");
 
 					i = PlayerInfo[playerid][pPhousekey2];
 				}
 				case 2: {
-					if(PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID) return ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
+					if(PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID) return ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Chon nha cua ban", "Nha 1\nNha 2\nNha 3", "Xuat hien", "");
 
 					i = PlayerInfo[playerid][pPhousekey3];
 				}
@@ -705,7 +705,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			Streamer_UpdateEx(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ]);
 			SetPlayerInterior(playerid,HouseInfo[i][hIntIW]);
 			SetPlayerPos(playerid,HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ]);
-			GameTextForPlayer(playerid, "~w~Welcome Home", 5000, 1);
+			GameTextForPlayer(playerid, "~w~Chao mung ve nha", 5000, 1);
 			PlayerInfo[playerid][pInt] = HouseInfo[i][hIntIW];
 			PlayerInfo[playerid][pVW] = HouseInfo[i][hIntVW];
 			SetPlayerVirtualWorld(playerid,HouseInfo[i][hIntVW]);

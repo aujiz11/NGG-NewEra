@@ -39,21 +39,21 @@ UpdateVLPTextDraws(playerid, vehicleid, TYPE = 0) {
 	new tdMessage[9 + MAX_ZONE_NAME], tdCarLocation[MAX_ZONE_NAME], Float:CarPos[3];
 	GetVehiclePos(vehicleid, CarPos[0], CarPos[1], CarPos[2]);
 	Get3DZone(CarPos[0], CarPos[1], CarPos[2], tdCarLocation, sizeof(tdCarLocation));
-	format(tdMessage, sizeof(tdMessage), "%s Robbery", tdCarLocation);
+	format(tdMessage, sizeof(tdMessage), "Cuop %s", tdCarLocation);
 	PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], tdMessage);
 	switch(TYPE) {
 		case 0: {
-			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Attempting to lock pick vehicle");
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Dang pha khoa xe");
 			format(tdMessage, sizeof(tdMessage), "%s", ConvertTimeS(GetPVarInt(playerid, "LockPickCountdown"), 1));
 			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][3], tdMessage);
 		}
 		case 1: {
-			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Attempting to crack the trunk");
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Dang pha khoa cop xe");
 			format(tdMessage, sizeof(tdMessage), "%s", ConvertTimeS(GetPVarInt(playerid, "CrackTrunkCountdown"), 1));
 			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][3], tdMessage);
 		}
 		case 2: {
-			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Deliver Vehicle");
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Giao xe");
 			format(tdMessage, sizeof(tdMessage), "00:%d", GetPVarInt(playerid, "DeliveringVehicleTime"));
 			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][3], tdMessage);
 		}
@@ -246,8 +246,8 @@ CMD:pickveh(playerid, params[])
 		return SendClientMessageEx(playerid, COLOR_WHITE, "You need to be next to the drivers door in order to lock pick it.");
 	}
 	*/
-	SendClientMessageEx(playerid, COLOR_WHITE, "This command has been disabled temporaly disabled due to an unknown issue.");
-	SendClientMessageEx(playerid, COLOR_WHITE, "Please do not report about this being disabled, we are testing something.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Lenh nay tam thoi bi vo hieu hoa do loi chua xac dinh.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Xin dung bao cao viec lenh bi tat, chung toi dang thu nghiem.");
 	return 1;
 }
 CMD:cracktrunk(playerid, params[])
@@ -317,8 +317,8 @@ CMD:cracktrunk(playerid, params[])
 	else {
 		return SendClientMessageEx(playerid, COLOR_WHITE, "You need to be at the back of the car that you lock picked.");
 	}*/
-	SendClientMessageEx(playerid, COLOR_WHITE, "This command has been disabled temporaly disabled due to an unknown issue.");
-	SendClientMessageEx(playerid, COLOR_WHITE, "Please do not report about this being disabled, we are testing something.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Lenh nay tam thoi bi vo hieu hoa do loi chua xac dinh.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Xin dung bao cao viec lenh bi tat, chung toi dang thu nghiem.");
 	return 1;
 }
 
@@ -343,7 +343,7 @@ CMD:stoplockpick(playerid, params[])
 		DeletePVar(playerid, "LockPickPlayer");
 		DestroyVLPTextDraws(playerid);
 		ClearAnimationsEx(playerid, 1);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully prevented yourself from this lock pick.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da dung pha khoa xe.");
 	}
 	return 1;
 }
@@ -355,7 +355,7 @@ CMD:stopcracking(playerid, params[])
 		DeletePVar(playerid, "CrackTrunkCountdown");
 		DestroyVLPTextDraws(playerid);
 		ClearAnimationsEx(playerid, 1);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully prevented yourself from this lock pick.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da dung pha khoa xe.");
 	}
 	return 1;
 }
@@ -371,7 +371,7 @@ DeliverVehicleTimer(i)
 			ownerid = GetPVarInt(i, "LockPickPlayer");
 		GetVehiclePos(GetPVarInt(i, "LockPickVehicle"), x, y, z);
 		if(GetPVarInt(i, "DeliveringVehicleTime") < gettime() || !IsPlayerInRangeOfPoint(i, 50.0, x, y, z) && int == 0) {
-			SendClientMessageEx(i, COLOR_YELLOW, "You failed to deliver the vehicle, the vehicle has been restored.");
+			SendClientMessageEx(i, COLOR_YELLOW, "Ban giao xe that bai, xe da duoc khoi phuc.");
 			if(GetPVarType(i, "LockPickVehicleSQLId")) 
 			{
 				mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d' AND `sqlID` = '%d'", VehicleFuel[GetPVarInt(i, "LockPickVehicle")], GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));

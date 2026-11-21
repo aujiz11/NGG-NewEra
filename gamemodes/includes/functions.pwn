@@ -344,7 +344,7 @@ public killPlayer(playerid)
 		SetHealth(playerid, 0);
 	}
 	else
-		return SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the 10 seconds, therefore you couldn't commit suicide.");
+		return SendClientMessageEx(playerid, COLOR_RED, "Ban bi thuong trong 10 giay nen khong the tu sat.");
 	return 1;
 }
 
@@ -380,7 +380,7 @@ forward IdiotSound(playerid);
 public IdiotSound(playerid)
 {
     PlayAudioStreamForPlayerEx(playerid, "http://www.ng-gaming.net/users/farva/you-are-an-idiot.mp3");
-    ShowPlayerDialogEx(playerid,DIALOG_NOTHING,DIALOG_STYLE_MSGBOX,"BUSTED!","A 15 percent CLEO tax has been assessed to your account along with a 3 hour prison - future use could result in a ban","Exit","");
+    ShowPlayerDialogEx(playerid,DIALOG_NOTHING,DIALOG_STYLE_MSGBOX,"BUSTED!","Tai khoan cua ban bi tru thue CLEO 15 percent va phat tu 3 gio, tai pham co the bi cam","Thoat","");
 }
 
 forward SetCamBack(playerid);
@@ -415,18 +415,18 @@ public HttpCallback_ShopIDCheck(index, response_code, data[])
 		{
 			if(confirmed)
 			{
-				format(shopstring, sizeof(shopstring), "{FFFFFF}You are now waiting to receive shop order ID: %d (Confirmed)\n\nA shop tech will be with you as soon as possible.\n\nIf you have more than one order then please let the shop tech know once they are with you.\n\nShop Techs Online: %d\n\nNOTE: The shop order remains pending even if you go offline and log back in.", PlayerInfo[index][pOrder], shoptechs);
-				ShowPlayerDialogEx(index, DIALOG_SHOPSENT, DIALOG_STYLE_MSGBOX, "{3399FF}Shop Order", shopstring, "Close", "");
+				format(shopstring, sizeof(shopstring), "{FFFFFF}Ban dang cho nhan don shop ID: %d (Da xac nhan)\n\nShop Tech se ho tro ban som nhat co the.\n\nNeu co nhieu don, hay bao cho Shop Tech khi duoc ho tro.\n\nShop Tech dang online: %d\n\nLUU Y: Don shop van cho xu ly neu ban thoat game roi dang nhap lai.", PlayerInfo[index][pOrder], shoptechs);
+				ShowPlayerDialogEx(index, DIALOG_SHOPSENT, DIALOG_STYLE_MSGBOX, "{3399FF}Don hang cua hang", shopstring, "Dong", "");
 
-				format(string, sizeof(string), "Shop order ID %d (Confirmed) from %s (ID: %d) is now pending.", PlayerInfo[index][pOrder], GetPlayerNameEx(index), index);
+				format(string, sizeof(string), "Don shop ID %d (Da xac nhan) cua %s (ID: %d) dang cho xu ly.", PlayerInfo[index][pOrder], GetPlayerNameEx(index), index);
 				ShopTechBroadCast(COLOR_SHOP, string);
 			}
 			else
 			{
-				format(shopstring, sizeof(shopstring), "{FFFFFF}You are now waiting to receive shop order ID: %d (Invalid)\n\nA shop tech will be with you as soon as possible.\n\nIf you have more than one order then please let the shop tech know once they are with you.\n\nShop Techs Online: %d\n\nNOTE: The shop order remains pending even if you go offline and log back in.", PlayerInfo[index][pOrder], shoptechs);
-				ShowPlayerDialogEx(index, DIALOG_SHOPSENT, DIALOG_STYLE_MSGBOX, "{3399FF}Shop Order", shopstring, "Close", "");
+				format(shopstring, sizeof(shopstring), "{FFFFFF}Ban dang cho nhan don shop ID: %d (Khong hop le)\n\nShop Tech se ho tro ban som nhat co the.\n\nNeu co nhieu don, hay bao cho Shop Tech khi duoc ho tro.\n\nShop Tech dang online: %d\n\nLUU Y: Don shop van cho xu ly neu ban thoat game roi dang nhap lai.", PlayerInfo[index][pOrder], shoptechs);
+				ShowPlayerDialogEx(index, DIALOG_SHOPSENT, DIALOG_STYLE_MSGBOX, "{3399FF}Don hang cua hang", shopstring, "Dong", "");
 
-				format(string, sizeof(string), "Shop order ID %d (Invalid) from %s (ID: %d) is now pending.", PlayerInfo[index][pOrder], GetPlayerNameEx(index), index);
+				format(string, sizeof(string), "Don shop ID %d (Khong hop le) cua %s (ID: %d) dang cho xu ly.", PlayerInfo[index][pOrder], GetPlayerNameEx(index), index);
 				ShopTechBroadCast(COLOR_SHOP, string);
 			}
 		}
@@ -434,13 +434,13 @@ public HttpCallback_ShopIDCheck(index, response_code, data[])
 		{
 			if(confirmed)
 			{
-				format(shopstring, sizeof(shopstring), "{FFFFFF}You are now waiting to receive shop order ID: %d (Confirmed)\n\nA shop tech will be with you as soon as possible.\n\nIf you have more than one order then please let the shop tech know once they are with you.\n\nThere are currently no shop techs online, you can resume normal gameplay and a shop tech will be with you when they log on.\n\nNOTE: The shop order remains pending even if you go offline and log back in.", PlayerInfo[index][pOrder]);
-				ShowPlayerDialogEx(index, DIALOG_SHOPSENT, DIALOG_STYLE_MSGBOX, "{3399FF}Shop Order", shopstring, "Close", "");
+				format(shopstring, sizeof(shopstring), "{FFFFFF}Ban dang cho nhan don shop ID: %d (Da xac nhan)\n\nShop Tech se ho tro ban som nhat co the.\n\nNeu co nhieu don, hay bao cho Shop Tech khi duoc ho tro.\n\nHien khong co Shop Tech online, ban co the choi binh thuong va duoc ho tro khi ho dang nhap.\n\nLUU Y: Don shop van cho xu ly neu ban thoat game roi dang nhap lai.", PlayerInfo[index][pOrder]);
+				ShowPlayerDialogEx(index, DIALOG_SHOPSENT, DIALOG_STYLE_MSGBOX, "{3399FF}Don hang cua hang", shopstring, "Dong", "");
 			}
 			else
 			{
-				format(shopstring, sizeof(shopstring), "{FFFFFF}You are now waiting to receive shop order ID: %d (Invalid)\n\nA shop tech will be with you as soon as possible.\n\nIf you have more than one order then please let the shop tech know once they are with you.\n\nThere are currently no shop techs online, you can resume normal gameplay and a shop tech will be with you when they log on.\n\nNOTE: The shop order remains pending even if you go offline and log back in.", PlayerInfo[index][pOrder]);
-				ShowPlayerDialogEx(index, DIALOG_SHOPSENT, DIALOG_STYLE_MSGBOX, "{3399FF}Shop Order", shopstring, "Close", "");
+				format(shopstring, sizeof(shopstring), "{FFFFFF}Ban dang cho nhan don shop ID: %d (Khong hop le)\n\nShop Tech se ho tro ban som nhat co the.\n\nNeu co nhieu don, hay bao cho Shop Tech khi duoc ho tro.\n\nHien khong co Shop Tech online, ban co the choi binh thuong va duoc ho tro khi ho dang nhap.\n\nLUU Y: Don shop van cho xu ly neu ban thoat game roi dang nhap lai.", PlayerInfo[index][pOrder]);
+				ShowPlayerDialogEx(index, DIALOG_SHOPSENT, DIALOG_STYLE_MSGBOX, "{3399FF}Don hang cua hang", shopstring, "Dong", "");
 			}
 		}
 		new playerip[32];
@@ -452,7 +452,7 @@ public HttpCallback_ShopIDCheck(index, response_code, data[])
 	{
 		PlayerInfo[index][pOrder] = 0;
 		PlayerInfo[index][pOrderConfirmed] = 0;
-		ShowPlayerDialogEx(index, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{3399FF}Shop Order - Server Connection Error", "{FFFFFF}We are unable to process your order at this time.\n\nPlease try again later.", "Close", "");
+		ShowPlayerDialogEx(index, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{3399FF}Don Shop - Loi ket noi may chu", "{FFFFFF}Hien chua the xu ly don hang cua ban.\n\nVui long thu lai sau.", "Dong", "");
 	}
 }
 
@@ -486,7 +486,7 @@ public SetVehicleEngine(vehicleid, playerid)
     if(engine == VEHICLE_PARAMS_ON)
 	{
 		SetVehicleParamsEx(vehicleid,VEHICLE_PARAMS_OFF,lights,alarm,doors,bonnet,boot,objective);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine stopped successfully.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da tat dong co xe.");
 		arr_Engine{vehicleid} = 0;
 	}
     else if(engine == VEHICLE_PARAMS_OFF || engine == VEHICLE_PARAMS_UNSET)
@@ -495,8 +495,8 @@ public SetVehicleEngine(vehicleid, playerid)
 			Float: f_vHealth;
 
 		GetVehicleHealth(vehicleid, f_vHealth);
-		if (GetPVarInt(playerid, "Refueling")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while refueling.");
-		if(f_vHealth < 350.0) return SendClientMessageEx(playerid, COLOR_RED, "The car won't start - it's totalled!");
+		if (GetPVarInt(playerid, "Refueling")) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong the lam vay khi dang do xang.");
+		if(f_vHealth < 350.0) return SendClientMessageEx(playerid, COLOR_RED, "Khong the khoi dong xe, xe da hong nang!");
 		if(IsRefuelableVehicle(vehicleid) && !IsVIPcar(vehicleid) && !IsAdminSpawnedVehicle(vehicleid) && VehicleFuel[vehicleid] <= 0.0)
 		{
 			/*if(!PlayerInfo[playerid][pShopNotice])
@@ -505,11 +505,11 @@ public SetVehicleEngine(vehicleid, playerid)
 				PlayerTextDrawShow(playerid, MicroNotice[playerid]);
 				SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
 			}*/
-			return SendClientMessageEx(playerid, COLOR_RED, "The car won't start - there's no fuel in the tank!");
+			return SendClientMessageEx(playerid, COLOR_RED, "Khong the khoi dong xe, binh da het nhien lieu!");
 		}
 		SetVehicleParamsEx(vehicleid,VEHICLE_PARAMS_ON,lights,alarm,doors,bonnet,boot,objective);
-		if(DynVeh[vehicleid] != -1 && DynVehicleInfo[DynVeh[vehicleid]][gv_iType] == 1 && IsAPlane(vehicleid)) { SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine started successfully (/announcetakeoff to turn the engine off)."); }
-		else SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine started successfully (press ~k~~CONVERSATION_YES~ to turn the engine off).");
+		if(DynVeh[vehicleid] != -1 && DynVehicleInfo[DynVeh[vehicleid]][gv_iType] == 1 && IsAPlane(vehicleid)) { SendClientMessageEx(playerid, COLOR_WHITE, "Da khoi dong xe (dung /announcetakeoff de tat dong co)."); }
+		else SendClientMessageEx(playerid, COLOR_WHITE, "Da khoi dong xe (nhan ~k~~CONVERSATION_YES~ de tat dong co).");
 		arr_Engine{vehicleid} = 1;
 		if(GetChased[playerid] != INVALID_PLAYER_ID && VehicleBomb{vehicleid} == 1)
 		{
@@ -525,9 +525,9 @@ public SetVehicleEngine(vehicleid, playerid)
 					new takemoney = PlayerInfo[playerid][pHeadValue];//(PlayerInfo[playerid][pHeadValue] / 4) * 2;
 					GivePlayerCash(GetChased[playerid], floatround(takemoney * 0.9));
 					GivePlayerCash(playerid, -takemoney);
-					format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(GetChased[playerid]),GetPlayerNameEx(playerid),takemoney);
+					format(string,sizeof(string),"Hitman %s da hoan thanh hop dong voi %s va nhan $%d.",GetPlayerNameEx(GetChased[playerid]),GetPlayerNameEx(playerid),takemoney);
 					foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_YELLOW, string);
-					format(string,sizeof(string),"You have been critically injured by a hitman and lost $%d!",takemoney);
+					format(string,sizeof(string),"Ban bi hitman danh trong thuong va mat $%d!",takemoney);
 					ResetPlayerWeaponsEx(playerid);
 					// SpawnPlayer(playerid);
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
@@ -585,7 +585,7 @@ public KickNonRP(playerid)
 	GetPVarString(playerid, "KickNonRP", name, sizeof(name));
 	if(strcmp(GetPlayerNameEx(playerid), name) == 0)
 	{
-	    SendClientMessage(playerid, COLOR_WHITE, "You have been kicked for failing to connect with a role play name (i.e. John_Smith).");
+	    SendClientMessage(playerid, COLOR_WHITE, "Ban bi kick vi khong dung ten roleplay (vi du John_Smith).");
 		SetTimerEx("KickEx", 1000, false, "i", playerid);
 	}
 }
@@ -701,7 +701,7 @@ public OtherTimerEx(playerid, type)
 				        if(GetPVarInt(playerid, "tpJustEntered") == 0)
 				        {
 				        	new string[128];
-							format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s may be TP hacking with a crate/forklift.", GetPlayerNameEx(playerid));
+							format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s co the hack TP voi thung/xe nang.", GetPlayerNameEx(playerid));
 							ABroadCast(COLOR_YELLOW, string, 2);
 							SetPVarInt(playerid, "tpForkliftTimer", GetPVarInt(playerid, "tpForkliftTimer")+15);
 						}
@@ -745,7 +745,7 @@ public OtherTimerEx(playerid, type)
 					if(GetPVarType(playerid, "tpJustEntered") == 0)
 					{
 						new string[128];
-						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s(%d) may be TP hacking while delivering a lock picked vehicle.", GetPlayerNameEx(playerid), playerid);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s(%d) co the hack TP khi giao xe bi pha khoa.", GetPlayerNameEx(playerid), playerid);
 						ABroadCast(COLOR_YELLOW, string, 2);
 						SetPVarInt(playerid, "tpDeliverVehTimer", GetPVarInt(playerid, "tpDeliverVehTimer")+15);
 					}
@@ -830,7 +830,7 @@ public HelpTimer(playerid)
   		SetPVarInt(playerid, "HelpTime", GetPVarInt(playerid, "HelpTime")-1);
     	if(GetPVarInt(playerid, "HelpTime") == 0)
      	{
-      		SendClientMessageEx(playerid, COLOR_GREY, "Your help request has expired. Its recommended you seek help on the forums (www.ng-gaming.net/forums)");
+      		SendClientMessageEx(playerid, COLOR_GREY, "Yeu cau ho tro da het han. Ban nen tim ho tro tren dien dan (www.ng-gaming.net/forums)");
         	DeletePVar(playerid, "COMMUNITY_ADVISOR_REQUEST");
          	return 1;
         }
@@ -864,13 +864,13 @@ public OnPlayerPickUpDynamicPickup(playerid, pickupid)
 
 		if (pickupid != bikePickup)
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD2, "That isn't your pickup!");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Day khong phai diem cua ban!");
 			return 1;
 		}
 
 		if (stage > 1 && !IsPlayerInAnyVehicle(playerid))
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "You must be on your bike to proceed!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Can o tren xe dap de di tiep!");
 			return 1;
 		}
 
@@ -889,7 +889,7 @@ public OnPlayerPickUpDynamicPickup(playerid, pickupid)
 				LinkVehicleToInterior(vehicleId, GetPlayerInterior(playerid));
 				Businesses[business][bGymBikeVehicles][slot] = vehicleId;
 
-				SendClientMessageEx(playerid, COLOR_WHITE, "Follow the arrow pickups to complete the track.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Di theo cac diem mui ten de hoan thanh duong dua.");
 				//SendClientMessageEx(playerid, COLOR_WHITE, "Type /leaveparkour to quit the activity without completing it.");
 
 				bikePickup = CreateDynamicPickup(1318, 14, 2823.5071, -2260.9243, 97.5347, .playerid = playerid, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = 0);
@@ -1083,7 +1083,7 @@ public OnPlayerPickUpDynamicPickup(playerid, pickupid)
 				Businesses[business][bGymBikePlayers][slot] = INVALID_PLAYER_ID;
 				Businesses[business][bGymBikeVehicles][slot] = INVALID_VEHICLE_ID;
 
-				SendClientMessageEx(playerid, COLOR_WHITE, "Track finished.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da ve dich.");
 
 				DeletePVar(playerid, "_BikeParkourStage");
 				DeletePVar(playerid, "_BikeParkourSlot");
@@ -1174,9 +1174,9 @@ public UpdateCarRadars()
 			if (target == -1)
 			{
 				// no target was found
-				PlayerTextDrawSetString(p, _crTextTarget[p], "Target Vehicle: ~r~N/A");
-				PlayerTextDrawSetString(p, _crTextSpeed[p], "Speed: ~r~N/A");
-				PlayerTextDrawSetString(p, _crTickets[p], "Tickets: ~r~N/A");
+				PlayerTextDrawSetString(p, _crTextTarget[p], "Xe muc tieu: ~r~N/A");
+				PlayerTextDrawSetString(p, _crTextSpeed[p], "Toc do: ~r~N/A");
+				PlayerTextDrawSetString(p, _crTickets[p], "Phat: ~r~N/A");
 			}
 			else
 			{	
@@ -1187,16 +1187,16 @@ public UpdateCarRadars()
 
 					new str[60];
 
-					format(str, sizeof(str), "Target Vehicle: ~r~%s (%i)", GetVehicleName(targetVehicle), targetVehicle);
+					format(str, sizeof(str), "Xe muc tieu: ~r~%s (%i)", GetVehicleName(targetVehicle), targetVehicle);
 					PlayerTextDrawSetString(p, _crTextTarget[p], str);
-					format(str, sizeof(str), "Speed: ~r~%d MPH", floatround(speed, floatround_round));
+					format(str, sizeof(str), "Toc do: ~r~%d MPH", floatround(speed, floatround_round));
 					PlayerTextDrawSetString(p, _crTextSpeed[p], str);
 					foreach(new i : Player)
 					{
 						new veh = GetPlayerVehicle(i, targetVehicle);
 						if (veh != -1 && PlayerVehicleInfo[i][veh][pvTicket] > 0)
 						{
-							format(str, sizeof(str), "Tickets: ~r~$%s", number_format(PlayerVehicleInfo[i][veh][pvTicket]));
+							format(str, sizeof(str), "Phat: ~r~$%s", number_format(PlayerVehicleInfo[i][veh][pvTicket]));
 							PlayerTextDrawSetString(p, _crTickets[p], str);
 							if (gettime() >= (GetPVarInt(p, "_lastTicketWarning") + 10))
 							{
@@ -1207,7 +1207,7 @@ public UpdateCarRadars()
 					}
 					if((cveh = IsDynamicCrateVehicle(targetVehicle)) != -1) {
 						if(ValidGroup(CrateVehicle[cveh][cvGroupID]) && CrateVehicle[cveh][cvTickets] > 0) {
-							format(str, sizeof(str), "Tickets: ~r~$%s", number_format(CrateVehicle[cveh][cvTickets]));
+							format(str, sizeof(str), "Phat: ~r~$%s", number_format(CrateVehicle[cveh][cvTickets]));
 							PlayerTextDrawSetString(p, _crTickets[p], str);
 							if (gettime() >= (GetPVarInt(p, "_lastTicketWarning") + 10))
 							{

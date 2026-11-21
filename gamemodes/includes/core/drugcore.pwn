@@ -44,9 +44,9 @@ new dr_iPlayerTimeStamp[MAX_PLAYERS];
 CMD:odrughelp(playerid, const params[])
 {
 	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
-	SendClientMessageEx(playerid, COLOR_GREY, "GENERAL: /mydrugs, /usedrug, /buypot, /buyopium, /plantpot, /plantopium, /pickplant, /checkplant /makeheroin");
-	if(IsACop(playerid)) SendClientMessageEx(playerid, COLOR_GREY, "POLICE: /destroyplant, /searchcar");
-	if(IsAdminLevel(playerid, ADMIN_JUNIOR, 0)) SendClientMessageEx(playerid, COLOR_GREY, "ADMINISTRATOR: /adestroyplant");
+	SendClientMessageEx(playerid, COLOR_GREY, "CHUNG: /mydrugs, /usedrug, /buypot, /buyopium, /plantpot, /plantopium, /pickplant, /checkplant /makeheroin");
+	if(IsACop(playerid)) SendClientMessageEx(playerid, COLOR_GREY, "CANH SAT: /destroyplant, /searchcar");
+	if(IsAdminLevel(playerid, ADMIN_JUNIOR, 0)) SendClientMessageEx(playerid, COLOR_GREY, "ADMIN: /adestroyplant");
 	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
 	return 1;
 }
@@ -56,7 +56,7 @@ CMD:mydrugs(playerid, params[])
 	new string[450];
 	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
 	for(new i; i < sizeof(Drugs); i++) format(string, sizeof(string),"%s | %s: %dg", string, Drugs[i], PlayerInfo[playerid][pDrugs][i]);
-	format(string, sizeof(string),"%s | Pot Seeds: %d | Opium Seeds: %d | Syringes: %d |", string, PlayerInfo[playerid][pWSeeds], PlayerInfo[playerid][pOpiumSeeds], PlayerInfo[playerid][pSyringes]);
+	format(string, sizeof(string),"%s | Hat pot: %d | Hat opium: %d | Ong tiem: %d |", string, PlayerInfo[playerid][pWSeeds], PlayerInfo[playerid][pOpiumSeeds], PlayerInfo[playerid][pSyringes]);
 	SendClientMessageEx(playerid, COLOR_GREY, string);
 	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
 	return 1;
@@ -67,61 +67,61 @@ CMD:checkdrugs(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /checkdrugs [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /checkdrugs [player]");
 		if(IsPlayerConnected(giveplayerid))
 		{
 			new string[450];
 			SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
 			for(new i; i < sizeof(Drugs); i++) format(string, sizeof(string),"%s | %s: %dg", string, Drugs[i], PlayerInfo[giveplayerid][pDrugs][i]);
-			format(string, sizeof(string),"%s | Pot Seeds: %d | Opium Seeds: %d | Syringes: %d |", string, PlayerInfo[giveplayerid][pWSeeds], PlayerInfo[giveplayerid][pOpiumSeeds], PlayerInfo[giveplayerid][pSyringes]);
+			format(string, sizeof(string),"%s | Hat pot: %d | Hat opium: %d | Ong tiem: %d |", string, PlayerInfo[giveplayerid][pWSeeds], PlayerInfo[giveplayerid][pOpiumSeeds], PlayerInfo[giveplayerid][pSyringes]);
 			SendClientMessageEx(playerid, COLOR_GREY, string);
 			SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
 CMD:usedrug(playerid, params[])
 {
-	if(GetPVarInt(playerid, "pDrugTime") > gettime()) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must wait 60 seconds before using drugs again.");
-	if(GetPVarType(playerid, "WatchingTV") || GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot use drugs while watching TV.");
-	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
+	if(GetPVarInt(playerid, "pDrugTime") > gettime()) return SendClientMessageEx(playerid, COLOR_GRAD1, "Can cho 60 giay truoc khi dung lai ma tuy.");
+	if(GetPVarType(playerid, "WatchingTV") || GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Khong the dung ma tuy khi dang xem TV.");
+	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   Khong the lam vay trong Hunger Games Event!");
    	#if defined zombiemode
 	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
 	#endif
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || (PlayerInfo[playerid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1))
-   		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
-	if(GetPVarType(playerid, "AttemptingLockPick")) return SendClientMessageEx(playerid, COLOR_WHITE, "You are attempting to lockpick, please wait.");
-	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
-	if(PlayerBoxing[playerid] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use drugs while you're fighting.");
-	if(UsedCrack[playerid] == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You must wait 5 seconds before using more drugs.");
-	if(PlayerInfo[playerid][pHospital]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this at this time.");
+   		return SendClientMessage(playerid, COLOR_GRAD2, "Ban chua the lam viec nay!");
+	if(GetPVarType(playerid, "AttemptingLockPick")) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban dang mo khoa xe, hay cho.");
+	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay khi dang o dau truong!");
+	if(PlayerBoxing[playerid] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung ma tuy khi dang danh nhau.");
+	if(UsedCrack[playerid] == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "Can cho 5 giay truoc khi dung them ma tuy.");
+	if(PlayerInfo[playerid][pHospital]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the lam viec nay.");
 
 	new drugstring[16], amount;
 	if(sscanf(params, "s[16]d", drugstring, amount))
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /usedrug [drug name] [amount]");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /usedrug [drug name] [amount]");
 		ListDrugs(playerid);
 		return 1;
 	}
 
-	if(amount < 1 || amount > 20) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot take that.");
+	if(amount < 1 || amount > 20) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung luong nay.");
 
 	new drug = GetDrugID(drugstring);
 	if(drug == -1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /usedrug [drug name] [amount]");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /usedrug [drug name] [amount]");
 		ListDrugs(playerid);
 		return 1;
 	}
 
-	if(PlayerInfo[playerid][pDrugs][drug] < amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have that many drugs.");
-	if(drug == 4 && amount != 10) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must take only 10 heroin at a time.");
-	if(drug == 4 && PlayerInfo[playerid][pSyringes] <= 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need a syringe. Craft one or buy one from a craftsman.");
-	if(drug != 4 && dr_iPlayerTimeStamp[playerid] > gettime() - 60) return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been injured in the last minute");
-	if(drug != 4 && GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this right now.");
+	if(PlayerInfo[playerid][pDrugs][drug] < amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co du ma tuy.");
+	if(drug == 4 && amount != 10) return SendClientMessageEx(playerid, COLOR_GRAD1, "Moi lan chi duoc dung 10 heroin.");
+	if(drug == 4 && PlayerInfo[playerid][pSyringes] <= 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Can ong tiem. Hay che tao hoac mua tu Craftsman.");
+	if(drug != 4 && dr_iPlayerTimeStamp[playerid] > gettime() - 60) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da bi thuong trong phut vua qua");
+	if(drug != 4 && GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban chua the lam viec nay.");
 	if(!IsPlayerInAnyVehicle(playerid) && drug != 4) ApplyAnimation(playerid,"SMOKING","M_smkstnd_loop",2.1,false,false,false,false,0);
 
 	PlayerInfo[playerid][pDrugs][drug] -= amount;
@@ -134,19 +134,19 @@ CMD:usedrug(playerid, params[])
 CMD:buypot(playerid, params[])
 {
 	new string[256];
-	if(!Job_HasJob(playerid, JOB_DRUG_SMUGGLER)) return SendClientMessageEx(playerid,COLOR_GREY,"  You are not a drug smuggler!");
+	if(!Job_HasJob(playerid, JOB_DRUG_SMUGGLER)) return SendClientMessageEx(playerid,COLOR_GREY,"Ban khong phai Drug Smuggler!");
 
 	for (new i=0; i<MAX_POINTS; i++)
 	{
 		if(IsPlayerInRangeOfPoint(playerid, 3.0, DynPoints[i][poPos][0], DynPoints[i][poPos][1], DynPoints[i][poPos][2]) && DynPoints[i][poType] == 1)
 		{
-			if(GetPlayerMoney(playerid) < 10000) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot afford the $10,000!");
+			if(GetPlayerMoney(playerid) < 10000) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong du $10,000!");
 			GivePlayerCashEx(playerid, TYPE_ONHAND, -10000);
 
 			PlayerInfo[playerid][pWSeeds] += 1;
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have purchased a bag of pot seeds from the drug house.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da mua tui hat can sa tai Drug House.");
 
-			format(string, sizeof(string), "* %s has purchased some pot seeds.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s mua hat can sa.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 	}
@@ -156,20 +156,20 @@ CMD:buypot(playerid, params[])
 CMD:buyopium(playerid, params[])
 {
 	new string[256];
-	if(!Job_HasJob(playerid, JOB_DRUG_SMUGGLER)) return SendClientMessageEx(playerid,COLOR_GREY,"  You are not a drug smuggler!");
-	if(GetPlayerMoney(playerid) < 100000) return SendClientMessageEx(playerid,COLOR_GREY,"  You can't afford to buy Opium");
+	if(!Job_HasJob(playerid, JOB_DRUG_SMUGGLER)) return SendClientMessageEx(playerid,COLOR_GREY,"Ban khong phai Drug Smuggler!");
+	if(GetPlayerMoney(playerid) < 100000) return SendClientMessageEx(playerid,COLOR_GREY,"Ban khong du tien mua Opium");
 
 	for (new i=0; i<MAX_POINTS; i++)
 	{
 		if(IsPlayerInRangeOfPoint(playerid, 5.0, DynPoints[i][poPos][0], DynPoints[i][poPos][1], DynPoints[i][poPos][2]) && DynPoints[i][poType] == 2)
 		{
-			if(GetPlayerMoney(playerid) < 100000) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot afford the $100,000!");
+			if(GetPlayerMoney(playerid) < 100000) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong du $100,000!");
 			GivePlayerCashEx(playerid, TYPE_ONHAND, -100000);
 
 			PlayerInfo[playerid][pOpiumSeeds] += 1;
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have purchased a bag of opium seeds from the drug house.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da mua tui hat thuoc phien tai Drug House.");
 
-			format(string, sizeof(string), "* %s has purchased some opium seeds.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s mua hat thuoc phien.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 	}
@@ -183,7 +183,7 @@ public DrugEffectTime(playerid)
     SetPlayerDrunkLevel(playerid, 0);
 	SetPlayerWeather(playerid, gWeather);
 
-	SendClientMessageEx(playerid, COLOR_GRAD1, "Your side affects have worn off.");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Tac dung phu da het.");
     return 1;
 }
 
@@ -206,7 +206,7 @@ GivePlayerDrugEffects(playerid, id, amount)
 			SetHealth(playerid, health + increase);
 			if(health + increase > 100) SetHealth(playerid, 100);
 
-			format(string, sizeof(string), "* %s has used some pot.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s dung can sa.", GetPlayerNameEx(playerid));
 			ProxDetector(25.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		case 1: // Crack
@@ -215,7 +215,7 @@ GivePlayerDrugEffects(playerid, id, amount)
 			SetArmour(playerid, armour + increase);
 			if(armour + increase > 100) SetArmour(playerid, 100);
 
-			format(string, sizeof(string), "* %s has used some crack.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s dung crack.", GetPlayerNameEx(playerid));
 			ProxDetector(25.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		case 2: // Meth
@@ -226,7 +226,7 @@ GivePlayerDrugEffects(playerid, id, amount)
 
 			if(health + increase > 150) SetHealth(playerid, 150);
 
-			format(string, sizeof(string), "* %s has used some meth.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s dung meth.", GetPlayerNameEx(playerid));
 			ProxDetector(25.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		case 3: // Ecstasy
@@ -238,7 +238,7 @@ GivePlayerDrugEffects(playerid, id, amount)
 			if(health + increase > 150) SetHealth(playerid, 150);
 			if(armour + increase > 150) SetArmour(playerid, 150);
 
-			format(string, sizeof(string), "* %s has used some ecstasy.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s dung ecstasy.", GetPlayerNameEx(playerid));
 			ProxDetector(25.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		case 4: // Heroin
@@ -252,8 +252,8 @@ GivePlayerDrugEffects(playerid, id, amount)
 
 				if(!IsPlayerInAnyVehicle(playerid)) ApplyAnimation(playerid,"SMOKING","M_smkstnd_loop",2.1,false,false,false,false,0);
 
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have injected heroin into yourself, the effects will begin in 5 seconds.");
-				format(string, sizeof(string), "* %s injects heroin into themself.", GetPlayerNameEx(playerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban tiem heroin, tac dung se bat dau sau 5 giay.");
+				format(string, sizeof(string), "* %s tu tiem heroin.", GetPlayerNameEx(playerid));
 				ProxDetector(25.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
         		return 1;
 			}
@@ -264,8 +264,8 @@ GivePlayerDrugEffects(playerid, id, amount)
 			SetPVarInt(playerid, "Health", 30);
 			SetPVarInt(playerid, "InjectHeroin", SetTimerEx("InjectHeroin", 5000, false, "i", playerid));
 
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have injected heroin into yourself, the effects will begin in 5 seconds.");
-			format(string, sizeof(string), "* %s injects heroin into themself.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban tiem heroin, tac dung se bat dau sau 5 giay.");
+			format(string, sizeof(string), "* %s tu tiem heroin.", GetPlayerNameEx(playerid));
 			ProxDetector(25.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 	}
@@ -282,7 +282,7 @@ public InjectHeroin(playerid)
 	SetHealth(playerid, 30);
 	SetPVarInt(playerid, "HeroinEffect", SetTimerEx("HeroinEffect", 1000, true, "i", playerid));
 
-	SendClientMessageEx(playerid, COLOR_GREEN, "The effects of the heroin have started.");
+	SendClientMessageEx(playerid, COLOR_GREEN, "Heroin bat dau co tac dung.");
 	return 1;
 }
 
@@ -290,7 +290,7 @@ forward HeroinEffectStanding(playerid);
 public HeroinEffectStanding(playerid)
 {
 	SetPVarInt(playerid, "HeroinDamageResist", 0);
-	SendClientMessageEx(playerid, COLOR_GREEN, "The effects of the heroin have worn off.");
+	SendClientMessageEx(playerid, COLOR_GREEN, "Heroin da het tac dung.");
 	return 1;
 }
 
@@ -314,7 +314,7 @@ forward InjectHeroinStanding(playerid);
 public InjectHeroinStanding(playerid)
 {
 	SetPVarInt(playerid, "HeroinDamageResist", 1);
-	SendClientMessageEx(playerid, COLOR_GREEN, "The effects of the heroin have started.");
+	SendClientMessageEx(playerid, COLOR_GREEN, "Heroin bat dau co tac dung.");
 	SetPVarInt(playerid, "HeroinEffectStanding", SetTimerEx("HeroinEffectStanding", 30000, false, "i", playerid));
 	return 1;
 }
@@ -414,11 +414,11 @@ Smuggle_VehicleLoad(playerid, iTargetID, iVehID)
 {
 	new iTotalAmount;
 
-	szMiscArray = "Ingredient\tAmount in vehicle\n";
+	szMiscArray = "Nguyen lieu\tSo luong trong xe\n";
 
 	if(iTotalAmount == 0) {
 		szMiscArray[0] = 0;
-		szMiscArray = "Drugs\tAmount in vehicle\n";
+		szMiscArray = "Ma tuy\tSo luong trong xe\n";
 		for(new i; i < sizeof(Drugs); ++i) {
 
 			if(PlayerVehicleInfo[iTargetID][iVehID][pvDrugs][i] > 0) {
@@ -427,12 +427,12 @@ Smuggle_VehicleLoad(playerid, iTargetID, iVehID)
 				iTotalAmount += PlayerVehicleInfo[iTargetID][iVehID][pvDrugs][i];
 			}
 		}
-		if(iTotalAmount == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "There are no drugs in this vehicle.");
+		if(iTotalAmount == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Xe nay khong co ma tuy.");
 	}
-	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Vehicle | Drug Packages", szMiscArray, "Select", "");
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Xe | Kien ma tuy", szMiscArray, "Chon", "");
 
-	SendClientMessageEx(playerid, COLOR_GREEN, "_________ %s | Drugs Stored _________", GetVehicleName(iVehID));
-	SendClientMessageEx(playerid, COLOR_GRAD1, "Total amount: %d pieces.", iTotalAmount);
+	SendClientMessageEx(playerid, COLOR_GREEN, "_________ %s | Kho ma tuy _________", GetVehicleName(iVehID));
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Tong: %d don vi.", iTotalAmount);
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________________");
 	return 1;
 }
@@ -544,18 +544,18 @@ stock SavePlants()
 CMD:makeheroin(playerid, params[])
 {
 	if(!IsPlayerInRangeOfPoint(playerid, 15.0, -882.2048,1109.3385,5442.8193))
-	    return SendClientMessageEx(playerid, COLOR_GREY, "You are not at the purification lab.");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o phong tinh che.");
 
 	if(PlayerInfo[playerid][pRawOpium] == 0)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "You don't have any raw opium to purify.");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co thuoc phien tho de tinh che.");
 
 	if(Purification[0] == 1)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "Only one player may attempt to purify their opium at a time.");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Moi lan chi mot nguoi duoc tinh che thuoc phien.");
 
 	new szMessage[128];
-	SendClientMessageEx(playerid, COLOR_GREEN, "You must wait 30 seconds, for purification to be complete.");
+	SendClientMessageEx(playerid, COLOR_GREEN, "Can cho 30 giay de tinh che xong.");
 
-    format(szMessage, sizeof(szMessage), "* %s begins the purification process.", GetPlayerNameEx(playerid));
+    format(szMessage, sizeof(szMessage), "* %s bat dau tinh che.", GetPlayerNameEx(playerid));
 	ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
 	Purification[0] = 1;
@@ -569,11 +569,11 @@ CMD:plantopium(playerid, params[])
  	{
 		if(PlayerInfo[playerid][pWeedObject] > 0)
 		{
-		    SendClientMessageEx(playerid, COLOR_GRAD2, "You already have a plant growing." );
+		    SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da co cay dang lon." );
 		    return 1;
 		}
-		if(GetPlayerInterior(playerid) == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "   You need to be inside an inteiror!");
-		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER || GetPlayerState(playerid) == PLAYER_STATE_PASSENGER) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot plant seeds while inside a vehicle!");
+		if(GetPlayerInterior(playerid) == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Can o trong noi that!");
+		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER || GetPlayerState(playerid) == PLAYER_STATE_PASSENGER) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the gieo hat trong xe!");
 		for(new i = 0; i < MAX_PLANTS; ++i)
 		{
 		    if(Plants[i][pObject] == 0)
@@ -583,7 +583,7 @@ CMD:plantopium(playerid, params[])
 					Float:xyz[3];
 
                 ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_In", 4.0, false, false, false, false, 0, 1);
-				SendClientMessageEx(playerid, COLOR_GREEN, "You have planted some opium. It will take around 2 hours to grow.");
+				SendClientMessageEx(playerid, COLOR_GREEN, "Da trong thuoc phien, can khoang 2 gio de lon.");
 		        GetPlayerPos(playerid, xyz[0], xyz[1], xyz[2]);
 		        xyz[2] -= 1.0;
 
@@ -594,14 +594,14 @@ CMD:plantopium(playerid, params[])
 				new string[128];
 				format(string, sizeof(string), "%s(%d) (IP:%s) has placed opium plant (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), i);
 				Log("logs/plant.log", string);
-				format(szMessage, sizeof(szMessage), "* %s plants some opium.", GetPlayerNameEx(playerid));
+				format(szMessage, sizeof(szMessage), "* %s trong thuoc phien.", GetPlayerNameEx(playerid));
 				ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "The server has reached the max number of plants. Try again later!");
+		SendClientMessageEx(playerid, COLOR_GREY, "May chu da dat gioi han so cay. Hay thu lai sau!");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough seeds to plant opium - head to the crack house and pick up some seeds (/buyopium).");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Khong du hat thuoc phien, hay mua tai Crack House (/buyopium).");
 	return 1;
 }
 
@@ -611,11 +611,11 @@ CMD:plantpot(playerid, params[])
  	{
 		if(PlayerInfo[playerid][pWeedObject] > 0)
 		{
-		    SendClientMessageEx(playerid, COLOR_GRAD2, "You already have a plant growing." );
+		    SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da co cay dang lon." );
 		    return 1;
 		}
-		if(GetPlayerInterior(playerid) == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "   You need to be inside an inteiror!");
-		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER || GetPlayerState(playerid) == PLAYER_STATE_PASSENGER) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot plant seeds while inside a vehicle!");
+		if(GetPlayerInterior(playerid) == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Can o trong noi that!");
+		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER || GetPlayerState(playerid) == PLAYER_STATE_PASSENGER) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the gieo hat trong xe!");
 		for(new i = 0; i < MAX_PLANTS; ++i)
 		{
 		    if(Plants[i][pObject] == 0)
@@ -625,7 +625,7 @@ CMD:plantpot(playerid, params[])
 					Float: xyz[3];
 
                 ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_In", 4.0, false, false, false, false, 0, 1);
-				SendClientMessageEx(playerid, COLOR_GREEN, "You have planted some weed. It will take around 20-45 minutes to grow.");
+				SendClientMessageEx(playerid, COLOR_GREEN, "Da trong can sa, can khoang 20-45 phut de lon.");
 		        GetPlayerPos(playerid, xyz[0], xyz[1], xyz[2]);
 				xyz[2] -= 1.5;
 
@@ -637,14 +637,14 @@ CMD:plantpot(playerid, params[])
                 new string[128];
 				format(string, sizeof(string), "%s(%d) (IP:%s) has placed weed plant (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), i);
 				Log("logs/plant.log", string);
-				format(szMessage, sizeof(szMessage), "* %s plants some weed.", GetPlayerNameEx(playerid));
+				format(szMessage, sizeof(szMessage), "* %s trong can sa.", GetPlayerNameEx(playerid));
 				ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "The server has reached the max number of plants.");
+		SendClientMessageEx(playerid, COLOR_GREY, "May chu da dat gioi han so cay.");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough seeds to plant weed - head to the drug house and pick up some seeds (/buypot).");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Khong du hat can sa, hay mua tai Drug House (/buypot).");
 	return 1;
 }
 
@@ -656,7 +656,7 @@ CMD:adestroyplant(playerid, params[])
 			iTargetID;
 
 		if(sscanf(params, "u", iTargetID)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /adestroyplant [player]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /adestroyplant [player]");
 		}
 		else if(IsPlayerConnected(iTargetID)) {
 
@@ -672,9 +672,9 @@ CMD:adestroyplant(playerid, params[])
 							PlayerInfo[z][pWeedObject] = 0;
 						}
 					}
-					SendClientMessageEx(playerid, COLOR_GREY, "You have destroyed %s's plant.", GetPlayerNameEx(iTargetID), Plants[i][pGrowth]);
+					SendClientMessageEx(playerid, COLOR_GREY, "Ban da pha cay cua %s.", GetPlayerNameEx(iTargetID), Plants[i][pGrowth]);
 
-					SendClientMessageEx(iTargetID, COLOR_GREY, "Administrator %s has destroyed your plant.", GetPlayerNameEx(playerid), Plants[i][pGrowth]);
+					SendClientMessageEx(iTargetID, COLOR_GREY, "Admin %s da pha cay cua ban.", GetPlayerNameEx(playerid), Plants[i][pGrowth]);
                     new string[128];
 					format(string, sizeof(string), "%s (IP:%s) has destroyed %s(%d) (IP:%s) plant (%d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), GetPlayerIpEx(iTargetID), i);
 					Log("logs/plant.log", string);
@@ -685,9 +685,9 @@ CMD:adestroyplant(playerid, params[])
 			    }
 			}
 		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+		else SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You're not authorized to use this command.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -709,8 +709,8 @@ CMD:destroyplant(playerid, params[])
 					switch(Plants[i][pPlantType]) {
 	    				case 1:
 					    {
-							SendClientMessageEx(playerid, COLOR_GREY, "* You seized a marijuana plant weighing %d grams.", Plants[i][pGrowth]);
-							format(szMessage, sizeof(szMessage), "* %s seizes the weed plant.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
+							SendClientMessageEx(playerid, COLOR_GREY, "* Ban tich thu cay can sa nang %d grams.", Plants[i][pGrowth]);
+							format(szMessage, sizeof(szMessage), "* %s tich thu cay can sa.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
 							ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 							foreach(new z : Player)
 							{
@@ -728,8 +728,8 @@ CMD:destroyplant(playerid, params[])
 						case 2:
 						{
 						    new Grams = Random(10, 30);
-							SendClientMessageEx(playerid, COLOR_GREY, "* You seized a opium plant weighing %d milligrams.", Grams);
-							format(szMessage, sizeof(szMessage), "* %s seizes the opium plant.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
+							SendClientMessageEx(playerid, COLOR_GREY, "* Ban tich thu cay thuoc phien nang %d milligrams.", Grams);
+							format(szMessage, sizeof(szMessage), "* %s tich thu cay opium.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
 							ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 							foreach(new z : Player)
 							{
@@ -748,11 +748,11 @@ CMD:destroyplant(playerid, params[])
 				}
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You are not at a plant.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan cay.");
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not a law enforcement officer.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai nhan vien hanh phap.");
 	}
 	return 1;
 }
@@ -772,27 +772,27 @@ CMD:checkplant(playerid, params[])
 		                if(Plants[i][pGrowth] > 10)
 		                {
 
-							SendClientMessageEx(playerid, COLOR_WHITE, "Your plant currently carries %i grams - use /pickplant to claim it.", Plants[i][pGrowth]);
+							SendClientMessageEx(playerid, COLOR_WHITE, "Cay dang co %i grams, dung /pickplant de thu hoach.", Plants[i][pGrowth]);
 							return 1;
 						}
-						else SendClientMessageEx(playerid, COLOR_YELLOW, "This plant isn't ready to be picked yet.");
+						else SendClientMessageEx(playerid, COLOR_YELLOW, "Cay chua the thu hoach.");
 						return 1;
 					}
 					case 2:
 					{
 					    if(Plants[i][pGrowth] >= 120)
 					    {
-							SendClientMessageEx(playerid, COLOR_WHITE, "Your plant is currently ready to be harvested - use /pickplant to claim it.");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Cay da san sang, dung /pickplant de thu hoach.");
 							return 1;
 						}
-						else SendClientMessageEx(playerid, COLOR_WHITE, "Your opium plant still needs more time to grow.");
+						else SendClientMessageEx(playerid, COLOR_WHITE, "Cay thuoc phien can them thoi gian de lon.");
 						return 1;
 					}
 				}
 		    }
 		}
 	}
-	return SendClientMessageEx(playerid, COLOR_GREY, "You are not at a plant.");
+	return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan cay.");
 }
 
 CMD:pickplant(playerid, params[])
@@ -813,8 +813,8 @@ CMD:pickplant(playerid, params[])
 
 							ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_Out", 4.0, false, false, false, false, 0, 1);
 
-							SendClientMessageEx(playerid, COLOR_GREY, "You picked the plant and gathered %d grams of pot.", Plants[i][pGrowth]);
-							format(szMessage, sizeof(szMessage), "* %s picks the weed plant.", GetPlayerNameEx(playerid));
+							SendClientMessageEx(playerid, COLOR_GREY, "Da thu hoach cay va nhan %d grams can sa.", Plants[i][pGrowth]);
+							format(szMessage, sizeof(szMessage), "* %s thu hoach cay can sa.", GetPlayerNameEx(playerid));
 							ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
                             foreach(new z : Player)
 							{
@@ -830,7 +830,7 @@ CMD:pickplant(playerid, params[])
 							SavePlant(i);
 							return 1;
 						}
-						else SendClientMessageEx(playerid, COLOR_GREY, "This plant is not ready to be picked yet.");
+						else SendClientMessageEx(playerid, COLOR_GREY, "Cay chua the thu hoach.");
 						return 1;
 					}
 					case 2:
@@ -842,8 +842,8 @@ CMD:pickplant(playerid, params[])
 
 							ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_Out", 4.0, false, false, false, false, 0, 1);
 
-							SendClientMessageEx(playerid, COLOR_GREY, "You picked the plant and gathered %d milligrams of opium.", Grams);
-							format(szMessage, sizeof(szMessage), "* %s picks the opium plant.", GetPlayerNameEx(playerid));
+							SendClientMessageEx(playerid, COLOR_GREY, "Da thu hoach cay va nhan %d milligrams thuoc phien.", Grams);
+							format(szMessage, sizeof(szMessage), "* %s thu hoach cay opium.", GetPlayerNameEx(playerid));
 							ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 							foreach(new z : Player)
 							{
@@ -859,14 +859,14 @@ CMD:pickplant(playerid, params[])
 							SavePlant(i);
 							return 1;
 					    }
-					    else SendClientMessageEx(playerid, COLOR_GREY, "This plant is not ready to be picked yet.");
+					    else SendClientMessageEx(playerid, COLOR_GREY, "Cay chua the thu hoach.");
 						return 1;
 					}
 				}
 	   		}
 		}
 	}
-	return SendClientMessageEx(playerid, COLOR_GREY, "You are not at a plant.");
+	return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan cay.");
 }
 
 forward AttemptPurify(playerid);
@@ -876,7 +876,7 @@ public AttemptPurify(playerid)
 	{
 	    if(playerTabbed[playerid] != 0)
 		{
-   			SendClientMessageEx(playerid, COLOR_GREY, "You alt-tabbed during the purification process.");
+   			SendClientMessageEx(playerid, COLOR_GREY, "Ban da alt-tab khi dang tinh che.");
 			Purification[0] = 0;
 	    	KillTimer(GetPVarInt(playerid, "AttemptPurify"));
 	    	DeletePVar(playerid, "PurifyTime");
@@ -888,9 +888,9 @@ public AttemptPurify(playerid)
 	        new szMessage[128];
 	        if(PlayerInfo[playerid][pRawOpium] > 30)
 	        {
-				SendClientMessageEx(playerid, COLOR_GREEN, "You have successfully purified %d milligrams of heroin!", 30);
+				SendClientMessageEx(playerid, COLOR_GREEN, "Da tinh che %d milligrams heroin!", 30);
 
-	        	format(szMessage, sizeof(szMessage), "* %s has successfully purified %d milligrams of heroin.", GetPlayerNameEx(playerid), 30);
+	        	format(szMessage, sizeof(szMessage), "* %s tinh che thanh cong %d milligrams heroin.", GetPlayerNameEx(playerid), 30);
 				ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
 				PlayerInfo[playerid][pDrugs][4] += 30;
@@ -902,9 +902,9 @@ public AttemptPurify(playerid)
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREEN, "You have successfully purified %d milligrams of heroin!", PlayerInfo[playerid][pRawOpium]);
+				SendClientMessageEx(playerid, COLOR_GREEN, "Da tinh che %d milligrams heroin!", PlayerInfo[playerid][pRawOpium]);
 
-	        	format(szMessage, sizeof(szMessage), "* %s has successfully purified %d milligrams of heroin.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pRawOpium]);
+	        	format(szMessage, sizeof(szMessage), "* %s tinh che thanh cong %d milligrams heroin.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pRawOpium]);
 				ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
 				PlayerInfo[playerid][pDrugs][4] += PlayerInfo[playerid][pRawOpium];
@@ -926,7 +926,7 @@ public AttemptPurify(playerid)
 	    Purification[0] = 0;
 	    KillTimer(GetPVarInt(playerid, "AttemptPurify"));
 	    DeletePVar(playerid, "AttemptPurify");
-	    SendClientMessageEx(playerid, COLOR_GREY, "You stopped the purification process.");
+	    SendClientMessageEx(playerid, COLOR_GREY, "Ban da dung tinh che.");
 	}
 	return 1;
 }

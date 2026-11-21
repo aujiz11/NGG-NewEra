@@ -12,7 +12,7 @@ stock ExecuteNOPAction(playerid)
 	if(NOPTrigger[playerid] > 1)
 	{
 		new sec = (NOPTrigger[playerid] * 5000)/1000-1;
-		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may be NOP hacking - restricted vehicle (model %d) for %d seconds.", GetPlayerNameEx(playerid), playerid, GetVehicleModel(newcar),sec);
+		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) co the dung NOP hack - cam lai xe (model %d) trong %d giay.", GetPlayerNameEx(playerid), playerid, GetVehicleModel(newcar),sec);
 		ABroadCast(COLOR_YELLOW, string, 2);
 	}
 	return 1;
@@ -28,7 +28,7 @@ stock ExecuteHackerAction( playerid, weaponid )
 	new String[ 128 ], WeaponName[ 128 ];
 	GetWeaponName( weaponid, WeaponName, sizeof( WeaponName ) );
 
-	format( String, sizeof( String ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may possibly be weapon hacking (%s).", GetPlayerNameEx(playerid), playerid, WeaponName );
+	format( String, sizeof( String ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) co the gian lan vu khi (%s).", GetPlayerNameEx(playerid), playerid, WeaponName );
 	ABroadCast( COLOR_YELLOW, String, 2 );
 	format(String, sizeof(String), "%s(%d) (ID %d) may possibly be weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerid, WeaponName);
 	Log("logs/hack.log", String);
@@ -64,7 +64,7 @@ public sobeitCheck(playerid)
 
         if(pX != cX && pY != cY && pZ != cZ && hX != cX1 && hY != cY1 && hZ != cZ1)
         {
-            SendClientMessageEx(playerid, COLOR_RED, "You have failed the player account check, please relog and try again!");
+            SendClientMessageEx(playerid, COLOR_RED, "Kiem tra tai khoan that bai, hay dang nhap lai va thu lai!");
             IsPlayerFrozen[playerid] = 0;
             DeletePVar(playerid,"FrontVectorX");
             DeletePVar(playerid,"FrontVectorY");
@@ -97,7 +97,7 @@ public sobeitCheck(playerid)
 		    mysql_format(MainPipeline, szString, sizeof(szString), "INSERT INTO `sobeitkicks` (sqlID, Kicks) VALUES (%d, 1) ON DUPLICATE KEY UPDATE Kicks = Kicks + 1", GetPlayerSQLId(playerid));
 			mysql_tquery(MainPipeline, szString, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 
-			SendClientMessageEx(playerid, COLOR_RED, "The hacking tool 's0beit' is not allowed on this server, please uninstall it.");
+			SendClientMessageEx(playerid, COLOR_RED, "May chu cam cong cu gian lan 's0beit', vui long go bo.");
    			format(szString, sizeof(szString), "%s(%d) (IP: %s) has logged into the server with s0beit installed.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), IP);
    			Log("logs/sobeit.log", szString);
    			IsPlayerFrozen[playerid] = 0;
@@ -106,7 +106,7 @@ public sobeitCheck(playerid)
 
 	}
 	
-	if(playerTabbed[playerid] > 2) { SendClientMessageEx(playerid, COLOR_RED, "You have failed the account check, please relog."), SetTimerEx("KickEx", 1000, false, "i", playerid); }
+	if(playerTabbed[playerid] > 2) { SendClientMessageEx(playerid, COLOR_RED, "Kiem tra tai khoan that bai, hay dang nhap lai."), SetTimerEx("KickEx", 1000, false, "i", playerid); }
 
 	if(PlayerInfo[playerid][pVW] > 0 || PlayerInfo[playerid][pInt] > 0) HideNoticeGUIFrame(playerid);
 	sobeitCheckvar[playerid] = 1;
@@ -126,7 +126,7 @@ ptask Anti_Rapidfire[1000](i)
 		Log("logs/rapid.log", szMiscArray);
 
 		SetPVarInt(i, "MaxRFWarn", GetPVarInt(i, "MaxRFWarn")+1);
-		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be rapidfire hacking. %d/%d warnings", GetPlayerNameEx(i), i, GetPVarInt(i, "MaxRFWarn"), MAX_RF_WARNS);
+		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) co the hack toc do ban. %d/%d canh bao", GetPlayerNameEx(i), i, GetPVarInt(i, "MaxRFWarn"), MAX_RF_WARNS);
 		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 		if(GetPVarInt(i, "MaxRFWarn") >= MAX_RF_WARNS)
 		{
@@ -146,7 +146,7 @@ ptask Anti_Invisibility[5000](i)
 {
 	if(GetPlayerState(i) == PLAYER_STATE_SPECTATING && Spectating[i] == INVALID_PLAYER_ID && PlayerInfo[i][pAdmin] < 2)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) is using Invisibility CLEOs.", GetPlayerNameEx(i), i);
+		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) dang dung CLEO tang hinh.", GetPlayerNameEx(i), i);
 		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 	}
 }
@@ -177,7 +177,7 @@ public LoginCheckEx(i)
 		{
 			format(string, sizeof(string), "%s(%d) [%s] has moved from the login screen position.", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerIpEx(i));
 			Log("logs/security.log", string);
-			SendClientMessage(i, COLOR_WHITE, "SERVER: You have moved while being in the login screen!");
+			SendClientMessage(i, COLOR_WHITE, "SERVER: Ban da di chuyen khi dang o man hinh dang nhap!");
 			ShowPlayerDialogEx(i, -1, DIALOG_STYLE_MSGBOX, "", "", "", "");
 			SetTimerEx("KickEx", 1000, false, "i", i);
 		}
@@ -226,12 +226,12 @@ CMD:hackwarnings(playerid, params[])
 		GetArmour(i, rarmor);
 		if(health > rhealth)
 		{
-			format(szMiscArray, sizeof(szMiscArray), "%s (ID: %i, Level: %d) - Health - Recorded: %f - Current: %f", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel], rhealth, health);
+			format(szMiscArray, sizeof(szMiscArray), "%s (ID: %i, Cap: %d) - Mau - Da ghi: %f - Hien tai: %f", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel], rhealth, health);
 			SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 		}
 		if(armor > rarmor)
 		{
-			format(szMiscArray, sizeof(szMiscArray), "%s (ID: %i, Level: %d) - Armor - Recorded: %f - Current: %f", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel], rarmor, armor);
+			format(szMiscArray, sizeof(szMiscArray), "%s (ID: %i, Cap: %d) - Giap - Da ghi: %f - Hien tai: %f", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel], rarmor, armor);
 			SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 		}
 	}

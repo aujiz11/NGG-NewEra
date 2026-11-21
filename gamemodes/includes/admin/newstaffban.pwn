@@ -53,7 +53,7 @@ stock IsStaffBanned(playerid)
 	cache_delete(result);
 	if(affected > 0) {
 		PlayerInfo[playerid][pStaffBanned] = 0;
-		SendClientMessage(playerid, COLOR_GRAD1, "Your staff ban has expired. Previous staff ranks have not been restored.");
+		SendClientMessage(playerid, COLOR_GRAD1, "Lenh cam Staff da het han. Chuc vu cu khong duoc khoi phuc.");
 	}
 	return PlayerInfo[playerid][pStaffBanned];
 }
@@ -85,22 +85,22 @@ StaffBan_Change(playerid, targetid, const accountName[], const reason[], days, b
 {
 	if(playerid < 0 || playerid >= MAX_PLAYERS || !IsPlayerConnected(playerid) || !gPlayerLogged{playerid} || GetPlayerSQLId(playerid) <= 0
 		|| (PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pHR] <= 0))
-		return SendClientMessage(playerid, COLOR_GRAD2, "You're not authorised to use this command.");
+		return SendClientMessage(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	if(!gAccountsInnoDB || !gStaffBansInnoDB || restarting || mysql_unprocessed_queries(MainPipeline))
-		return SendClientMessage(playerid, COLOR_GRAD2, "Staff-ban storage is unavailable or busy. Please try again.");
+		return SendClientMessage(playerid, COLOR_GRAD2, "Du lieu cam Staff chua san sang hoac dang ban. Hay thu lai.");
 	if((targetid == INVALID_PLAYER_ID && !accountName[0])
 		|| (targetid != INVALID_PLAYER_ID && (targetid < 0 || targetid >= MAX_PLAYERS || !IsPlayerConnected(targetid) || !gPlayerLogged{targetid})))
-		return SendClientMessage(playerid, COLOR_GRAD2, "That player is not logged in.");
+		return SendClientMessage(playerid, COLOR_GRAD2, "Nguoi choi do chua dang nhap.");
 
 	new created = gettime(), expires = STAFFBAN_INDEFINITE;
-	if(created < 0) return SendClientMessage(playerid, COLOR_GRAD2, "The server time is outside the supported staff-ban range.");
+	if(created < 0) return SendClientMessage(playerid, COLOR_GRAD2, "Thoi gian may chu nam ngoai pham vi ho tro cua lenh cam Staff.");
 	new maxDays = (cellmax - created) / 86400;
-	if(days < 0 || days > maxDays) return SendClientMessageEx(playerid, COLOR_GRAD2, "Days must be between 0 and %d.", maxDays);
+	if(days < 0 || days > maxDays) return SendClientMessageEx(playerid, COLOR_GRAD2, "So ngay phai tu 0 den %d.", maxDays);
 	if(days > 0) expires = created + days * 86400;
 
 	new query[1024], sqlid, admin, banned, previousExpiry, name[MAX_PLAYER_NAME + 1];
 	mysql_query(MainPipeline, "START TRANSACTION", false);
-	if(mysql_errno(MainPipeline)) return SendClientMessage(playerid, COLOR_GRAD2, "The staff-ban change was not confirmed.");
+	if(mysql_errno(MainPipeline)) return SendClientMessage(playerid, COLOR_GRAD2, "Chua xac nhan duoc thay doi lenh cam Staff.");
 	if(targetid == INVALID_PLAYER_ID)
 		mysql_format(MainPipeline, query, sizeof(query), "SELECT a.`id`,a.`Username`,a.`AdminLevel`,a.`StaffBanned`,b.`expiredate` FROM `accounts` a LEFT JOIN `staffbans` b ON b.`playerid`=a.`id` AND b.`status`=1 WHERE a.`Username`='%e' FOR UPDATE", accountName);
 	else
@@ -121,13 +121,13 @@ StaffBan_Change(playerid, targetid, const accountName[], const reason[], days, b
 		cache_delete(result);
 	}
 	new error[128];
-	if(rows != 1 || sqlid <= 0) format(error, sizeof(error), "Account not found, or staff-ban storage could not be read consistently.");
+	if(rows != 1 || sqlid <= 0) format(error, sizeof(error), "Khong tim thay tai khoan hoac du lieu cam Staff khong nhat quan.");
 	else if(targetid == INVALID_PLAYER_ID) {
 		foreach(new i : Player) {
 			new connectedName[MAX_PLAYER_NAME + 1];
 			GetPlayerName(i, connectedName, sizeof(connectedName));
 			if((gPlayerLogged{i} && GetPlayerSQLId(i) == sqlid) || !strcmp(connectedName, name, true)) {
-				format(error, sizeof(error), "That player is connected. Use the online staff-ban command.");
+				format(error, sizeof(error), "Nguoi choi dang online. Hay dung lenh cam Staff online.");
 				break;
 			}
 		}
@@ -135,11 +135,11 @@ StaffBan_Change(playerid, targetid, const accountName[], const reason[], days, b
 	if(!error[0] && ban) {
 		if(PlayerInfo[playerid][pAdmin] != 99999 && ((admin > 0 && admin >= PlayerInfo[playerid][pAdmin])
 			|| (targetid != INVALID_PLAYER_ID && PlayerInfo[targetid][pAdmin] > 0 && PlayerInfo[targetid][pAdmin] >= PlayerInfo[playerid][pAdmin])))
-			format(error, sizeof(error), "You cannot perform this action on an equal or higher level administrator.");
+			format(error, sizeof(error), "Khong the thao tac voi Admin ngang hoac cao cap hon.");
 		else if(banned && !(previousExpiry > 0 && previousExpiry <= created && previousExpiry != STAFFBAN_INDEFINITE))
-			format(error, sizeof(error), "That account is already staff banned.");
+			format(error, sizeof(error), "Tai khoan do da bi cam Staff.");
 	}
-	else if(!error[0] && !banned) format(error, sizeof(error), "That account is not staff banned.");
+	else if(!error[0] && !banned) format(error, sizeof(error), "Tai khoan do khong bi cam Staff.");
 	if(error[0]) {
 		mysql_query(MainPipeline, "ROLLBACK", false);
 		return SendClientMessage(playerid, COLOR_GRAD2, error);
@@ -163,12 +163,12 @@ StaffBan_Change(playerid, targetid, const accountName[], const reason[], days, b
 	}
 	if(failed) {
 		mysql_query(MainPipeline, "ROLLBACK", false);
-		return SendClientMessage(playerid, COLOR_GRAD2, "The staff-ban change was not confirmed. Please try again.");
+		return SendClientMessage(playerid, COLOR_GRAD2, "Chua xac nhan duoc thay doi lenh cam Staff. Hay thu lai.");
 	}
 	mysql_query(MainPipeline, "COMMIT", false);
 	if(mysql_errno(MainPipeline)) {
 		mysql_query(MainPipeline, "ROLLBACK", false);
-		return SendClientMessage(playerid, COLOR_GRAD2, "The staff-ban change was not confirmed. Please check its status before retrying.");
+		return SendClientMessage(playerid, COLOR_GRAD2, "Chua xac nhan duoc thay doi lenh cam Staff. Hay kiem tra trang thai truoc khi thu lai.");
 	}
 
 	if(targetid != INVALID_PLAYER_ID) {
@@ -217,16 +217,16 @@ StaffBan_Change(playerid, targetid, const accountName[], const reason[], days, b
 			format(PlayerInfo[targetid][pSecureIP], 16, "0.0.0.0");
 		}
 		PlayerInfo[targetid][pStaffBanned] = ban;
-		SendClientMessageEx(targetid, COLOR_LIGHTRED, "Your staff ban was %s by %s. Reason: %s", ban ? ("issued") : ("removed"), GetPlayerNameEx(playerid), reason);
+		SendClientMessageEx(targetid, COLOR_LIGHTRED, "Ban bi %s Staff ban boi %s. Ly do: %s", ban ? ("ap dung") : ("go bo"), GetPlayerNameEx(playerid), reason);
 	}
 	new expiryText[32] = "indefinite", message[512];
 	if(days > 0) format(expiryText, sizeof(expiryText), "%s", date(expires, 1));
-	format(message, sizeof(message), "{AA3333}AdmWarning{FFFF00}: %s's staff ban was %s by %s. Reason: %s", name, ban ? ("issued") : ("removed"), GetPlayerNameEx(playerid), reason);
+	format(message, sizeof(message), "{AA3333}AdmWarning{FFFF00}: Cam Staff cua %s: %s boi %s. Ly do: %s", name, ban ? ("ap dung") : ("go bo"), GetPlayerNameEx(playerid), reason);
 	ABroadCast(COLOR_YELLOW, message, 4);
-	SendClientMessageEx(playerid, COLOR_GRAD1, "Staff ban %s for %s. Reason: %s", ban ? ("issued") : ("removed"), name, reason);
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Da %s cam Staff: %s. Ly do: %s", ban ? ("ap dung") : ("go bo"), name, reason);
 	if(ban) {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Staff-ban expiry: %s", expiryText);
-		if(targetid != INVALID_PLAYER_ID) SendClientMessageEx(targetid, COLOR_LIGHTRED, "Staff-ban expiry: %s", expiryText);
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Han cam Staff: %s", days > 0 ? expiryText : ("vo thoi han"));
+		if(targetid != INVALID_PLAYER_ID) SendClientMessageEx(targetid, COLOR_LIGHTRED, "Han cam Staff: %s", days > 0 ? expiryText : ("vo thoi han"));
 	}
 	format(message, sizeof(message), "%s (%d): staff ban %s by %s (%d), reason: %s", name, sqlid, ban ? ("issued") : ("removed"), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), reason);
 	Log("logs/staffban.log", message);
@@ -241,14 +241,14 @@ CMD:staffban(playerid, params[])
 {
 	new targetid, text[160], reason[128], days;
 	if(sscanf(params, "ds[160]", targetid, text) || !StaffBan_ParseReason(text, reason, days))
-		return SendClientMessage(playerid, COLOR_GREY, "USAGE: /staffban [playerid] [reason] [days; 0 = indefinite]");
+		return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /staffban [playerid] [reason] [days, 0 = indefinite]");
 	return StaffBan_Change(playerid, targetid, "", reason, days, true);
 }
 
 CMD:unstaffban(playerid, params[])
 {
 	new targetid, reason[128];
-	if(sscanf(params, "ds[128]", targetid, reason)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /unstaffban [playerid] [reason]");
+	if(sscanf(params, "ds[128]", targetid, reason)) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /unstaffban [playerid] [reason]");
 	return StaffBan_Change(playerid, targetid, "", reason, 0, false);
 }
 
@@ -256,52 +256,52 @@ CMD:ostaffban(playerid, params[])
 {
 	new name[MAX_PLAYER_NAME + 1], text[160], reason[128], days;
 	if(sscanf(params, "s[25]s[160]", name, text) || !StaffBan_ParseReason(text, reason, days))
-		return SendClientMessage(playerid, COLOR_GREY, "USAGE: /ostaffban [account name] [reason] [days; 0 = indefinite]");
+		return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /ostaffban [account name] [reason] [days, 0 = indefinite]");
 	return StaffBan_Change(playerid, INVALID_PLAYER_ID, name, reason, days, true);
 }
 
 CMD:ounstaffban(playerid, params[])
 {
 	new name[MAX_PLAYER_NAME + 1];
-	if(sscanf(params, "s[25]", name)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /ounstaffban [account name]");
+	if(sscanf(params, "s[25]", name)) return SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /ounstaffban [account name]");
 	return StaffBan_Change(playerid, INVALID_PLAYER_ID, name, "Offline removal", 0, false);
 }
 
 CMD:staffbans(playerid, params[])
 {
 	if(!gPlayerLogged{playerid} || (PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pHR] <= 0))
-		return SendClientMessage(playerid, COLOR_GRAD2, "You're not authorised to use this command.");
-	if(!gStaffBansInnoDB) return SendClientMessage(playerid, COLOR_GRAD2, "Staff-ban storage is unavailable.");
+		return SendClientMessage(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
+	if(!gStaffBansInnoDB) return SendClientMessage(playerid, COLOR_GRAD2, "Du lieu cam Staff chua san sang.");
 	new query[512];
 	mysql_format(MainPipeline, query, sizeof(query), "SELECT b.`playerid`,b.`issuer`,b.`details`,b.`expiredate`,i.`Username` FROM `staffbans` b JOIN `accounts` a ON a.`id`=b.`playerid` LEFT JOIN `accounts` i ON i.`id`=b.`issuer` WHERE b.`status`=1 AND a.`StaffBanned`=1 AND (b.`expiredate`>%d OR b.`expiredate`=%d) ORDER BY b.`id`", gettime(), STAFFBAN_INDEFINITE);
 	new Cache:result = mysql_query(MainPipeline, query);
-	if(!cache_is_valid(result)) return SendClientMessage(playerid, COLOR_GRAD2, "Staff bans could not be read.");
+	if(!cache_is_valid(result)) return SendClientMessage(playerid, COLOR_GRAD2, "Khong the doc danh sach cam Staff.");
 	new rows, displayed;
 	cache_get_row_count(rows);
 	SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
-	SendClientMessage(playerid, COLOR_GRAD3, "List of online staff bans:");
+	SendClientMessage(playerid, COLOR_GRAD3, "Danh sach nguoi online bi cam Staff:");
 	for(new row; row < rows; ++row) {
-		new sqlid, issuer, expires, reason[128], issuerName[MAX_PLAYER_NAME + 1], expiryText[32] = "indefinite";
+		new sqlid, issuer, expires, reason[128], issuerName[MAX_PLAYER_NAME + 1], expiryText[32] = "vo thoi han";
 		cache_get_value_name_int(row, "playerid", sqlid);
 		cache_get_value_name_int(row, "issuer", issuer);
 		cache_get_value_name_int(row, "expiredate", expires);
 		cache_get_value_name(row, "details", reason, sizeof(reason));
 		new bool:missingIssuer;
 		cache_is_value_name_null(row, "Username", missingIssuer);
-		if(missingIssuer) format(issuerName, sizeof(issuerName), "Account #%d", issuer);
+		if(missingIssuer) format(issuerName, sizeof(issuerName), "TK #%d", issuer);
 		else cache_get_value_name(row, "Username", issuerName, sizeof(issuerName));
 		if(expires != STAFFBAN_INDEFINITE) format(expiryText, sizeof(expiryText), "%s", date(expires, 1));
 		foreach(new i : Player) {
 			if(gPlayerLogged{i} && GetPlayerSQLId(i) == sqlid) {
-				SendClientMessageEx(playerid, COLOR_GRAD1, "%s (ID: %d) - issuer: %s - expires: %s", GetPlayerNameEx(i), i, issuerName, expiryText);
-				SendClientMessageEx(playerid, COLOR_GRAD1, "Reason: %s", reason);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "%s (ID: %d) - cam: %s - het han: %s", GetPlayerNameEx(i), i, issuerName, expiryText);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Ly do: %s", reason);
 				++displayed;
 				break;
 			}
 		}
 	}
 	cache_delete(result);
-	if(!displayed) SendClientMessage(playerid, COLOR_GRAD1, "No active online staff bans were found.");
+	if(!displayed) SendClientMessage(playerid, COLOR_GRAD1, "Khong co nguoi online dang bi cam Staff.");
 	SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
 	return 1;
 }

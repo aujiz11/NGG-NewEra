@@ -98,7 +98,7 @@ timer FinishMedKit[5000](playerid)
 		SetHealth(playerid, 100);
 		SetArmour(playerid, 150);
 		PlayerInfo[playerid][pBItems][5]--;
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have used the Med Kit from the backpack.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da dung Med Kit trong ba lo.");
 		new ip[MAX_PLAYER_NAME];
 		GetPlayerIp(playerid, ip, sizeof(ip));
 		format(szMiscArray, sizeof(szMiscArray), "[MEDKIT] %s(%d) (IP:%s) used a medkit (%d Kits Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, PlayerInfo[playerid][pBItems][5], PlayerInfo[playerid][pBackpack]);
@@ -107,7 +107,7 @@ timer FinishMedKit[5000](playerid)
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_RED, "You have taken damage or tried entering a car during the 5 seconds, therefore you couldn't use the Med Kit.");
+		SendClientMessageEx(playerid, COLOR_RED, "Ban bi thuong hoac thu len xe trong 5 giay nen khong dung duoc Med Kit.");
 		SetPVarInt(playerid, "BackpackDisabled", 60);
 	}
 	DeletePVar(playerid, "BackpackMedKit");
@@ -119,7 +119,7 @@ timer FinishMeal[5000](playerid)
 	if(GetPVarInt(playerid, "BackpackMeal") == 1)
 	{
 		PlayerInfo[playerid][pBItems][0]--;
-		format(szMiscArray, sizeof(szMiscArray),"* You have used a Full Meal from your backpack(%d remaining meals).",PlayerInfo[playerid][pBItems][0]);
+		format(szMiscArray, sizeof(szMiscArray),"* Ban da dung Full Meal trong ba lo(con %d suat an).",PlayerInfo[playerid][pBItems][0]);
 		SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
 		SetHealth(playerid, 100.0);
 
@@ -130,7 +130,7 @@ timer FinishMeal[5000](playerid)
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_RED, "You have taken damage or tried entering a car during the 5 seconds, therefore you couldn't use the Full Meal.");
+		SendClientMessageEx(playerid, COLOR_RED, "Ban bi thuong hoac thu len xe trong 5 giay nen khong dung duoc Full Meal.");
 		SetPVarInt(playerid, "BackpackDisabled", 120);
 	}
 	ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "");
@@ -157,7 +157,7 @@ timer CheckVehiclesLeftSpawned[5000](playerid)
 				PlayerVehicleInfo[playerid][v][pvSpawned] = 1;
 				PlayerVehicleInfo[playerid][v][pvFuel] = VehicleFuel[GetPVarInt(j, "LockPickVehicle")];
 				g_mysql_SaveVehicle(playerid, v);
-				SendClientMessageEx(j, COLOR_GREY, "(( The player that owns this vehicle has logged back in! ))");
+				SendClientMessageEx(j, COLOR_GREY, "(( Chu xe nay da dang nhap lai! ))");
 				new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(j, ip2, sizeof(ip2));
@@ -191,7 +191,7 @@ task ServerHeartbeat[1000]() {
 			{
 				if(Reports[z][ReportPriority] == 1 || Reports[z][ReportPriority] == 2)
 				{
-					ABroadCastText(COLOR_LIGHTRED,"A priority report is pending.", 2);
+					ABroadCastText(COLOR_LIGHTRED,"Co bao cao uu tien dang cho.", 2);
 					break;
 				}
 			}
@@ -238,7 +238,7 @@ task SyncTime[60000]()
 	for(new i=0;i<MAX_REPORTS;i++) { if(Reports[i][BeingUsed] == 1) reports++; if(Reports[i][ReportPriority] <= 2 && Reports[i][BeingUsed] == 1) priority++; }
 	if(reports >= 5)
 	{
-		format(szMiscArray, 80, "There are currently %d reports pending. (%d priority)", reports, priority);
+		format(szMiscArray, 80, "Hien co %d bao cao dang cho. (%d uu tien)", reports, priority);
 	 	ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 	}
 	
@@ -285,11 +285,11 @@ task SyncTime[60000]()
 		else
 		{
 		    if(SpecLotto) {
-				SendClientMessageToAllEx(COLOR_WHITE, "Special Lottery: Remember to buy a lotto ticket at a 24/7. Next drawing is at %s. The total Jackpot is $%s", ConvertToTwelveHour(tmphour), number_format(Jackpot));
-				SendClientMessageToAllEx(COLOR_WHITE, "Special Prize: %s", LottoPrize);
+				SendClientMessageToAllEx(COLOR_WHITE, "Special Lottery: Nho mua ve lotto tai 24/7. Quay luc %s. Tong Jackpot la $%s", ConvertToTwelveHour(tmphour), number_format(Jackpot));
+				SendClientMessageToAllEx(COLOR_WHITE, "Giai dac biet: %s", LottoPrize);
 		    }
 		    else {
-				SendClientMessageToAllEx(COLOR_WHITE, "Lottery: Remember to buy a lotto ticket at a 24/7. Next drawing is at %s. The total Jackpot is $%s", ConvertToTwelveHour(tmphour), number_format(Jackpot));
+				SendClientMessageToAllEx(COLOR_WHITE, "Lottery: Nho mua ve lotto tai 24/7. Quay luc %s. Tong Jackpot la $%s", ConvertToTwelveHour(tmphour), number_format(Jackpot));
 			}
 		}
 		for(new iGroupID; iGroupID < MAX_GROUPS; iGroupID++)
@@ -358,7 +358,7 @@ task SyncTime[60000]()
 					}
 					else
 					{
-						format(szMiscArray, sizeof(szMiscArray), "Warning: The Government Vault has insufficient funds to fund %s.", arrGroupData[iGroupID][g_szGroupName]);
+						format(szMiscArray, sizeof(szMiscArray), "Canh bao: Government Vault khong du ngan sach cap cho %s.", arrGroupData[iGroupID][g_szGroupName]);
 						SendGroupMessage(GROUP_TYPE_GOV, COLOR_RED, szMiscArray);
 					}
 				}
@@ -426,7 +426,7 @@ task SyncTime[60000]()
 
 		new ttTime = CalculateWorldGameTime(gServerHour, minuite);
 
-		format(szMiscArray, sizeof(szMiscArray), "The time is now %s. ((ST: %s))", ConvertToTwelveHour(ttTime), ConvertToTwelveHour(tmphour));
+		format(szMiscArray, sizeof(szMiscArray), "Bay gio la %s. ((ST: %s))", ConvertToTwelveHour(ttTime), ConvertToTwelveHour(tmphour));
 		SendClientMessageToAllEx(COLOR_WHITE, szMiscArray);
 		new query[300];
 		mysql_format(MainPipeline, query, sizeof(query), "SELECT b.shift, b.needs_%e, COUNT(DISTINCT s.id) as ShiftCount FROM cp_shift_blocks b LEFT JOIN cp_shifts s ON b.shift_id = s.shift_id AND s.date = '%d-%02d-%02d' AND s.status >= 2 AND s.type = 1 WHERE b.time_start = '%02d:00:00' AND b.type = 1 GROUP BY b.shift, b.needs_%e", GetWeekday(), year, month, day, tmphour, GetWeekday());
@@ -443,7 +443,7 @@ task SyncTime[60000]()
 				if(tmphour == 0) WDReportCount[i] = 0;
 				WDReportHourCount[i] = 0;
 			}
-			if(PlayerInfo[i][pLevel] <= 5) SendClientMessageEx(i, COLOR_LIGHTBLUE, "Need to travel somewhere and don't have wheels? Use '/service taxi' to call a cab!");
+			if(PlayerInfo[i][pLevel] <= 5) SendClientMessageEx(i, COLOR_LIGHTBLUE, "Can di lai ma khong co xe? Dung '/service taxi' de goi taxi!");
 			if(PlayerInfo[i][pDonateRank] >= 3)
 			{
 				sscanf(PlayerInfo[i][pBirthDate], "p<->iii", byear, bmonth, bday);
@@ -467,10 +467,10 @@ task SyncTime[60000]()
 					{
 						PlayerInfo[i][pReceivedBGift] = 1;
 						GiftPlayer(MAX_PLAYERS, i);
-						SendClientMessageEx(i, COLOR_YELLOW, "Happy Birthday %s! You have received a free gift!", GetPlayerNameEx(i));
+						SendClientMessageEx(i, COLOR_YELLOW, "Chuc mung sinh nhat %s! Ban da nhan mot mon qua mien phi!", GetPlayerNameEx(i));
 						format(szMiscArray, sizeof(szMiscArray), "%s(%d) has received a free gift for his birthday (%s) (Payday).", GetPlayerNameEx(i), GetPlayerSQLId(i), PlayerInfo[i][pBirthDate]);
 						Log("logs/birthday.log", szMiscArray);
-						SendClientMessageEx(i, COLOR_YELLOW, "Gold VIP: You will get x2 paycheck as a birthday gift today.");
+						SendClientMessageEx(i, COLOR_YELLOW, "Gold VIP: Ban nhan x2 paycheck lam qua sinh nhat hom nay.");
 						OnPlayerStatsUpdate(i);
 					}
 				}
@@ -486,12 +486,12 @@ task SyncTime[60000]()
 			if(strcmp(DynPoints[x][poName], "NULL", true) != 0) {
 				if(DynPoints[x][poTimer] > 0) DynPoints[x][poTimer]--, SavePoint(x);
 				if(!DynPoints[x][poTimer] && !DynPoints[x][poCapturable] && !DynPoints[x][poLocked]) {
-					SendClientMessageToAllEx(COLOR_YELLOW, "%s has become available for capture.", DynPoints[x][poName]);
+					SendClientMessageToAllEx(COLOR_YELLOW, "%s da san sang bi chiem.", DynPoints[x][poName]);
 					DynPoints[x][poCapturable] = 1;
 					SavePoint(x);
 				}
 				if((0 <= DynPoints[x][poCaptureGroup] < MAX_GROUPS) && DynPoints[x][poAmountHour] > 0) {
-					format(szMiscArray, sizeof(szMiscArray), "Your family has recieved %s %s for owning %s.", number_format(DynPoints[x][poAmountHour]), PointTypeToName(DynPoints[x][poType]), DynPoints[x][poName]);
+					format(szMiscArray, sizeof(szMiscArray), "Family cua ban nhan %s %s vi so huu %s.", number_format(DynPoints[x][poAmountHour]), PointTypeToName(DynPoints[x][poType]), DynPoints[x][poName]);
 					foreach(new i: Player)
 					{
 						if(PlayerInfo[i][pMember] == DynPoints[x][poCaptureGroup]) {
@@ -517,7 +517,7 @@ task SyncTime[60000]()
 			    {
 					if(ValidGroup(TurfWars[i][twOwnerId]))
 			    	{
-			        	format(szMiscArray,sizeof(szMiscArray),"%s that you currently own is vulnerable for capture!",TurfWars[i][twName]);
+			        	format(szMiscArray,sizeof(szMiscArray),"Khu vuc %s cua ban dang co the bi chiem!",TurfWars[i][twName]);
 			        	foreach(new x: Player) if(PlayerInfo[x][pMember] == TurfWars[i][twOwnerId]) SendClientMessageEx(x, COLOR_YELLOW, szMiscArray);
 			    	}
 				}
@@ -534,7 +534,7 @@ task SyncTime[60000]()
 				}
 				for(new drug; drug < sizeof(bonus); ++drug) arrGroupData[ownerid][g_iDrugs][drug] += bonus[drug];
 
-			    foreach(new x: Player) if(PlayerInfo[x][pMember] == TurfWars[i][twOwnerId]) SendClientMessageEx(x, COLOR_LIGHTBLUE, "Your family has recieved drugs for owning a drug turf.");
+			    foreach(new x: Player) if(PlayerInfo[x][pMember] == TurfWars[i][twOwnerId]) SendClientMessageEx(x, COLOR_LIGHTBLUE, "Family nhan duoc ma tuy vi so huu turf ma tuy.");
 			}
 		}
 		//CallRemoteFunction("ActivateRandomQuestion", "");//Olympics
@@ -542,7 +542,7 @@ task SyncTime[60000]()
 			foreach(new i: Player)
 			{
 				if(PlayerInfo[i][pDedicatedHours] > 0) {
-					SendClientMessageEx(i, COLOR_YELLOW, "Player Dedicated has entered a new month your hours and rank have been reset.");
+					SendClientMessageEx(i, COLOR_YELLOW, "Player Dedicated da sang thang moi, gio choi va hang cua ban da duoc dat lai.");
 					PlayerInfo[i][pDedicatedHours] = 0;
 					if(PlayerInfo[i][pDedicatedPlayer] != 4) PlayerInfo[i][pDedicatedPlayer] = 0;
 				}
@@ -568,14 +568,14 @@ task ProductionUpdate[300000]()
 
 		if(AdvisorMessage == 3 && Advisors > 0 && PlayerInfo[i][pLevel] < 4)
 		{
-			SendClientMessageEx(i, COLOR_LIGHTBLUE, "Need help? The Advisors are here to help you. (/requesthelp to get help)");
+			SendClientMessageEx(i, COLOR_LIGHTBLUE, "Can giup? Advisors san sang ho tro. (Dung /requesthelp de duoc giup)");
 		}
 		if(PlayerInfo[i][pConnectHours] < 2) {
-			SendClientMessageEx(i, COLOR_LIGHTRED, "Due to an increase in new playing accounts being created for Death Matching.");
-			SendClientMessageEx(i, COLOR_LIGHTRED, "Weapons for new players are restricted for the first two hours of game play.");
+			SendClientMessageEx(i, COLOR_LIGHTRED, "Do so tai khoan moi duoc tao de Death Matching tang len.");
+			SendClientMessageEx(i, COLOR_LIGHTRED, "Nguoi choi moi bi han che vu khi trong hai gio choi dau tien.");
 		}
 
-		if(PlayerDrunk[i] > 0) { PlayerDrunk[i] = 0; PlayerDrunkTime[i] = 0; GameTextForPlayer(i, "~p~Drunk effect~n~~w~Gone", 3500, 1); }
+		if(PlayerDrunk[i] > 0) { PlayerDrunk[i] = 0; PlayerDrunkTime[i] = 0; GameTextForPlayer(i, "~p~Trang thai say~n~~w~Da het", 3500, 1); }
 	}
 	if(AdvisorMessage == 3) {
 		AdvisorMessage = 0;
@@ -586,7 +586,7 @@ task ProductionUpdate[300000]()
 			VIPGiftsTimeLeft -= 5;
 			if(VIPGiftsTimeLeft > 0)
 			{
-				format(szMiscArray, sizeof(szMiscArray), "%s would like for you to come to Club VIP for free gifts and great times [%d minutes remains]", VIPGiftsName, VIPGiftsTimeLeft);
+				format(szMiscArray, sizeof(szMiscArray), "%s moi ban den Club VIP de nhan qua mien phi va vui choi [con %d phut]", VIPGiftsName, VIPGiftsTimeLeft);
 				SendVIPMessage(COLOR_LIGHTGREEN, szMiscArray);
 			}
 		}
@@ -594,7 +594,7 @@ task ProductionUpdate[300000]()
 		{
 			VIPGiftsTimeLeft = 0;
 			VIPGifts = 0;
-			format(szMiscArray, sizeof(szMiscArray), "Club VIP is no longer giving away free gifts. Thanks for coming!", VIPGiftsName, VIPGiftsTimeLeft);
+			format(szMiscArray, sizeof(szMiscArray), "Club VIP da ket thuc phat qua mien phi. Cam on ban da tham gia!", VIPGiftsName, VIPGiftsTimeLeft);
 			SendVIPMessage(COLOR_LIGHTGREEN, szMiscArray);
 		}
 	}
@@ -661,7 +661,7 @@ task MoneyUpdate[1000]()
 					EventLastVW[i] = 0;
 					EventLastInt[i] = 0;
 					DeletePVar(i, "EventToken");
-					SendClientMessageEx( i, COLOR_YELLOW, "You have been removed from the event as it has been terminated by the timer." );
+					SendClientMessageEx( i, COLOR_YELLOW, "Ban da roi su kien vi da het thoi gian." );
 				}
 			}
 			EventKernel[ EventPositionX ] = 0;
@@ -695,7 +695,7 @@ task MoneyUpdate[1000]()
 			EventKernel[EventCreator] = INVALID_PLAYER_ID;
 			EventKernel[VipOnly] = 0;
 			EventKernel[EventJoinStaff] = 0;
-			SendClientMessageToAllEx( COLOR_LIGHTBLUE, "* The event has been finished because the time limit has been reached." );
+			SendClientMessageToAllEx( COLOR_LIGHTBLUE, "* Su kien da ket thuc vi het thoi gian." );
 		}
 	}
 }
@@ -783,44 +783,44 @@ task PaintballArenaUpdate[1000]()
 
 			if(PaintBallArena[i][pbTimeLeft] == 300-1)
 			{
-			    SendPaintballArenaMessage(i, COLOR_YELLOW, "Five minutes left in this round!");
+			    SendPaintballArenaMessage(i, COLOR_YELLOW, "Vong dau con nam phut!");
 				//SendPaintballArenaSound(i, 1057);
 				////SendPaintballArenaAudio(i, 5, 100);
 			}
 
 			if(PaintBallArena[i][pbTimeLeft] == 180)
 			{
-				SendPaintballArenaMessage(i, COLOR_YELLOW, "Three minutes left in this round!");
+				SendPaintballArenaMessage(i, COLOR_YELLOW, "Vong dau con ba phut!");
 				//SendPaintballArenaSound(i, 1057);
 				////SendPaintballArenaAudio(i, 4, 100);
 			}
 			if(PaintBallArena[i][pbTimeLeft] == 120)
 			{
-				SendPaintballArenaMessage(i, COLOR_YELLOW, "Two minutes left in this round!");
+				SendPaintballArenaMessage(i, COLOR_YELLOW, "Vong dau con hai phut!");
 				//SendPaintballArenaSound(i, 1057);
 				//SendPaintballArenaAudio(i, 3, 100);
 			}
 			if(PaintBallArena[i][pbTimeLeft] == 60)
 			{
-				SendPaintballArenaMessage(i, COLOR_YELLOW, "One minute left in this round!");
+				SendPaintballArenaMessage(i, COLOR_YELLOW, "Vong dau con mot phut!");
 				//SendPaintballArenaSound(i, 1057);
 				//SendPaintballArenaAudio(i, 2, 100);
 			}
 			if(PaintBallArena[i][pbTimeLeft] == 30)
 			{
-			    SendPaintballArenaMessage(i, COLOR_YELLOW, "30 seconds left in this round!");
+			    SendPaintballArenaMessage(i, COLOR_YELLOW, "Vong dau con 30 giay!");
 			    //SendPaintballArenaSound(i, 1057);
 			    //SendPaintballArenaAudio(i, 6, 100);
 			}
 			if(PaintBallArena[i][pbTimeLeft] == 12)
 			{
-			    SendPaintballArenaMessage(i, COLOR_RED, "Sudden death, 5 seconds left!");
+			    SendPaintballArenaMessage(i, COLOR_RED, "Sudden death, con 5 giay!");
 			    //SendPaintballArenaSound(i, 1057);
 			    //SendPaintballArenaAudio(i, 37, 100);
 			}
 			if(PaintBallArena[i][pbTimeLeft] == 7)
 			{
-			    SendPaintballArenaMessage(i, COLOR_YELLOW, "Round Over!");
+			    SendPaintballArenaMessage(i, COLOR_YELLOW, "Het vong dau!");
 			    //SendPaintballArenaSound(i, 1057);
 			    //SendPaintballArenaAudio(i, 20, 100);
 			}
@@ -842,7 +842,7 @@ task PaintballArenaUpdate[1000]()
 			    new
 					winnerid = SortWinnerPaintballScores(i);
 
-			    format(szMiscArray, sizeof(szMiscArray), "%s has won $%d from the Paintball Match, thanks for playing!", GetPlayerNameEx(winnerid),PaintBallArena[i][pbMoneyPool]);
+			    format(szMiscArray, sizeof(szMiscArray), "%s da thang $%d trong Paintball Match, cam on ban da choi!", GetPlayerNameEx(winnerid),PaintBallArena[i][pbMoneyPool]);
 			    GivePlayerCash(winnerid,PaintBallArena[i][pbMoneyPool]);
 			    SendPaintballArenaMessage(i, COLOR_YELLOW, szMiscArray);
 			    foreach(new p: Player)
@@ -911,7 +911,7 @@ task hungerGames[1000]()
 		{
 			hgCountdown--;
 
-			format(szMiscArray, sizeof(szMiscArray), "Time left until start: %d", hgCountdown);
+			format(szMiscArray, sizeof(szMiscArray), "Con %d truoc khi bat dau", hgCountdown);
 			foreach(new i: Player)
 			{
 				if(HungerPlayerInfo[i][hgInEvent] == 1)
@@ -922,11 +922,11 @@ task hungerGames[1000]()
 
 			if(hgCountdown == 300)
 			{
-				SendClientMessageToAll(COLOR_LIGHTBLUE, "The Hunger Games Event will start in 5 minutes, type /joinhunger to participate.");
+				SendClientMessageToAll(COLOR_LIGHTBLUE, "Hunger Games Event bat dau sau 5 phut, dung /joinhunger de tham gia.");
 			}
 			else if(hgCountdown == 60)
 			{
-				SendClientMessageToAll(COLOR_LIGHTBLUE, "The Hunger Games Event will start in 1 minute, type /joinhunger to participate.");
+				SendClientMessageToAll(COLOR_LIGHTBLUE, "Hunger Games Event bat dau sau 1 phut, dung /joinhunger de tham gia.");
 			}
 			else if(hgCountdown == 30)
 			{
@@ -934,8 +934,8 @@ task hungerGames[1000]()
 				{
 					if(HungerPlayerInfo[i][hgInEvent] == 1)
 					{
-						SendClientMessageEx(i, COLOR_LIGHTBLUE, "* The event will be starting in 30 seconds...");
-						SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Godmode will be disabled and backpacks will be spawned in 30 seconds.");
+						SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Su kien bat dau sau 30 giay...");
+						SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Bat tu se tat va backpack se xuat hien sau 30 giay.");
 					}
 				}
 			}
@@ -945,7 +945,7 @@ task hungerGames[1000]()
 			LoadHGBackpacks();
 			hgActive = 2;
 
-			format(szMiscArray, sizeof(szMiscArray), "Time left until start: %d", hgCountdown);
+			format(szMiscArray, sizeof(szMiscArray), "Con %d truoc khi bat dau", hgCountdown);
 			foreach(new i: Player)
 			{
 				if(HungerPlayerInfo[i][hgInEvent] == 1)
@@ -963,8 +963,8 @@ task hungerGames[1000]()
 						SetHealth(i, 50.0);
 					}
 
-					SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Let the Hunger Games Begin!");
-					GameTextForPlayer(i, "The Game is on!", 2000, 6);
+					SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Hunger Games bat dau!");
+					GameTextForPlayer(i, "Tro choi bat dau!", 2000, 6);
 					PlayerTextDrawHide(i, HungerPlayerInfo[i][hgTimeLeftText]);
 					PlayerTextDrawHide(i, HungerPlayerInfo[i][hgLoadingText]);
 				}
@@ -999,7 +999,7 @@ task PlayerHeartBeat[1000]() {
 		if(1 <= GetPlayerState(i) <= 3) {
 			if(playerTabbed[i] >= 1) {
 				if(++playerTabbed[i] >= 1200 && PlayerInfo[i][pAdmin] < 2) {
-					SendClientMessageEx(i, COLOR_WHITE, "You have been automatically kicked for alt-tabbing.");
+					SendClientMessageEx(i, COLOR_WHITE, "Ban bi tu dong kick vi alt-tab.");
 					Disconnect(i);
 					continue;
 				}
@@ -1009,7 +1009,7 @@ task PlayerHeartBeat[1000]() {
 			}
 			else if((IsPlayerInRangeOfPoint(i, 2.0, PlayerPos[i][0], PlayerPos[i][1], PlayerPos[i][2]) || InsidePlane[i] != INVALID_PLAYER_ID) && ++playerLastTyped[i] >= 10) {
 				if(++playerAFK[i] >= 1200 && PlayerInfo[i][pAdmin] < 2) {
-					SendClientMessageEx(i, COLOR_WHITE, "You have been automatically kicked for idling.");
+					SendClientMessageEx(i, COLOR_WHITE, "Ban bi tu dong kick vi khong hoat dong.");
 					Disconnect(i);
 					continue;
 				}
@@ -1019,7 +1019,7 @@ task PlayerHeartBeat[1000]() {
 		}
 		if(GetPVarType(i, "IsInArena") && GetPlayerVirtualWorld(i) == 0)
 		{
-			SendClientMessageEx(i, COLOR_WHITE, "SERVER: You have been kicked for PaintBall Exploiting.");
+			SendClientMessageEx(i, COLOR_WHITE, "SERVER: Ban bi kick vi loi dung PaintBall.");
 			format(szMiscArray, sizeof(szMiscArray), " %s(%d) (ID: %d) (IP: %s) has been kicked for attempting to Paint Ball Exploit.", GetPlayerNameEx(i), GetPlayerSQLId(i), i, GetPlayerIpEx(i));
 			Log("logs/pbexploit.log", szMiscArray);
 			SetTimerEx("KickEx", 1000, false, "i", i);
@@ -1029,11 +1029,11 @@ task PlayerHeartBeat[1000]() {
 			if(GetPVarInt(i, "HitCooldown") > 0) {
 
 				SetPVarInt(i, "HitCooldown", GetPVarInt(i, "HitCooldown")-1);
-				format(szMiscArray, sizeof(szMiscArray), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~%d seconds until approval", GetPVarInt(i, "HitCooldown"));
+				format(szMiscArray, sizeof(szMiscArray), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~Con %d giay de duoc chap thuan", GetPVarInt(i, "HitCooldown"));
 				GameTextForPlayer(i, szMiscArray, 1100, 3);
 				if(GetPVarInt(i, "HitCooldown") == 0)
 				{
-					GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~Contract Approved.", 5000, 3);
+					GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~Da duyet hop dong.", 5000, 3);
 				}
 			}
 		}
@@ -1072,7 +1072,7 @@ task PlayerHeartBeat[1000]() {
 			{
 				if(strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)
 				{
-					ShowPlayerDialogEx(i, DIALOG_STAYPRISON, DIALOG_STYLE_MSGBOX, "Notice", "Your initial prison time has ran out. However, you can choose to stay.\nWould you like to be released?", "Yes", "No");
+					ShowPlayerDialogEx(i, DIALOG_STAYPRISON, DIALOG_STYLE_MSGBOX, "Notice", "Ban da thu xong an tu ban dau, nhung co the chon o lai.\nBan muon duoc tha khong?", "Co", "Khong");
 				}
 				else
 				{
@@ -1082,7 +1082,7 @@ task PlayerHeartBeat[1000]() {
 			if(gettime() >= PlayerInfo[i][pPrisonWineTime] && GetPVarInt(i, "pPrisonMWine") == 1 && strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)
 			{
 				SetPVarInt(i, "pPrisonMWine", 2);
-				SendClientMessageEx(i, COLOR_GREY, "Your pruno is finished. Go to your cell and type /finishpruno to collect it.");
+				SendClientMessageEx(i, COLOR_GREY, "Pruno da u xong. Hay ve buong va dung /finishpruno de lay.");
 			}
 			
 
@@ -1104,7 +1104,7 @@ task PlayerHeartBeat[1000]() {
 						DeletePVar(i, "LockPickPlayer");
 						DestroyVLPTextDraws(i);
 						ClearAnimationsEx(i, 1);
-						SendClientMessageEx(i, COLOR_YELLOW, "The vehicle is no longer available. Your lock pick has been cancelled.");
+						SendClientMessageEx(i, COLOR_YELLOW, "Xe khong con kha dung. Da huy pha khoa.");
 						continue;
 					}
 				}
@@ -1138,7 +1138,7 @@ task PlayerHeartBeat[1000]() {
 							UnLockPlayerVehicle(ownerid, PlayerVehicleInfo[ownerid][slot][pvId], PlayerVehicleInfo[ownerid][slot][pvLock]);
 							PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 2;
 							if(--PlayerVehicleInfo[ownerid][slot][pvLocksLeft] <= 0 && PlayerVehicleInfo[ownerid][slot][pvLock]) {
-								SendClientMessageEx(i, COLOR_PURPLE, "(( The lock has been damaged as result of the lock pick! ))");
+								SendClientMessageEx(i, COLOR_PURPLE, "(( Khoa da bi hong do bi pha! ))");
 							}
 							strcpy(PlayerVehicleInfo[ownerid][slot][pvLastLockPickedBy], GetPlayerNameEx(i));
 							new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
@@ -1150,7 +1150,7 @@ task PlayerHeartBeat[1000]() {
 					}
 
 					if(GetPVarInt(i, "LockPickCountdown") <= 0) {
-						if(--PlayerInfo[i][pToolBox] <= 0) SendClientMessageEx(i, COLOR_PURPLE, "(( The tools from the Tool Box look spoiled, you may need to get a new Tool Box ))");
+						if(--PlayerInfo[i][pToolBox] <= 0) SendClientMessageEx(i, COLOR_PURPLE, "(( Dung cu trong Tool Box co ve da hong, ban co the can Tool Box moi ))");
 						if(++PlayerInfo[i][pLockPickVehCount] > 11) {
 							PlayerInfo[i][pLockPickTime] = gettime() + 21600;
 							PlayerInfo[i][pLockPickVehCount] = 0;
@@ -1159,8 +1159,8 @@ task PlayerHeartBeat[1000]() {
 						new engine, lights, alarm, doors, bonnet, boot, objective;
 						GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
 						SetVehicleParamsEx(vehicleid,engine,lights,VEHICLE_PARAMS_OFF,doors,bonnet,boot,objective);
-						SendClientMessageEx(i, COLOR_YELLOW, "You have successfully picked this vehicle lock, you may now deliver this to the checkpoint mark to get money.");
-						if(PlayerInfo[i][pCrowBar] > 0) SendClientMessageEx(i, COLOR_CYAN, "Optionally, you may try to open the trunk to see what's inside (/cracktrunk).");
+						SendClientMessageEx(i, COLOR_YELLOW, "Ban da pha khoa xe thanh cong, hay giao xe den checkpoint de nhan tien.");
+						if(PlayerInfo[i][pCrowBar] > 0) SendClientMessageEx(i, COLOR_CYAN, "Ban cung co the thu mo cop de xem ben trong (/cracktrunk).");
 						PlayerPlaySound(i, 1145, 0.0, 0.0, 0.0);
 						SetPlayerSkin(i, GetPlayerSkin(i));
 						SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
@@ -1183,23 +1183,23 @@ task PlayerHeartBeat[1000]() {
 						ClearAnimationsEx(i, 1);
 
 						if(PlayerInfo[i][pDoubleEXP] > 0) {
-							format(szMiscArray, sizeof(szMiscArray), "You have gained 2 Vehicle Lock Picking skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[i][pDoubleEXP]);
+							format(szMiscArray, sizeof(szMiscArray), "Ban nhan 2 diem Vehicle Lock Picking thay vi 1. Double EXP token con %d gio.", PlayerInfo[i][pDoubleEXP]);
 							SendClientMessageEx(i, COLOR_YELLOW, szMiscArray);
 							PlayerInfo[i][pCarLockPickSkill] += 2;
 						}
 						else ++PlayerInfo[i][pCarLockPickSkill];
 
 						switch(PlayerInfo[i][pCarLockPickSkill]) {
-							case 50: SendClientMessageEx(i, COLOR_YELLOW, "* Your Car Lock Picking Skill is now Level 2, you will get more rewards & time will be reduced.");
-							case 125: SendClientMessageEx(i, COLOR_YELLOW, "* Your Car Lock Picking Skill is now Level 3, you will get more rewards & time will be reduced.");
-							case 225: SendClientMessageEx(i, COLOR_YELLOW, "* Your Car Lock Picking Skill is now Level 4, you will get more rewards & time will be reduced.");
-							case 350: SendClientMessageEx(i, COLOR_YELLOW, "* Your Car Lock Picking Skill is now Level 5, you will get more rewards & time will be reduced.");
+							case 50: SendClientMessageEx(i, COLOR_YELLOW, "* Car Lock Picking Skill da dat cap 2, phan thuong tang va thoi gian giam.");
+							case 125: SendClientMessageEx(i, COLOR_YELLOW, "* Car Lock Picking Skill da dat cap 3, phan thuong tang va thoi gian giam.");
+							case 225: SendClientMessageEx(i, COLOR_YELLOW, "* Car Lock Picking Skill da dat cap 4, phan thuong tang va thoi gian giam.");
+							case 350: SendClientMessageEx(i, COLOR_YELLOW, "* Car Lock Picking Skill da dat cap 5, phan thuong tang va thoi gian giam.");
 						}
 						/* DeletePVar(i, "LockPickVehicle");
 						DeletePVar(i, "LockPickPlayer"); */
 					}
 					else if((GetPVarInt(i, "LockPickCountdown") <= floatround((GetPVarInt(i, "LockPickTotalTime") * 0.9), floatround_ceil)) && GetPlayerAnimationIndex(i) != 368) {
-						SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
+						SendClientMessageEx(i, COLOR_YELLOW, "Canh bao{FFFFFF}: Ban da roi vi tri nen pha khoa that bai.");
 						DeletePVar(i, "AttemptingLockPick");
 						DeletePVar(i, "LockPickCountdown");
 						DeletePVar(i, "LockPickTotalTime");
@@ -1220,7 +1220,7 @@ task PlayerHeartBeat[1000]() {
 					}
 				}
 				else {
-					SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
+					SendClientMessageEx(i, COLOR_YELLOW, "Canh bao{FFFFFF}: Ban da roi vi tri nen pha khoa that bai.");
 					DeletePVar(i, "AttemptingLockPick");
 					DeletePVar(i, "LockPickCountdown");
 					DeletePVar(i, "LockPickTotalTime");
@@ -1252,7 +1252,7 @@ task PlayerHeartBeat[1000]() {
 						new
 							wslot,
 							ownerid = GetPVarInt(i, "LockPickPlayer");
-						SendClientMessageEx(i, COLOR_PURPLE, "(( The trunk cracks, you begin to search for any items ))");
+						SendClientMessageEx(i, COLOR_PURPLE, "(( Cop da mo, ban bat dau tim do ben trong ))");
 						PlayerPlaySound(i, 1145, 0.0, 0.0, 0.0);
 						new engine, lights, alarm, doors, bonnet, boot, objective;
 						GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
@@ -1268,7 +1268,7 @@ task PlayerHeartBeat[1000]() {
 							new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
 							wslot = FindGunInVehicleForPlayer(ownerid, slot, i);
 							if(wslot != -1) {
-								SendClientMessageEx(i, COLOR_YELLOW, "You found a %s.", GetWeaponNameEx(PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot]));
+								SendClientMessageEx(i, COLOR_YELLOW, "Ban tim thay %s.", GetWeaponNameEx(PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot]));
 								GivePlayerValidWeapon(i, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot]);
 								PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot] = 0;
 								g_mysql_SaveVehicle(ownerid, slot);
@@ -1278,17 +1278,17 @@ task PlayerHeartBeat[1000]() {
 								format(szMiscArray, sizeof(szMiscArray), "[LOCK PICK] %s(%d) (IP:%s) successfully cracked the trunk of a %s(VID:%d Slot %d Weapon ID: %d) owned by %s(IP:%s)", GetPlayerNameEx(i), GetPlayerSQLId(i), ip, GetVehicleName(vehicleid), vehicleid, slot, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], GetPlayerNameEx(ownerid), ip2);
 								Log("logs/playervehicle.log", szMiscArray);
 							}
-							else SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: There was nothing inside the trunk.");
+							else SendClientMessageEx(i, COLOR_YELLOW, "Canh bao{FFFFFF}: Khong co gi trong cop xe.");
 						}
 						DestroyVLPTextDraws(i);
-						if(--PlayerInfo[i][pCrowBar] <= 0) SendClientMessageEx(i, COLOR_PURPLE, "(( The tools from the Tool Box look spoiled, you may need to get a new Tool Box ))");
+						if(--PlayerInfo[i][pCrowBar] <= 0) SendClientMessageEx(i, COLOR_PURPLE, "(( Dung cu trong Tool Box co ve da hong, ban co the can Tool Box moi ))");
 						SetPVarInt(i, "TrunkAlreadyCracked", 1);
 						DeletePVar(i, "AttemptingCrackTrunk");
 						DeletePVar(i, "CrackTrunkCountdown");
 					}
 					if(GetPlayerAnimationIndex(i) != 368 && GetPVarInt(i, "CrackTrunkCountdown") <= 50) {
 						DestroyVLPTextDraws(i);
-						SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
+						SendClientMessageEx(i, COLOR_YELLOW, "Canh bao{FFFFFF}: Ban da roi vi tri nen pha khoa that bai.");
 						DeletePVar(i, "AttemptingCrackTrunk");
 						DeletePVar(i, "CrackTrunkCountdown");
 						ClearAnimationsEx(i, 1);
@@ -1296,7 +1296,7 @@ task PlayerHeartBeat[1000]() {
 				}
 				else {
 					DestroyVLPTextDraws(i);
-					SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
+					SendClientMessageEx(i, COLOR_YELLOW, "Canh bao{FFFFFF}: Ban da roi vi tri nen pha khoa that bai.");
 					DeletePVar(i, "AttemptingCrackTrunk");
 					DeletePVar(i, "CrackTrunkCountdown");
 					ClearAnimationsEx(i, 1);
@@ -1316,7 +1316,7 @@ task PlayerHeartBeat[1000]() {
 						DeletePVar(i, "CarLastX");
 						DeletePVar(i, "CarLastY");
 						DeletePVar(i, "CarLastZ");
-						SendClientMessageEx(i, COLOR_PURPLE, "(( The 2 minutes have been reached, you lost trace of this vehicle! ))");
+						SendClientMessageEx(i, COLOR_PURPLE, "(( Da het 2 phut, ban mat dau xe nay! ))");
 					}
 				}
 				else {
@@ -1326,7 +1326,7 @@ task PlayerHeartBeat[1000]() {
 					DeletePVar(i, "CarLastX");
 					DeletePVar(i, "CarLastY");
 					DeletePVar(i, "CarLastZ");
-					SendClientMessageEx(i, COLOR_PURPLE, "The caller has disconnected!");
+					SendClientMessageEx(i, COLOR_PURPLE, "Nguoi goi da ngat ket noi!");
 				}
 			}
 			if(GetPVarType(i, "wheelclampcountdown")) {
@@ -1338,7 +1338,7 @@ task PlayerHeartBeat[1000]() {
 				if(!IsPlayerInRangeOfPoint(i, 5.0, CarPos[0], CarPos[1], CarPos[2]) || IsPlayerInAnyVehicle(i)) {
 					DeletePVar(i, "wheelclampvehicle");
 					DeletePVar(i, "wheelclampcountdown");
-					SendClientMessageEx(i, COLOR_PURPLE, "(( You failed placing the Wheel Clamp in the vehicle's front tire. ))");
+					SendClientMessageEx(i, COLOR_PURPLE, "(( Ban lap Wheel Clamp vao lop truoc that bai. ))");
 				}
 				else if(GetPVarInt(i, "wheelclampcountdown") <= 0) {
 					WheelClamp{vehicleid} = 1;
@@ -1347,7 +1347,7 @@ task PlayerHeartBeat[1000]() {
 					if(arrVehParams[0] == VEHICLE_PARAMS_ON) SetVehicleParamsEx(vehicleid,VEHICLE_PARAMS_OFF, arrVehParams[1], arrVehParams[2], arrVehParams[3], arrVehParams[4], arrVehParams[5], arrVehParams[6]);
 					DeletePVar(i, "wheelclampvehicle");
 					DeletePVar(i, "wheelclampcountdown");
-					format(szMiscArray, sizeof(szMiscArray), "* %s has attached a Wheel Clamp on the %s's front tire.", GetPlayerNameEx(i), GetVehicleName(vehicleid), vehicleid);
+					format(szMiscArray, sizeof(szMiscArray), "* %s da gan Wheel Clamp vao lop truoc cua %s.", GetPlayerNameEx(i), GetVehicleName(vehicleid), vehicleid);
 					ProxDetector(30.0, i, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
 			}
@@ -1385,7 +1385,7 @@ task PlayerHeartBeat[1000]() {
 						if(GetPlayerInterior(pID) != 0) {
 							DeletePVar(i, "hFind");
 							DisablePlayerCheckpoint(i);
-							SendClientMessageEx(i, COLOR_GREY, "The signal is too weak to track (Interior).");
+							SendClientMessageEx(i, COLOR_GREY, "Tin hieu qua yeu de theo doi (Interior).");
 						}
 						else {
 							GetPlayerPos(pID, X, Y, Z);
@@ -1395,7 +1395,7 @@ task PlayerHeartBeat[1000]() {
 					else
 					{
 
-						SendClientMessageEx(i, COLOR_GRAD2, "Your tracker has lost its signal.");
+						SendClientMessageEx(i, COLOR_GRAD2, "Thiet bi theo doi cua ban da mat tin hieu.");
 						DeletePVar(i, "hFind");
 						DisablePlayerCheckpoint(i);
 					}
@@ -1431,7 +1431,7 @@ task PlayerHeartBeat[1000]() {
 				{
 					PlayerStoned[i] = 0;
 					SetPlayerDrunkLevel(i, 0);
-					SendClientMessageEx(i, COLOR_GRAD1, " You are no longer stoned!");
+					SendClientMessageEx(i, COLOR_GRAD1, " Ban da het phe thuoc!");
 				}
 			}
 			if(FindTime[i] >= 1)
@@ -1442,7 +1442,7 @@ task PlayerHeartBeat[1000]() {
 					SetPlayerToTeamColor(FindingPlayer[i]);
 					FindingPlayer[i] = -1;
 					PlayerPlaySound(i, 1056, 0.0, 0.0, 0.0);
-					GameTextForPlayer(i, "~r~Signal lost", 2500, 1);
+					GameTextForPlayer(i, "~r~Mat tin hieu", 2500, 1);
 				}
 				else
 				{
@@ -1495,7 +1495,7 @@ task PlayerHeartBeat[1000]() {
 							GetPlayerPos(EMSAccepted[i], X, Y, Z);
 							new zone[MAX_ZONE_NAME];
 							Get3DZone(X, Y, Z, zone, sizeof(zone));
-							format(szMiscArray, sizeof(szMiscArray), "Your patient is located in %s.", zone);
+							format(szMiscArray, sizeof(szMiscArray), "Benh nhan cua ban o %s.", zone);
 							SetPlayerCheckpoint(i, X, Y, Z, 5);
 						}
 					}
@@ -1529,7 +1529,7 @@ task PlayerHeartBeat[1000]() {
 			}
 			if(MechanicCallTime[i] > 0)
 			{
-				if(MechanicCallTime[i] == 30) { MechanicCallTime[i] = 0; DisablePlayerCheckpoint(i); PlayerPlaySound(i, 1056, 0.0, 0.0, 0.0); GameTextForPlayer(i, "~r~RedMarker gone", 2500, 1); }
+				if(MechanicCallTime[i] == 30) { MechanicCallTime[i] = 0; DisablePlayerCheckpoint(i); PlayerPlaySound(i, 1056, 0.0, 0.0, 0.0); GameTextForPlayer(i, "~r~Mat diem do", 2500, 1); }
 				else
 				{
 					format(szMiscArray, sizeof(szMiscArray), "%d", 30 - MechanicCallTime[i]);
@@ -1581,7 +1581,7 @@ task PlayerHeartBeat[1000]() {
 					{
 						//Frozen[i] = 0;
 						DeletePVar(i, "IsFrozen");
-						GameTextForPlayer(i, "~r~No-one is looking, run!", 2500, 3);
+						GameTextForPlayer(i, "~r~Khong ai nhin, chay di!", 2500, 3);
 						TogglePlayerControllable(i, true);
 						PlayerCuffed[i] = 3;
 						//SetHealth(i, GetPVarFloat(i, "cuffhealth"));
@@ -1621,7 +1621,7 @@ task PlayerHeartBeat[1000]() {
 				if(copinrange == 1) {
 					TogglePlayerControllable(i, false);
 					PlayerCuffed[i] = 2;
-					GameTextForPlayer(i, "~r~They caught you again!", 2500, 3);
+					GameTextForPlayer(i, "~r~Ban lai bi bat!", 2500, 3);
 				}
 
 				if(PlayerCuffedTime[i] <= 0)
@@ -1631,7 +1631,7 @@ task PlayerHeartBeat[1000]() {
 					{
 						//Frozen[i] = 0;
 						DeletePVar(i, "IsFrozen");
-						GameTextForPlayer(i, "~r~The cuffs broke!", 2500, 3);
+						GameTextForPlayer(i, "~r~Cong da hong!", 2500, 3);
 						TogglePlayerControllable(i, true);
 						PlayerCuffed[i] = 0;
 						SetHealth(i, GetPVarFloat(i, "cuffhealth"));
@@ -1714,8 +1714,8 @@ task PlayerHeartBeat[1000]() {
 								SetPVarInt(ii, "_BoxingFight", i + 1);
 								SetPVarInt(i, "_BoxingFightCountdown", 4);
 
-								SendClientMessageEx(i, COLOR_WHITE, "You are now in a boxing match with %s.", GetPlayerNameEx(ii));
-								format(szMiscArray, sizeof(szMiscArray), "You are now in a boxing match with %s.", GetPlayerNameEx(i));
+								SendClientMessageEx(i, COLOR_WHITE, "Ban bat dau dau quyen Anh voi %s.", GetPlayerNameEx(ii));
+								format(szMiscArray, sizeof(szMiscArray), "Ban bat dau dau quyen Anh voi %s.", GetPlayerNameEx(i));
 								SendClientMessageEx(ii, COLOR_WHITE, szMiscArray);
 								break;
 							}
@@ -1761,8 +1761,8 @@ task PlayerHeartBeat[1000]() {
 								SetPVarInt(ii, "_BoxingFight", i + 1);
 								SetPVarInt(i, "_BoxingFightCountdown", 4);
 
-								SendClientMessageEx(i, COLOR_WHITE, "You are now in a boxing match with %s.", GetPlayerNameEx(ii));
-								format(szMiscArray, sizeof(szMiscArray), "You are now in a boxing match with %s.", GetPlayerNameEx(i));
+								SendClientMessageEx(i, COLOR_WHITE, "Ban bat dau dau quyen Anh voi %s.", GetPlayerNameEx(ii));
+								format(szMiscArray, sizeof(szMiscArray), "Ban bat dau dau quyen Anh voi %s.", GetPlayerNameEx(i));
 								SendClientMessageEx(ii, COLOR_WHITE, szMiscArray);
 								break;
 							}
@@ -1799,8 +1799,8 @@ task PlayerHeartBeat[1000]() {
 			}
 			else if (countdown == 1)
 			{
-				SendClientMessageEx(i, COLOR_RED, "Fight!");
-				SendClientMessageEx(ii, COLOR_RED, "Fight!");
+				SendClientMessageEx(i, COLOR_RED, "Bat dau!");
+				SendClientMessageEx(ii, COLOR_RED, "Bat dau!");
 				DeletePVar(i, "_BoxingFightCountdown");
 				TogglePlayerControllable(i, true);
 				TogglePlayerControllable(ii, true);
@@ -1868,7 +1868,7 @@ task PlayerHeartBeat[1000]() {
 					new Float:rX, Float:rY, Float:rZ;
 					GetPlayerPos(i, rX, rY, rZ);
 
-					format(szMiscArray, sizeof(szMiscArray), "* %s's phone rings.", GetPlayerNameEx(Mobile[i]));
+					format(szMiscArray, sizeof(szMiscArray), "* Dien thoai cua %s do chuong.", GetPlayerNameEx(Mobile[i]));
 					RingTone[Mobile[i]] = 10;
 					ProxDetector(30.0, Mobile[i], szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
@@ -1877,7 +1877,7 @@ task PlayerHeartBeat[1000]() {
 
 		if(CellTime[i] == 0 && CallCost[i] > 0)
 		{
-			format(szMiscArray, sizeof(szMiscArray), "~w~The call cost~n~~r~$%d",CallCost[i]);
+			format(szMiscArray, sizeof(szMiscArray), "~w~Cuoc goi ton~n~~r~$%d",CallCost[i]);
 			GivePlayerCash(i, -CallCost[i]);
 			GameTextForPlayer(i, szMiscArray, 5000, 1);
 			CallCost[i] = 0;
@@ -1893,7 +1893,7 @@ task PlayerHeartBeat[1000]() {
 					TransportTime[TransportDriver[i]] = 0;
 					TransportCost[TransportDriver[i]] = 0;
 
-					format(szMiscArray, sizeof(szMiscArray), "~w~Passenger left~n~~g~Earned $%d", TransportCost[i]);
+					format(szMiscArray, sizeof(szMiscArray), "~w~Khach da roi xe~n~~g~Thu nhap $%d", TransportCost[i]);
 					GameTextForPlayer(TransportDriver[i], szMiscArray, 5000, 1);
 					TransportDriver[i] = INVALID_PLAYER_ID;
 				}
@@ -1919,7 +1919,7 @@ task PlayerHeartBeat[1000]() {
 				new Float:slx, Float:sly, Float:slz;
 				GetPlayerPos(i, slx, sly, slz);
 				SetPlayerPos(i, slx, sly, slz + 2);
-				GameTextForPlayer(i, "~r~You're flat out of cash!", 4000, 4);
+				GameTextForPlayer(i, "~r~Ban da het tien mat!", 4000, 4);
 			}
 		}
 
@@ -1955,7 +1955,7 @@ task SyncUp[60000]()
 				//Frozen[i] = 0;
 				SetPlayerPos(i, 1415.5137,-1702.2272,13.5395);
 				SetPlayerFacingAngle(i, 240.0264);
-				SendClientMessageEx(i, COLOR_WHITE, "No Judge has attended your pending trial, you are free!");
+				SendClientMessageEx(i, COLOR_WHITE, "Khong Judge nao den phien toa dang cho, ban duoc tu do!");
 				Lawyer_ClearAppeal(i);
 				PlayerInfo[i][pBeingSentenced] = 0;
 			}
@@ -1972,8 +1972,8 @@ task SyncUp[60000]()
 			new Float:health;
 			GetHealth(i, health);
 			SetHealth(i, health - 10.0);
-			SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 10 health due to virus.");
-			SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Seek a medic to cure you!");
+			SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Mat 10 mau do virus.");
+			SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Hay tim Medic de chua tri!");
 		}
 		#endif
 		switch(GetPVarInt(i, "STD")) {
@@ -1981,24 +1981,24 @@ task SyncUp[60000]()
 				new Float: health;
 				GetHealth(i, health);
 				SetHealth(i, health - 5.0);
-				SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 4 health due to STD.");
+				SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Mat 4 mau do STD.");
 			}
 			case 2: {
 				new Float: health;
 				GetHealth(i, health);
 				SetHealth(i, health - 12.0);
-				SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 8 health due to STD.");
+				SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Mat 8 mau do STD.");
 			}
 			case 3: {
 				new Float: health;
 				GetHealth(i, health);
 				SetHealth(i, health - 20.0);
-				SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 12 health due to STD.");
+				SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Mat 12 mau do STD.");
 			}
 		}
 		if(GetPlayerCash(i) < 0) {
 			if(!GetPVarType(i, "debtMsg")) {
-				SendClientMessageEx(i, COLOR_LIGHTRED, "You're now in debt; you must repay the debt of $%s. If not, you will be arrested...", number_format(GetPlayerCash(i)));
+				SendClientMessageEx(i, COLOR_LIGHTRED, "Ban dang mac no, hay tra $%s. Neu khong, ban se bi bat...", number_format(GetPlayerCash(i)));
 				SetPVarInt(i, "debtMsg", 1);
 			}
 		}
@@ -2006,7 +2006,7 @@ task SyncUp[60000]()
 
 		if(PlayerInfo[i][mPurchaseCount][1] && --PlayerInfo[i][mCooldown][1] <= 0)
 		{
-			SendClientMessageEx(i, COLOR_GREY, "Your Job Boost has expired! Reset Info: Job: %s | Skill: %d (Level: %d)", GetJobName(PlayerInfo[i][mBoost][0]), PlayerInfo[i][mBoost][1], GetJobLevel(i, PlayerInfo[i][mBoost][0]));
+			SendClientMessageEx(i, COLOR_GREY, "Job Boost da het han! Khoi phuc: Cong viec: %s | Ky nang: %d (Cap: %d)", GetJobName(PlayerInfo[i][mBoost][0]), PlayerInfo[i][mBoost][1], GetJobLevel(i, PlayerInfo[i][mBoost][0]));
 			format(szMiscArray, sizeof(szMiscArray), "[JOBBOOST - Expired] %s(%d) Job: %s (%d) Skill: %d (%d)", GetPlayerNameEx(i), GetPlayerSQLId(i), GetJobName(PlayerInfo[i][mBoost][0]), PlayerInfo[i][mBoost][0], PlayerInfo[i][mBoost][1], GetJobLevel(i, PlayerInfo[i][mBoost][0]));
 			Log("logs/micro.log", szMiscArray);
 			new skill = Job_GetSkill(PlayerInfo[i][mBoost][0]);
@@ -2018,12 +2018,12 @@ task SyncUp[60000]()
 		}
 		if(PlayerInfo[i][mCooldown][4] && --PlayerInfo[i][mCooldown][4] <= 0)
 		{
-			SendClientMessageEx(i, COLOR_GREY, "Your Energy Bar has expired!");
+			SendClientMessageEx(i, COLOR_GREY, "Energy Bar cua ban da het tac dung!");
 			PlayerInfo[i][mCooldown][4] = 0;
 		}
 		if(PlayerInfo[i][mPurchaseCount][12] && --PlayerInfo[i][mCooldown][12] <= 0)
 		{
-			SendClientMessageEx(i, COLOR_GREY, "Your Quick Bank Access has expired!");
+			SendClientMessageEx(i, COLOR_GREY, "Quick Bank Access cua ban da het han!");
 			PlayerInfo[i][mPurchaseCount][12] = 0;
 			PlayerInfo[i][mCooldown][12] = 0;
 		}
@@ -2032,7 +2032,7 @@ task SyncUp[60000]()
 			PlayerInfo[i][pTempVIP] = 0;
 			PlayerInfo[i][pBuddyInvited] = 0;
 			PlayerInfo[i][pDonateRank] = 0;
-			SendClientMessageEx(i, COLOR_LIGHTBLUE, "Your temporary VIP subscription has expired.");
+			SendClientMessageEx(i, COLOR_LIGHTBLUE, "VIP tam thoi cua ban da het han.");
 			SetPlayerToTeamColor(i);
 		}
 		/*if(PlayerInfo[i][pBuddyInvited] == 1 && PlayerInfo[i][pTempVIP] == 15 && !PlayerInfo[i][pShopNotice])
@@ -2077,7 +2077,7 @@ ptask PlayerUpdate[1000](i) {
 				IsSpawned[i] = 1;
 				SpawnKick[i] = 0;
 				new string[128];
-				SendClientMessageEx(i, COLOR_WHITE, "SERVER: You have been kicked for being AFK.");
+				SendClientMessageEx(i, COLOR_WHITE, "SERVER: Ban bi kick vi AFK.");
 				format(string, sizeof(string), " %s(%d) (ID: %d) (IP: %s) has been kicked for not being spawned over 2 minutes.", GetPlayerNameEx(i), GetPlayerSQLId(i), i, GetPlayerIpEx(i));
 				Log("logs/spawnafk.log", string);
 				SetTimerEx("KickEx", 1000, false, "i", i);
@@ -2099,9 +2099,9 @@ ptask PlayerUpdate[1000](i) {
 					ping = GetPlayerPing(i);
 					if(ping != 65535) // Invalid Ping
 					{
-						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has just been kicked for %d ping (maximum: "#MAX_PING").", GetPlayerNameEx(i), ping);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s vua bi kick vi ping %d (toi da: "#MAX_PING").", GetPlayerNameEx(i), ping);
 						ABroadCast(COLOR_YELLOW, string, 2);
-						SendClientMessageEx(i, COLOR_WHITE, "You have been kicked because your ping is higher than the maximum.");
+						SendClientMessageEx(i, COLOR_WHITE, "Ban bi kick vi ping cao hon muc toi da.");
 						SetPVarInt(i, "BeingKicked", 1);
 						SetTimerEx("KickEx", 1000, false, "i", i);
 					}
@@ -2113,7 +2113,7 @@ ptask PlayerUpdate[1000](i) {
 			if(rBigEarT[i] == 0) {
 				DeletePVar(i, "BigEar");
 				DeletePVar(i, "BigEarPlayer");
-				SendClientMessageEx(i, COLOR_WHITE, "Big Ears has been turned off.");
+				SendClientMessageEx(i, COLOR_WHITE, "Big Ears da duoc tat.");
 			}
 		}
 		if(PlayerInfo[i][pTriageTime] != 0)
@@ -2143,7 +2143,7 @@ ptask PlayerUpdate[1000](i) {
 				|| !GetPVarType(officer, "Tackling") || GetPVarInt(officer, "Tackling") != i || GetPVarInt(officer, "TackleTargetSession") != g_arrQueryHandle[i]
 				|| GetPlayerVirtualWorld(i) != GetPlayerVirtualWorld(officer) || GetPlayerInterior(i) != GetPlayerInterior(officer) || !ProxDetectorS(5.0, i, officer))
 			{
-				SendClientMessageEx(i, COLOR_GREEN, "You're able to escape due to the cops leaving you unrestrained.");
+				SendClientMessageEx(i, COLOR_GREEN, "Ban co the tron thoat vi canh sat khong khong che ban.");
 				ClearTackle(i);
 			}
 			else if(GetPVarInt(i, "TackleCooldown") > 0)
@@ -2160,9 +2160,9 @@ ptask PlayerUpdate[1000](i) {
 						{
 							case 35,40,22,72,11..16, 62..64:
 							{
-								GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~ESCAPE!", 10000, 3);
-								SendClientMessageEx(i, COLOR_GREEN, "You're able to push the officer off you and escape.");
-								format(string, sizeof(string), "** %s pushes %s aside and is able to escape.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
+								GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~CHAY DI!", 10000, 3);
+								SendClientMessageEx(i, COLOR_GREEN, "Ban co the day officer ra va tron thoat.");
+								format(string, sizeof(string), "** %s day %s sang ben va tron thoat.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
 								ProxDetector(30.0, i, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 								TogglePlayerControllable(GetPVarInt(i, "IsTackled"), false);
 								ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, true, true, true, true, 0, 1);
@@ -2178,9 +2178,9 @@ ptask PlayerUpdate[1000](i) {
 						{
 							case 35,40,22,62:
 							{
-								GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~ESCAPE!", 10000, 3);
-								SendClientMessageEx(i, COLOR_GREEN, "You're able to push the officer off you and escape.");
-								format(string, sizeof(string), "** %s pushes %s aside and is able to escape.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
+								GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~CHAY DI!", 10000, 3);
+								SendClientMessageEx(i, COLOR_GREEN, "Ban co the day officer ra va tron thoat.");
+								format(string, sizeof(string), "** %s day %s sang ben va tron thoat.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
 								ProxDetector(30.0, i, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 								TogglePlayerControllable(GetPVarInt(i, "IsTackled"), false);
 								ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, true, true, true, true, 0, 1);
@@ -2198,7 +2198,7 @@ ptask PlayerUpdate[1000](i) {
 					CopGetUp(GetPVarInt(i, "IsTackled"));
 				}
 				SetPVarInt(GetPVarInt(i, "IsTackled"), "CopTackleCooldown", 30);
-				ShowPlayerDialogEx(i, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
+				ShowPlayerDialogEx(i, -1, DIALOG_STYLE_LIST, "Dong", "Close", "Dong", "Dong");
 				ClearTackle(i);
 			}
 		}
@@ -2240,13 +2240,13 @@ ptask PlayerUpdate[1000](i) {
 						{
 							CancelTruckDelivery(i);
 							DeletePVar(i, "GasWarnings");
-							SendClientMessageEx(i, COLOR_REALRED, "You have failed your delivery as you lost your load!");
+							SendClientMessageEx(i, COLOR_REALRED, "Ban giao hang that bai vi da mat hang!");
 						}
 					}
 					else DeletePVar(i, "GasWarnings");
 				} else {
 					CancelTruckDelivery(i);
-					SendClientMessageEx(i, COLOR_REALRED, "There was an issue with the delivery unknown bussiness specified.");
+					SendClientMessageEx(i, COLOR_REALRED, "Giao hang gap loi, khong xac dinh duoc doanh nghiep.");
 				}
 			}
 		}
@@ -2285,22 +2285,22 @@ ptask EMSUpdate[5000](i) {
 				// if(GetPlayerAnimationIndex(i) != 746) ClearAnimationsEx(i), PlayDeathAnimation(i);
 				if(!GetPVarType(i, "StreamPrep") && !IsPlayerInRangeOfPoint(i, 3.0, GetPVarFloat(i,"MedicX"), GetPVarFloat(i,"MedicY"), GetPVarFloat(i,"MedicZ")) && !GetPVarInt(i, "OnStretcher"))
 				{
-					SendClientMessageEx(i, COLOR_WHITE, "You fell unconscious, you were immediately sent to the hospital.");
+					SendClientMessageEx(i, COLOR_WHITE, "Ban bat tinh va da duoc dua ngay den benh vien.");
 					KillEMSQueue(i);
 					SpawnPlayer(i);
 				}
-				GameTextForPlayer(i, "~r~Injured~n~~w~/accept death or /service ems", 5000, 3);
+				GameTextForPlayer(i, "~r~Bi thuong~n~~w~/accept death hoac /service ems", 5000, 3);
 			}
 			if(GetPVarInt(i, "EMSAttempt") == 1)
 			{
 				// if(GetPlayerAnimationIndex(i) != 746) ClearAnimationsEx(i), PlayDeathAnimation(i);
 				if(!GetPVarType(i, "StreamPrep") && !IsPlayerInRangeOfPoint(i, 3.0, GetPVarFloat(i,"MedicX"), GetPVarFloat(i,"MedicY"), GetPVarFloat(i,"MedicZ")) && !GetPVarInt(i, "OnStretcher"))
 				{
-					SendClientMessageEx(i, COLOR_WHITE, "You fell unconscious, you were immediately sent to the hospital.");
+					SendClientMessageEx(i, COLOR_WHITE, "Ban bat tinh va da duoc dua ngay den benh vien.");
 					KillEMSQueue(i);
 					SpawnPlayer(i);
 				}
-				GameTextForPlayer(i, "~r~Injured~n~~w~Waiting for EMS to Arrive...", 5000, 3);
+				GameTextForPlayer(i, "~r~Bi thuong~n~~w~Cho EMS den...", 5000, 3);
 			}
 			if(GetPVarInt(i, "EMSAttempt") == 2)
 			{
@@ -2309,13 +2309,13 @@ ptask EMSUpdate[5000](i) {
 					SetPVarInt(i, "EMSWarns", GetPVarInt(i, "EMSWarns")+1);
 					if(GetPVarInt(i, "EMSWarns") == 2)
 					{
-						SendClientMessageEx(i, COLOR_WHITE, "You fell unconscious, you were immediately sent to the hospital.");
+						SendClientMessageEx(i, COLOR_WHITE, "Ban bat tinh va da duoc dua ngay den benh vien.");
 						KillEMSQueue(i);
 						SpawnPlayer(i);
 						DeletePVar(i, "EMSWarns");
 					}
 				}
-				GameTextForPlayer(i, "~g~Rescued~n~~w~Awaiting Treatment...", 5000, 3);
+				GameTextForPlayer(i, "~g~Da cuu~n~~w~Cho dieu tri...", 5000, 3);
 			}
 			if(GetPVarInt(i, "EMSAttempt") == 3)
 			{
@@ -2324,11 +2324,11 @@ ptask EMSUpdate[5000](i) {
 					new ambmodel = GetPlayerVehicleID(i);
 					if(IsAnAmbulance(ambmodel))
 					{
-						GameTextForPlayer(i, "~g~Rescued~n~~w~Waiting for EMS to take to Hospital...", 5000, 3);
+						GameTextForPlayer(i, "~g~Da cuu~n~~w~Cho EMS dua den Hospital...", 5000, 3);
 					}
 					else
 					{
-						SendClientMessageEx(i, COLOR_WHITE, "You fell unconscious due to no life support, you were immediately sent to the hospital.");
+						SendClientMessageEx(i, COLOR_WHITE, "Ban bat tinh vi thieu ho tro su song va da duoc dua ngay den benh vien.");
 						KillEMSQueue(i);
 						SpawnPlayer(i);
 					}
@@ -2338,7 +2338,7 @@ ptask EMSUpdate[5000](i) {
 					SetPVarInt(i, "EMSWarnst", GetPVarInt(i, "EMSWarnst")+1);
 					if(GetPVarInt(i, "EMSWarnst") == 2)
 					{
-						SendClientMessageEx(i, COLOR_WHITE, "You fell out of the vehicle, you were immediately sent to the hospital.");
+						SendClientMessageEx(i, COLOR_WHITE, "Ban roi khoi xe va da duoc dua ngay den benh vien.");
 						KillEMSQueue(i);
 						SpawnPlayer(i);
 						DeletePVar(i, "EMSWarnst");
@@ -2349,7 +2349,7 @@ ptask EMSUpdate[5000](i) {
 			GetHealth(i, health);
 			if(health <= 5)
 			{
-				SendClientMessageEx(i, COLOR_WHITE, "You fell unconscious, you were immediately sent to the hospital.");
+				SendClientMessageEx(i, COLOR_WHITE, "Ban bat tinh va da duoc dua ngay den benh vien.");
 				KillEMSQueue(i);
 				SpawnPlayer(i);
 			}
@@ -2419,7 +2419,7 @@ ptask PlayerMicroBeat[500](i) {
 						SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:MicroNotice[i]);
 					}*/
 				}
-				GameTextForPlayer(i, "~r~Totalled!", 2500, 3);
+				GameTextForPlayer(i, "~r~Hong hoan toan!", 2500, 3);
 				arr_Engine{iVehicle} = 0;
 			}
 			else if(PlayerInfo[i][pSpeedo] != 0) {

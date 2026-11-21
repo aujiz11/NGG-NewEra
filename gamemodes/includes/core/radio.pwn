@@ -68,7 +68,7 @@ stock PlayerFixRadio(playerid)
 forward RevisionListHTTP(index, response_code, data[]);
 public RevisionListHTTP(index, response_code, data[])
 {
-	ShowPlayerDialogEx(index, DIALOG_REVISION, DIALOG_STYLE_LIST, "Current Version: "SERVER_GM_TEXT" -- View full changes at http://dev.ng-gaming.net", data, "Close", "");
+	ShowPlayerDialogEx(index, DIALOG_REVISION, DIALOG_STYLE_LIST, "Phien ban hien tai: "SERVER_GM_TEXT" -- Xem day du thay doi tai http://dev.ng-gaming.net", data, "Dong", "");
 	return 1;
 }
 
@@ -117,7 +117,7 @@ public Top50HTTP(index, response_code, data[])
 	DeletePVar(index, "pHTTPWait");
  	if(response_code == 200)
  	{
-		ShowPlayerDialogEx(index,TOP50LIST,DIALOG_STYLE_LIST,"Top 50 Stations",data,"Select", "Back");
+		ShowPlayerDialogEx(index,TOP50LIST,DIALOG_STYLE_LIST,"Top 50 dai",data,"Chon", "Quay lai");
 	}
 	return 1;
 }
@@ -128,7 +128,7 @@ public Top50InfoHTTP(index, response_code, data[])
 	DeletePVar(index, "pHTTPWait");
  	if(response_code == 200)
  	{
-		ShowPlayerDialogEx(index,TOP50LISTEN,DIALOG_STYLE_MSGBOX,"Station Info",data,"Listen", "Back");
+		ShowPlayerDialogEx(index,TOP50LISTEN,DIALOG_STYLE_MSGBOX,"Thong tin dai",data,"Nghe", "Quay lai");
 	}
 	return 1;
 }
@@ -139,7 +139,7 @@ public GenreHTTP(index, response_code, data[])
 	DeletePVar(index, "pHTTPWait");
  	if(response_code == 200)
  	{
-		ShowPlayerDialogEx(index,GENRES,DIALOG_STYLE_LIST,"Genres",data,"Select", "Back");
+		ShowPlayerDialogEx(index,GENRES,DIALOG_STYLE_LIST,"The loai",data,"Chon", "Quay lai");
 	}
 	return 1;
 }
@@ -150,7 +150,7 @@ public StationListHTTP(index, response_code, data[])
     DeletePVar(index, "pHTTPWait");
  	if(response_code == 200)
  	{
-		ShowPlayerDialogEx(index,STATIONLIST,DIALOG_STYLE_LIST,"Stations",data,"Select", "Back");
+		ShowPlayerDialogEx(index,STATIONLIST,DIALOG_STYLE_LIST,"Danh sach dai",data,"Chon", "Quay lai");
 	}
 	return 1;
 }
@@ -161,7 +161,7 @@ public StationInfoHTTP(index, response_code, data[])
     DeletePVar(index, "pHTTPWait");
  	if(response_code == 200)
  	{
-		ShowPlayerDialogEx(index,STATIONLISTEN,DIALOG_STYLE_MSGBOX,"Station Info",data,"Listen", "Back");
+		ShowPlayerDialogEx(index,STATIONLISTEN,DIALOG_STYLE_MSGBOX,"Thong tin dai",data,"Nghe", "Quay lai");
 	}
 	return 1;
 }
@@ -173,7 +173,7 @@ public StationSearchHTTP(index, response_code, data[])
     HideNoticeGUIFrame(index);
  	if(response_code == 200)
  	{
-		ShowPlayerDialogEx(index,STATIONSEARCHLIST,DIALOG_STYLE_LIST,"Stations",data,"Select", "Back");
+		ShowPlayerDialogEx(index,STATIONSEARCHLIST,DIALOG_STYLE_LIST,"Danh sach dai",data,"Chon", "Quay lai");
 	}
 	return 1;
 }
@@ -185,7 +185,7 @@ public StationSearchInfoHTTP(index, response_code, data[])
     HideNoticeGUIFrame(index);
  	if(response_code == 200)
  	{
-		ShowPlayerDialogEx(index,STATIONSEARCHLISTEN,DIALOG_STYLE_MSGBOX,"Station Info",data,"Listen", "Back");
+		ShowPlayerDialogEx(index,STATIONSEARCHLISTEN,DIALOG_STYLE_MSGBOX,"Thong tin dai",data,"Nghe", "Quay lai");
 	}
 	return 1;
 }
@@ -207,7 +207,7 @@ public StationSelectHTTP(index, response_code, data[])
 			}	
 		  	format(stationidv[GetPlayerVehicleID(index)], 64, "%s", data);
 		  	new string[53];
-		  	format(string, sizeof(string), "* %s changes the radio station.", GetPlayerNameEx(index), string);
+		  	format(string, sizeof(string), "* %s doi dai radio.", GetPlayerNameEx(index), string);
 			ProxDetector(10.0, index, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	        DeletePVar(index, "pSelectGenre");
 	        DeletePVar(index, "pSelectStation");
@@ -232,11 +232,11 @@ public StationSelectHTTP(index, response_code, data[])
 	return 1;
 }
 
-stock ShowSetStation(playerid, const title[] = "Radio Menu")
+stock ShowSetStation(playerid, const title[] = "Menu radio")
 {
 	new string[256];
-	format(string, sizeof(string), "Favorite Station\nGenres\nTop 50 Stations\nSearch\nK-LSR\nRadio New Robada\nNick's Radio\nCustom Audio URL\n%sTurn radio off", ((!isnull(PlayerInfo[playerid][pFavStation])) ? ("Favorite Station Settings\n") : ("")));
-	return ShowPlayerDialogEx(playerid, SETSTATION, DIALOG_STYLE_LIST, title, string, "Select", "Close");
+	format(string, sizeof(string), "Dai yeu thich\nThe loai\nTop 50 dai\nTim kiem\nK-LSR\nRadio New Robada\nNick's Radio\nURL am thanh tuy chinh\n%sTat radio", ((!isnull(PlayerInfo[playerid][pFavStation])) ? ("Cai dat dai yeu thich\n") : ("")));
+	return ShowPlayerDialogEx(playerid, SETSTATION, DIALOG_STYLE_LIST, title, string, "Chon", "Dong");
 }
 
 hook OnPlayerEnterDynamicArea(playerid, areaid) {
@@ -265,8 +265,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(isnull(PlayerInfo[playerid][pFavStation]))
 				{
-					if(GetPVarType(playerid, "pAudioStream")) ShowPlayerDialogEx(playerid, STATIONFAV, DIALOG_STYLE_MSGBOX, "Favorite Station", "You don't currently have a favorite station set.\n\nWould you like to set the one that is currently playing?", "Select", "Back");
-					else ShowPlayerDialogEx(playerid, STATIONFAV2, DIALOG_STYLE_MSGBOX, "Favorite Station", "You don't currently have a favorite station set.\n\nPlease find a station and return to this menu to set a favorite station.", "Back", "");
+					if(GetPVarType(playerid, "pAudioStream")) ShowPlayerDialogEx(playerid, STATIONFAV, DIALOG_STYLE_MSGBOX, "Dai yeu thich", "Ban chua dat dai yeu thich.\n\nBan muon dat dai dang phat lam yeu thich khong?", "Chon", "Quay lai");
+					else ShowPlayerDialogEx(playerid, STATIONFAV2, DIALOG_STYLE_MSGBOX, "Dai yeu thich", "Ban chua dat dai yeu thich.\n\nHay tim dai va quay lai menu nay de dat yeu thich.", "Quay lai", "");
 				}
 				else
 				{
@@ -277,7 +277,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid)) PlayAudioStreamForPlayerEx(i, PlayerInfo[playerid][pFavStation]);
 						}
 						format(stationidv[GetPlayerVehicleID(playerid)], 255, "%s", PlayerInfo[playerid][pFavStation]);
-						format(szMiscArray, sizeof(szMiscArray), "* %s changes the radio station.", GetPlayerNameEx(playerid), szMiscArray);
+						format(szMiscArray, sizeof(szMiscArray), "* %s doi dai radio.", GetPlayerNameEx(playerid), szMiscArray);
 						ProxDetector(10.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					}
 					else if(GetPVarType(playerid, "pBoomBox"))
@@ -305,7 +305,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				else
 				{
-					SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+					SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread dang ban");
 				}
 			}
 			else if(listitem == 2)
@@ -318,12 +318,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				else
 				{
-					SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+					SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread dang ban");
 				}
 			}
 			else if(listitem == 3)
 			{
-				ShowPlayerDialogEx(playerid,STATIONSEARCH,DIALOG_STYLE_INPUT,"Station Search","Input a search criteria:","Search","Back");
+				ShowPlayerDialogEx(playerid,STATIONSEARCH,DIALOG_STYLE_INPUT,"Tim dai","Nhap dieu kien tim kiem:","Tim","Quay lai");
 			}
 			else if(listitem == 4)
 			{
@@ -336,7 +336,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						}
 					}	
 					format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1");
-					format(szMiscArray, sizeof(szMiscArray), "* %s changes the radio station.", GetPlayerNameEx(playerid), szMiscArray);
+					format(szMiscArray, sizeof(szMiscArray), "* %s doi dai radio.", GetPlayerNameEx(playerid), szMiscArray);
 					ProxDetector(10.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
 				else if(GetPVarType(playerid, "pBoomBox"))
@@ -367,7 +367,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						}
 					}	
 					format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", "https://radio.newrobada.com/radio/8000/autodj.mp3");
-					format(szMiscArray, sizeof(szMiscArray), "* %s changes the radio station.", GetPlayerNameEx(playerid), szMiscArray);
+					format(szMiscArray, sizeof(szMiscArray), "* %s doi dai radio.", GetPlayerNameEx(playerid), szMiscArray);
 					ProxDetector(10.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
 				else if(GetPVarType(playerid, "pBoomBox"))
@@ -398,7 +398,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						}
 					}	
 					format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", "http://nick.ng-gaming.net:8000/listen.pls");
-					format(szMiscArray, sizeof(szMiscArray), "* %s changes the radio station.", GetPlayerNameEx(playerid), szMiscArray);
+					format(szMiscArray, sizeof(szMiscArray), "* %s doi dai radio.", GetPlayerNameEx(playerid), szMiscArray);
 					ProxDetector(10.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
 				else if(GetPVarType(playerid, "pBoomBox"))
@@ -420,11 +420,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else if(listitem == 7)
 			{
-				ShowPlayerDialogEx(playerid, CUSTOM_URLCHOICE, DIALOG_STYLE_INPUT, "Custom URL", "Please insert a valid audio url stream.", "Enter", "Back");
+				ShowPlayerDialogEx(playerid, CUSTOM_URLCHOICE, DIALOG_STYLE_INPUT, "URL tuy chinh", "Nhap URL phat am thanh hop le.", "Nhap", "Quay lai");
 			}
 			else if(!isnull(PlayerInfo[playerid][pFavStation]) && listitem == 8)
 			{
-				ShowPlayerDialogEx(playerid, STATIONFAVSETTING, DIALOG_STYLE_LIST, "Favorite Station Settings", "Modify Station\nRemove Station", "Select", "Back");
+				ShowPlayerDialogEx(playerid, STATIONFAVSETTING, DIALOG_STYLE_LIST, "Cai dat dai yeu thich", "Sua dai\nXoa dai", "Chon", "Quay lai");
 			}
 			else if((isnull(PlayerInfo[playerid][pFavStation]) && listitem == 8) || (!isnull(PlayerInfo[playerid][pFavStation]) && listitem == 9))
 			{
@@ -432,7 +432,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(GetPVarType(playerid, "pBoomBox"))
 					{
-						SendClientMessage(playerid, COLOR_WHITE, "You have turned off the boom box.");
+						SendClientMessage(playerid, COLOR_WHITE, "Ban da tat boombox.");
 						new Float:playerPos[3];
 						GetPlayerPos(playerid, playerPos[0], playerPos[1], playerPos[2]);
 						foreach(new i: Player)
@@ -448,7 +448,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				else
 				{
-					format(szMiscArray, sizeof(szMiscArray), "* %s turns off the radio.", GetPlayerNameEx(playerid), szMiscArray);
+					format(szMiscArray, sizeof(szMiscArray), "* %s tat radio.", GetPlayerNameEx(playerid), szMiscArray);
 					ProxDetector(10.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					foreach(new i: Player)
 					{
@@ -465,7 +465,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	{
 		if(response)
 		{
-			if(isnull(inputtext) || IsNumericString(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You have not entered a valid URL.");
+			if(isnull(inputtext) || IsNumericString(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD1, "URL ban nhap khong hop le.");
 			if(IsPlayerInAnyVehicle(playerid))
 			{
 				foreach(new i: Player)
@@ -477,7 +477,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 				}
 				format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", inputtext);
-				format(szMiscArray, sizeof(szMiscArray), "* %s changes the radio station.", GetPlayerNameEx(playerid));
+				format(szMiscArray, sizeof(szMiscArray), "* %s doi dai radio.", GetPlayerNameEx(playerid));
 				ProxDetector(10.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				DeletePVar(playerid, "pSelectGenre");
 				DeletePVar(playerid, "pSelectStation");
@@ -519,7 +519,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else
 			{
-				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread dang ban");
 			}
 		}
 		else
@@ -541,7 +541,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else
 			{
-				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread dang ban");
 			}
 		}
 		else
@@ -554,7 +554,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else
 			{
-				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread dang ban");
 			}
 		}
 	}
@@ -575,7 +575,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else
 			{
-				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread dang ban");
 			}
 		}
 	}
@@ -591,7 +591,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else
 			{
-				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread dang ban");
 			}
 		}
 		else
@@ -605,7 +605,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else
 			{
-				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread dang ban");
 			}
 		}
 	}
@@ -622,7 +622,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else
 			{
-				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread dang ban");
 			}
 		}
 		else
@@ -635,7 +635,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else
 			{
-				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread dang ban");
 			}
 		}
 	}
@@ -659,7 +659,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				else
 				{
-					SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+					SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread dang ban");
 				}
 			}
 		}
@@ -683,7 +683,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else
 			{
-				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread dang ban");
 			}
 		}
 		else
@@ -705,7 +705,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else
 			{
-				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread dang ban");
 			}
 		}
 		else
@@ -720,7 +720,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else
 			{
-				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread dang ban");
 			}
 		}
 	}
@@ -729,7 +729,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		if(response)
 		{
 			GetPVarString(playerid, "pAudioStream", PlayerInfo[playerid][pFavStation], 255);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully set your favorite station.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dat dai yeu thich.");
 		}
 		else ShowSetStation(playerid);
 	}
@@ -744,19 +744,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			case 0:
 			{
 				GetPVarString(playerid, "pAudioStream", PlayerInfo[playerid][pFavStation], 255);
-				ShowPlayerDialogEx(playerid, STATIONFAVMODIFY, DIALOG_STYLE_MSGBOX, "Favorite Station", "You have successfully modified your favorite station!", "Go Back", "Exit");
+				ShowPlayerDialogEx(playerid, STATIONFAVMODIFY, DIALOG_STYLE_MSGBOX, "Dai yeu thich", "Da sua dai yeu thich!", "Quay lai", "Thoat");
 			}
 			case 1:
 			{
 				strcat((PlayerInfo[playerid][pFavStation][0] = 0, PlayerInfo[playerid][pFavStation]), "", 8);
-				ShowPlayerDialogEx(playerid, STATIONREMOVE, DIALOG_STYLE_MSGBOX, "Favorite Station", "You have successfully removed your favorite station!", "Go Back", "Exit");
+				ShowPlayerDialogEx(playerid, STATIONREMOVE, DIALOG_STYLE_MSGBOX, "Dai yeu thich", "Da xoa dai yeu thich!", "Quay lai", "Thoat");
 			}
 		}
 		if(!response) ShowSetStation(playerid);
 	}
 	else if(dialogid == STATIONFAVMODIFY)
 	{
-		if(response) ShowPlayerDialogEx(playerid, STATIONFAVSETTING, DIALOG_STYLE_LIST, "Favorite Station Settings", "Modify Station\nRemove Station", "Select", "Back");
+		if(response) ShowPlayerDialogEx(playerid, STATIONFAVSETTING, DIALOG_STYLE_LIST, "Cai dat dai yeu thich", "Sua dai\nXoa dai", "Chon", "Quay lai");
 	}
 	else if(dialogid == STATIONREMOVE)
 	{
@@ -767,7 +767,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 CMD:setstation(playerid, params[]) {
     if(!IsPlayerInAnyVehicle(playerid)) {
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be in a car to use a car radio.");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Can o trong xe de dung radio xe.");
 	}
 	ShowSetStation(playerid);
     return 1;
@@ -787,16 +787,16 @@ CMD:audiostopurl(playerid, params[])
 			DestroyDynamicArea(GetGVarInt("MusicArea"));
 			DeleteGVar("MusicArea");
 	        DestroyDynamicArea(audiourlid);
-	        format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has stopped the audiourl",GetPlayerNameEx(playerid));
+	        format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s da dung audiourl",GetPlayerNameEx(playerid));
 	        ABroadCast(COLOR_YELLOW, string, 4);
 		}
 		else
 		{
-		    SendClientMessage(playerid, COLOR_WHITE, "There is no audiourl to stop");
+		    SendClientMessage(playerid, COLOR_WHITE, "Khong co audiourl de dung");
 		}
     }
     else {
-        SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not authorized to use that command !");
+        SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
         return 1;
     }
     return 1;
@@ -808,15 +808,15 @@ CMD:audiourl(playerid, params[])
 
         new range;
         if(sscanf(params, "d", range)) {
-            SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /audiourl [range].");
+            SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /audiourl [range].");
             return 1;
         }
 
         SetPVarInt(playerid, "aURLrange", range);
-        ShowPlayerDialogEx(playerid, AUDIO_URL, DIALOG_STYLE_INPUT, "Audio URL", "Enter Audio URL", "OK", "Cancel");
+        ShowPlayerDialogEx(playerid, AUDIO_URL, DIALOG_STYLE_INPUT, "Audio URL", "Nhap URL am thanh", "Dong y", "Huy");
     }
     else {
-        SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not authorized to use that command !");
+        SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
         return 1;
     }
     return 1;
@@ -835,20 +835,20 @@ CMD:music(playerid, params[])
 		new choice[32];
 		if(sscanf(params, "s[32]", choice))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /music [name]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Available names: On, Off, Next");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /music [name]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Lua chon: On, Off, Next");
 			return 1;
 		}
 
 		if(strcmp(choice,"on",true) == 0)
 		{
-			GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~g~Music person On", 5000, 5);
+			GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~g~Da bat nhac ca nhan", 5000, 5);
 			new channel = Music[playerid];
 			PlayerPlaySound(playerid, Songs[channel][0], 0.0, 0.0, 0.0);
 		}
 		else if(strcmp(choice,"off",true) == 0)
 		{
-			GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~r~Music person Off", 5000, 5);
+			GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~r~Da tat nhac ca nhan", 5000, 5);
 			PlayerFixRadio(playerid);
 			if(GetPVarType(playerid, "MusicIRadio"))
 			{
@@ -870,13 +870,13 @@ CMD:music(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   Unknown music command!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Lenh nhac khong hop le!");
 			return 1;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "   You don't have a Music-Player!");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co Music-Player!");
 		return 1;
 	}
 	return 1;
@@ -886,10 +886,10 @@ CMD:mp3(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pCDPlayer] || PlayerInfo[playerid][pAdmin] >= 2)
 	{
-		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be on foot to use your MP3 Player.");
+		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Can di bo de dung MP3 Player.");
 		
-		ShowSetStation(playerid, "MP3 Player - Choose a station");
+		ShowSetStation(playerid, "MP3 Player - Chon dai");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have a CD Player/MP3 Player.");
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co CD Player/MP3 Player.");
 	return 1;
 }	

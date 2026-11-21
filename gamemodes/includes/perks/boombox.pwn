@@ -43,7 +43,7 @@ CMD:setboombox(playerid, params[])
     }
 	else
 	{
-	    SendClientMessage(playerid, COLOR_GRAD2, "You don't have a boombox out!");
+	    SendClientMessage(playerid, COLOR_GRAD2, "Ban chua dat boombox!");
 	}
 	return 1;
 }
@@ -52,28 +52,30 @@ CMD:shopboombox(playerid, params[])
 {
 	if (PlayerInfo[playerid][pShopTech] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, " You are not allowed to use this command.");
+		SendClientMessageEx(playerid, COLOR_GREY, " Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new giveplayerid, invoice;
-	if(sscanf(params, "ui", giveplayerid, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shopboombox [player] [invoice #]");
+	if(sscanf(params, "ui", giveplayerid, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /shopboombox [player] [invoice #]");
 	new string[128];
 
 	if(PlayerInfo[giveplayerid][pBoombox] == 1)
 	{
 	    PlayerInfo[giveplayerid][pBoombox] = 0;
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Your boombox has been taken by Shop Tech %s. ", GetPlayerNameEx(playerid));
-		format(string, sizeof(string), "[SHOPBOOMBOX] %s has taken %s(%d) boombox - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Boombox cua ban da bi Shop Tech %s thu hoi. ", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "[SHOPBOOMBOX] %s da thu boombox cua %s(%d) - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 		SendClientMessageEx(playerid, COLOR_GRAD1, string);
+		format(string, sizeof(string), "[SHOPBOOMBOX] %s has taken %s(%d) boombox - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 		Log("logs/shoplog.log", string);
 	}
 	else
 	{
 		PlayerInfo[giveplayerid][pBoombox] = 1;
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have been given a boombox from Shop Tech %s. ", GetPlayerNameEx(playerid));
-		format(string, sizeof(string), "[SHOPBOOMBOX] %s has given %s(%d) a boombox - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Ban duoc Shop Tech %s cap boombox. ", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "[SHOPBOOMBOX] %s da cap boombox cho %s(%d) - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 		SendClientMessageEx(playerid, COLOR_GRAD1, string);
+		format(string, sizeof(string), "[SHOPBOOMBOX] %s has given %s(%d) a boombox - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 		Log("logs/shoplog.log", string);
 	}
 	return 1;
@@ -83,11 +85,11 @@ CMD:placeboombox(playerid, params[])
 {
 	if(PlayerInfo[playerid][pBoombox] == 1 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
-	    if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
-		if(GetPVarInt(playerid, "WatchingTV")) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");
-		if(GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pJailTime] > 0 || PlayerInfo[playerid][pHospital] > 0 || IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+	    if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay trong dau truong!");
+		if(GetPVarInt(playerid, "WatchingTV")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the lam vay khi dang xem TV!");
+		if(GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pJailTime] > 0 || PlayerInfo[playerid][pHospital] > 0 || IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban chua the lam vay.");
 		//if(PlayerInfo[playerid][pVW] == 0 || PlayerInfo[playerid][pInt] == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can only place boomboxes inside interiors.");
-		if(GetPVarType(playerid, "pBoomBox")) return SendClientMessageEx(playerid, COLOR_WHITE, "You already have a boombox out, use /destroyboombox.");
+		if(GetPVarType(playerid, "pBoomBox")) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban da dat boombox, dung /destroyboombox.");
 
 		foreach(new i: Player)
 		{
@@ -95,14 +97,14 @@ CMD:placeboombox(playerid, params[])
 			{
 				if(IsPlayerInRangeOfPoint(playerid, 30.0, GetPVarFloat(i, "pBoomBoxX"), GetPVarFloat(i, "pBoomBoxY"), GetPVarFloat(i, "pBoomBoxZ")) && GetPVarInt(i, "pBoomBoxVW") == GetPlayerVirtualWorld(playerid))
 				{
-					SendClientMessage(playerid, COLOR_WHITE, "You are in range of another boombox, you can't place one here!");
+					SendClientMessage(playerid, COLOR_WHITE, "Co boombox khac o gan, khong the dat tai day!");
 					return 1;
 				}
 			}
 		}	
 
 		new string[128];
-		format(string, sizeof(string), "%s has placed a boombox!", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "%s da dat boombox!", GetPlayerNameEx(playerid));
 	    ProxDetector(30.0, playerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
 
 	    new Float:x, Float:y, Float:z, Float:a;
@@ -115,7 +117,7 @@ CMD:placeboombox(playerid, params[])
 
 	    SetPVarInt(playerid, "pBoomBox", CreateDynamicObject(2103, x, y, z, 0.0, 0.0, a, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = GetPlayerInterior(playerid)));
 	    SetPVarFloat(playerid, "pBoomBoxX", x); SetPVarFloat(playerid, "pBoomBoxY", y); SetPVarFloat(playerid, "pBoomBoxZ", z);
-		format(string, sizeof(string), "%s's boombox\n{FF0000}/setboombox {FFFF00}or\n{FF0000}/destroyboombox", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "Boombox cua %s\n{FF0000}/setboombox {FFFF00}hoac\n{FF0000}/destroyboombox", GetPlayerNameEx(playerid));
 	    SetPVarInt(playerid, "pBoomBoxLabel", _:CreateDynamic3DTextLabel(string, COLOR_YELLOW, x, y, z+0.6, 5.0, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = GetPlayerInterior(playerid)));
 		SetPVarInt(playerid, "pBoomBoxArea", CreateDynamicSphere(x, y, z, 30.0, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid)));
 		SetPVarInt(playerid, "pBoomBoxInt", GetPlayerInterior(playerid));
@@ -123,7 +125,7 @@ CMD:placeboombox(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have a boom box! Buy from one shop.ng-gaming.net");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co boombox! Mua tai shop.ng-gaming.net");
 	}
 	return 1;
 }
@@ -139,7 +141,7 @@ CMD:destroyboombox(playerid, params[])
 	    if(GetPVarType(playerid, "pBoomBoxArea"))
 	    {
 	        new string[128];
-			format(string, sizeof(string), "* %s has destroyed the boombox.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s da huy boombox.", GetPlayerNameEx(playerid));
 	        foreach(new i: Player)
 			{
 				if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
@@ -150,7 +152,7 @@ CMD:destroyboombox(playerid, params[])
 			}	
 	        DeletePVar(playerid, "pBoomBoxArea");
 		}
-		SendClientMessage(playerid, COLOR_WHITE, "You've destroyed your boombox!");
+		SendClientMessage(playerid, COLOR_WHITE, "Ban da huy boombox!");
 	}
 	else
 	{
@@ -175,7 +177,7 @@ CMD:destroyboombox(playerid, params[])
 					new string[128];
 					if(GetPVarType(i, "pBoomBoxArea"))
 					{
-						format(string, sizeof(string), "* %s has destroyed the boombox.", GetPlayerNameEx(playerid));
+						format(string, sizeof(string), "* %s da huy boombox.", GetPlayerNameEx(playerid));
 						foreach(new pi:Player)
 						{
 							if(IsPlayerInDynamicArea(pi, GetPVarInt(i, "pBoomBoxArea")))
@@ -186,13 +188,13 @@ CMD:destroyboombox(playerid, params[])
 						}	
 						DeletePVar(i, "pBoomBoxArea");
 					}
-					format(string, sizeof(string), "%s has destroyed your boombox!", GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "%s da huy boombox cua ban!", GetPlayerNameEx(playerid));
 					SendClientMessage(i, COLOR_WHITE, string);
 					return 1;
 				}
 			}
 		}	
-	    SendClientMessage(playerid, COLOR_WHITE, "You don't have a boombox or you are not near one to destroy.");
+	    SendClientMessage(playerid, COLOR_WHITE, "Ban khong co boombox hoac khong o gan boombox de huy.");
 	}
 	return 1;
 }

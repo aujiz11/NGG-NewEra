@@ -42,14 +42,14 @@ CMD:tledit(playerid, params[])
 		new string[128], choice[32], labelid, amount;
 		if(sscanf(params, "s[32]dD", choice, labelid, amount))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /tledit [name] [labelid] [amount]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Position, Color, PickupModel, Delete");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /tledit [name] [labelid] [amount]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: Position, Color, PickupModel, Delete");
 			return 1;
 		}
 
 		if(labelid >= MAX_3DLABELS)
 		{
-			SendClientMessageEx( playerid, COLOR_WHITE, "Invalid Text Label ID!");
+			SendClientMessageEx( playerid, COLOR_WHITE, "ID nhan van ban khong hop le!");
 			return 1;
 		}
 
@@ -58,7 +58,7 @@ CMD:tledit(playerid, params[])
 			GetPlayerPos(playerid, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]);
 			TxtLabels[labelid][tlInt] = GetPlayerInterior(playerid);
 			TxtLabels[labelid][tlVW] = GetPlayerVirtualWorld(playerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the position on Text Label #%d.", labelid);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri nhan van ban #%d.", labelid);
 			CreateTxtLabel(labelid);
 			SaveTxtLabel(labelid);
 			format(string, sizeof(string), "%s has edited Text Label ID %d's position.", GetPlayerNameEx(playerid), labelid);
@@ -68,7 +68,7 @@ CMD:tledit(playerid, params[])
 		else if(strcmp(choice, "color", true) == 0)
 		{
 			TxtLabels[labelid][tlColor] = amount;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the color to %d on Text Label #%d.", amount, labelid);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dat mau %d cho nhan van ban #%d.", amount, labelid);
 			CreateTxtLabel(labelid);
 			SaveTxtLabel(labelid);
 			format(string, sizeof(string), "%s has edited Text Label ID %d's color.", GetPlayerNameEx(playerid), labelid);
@@ -78,7 +78,7 @@ CMD:tledit(playerid, params[])
 		else if(strcmp(choice, "pickupmodel", true) == 0)
 		{
 			TxtLabels[labelid][tlPickupModel] = amount;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the pickup model to %d on Text Label #%d.", amount, labelid);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dat model pickup %d cho nhan van ban #%d.", amount, labelid);
 			CreateTxtLabel(labelid);
 			SaveTxtLabel(labelid);
 			format(string, sizeof(string), "%s has edited Text Label ID %d's PickupModel.", GetPlayerNameEx(playerid), labelid);
@@ -88,7 +88,7 @@ CMD:tledit(playerid, params[])
 		else if(strcmp(choice, "delete", true) == 0)
 		{
 			if(strcmp(TxtLabels[labelid][tlText], "None", true) == 0) {
-				SendClientMessageEx(playerid, COLOR_WHITE, "Text Label %d does not exist.", labelid);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Nhan chu %d khong ton tai.", labelid);
 				return 1;
 			}
 			if(IsValidDynamicPickup(TxtLabels[labelid][tlPickupID])) DestroyDynamicPickup(TxtLabels[labelid][tlPickupID]);
@@ -102,13 +102,13 @@ CMD:tledit(playerid, params[])
 			TxtLabels[labelid][tlColor] = 0;
 			TxtLabels[labelid][tlPickupModel] = 0;
 			SaveTxtLabel(labelid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted Text Label #%d.", labelid);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa nhan van ban #%d.", labelid);
 			format(string, sizeof(string), "%s has deleted Text Label %d.", GetPlayerNameEx(playerid), labelid);
 			Log("logs/tledit.log", string);
 			return 1;
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -118,22 +118,22 @@ CMD:tltext(playerid, params[]) {
 		new szName[128], labelid;
 
 		if(sscanf(params, "ds[128]", labelid, szName)) {
-			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /tltext [labelid] [text]");
+			return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /tltext [labelid] [text]");
 		}
 		else if(!(0 <= labelid <= MAX_3DLABELS)) {
-			return SendClientMessageEx(playerid, COLOR_GREY, "Invalid door specified.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Cua duoc chon khong hop le.");
 		}
 		else if(strfind(szName, "\r") != -1 || strfind(szName, "\n") != -1) {
-			return SendClientMessageEx(playerid, COLOR_GREY, "Newline characters are forbidden.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Khong duoc dung ky tu xuong dong.");
 		}
 		strcat((TxtLabels[labelid][tlText][0] = 0, TxtLabels[labelid][tlText]), szName, 128);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully changed the text on this text label.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi noi dung nhan van ban nay.");
 		CreateTxtLabel(labelid);
 		SaveTxtLabel(labelid);
 		format(szName, sizeof(szName), "%s has edited Text Label ID %d's text to %s.", GetPlayerNameEx(playerid), labelid, TxtLabels[labelid][tlText]);
 		Log("logs/tledit.log", szName);
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -142,16 +142,16 @@ CMD:tlstatus(playerid, params[])
 	new labelid;
 	if(sscanf(params, "i", labelid))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /tlstatus [labelid]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /tlstatus [labelid]");
 		return 1;
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pGangModerator] == 2 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
-		SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Text Label Status (ID: %d) ___________|", labelid);
+		SendClientMessageEx(playerid, COLOR_GREEN, "|_____ Trang thai nhan van ban (ID: %d) _____|", labelid);
 		SendClientMessageEx(playerid, COLOR_WHITE, "[Position] X: %f | Y: %f | Z: %f | VW: %d | Int: %d", TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt]);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Text: %s | Color: %d | Pickup Model: %d", TxtLabels[labelid][tlText], TxtLabels[labelid][tlColor], TxtLabels[labelid][tlPickupModel]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Chu: %s | Mau: %d | Model pickup: %d", TxtLabels[labelid][tlText], TxtLabels[labelid][tlColor], TxtLabels[labelid][tlPickupModel]);
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -159,17 +159,17 @@ CMD:tlnext(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pGangModerator] == 2 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
-		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available text label...");
+		SendClientMessageEx(playerid, COLOR_RED, "* Dang tim nhan van ban trong tiep theo...");
 		for(new x = 0;x<MAX_3DLABELS;x++)
 		{
 			if(TxtLabels[x][tlPosX] == 0)
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", x);
+				SendClientMessageEx(playerid, COLOR_WHITE, "%d co the su dung.", x);
 				break;
 			}
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -178,7 +178,7 @@ CMD:gotolabel(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pGangModerator] == 2 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
 		new labelnum;
-		if(sscanf(params, "d", labelnum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotolabel [labelnumber]");
+		if(sscanf(params, "d", labelnum)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gotolabel [labelnumber]");
 
 		SetPlayerPos(playerid,TxtLabels[labelnum][tlPosX],TxtLabels[labelnum][tlPosY],TxtLabels[labelnum][tlPosZ]);
 		SetPlayerInterior(playerid,TxtLabels[labelnum][tlInt]);

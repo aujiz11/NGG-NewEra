@@ -74,9 +74,9 @@ public OfflineWarranting(index)
 	GetPVarString(index, "WarrantRes", reason, 64);
 
 	if(cache_affected_rows()) {
-		SendClientMessageEx(index, COLOR_WHITE, "You have successfully warranted %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Da phat lenh bat tai khoan %s.", name);
 
-		format(string, sizeof(string), "You are hereby commanded to apprehend and present to the court %s to answer the charges of:", name);
+		format(string, sizeof(string), "Ban duoc lenh bat va dua %s ra toa de tra loi cac cao buoc:", name);
 		SendGroupMessage(1, DEPTRADIO, string);
 		format(string, sizeof(string), "%s", reason);
 		SendGroupMessage(1, DEPTRADIO, string);
@@ -85,7 +85,7 @@ public OfflineWarranting(index)
 		//Log("logs/warrant.log", string);
 	}
 	else {
-		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with warranting %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Co loi khi phat lenh bat tai khoan %s.", name);
 	}
 
 	DeletePVar(index, "OfflineWarrant");
@@ -100,13 +100,13 @@ public OfflineWarrantWD(index)
 	GetPVarString(index, "OfflineWarrant", name, 24);
 
 	if(cache_affected_rows()) {
-		SendClientMessageEx(index, COLOR_WHITE, "You have successfully recalled the warrant on %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Da thu hoi lenh bat tai khoan %s.", name);
 
 		//format(string, sizeof(string), "%s recalled the warrant on %s's account", GetPlayerNameEx(index), name);
 		//Log("logs/warrant.log", string);
 	}
 	else {
-		SendClientMessageEx(index, COLOR_WHITE, "There was an issue with recalling the warrant on %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, "Co loi khi thu hoi lenh bat tai khoan %s.", name);
 	}
 
 	DeletePVar(index, "OfflineWarrant");
@@ -116,16 +116,16 @@ public OfflineWarrantWD(index)
 
 CMD:owarrant(playerid, params[]) {
 	if(!IsAJudge(playerid)) {
-  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
   		return 1;
 	}
 	if(PlayerInfo[playerid][pRank] < 3) {
-  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay, can cap bac 3+.");
   		return 1;
 	}
 
 	new name[MAX_PLAYER_NAME], reason[64];
-	if(sscanf(params, "s[24]s[64]", name, reason)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /owarrant [player name] [crime]");
+	if(sscanf(params, "s[24]s[64]", name, reason)) return SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /owarrant [player name] [crime]");
 
 	if(!IsPlayerConnected(ReturnUser(name))) {
 		new query[512];
@@ -133,12 +133,12 @@ CMD:owarrant(playerid, params[]) {
 		SetPVarString(playerid, "OfflineWarrant", name);
 		SetPVarString(playerid, "WarrantRes", reason);
 
-		SendClientMessageEx(playerid, COLOR_YELLOW, "Attempting to warrant %s's account for %s...", name, reason);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Dang phat lenh bat tai khoan %s vi %s...", name, reason);
 
 		mysql_format(MainPipeline, query,sizeof(query),"UPDATE `accounts` SET `Warrants` = '%e' WHERE `Warrants` = '' AND `Username` = '%e'", reason, name);
 		mysql_tquery(MainPipeline, query, "OfflineWarranting", "i", playerid);
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot offline warrant online players!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the phat lenh bat offline voi nguoi choi dang online!");
 	return 1;
 }
 
@@ -146,29 +146,29 @@ CMD:owarrantwd(playerid, params[])
 {
     if(!IsAJudge(playerid))
 	{
-  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
   		return 1;
  	}
 	if(PlayerInfo[playerid][pMember] < 3)
 	{
-  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay, can cap bac 3+.");
   		return 1;
   	}
 
 	new name[MAX_PLAYER_NAME];
-	if(sscanf(params, "s[24]s[64]", name)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /owarrantwd [player name]");
+	if(sscanf(params, "s[24]s[64]", name)) return SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /owarrantwd [player name]");
 
 	if(!IsPlayerConnected(ReturnUser(name))) {
 		new query[512];
 
 		SetPVarString(playerid, "OfflineWarrant", name);
 
-		SendClientMessageEx(playerid, COLOR_YELLOW, "Attempting to recall the warrant on %s's account...", name);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Dang thu hoi lenh bat tai khoan %s...", name);
 
 		mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Warrants` = '' WHERE `Warrants` != '' AND `Username` = '%e'", name);
 		mysql_tquery(MainPipeline, query, "OfflineWarrantWD", "i", playerid);
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot offline warrant online players!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the phat lenh bat offline voi nguoi choi dang online!");
 	return 1;
 }
 
@@ -177,12 +177,12 @@ CMD:present(playerid, params[])
   	if(IsAJudge(playerid))
 	{
 		new giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /present [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /present [player]");
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
-			if(PlayerInfo[giveplayerid][pBeingSentenced] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "That person isn't pending a sentence!");
-			if(courtjail[giveplayerid] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "That person isn't in the courthouse jail!");
+			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay cho chinh minh!");
+			if(PlayerInfo[giveplayerid][pBeingSentenced] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi do khong dang cho tuyen an!");
+			if(courtjail[giveplayerid] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi do khong o buong giam toa an!");
 			if(courtjail[giveplayerid] > 0)
 			{
 				SetPlayerPos(giveplayerid, 1494.8669, -1552.0634, 1127.0251);
@@ -196,7 +196,7 @@ CMD:present(playerid, params[])
 	}
 	else
 	{
-	    return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not a part of the Judicial System!");
+	    return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
 	}
 	return 1;
 }
@@ -206,8 +206,8 @@ CMD:checkjudgements(playerid, params[])
     if(IsACop(playerid) || IsAJudge(playerid))
     {
 
-    	if(JudgeOnlineCheck() == 0) return SendClientMessageEx(playerid, COLOR_GRAD4, "There must be at least one judge online to use this command!");
-		SendClientMessageEx(playerid, COLOR_YELLOW, "Pending Judgements List:");
+    	if(JudgeOnlineCheck() == 0) return SendClientMessageEx(playerid, COLOR_GRAD4, "Can it nhat mot Judge online de dung lenh nay!");
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Danh sach cho xet xu:");
 
 		new
 			fCounter;
@@ -218,12 +218,12 @@ CMD:checkjudgements(playerid, params[])
 			{
 				if(PlayerInfo[i][pJailTime] > 1)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "Sentenced: %s - jail (transport completed) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Da tuyen: %s - jail (da giao) - thoi gian: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
 					++fCounter;
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "Sentenced: %s - jail (being transported) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Da tuyen: %s - jail (dang giao) - thoi gian: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
 					++fCounter;
 				}
 			}
@@ -231,19 +231,19 @@ CMD:checkjudgements(playerid, params[])
 			{
 				if(PlayerInfo[i][pJailTime] > 1)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "Sentenced: %s - prison (transport completed) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Da tuyen: %s - prison (da giao) - thoi gian: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
 					++fCounter;
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "Sentenced: %s - prison (being transported) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Da tuyen: %s - prison (dang giao) - thoi gian: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
 					++fCounter;
 				}
 			}
 		}	
 		if(fCounter == 0)
 		{
-  			SendClientMessageEx(playerid, COLOR_GRAD1, "Nobody is pending judgement.");
+  			SendClientMessageEx(playerid, COLOR_GRAD1, "Khong co ai cho xet xu.");
 		}
   	}
 	return 1;
@@ -251,12 +251,12 @@ CMD:checkjudgements(playerid, params[])
 
 CMD:freezeassets(playerid, params[])
 {
-  	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of the Judicial System!");
-	if(PlayerInfo[playerid][pRank] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 4+ can do this.");
+  	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong thuoc Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong du quyen, chi rank 4+ duoc dung lenh nay.");
 	new giveplayerid, houseorcar[8];
-	if(sscanf(params, "us[8]", giveplayerid, houseorcar)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /freezeassets [player] [house/car/bank]");
-	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
-	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+	if(sscanf(params, "us[8]", giveplayerid, houseorcar)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /freezeassets [player] [house/car/bank]");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay cho chinh minh!");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 	new string[128],
 		rank[GROUP_MAX_RANK_LEN],
 		division[GROUP_MAX_DIV_LEN],
@@ -269,20 +269,20 @@ CMD:freezeassets(playerid, params[])
 	    {
 			PlayerInfo[giveplayerid][pFreezeHouse] = 1;
 	       	GetPlayerGroupInfo(playerid, rank, division, employer);
-		   	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has frozen %s house assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+		   	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s khoa tai san nha cua %s.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		   	ABroadCast(COLOR_YELLOW,string, 2);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have frozen %s's house assets.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your house assets have been frozen by %s", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da khoa tai san nha cua %s.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Tai san nha cua ban bi %s dong bang", GetPlayerNameEx(playerid));
 
 	   	 	format(szMiscArray, sizeof(szMiscArray), "%s %s has frozen %s house assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    }
 	    else
 	    {
 	        PlayerInfo[giveplayerid][pFreezeHouse] = 0;
-			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has unfrozen %s house assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s mo khoa tai san nha cua %s.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    	ABroadCast(COLOR_YELLOW,string, 2);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have unfrozen %s's house assets.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your house assets have been unfrozen by %s", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da mo khoa tai san nha cua %s.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Tai san nha cua ban duoc %s mo dong bang", GetPlayerNameEx(playerid));
 
 	   	 	format(szMiscArray, sizeof(szMiscArray), "%s %s has unfrozen %s house assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		}
@@ -293,20 +293,20 @@ CMD:freezeassets(playerid, params[])
 		{
 			PlayerInfo[giveplayerid][pFreezeCar] = 1;
 	       	GetPlayerGroupInfo(playerid, rank, division, employer);
-			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has frozen %s vehicle assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s khoa tai san xe cua %s.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    	ABroadCast(COLOR_YELLOW,string, 2);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have frozen %s's vehicle assets.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your vehicle assets have been frozen by %s", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da dong bang tai san xe cua %s.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Tai san xe cua ban bi %s dong bang", GetPlayerNameEx(playerid));
 
 		 	format(szMiscArray, sizeof(szMiscArray), "%s %s has frozen %s vehicle assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    }
 	    else
 	    {
 	        PlayerInfo[giveplayerid][pFreezeCar] = 0;
-	        format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has unfrozen %s vehicle assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+	        format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s mo khoa tai san xe cua %s.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    	ABroadCast(COLOR_YELLOW,string, 2);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have unfrozen %s's vehicle assets.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your vehicle assets have been unfrozen by %s", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da mo dong bang tai san xe cua %s.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Tai san xe cua ban duoc %s mo dong bang", GetPlayerNameEx(playerid));
 
 		 	format(szMiscArray, sizeof(szMiscArray), "%s %s has unfrozen %s vehicle assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    }
@@ -317,27 +317,27 @@ CMD:freezeassets(playerid, params[])
     	{
         	PlayerInfo[giveplayerid][pFreezeBank] = 1;
        		GetPlayerGroupInfo(playerid, rank, division, employer);
-	   		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has froze %s bank account.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+	   		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s khoa tai khoan cua %s.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
     		ABroadCast(COLOR_YELLOW,string, 2);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have frozen %s's bank account.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your bank account has been frozen by %s", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da khoa tai khoan cua %s.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Tai khoan cua ban bi %s khoa", GetPlayerNameEx(playerid));
 
    	 		format(szMiscArray, sizeof(szMiscArray), "%s %s has frozen %s bank assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
     	}
     	else
     	{
 			PlayerInfo[giveplayerid][pFreezeBank] = 0;
-			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has unfrozen %s bank account.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s mo khoa tai khoan cua %s.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ABroadCast(COLOR_YELLOW,string, 2);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have unfrozen %s's bank account.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your bank account has been unfrozen by %s", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da mo khoa tai khoan cua %s.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Tai khoan cua ban duoc %s mo khoa", GetPlayerNameEx(playerid));
 
    	 		format(szMiscArray, sizeof(szMiscArray), "%s %s has unfrozen %s bank assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		}
 	}
 	else
 	{
-	    return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /freezeassets [player] [house/car/bank]");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /freezeassets [player] [house/car/bank]");
 	}
 	GroupLogEx(PlayerInfo[playerid][pMember], szMiscArray, 1);
 	return 1;
@@ -346,32 +346,32 @@ CMD:freezeassets(playerid, params[])
 CMD:reward(playerid, params[])
 {
 
-    if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
-	if(PlayerInfo[playerid][pRank] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 4+ can do this.");
+    if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong du quyen, chi rank 4+ duoc dung lenh nay.");
 
 	new
 		giveplayerid,
 		money;
 
-	if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /reward [player] [money(max of $50,000)]");
-	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+	if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /reward [player] [money(max of $50,000)]");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay cho chinh minh!");
 	if(IsPlayerConnected(giveplayerid))
 	{
 		new
 			string[64 + (MAX_PLAYER_NAME * 2)];
 
-  		if(money < 1 || money > 50000) return SendClientMessageEx(playerid, COLOR_GRAD5, "Reward amount cannot be lower than $1 or higher than $50,000!");
+  		if(money < 1 || money > 50000) return SendClientMessageEx(playerid, COLOR_GRAD5, "Tien thuong khong duoc duoi $1 hoac tren $50,000!");
     	new rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN], employer[GROUP_MAX_NAME_LEN];
    		GetPlayerGroupInfo(playerid, rank, division, employer);
-	    format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s(%d) has just rewarded %s(%d) $%d.", rank, GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), money);
+	    format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s(%d) vua thuong %s(%d) $%d.", rank, GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), money);
 	    ABroadCast(COLOR_YELLOW,string, 2);
 
 		format(string, sizeof(string), "AdmCmd: %s %s has just rewarded %s $%d", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), money);
 		Log("logs/rpspecial.log", string);
 		Tax -= money;
   		GivePlayerCash(giveplayerid, money);
-	    SendClientMessageEx(playerid, COLOR_WHITE, "You have given a reward of $%d to %s.", money, GetPlayerNameEx(giveplayerid));
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have recieved a reward of $%d from %s %s.", money, rank, GetPlayerNameEx(playerid));
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Ban da thuong $%d cho %s.", money, GetPlayerNameEx(giveplayerid));
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "Ban nhan $%d tien thuong tu %s %s.", money, rank, GetPlayerNameEx(playerid));
 	}
 	return 1;
 }
@@ -379,14 +379,14 @@ CMD:reward(playerid, params[])
 CMD:reversejudgement(playerid, params[])
 {
 
-    if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
-	if(PlayerInfo[playerid][pRank] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 4+ can do this.");
+    if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong du quyen, chi rank 4+ duoc dung lenh nay.");
 
 	new
 		giveplayerid; // For future reference - sscanf plugin is 3 times as fast as ReturnUser, even when used on only one argument
 
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /reversejudgement [player]");
-	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /reversejudgement [player]");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay cho chinh minh!");
 	if(IsPlayerConnected(giveplayerid))
 	{
  		if(PlayerInfo[giveplayerid][pJudgeJailTime] != 0)
@@ -397,14 +397,14 @@ CMD:reversejudgement(playerid, params[])
 			PlayerInfo[giveplayerid][pJudgeJailTime] = 0;
    			switch(PlayerInfo[playerid][pSex])
 			{
-			    case 1: format(string, sizeof(string), "%s %s has reversed %s's judgement, he is free to go.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-			    case 2: format(string, sizeof(string), "%s %s has reversed %s's judgement, she is free to go.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			    case 1: format(string, sizeof(string), "%s %s da huy ban an cua %s, nguoi nay duoc tu do.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			    case 2: format(string, sizeof(string), "%s %s da huy ban an cua %s, nguoi nay duoc tu do.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			}
    			SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
    		}
 	    else
    		{
-        	SendClientMessageEx(playerid, COLOR_GRAD1, "That person doesn't have a jail/prison sentence.");
+        	SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi do khong co an jail/prison.");
    		}
 	}
 	return 1;
@@ -413,7 +413,7 @@ CMD:reversejudgement(playerid, params[])
 CMD:commute(playerid, params[])
 {
 	pc_cmd_pardon(playerid, "");
-	SendClientMessageEx(playerid, COLOR_GRAD1, "You can also use /pardon.");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Ban cung co the dung /pardon.");
 	return 1;
 }
 
@@ -424,8 +424,8 @@ CMD:pardon(playerid, const params[])
 		new
 			giveplayerid;
 
-        if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pardon [player]");
-		if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+        if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /pardon [player]");
+		if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay cho chinh minh!");
 		if(IsPlayerConnected(giveplayerid))
 		{
 		    if(PlayerInfo[giveplayerid][pJudgeJailTime] != 0)
@@ -435,20 +435,20 @@ CMD:pardon(playerid, const params[])
 		        PlayerInfo[giveplayerid][pJudgeJailTime] = 2;
 		        switch(PlayerInfo[playerid][pSex])
 				{
-				    case 1: format(string, sizeof(string), "President %s has forgiven %s of his crimes, he's now free.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-				    case 2: format(string, sizeof(string), "President %s has forgiven %s of his crimes, she's now free.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				    case 1: format(string, sizeof(string), "President %s da an xa cho %s, nguoi nay duoc tu do.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				    case 2: format(string, sizeof(string), "President %s da an xa cho %s, nguoi nay duoc tu do.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				}
 			    SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
 		    }
 		    else
 	   		{
-	       		SendClientMessageEx(playerid, COLOR_GRAD1, "That person doesn't have a jail/prison sentence.");
+	       		SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi do khong co an jail/prison.");
 	   		}
 		}
 	}
  	else
   	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Only the President can use this command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Chi President duoc dung lenh nay.");
   	}
 	return 1;
 }
@@ -457,8 +457,8 @@ CMD:wants(playerid, params[])
 {
     if(IsACop(playerid) || IsAJudge(playerid))
     {
-    	if(JudgeOnlineCheck() == 0) return SendClientMessageEx(playerid, COLOR_GRAD4, "There must be at least one judge online to use this command!");
-		SendClientMessageEx(playerid, COLOR_YELLOW, "Outstanding Warrants List:");
+    	if(JudgeOnlineCheck() == 0) return SendClientMessageEx(playerid, COLOR_GRAD4, "Can it nhat mot Judge online de dung lenh nay!");
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Danh sach lenh bat con hieu luc:");
 
 		new
 			fCounter;
@@ -467,13 +467,13 @@ CMD:wants(playerid, params[])
 		{
 			if(!isnull(PlayerInfo[i][pWarrant]) || PlayerInfo[i][pWarrant] != 0)
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "%s (%d) - reason: %s.",GetPlayerNameEx(i), i, PlayerInfo[i][pWarrant]);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "%s (%d) - ly do: %s.",GetPlayerNameEx(i), i, PlayerInfo[i][pWarrant]);
 				++fCounter;
 			}
 		}	
 		if(fCounter <= 0)
 		{
-		    SendClientMessageEx(playerid, COLOR_GRAD1, "Nobody has any pending warrants.");
+		    SendClientMessageEx(playerid, COLOR_GRAD1, "Khong co lenh bat nao dang cho.");
 		}
   	}
 	return 1;
@@ -485,16 +485,16 @@ CMD:mywarrants(playerid, params[])
     {
 		if(!isnull(PlayerInfo[playerid][pWarrant]))
   		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "You do have active warrants for your arrest. Please considering calling 911 to turn yourself in.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban co lenh bat con hieu luc. Hay can nhac goi 911 de dau thu.");
    		}
      	else
       	{
-       		SendClientMessageEx(playerid, COLOR_WHITE, "You do not have active warrants.");
+       		SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong co lenh bat con hieu luc.");
       	}
    	}
     else
     {
-    	SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be at the point in City Hall to check if you have active warrants.");
+    	SendClientMessageEx(playerid, COLOR_GRAD1, "Den diem trong City Hall de kiem tra lenh bat.");
     }
 	return 1;
 }
@@ -505,7 +505,7 @@ CMD:jarrest(playerid, params[])
 	{
  		if(!IsAtArrestPoint(playerid, 4))
 		{
-  			SendClientMessageEx(playerid, COLOR_GREY, "You aren't at the arrest point.");
+  			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o diem bat giu.");
 	    	return 1;
 		}
 		new suspect = GetClosestPlayer(playerid);
@@ -513,8 +513,8 @@ CMD:jarrest(playerid, params[])
 		{
 			if(ProxDetectorS(5.0, playerid,suspect))
 			{
-				if(PlayerInfo[suspect][pJudgeJailType] != 1) { return SendClientMessageEx(playerid, COLOR_GREY, "That person doesn't need to complete a sentence in jail."); }
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You arrested %s!", GetPlayerNameEx(suspect));
+				if(PlayerInfo[suspect][pJudgeJailType] != 1) { return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong can thi hanh an jail."); }
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da bat %s!", GetPlayerNameEx(suspect));
 				ResetPlayerWeaponsEx(suspect);
 				for(new x; x < MAX_PLAYERVEHICLES; x++) if(PlayerVehicleInfo[suspect][x][pvTicket] >= 1) {
 					PlayerVehicleInfo[suspect][x][pvTicket] = 0;
@@ -554,26 +554,26 @@ CMD:deliver(playerid, params[])
 {
 	if(!IsPlayerInRangeOfPoint(playerid, 8.0, 1991.7953,-2321.2532,13.5469))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not at the Los Santos International Airport.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o Los Santos International Airport.");
 		return 1;
 	}
 	new giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deliver [player]");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /deliver [player]");
 	if(PlayerInfo[playerid][pRank] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You must be at least rank 1.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Can it nhat rank 1.");
 		return 1;
 	}
 	if(IsPlayerConnected(giveplayerid))
 	{
-		if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "   Can't throw yourself into prison!"); return 1; }
-		if(PlayerInfo[giveplayerid][pJudgeJailTime] == 0 && PlayerInfo[giveplayerid][pJudgeJailType] != 2) { SendClientMessageEx(playerid, COLOR_GREY, "That person doesn't need to be in prison!"); return 1; }
+		if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "   Khong the tu dua minh vao prison!"); return 1; }
+		if(PlayerInfo[giveplayerid][pJudgeJailTime] == 0 && PlayerInfo[giveplayerid][pJudgeJailType] != 2) { SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong can vao prison!"); return 1; }
 		if(ProxDetectorS(8.0, playerid, giveplayerid))
 		{
   			DeletePVar(giveplayerid, "IsFrozen");
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You've brought %s to the Department of Corrections.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s brought you to the Department of Corrections.", GetPlayerNameEx(playerid));
-			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~the Department of Corrections", 5000, 3);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da dua %s den Department of Corrections.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s da dua ban den Department of Corrections.", GetPlayerNameEx(playerid));
+			GameTextForPlayer(giveplayerid, "~w~Chao mung den ~n~~r~Department of Corrections", 5000, 3);
 			ClearAnimationsEx(giveplayerid);
 			PlayerCuffed[giveplayerid] = 0;
 			DeletePVar(giveplayerid, "PlayerCuffed");
@@ -599,13 +599,13 @@ CMD:deliver(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 			return 1;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 		return 1;
 	}
 	return 1;
@@ -614,26 +614,26 @@ CMD:deliver(playerid, params[])
 
 CMD:warrant(playerid, params[])
 {
-	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
  	if(PlayerInfo[playerid][pRank] < 3)
 	{
-  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay, can cap bac 3+.");
   		return 1;
 	}
 
 	new string[128], crime[64], giveplayerid;
-	if(sscanf(params, "us[64]", giveplayerid, crime)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /warrant [player] [crime]");
+	if(sscanf(params, "us[64]", giveplayerid, crime)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /warrant [player] [crime]");
 
-	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't place warrants on yourself!");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the tu phat lenh bat minh!");
 	if(IsPlayerConnected(giveplayerid))
 	{
-		if(!isnull(PlayerInfo[giveplayerid][pWarrant])) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person has active warrants already.");
+		if(!isnull(PlayerInfo[giveplayerid][pWarrant])) return SendClientMessageEx(playerid, COLOR_GRAD5, "Nguoi do da co lenh bat con hieu luc.");
 		format(PlayerInfo[giveplayerid][pWarrant], 64, crime);
-		format(string, sizeof(string), "You are hereby commanded to apprehend and present to the court %s to answer the charges of:", GetPlayerNameEx(giveplayerid));
+		format(string, sizeof(string), "Ban duoc lenh bat va dua %s ra toa de tra loi cac cao buoc:", GetPlayerNameEx(giveplayerid));
 		SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
 		format(string, sizeof(string), "%s", crime);
 		SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, string);
-		format(string, sizeof(string), "%s has warranted %s to answer for his charges against the Sovereign Republic.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+		format(string, sizeof(string), "%s da phat lenh bat %s de tra loi cao buoc chong lai Sovereign Republic.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, string);
 		GroupLogEx(PlayerInfo[playerid][pMember], string, 0);
 		return 1;
@@ -645,25 +645,25 @@ CMD:warrantwd(playerid, params[])
 {
     if(!IsAJudge(playerid))
 	{
-  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
   		return 1;
  	}
 	if(PlayerInfo[playerid][pMember] < 3)
 	{
-  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay, can cap bac 3+.");
   		return 1;
   	}
 
   	new string[128], giveplayerid;
-  	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /warrantwd [player]");
+  	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /warrantwd [player]");
 
-	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't remove warrants on yourself!");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the tu xoa lenh bat cua minh!");
 	if(IsPlayerConnected(giveplayerid))
 	{
- 		if(strlen(PlayerInfo[giveplayerid][pWarrant]) == 0) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person doesn't have any active warrants.");
+ 		if(strlen(PlayerInfo[giveplayerid][pWarrant]) == 0) return SendClientMessageEx(playerid, COLOR_GRAD5, "Nguoi do khong co lenh bat con hieu luc.");
 		format(PlayerInfo[giveplayerid][pWarrant], 128, "");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully recalled %s's warrant.", GetPlayerNameEx(giveplayerid));
-		format(string, sizeof(string), "%s has withdrawn the warrant on %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Da thu hoi lenh bat cua %s.", GetPlayerNameEx(giveplayerid));
+		format(string, sizeof(string), "%s da thu hoi lenh bat cua %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, string);
 		GroupLogEx(PlayerInfo[playerid][pMember], string, 0);
 		return 1;
@@ -677,10 +677,10 @@ CMD:warrantarrest(playerid, params[])
 
     if(IsACop(playerid))
 	{
-	    if(JudgeOnlineCheck() == 0) return SendClientMessageEx(playerid, COLOR_GRAD4, "There must be at least one judge online to do this!");
+	    if(JudgeOnlineCheck() == 0) return SendClientMessageEx(playerid, COLOR_GRAD4, "Can it nhat mot Judge online de lam viec nay!");
         if(!IsAtArrestPoint(playerid, 3))
 		{
-  			SendClientMessageEx(playerid, COLOR_GREY, "You aren't at a warrant arrest point.");
+  			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o diem bat giu theo lenh.");
 	    	return 1;
 		}
 
@@ -691,12 +691,12 @@ CMD:warrantarrest(playerid, params[])
 			{
 				if(strlen(PlayerInfo[suspect][pWarrant]) < 1)
 				{
-	   				SendClientMessageEx(playerid, COLOR_GREY, "The person must have active warrants.");
+	   				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do phai co lenh bat con hieu luc.");
 				    return 1;
 				}
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You warrant arrested %s!", GetPlayerNameEx(suspect));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da bat %s theo lenh!", GetPlayerNameEx(suspect));
 				ResetPlayerWeaponsEx(suspect);
-				format(string, sizeof(string), "<< Defendant %s has been delivered to the courtroom pending trial by %s >>", GetPlayerNameEx(suspect), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "<< Bi cao %s da duoc %s dua den phong xu de cho xet xu >>", GetPlayerNameEx(suspect), GetPlayerNameEx(playerid));
 				SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, string);
 				SetPlayerInterior(suspect, 5);
 				PlayerInfo[suspect][pInt] = 1;
@@ -723,20 +723,20 @@ CMD:warrantarrest(playerid, params[])
 				Lawyer_ClearAppeal(suspect);
 				PlayerInfo[suspect][pBeingSentenced] = 60;
 				SetPlayerColor(suspect, SHITTY_JUDICIALSHITHOTCH);
-				SendClientMessageEx(suspect, COLOR_LIGHTBLUE, "You have been arrested for a pending warrant on you, you'll be attended by a judge soon.");
+				SendClientMessageEx(suspect, COLOR_LIGHTBLUE, "Ban bi bat theo lenh, Judge se som xu ly.");
 				Player_StreamPrep(suspect, WarrantJail[rand][0], WarrantJail[rand][1], WarrantJail[rand][2], FREEZE_TIME);
 				
 			}
 		}
 		else
 		{
-  			SendClientMessageEx(playerid, COLOR_GREY, "   No-one close enough to arrest.");
+  			SendClientMessageEx(playerid, COLOR_GREY, "   Khong co ai o du gan de bat.");
 	    	return 1;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a law enforcement officer!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "   Ban khong phai nhan vien hanh phap!");
    		return 1;
 	}
 	return 1;
@@ -746,10 +746,10 @@ CMD:adjourn(playerid, params[])
 {
 	new giveplayerid;
 
-    if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
-	if(PlayerInfo[playerid][pRank] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /adjourn [player]");
-	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+    if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay, can cap bac 3+.");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /adjourn [player]");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay cho chinh minh!");
 	if(IsPlayerConnected(giveplayerid))
 	{
 	    if(PlayerInfo[giveplayerid][pBeingSentenced])
@@ -760,10 +760,10 @@ CMD:adjourn(playerid, params[])
 	    	DeletePVar(giveplayerid, "IsFrozen");
 			PhoneOnline[giveplayerid] = 0;
 			format(PlayerInfo[giveplayerid][pWarrant], 128, "");
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have released %s from the courtroom.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has released you from the courtroom, you can now leave.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da tha %s khoi phong xu.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s da tha ban khoi phong xu, ban co the roi di.", GetPlayerNameEx(playerid));
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD2, "The person needs to be on the courtroom being sentenced");
+		else SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do phai o phong xu va dang cho tuyen an.");
 	}
 	return 1;
 }
@@ -773,17 +773,17 @@ CMD:sentence(playerid, params[]) {
 	new giveplayerid;
 
     if(!IsAJudge(playerid)) {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
 	}
 	else if(PlayerInfo[playerid][pRank] < 3) {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay, can cap bac 3+.");
 	}
 	else if(sscanf(params, "u", giveplayerid)) {
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sentence [player]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /sentence [player]");
 	}
 	else if(IsPlayerConnected(giveplayerid)) {
 		if(giveplayerid == playerid) {
-			SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay cho chinh minh!");
 		}
  		else if(PlayerInfo[giveplayerid][pBeingSentenced]) {
 			Lawyer_ClearAppeal(giveplayerid);
@@ -797,12 +797,12 @@ CMD:sentence(playerid, params[]) {
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
 			PlayerInfo[giveplayerid][pVW] = 0;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have released %s from the courtroom.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has released you from the courtroom, you can now leave.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da tha %s khoi phong xu.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s da tha ban khoi phong xu, ban co the roi di.", GetPlayerNameEx(playerid));
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD2, "The person needs to be in the courtroom being sentenced.");
+		else SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do phai o phong xu va dang cho tuyen an.");
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 	return 1;
 }
 
@@ -810,19 +810,19 @@ CMD:trial(playerid, params[])
 {
 	new giveplayerid;
 
-    if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
-	if(PlayerInfo[playerid][pRank] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /trial [player]");
-	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+    if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay, can cap bac 3+.");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /trial [player]");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay cho chinh minh!");
 	if(IsPlayerConnected(giveplayerid))
 	{
 	    if(PlayerInfo[giveplayerid][pBeingSentenced])
 	    {
 	    	PlayerInfo[giveplayerid][pBeingSentenced] += 10;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have extended %s's courtroom time by 10 minutes, courtroom time: %d", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pBeingSentenced]);
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has extended your courtroom time by 10 minutes, courtroom time: %d", GetPlayerNameEx(playerid), PlayerInfo[giveplayerid][pBeingSentenced]);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da tang thoi gian o toa cua %s them 10 phut, hien tai: %d", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pBeingSentenced]);
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s da tang thoi gian o toa cua ban them 10 phut, hien tai: %d", GetPlayerNameEx(playerid), PlayerInfo[giveplayerid][pBeingSentenced]);
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD2, "The person needs to be in the courtroom being sentenced");
+		else SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do phai o phong xu va dang cho tuyen an.");
 	}
 	return 1;
 }
@@ -831,16 +831,16 @@ CMD:subpoena(playerid, params[])
 {
 	new dates[32], message[64], giveplayerid;
 
-    if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
-	if(PlayerInfo[playerid][pRank] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 1+ can do this.");
-	if(sscanf(params, "us[32]s[64]", giveplayerid, dates, message)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /subpoena [player] [date] [message]");
-	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+    if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong du quyen, chi rank 1+ duoc dung lenh nay.");
+	if(sscanf(params, "us[32]s[64]", giveplayerid, dates, message)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /subpoena [player] [date] [message]");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay cho chinh minh!");
 	if(IsPlayerConnected(giveplayerid))
 	{
-	    SendClientMessageEx(giveplayerid, COLOR_WHITE, "|___________ Important Message from the Courts ___________|");
-		SendClientMessageEx(giveplayerid, COLOR_YELLOW, "You have been summoned for a Court Appearance on the day of %s for the following reason(s): %s", dates, message);
+	    SendClientMessageEx(giveplayerid, COLOR_WHITE, "|___________ Thong bao quan trong tu toa an ___________|");
+		SendClientMessageEx(giveplayerid, COLOR_YELLOW, "Ban duoc trieu tap ra toa vao %s vi: %s", dates, message);
 		SendClientMessageEx(giveplayerid, COLOR_WHITE, "|_________________________________________________________|");
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have summoned %s for a Court Appearance", GetPlayerNameEx(giveplayerid));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da trieu tap %s ra toa", GetPlayerNameEx(giveplayerid));
 	}
 	return 1;
 }
@@ -849,37 +849,37 @@ CMD:judgejail(playerid, params[])
 {
     if(!IsAJudge(playerid))
 	{
-  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
   		return 1;
 	}
 	if(PlayerInfo[playerid][pRank] < 3)
 	{
-  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay, can cap bac 3+.");
   		return 1;
 	}
 
 	new giveplayerid, jailtime, reason[64];
-	if(sscanf(params, "uds[64]", giveplayerid, jailtime, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /judgejail [player] [time (minutes)] [reason]");
+	if(sscanf(params, "uds[64]", giveplayerid, jailtime, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /judgejail [player] [time (minutes)] [reason]");
 
-	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay cho chinh minh!");
 	if(IsPlayerConnected(giveplayerid))
 	{
-		if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person isn't being sentenced!");
+		if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "Nguoi do khong dang cho tuyen an!");
 		if(jailtime < 5)
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD5, "Sentence must be at least 5 minute!");
+			return SendClientMessageEx(playerid, COLOR_GRAD5, "Ban an phai it nhat 5 phut!");
 		}
 		if(jailtime > 120)
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD5, "Maximum sentence is 2 Hours / 120 Minutes");
+			return SendClientMessageEx(playerid, COLOR_GRAD5, "Ban an toi da 2 Gio / 120 Phut");
 		}
 		PlayerInfo[giveplayerid][pJudgeJailType] = 1;
 		PlayerInfo[giveplayerid][pJudgeJailTime] = jailtime*60;
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have sentenced %s to fulfill %d minutes in jail, reason: %s", GetPlayerNameEx(giveplayerid), jailtime, reason);
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been sentenced to fulfill %d minutes in jail by %s, reason: %s", jailtime, GetPlayerNameEx(playerid), reason);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da tuyen %s thi hanh %d phut jail, ly do: %s", GetPlayerNameEx(giveplayerid), jailtime, reason);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "Ban bi tuyen %d phut jail boi %s, ly do: %s", jailtime, GetPlayerNameEx(playerid), reason);
 		if(IsACop(giveplayerid))
 		{
-		    SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE,"* You have been auto-removed from your faction by being sentenced to jail, you are now a civilian again.");
+		    SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE,"* Ban tu dong bi xoa khoi to chuc do bi ket an tu va tro lai lam thuong dan.");
 			PlayerInfo[giveplayerid][pMember] = INVALID_GROUP_ID;
 			PlayerInfo[giveplayerid][pLeader] = INVALID_GROUP_ID;
 			PlayerInfo[giveplayerid][pRank] = INVALID_RANK;
@@ -902,37 +902,37 @@ CMD:judgeprison(playerid, params[])
 {
     if(!IsAJudge(playerid))
 	{
-  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
   		return 1;
 	}
 	if(PlayerInfo[playerid][pRank] < 3)
 	{
-  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay, can cap bac 3+.");
   		return 1;
 	}
 
 	new giveplayerid, jailtime, reason[64];
-	if(sscanf(params, "uds[64]", giveplayerid, jailtime, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /judgeprison [player] [time (mins)] [reason]");
+	if(sscanf(params, "uds[64]", giveplayerid, jailtime, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /judgeprison [player] [time (mins)] [reason]");
 
-	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay cho chinh minh!");
 	if(IsPlayerConnected(giveplayerid))
 	{
-	    if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person isn't being sentenced!");
+	    if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "Nguoi do khong dang cho tuyen an!");
 		if(jailtime < 5)
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD5, "Sentence must be at least 5 minute!");
+			return SendClientMessageEx(playerid, COLOR_GRAD5, "Ban an phai it nhat 5 phut!");
 		}
 		if(jailtime > 120)
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD5, "Maximum sentence is 2 Hours / 120 Minutes");
+			return SendClientMessageEx(playerid, COLOR_GRAD5, "Ban an toi da 2 Gio / 120 Phut");
 		}
 		PlayerInfo[giveplayerid][pJudgeJailType] = 2;
 		PlayerInfo[giveplayerid][pJudgeJailTime] = jailtime*60;
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have sentenced %s to fulfill %d minutes in prison, reason: %s", GetPlayerNameEx(giveplayerid), jailtime, reason);
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been sentenced to fulfill %d minutes in prison by %s, reason: %s", jailtime, GetPlayerNameEx(playerid), reason);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da tuyen %s thi hanh %d phut prison, ly do: %s", GetPlayerNameEx(giveplayerid), jailtime, reason);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "Ban bi tuyen %d phut prison boi %s, ly do: %s", jailtime, GetPlayerNameEx(playerid), reason);
 		if(IsACop(giveplayerid))
 		{
-		    SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE,"* You have been auto-removed from your faction by being sentenced to jail, you are now a civilian again.");
+		    SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE,"* Ban tu dong bi xoa khoi to chuc do bi ket an tu va tro lai lam thuong dan.");
 			PlayerInfo[giveplayerid][pMember] = INVALID_GROUP_ID;
 			PlayerInfo[giveplayerid][pLeader] = INVALID_GROUP_ID;
 			PlayerInfo[giveplayerid][pRank] = INVALID_RANK;
@@ -953,18 +953,18 @@ CMD:judgeprison(playerid, params[])
 
 CMD:judgefine(playerid, params[])
 {
-	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
-	if(PlayerInfo[playerid][pRank] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay, can cap bac 3+.");
 
 	new giveplayerid, judgefine, reason[64], totalwealth;
 
-	if(sscanf(params, "uds[64]", giveplayerid, judgefine, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /judgefine [player] [amount] [reason]");
-	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
+	if(sscanf(params, "uds[64]", giveplayerid, judgefine, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /judgefine [player] [amount] [reason]");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi choi khong hop le.");
 	totalwealth = PlayerInfo[giveplayerid][pCash] + PlayerInfo[giveplayerid][pAccount];
-	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
-	if(!(1 <= judgefine <= 500000)) return SendClientMessageEx(playerid, COLOR_GREY, "Fine amount cannot be lower than $1 or higher than $500,000!");
-	if(totalwealth < 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is already in debt - contact an administrator.");
-	if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person isn't being sentenced!");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay cho chinh minh!");
+	if(!(1 <= judgefine <= 500000)) return SendClientMessageEx(playerid, COLOR_GREY, "Tien phat khong duoc duoi $1 hoac tren $500,000!");
+	if(totalwealth < 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do da mac no, hay lien he Admin.");
+	if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "Nguoi do khong dang cho tuyen an!");
 	SetPVarInt(playerid, "judgefine", judgefine);
 	SetPVarInt(playerid, "jfined", giveplayerid);
 	SetPVarString(playerid, "jreason", reason);
@@ -976,78 +976,78 @@ CMD:probation(playerid, params[])
 {
     if(!IsAJudge(playerid))
 	{
-        SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+        SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
         return 1;
     }
     if(PlayerInfo[playerid][pRank] < 3)
 	{
-        SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+        SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay, can cap bac 3+.");
         return 1;
     }
 
 	new giveplayerid, probtime, reason[64];
-	if(sscanf(params, "uds[64]", giveplayerid, probtime, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /probation [player] [time 1-360 Minutes] [reason and terms]");
+	if(sscanf(params, "uds[64]", giveplayerid, probtime, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /probation [player] [time 1-360 Minutes] [reason and terms]");
 
-    if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+    if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay cho chinh minh!");
     if(IsPlayerConnected(giveplayerid))
 	{
-        if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person isn't being sentenced!");
-        if(probtime < 1 && probtime > 360) return SendClientMessageEx(playerid, COLOR_GRAD5, "Time cannot be lower 1 minute or higher than 360 minutes!");
+        if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "Nguoi do khong dang cho tuyen an!");
+        if(probtime < 1 && probtime > 360) return SendClientMessageEx(playerid, COLOR_GRAD5, "Thoi gian khong duoc duoi 1 phut hoac tren 360 phut!");
         PlayerInfo[giveplayerid][pProbationTime] = probtime;
-        SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s in probation for %d minutes, reason and terms: %s", GetPlayerNameEx(giveplayerid), probtime, reason);
-        SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been set in probation for %d minutes by %s, reason and terms: %s", probtime, GetPlayerNameEx(playerid), reason);
+        SendClientMessageEx(playerid, COLOR_WHITE, "Ban da dat %s quan che %d phut, ly do va dieu kien: %s", GetPlayerNameEx(giveplayerid), probtime, reason);
+        SendClientMessageEx(giveplayerid, COLOR_WHITE, "Ban bi quan che %d phut boi %s, ly do va dieu kien: %s", probtime, GetPlayerNameEx(playerid), reason);
     }
     return 1;
 }
 
 CMD:viewassets(playerid, params[])
 {
-  	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of the Judicial System!");
-	if(PlayerInfo[playerid][pRank] < 5) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 5+ can do this.");
+  	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong thuoc Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 5) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong du quyen, chi rank 5+ duoc dung lenh nay.");
 	
 	new giveplayerid;
 
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /viewassets [player]");
-	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /viewassets [player]");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 	
-	SendClientMessageEx(playerid, COLOR_WHITE, "%s's assets | Vehicle Status: %d - House Status: %d - Bank Account Status: %d", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pFreezeCar], PlayerInfo[giveplayerid][pFreezeHouse], PlayerInfo[giveplayerid][pFreezeBank]);
-	SendClientMessageEx(playerid, COLOR_WHITE, "%s's assets | Cash: $%s - Bank: $%s", GetPlayerNameEx(giveplayerid), number_format(PlayerInfo[giveplayerid][pCash]), number_format(PlayerInfo[giveplayerid][pAccount]));
+	SendClientMessageEx(playerid, COLOR_WHITE, "Tai san %s | Trang thai xe: %d - Nha: %d - Tai khoan: %d", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pFreezeCar], PlayerInfo[giveplayerid][pFreezeHouse], PlayerInfo[giveplayerid][pFreezeBank]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Tai san %s | Tien: $%s - Bank: $%s", GetPlayerNameEx(giveplayerid), number_format(PlayerInfo[giveplayerid][pCash]), number_format(PlayerInfo[giveplayerid][pAccount]));
 	return true;
 }
 
 CMD:alimony(playerid, params[]) {
 
 	if(!IsAJudge(playerid)) 
-  		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+  		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong thuoc Judicial System!");
 	if(PlayerInfo[playerid][pRank] < 3) 
-  		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+  		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay, can cap bac 3+.");
   	new charged, recieved, amount;
-  	if(sscanf(params, "iii", charged, amount, recieved)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /alimony [charging id] [percentage] [reciever id]");
-  	if(charged == playerid || recieved == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command on yourself!");
+  	if(sscanf(params, "iii", charged, amount, recieved)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /alimony [charging id] [percentage] [reciever id]");
+  	if(charged == playerid || recieved == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung lenh nay voi chinh minh!");
   	
   	new totalwealth = PlayerInfo[charged][pAccount] + GetPlayerCash(charged),
   		fine = amount * totalwealth / 100;
-  	if(totalwealth < 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is in debt - contact an administrator.");  	
+  	if(totalwealth < 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do mac no, hay lien he Admin.");  	
   	if(IsPlayerConnected(charged) || IsPlayerConnected(recieved))
 	{
 		if(amount < 5)
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "Minimum percentage must be atleast 5");
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Ty le toi thieu la 5");
 		if(amount > 25)
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "Maximum percentage must not exceed 25");
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Ty le toi da khong duoc qua 25");
 		if(fine < 300000) {
-			SendClientMessageEx(playerid, COLOR_GRAD2, "The charge was $%d however as it falls below the minimum amount, %s was only charged $300,000", fine, GetPlayerNameEx(charged));
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Phi la $%d nhung duoi muc toi thieu, %s chi bi thu $300,000", fine, GetPlayerNameEx(charged));
 			fine = 300000;			
 		}
 		if(fine > 2500000) {
-			SendClientMessageEx(playerid, COLOR_GRAD2, "The charge was $%d however as it exceeds the maximum amount, %s was only charged $2,500,000", fine, GetPlayerNameEx(charged));
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Phi la $%d nhung tren muc toi da, %s chi bi thu $2,500,000", fine, GetPlayerNameEx(charged));
 			fine = 2500000;
 		}
 
 		GivePlayerCashEx(charged, TYPE_ONHAND, -fine);
-		SendClientMessageEx(charged, COLOR_WHITE, "You have been charged $%d for alimony to %s by Judge %s.", fine, GetPlayerNameEx(recieved), GetPlayerNameEx(playerid));
+		SendClientMessageEx(charged, COLOR_WHITE, "Ban bi thu $%d cap duong cho %s boi Judge %s.", fine, GetPlayerNameEx(recieved), GetPlayerNameEx(playerid));
 
 		GivePlayerCashEx(recieved, TYPE_ONHAND, fine);
-		SendClientMessageEx(recieved, COLOR_WHITE, "You have been given $%d from %s as alimony.", fine, GetPlayerNameEx(recieved));
+		SendClientMessageEx(recieved, COLOR_WHITE, "Ban nhan $%d tu %s lam cap duong.", fine, GetPlayerNameEx(recieved));
 
 		foreach(new i: Player) {
 			if(PlayerInfo[i][pAdmin] >= 3) {
@@ -1056,7 +1056,7 @@ CMD:alimony(playerid, params[]) {
 			}
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "That player is not online!");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi do khong online!");
 	return 1;
 }
 

@@ -42,40 +42,40 @@ CMD:selldrink(playerid, params[])
 		if(IsAtBar(playerid))
 		{
 			new giveplayerid;
-			if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /selldrink [player]");
+			if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /selldrink [player]");
 
 			if(IsPlayerConnected(giveplayerid))
 			{
 				if(playerid == giveplayerid)
 				{
-					return SendClientMessageEx(playerid, COLOR_GREY, " You can't sell drinks to yourself.");
+					return SendClientMessageEx(playerid, COLOR_GREY, " Khong the ban do uong cho chinh minh.");
 				}
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
 					DrinkOffer[giveplayerid] = playerid;
 					SetPVarInt(giveplayerid, "DrinkOfferSession", g_arrQueryHandle[playerid]);
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Bartender %s has offered has offered to pour you a drink. /accept drink to select a drink.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have offered %s a drink.",GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Bartender %s muon moi ban do uong. /accept drink de chon.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban moi %s do uong.",GetPlayerNameEx(giveplayerid));
 				}
 				else
 				{
-					return SendClientMessageEx(playerid, COLOR_GREY, " That person is not near you!");
+					return SendClientMessageEx(playerid, COLOR_GREY, " Nguoi do khong o gan ban!");
 				}
 			}
 			else
 			{
-				return SendClientMessageEx(playerid, COLOR_GREY, " That person is not connected!");
+				return SendClientMessageEx(playerid, COLOR_GREY, " Nguoi do chua ket noi!");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   You are not at a Bar!");
+			SendClientMessageEx(playerid, COLOR_GREY, "   Ban khong o tai Bar!");
 			return 1;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, " You are not a bartender!");
+		SendClientMessageEx(playerid, COLOR_GREY, " Ban khong phai bartender!");
 		return 1;
 	}
 	return 1;

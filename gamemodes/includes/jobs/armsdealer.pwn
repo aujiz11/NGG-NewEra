@@ -94,13 +94,13 @@ ArmsDealer_CanTrade(playerid)
 ArmsDealer_Check(dealer, recipient, recipe, viewer)
 {
 	if(!ArmsDealer_CanTrade(dealer) || (recipient != dealer && !ArmsDealer_CanTrade(recipient)))
-		return SendClientMessageEx(viewer, COLOR_GREY, "Both players must be available on foot to craft or receive a weapon."), 0;
+		return SendClientMessageEx(viewer, COLOR_GREY, "Ca hai phai san sang va di bo de che tao hoac nhan vu khi."), 0;
 	
 	if(!Job_HasJob(dealer, JOB_ARMS_DEALER))
-		return SendClientMessageEx(viewer, COLOR_GREY, "The seller is no longer an Arms Dealer."), 0;
+		return SendClientMessageEx(viewer, COLOR_GREY, "Nguoi ban khong con la Arms Dealer."), 0;
 	
 	if(PlayerInfo[recipient][pConnectHours] < 2 || PlayerInfo[recipient][pWRestricted] > 0)
-		return SendClientMessageEx(viewer, COLOR_GREY, "The recipient is currently weapon restricted."), 0;
+		return SendClientMessageEx(viewer, COLOR_GREY, "Nguoi nhan dang bi cam vu khi."), 0;
 	
 	if(recipient != dealer)
 	{
@@ -108,16 +108,16 @@ ArmsDealer_Check(dealer, recipient, recipe, viewer)
 		GetPlayerPos(dealer, x, y, z);
 		if(GetPlayerVirtualWorld(dealer) != GetPlayerVirtualWorld(recipient) || GetPlayerInterior(dealer) != GetPlayerInterior(recipient)
 			|| !IsPlayerInRangeOfPoint(recipient, 8.0, x, y, z))
-			return SendClientMessageEx(viewer, COLOR_GREY, "You must be near each other in the same interior and world."), 0;
+			return SendClientMessageEx(viewer, COLOR_GREY, "Hai nguoi phai o gan, cung interior va world."), 0;
 	}
 	if(PlayerInfo[dealer][pArmsSkill] < ArmsRecipes[recipe][armsSkill])
-		return SendClientMessageEx(viewer, COLOR_GREY, "The dealer does not have the required skill to craft this weapon."), 0;
+		return SendClientMessageEx(viewer, COLOR_GREY, "Nguoi ban chua du ky nang che tao vu khi nay."), 0;
 	
 	if(PlayerInfo[dealer][pDonateRank] < ArmsRecipes[recipe][armsVIP])
-		return SendClientMessageEx(viewer, COLOR_GREY, "Gold VIP is required to craft this weapon."), 0;
+		return SendClientMessageEx(viewer, COLOR_GREY, "Can Gold VIP de che tao vu khi nay."), 0;
 	
 	if(PlayerInfo[dealer][pMats] < ArmsRecipes[recipe][armsMaterials])
-		return SendClientMessageEx(viewer, COLOR_GREY, "The dealer does not have enough materials to craft this weapon."), 0;
+		return SendClientMessageEx(viewer, COLOR_GREY, "Nguoi ban khong du vat lieu che tao vu khi nay."), 0;
 	
 	return 1;
 }
@@ -130,10 +130,10 @@ ArmsDealer_Complete(dealer, recipient, recipe)
 	if(dealer != recipient && PlayerInfo[dealer][pDoubleEXP] > 0) gained *= 2;
 	if(PlayerInfo[dealer][pArmsSkill] > cellmax - gained) gained = cellmax - PlayerInfo[dealer][pArmsSkill];
 	PlayerInfo[dealer][pArmsSkill] += gained;
-	if(gained > 1) SendClientMessageEx(dealer, COLOR_YELLOW, "You gained %d arms dealer skill points with your Double EXP token. It has %d hours left.", gained, PlayerInfo[dealer][pDoubleEXP]);
+	if(gained > 1) SendClientMessageEx(dealer, COLOR_YELLOW, "Ban nhan %d diem arms dealer nho Double EXP. Token con %d gio.", gained, PlayerInfo[dealer][pDoubleEXP]);
 	new weapon[32], message[144];
 	GetWeaponName(ArmsRecipes[recipe][armsWeapon], weapon, sizeof(weapon));
-	format(message, sizeof(message), "%s crafts a %s from their materials, handing it to %s.", GetPlayerNameEx(dealer), weapon, GetPlayerNameEx(recipient));
+	format(message, sizeof(message), "%s che tao %s tu vat lieu, dua cho %s.", GetPlayerNameEx(dealer), weapon, GetPlayerNameEx(recipient));
 	ProxDetector(30.0, dealer, message, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
 	PlayerPlaySound(dealer, 1052, 0.0, 0.0, 0.0);
 	if(recipient != dealer) PlayerPlaySound(recipient, 1052, 0.0, 0.0, 0.0);
@@ -142,12 +142,12 @@ ArmsDealer_Complete(dealer, recipient, recipe)
 
 ArmsDealer_Accept(playerid)
 {
-	if(!GetPVarType(playerid, "pSellGunID")) return SendClientMessageEx(playerid, COLOR_GREY, "No one has offered you a weapon.");
+	if(!GetPVarType(playerid, "pSellGunID")) return SendClientMessageEx(playerid, COLOR_GREY, "Chua co ai de nghi vu khi cho ban.");
 	new dealer = GetPVarInt(playerid, "pSellGunID");
 	if(!Offer_IsCurrent(playerid, dealer, "pSellGunSession"))
 	{
 		ArmsDealer_ClearOffer(playerid);
-		return SendClientMessageEx(playerid, COLOR_GREY, "The weapon offer has expired.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "De nghi vu khi da het han.");
 	}
 	new weapon = GetPVarInt(playerid, "pSellGun"), recipe = -1;
 	for(new i; i < sizeof(ArmsRecipes); ++i)
@@ -161,7 +161,7 @@ ArmsDealer_Accept(playerid)
 	if(recipe == -1 || dealer == playerid)
 	{
 		ArmsDealer_ClearOffer(playerid);
-		return SendClientMessageEx(playerid, COLOR_GREY, "This weapon offer is no longer valid.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "De nghi vu khi nay khong con hop le.");
 	}
 	if(!ArmsDealer_Check(dealer, playerid, recipe, playerid)) return 1;
 	ArmsDealer_ClearOffer(playerid);
@@ -171,18 +171,18 @@ ArmsDealer_Accept(playerid)
 CMD:sellgun(playerid, params[])
 {
 	if(!Job_HasJob(playerid, JOB_ARMS_DEALER))
-		return SendClientMessageEx(playerid, COLOR_GREY, "You are not an Arms Dealer!");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai Arms Dealer!");
 	
 	if(!ArmsDealer_CanTrade(playerid)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot craft or offer weapons right now.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the che tao hay de nghi vu khi.");
 	
 	new now = gettime();
-	if(GetPVarInt(playerid, "pSellGunTime") > now) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must wait %d seconds before offering another weapon.", GetPVarInt(playerid, "pSellGunTime") - now);
+	if(GetPVarInt(playerid, "pSellGunTime") > now) return SendClientMessageEx(playerid, COLOR_GRAD1, "Hay cho %d giay de de nghi vu khi tiep.", GetPVarInt(playerid, "pSellGunTime") - now);
 	new target, name[16];
 	if(sscanf(params, "us[16]", target, name))
 	{
 		new line[128], entry[48];
-		SendClientMessageEx(playerid, COLOR_WHITE, "Available weapons and material costs:");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Vu khi va chi phi vat lieu:");
 		for(new i; i < sizeof(ArmsRecipes); ++i)
 		{
 			if(PlayerInfo[playerid][pArmsSkill] < ArmsRecipes[i][armsSkill]) continue;
@@ -196,7 +196,7 @@ CMD:sellgun(playerid, params[])
 			strcat(line, entry, sizeof(line));
 		}
 		if(line[0]) SendClientMessageEx(playerid, COLOR_WHITE, "%s", line);
-		return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /sellgun [playerid] [weapon]");
+		return SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /sellgun [playerid] [weapon]");
 	}
 	new recipe = -1;
 	for(new i; i < sizeof(ArmsRecipes); ++i)
@@ -207,7 +207,7 @@ CMD:sellgun(playerid, params[])
 			break;
 		}
 	}
-	if(recipe == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid weapon name. Use /sellgun to see available recipes.");
+	if(recipe == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ten vu khi sai. Dung /sellgun de xem cong thuc.");
 	if(!ArmsDealer_Check(playerid, target, recipe, playerid)) return 1;
 	if(target == playerid) ArmsDealer_Complete(playerid, playerid, recipe);
 	else
@@ -216,8 +216,8 @@ CMD:sellgun(playerid, params[])
 		SetPVarInt(target, "pSellGun", ArmsRecipes[recipe][armsWeapon]);
 		SetPVarInt(target, "pSellGunID", playerid);
 		SetPVarInt(target, "pSellGunSession", g_arrQueryHandle[playerid]);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You offered %s a %s.", GetPlayerNameEx(target), ArmsRecipes[recipe][armsName]);
-		SendClientMessageEx(target, COLOR_LIGHTBLUE, "%s offered to craft you a %s. Use /accept weapon to accept.", GetPlayerNameEx(playerid), ArmsRecipes[recipe][armsName]);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban moi %s nhan %s.", GetPlayerNameEx(target), ArmsRecipes[recipe][armsName]);
+		SendClientMessageEx(target, COLOR_LIGHTBLUE, "%s muon che tao cho ban %s. Dung /accept weapon de dong y.", GetPlayerNameEx(playerid), ArmsRecipes[recipe][armsName]);
 	}
 	SetPVarInt(playerid, "pSellGunTime", now + 10);
 	return 1;

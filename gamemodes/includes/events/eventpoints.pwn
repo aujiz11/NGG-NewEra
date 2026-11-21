@@ -55,7 +55,7 @@ LoadEventPoints() {
 			EventPoints[iIndex][epFlagable]
 		) && EventPoints[iIndex][epPosX] != 0.0) {
 			EventPoints[iIndex][epObjectID] = CreateDynamicPickup(1274, 1, EventPoints[iIndex][epPosX], EventPoints[iIndex][epPosY], EventPoints[iIndex][epPosZ], EventPoints[iIndex][epVW]);
-			format(szFileStr,sizeof(szFileStr),"Event Point (ID: %d)\nPrize: %s\nType /claimpoint to claim your prize!", iIndex, EventPoints[iIndex][epPrize]);
+			format(szFileStr,sizeof(szFileStr),"Diem su kien (ID: %d)\nThuong: %s\nDung /claimpoint de nhan thuong!", iIndex, EventPoints[iIndex][epPrize]);
 			EventPoints[iIndex][epText3dID] = CreateDynamic3DTextLabel(szFileStr, COLOR_YELLOW, EventPoints[iIndex][epPosX], EventPoints[iIndex][epPosY], EventPoints[iIndex][epPosZ]+0.5, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, EventPoints[iIndex][epVW], EventPoints[iIndex][epInt]);
 			++iIndex;
 		}
@@ -103,16 +103,16 @@ CMD:gotopoint(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay!");
 		return 1;
 	}
 
 	new points;
-	if(sscanf(params, "d", points)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotopoint [pointid]");
+	if(sscanf(params, "d", points)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gotopoint [pointid]");
 
 	if(points >= MAX_EVENTPOINTS || points < 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotopoint [pointid]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gotopoint [pointid]");
 		return 1;
 	}
 	SetPlayerPos(playerid, EventPoints[points][epPosX], EventPoints[points][epPosY], EventPoints[points][epPosZ]);
@@ -125,12 +125,12 @@ CMD:createpoint(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay!");
 		return 1;
 	}
 
 	new string[128], objectid, flagable, pointid, prize[64];
-	if(sscanf(params, "ddds[64]", objectid, flagable, pointid, prize)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /createpoint [objectid] [flagable] [pointid] [prize]");
+	if(sscanf(params, "ddds[64]", objectid, flagable, pointid, prize)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /createpoint [objectid] [flagable] [pointid] [prize]");
 
 	if(EventPoints[pointid][epObjectID] != 0)
 	{
@@ -161,11 +161,11 @@ CMD:createpoint(playerid, params[])
 	EventPoints[pointid][epFlagable] = flagable;
 	format(EventPoints[pointid][epPrize], 64, "%s", prize);
 
-	format(string,sizeof(string),"Event Point (ID: %d)\nPrize: %s\nType /claimpoint to claim your prize!", pointid, EventPoints[pointid][epPrize]);
+	format(string,sizeof(string),"Diem su kien (ID: %d)\nThuong: %s\nDung /claimpoint de nhan thuong!", pointid, EventPoints[pointid][epPrize]);
 	EventPoints[pointid][epObjectID] = CreateDynamicPickup(objectid, 1, EventPoints[pointid][epPosX], EventPoints[pointid][epPosY], EventPoints[pointid][epPosZ], EventPoints[pointid][epVW]);
 	EventPoints[pointid][epText3dID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, EventPoints[pointid][epPosX], EventPoints[pointid][epPosY], EventPoints[pointid][epPosZ]+0.5, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, EventPoints[pointid][epVW], EventPoints[pointid][epInt]);
 
-	SendClientMessageEx(playerid, COLOR_GRAD2, "You have placed PointID %d at your current position.", pointid);
+	SendClientMessageEx(playerid, COLOR_GRAD2, "Da dat diem ID %d tai vi tri cua ban.", pointid);
 	return 1;
 }
 
@@ -173,12 +173,12 @@ CMD:deletepoint(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay!");
 		return 1;
 	}
 
 	new pointid;
-	if(sscanf(params, "d", pointid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deletepoint [pointid]");
+	if(sscanf(params, "d", pointid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /deletepoint [pointid]");
 
 	if(pointid >= MAX_EVENTPOINTS || pointid < 0)
 	{
@@ -201,7 +201,7 @@ CMD:deletepoint(playerid, params[])
 		EventPoints[pointid][epFlagable] = 0;
 		format(EventPoints[pointid][epPrize], 64, "");
 
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You have deleted PointID %d from the server.", pointid);
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Da xoa diem ID %d khoi may chu.", pointid);
 	}
 	return 1;
 }
@@ -216,14 +216,14 @@ CMD:claimpoint(playerid, params[])
 			{
 				new string[128];
 
-				SendClientMessageEx(playerid, COLOR_GRAD2, " Congratulations you have won a Special Prize (%s)!", EventPoints[p][epPrize]);
-				SendClientMessageEx(playerid, COLOR_GRAD2, " Note: This prize may take up to 48 hours to be rewarded..");
+				SendClientMessageEx(playerid, COLOR_GRAD2, " Chuc mung ban da nhan Special Prize (%s)!", EventPoints[p][epPrize]);
+				SendClientMessageEx(playerid, COLOR_GRAD2, " Luu y: Co the can toi 48 gio de nhan thuong..");
 				if(EventPoints[p][epFlagable] == 1)
 				{
 					format(string, 128, "Special Prize (%s)", EventPoints[p][epPrize]);
                     AddFlag(playerid, INVALID_PLAYER_ID, string);
 				}
-				format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has just found PointID %d, they are now pending a special prize.", GetPlayerNameEx(playerid), p);
+				format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s vua tim thay diem ID %d, dang cho nhan thuong dac biet.", GetPlayerNameEx(playerid), p);
 				ABroadCast(COLOR_YELLOW, string, 4);
 
 				format(string, sizeof(string), "AdmCmd: %s(%d) has just found PointID %d, Prize: %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), p, EventPoints[p][epPrize]);
@@ -257,6 +257,6 @@ CMD:claimpoints(playerid, params[])
 	{
 		if(EventPoints[i][epPosX] != 0.0) amount++;
 	}
-	SendClientMessageEx(playerid, -1, "There are %d available claim points on the map!", amount);
+	SendClientMessageEx(playerid, -1, "Con %d diem nhan thuong tren ban do!", amount);
 	return 1;
 }

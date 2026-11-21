@@ -48,9 +48,9 @@ stock UpdateVehicleHUDForPlayer(p, fuel, speed)
 	}
 
 	if (IsVIPcar(vehicleid) || IsAdminSpawnedVehicle(vehicleid) || IsFamedVeh(vehicleid) || GetVehicleModel(vehicleid) == 481 || GetVehicleModel(vehicleid) == 509 || GetVehicleModel(vehicleid) == 510)
-		format(str, sizeof(str), "~b~Fuel: ~w~U");
+		format(str, sizeof(str), "~b~Xang: ~w~U");
 	else
-		format(str, sizeof(str), "~b~Fuel: ~w~%i",fuel);
+		format(str, sizeof(str), "~b~Xang: ~w~%i",fuel);
 
 	PlayerTextDrawSetString(p, _vhudTextFuel[p], str);
 
@@ -59,23 +59,23 @@ stock UpdateVehicleHUDForPlayer(p, fuel, speed)
 	
 	if(Seatbelt[p] == 0)
 	{
-		format(str, sizeof(str), "~b~%s: ~r~OFF", IsABike(vehicleid) ? ("HM"):("SB"));
+		format(str, sizeof(str), "~b~%s: ~r~TAT", IsABike(vehicleid) ? ("HM"):("SB"));
 		PlayerTextDrawSetString(p, _vhudSeatBelt[p], str);
 	}
 	else if(Seatbelt[p] == 2) {
-		format(str, sizeof(str), "~b~HM: ~g~ON");
+		format(str, sizeof(str), "~b~HM: ~g~BAT");
 		PlayerTextDrawSetString(p, _vhudSeatBelt[p], str);
 	}
 	else {
-		format(str, sizeof(str), "~b~SB: ~g~ON");
+		format(str, sizeof(str), "~b~SB: ~g~BAT");
 		PlayerTextDrawSetString(p, _vhudSeatBelt[p], str);
 	}
 	if(lights != VEHICLE_PARAMS_ON) {
-		format(str, sizeof(str), "~b~Lights: ~r~OFF");
+		format(str, sizeof(str), "~b~Den: ~r~TAT");
 		PlayerTextDrawSetString(p, _vhudLights[p], str);	
 	}
 	else {
-		format(str, sizeof(str), "~b~Lights: ~g~ON");
+		format(str, sizeof(str), "~b~Den: ~g~BAT");
 		PlayerTextDrawSetString(p, _vhudLights[p], str);
 	}
 }
@@ -128,7 +128,7 @@ CMD:speedopos(playerid, params[])
 {
 	if (GetPlayerState(playerid) != PLAYER_STATE_DRIVER && GetPlayerState(playerid) != PLAYER_STATE_PASSENGER )
 	{
-		return SendClientMessageEx(playerid, COLOR_GREY, "You're not driving a vehicle.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong dang lai xe.");
 	}
 	if (PlayerInfo[playerid][pSpeedo])
 	{
@@ -137,13 +137,13 @@ CMD:speedopos(playerid, params[])
 		{
 			if(TPosX[0] < 0 || TPosX[0] > 640)
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /speedopos (optional) [X] [Y]");
-				return SendClientMessageEx(playerid, COLOR_GREY, "X must be above 0 and below 640");
+				SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /speedopos (optional) [X] [Y]");
+				return SendClientMessageEx(playerid, COLOR_GREY, "X phai lon hon 0 va nho hon 640");
 			}
 			if(TPosY[0] < 0 || TPosY[0] > 640)
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /speedopos (optional) [X] [Y]");
-				return SendClientMessageEx(playerid, COLOR_GREY, "Y must be above 0 and below 480");
+				SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /speedopos (optional) [X] [Y]");
+				return SendClientMessageEx(playerid, COLOR_GREY, "Y phai lon hon 0 va nho hon 480");
 			}
 			TPosX[1] = TPosX[0] + 60.0;
 			TPosY[1] = TPosY[0] + 17.0;
@@ -180,7 +180,7 @@ CMD:speedopos(playerid, params[])
 		}
 		
 		PlayerTextDrawDestroy(playerid, _vhudTextFuel[playerid]);
-		_vhudTextFuel[playerid] = CreatePlayerTextDraw(playerid, TPosX[0], TPosY[0], "~b~Fuel: N/A");
+		_vhudTextFuel[playerid] = CreatePlayerTextDraw(playerid, TPosX[0], TPosY[0], "~b~Xang: N/A");
 		PlayerTextDrawBackgroundColor(playerid, _vhudTextFuel[playerid], 255);
 		PlayerTextDrawFont(playerid, _vhudTextFuel[playerid], 1);
 		PlayerTextDrawLetterSize(playerid, _vhudTextFuel[playerid], 0.270000, 2.000000);
@@ -198,7 +198,7 @@ CMD:speedopos(playerid, params[])
 		PlayerTextDrawSetProportional(playerid, _vhudTextSpeed[playerid], true);
 
 		PlayerTextDrawDestroy(playerid, _vhudSeatBelt[playerid]);
-		_vhudSeatBelt[playerid] = CreatePlayerTextDraw(playerid, TPosX[1], TPosY[1], "~b~SB: ~r~OFF");
+		_vhudSeatBelt[playerid] = CreatePlayerTextDraw(playerid, TPosX[1], TPosY[1], "~b~SB: ~r~TAT");
 		PlayerTextDrawBackgroundColor(playerid, _vhudSeatBelt[playerid], 255);
 		PlayerTextDrawFont(playerid, _vhudSeatBelt[playerid], 1);
 		PlayerTextDrawLetterSize(playerid, _vhudSeatBelt[playerid], 0.270000, 2.000000);
@@ -207,7 +207,7 @@ CMD:speedopos(playerid, params[])
 		PlayerTextDrawSetProportional(playerid, _vhudSeatBelt[playerid], true);
 
 		PlayerTextDrawDestroy(playerid, _vhudLights[playerid]);
-		_vhudLights[playerid] = CreatePlayerTextDraw(playerid, TPosX[0], TPosY[1], "~b~Lights: ~r~OFF");
+		_vhudLights[playerid] = CreatePlayerTextDraw(playerid, TPosX[0], TPosY[1], "~b~Den: ~r~TAT");
 		PlayerTextDrawBackgroundColor(playerid, _vhudLights[playerid], 255);
 		PlayerTextDrawFont(playerid, _vhudLights[playerid], 1);
 		PlayerTextDrawLetterSize(playerid, _vhudLights[playerid], 0.270000, 2.000000);
@@ -216,7 +216,7 @@ CMD:speedopos(playerid, params[])
 		PlayerTextDrawSetProportional(playerid, _vhudLights[playerid], true);
 		
 		ShowVehicleHUDForPlayer(playerid);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have moved the position of your speedometer.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da doi vi tri dong ho toc do.");
 
 	}
 	return 1;
@@ -226,17 +226,17 @@ CMD:speedo(playerid, params[])
 {
 	if (GetPlayerState(playerid) != PLAYER_STATE_DRIVER && GetPlayerState(playerid) != PLAYER_STATE_PASSENGER )
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not driving a vehicle.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong dang lai xe.");
 	}
 	else if (!PlayerInfo[playerid][pSpeedo])
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled your speedometer.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da bat dong ho toc do.");
 		PlayerInfo[playerid][pSpeedo] = 1;
 		ShowVehicleHUDForPlayer(playerid);
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled your speedometer.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da tat dong ho toc do.");
 		PlayerInfo[playerid][pSpeedo] = 0;
 		HideVehicleHUDForPlayer(playerid);
 	}

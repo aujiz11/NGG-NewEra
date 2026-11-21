@@ -4,28 +4,28 @@ stock ShowStats(playerid,targetid)
 	{
 		new resultline[1024], header[65], org[128], employer[GROUP_MAX_NAME_LEN], rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN];
 		new sext[16], std[20], nation[24], biz[128];
-		if(PlayerInfo[targetid][pSex] == 1) { sext = "Male"; } else { sext = "Female"; }
+		if(PlayerInfo[targetid][pSex] == 1) { sext = "Nam"; } else { sext = "Nu"; }
 		switch(GetPVarInt(targetid, "STD"))
 		{
 		    case 1: std = "Chlamydia";
 		    case 2: std = "Gonorrhea";
 		    case 3: std = "Syphilis";
-		    default: std = "None";
+		    default: std = "Khong";
 		}
 		if(PlayerInfo[targetid][pMember] != INVALID_GROUP_ID)
 		{
 			GetPlayerGroupInfo(targetid, rank, division, employer);
-			format(org, sizeof(org), "Group: %s (%d)\nRank: %s (%d)\nDivision: %s (%d)\n", employer, PlayerInfo[targetid][pMember], rank, PlayerInfo[targetid][pRank], division, PlayerInfo[targetid][pDivision]);
-			if(arrGroupData[PlayerInfo[targetid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL) format(org, sizeof(org), "%sBadge Number: %s\n", org, PlayerInfo[targetid][pBadge]);
+			format(org, sizeof(org), "To chuc: %s (%d)\nCap: %s (%d)\nDon vi: %s (%d)\n", employer, PlayerInfo[targetid][pMember], rank, PlayerInfo[targetid][pRank], division, PlayerInfo[targetid][pDivision]);
+			if(arrGroupData[PlayerInfo[targetid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL) format(org, sizeof(org), "%sSo hieu: %s\n", org, PlayerInfo[targetid][pBadge]);
 		}
 		else format(org, sizeof(org), "");
-		if(PlayerInfo[targetid][pBusiness] != INVALID_BUSINESS_ID) format(biz, sizeof(biz), "Business: %s (%d)\nRank: %s (%d)\n", Businesses[PlayerInfo[targetid][pBusiness]][bName], PlayerInfo[targetid][pBusiness], GetBusinessRankName(PlayerInfo[targetid][pBusinessRank]), PlayerInfo[targetid][pBusinessRank]);
+		if(PlayerInfo[targetid][pBusiness] != INVALID_BUSINESS_ID) format(biz, sizeof(biz), "DN: %s (%d)\nCap: %s (%d)\n", Businesses[PlayerInfo[targetid][pBusiness]][bName], PlayerInfo[targetid][pBusiness], GetBusinessRankName(PlayerInfo[targetid][pBusinessRank]), PlayerInfo[targetid][pBusinessRank]);
 		else format(biz, sizeof(biz), "");
 		switch(PlayerInfo[targetid][pNation])
 		{
 			case 0: nation = "San Andreas";
 			case 1: nation = "New Robada";
-			case 2: nation = "None";
+			case 2: nation = "Khong";
 		}
 		new insur[32];
 		insur = GetHospitalName(PlayerInfo[targetid][pInsurance]);
@@ -78,7 +78,7 @@ stock ShowStats(playerid,targetid)
 				case 4: dprank = "{336600}Dedicated Moderator{FFFFFF}\n";
 			}
 		}
-		if(PlayerInfo[targetid][pMarriedID] == -1) format(PlayerInfo[targetid][pMarriedName], MAX_PLAYER_NAME, "Nobody");
+		if(PlayerInfo[targetid][pMarriedID] == -1) format(PlayerInfo[targetid][pMarriedName], MAX_PLAYER_NAME, "Khong ai");
 		new nxtlevel = PlayerInfo[targetid][pLevel]+1;
 		new expamount = nxtlevel*4;
 		new Float:health, Float:armor;
@@ -91,35 +91,35 @@ stock ShowStats(playerid,targetid)
 		new fifstr[128];
 		if(FIFEnabled)
 		{
-			format(fifstr, sizeof(fifstr), "{FF8000}FIF Hours:{FFFFFF} %d\n{FF8000}FIF Chances:{FFFFFF} %d\n", FIFInfo[targetid][FIFHours], FIFInfo[targetid][FIFChances]);
+			format(fifstr, sizeof(fifstr), "{FF8000}Gio FIF:{FFFFFF} %d\n{FF8000}Luot FIF:{FFFFFF} %d\n", FIFInfo[targetid][FIFHours], FIFInfo[targetid][FIFChances]);
 		}
 		SetPVarInt(playerid, "ShowStats", targetid);
-		format(header, sizeof(header), "Showing Statistics of %s", GetPlayerNameEx(targetid));
+		format(header, sizeof(header), "Thong tin cua %s", GetPlayerNameEx(targetid));
 		format(resultline, sizeof(resultline),"%s\n\
 			%s\
 			%s\
 			%s\
 			%s\
 			%s\
-			{FFFFFF}Level: %d\n\
-			Gender: %s\n\
-			Date of Birth: %s\n\
-			Current Location: %s (%0.2f, %0.2f, %0.2f)\n\
-			Married To: %s\n\
-			Health: %.1f\n\
-			Armor: %.1f\n\
-			Playing Hours: %s\n\
-			Dedicated Hours: %s\n\
-			Fitness: %d\n\
-			Upgrade Points: %s\n\
-			Next Level: %s{303030}/{FFFFFF}%s hours\n\
-			Nation: %s\n\
+			{FFFFFF}Cap: %d\n\
+			Gioi tinh: %s\n\
+			Ngay sinh: %s\n\
+			Vi tri: %s (%0.2f, %0.2f, %0.2f)\n\
+			Ket hon voi: %s\n\
+			Mau: %.1f\n\
+			Giap: %.1f\n\
+			Gio choi: %s\n\
+			Gio Dedicated: %s\n\
+			The luc: %d\n\
+			Diem nang cap: %s\n\
+			Cap tiep theo: %s{303030}/{FFFFFF}%s gio\n\
+			Quoc gia: %s\n\
 			%s\
 			%s\
-			Job: %s (Level: %d)\n\
-			Job 2: %s (Level: %d)\n\
-			Job 3: %s (Level: %d)\n\
-			Insurance: %s",
+			Cong viec: %s (Cap: %d)\n\
+			Cong viec 2: %s (Cap: %d)\n\
+			Cong viec 3: %s (Cap: %d)\n\
+			Bao hiem: %s",
 			staffrank,
 			famedrank,
 			dprank,
@@ -149,7 +149,7 @@ stock ShowStats(playerid,targetid)
 			GetJobName(PlayerInfo[targetid][pJob3]),
 			GetJobLevel(targetid, PlayerInfo[targetid][pJob3]),
 			insur);
-		ShowPlayerDialogEx(playerid, DISPLAY_STATS, DIALOG_STYLE_MSGBOX, header, resultline, "Next Page", "Close");
+		ShowPlayerDialogEx(playerid, DISPLAY_STATS, DIALOG_STYLE_MSGBOX, header, resultline, "Trang tiep", "Dong");
 	}
 	return 1;
 }

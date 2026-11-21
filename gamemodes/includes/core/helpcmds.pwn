@@ -365,7 +365,7 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 				DeletePVar(playerid, string);
 			}
 			new iGroupID = PlayerInfo[playerid][pMember], j = 0;
-			format(szMiscArray, sizeof(szMiscArray), "Search\n");
+			format(szMiscArray, sizeof(szMiscArray), "Tim kiem\n");
 			format(string, sizeof(string), "HelpResultMainCat%i", j);
 			SetPVarInt(playerid, string, 0);
 			j++;
@@ -392,41 +392,41 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			}
 			if(PlayerInfo[playerid][pLevel] <= 3)
 			{
-				format(szMiscArray, sizeof(szMiscArray), "%sNewbie Help\n", szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%sHo tro nguoi moi\n", szMiscArray);
 				format(string, sizeof(string), "HelpResultMainCat%i", j);
 				SetPVarInt(playerid, string, 4);
 				j++;
 			}
-			format(szMiscArray, sizeof(szMiscArray), "%sGeneral\n", szMiscArray);
+			format(szMiscArray, sizeof(szMiscArray), "%sChung\n", szMiscArray);
 			format(string, sizeof(string), "HelpResultMainCat%i", j);
 			SetPVarInt(playerid, string, 5);
 			j++;
-			format(szMiscArray, sizeof(szMiscArray), "%sAccount\n", szMiscArray);
+			format(szMiscArray, sizeof(szMiscArray), "%sTai khoan\n", szMiscArray);
 			format(string, sizeof(string), "HelpResultMainCat%i", j);
 			SetPVarInt(playerid, string, 6);
 			j++;
-			format(szMiscArray, sizeof(szMiscArray), "%sChat\n", szMiscArray);
+			format(szMiscArray, sizeof(szMiscArray), "%sTro chuyen\n", szMiscArray);
 			format(string, sizeof(string), "HelpResultMainCat%i", j);
 			SetPVarInt(playerid, string, 7);
 			j++;
-			format(szMiscArray, sizeof(szMiscArray), "%sShop\n", szMiscArray);
+			format(szMiscArray, sizeof(szMiscArray), "%sCua hang\n", szMiscArray);
 			format(string, sizeof(string), "HelpResultMainCat%i", j);
 			SetPVarInt(playerid, string, 8);
 			j++;
-			format(szMiscArray, sizeof(szMiscArray), "%sJob\n", szMiscArray);
+			format(szMiscArray, sizeof(szMiscArray), "%sNghe\n", szMiscArray);
 			format(string, sizeof(string), "HelpResultMainCat%i", j);
 			SetPVarInt(playerid, string, 9);
 			j++;
 			if(0 <= iGroupID < MAX_GROUPS)
 			{
-				format(szMiscArray, sizeof(szMiscArray), "%sGroup\n", szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%sTo chuc\n", szMiscArray);
 				format(string, sizeof(string), "HelpResultMainCat%i", j);
 				SetPVarInt(playerid, string, 10);
 				j++;
 			}
 			if(IsValidBusinessID(PlayerInfo[playerid][pBusiness]))
 			{
-				format(szMiscArray, sizeof(szMiscArray), "%sBusiness\n", szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%sDoanh nghiep\n", szMiscArray);
 				format(string, sizeof(string), "HelpResultMainCat%i", j);
 				SetPVarInt(playerid, string, 11);
 				j++;
@@ -438,28 +438,28 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 				SetPVarInt(playerid, string, 12);
 				j++;
 			}
-			format(szMiscArray, sizeof(szMiscArray), "%sOther", szMiscArray);
+			format(szMiscArray, sizeof(szMiscArray), "%sKhac", szMiscArray);
 			format(string, sizeof(string), "HelpResultMainCat%i", j);
 			SetPVarInt(playerid, string, 13);
-			ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
 		}
-		case DIALOG_HELPSEARCH0: ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH1, DIALOG_STYLE_LIST, "Help System - Search", "Search by Command & Description\nSearch by Command Only\nSearch by Description Only", "Select", "Go Back");
+		case DIALOG_HELPSEARCH0: ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH1, DIALOG_STYLE_LIST, "Tro giup - Tim kiem", "Tim theo lenh va mo ta\nChi tim theo lenh\nChi tim theo mo ta", "Chon", "Quay lai");
 		case DIALOG_HELPSEARCH1:
 		{
 			SetPVarInt(playerid, "HelpSearchType", listitem);
 			switch(listitem)
 			{
-				case 0: ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH2, DIALOG_STYLE_INPUT, "Help System - Search (Command & Description)", "Search:", "Search", "Go Back");
-				case 1: ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH2, DIALOG_STYLE_INPUT, "Help System - Search (Command)", "Search:", "Search", "Go Back");
-				case 2: ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH2, DIALOG_STYLE_INPUT, "Help System - Search (Description)", "Search:", "Search", "Go Back");
+				case 0: ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH2, DIALOG_STYLE_INPUT, "Tim kiem - Lenh va mo ta", "Tim:", "Tim", "Quay lai");
+				case 1: ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH2, DIALOG_STYLE_INPUT, "Tim kiem - Lenh", "Tim:", "Tim", "Quay lai");
+				case 2: ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH2, DIALOG_STYLE_INPUT, "Tim kiem - Mo ta", "Tim:", "Tim", "Quay lai");
 			}
 		}
 		case DIALOG_HELPSEARCH2:
 		{
 			Help_GenerateCMDList(playerid, GetPVarInt(playerid, "HelpSearchType"), -1, 0, 0, inputtext);
 			DeletePVar(playerid, "HelpSearchType");
-			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH3, DIALOG_STYLE_LIST, "Help System - Search Results", szMiscArray, "Select", "Go Back");
-			else ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH0, DIALOG_STYLE_MSGBOX, "Help System - Search Results", "No results found! Please try another search term.", "Go Back", "");
+			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH3, DIALOG_STYLE_LIST, "Tro giup - Ket qua tim kiem", szMiscArray, "Chon", "Quay lai");
+			else ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH0, DIALOG_STYLE_MSGBOX, "Tro giup - Ket qua tim kiem", "Khong co ket qua! Hay thu tu khoa khac.", "Quay lai", "");
 		}
 		case DIALOG_HELPSEARCH3:
 		{
@@ -475,7 +475,7 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 		}
 		case DIALOG_HELPSEARCH_INPUTLIMIT:
 		{
-			ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH_INPUTLIMIT, DIALOG_STYLE_MSGBOX, "Help System - Search", "Minimum of 2 characters required to search!", "Go Back", "");
+			ShowPlayerDialogEx(playerid, DIALOG_HELPSEARCH_INPUTLIMIT, DIALOG_STYLE_MSGBOX, "Tro giup - Tim kiem", "Can it nhat 2 ky tu de tim kiem!", "Quay lai", "");
 		}
 		case DIALOG_HELPCATADMIN:
 		{
@@ -608,8 +608,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 				format(szMiscArray, sizeof(szMiscArray), "%sBan Appealer\n", szMiscArray);
 			}
 			Help_GenerateCMDList(playerid, 3, j, 1, 0);
-			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATADMIN, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATADMIN, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 		}
 		case DIALOG_HELPCATADMIN1:
 		{
@@ -618,11 +618,11 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				Help_GenerateCMDList(playerid, 3, -1, 1, GetPVarInt(playerid, string));
 				ClearHelpSearch(playerid, 0, 1);
-				if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATADMIN, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
+				if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATADMIN, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
 				else
 				{
 					SetPVarInt(playerid, "HelpResultMainCat0", 1);
-					ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+					ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 				}
 			}
 			else
@@ -667,8 +667,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 				format(szMiscArray, sizeof(szMiscArray), "%sChief Advisor\n", szMiscArray);
 			}
 			Help_GenerateCMDList(playerid, 3, j, 2, 0);
-			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATADVISOR, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATADVISOR, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 		}
 		case DIALOG_HELPCATADVISOR1:
 		{
@@ -677,8 +677,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				Help_GenerateCMDList(playerid, 3, -1, 2, GetPVarInt(playerid, string));
 				ClearHelpSearch(playerid, 0, 1);
-				if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATADVISOR, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-				else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+				if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATADVISOR, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+				else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 			}
 			else
 			{
@@ -729,8 +729,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 				format(szMiscArray, sizeof(szMiscArray), "%sFamed Vice-Chairman\n", szMiscArray);
 			}
 			Help_GenerateCMDList(playerid, 3, j, 3, 0);
-			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATFAMED, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATFAMED, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 		}
 		case DIALOG_HELPCATFAMED1:
 		{
@@ -739,8 +739,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				Help_GenerateCMDList(playerid, 3, -1, 3, GetPVarInt(playerid, string));
 				ClearHelpSearch(playerid, 0, 1);
-				if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATFAMED, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-				else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+				if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATFAMED, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+				else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 			}
 			else
 			{
@@ -754,8 +754,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 		case DIALOG_HELPCATNEWB:
 		{
 			Help_GenerateCMDList(playerid, 3, -1, 4, 0);
-			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATNEWB, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATNEWB, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 		}
 		case DIALOG_HELPCATNEWB1:
 		{
@@ -768,8 +768,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 		case DIALOG_HELPCATGENERAL:
 		{
 			Help_GenerateCMDList(playerid, 3, -1, 5, 0);
-			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATGENERAL, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATGENERAL, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 		}
 		case DIALOG_HELPCATGENERAL1:
 		{
@@ -782,8 +782,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 		case DIALOG_HELPCATACCOUNT:
 		{
 			Help_GenerateCMDList(playerid, 3, -1, 6, 0);
-			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATACCOUNT, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATACCOUNT, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 		}
 		case DIALOG_HELPCATACCOUNT1:
 		{
@@ -796,8 +796,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 		case DIALOG_HELPCATCHAT:
 		{
 			Help_GenerateCMDList(playerid, 3, -1, 7, 0);
-			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATCHAT, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATCHAT, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 		}
 		case DIALOG_HELPCATCHAT1:
 		{
@@ -810,8 +810,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 		case DIALOG_HELPCATSHOP:
 		{
 			Help_GenerateCMDList(playerid, 3, -1, 8, 0);
-			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATSHOP, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATSHOP, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 		}
 		case DIALOG_HELPCATSHOP1:
 		{
@@ -835,8 +835,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 				strcat(szMiscArray, line, sizeof(szMiscArray));
 			}
 			Help_GenerateCMDList(playerid, 3, -1, 9, 0);
-			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATJOB, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATJOB, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 		}
 		case DIALOG_HELPCATJOB1:
 		{			
@@ -845,8 +845,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				Help_GenerateCMDList(playerid, 3, -1, 9, GetPVarInt(playerid, string));
 				ClearHelpSearch(playerid, 0, 1);
-				if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATJOB, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-				else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+				if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATJOB, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+				else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 			}
 			else
 			{
@@ -870,8 +870,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 				format(szMiscArray, sizeof(szMiscArray), "Leadership\n");
 			}
 			Help_GenerateCMDList(playerid, 3, j, 10, arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType]);
-			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATGROUP, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATGROUP, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 		}
 		case DIALOG_HELPCATGROUP1:
 		{
@@ -881,8 +881,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				Help_GenerateCMDList(playerid, 3, -1, 11, arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType]);
 				ClearHelpSearch(playerid, 0, 1);
-				if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATGROUP, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-				else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+				if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATGROUP, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+				else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 			}
 			else
 			{
@@ -897,8 +897,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 		{
 			if(!IsValidBusinessID(PlayerInfo[playerid][pBusiness])) return Help_ListCat(playerid);
 			Help_GenerateCMDList(playerid, 3, -1, 12, Businesses[PlayerInfo[playerid][pBusiness]][bType]);
-			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATBUSINESS, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATBUSINESS, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 		}
 		case DIALOG_HELPCATBUSINESS1:
 		{
@@ -946,8 +946,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 				format(szMiscArray, sizeof(szMiscArray), "%sPlatinum VIP\n", szMiscArray);
 			}
 			Help_GenerateCMDList(playerid, 3, -1, 13, 0);
-			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATVIP, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATVIP, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 		}
 		case DIALOG_HELPCATVIP1:
 		{
@@ -956,8 +956,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				Help_GenerateCMDList(playerid, 3, -1, 13, GetPVarInt(playerid, string));
 				ClearHelpSearch(playerid, 0, 1);
-				if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATVIP, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-				else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+				if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATVIP, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+				else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 			}
 			else
 			{
@@ -977,56 +977,56 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 1);
 				j++;
-				format(szMiscArray, sizeof(szMiscArray), "Animation\n");
+				format(szMiscArray, sizeof(szMiscArray), "Hoat anh\n");
 			}
 			if(Help_Perm(playerid, 14, 2, 1))
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 2);
 				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sBackpack\n", szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%sBa lo\n", szMiscArray);
 			}
 			if(Help_Perm(playerid, 14, 3, 1))
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 3);
 				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sCar\n", szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%sXe\n", szMiscArray);
 			}
 			if(Help_Perm(playerid, 14, 4, 1))
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 4);
 				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sCellphone\n", szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%sDien thoai\n", szMiscArray);
 			}
 			if(Help_Perm(playerid, 14, 5, 1))
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 5);
 				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sFish\n", szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%sCau ca\n", szMiscArray);
 			}
 			if(Help_Perm(playerid, 14, 6, 1))
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 6);
 				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sHouse\n", szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%sNha\n", szMiscArray);
 			}
 			if(Help_Perm(playerid, 14, 7, 1))
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 7);
 				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sMail\n", szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%sThu tin\n", szMiscArray);
 			}
 			if(Help_Perm(playerid, 14, 8, 1))
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 8);
 				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sRent\n", szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%sThue nha\n", szMiscArray);
 			}
 			if(Help_Perm(playerid, 14, 9, 1))
 			{
@@ -1042,8 +1042,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 				format(szMiscArray, sizeof(szMiscArray), "%sVoucher\n", szMiscArray);
 			}
 			Help_GenerateCMDList(playerid, 3, -1, 14, 0);
-			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATOTHER, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+			if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATOTHER, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+			else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 		}
 		case DIALOG_HELPCATOTHER1:
 		{
@@ -1052,8 +1052,8 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 			{
 				Help_GenerateCMDList(playerid, 3, -1, 14, GetPVarInt(playerid, string));
 				ClearHelpSearch(playerid, 0, 1);
-				if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATOTHER, DIALOG_STYLE_LIST, "Help System", szMiscArray, "Select", "Cancel");
-				else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "Help System", "No commands found for this category.", "Go Back", "");
+				if(!isnull(szMiscArray)) ShowPlayerDialogEx(playerid, DIALOG_HELPCATOTHER, DIALOG_STYLE_LIST, "He thong tro giup", szMiscArray, "Chon", "Huy");
+				else ShowPlayerDialogEx(playerid, DIALOG_HELPCATMAIN, DIALOG_STYLE_MSGBOX, "He thong tro giup", "Danh muc nay chua co lenh.", "Quay lai", "");
 			}
 			else
 			{
@@ -1089,7 +1089,7 @@ stock Help_GenerateCMDList(playerid, listtype, listitem = -1, type = 0, subtype 
 		}
 		if(j >= MAX_HELP_RESULTS || strlen(szMiscArray) + strlen(Help[i][HelpName]) + 1 >= sizeof(szMiscArray))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "The help list is full. Use Search with a more specific command or description to find other results.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Danh sach tro giup da day. Hay tim lenh hoac mo ta cu the hon de xem ket qua khac.");
 			break;
 		}
 		format(string, sizeof(string), "HelpResult%i", j++);
@@ -1105,16 +1105,16 @@ stock Help_ShowCMD(playerid, cmd, dialog)
 	if(!(0 <= cmd < HelpCount) || !Help_Perm(playerid, Help[cmd][HelpType], Help[cmd][HelpSubtype], Help[cmd][HelpLevel])) return Help_ListCat(playerid);
 	new string[64];
 	SetPVarInt(playerid, "TmpCMD", cmd);
-	format(string, sizeof(string), "Command Help for %s", Help[cmd][HelpName]);
-	format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Usage: {AFAFAF}%s %s\n\n{FFFFFF}Description: {AFAFAF}%s\n\t\t\t\t\t", Help[cmd][HelpName], Help[cmd][HelpParam], Help[cmd][HelpDesc]);
-	return ShowPlayerDialogEx(playerid, dialog, DIALOG_STYLE_MSGBOX, string, szMiscArray, "Copy", "Exit");
+	format(string, sizeof(string), "Huong dan lenh %s", Help[cmd][HelpName]);
+	format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Cu phap: {AFAFAF}%s %s\n\n{FFFFFF}Mo ta: {AFAFAF}%s\n\t\t\t\t\t", Help[cmd][HelpName], Help[cmd][HelpParam], Help[cmd][HelpDesc]);
+	return ShowPlayerDialogEx(playerid, dialog, DIALOG_STYLE_MSGBOX, string, szMiscArray, "Sao chep", "Thoat");
 }
 
 stock Help_SendToChat(playerid, response, cmd)
 {
 	if(response && GetPVarType(playerid, "TmpCMD") && 0 <= cmd < HelpCount && Help_Perm(playerid, Help[cmd][HelpType], Help[cmd][HelpSubtype], Help[cmd][HelpLevel]))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: %s %s", Help[cmd][HelpName], Help[cmd][HelpParam]);
+		SendClientMessageEx(playerid, COLOR_GREY, "DUNG: %s %s", Help[cmd][HelpName], Help[cmd][HelpParam]);
 	}
 }
 
@@ -1308,14 +1308,14 @@ stock ClearHelpSearch(playerid, Clear1 = 1, Clear2 = 1)
 
 CMD:rules(playerid, params[])
 {
-	format(szMiscArray, sizeof(szMiscArray), "Death Matching: Attacking a player in any way without a proper in character reason.");
-	format(szMiscArray, sizeof(szMiscArray), "%s\n\nKilling on Sight: Attacking a player in any way with little/insufficient/no roleplay, even if you have RP reason to attack the player.", szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "%s\n\nRevenge Killing: Attempting to kill the person who killed you or returning to the situation in which you died.", szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "%s\n\nPowergaming: Forcing roleplay on another player or roleplaying impossible god-like/superhero abilities or the use of futuristic technologies.", szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "%s\n\nMetagaming: Mixing of out of character and in character information. Using IC info oocly or using OOC info icly. Use of acronyms or smilies. (ex. 'wtf' or :)", szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "%s\n\nNon-roleplay behavior: Acting in a manner that is deemed unrealstic or non-roleplay, including but not limited to: improper use of toys,\n ramming vehicles into players excessively, car surfing etc", szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "%s\n\nAvoiding Roleplay: Disconnecting or using /kill to avoid roleplay/arrest etc.", szMiscArray);
-	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "NG-RP: Server Offences", szMiscArray, "Okay", "");
+	format(szMiscArray, sizeof(szMiscArray), "Death Matching: Tan cong nguoi choi khi khong co ly do IC hop ly.");
+	format(szMiscArray, sizeof(szMiscArray), "%s\n\nKilling on Sight: Tan cong nguoi choi khi chua roleplay du, ke ca khi da co ly do RP.", szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s\n\nRevenge Killing: Tim giet nguoi da giet minh hoac quay lai tinh huong minh da chet.", szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s\n\nPowergaming: Ep buoc roleplay, nhap vai kha nang phi thuc te nhu sieu anh hung hay cong nghe tuong lai.", szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s\n\nMetagaming: Tron thong tin IC va thong tin ngoai nhan vat. Dung thong tin OOC cho IC. Dung chu viet tat hoac bieu tuong cam xuc. (vi du 'wtf' hoac :)", szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s\n\nHanh vi Non-roleplay: Hanh dong thieu thuc te nhu dung toy sai muc dich,\n lien tuc tong xe vao nguoi, dung tren xe dang chay, v.v.", szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s\n\nAvoiding Roleplay: Thoat game hoac dung /kill de tranh roleplay, bi bat, v.v.", szMiscArray);
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "NG-RP: Vi pham may chu", szMiscArray, "Dong y", "");
 	return 1;
 }
 
@@ -1326,8 +1326,8 @@ CMD:help(playerid, params[])
 
 CMD:reloadhelp(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
-	SendClientMessageEx(playerid, COLOR_WHITE, "Reloading all help entries...");
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Dang tai lai toan bo muc tro giup...");
 	return RehashHelp();
 }
 
@@ -1336,76 +1336,76 @@ CMD:ohelp(playerid, params[])
 	new string[512];
 	if(PlayerInfo[playerid][pLevel] <= 3)
 	{
-		SendClientMessageEx(playerid, TEAM_AZTECAS_COLOR,"*** HELP *** /report /requesthelp (/newb)ie /tog newbie");
+		SendClientMessageEx(playerid, TEAM_AZTECAS_COLOR,"*** TRO GIUP *** /report /requesthelp (/newb)ie /tog newbie");
 	}
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** ACCOUNT *** /(net)stats /inventory /quickstats /myguns /buylevel /upgrade /changepass /killcheckpoint /resetupgrades(100k)");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** CHAT *** /w(hisper) /o(oc) /s(hout) /l(ow) /b /ad(vertisement)s /f(amily) /togooc /tognews /togfam /cancelcall");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** CHAT *** /me /ame /lme /do /ldo /se(texamine) /examine");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /pay /writecheck /charity /time /buy /(check)id /music /showlicenses /clothes /mywarrants");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /apply /skill /stopani /kill /buyclothes /droplicense /calculate /refuel /car /seatbelt /checkbelt, /defendtime");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /cancel /accept /eject /contract /service /families /joinevent /nextpaycheck, /nextgift, /pointtime");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /speedo /speedopos /viewmotd /pickveh /cracktrunk /backpackhelp /nextnamechange");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** SHOP *** /shophelp /credits /sellcredits /microshop /activeitems /cooldowns");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** TAI KHOAN *** /(net)stats /inventory /quickstats /myguns /buylevel /upgrade /changepass /killcheckpoint /resetupgrades(100k)");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** TRO CHUYEN *** /w(hisper) /o(oc) /s(hout) /l(ow) /b /ad(vertisement)s /f(amily) /togooc /tognews /togfam /cancelcall");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** TRO CHUYEN *** /me /ame /lme /do /ldo /se(texamine) /examine");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** CHUNG *** /pay /writecheck /charity /time /buy /(check)id /music /showlicenses /clothes /mywarrants");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** CHUNG *** /apply /skill /stopani /kill /buyclothes /droplicense /calculate /refuel /car /seatbelt /checkbelt, /defendtime");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** CHUNG *** /cancel /accept /eject /contract /service /families /joinevent /nextpaycheck, /nextgift, /pointtime");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** CHUNG *** /speedo /speedopos /viewmotd /pickveh /cracktrunk /backpackhelp /nextnamechange");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** CUA HANG *** /shophelp /credits /sellcredits /microshop /activeitems /cooldowns");
 
 	switch(PlayerInfo[playerid][pJob])
 	{
-		case JOB_DETECTIVE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /trace");
-		case JOB_LAWYER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted /offerappeal /finishappeal");
-		case JOB_PROSTITUTE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
+		case JOB_DETECTIVE: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /trace");
+		case JOB_LAWYER: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /lawyerduty /free /defend /wanted /offerappeal /finishappeal");
+		case JOB_PROSTITUTE: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /sex");
 		case JOB_DRUG_DEALER: pc_cmd_odrughelp(playerid, "");
-		case JOB_PIMP: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /dropcar");
-		case JOB_MECHANIC: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fix /nos /hyd /repair /refill /mechduty");
-		case JOB_BODYGUARD: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /guard /frisk");
-		case JOB_ARMS_DEALER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /sellgun");
-		case JOB_BOXER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fight");
-		case JOB_DRUG_SMUGGLER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getcrate");
+		case JOB_PIMP: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /dropcar");
+		case JOB_MECHANIC: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /fix /nos /hyd /repair /refill /mechduty");
+		case JOB_BODYGUARD: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /guard /frisk");
+		case JOB_ARMS_DEALER: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /getmats /sell /sellgun");
+		case JOB_BOXER: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /fight");
+		case JOB_DRUG_SMUGGLER: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /getcrate");
 		// case JOB_STREET_SWEEPER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /papers /bring /deliver");
-		case JOB_TAXI: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fare");
-		case JOB_CRAFTSMAN: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /craft");
-		case JOB_BARTENDER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
-		case JOB_SHIPMENT: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /loadshipment /checkcargo /hijackcargo");
-		case JOB_PIZZA: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza*");
-		case JOB_GARBAGE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /garbagerun");
+		case JOB_TAXI: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /fare");
+		case JOB_CRAFTSMAN: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /getmats /sell /craft");
+		case JOB_BARTENDER: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /selldrink");
+		case JOB_SHIPMENT: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /loadshipment /checkcargo /hijackcargo");
+		case JOB_PIZZA: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /getpizza*");
+		case JOB_GARBAGE: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /garbagerun");
 	}
 	switch(PlayerInfo[playerid][pJob2])
 	{
-		case JOB_DETECTIVE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /trace");
-		case JOB_LAWYER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted");
-		case JOB_PROSTITUTE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
+		case JOB_DETECTIVE: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /trace");
+		case JOB_LAWYER: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /lawyerduty /free /defend /wanted");
+		case JOB_PROSTITUTE: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /sex");
 		case JOB_DRUG_DEALER: pc_cmd_odrughelp(playerid, "");
-		case JOB_PIMP: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /dropcar");
-		case JOB_MECHANIC: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fix /nos /hyd /repair /refill /mechduty");
-		case JOB_BODYGUARD: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /guard /frisk");
-		case JOB_ARMS_DEALER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /sellgun");
-		case JOB_BOXER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fight");
-		case JOB_DRUG_SMUGGLER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getcrate");
+		case JOB_PIMP: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /dropcar");
+		case JOB_MECHANIC: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /fix /nos /hyd /repair /refill /mechduty");
+		case JOB_BODYGUARD: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /guard /frisk");
+		case JOB_ARMS_DEALER: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /getmats /sell /sellgun");
+		case JOB_BOXER: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /fight");
+		case JOB_DRUG_SMUGGLER: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /getcrate");
 		// case JOB_STREET_SWEEPER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /papers /bring /deliver");
-		case JOB_TAXI: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fare");
-		case JOB_CRAFTSMAN: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /craft");
-		case JOB_BARTENDER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
-		case JOB_SHIPMENT: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /loadshipment /checkcargo /hijackcargo");
-		case JOB_PIZZA: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza");
-		case JOB_GARBAGE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /garbagerun");
+		case JOB_TAXI: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /fare");
+		case JOB_CRAFTSMAN: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /getmats /sell /craft");
+		case JOB_BARTENDER: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /selldrink");
+		case JOB_SHIPMENT: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /loadshipment /checkcargo /hijackcargo");
+		case JOB_PIZZA: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /getpizza");
+		case JOB_GARBAGE: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /garbagerun");
 	}
 	switch(PlayerInfo[playerid][pJob3])
 	{
-		case JOB_DETECTIVE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /trace");
-		case JOB_LAWYER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted");
-		case JOB_PROSTITUTE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
+		case JOB_DETECTIVE: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /trace");
+		case JOB_LAWYER: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /lawyerduty /free /defend /wanted");
+		case JOB_PROSTITUTE: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /sex");
 		case JOB_DRUG_DEALER: pc_cmd_odrughelp(playerid, "");
-		case JOB_PIMP: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /dropcar");
-		case JOB_MECHANIC: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fix /nos /hyd /repair /refill /mechduty");
-		case JOB_BODYGUARD: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /guard /frisk");
-		case JOB_ARMS_DEALER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /sellgun");
-		case JOB_BOXER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fight");
-		case JOB_DRUG_SMUGGLER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getcrate");
+		case JOB_PIMP: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /dropcar");
+		case JOB_MECHANIC: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /fix /nos /hyd /repair /refill /mechduty");
+		case JOB_BODYGUARD: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /guard /frisk");
+		case JOB_ARMS_DEALER: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /getmats /sell /sellgun");
+		case JOB_BOXER: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /fight");
+		case JOB_DRUG_SMUGGLER: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /getcrate");
 		// case JOB_STREET_SWEEPER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /papers /bring /deliver");
-		case JOB_TAXI: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fare");
-		case JOB_CRAFTSMAN: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /craft");
-		case JOB_BARTENDER: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
-		case JOB_SHIPMENT: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /loadshipment /checkcargo /hijackcargo");
-		case JOB_PIZZA: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza");
-		case JOB_GARBAGE: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /garbagerun");
+		case JOB_TAXI: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /fare");
+		case JOB_CRAFTSMAN: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /getmats /sell /craft");
+		case JOB_BARTENDER: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /selldrink");
+		case JOB_SHIPMENT: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /loadshipment /checkcargo /hijackcargo");
+		case JOB_PIZZA: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /getpizza");
+		case JOB_GARBAGE: SendClientMessageEx(playerid,COLOR_WHITE,"*** CONG VIEC *** /garbagerun");
 	}
 	new iGroupID = PlayerInfo[playerid][pMember];
 	if(0 <= iGroupID < MAX_GROUPS)
@@ -1511,8 +1511,8 @@ CMD:ohelp(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_PURPLE, "*** VIP Moderator *** /vipparty /vto /vtoreset /vmute /vsuspend /vipm");
 	}
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** OTHER *** /cellphonehelp /carhelp /househelp /toyhelp /renthelp /jobhelp /animhelp /fishhelp");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** OTHER *** /mailhelp /businesshelp /voucherhelp /backpackhelp");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** KHAC *** /cellphonehelp /carhelp /househelp /toyhelp /renthelp /jobhelp /animhelp /fishhelp");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** KHAC *** /mailhelp /businesshelp /voucherhelp /backpackhelp");
 
 	//Start of Famed Commands
 	if(PlayerInfo[playerid][pFamed] >= 1)

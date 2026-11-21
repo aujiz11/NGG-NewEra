@@ -52,19 +52,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			GetPVarString(playerid, "actionstring", szMessage, sizeof(szMessage));
 			SetPVarInt(iTargetID, "actionplayer", playerid);
-			SendClientMessageEx(playerid, COLOR_YELLOW, " ** Sent: {C2A2DA}%s attempts to %s", GetPlayerNameEx(playerid), szMessage);
-			SendClientMessageEx(playerid, COLOR_YELLOW, " * > Action request sent to: %s. Awaiting response...", GetPlayerNameEx(iTargetID));
+			SendClientMessageEx(playerid, COLOR_YELLOW, " ** Da gui: {C2A2DA}%s thu %s", GetPlayerNameEx(playerid), szMessage);
+			SendClientMessageEx(playerid, COLOR_YELLOW, " * > Da gui yeu cau hanh dong: %s. Dang cho phan hoi...", GetPlayerNameEx(iTargetID));
 
-			format(szMiscArray, sizeof(szMiscArray), "Sender: %s\n\nAction: %s (( %s ))\n\n\
-				Select 'Accept' to accept the action.\n\
-				Select 'Deny' to deny the action. You will need to provide a reason.", GetPlayerNameExt(playerid), szMessage, GetPlayerNameExt(playerid));
-			ShowPlayerDialogEx(iTargetID, DIALOG_ADO2, DIALOG_STYLE_MSGBOX, "Incoming Action Request", szMiscArray, "Accept", "Deny");
+			format(szMiscArray, sizeof(szMiscArray), "Nguoi gui: %s\n\nHanh dong: %s (( %s ))\n\n\
+				Chon 'Dong y' de chap nhan.\n\
+				Chon 'Tu choi' de tu choi va cung cap ly do.", GetPlayerNameExt(playerid), szMessage, GetPlayerNameExt(playerid));
+			ShowPlayerDialogEx(iTargetID, DIALOG_ADO2, DIALOG_STYLE_MSGBOX, "Yeu cau hanh dong moi", szMiscArray, "Dong y", "Tu choi");
 		}
 		case DIALOG_ADO2: {
 
 			if(!response) {
 
-				return ShowPlayerDialogEx(playerid, DIALOG_ADO3, DIALOG_STYLE_INPUT, "Action Denied", "Please provide a reason for denying the action request", "Submit", "Cancel");
+				return ShowPlayerDialogEx(playerid, DIALOG_ADO3, DIALOG_STYLE_INPUT, "Tu choi hanh dong", "Nhap ly do tu choi yeu cau hanh dong", "Gui", "Huy");
 			}
 			new iActionID = GetPVarInt(playerid, "actionplayer");
 			GetPVarString(iActionID, "actionstring", szMiscArray, sizeof(szMiscArray));
@@ -77,12 +77,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case DIALOG_ADO3: {
 
 			new iActionID = GetPVarInt(playerid, "actionplayer");
-			format(szMiscArray, sizeof(szMiscArray), " * %s denied the action.", GetPlayerNameExt(iActionID));
+			format(szMiscArray, sizeof(szMiscArray), " * %s tu choi hanh dong.", GetPlayerNameExt(iActionID));
 			SendClientMessage(iActionID, COLOR_PURPLE, szMiscArray);
-			format(szMiscArray, sizeof(szMiscArray), " * Reason: %s.", inputtext);
+			format(szMiscArray, sizeof(szMiscArray), " * Ly do: %s.", inputtext);
 			SendClientMessage(iActionID, COLOR_YELLOW, szMiscArray);
-			SendClientMessage(playerid, COLOR_PURPLE, "You denied the action.");
-			format(szMiscArray, sizeof(szMiscArray), " * Reason: %s.", inputtext);
+			SendClientMessage(playerid, COLOR_PURPLE, "Ban da tu choi hanh dong.");
+			format(szMiscArray, sizeof(szMiscArray), " * Ly do: %s.", inputtext);
 			SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
 			DeletePVar(iActionID, "actionstring");
 			DeletePVar(playerid, "actionplayer");
@@ -206,8 +206,8 @@ CMD:togooc(playerid, params[])
 
 CMD:me(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /me [action]");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /me [action]");
 	new string[255];
 	format(string, sizeof(string), "{FF8000}* {C2A2DA}%s %s", GetPlayerNameEx(playerid), params);
 	if(PlayerInfo[playerid][pIsolated] != 0) ProxDetector(5.0, playerid, string, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
@@ -220,29 +220,29 @@ CMD:me(playerid, params[])
 alias:w("whisper")
 CMD:w(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
 	new giveplayerid, whisper[128];
 
 	if(gPlayerLogged{playerid} == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
 		return 1;
 	}
 	if(sscanf(params, "us[128]", giveplayerid, whisper))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/w)hisper [player] [text]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: (/w)hisper [player] [text]");
 		return 1;
 	}
 	if(GetPVarType(playerid, "WatchingTV") && PlayerInfo[playerid][pAdmin] < 2)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do this while watching TV.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the lam vay khi dang xem TV.");
 		return 1;
 	}
 	if (IsPlayerConnected(giveplayerid))
 	{
 		if(PlayerInfo[giveplayerid][pToggledChats][CHAT_WHISPERS] != 0 && PlayerInfo[playerid][pAdmin] < 2)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "That person is blocking whispers!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do dang chan loi thi tham!");
 			return 1;
 		}
 		new giveplayer[MAX_PLAYER_NAME], sendername[MAX_PLAYER_NAME], string[128];
@@ -250,8 +250,8 @@ CMD:w(playerid, params[])
 		giveplayer = GetPlayerNameEx(giveplayerid);
 		if(giveplayerid == playerid)
 		{
-			if(PlayerInfo[playerid][pSex] == 1) format(string, sizeof(string), "* %s mutters something to himself.", GetPlayerNameEx(playerid));
-			else format(string, sizeof(string), "* %s mutters something to herself.", GetPlayerNameEx(playerid));
+			if(PlayerInfo[playerid][pSex] == 1) format(string, sizeof(string), "* %s lam bam mot minh.", GetPlayerNameEx(playerid));
+			else format(string, sizeof(string), "* %s lam bam mot minh.", GetPlayerNameEx(playerid));
 			return ProxDetector(5.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		if(ProxDetectorS(5.0, playerid, giveplayerid) || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] == 2)
@@ -260,27 +260,27 @@ CMD:w(playerid, params[])
 			{
 				if(GetPVarInt(i, "BigEar") == 6 && (GetPVarInt(i, "BigEarPlayer") == playerid || GetPVarInt(i, "BigEarPlayer")  == giveplayerid))
 				{
-					format(string, sizeof(string), "(BE)%s(ID %d) whispers to %s(ID %d): %s", GetPlayerNameEx(playerid), playerid, GetPlayerNameEx(giveplayerid), giveplayerid, whisper);
+					format(string, sizeof(string), "(BE)%s(ID %d) noi nho voi %s(ID %d): %s", GetPlayerNameEx(playerid), playerid, GetPlayerNameEx(giveplayerid), giveplayerid, whisper);
 					SendClientMessageWrap(i, COLOR_YELLOW, 92, string);
 				}
 			}	
 
-			format(string, sizeof(string), "%s (ID %d) whispers to you: %s", GetPlayerNameEx(playerid), playerid, whisper);
+			format(string, sizeof(string), "%s (ID %d) thi tham: %s", GetPlayerNameEx(playerid), playerid, whisper);
 			SendClientMessageWrap(giveplayerid, COLOR_YELLOW, 92, string);
 
-			format(string, sizeof(string), "You whispered to %s: %s", GetPlayerNameEx(giveplayerid),whisper);
+			format(string, sizeof(string), "Ban thi tham voi %s: %s", GetPlayerNameEx(giveplayerid),whisper);
 			SendClientMessageWrap(playerid, COLOR_YELLOW, 92, string);
 			return 1;
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 		}
 		return 1;
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 	}
 	return 1;
 }
@@ -289,12 +289,12 @@ CMD:do(playerid, params[])
 {
 	if(gPlayerLogged{playerid} == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
 		return 1;
 	}
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /do [action]");
-	else if(strlen(params) > 120) return SendClientMessageEx(playerid, COLOR_GREY, "The specified message must not be longer than 120 characters in length.");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /do [action]");
+	else if(strlen(params) > 120) return SendClientMessageEx(playerid, COLOR_GREY, "Tin nhan khong duoc vuot 120 ky tu.");
 	new
 		iCount,
 		iPos,
@@ -304,7 +304,7 @@ CMD:do(playerid, params[])
 		if(iChar == '@') iCount++;
 	}
 	if(iCount >= 5) {
-		return SendClientMessageEx(playerid, COLOR_GREY, "The specified message must not contain more than 4 '@' symbols.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Tin nhan khong duoc chua qua 4 ky tu '@'.");
 	}
 
 	new string[150];
@@ -318,20 +318,20 @@ CMD:ooc(playerid, params[])
 {
 	if(gPlayerLogged{playerid} == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
 		return 1;
 	}
 	if ((noooc) && PlayerInfo[playerid][pAdmin] < 2 && EventKernel[EventCreator] != playerid)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "   The OOC channel has been disabled by an Admin!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Kenh OOC da bi Admin tat!");
 		return 1;
 	}
 	if(PlayerInfo[playerid][pToggledChats][CHAT_OOC])
 	{
-		SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "   You have disabled OOC Chat, re-enable with /togooc!");
+		SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Ban da tat OOC Chat, dung /togooc de bat lai!");
 		return 1;
 	}
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/o)oc [ooc chat]");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: (/o)oc [ooc chat]");
 
 	if(PlayerInfo[playerid][pAdmin] == 1)
 	{
@@ -364,7 +364,7 @@ CMD:ooc(playerid, params[])
 
 CMD:o(playerid, params[]) 
 {
-	return SendClientMessageEx(playerid, COLOR_GRAD1, "/o has been renamed to /ooc to prevent typos.");
+	return SendClientMessageEx(playerid, COLOR_GRAD1, "/o da doi thanh /ooc de tranh nhap nham.");
 }
 
 
@@ -372,19 +372,19 @@ CMD:o(playerid, params[])
 alias:s("shout")
 CMD:s(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
 	if(gPlayerLogged{playerid} == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
 		return 1;
 	}
 
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/s)hout [shout chat]");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: (/s)hout [shout chat]");
 
 	new string[128];
-	format(string, sizeof(string), "(shouts) %s!", params);
+	format(string, sizeof(string), "(het) %s!", params);
 	SetPlayerChatBubble(playerid,string,COLOR_WHITE,60.0,5000);
-	format(string, sizeof(string), "%s shouts: %s!", GetPlayerNameEx(playerid), params);
+	format(string, sizeof(string), "%s het: %s!", GetPlayerNameEx(playerid), params);
 	if(PlayerInfo[playerid][pIsolated] != 0) ProxDetector(5.0, playerid, string,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_FADE1,COLOR_FADE2, 1); // addition for prison system
 	else ProxDetector(30.0, playerid, string,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_FADE1,COLOR_FADE2, 1);
 	return 1;
@@ -397,16 +397,16 @@ CMD:l(playerid, params[])
 {
 	if(gPlayerLogged{playerid} == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
 		return 1;
 	}
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/l)ow [close chat]");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: (/l)ow [close chat]");
 
 	new string[128];
-	format(string, sizeof(string), "%s says quietly: %s", GetPlayerNameEx(playerid), params);
+	format(string, sizeof(string), "%s noi khe: %s", GetPlayerNameEx(playerid), params);
 	ProxDetector(5.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5, 1);
-	format(string, sizeof(string), "(quietly) %s", params);
+	format(string, sizeof(string), "(noi khe) %s", params);
 	SetPlayerChatBubble(playerid,string,COLOR_WHITE,5.0,5000);
 	return 1;
 }
@@ -415,11 +415,11 @@ CMD:b(playerid, params[])
 {
 	if(gPlayerLogged{playerid} == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban chua dang nhap.");
 		return 1;
 	}
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /b [local ooc chat]");
-	if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You can't use this command while watching TV.");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /b [local ooc chat]");
+	if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "Khong the dung lenh khi dang xem TV.");
 	new string[128];
 	format(string, sizeof(string), "%s: (( %s ))", GetPlayerNameEx(playerid), params);
 	
@@ -443,11 +443,11 @@ CMD:accent(playerid, params[])
 	new accent;
 	if(sscanf(params, "d", accent))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /accent [accent ID]");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: Normal [1], British [2], Japanese [3], Asian [4], Scottish [6], Irish [7], Russian [8]");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: American [9], Spanish [10], Southern [11], Italian [13], Gangsta [14], Australian [15], Arabic [16]");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: Balkan [17], Canadian [18], Jamaican [19], Israeli [20], Dutch [21], Brazilian [22], German [23], Turkish [24]");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: Kiwi [25], French [26], Korean [27], Thai [28], Swedish [29], Danish [30], Norwegian [31]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /accent [accent ID]");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Giong noi: Normal [1], British [2], Japanese [3], Asian [4], Scottish [6], Irish [7], Russian [8]");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Giong noi: American [9], Spanish [10], Southern [11], Italian [13], Gangsta [14], Australian [15], Arabic [16]");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Giong noi: Balkan [17], Canadian [18], Jamaican [19], Israeli [20], Dutch [21], Brazilian [22], German [23], Turkish [24]");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Giong noi: Kiwi [25], French [26], Korean [27], Thai [28], Swedish [29], Danish [30], Norwegian [31]");
 		return 1;
 	}
 
@@ -456,157 +456,157 @@ CMD:accent(playerid, params[])
 		case 1:
 		{
 			PlayerInfo[playerid][pAccent] = 1;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Normal accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Normal, dung /accent de doi." );
 		}
 		case 2:
 		{
 			PlayerInfo[playerid][pAccent] = 2;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the British accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong British, dung /accent de doi." );
 		}
 		case 3:
 		{
 			PlayerInfo[playerid][pAccent] = 3;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Japanese accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Japanese, dung /accent de doi." );
 		}
 		case 4:
 		{
 			PlayerInfo[playerid][pAccent] = 4;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Chinese accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Chinese, dung /accent de doi." );
 		}
 		case 5:
 		{
 			PlayerInfo[playerid][pAccent] = 5;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Korean accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Korean, dung /accent de doi." );
 		}
 		case 6:
 		{
 			PlayerInfo[playerid][pAccent] = 6;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Scottish accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Scottish, dung /accent de doi." );
 		}
 		case 7:
 		{
 			PlayerInfo[playerid][pAccent] = 7;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Irish accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Irish, dung /accent de doi." );
 		}
 		case 8:
 		{
 			PlayerInfo[playerid][pAccent] = 8;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Russian accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Russian, dung /accent de doi." );
 		}
 		case 9:
 		{
 			PlayerInfo[playerid][pAccent] = 9;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the American accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong American, dung /accent de doi." );
 		}
 		case 10:
 		{
 			PlayerInfo[playerid][pAccent] = 10;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Spanish accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Spanish, dung /accent de doi." );
 		}
 		case 11:
 		{
 			PlayerInfo[playerid][pAccent] = 11;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Texan accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Texan, dung /accent de doi." );
 		}
 		case 12:
 		{
 			PlayerInfo[playerid][pAccent] = 12;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Cuban accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Cuban, dung /accent de doi." );
 		}
 		case 13:
 		{
 			PlayerInfo[playerid][pAccent] = 13;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Italian accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Italian, dung /accent de doi." );
 		}
 		case 14:
 		{
 			PlayerInfo[playerid][pAccent] = 14;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Gangsta accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Gangsta, dung /accent de doi." );
 		}
 		case 15:
 		{
 			PlayerInfo[playerid][pAccent] = 15;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Australian accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Australian, dung /accent de doi." );
 		}
 		case 16:
 		{
 			PlayerInfo[playerid][pAccent] = 16;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Arabic accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Arabic, dung /accent de doi." );
 		}
 		case 17:
 		{
 			PlayerInfo[playerid][pAccent] = 17;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Balkan accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Balkan, dung /accent de doi." );
 		}
 		case 18:
 		{
 			PlayerInfo[playerid][pAccent] = 18;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Canadian accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Canadian, dung /accent de doi." );
 		}
 		case 19:
 		{
 			PlayerInfo[playerid][pAccent] = 19;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Jamaican accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Jamaican, dung /accent de doi." );
 		}
 		case 20:
 		{
 			PlayerInfo[playerid][pAccent] = 20;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Israeli accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Israeli, dung /accent de doi." );
 		}
 		case 21:
 	    {
 	        PlayerInfo[playerid][pAccent] = 21;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Dutch accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Dutch, dung /accent de doi." );
 	    }
 		case 22:
 	    {
 	        PlayerInfo[playerid][pAccent] = 22;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Brazilian accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Brazilian, dung /accent de doi." );
 	    }
    		case 23:
 	    {
 	        PlayerInfo[playerid][pAccent] = 23;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the German accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong German, dung /accent de doi." );
 	    }
 	    case 24:
 	    {
 	        PlayerInfo[playerid][pAccent] = 24;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Turkish accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Turkish, dung /accent de doi." );
 	    } 
 		case 25:
 	    {
 	        PlayerInfo[playerid][pAccent] = 25;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Kiwi accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Kiwi, dung /accent de doi." );
 	    }
 		case 26:
 	    {
 	        PlayerInfo[playerid][pAccent] = 26;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the French accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong French, dung /accent de doi." );
 	    }
 		case 27:
 	    {
 	        PlayerInfo[playerid][pAccent] = 27;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Korean accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Korean, dung /accent de doi." );
 	    }
 		case 28:
 	    {
 	        PlayerInfo[playerid][pAccent] = 28;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Thai accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Thai, dung /accent de doi." );
 	    }
 		case 29:
 		{
 			PlayerInfo[playerid][pAccent] = 29;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Swedish accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Swedish, dung /accent de doi." );
 		}
 		case 30:
 		{
 			PlayerInfo[playerid][pAccent] = 30;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Danish accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Danish, dung /accent de doi." );
 		}
 		case 31:
 		{
 			PlayerInfo[playerid][pAccent] = 31;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Norwegian accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban se noi giong Norwegian, dung /accent de doi." );
 		}
 	}
 	return 1;
@@ -614,29 +614,29 @@ CMD:accent(playerid, params[])
 
 CMD:pr(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
 	if(PlayerInfo[playerid][pRadio] == 1)
 	{
 		if(isnull(params))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pr [chat]");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "HINT: Type /setfreq to set the frequency of your portable radio.");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /pr [chat]");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "GOI Y: Dung /setfreq de chinh tan so bo dam.");
 			return 1;
 		}
 		if(PlayerInfo[playerid][pRadioFreq] >= 1 || PlayerInfo[playerid][pRadioFreq] <= -1)
 		{
-			if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
+			if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua the lam viec nay.");
 			RadioBroadCast(playerid, params);
 			return 1;
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD2, "The frequency of your radio is set to 0, you can not broadcast over that frequency.");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Tan so bo dam la 0, khong the phat tren tan so nay.");
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have a portable radio!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co bo dam!");
 	}
 	return 1;
 }
@@ -646,20 +646,20 @@ CMD:setfreq(playerid, params[])
 	new frequency;
 	if(sscanf(params, "d", frequency))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setfreq [frequency]");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "HINT: Set the frequency of your radio to 0 if you don't want to hear anything.");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /setfreq [frequency]");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "GOI Y: Dat tan so bo dam ve 0 neu khong muon nghe.");
 		return 1;
 	}
 
-	if(frequency > 9999999 || frequency < -9999999) { SendClientMessageEx(playerid, COLOR_GREY, "Frequency can not be lower than -9999999 or higher than 9999999!"); return 1; }
+	if(frequency > 9999999 || frequency < -9999999) { SendClientMessageEx(playerid, COLOR_GREY, "Tan so phai tu -9999999 den 9999999!"); return 1; }
 	if (PlayerInfo[playerid][pRadio] == 1)
 	{
 		PlayerInfo[playerid][pRadioFreq] = frequency;
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the frequency of your portable radio to %d khz.",frequency);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da dat tan so bo dam la %d khz.",frequency);
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have a portable radio!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co bo dam!");
 	}
 	return 1;
 }
@@ -752,8 +752,8 @@ ChatBoxProcess(playerid, hColor, szText[]) {
 
 CMD:ame(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ame [action]");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /ame [action]");
 	new string[128];
 	format(string, sizeof(string), "%s %s", GetPlayerNameEx(playerid), params);
 	SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 15.0, 5000);
@@ -763,8 +763,8 @@ CMD:ame(playerid, params[])
 
 CMD:lme(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /lme [action]");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /lme [action]");
 	new string[128];
 	format(string, sizeof(string), "{FF8000}* {C2A2DA}%s %s", GetPlayerNameEx(playerid), params);
 	ProxDetectorWrap(playerid, string, 92, 15, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
@@ -773,15 +773,15 @@ CMD:lme(playerid, params[])
 
 CMD:ldo(playerid, params[])
 {
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ldo [action]");
-	else if(strlen(params) > 120) return SendClientMessageEx(playerid, COLOR_GREY, "The specified message must not be longer than 120 characters in length.");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /ldo [action]");
+	else if(strlen(params) > 120) return SendClientMessageEx(playerid, COLOR_GREY, "Tin nhan khong duoc vuot 120 ky tu.");
 	new
 		iCount,
 		iPos,
 		iChar;
 	while((iChar = params[iPos++])) if(iChar == '@') iCount++;
-	if(iCount >= 5) return SendClientMessageEx(playerid, COLOR_GREY, "The specified message must not contain more than 4 '@' symbols.");
+	if(iCount >= 5) return SendClientMessageEx(playerid, COLOR_GREY, "Tin nhan khong duoc chua qua 4 ky tu '@'.");
 
 	new string[150];
 	format(string, sizeof(string), "* %s (( %s ))", params, GetPlayerNameEx(playerid));
@@ -793,23 +793,23 @@ CMD:resetexamine(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return 1;
 	new target;
-	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /resetexamine [playerid]");
-	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "Error: Player is not connected!");
+	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /resetexamine [playerid]");
+	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "Loi: Nguoi choi chua ket noi!");
 	format(PlayerInfo[target][pExamineDesc], 256, "None");
-	return SendClientMessageEx(playerid, COLOR_GREY, "You have successfully reset their examine description.");
+	return SendClientMessageEx(playerid, COLOR_GREY, "Da xoa mo ta ngoai hinh cua nguoi do.");
 }
 
 
 alias:setexamine("se")
-CMD:setexamine(playerid, params[]) return ShowPlayerDialogEx(playerid, DIALOG_SETEXAMINE, DIALOG_STYLE_INPUT, "Examine Description", "Please enter a description of yourself.\nExample: appears to be a white male, 6' 3 ..etc", "Set", "Cancel");
+CMD:setexamine(playerid, params[]) return ShowPlayerDialogEx(playerid, DIALOG_SETEXAMINE, DIALOG_STYLE_INPUT, "Mo ta ngoai hinh", "Nhap mo ta ve ban.\nVi du: nam da trang, cao 6' 3 ..v.v.", "Dat", "Huy");
 
 CMD:examine(playerid, params[])
 {
 	new target;
-	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /examine [playerid]");
-	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "Error: Player is not connected!");
-	if(!ProxDetectorS(5.0, playerid, target) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
-	if(!strlen(PlayerInfo[target][pExamineDesc]) || !strcmp(PlayerInfo[target][pExamineDesc], "None", true)) return SendClientMessageEx(playerid, COLOR_GREY, "That person doesn't have a description set.");
+	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /examine [playerid]");
+	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "Loi: Nguoi choi chua ket noi!");
+	if(!ProxDetectorS(5.0, playerid, target) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
+	if(!strlen(PlayerInfo[target][pExamineDesc]) || !strcmp(PlayerInfo[target][pExamineDesc], "None", true)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do chua dat mo ta ngoai hinh.");
 	if(strlen(PlayerInfo[target][pExamineDesc]) > 101)
 	{
 		new firstline[128], secondline[128];

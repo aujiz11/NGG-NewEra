@@ -48,8 +48,8 @@ ShowBugReportMainMenu(playerid)
 	if(GetPVarType(playerid, "BugSubject")) GetPVarString(playerid, "BugSubject", bug, 40); else bug = "N/A";
 	if(GetPVarType(playerid, "BugDetail")) GetPVarString(playerid, "BugDetail", bugdesc, 40); else bugdesc = "N/A";
 	if(strlen(bugdesc) > 35) strmid(bugdesc, bugdesc, 0, 35, 35), format(bugdesc, 41, "%s [...]", bugdesc);
-	format(string, sizeof(string), "Subject: %s\nDetails: %s\nSubmit Anonymously?: %s\nSubmit", bug, bugdesc, GetPVarInt(playerid, "BugAnonymous") == 1 ? ("Yes"):("No"));
-	return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bug Report", string, "Select", "Close");
+	format(string, sizeof(string), "Tieu de: %s\nChi tiet: %s\nGui an danh?: %s\nGui", bug, bugdesc, GetPVarInt(playerid, "BugAnonymous") == 1 ? ("Co"):("Khong"));
+	return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bao loi", string, "Chon", "Dong");
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
@@ -71,24 +71,24 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(listitem == 0) //Subject
 					{
 						SetPVarInt(playerid, "BugStep", 1);
-						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_INPUT, "Bug Report - Subject", "Please enter a short description of the bug:\n * 15 characters min\n * 40 characters max", "Continue", "Close");
+						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_INPUT, "Bao loi - Tieu de", "Nhap mo ta ngan gon ve loi:\n * It nhat 15 ky tu\n * Toi da 40 ky tu", "Tiep tuc", "Dong");
 					}
 					if(listitem == 1) //Bug Details
 					{
 						SetPVarInt(playerid, "BugStep", 2);
-						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_INPUT, "Bug Report - Bug Details", "Please explain the bug in as much detail you can:\n * 50 characters minimum", "Continue", "Close");
+						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_INPUT, "Bao loi - Chi tiet", "Mo ta loi cang chi tiet cang tot:\n * It nhat 50 ky tu", "Tiep tuc", "Dong");
 					}
 					if(listitem == 2) //Submit Anonymously?
 					{
 						SetPVarInt(playerid, "BugStep", 3);
 						SetPVarInt(playerid, "BugListItem", 2);
-						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bug Report - Submit Anonymously?", "No\nYes", "Continue", "Close");
+						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bao loi - Gui an danh?", "Khong\nCo", "Tiep tuc", "Dong");
 					}
 					if(listitem == 3) //Submit
 					{
 						new stringg[256];
 						if(strlen(bug) == 0 || strlen(bugdesc) == 0) 
-							return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report - {FF0000}Error", "Please fill in all the available text fields.", "Close", "");
+							return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bao loi - {FF0000}Loi", "Vui long dien day du cac muc noi dung.", "Dong", "");
 						if(strlen(bugdesc) > 64)
 						{
 							new firstl[65], secondl[65];
@@ -96,16 +96,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							strmid(secondl, bugdesc, 64, 128);
 							format(bugdesc, sizeof(bugdesc),"%s\n%s", firstl, secondl);
 						}
-						format(stringg, sizeof(stringg), "{4A8BC2}Subject: {BFC0C2}%s\n{4A8BC2}Details:\n{BFC0C2}%s\n{4A8BC2}Anonymous: {BFC0C2}%s", bug, bugdesc, GetPVarInt(playerid, "BugAnonymous") == 1 ? ("Yes"):("No"));
+						format(stringg, sizeof(stringg), "{4A8BC2}Tieu de: {BFC0C2}%s\n{4A8BC2}Chi tiet:\n{BFC0C2}%s\n{4A8BC2}An danh: {BFC0C2}%s", bug, bugdesc, GetPVarInt(playerid, "BugAnonymous") == 1 ? ("Co"):("Khong"));
 						SetPVarInt(playerid, "BugStep", 4);
-						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_MSGBOX , "Bug Report - Submit", stringg, "Submit", "Cancel");
+						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_MSGBOX , "Bao loi - Xac nhan gui", stringg, "Gui", "Huy");
 					}
 				}
 				if(GetPVarInt(playerid, "BugStep") == 1) //Subject
 				{
 					new bugsub[41];
 					if(sscanf(inputtext, "s[41]", bugsub) || strlen(inputtext) < 15 || strlen(inputtext) > 40) 
-						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_INPUT, "Bug Report - Subject", "Please enter a short description of the bug:\n * 15 characters min\n * 40 characters max", "Continue", "Close");
+						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_INPUT, "Bao loi - Tieu de", "Nhap mo ta ngan gon ve loi:\n * It nhat 15 ky tu\n * Toi da 40 ky tu", "Tiep tuc", "Dong");
 					SetPVarString(playerid, "BugSubject", bugsub);
 					ShowBugReportMainMenu(playerid);
 				}
@@ -113,7 +113,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					new bugdetails[128];
 					if(sscanf(inputtext, "s[128]", bugdetails) || strlen(inputtext) < 50) 
-						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_INPUT, "Bug Report - Bug Details", "Please explain the bug in as much detail you can:\n * 50 characters minimum", "Continue", "Close");
+						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_INPUT, "Bao loi - Chi tiet", "Mo ta loi cang chi tiet cang tot:\n * It nhat 50 ky tu", "Tiep tuc", "Dong");
 					SetPVarString(playerid, "BugDetail", bugdetails);
 					ShowBugReportMainMenu(playerid);
 				}
@@ -141,13 +141,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 CMD:bugreport(playerid, params[]) {
 
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarInt(playerid, "pDoingPJob") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital]) {
-		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+		return SendClientMessage(playerid, COLOR_GRAD2, "Ban chua the lam viec nay!");
 	}
 	else if(GetPVarType(playerid, "FixVehicleTimer")) {
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You are fixing a vehicle!");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban dang sua xe!");
 	}
 	if(gettime() - PlayerInfo[playerid][pBugReportTimeout] < 3600) 
-		return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report - {FF0000}Error", "You can only submit a bug report once every hour!\nAlternatively, you can visit http://cp.ng-gaming.net and post a bug report there.", "Close", "");
+		return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bao loi - {FF0000}Loi", "Moi gio ban chi duoc gui mot bao loi!\nBan cung co the gui bao loi tai http://cp.ng-gaming.net", "Dong", "");
 
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `devcpbans` WHERE `Userid` = %d LIMIT 1", GetPlayerSQLId(playerid));
 	return mysql_tquery(MainPipeline, szMiscArray, "CheckBugReportBans", "ii", playerid, 1);
@@ -175,10 +175,10 @@ public OnBugReport(playerid)
 
 	format(string, sizeof(string), "[BugID: %d] %s(%d) submitted a%sbug (%s)", cache_insert_id(), GetPlayerNameEx(playerid), GetPVarInt(playerid, "pSQLID"), GetPVarInt(playerid, "BugAnonymous") == 1 ? (" anonymous "):(" "), bug);
 	Log("logs/bugreport.log", string);
-	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report Submitted", 
-	"{FFFFFF}Your bug report has been successfully submitted.\n\
-	 We highly suggest adding more information regarding the bug by visiting: http://cp.ng-gaming.net\n\
-	 {FF8000}Note:{FFFFFF} If you are found abusing this system you will be restricted from submitting future bug reports.", "Close", "");
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Da gui bao loi", 
+	"{FFFFFF}Bao loi cua ban da duoc gui thanh cong.\n\
+	 Ban nen bo sung thong tin ve loi tai: http://cp.ng-gaming.net\n\
+	 {FF8000}Luu y:{FFFFFF} Lam dung he thong se khien ban bi cam gui bao loi.", "Dong", "");
 	PlayerInfo[playerid][pBugReportTimeout] = gettime();
 	DeletePVar(playerid, "BugStep");
 	DeletePVar(playerid, "BugSubject");
@@ -199,7 +199,7 @@ public CheckBugReportBans(playerid, check)
 	}
 	else
 	{
-		ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Report - {FF0000}Error", "You are restricted from submitting bug reports.\n\nPlease visit http://cp.ng-gaming.net and select anything from the Bug Report menu\nand your unban date/reason will be displayed.", "Close", "");
+		ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bao loi - {FF0000}Loi", "Ban da bi cam gui bao loi.\n\nTruy cap http://cp.ng-gaming.net va chon mot muc trong menu Bug Report\nde xem ly do va thoi diem duoc mo lai.", "Dong", "");
 	}
 	return 1;
 }
@@ -211,8 +211,8 @@ public CheckPendingBugReports(playerid)
 	cache_get_row_count(rows);
 	if(rows == 0) return 1;
 	new string[256], szResult[41];
-	format(string, sizeof(string), "{BFC0C2}You have {4A8BC2}%d{BFC0C2} bug report(s) pending your response.", rows);
-	strcat(string, "\nPlease follow up with the bug reports listed below and provide as many details as you can.\n{4A8BC2}BugID\tBug{BFC0C2}");
+	format(string, sizeof(string), "{BFC0C2}Ban co {4A8BC2}%d{BFC0C2} bao loi can phan hoi.", rows);
+	strcat(string, "\nVui long bo sung chi tiet cho cac bao loi duoi day.\n{4A8BC2}BugID\tNoi dung{BFC0C2}");
 	for(new i = 0; i < rows; i++)
 	{
 		cache_get_value_name(i, "id", szResult);
@@ -220,5 +220,5 @@ public CheckPendingBugReports(playerid)
 		cache_get_value_name(i, "Subject", szResult);
 		format(string, sizeof(string), "%s%s", string, szResult);
 	}
-	return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Reports Pending Response - {4A8BC2}http://cp.ng-gaming.net", string, "Close", "");
+	return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bao loi can phan hoi - {4A8BC2}http://cp.ng-gaming.net", string, "Dong", "");
 }

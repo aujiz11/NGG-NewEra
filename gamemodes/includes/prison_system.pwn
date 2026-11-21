@@ -93,8 +93,8 @@ ListDetainees(playerid)
 			iCount++;
 		}
 	}
-	if(iCount == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "No prisoners at this arrest point.");
-	return ShowPlayerDialogEx(playerid, DIALOG_LOAD_DETAINEES, DIALOG_LOAD_DETAINEES, "Detainees List", szPrisoners, "Load", "Cancel");
+	if(iCount == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong co tu nhan tai diem bat giu nay.");
+	return ShowPlayerDialogEx(playerid, DIALOG_LOAD_DETAINEES, DIALOG_LOAD_DETAINEES, "Danh sach nguoi bi giam", szPrisoners, "Len xe", "Huy");
 }
 
 LoadPrisoner(iLoadingID, iPrisonerID, iVehicleID, iVehicleSeat, iNewVW, iNewIW)
@@ -107,7 +107,7 @@ LoadPrisoner(iLoadingID, iPrisonerID, iVehicleID, iVehicleSeat, iNewVW, iNewIW)
 	TogglePlayerControllable(iPrisonerID, false);
 	DeletePVar(iPrisonerID, "ArrestPoint");
 
-	SendClientMessageEx(iPrisonerID, COLOR_LIGHTBLUE, "You have been loaded into a prisoner transport bus by and will be transported to DOC");
+	SendClientMessageEx(iPrisonerID, COLOR_LIGHTBLUE, "Ban da duoc dua len xe cho tu va se duoc chuyen den DOC");
 	ListDetainees(iLoadingID);
 }
 
@@ -120,14 +120,14 @@ ShowDocPrisonControls(playerid, icontrolid)
 		case 0:
 		{
 			// main dialog
-			format(szMiscArray, sizeof(szMiscArray), "Cell-block A\nIsolation Cells\nArea Doors\nLockdown\nIntercom");
-			ShowPlayerDialogEx(playerid, DIALOG_DOC_CP, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Cancel");
+			format(szMiscArray, sizeof(szMiscArray), "Cell-block A\nIsolation Cells\nCua khu vuc\nPhong toa\nLoa noi bo");
+			ShowPlayerDialogEx(playerid, DIALOG_DOC_CP, DIALOG_STYLE_LIST, "Bang dieu khien Doc", szMiscArray, "Chon", "Huy");
 		}
 		case 1:
 		{
 			// sub-dialog
-			format(szMiscArray, sizeof(szMiscArray), "Floor 1\nFloor 2\nAll Floor 1\nAll Floor 2");
-			ShowPlayerDialogEx(playerid, DIALOG_DOC_CP_SUB, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
+			format(szMiscArray, sizeof(szMiscArray), "Floor 1\nFloor 2\nToan bo Floor 1\nToan bo Floor 2");
+			ShowPlayerDialogEx(playerid, DIALOG_DOC_CP_SUB, DIALOG_STYLE_LIST, "Bang dieu khien Doc", szMiscArray, "Chon", "Quay lai");
 		}
 		case 2:
 		{
@@ -148,24 +148,24 @@ ShowDocPrisonControls(playerid, icontrolid)
 			Cell 14 (%s)\n\
 			Cell 15 (%s)\n\
 			Cell 16 (%s)",
-			((bDocCellOpen[0] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[1] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[2] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[3] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[4] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[5] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[6] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[7] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[8] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[9] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[10] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[11] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[12] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[13] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[14] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[15] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
+			((bDocCellOpen[0] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[1] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[2] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[3] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[4] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[5] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[6] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[7] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[8] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[9] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[10] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[11] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[12] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[13] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[14] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[15] == false) ? ("{FF0000}Dong"):("{00FF00}Mo"))
 			);
-			ShowPlayerDialogEx(playerid, DIALOG_DOC_CP_C1F1, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
+			ShowPlayerDialogEx(playerid, DIALOG_DOC_CP_C1F1, DIALOG_STYLE_LIST, "Bang dieu khien Doc", szMiscArray, "Chon", "Quay lai");
 		}
 		case 3:
 		{
@@ -185,23 +185,23 @@ ShowDocPrisonControls(playerid, icontrolid)
 			Cell 13 (%s)\n\
 			Cell 14 (%s)\n\
 			Cell 15 (%s)",
-			((bDocCellOpen[16] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[17] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[18] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[19] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[20] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[21] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[22] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[23] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[24] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[25] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[26] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[27] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[28] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[29] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocCellOpen[30] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
+			((bDocCellOpen[16] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[17] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[18] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[19] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[20] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[21] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[22] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[23] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[24] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[25] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[26] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[27] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[28] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[29] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocCellOpen[30] == false) ? ("{FF0000}Dong"):("{00FF00}Mo"))
 			);
-			ShowPlayerDialogEx(playerid, DIALOG_DOC_CP_C1F2, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
+			ShowPlayerDialogEx(playerid, DIALOG_DOC_CP_C1F2, DIALOG_STYLE_LIST, "Bang dieu khien Doc", szMiscArray, "Chon", "Quay lai");
 		}
 		case 4:
 		{
@@ -224,27 +224,27 @@ ShowDocPrisonControls(playerid, icontrolid)
 			Lobby 1 (%s)\n\
 			Lobby 2 (%s)\n\
 			Visitation (%s)",
-			((bDocAreaOpen[0] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[1] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[2] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[3] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[4] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[5] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[6] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[7] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[8] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[9] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[10] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[11] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[12] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[13] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[14] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[15] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[16] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[17] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[18] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
+			((bDocAreaOpen[0] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[1] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[2] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[3] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[4] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[5] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[6] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[7] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[8] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[9] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[10] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[11] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[12] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[13] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[14] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[15] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[16] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[17] == false) ? ("{FF0000}Dong"):("{00FF00}Mo")),
+			((bDocAreaOpen[18] == false) ? ("{FF0000}Dong"):("{00FF00}Mo"))
 			);
-			ShowPlayerDialogEx(playerid, DIALOG_DOC_CP_AREA, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
+			ShowPlayerDialogEx(playerid, DIALOG_DOC_CP_AREA, DIALOG_STYLE_LIST, "Bang dieu khien Doc", szMiscArray, "Chon", "Quay lai");
 		}
 	}
 	return 1;
@@ -266,7 +266,7 @@ DocLockdown(playerid)
 		{
 			OpenDocAreaDoors(i, 0);
 		}
-		format( szWarning, sizeof(szWarning), "ALERT: The DeMorgan Correctional Facility is now on lockdown for an emergency (( %s ))", GetPlayerNameEx(playerid));
+		format( szWarning, sizeof(szWarning), "CANH BAO: DeMorgan Correctional Facility dang phong toa khan cap (( %s ))", GetPlayerNameEx(playerid));
 		SendGroupMessage(1, COLOR_RED, szWarning);
 
 		format(szMiscArray, sizeof szMiscArray, "%s has set the DeMorgan Correctional Facilty on lockdown.", GetPlayerNameEx(playerid));
@@ -275,7 +275,7 @@ DocLockdown(playerid)
 	else
 	{
 		bDocLockdown = false;
-		format( szWarning, sizeof(szWarning), "ALERT: The DeMorgan Correctional Facility is no longer on lockdown (( %s ))", GetPlayerNameEx(playerid));
+		format( szWarning, sizeof(szWarning), "CANH BAO: DeMorgan Correctional Facility da go phong toa (( %s ))", GetPlayerNameEx(playerid));
 		SendGroupMessage(1, COLOR_YELLOW, szWarning);
 
 		format(szMiscArray, sizeof szMiscArray, "%s has removed the DeMorgan Correctional Facilty from lockdown.", GetPlayerNameEx(playerid));
@@ -641,7 +641,7 @@ public StartJailBoxing(iArenaID)
 	arrJailBoxingData[iArenaID][iDocBoxingCountdown]--;
 	if(arrJailBoxingData[iArenaID][iDocBoxingCountdown] == 0)
 	{
-		format(string, sizeof(string), "** [Boxing Countdown (Arena:%d)] The bell rings **", iArenaID);
+		format(string, sizeof(string), "** [Boxing Countdown (Arena:%d)] Chuong vang len **", iArenaID);
 		ProxDetector(10.0, iRangePoint, string, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000);
 		arrJailBoxingData[iArenaID][bInProgress] = true;
 		KillTimer(arrJailBoxingData[iArenaID][iDocCountDownTimer]);
@@ -649,7 +649,7 @@ public StartJailBoxing(iArenaID)
 	}
 	else
 	{
-		format(string, sizeof(string), "** [Boxing Countdown (Arena:%d)] %d seconds until start! **", iArenaID, arrJailBoxingData[iArenaID][iDocBoxingCountdown]);
+		format(string, sizeof(string), "** [Boxing Countdown (Arena:%d)] Con %d giay de bat dau! **", iArenaID, arrJailBoxingData[iArenaID][iDocBoxingCountdown]);
 		ProxDetector(10.0, iRangePoint, string, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000);
 	}
 	return 1;
@@ -670,7 +670,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					case 1: ShowDocPrisonControls(playerid, 5);
 					case 2: ShowDocPrisonControls(playerid, 4);
 					case 3: DocLockdown(playerid);
-					case 4: ShowPlayerDialogEx(playerid, DIALOG_DOC_CP_INT, DIALOG_STYLE_LIST, "Doc Control Pannel - Intercom", "Prison\nYard\nAll", "Select", "Back");
+					case 4: ShowPlayerDialogEx(playerid, DIALOG_DOC_CP_INT, DIALOG_STYLE_LIST, "Doc Control Pannel - Loa noi bo", "Prison\nYard\nTat ca", "Chon", "Quay lai");
 				}
 			}
 		}
@@ -777,7 +777,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(response)
 			{
-				ShowPlayerDialogEx(playerid, DIALOG_DOC_CP_INT2, DIALOG_STYLE_INPUT, "DoC Control Panel - Intercom", "Enter your message below:", "Login", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_DOC_CP_INT2, DIALOG_STYLE_INPUT, "DoC Control Panel - Loa noi bo", "Nhap noi dung ben duoi:", "Dang nhap", "Huy");
 				switch(listitem)
 				{
 					case 0: SetPVarInt(playerid, "pPrisonIntercom", 1);
@@ -863,7 +863,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
         	if(!response)
         	{
             	strcpy(PlayerInfo[playerid][pPrisonReason], "[IC] [DNRL] Prison Gang", 128);
-            	SendClientMessageEx(playerid, COLOR_GRAD1, "You have chosen to stay in prison. Use /docrelease if you wish to finish serving your sentence.");
+            	SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da chon o lai tu. Dung /docrelease neu muon ket thuc thu an.");
             	PlayerInfo[playerid][pJailTime] = 9999999;
         	}
         	else
@@ -885,23 +885,23 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							PlayerInfo[playerid][pPrisonCredits] -= 10;
 							PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 
-							SendClientMessageEx(playerid, COLOR_GREY, "You have purchased some cigarettes from the prison shop for 10 credits.");
+							SendClientMessageEx(playerid, COLOR_GREY, "Ban da mua thuoc la tai prison shop voi gia 10 credits.");
 						}
-					 	else return SendClientMessageEx(playerid, COLOR_GREY, "  You do not have enough prison credits!");
+					 	else return SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong du prison credits!");
                 	}
                 	case 0:
                 	{
                 	    if(PlayerInfo[playerid][pPrisonCredits] >= 5)
 						{
-                    		if(PlayerInfo[playerid][pDice] >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "You already have a dice!");
+                    		if(PlayerInfo[playerid][pDice] >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da co xuc xac!");
 
 							PlayerInfo[playerid][pDice] = 1;
 							PlayerInfo[playerid][pPrisonCredits] -= 5;
 							PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 
-							SendClientMessageEx(playerid, COLOR_GREY, "You have purchased a dice from the prison shop for 5 credits.");
+							SendClientMessageEx(playerid, COLOR_GREY, "Ban da mua xuc xac tai prison shop voi gia 5 credits.");
 						}
-						else return SendClientMessageEx(playerid, COLOR_GREY, "  You do not have enough prison credits!");
+						else return SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong du prison credits!");
                 	}
                 	case 1:
                 	{
@@ -911,13 +911,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							PlayerInfo[playerid][pPrisonCredits] -= 5;
 							PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 
-							SendClientMessageEx(playerid, COLOR_GREY, "You have purchased some paper from the prison shop for 5 credits.");
+							SendClientMessageEx(playerid, COLOR_GREY, "Ban da mua giay tai prison shop voi gia 5 credits.");
 						}
-						else return SendClientMessageEx(playerid, COLOR_GREY, "  You do not have enough prison credits!");
+						else return SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong du prison credits!");
                 	}
                 	case 6:
                 	{
-                    	if(PlayerInfo[playerid][pCDPlayer] >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "You already have a MP3!");
+                    	if(PlayerInfo[playerid][pCDPlayer] >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da co MP3!");
 
                     	if(PlayerInfo[playerid][pPrisonCredits] >= 50)
                     	{
@@ -925,9 +925,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							PlayerInfo[playerid][pPrisonCredits] -= 50;
 							PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 
-							SendClientMessageEx(playerid, COLOR_GREY, "You have purchased an MP3 Player from the prison shop for 50 credits.");
+							SendClientMessageEx(playerid, COLOR_GREY, "Ban da mua MP3 Player tai prison shop voi gia 50 credits.");
 						}
-						else return SendClientMessageEx(playerid, COLOR_GREY, "  You do not have enough prison credits!");
+						else return SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong du prison credits!");
                 	}
                 	case 7:
                 	{
@@ -941,21 +941,21 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								case 2: return ShowModelSelectionMenuEx(playerid, g_aFemaleSkins, sizeof(g_aFemaleSkins), "Skin Model", PRISON_SKINSELECT, -16.0, 0.0, -55.0);
                				}
 						}
-						else return SendClientMessageEx(playerid, COLOR_GREY, "  You do not have enough prison credits!");
+						else return SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong du prison credits!");
                 	}
                 	case 2:
                 	{
                 	    if(PlayerInfo[playerid][pPrisonCredits] >= 5)
                 	    {
-                	        if(GetPVarInt(playerid, "pPrisonSoap") >= 5) return SendClientMessageEx(playerid, COLOR_GREY, "You can only cary five soap at a time!");
+                	        if(GetPVarInt(playerid, "pPrisonSoap") >= 5) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chi co the mang nam banh xa phong cung luc!");
 
 							SetPVarInt(playerid, "pPrisonSoap", GetPVarInt(playerid, "pPrisonSoap") + 1); // these need to be added to the db and the enum
 							PlayerInfo[playerid][pPrisonCredits] -= 5;
 							PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 
-							SendClientMessageEx(playerid, COLOR_GREY, "You have purchased a bar of soap from the prison shop for 5 credits.");
+							SendClientMessageEx(playerid, COLOR_GREY, "Ban da mua mot banh xa phong tai prison shop voi gia 5 credits.");
 						}
-						else return SendClientMessageEx(playerid, COLOR_GREY, "  You do not have enough prison credits!");
+						else return SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong du prison credits!");
                 	}
                 	case 3:
                 	{
@@ -966,23 +966,23 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							PlayerInfo[playerid][pPrisonCredits] -= 5;
 							PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 
-							SendClientMessageEx(playerid, COLOR_GREY, "You have purchased a packet of sugar from the prison shop for 5 credits.");
+							SendClientMessageEx(playerid, COLOR_GREY, "Ban da mua mot goi duong tai prison shop voi gia 5 credits.");
 						}
-						else return SendClientMessageEx(playerid, COLOR_GREY, "  You do not have enough prison credits!");
+						else return SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong du prison credits!");
                 	}
                 	case 4:
                 	{
                 	    if(PlayerInfo[playerid][pPrisonCredits] >= 5)
                 	    {
-                	        if(GetPVarInt(playerid, "pPrisonBread") >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "You can only carry one loaf of bread at a time!");
+                	        if(GetPVarInt(playerid, "pPrisonBread") >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chi co the mang mot o banh mi cung luc!");
 
 							SetPVarInt(playerid, "pPrisonBread", 1); // these need to be added to the db and the enum
 							PlayerInfo[playerid][pPrisonCredits] -= 10;
 							PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 
-							SendClientMessageEx(playerid, COLOR_GREY, "You have purchased a loaf of bread from the prison shop for 10 credits.");
+							SendClientMessageEx(playerid, COLOR_GREY, "Ban da mua mot o banh mi tai prison shop voi gia 10 credits.");
 						}
-						else return SendClientMessageEx(playerid, COLOR_GREY, "  You do not have enough prison credits!");
+						else return SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong du prison credits!");
                 	}
             	}
 			}
@@ -1001,7 +1001,7 @@ CMD:bail(playerid, params[])
 			{
 				new string[128];
 
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You bailed yourself out for $%d.", PlayerInfo[playerid][pBailPrice]);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da tu bao lanh voi gia $%d.", PlayerInfo[playerid][pBailPrice]);
 				GivePlayerCash(playerid, -PlayerInfo[playerid][pBailPrice]);
 				PlayerInfo[playerid][pBailPrice] = 0;
 				WantLawyer[playerid] = 0; CallLawyer[playerid] = 0;
@@ -1012,17 +1012,17 @@ CMD:bail(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "You can't afford the bail price.");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong du tien bao lanh.");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have a bail price.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co muc tien bao lanh.");
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You're not in jail.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o trong tu.");
 	}
 	return 1;
 }
@@ -1030,31 +1030,31 @@ CMD:bail(playerid, params[])
 CMD:docarrest(playerid, params[])
 {
 	new giveplayerid, time, fine;
-	if(!IsACop(playerid)) SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a LEO faction. ");
-	else if(!IsAtArrestPoint(playerid, 2)) SendClientMessageEx(playerid, COLOR_GREY, "You are not at the DoC Prison arrest point." );
+	if(!IsACop(playerid)) SendClientMessageEx(playerid, COLOR_GREY, "Ban khong thuoc faction LEO. ");
+	else if(!IsAtArrestPoint(playerid, 2)) SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o diem bat giu DoC Prison." );
 	else if(sscanf(params, "udd", giveplayerid, time, fine))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /docarrest [playerid] [time] [fine]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /docarrest [playerid] [time] [fine]");
 		return 1;
 	}
 	else
 	{
    		new string[256];
    		new totalwealth = PlayerInfo[giveplayerid][pCash] + PlayerInfo[giveplayerid][pAccount];
-		if(!IsPlayerConnected(giveplayerid)) SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-		else if(!ProxDetectorS(5.0, playerid, giveplayerid)) SendClientMessageEx(playerid, COLOR_GREY, "You are close enough to the suspect.");
-		else if(PlayerInfo[giveplayerid][pWantedLevel] < 1 && PlayerInfo[playerid][pMember] != 12) SendClientMessageEx(playerid, COLOR_GREY, "The person must have a wanted level of at least one star.");
+		if(!IsPlayerConnected(giveplayerid)) SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
+		else if(!ProxDetectorS(5.0, playerid, giveplayerid)) SendClientMessageEx(playerid, COLOR_GREY, "Ban o du gan nghi pham.");
+		else if(PlayerInfo[giveplayerid][pWantedLevel] < 1 && PlayerInfo[playerid][pMember] != 12) SendClientMessageEx(playerid, COLOR_GREY, "Nguoi nay phai co it nhat mot sao truy na.");
 		else if(time > 60 || time < 5)
 		{
-		    SendClientMessageEx(playerid, COLOR_GREY, "The time has to be between 5-60 minutes.");
+		    SendClientMessageEx(playerid, COLOR_GREY, "Thoi gian phai tu 5-60 phut.");
 		}
 		else if(fine > 250000 || fine < 0)
 		{
-		    SendClientMessageEx(playerid, COLOR_GREY, "The fine amount has to be $0 - $250,000");
+		    SendClientMessageEx(playerid, COLOR_GREY, "Tien phat phai tu $0 - $250,000");
 		}
 		else if(totalwealth < 250000 && fine > 50000)
 		{
-		    SendClientMessageEx(playerid, COLOR_GREY, "You can only fine this person $50, 000.");
+		    SendClientMessageEx(playerid, COLOR_GREY, "Ban chi co the phat nguoi nay $50, 000.");
 		}
 		else {
 			SetPVarInt(playerid, "Arrest_Price", fine);
@@ -1063,8 +1063,8 @@ CMD:docarrest(playerid, params[])
 			SetPVarInt(playerid, "Arrest_BailPrice", fine*2);
 			SetPVarInt(playerid, "Arrest_Suspect", giveplayerid);
 			SetPVarInt(playerid, "Arrest_Type", 2);
-			format(string, sizeof(string), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(giveplayerid));
-			ShowPlayerDialogEx(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", string, "Submit", "");
+			format(string, sizeof(string), "Hay viet bao cao ngan ve cach %s hanh xu khi bi bat.\n\nBao cao phai dai tu 30 den 128 ky tu.", GetPlayerNameEx(giveplayerid));
+			ShowPlayerDialogEx(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Bao cao bat giu", string, "Gui", "");
 	    }
 	}
 	return 1;
@@ -1074,13 +1074,13 @@ CMD:arrest(playerid, params[])
 {
 	new giveplayerid, time, fine;
 	if(!IsACop(playerid)) {
-	    SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a LEO faction. ");
+	    SendClientMessageEx(playerid, COLOR_GREY, "Ban khong thuoc faction LEO. ");
 	}
 	else if(!IsAtArrestPoint(playerid, 0) && !IsAtArrestPoint(playerid, 1)) {
- 		SendClientMessageEx(playerid, COLOR_GREY, "You are not at a arrest point." );
+ 		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o diem bat giu." );
  	} else if(sscanf(params, "udd", giveplayerid, time, fine))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /arrest [playerid] [time] [fine]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /arrest [playerid] [time] [fine]");
 		return 1;
 	}
 
@@ -1090,25 +1090,25 @@ CMD:arrest(playerid, params[])
    		new	string[256], totalwealth;
 		totalwealth = PlayerInfo[giveplayerid][pCash] + PlayerInfo[giveplayerid][pAccount];
 		if(!IsPlayerConnected(giveplayerid)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 		}
 		else if(!ProxDetectorS(5.0, playerid, giveplayerid)) {
-		    SendClientMessageEx(playerid, COLOR_GREY, "You are not close enough to the suspect.");
+		    SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o du gan nghi pham.");
 		}
 		else if(time > 30 || time < 5)
 		{
-		    SendClientMessageEx(playerid, COLOR_GREY, "The time has to be between 5-30 minutes.");
+		    SendClientMessageEx(playerid, COLOR_GREY, "Thoi gian phai tu 5-30 phut.");
 		}
 		else if(fine > 250000 || fine < 0)
 		{
-		    SendClientMessageEx(playerid, COLOR_GREY, "The fine amount has to be $0 - $250,000");
+		    SendClientMessageEx(playerid, COLOR_GREY, "Tien phat phai tu $0 - $250,000");
 		}
 		else if(PlayerInfo[giveplayerid][pWantedLevel] < 1 && !IsAJudge(playerid)) {
-		    SendClientMessageEx(playerid, COLOR_GREY, "The person must have a wanted level of at least one star.");
+		    SendClientMessageEx(playerid, COLOR_GREY, "Nguoi nay phai co it nhat mot sao truy na.");
 		}
 		else if(totalwealth < 250000 && fine > 50000)
 		{
-		    SendClientMessageEx(playerid, COLOR_GREY, "You can only fine this person $50, 000.");
+		    SendClientMessageEx(playerid, COLOR_GREY, "Ban chi co the phat nguoi nay $50, 000.");
 		}
 		else {
 			SetPVarInt(playerid, "Arrest_Price", fine);
@@ -1117,8 +1117,8 @@ CMD:arrest(playerid, params[])
 			SetPVarInt(playerid, "Arrest_BailPrice", fine*2);
 			SetPVarInt(playerid, "Arrest_Suspect", giveplayerid);
 			SetPVarInt(playerid, "Arrest_Type", 0);
-			format(string, sizeof(string), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(giveplayerid));
-			ShowPlayerDialogEx(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", string, "Submit", "");
+			format(string, sizeof(string), "Hay viet bao cao ngan ve cach %s hanh xu khi bi bat.\n\nBao cao phai dai tu 30 den 128 ky tu.", GetPlayerNameEx(giveplayerid));
+			ShowPlayerDialogEx(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Bao cao bat giu", string, "Gui", "");
 	    }
 	}
 	return 1;
@@ -1126,28 +1126,28 @@ CMD:arrest(playerid, params[])
 
 CMD:listprisoners(playerid, params[])
 {
-	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
+	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can la DOC Guard de dung lenh nay.");
 	new szInmates[1024],
 		szString[20],
 		id;
-	if(sscanf(params, "d", id)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /listprisoners [arrestpoint id]");
+	if(sscanf(params, "d", id)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /listprisoners [arrestpoint id]");
 	foreach(new i : Player)
 	{
 		if((GetPVarInt(i, "ArrestPoint") == id + 1) && PlayerInfo[i][pJailTime] > 0)
 		{
-			format(szInmates, sizeof(szInmates), "%s\n* [%d] Prisoner Name: %s", szInmates, i, GetPlayerNameEx(i));
+			format(szInmates, sizeof(szInmates), "%s\n* [%d] Ten tu nhan: %s", szInmates, i, GetPlayerNameEx(i));
 		}
 	}
-	if(strlen(szInmates) == 0) format(szInmates, sizeof(szInmates), "Holding cell empty!");
-	format(szString, sizeof(szString), "Holding Cell %d", id);
-	ShowPlayerDialogEx(playerid, DIALOG_DOC_INMATES, DIALOG_STYLE_LIST, szString, szInmates, "Close", "");
+	if(strlen(szInmates) == 0) format(szInmates, sizeof(szInmates), "Buong tam giam trong!");
+	format(szString, sizeof(szString), "Buong %d", id);
+	ShowPlayerDialogEx(playerid, DIALOG_DOC_INMATES, DIALOG_STYLE_LIST, szString, szInmates, "Dong", "");
 
 	return 1;
 }
 
 CMD:inmates(playerid, params[])
 {
-	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
+	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can la DOC Guard de dung lenh nay.");
 	ListInmates(playerid);
 	return 1;
 }
@@ -1171,41 +1171,41 @@ ListInmates(playerid)
 
 			if(PlayerInfo[i][pBailPrice]) 
 			{
-				format(BailString, sizeof(BailString), "| Bail: $%s", number_format(PlayerInfo[i][pBailPrice]));
+				format(BailString, sizeof(BailString), "| Bao lanh: $%s", number_format(PlayerInfo[i][pBailPrice]));
 			}
 			else format(BailString, sizeof(BailString), "", number_format(PlayerInfo[i][pBailPrice]));
 
 			if(strfind(PlayerInfo[i][pPrisonReason], "[DNRL]", true) != -1)
 			{
-				format(TimeString, sizeof(TimeString), "Lifetime");
+				format(TimeString, sizeof(TimeString), "Chung than");
 			}
 			else format(TimeString, sizeof(TimeString), "%s", TimeConvert(PlayerInfo[i][pJailTime]));
 
-			format(szInmates, sizeof(szInmates), "%s\n* %s%s: %s | Cell: %d | Credits: %d %s", szInmates, IsoString, GetPlayerNameEx(i), TimeString, PlayerInfo[i][pPrisonCell], PlayerInfo[i][pPrisonCredits], BailString);
+			format(szInmates, sizeof(szInmates), "%s\n* %s%s: %s | Buong:%d | Credits: %d %s", szInmates, IsoString, GetPlayerNameEx(i), TimeString, PlayerInfo[i][pPrisonCell], PlayerInfo[i][pPrisonCredits], BailString);
 		}
 	}
-	if(strlen(szInmates) == 0) format(szInmates, sizeof(szInmates), "No inmates");
-	ShowPlayerDialogEx(playerid, DIALOG_DOC_INMATES, DIALOG_STYLE_LIST, "DOC Inmates Logbook", szInmates, "Close", "");
+	if(strlen(szInmates) == 0) format(szInmates, sizeof(szInmates), "Khong co tu nhan");
+	ShowPlayerDialogEx(playerid, DIALOG_DOC_INMATES, DIALOG_STYLE_LIST, "So theo doi tu nhan DOC", szInmates, "Dong", "");
 }
 
 CMD:loadprisoners(playerid, params[])
 {
-	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
-	if(GetArrestPointID(playerid) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a arrest point.");
+	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can la DOC Guard de dung lenh nay.");
+	if(GetArrestPointID(playerid) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan diem bat giu.");
 	new	getVeh = GetPlayerVehicleID(playerid);
 
 	if(GetVehicleModel(getVeh) == 431 || GetVehicleModel(getVeh) == 427)
 	{
 		ListDetainees(playerid);
 	}
-	else SendClientMessage(playerid, COLOR_WHITE, "You need to be in a bus to transport prisoners.");
+	else SendClientMessage(playerid, COLOR_WHITE, "Ban can ngoi trong xe bus de cho tu nhan.");
 	return 1;
 }
 
 CMD:deliverinmates(playerid, params[])
 {
-	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
-	if(!IsPlayerInRangeOfPoint(playerid, 4, -2053.6279,-198.0207,15.0703)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at the doc delivery point");
+	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can la DOC Guard de dung lenh nay.");
+	if(!IsPlayerInRangeOfPoint(playerid, 4, -2053.6279,-198.0207,15.0703)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai o diem giao tu nhan doc");
 	foreach(new i : Player)
 	{
 		if(IsPlayerInVehicle(i, GetPlayerVehicleID(playerid)) && GetPlayerVehicleSeat(i) != 0)
@@ -1234,15 +1234,15 @@ CMD:getinmatefood(playerid, params[])
 			SetPVarInt(playerid, "inmatefood", 5);
 			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CARRY);
 			SetPlayerAttachedObject(playerid, 9, 2767, 6, 0.195999, 0.042999, -0.191, -108.6, 168.6, -83.4999);
-			format(string, sizeof(string), "* %s has picked up a food tray.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s da lay mot khay thuc an.", GetPlayerNameEx(playerid));
 			ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "You cannot carry anymore food on your tray.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Khay cua ban khong the chua them thuc an.");
 		}
 	}
-	else SendClientMessageEx(playerid, COLOR_WHITE, "You are not at the Prison Cafe!");
+	else SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong o Prison Cafe!");
 	return 1;
 }
 
@@ -1253,7 +1253,7 @@ CMD:dropfoodtray(playerid, params[])
 	{
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 		RemovePlayerAttachedObject(playerid, 9);
-		format(string, sizeof(string), "* %s has dropped their food tray.", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "* %s da bo khay thuc an xuong.", GetPlayerNameEx(playerid));
 		ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		DeletePVar(playerid, "inmatefood");
 		DeletePVar(playerid, "carryingfood");
@@ -1261,7 +1261,7 @@ CMD:dropfoodtray(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You do not have a foodtray with food on it.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong co khay con thuc an.");
 	}
 	return 1;
 }
@@ -1269,12 +1269,12 @@ CMD:dropfoodtray(playerid, params[])
 CMD:offerinmatefood(playerid, params[])
 {
 	new iGiveTo;
-	if(sscanf(params, "u", iGiveTo)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /offerinmatefood [playerid]");
-	else if(iGiveTo == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot offer yourself food.");
-	else if(!IsPlayerConnected(iGiveTo)) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is not connected");
+	if(sscanf(params, "u", iGiveTo)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /offerinmatefood [playerid]");
+	else if(iGiveTo == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong the tu moi minh an.");
+	else if(!IsPlayerConnected(iGiveTo)) return SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi do chua ket noi");
 	//else if(GetPVarInt(playerid, "OfferingMeal") == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You may only offer food to one person at a time.");
-	else if(!PlayerInfo[iGiveTo][pJailTime]) return SendClientMessageEx(playerid, COLOR_WHITE, "You may only offer food to prison inmates.");
-	else if(!GetPVarInt(playerid, "inmatefood")) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have any prison food to offer.");
+	else if(!PlayerInfo[iGiveTo][pJailTime]) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban chi co the moi tu nhan an.");
+	else if(!GetPVarInt(playerid, "inmatefood")) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong co thuc an trong tu de moi.");
 	else if(ProxDetectorS(5.0, playerid, iGiveTo))
 	{
 		if(GetPVarInt(playerid, "OfferingMeal") == 1) { // added as a bug report fix
@@ -1289,10 +1289,10 @@ CMD:offerinmatefood(playerid, params[])
 		SetPVarInt(iGiveTo, "OfferedMealBy", playerid);
 		SetPVarInt(playerid, "OfferingMeal", 1);
 		SetPVarInt(playerid, "OfferedMealTo", iGiveTo);
-		SendClientMessageEx(iGiveTo, COLOR_LIGHTBLUE, "%s has offered you a meal. Type /acceptjailfood to take it.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have offered %s some prisoner food", GetPlayerNameEx(iGiveTo));
+		SendClientMessageEx(iGiveTo, COLOR_LIGHTBLUE, "%s moi ban mot bua an. Dung /acceptjailfood de nhan.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da moi %s thuc an trong tu", GetPlayerNameEx(iGiveTo));
 	}
-	else SendClientMessageEx(playerid, COLOR_WHITE, "You are not in range of that player.");
+	else SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong o gan nguoi choi do.");
 	return 1;
 }
 
@@ -1300,8 +1300,8 @@ CMD:acceptjailfood(playerid, params[])
 {
 	new iOffering = GetPVarInt(playerid, "OfferedMealBy"),
 		string[101];
-	if(GetPVarInt(playerid, "OfferedMeal") == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "No one offered you a meal.");
-	else if(!IsPlayerConnected(GetPVarInt(playerid, "OfferedMealBy"))) return SendClientMessageEx(playerid, COLOR_WHITE, "The person offering you food has disconnected.");
+	if(GetPVarInt(playerid, "OfferedMeal") == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong ai moi ban an.");
+	else if(!IsPlayerConnected(GetPVarInt(playerid, "OfferedMealBy"))) return SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi moi ban an da ngat ket noi.");
 	else if(ProxDetectorS(5.0, playerid, iOffering))
 	{
 		SetPVarInt(iOffering, "inmatefood", GetPVarInt(iOffering, "inmatefood") - 1);
@@ -1321,14 +1321,14 @@ CMD:acceptjailfood(playerid, params[])
 		DeletePVar(playerid, "OfferedMealBy");
 		DeletePVar(iOffering, "OfferingMeal");
 		DeletePVar(iOffering, "OfferedMealTo");
-		format(string, sizeof(string), "* %s takes a plate of food from %s and begins to eat it.", GetPlayerNameEx(playerid), GetPlayerNameEx(iOffering));
+		format(string, sizeof(string), "* %s nhan dia thuc an tu %s va bat dau an.", GetPlayerNameEx(playerid), GetPlayerNameEx(iOffering));
 		ProxChatBubble(playerid, string);
 		ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		//PlayAnimEx(playerid, "FOOD", "EAT_Burger", 4.1, 0, 1, 0, 4000, 1);
 		PlayAnimEx(playerid, "FOOD", "EAT_Burger", 4.0, false, false, false, true, 0, 0);
 		SetTimerEx("ClearAnims", 3000, false, "d", playerid);
 	}
-	else SendClientMessageEx(playerid, COLOR_WHITE, "You are not in range of the person offering you food.");
+	else SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong o gan nguoi moi an.");
 	return 1;
 }
 
@@ -1342,15 +1342,15 @@ CMD:getfood(playerid, params[])
 			SetPVarInt(playerid, "carryingfood", 1);
 			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CARRY);
 			SetPlayerAttachedObject(playerid, 9, 2767, 6, 0.195999, 0.042999, -0.191, -108.6, 168.6, -83.4999);
-			format(string, sizeof(string), "* %s reaches towards the counter, grabbing a tray of food.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s voi tay den quay, lay mot khay thuc an.", GetPlayerNameEx(playerid));
 			ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "You cannot carry anymore food on your tray.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Khay cua ban khong the chua them thuc an.");
 		}
 	}
-	else SendClientMessageEx(playerid, COLOR_WHITE, "You are not at the Prison Cafe!");
+	else SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong o Prison Cafe!");
 	return 1;
 }
 
@@ -1367,7 +1367,7 @@ CMD:eatfood(playerid, params[])
 		{
 			PlayerInfo[playerid][pFitness] = 0;
 		}
-		format(string, sizeof(string), "* %s grabs the food from the tray and eats it.", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "* %s lay thuc an tu khay va an.", GetPlayerNameEx(playerid));
 		ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		DeletePVar(playerid, "carryingfood");
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
@@ -1376,21 +1376,21 @@ CMD:eatfood(playerid, params[])
 		RemovePlayerAttachedObject(playerid, 9);
 
 	}
-	else SendClientMessageEx(playerid, COLOR_WHITE, "You are not carrying a food tray");
+	else SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong cam khay thuc an");
 	return 1;
 }
 
 CMD:extendsentence(playerid, params[])
 {
-	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
+	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can la DOC Guard de dung lenh nay.");
 	new iTargetID,
 		iExtended,
 		string[64];
-	if(sscanf(params, "ud", iTargetID, iExtended)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /extendsentence [playerid] [percentage to extend (1 - 30)]");
-	else if(strfind(PlayerInfo[iTargetID][pPrisonReason], "[IC]", true) == -1)  return SendClientMessageEx(playerid, COLOR_WHITE, "That player is not in IC Jail.");
-	else if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: That player is not connected.");
-	else if(iTargetID == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You cannot use this command on yourself.");
-	else if(strfind(PlayerInfo[iTargetID][pPrisonReason], "[EXT]", true) != -1) return SendClientMessageEx(playerid, COLOR_WHITE, "That player has already had their time extended.");
+	if(sscanf(params, "ud", iTargetID, iExtended)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /extendsentence [playerid] [percentage to extend (1 - 30)]");
+	else if(strfind(PlayerInfo[iTargetID][pPrisonReason], "[IC]", true) == -1)  return SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi choi do khong o IC Jail.");
+	else if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Nguoi do chua ket noi.");
+	else if(iTargetID == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Khong the dung lenh nay cho chinh minh.");
+	else if(strfind(PlayerInfo[iTargetID][pPrisonReason], "[EXT]", true) != -1) return SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi choi do da duoc tang an tu.");
 	else if(iExtended >= 1 && iExtended <= 30)
 	{
 		new StartJail = PlayerInfo[iTargetID][pJailTime];
@@ -1399,29 +1399,29 @@ CMD:extendsentence(playerid, params[])
 		Manip = 1.0 + (float(iExtended) / 100);
 		EndJail = StartJail * Manip;
 		PlayerInfo[iTargetID][pJailTime] = floatround(EndJail);
-		SendClientMessageEx(iTargetID, COLOR_RED, "Your jail time has been extended by %s by %d percent.", GetPlayerNameEx(playerid), iExtended);
-		SendClientMessageEx(playerid, COLOR_RED, "You have extended %s's jail sentence by %d percent.", GetPlayerNameEx(iTargetID), iExtended);
-		SendClientMessageEx(playerid, COLOR_RED, "Original Time: %s ------ New Time: %s", TimeConvert(StartJail), TimeConvert(PlayerInfo[iTargetID][pJailTime]));
+		SendClientMessageEx(iTargetID, COLOR_RED, "%s da tang an tu cua ban them %d percent.", GetPlayerNameEx(playerid), iExtended);
+		SendClientMessageEx(playerid, COLOR_RED, "Ban da tang an tu cua %s them %d percent.", GetPlayerNameEx(iTargetID), iExtended);
+		SendClientMessageEx(playerid, COLOR_RED, "Thoi gian cu: %s ------ Thoi gian moi: %s", TimeConvert(StartJail), TimeConvert(PlayerInfo[iTargetID][pJailTime]));
 		strcat(PlayerInfo[iTargetID][pPrisonReason], "[EXT]", 128);
 
 		format(string, sizeof string, "%s has extended %s's sentence by %d percent. (Original: %s, New: %s)", GetPlayerNameEx(playerid), GetPlayerNameExt(iTargetID), iExtended, TimeConvert(StartJail), TimeConvert(PlayerInfo[iTargetID][pJailTime]));
  		GroupLog(PlayerInfo[playerid][pMember], string);
 	}
-	else SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: The extension percentage cannot be less than 1 or greater than 10.");
+	else SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Ty le tang khong duoc duoi 1 hoac tren 10.");
 	return 1;
 }
 
 CMD:reducesentence(playerid, params[])
 {
-	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
+	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can la DOC Guard de dung lenh nay.");
 	new iTargetID,
 		iReduce,
 		string[64];
-	if(sscanf(params, "ud", iTargetID, iReduce)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /reducesentence [playerid] [percentage to reduce (1 - 30)]");
-	else if(strfind(PlayerInfo[iTargetID][pPrisonReason], "[IC]", true) == -1)  return SendClientMessageEx(playerid, COLOR_WHITE, "That player is not in IC Jail.");
-	else if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: That player is not connected.");
-	else if(iTargetID == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You cannot use this command on yourself.");
-	else if(strfind(PlayerInfo[iTargetID][pPrisonReason], "[RED]", true) != -1) return SendClientMessageEx(playerid, COLOR_WHITE, "That player has already had their time reduced.");
+	if(sscanf(params, "ud", iTargetID, iReduce)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /reducesentence [playerid] [percentage to reduce (1 - 30)]");
+	else if(strfind(PlayerInfo[iTargetID][pPrisonReason], "[IC]", true) == -1)  return SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi choi do khong o IC Jail.");
+	else if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Nguoi do chua ket noi.");
+	else if(iTargetID == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Khong the dung lenh nay cho chinh minh.");
+	else if(strfind(PlayerInfo[iTargetID][pPrisonReason], "[RED]", true) != -1) return SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi choi do da duoc giam an.");
 	else if(iReduce >= 1 && iReduce <= 30)
 	{
 		new StartJail = PlayerInfo[iTargetID][pJailTime];
@@ -1430,68 +1430,68 @@ CMD:reducesentence(playerid, params[])
 		Manip = 1.0 - (float(iReduce) / 100);
 		EndJail = StartJail * Manip;
 		PlayerInfo[iTargetID][pJailTime] = floatround(EndJail);
-		SendClientMessageEx(iTargetID, COLOR_RED, "Your jail time has been reduced by %s by %d percent.", GetPlayerNameEx(playerid), iReduce);
-		SendClientMessageEx(playerid, COLOR_RED, "You have reduced %s's jail sentence by %d percent.", GetPlayerNameEx(iTargetID), iReduce);
-		SendClientMessageEx(playerid, COLOR_RED, "Original Time: %s ------ New Time: %s", TimeConvert(StartJail), TimeConvert(PlayerInfo[iTargetID][pJailTime]));
+		SendClientMessageEx(iTargetID, COLOR_RED, "%s da giam an tu cua ban di %d percent.", GetPlayerNameEx(playerid), iReduce);
+		SendClientMessageEx(playerid, COLOR_RED, "Ban da giam an tu cua %s di %d percent.", GetPlayerNameEx(iTargetID), iReduce);
+		SendClientMessageEx(playerid, COLOR_RED, "Thoi gian cu: %s ------ Thoi gian moi: %s", TimeConvert(StartJail), TimeConvert(PlayerInfo[iTargetID][pJailTime]));
 		strcat(PlayerInfo[iTargetID][pPrisonReason], "[RED]", 128);
 
 		format(string, sizeof string, "%s has reduced %s's sentence by %d percent. (Original: %s, New: %s)", GetPlayerNameEx(playerid), GetPlayerNameExt(iTargetID), iReduce, TimeConvert(StartJail), TimeConvert(PlayerInfo[iTargetID][pJailTime]));
  		GroupLog(PlayerInfo[playerid][pMember], string);
 	}
-	else SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: The reduction percentage cannot be less than 1 or greater than 10.");
+	else SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Ty le giam khong duoc duoi 1 hoac tren 10.");
 
 	return 1;
 }
 
 CMD:isolateinmate(playerid, params[])
 {
-	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
+	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can la DOC Guard de dung lenh nay.");
 	new iTargetID,
 		iCellID,
 		string[128];
 
-	if(sscanf(params, "ud", iTargetID, iCellID)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /isolateinmate [playerid] [cellid]");
-	else if(iTargetID == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You cannot use this command on yourself.");
-	else if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: That player is not connected.");
-	else if(strfind(PlayerInfo[iTargetID][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is not in IC Jail.");
-	else if(!(0 <= iCellID < sizeof(DocIsolation))) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: Valid Isolation Cells [0-24]");
+	if(sscanf(params, "ud", iTargetID, iCellID)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /isolateinmate [playerid] [cellid]");
+	else if(iTargetID == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Khong the dung lenh nay cho chinh minh.");
+	else if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Nguoi do chua ket noi.");
+	else if(strfind(PlayerInfo[iTargetID][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi choi do khong o IC Jail.");
+	else if(!(0 <= iCellID < sizeof(DocIsolation))) return SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Buong biet giam hop le [0-24]");
 	else if(PlayerInfo[iTargetID][pIsolated] == 0)
 	{
 		DocIsolate(iTargetID, iCellID, 0);
 
-		SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "You have been sent to isolation by %s.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have sent %s to isolation.", GetPlayerNameEx(iTargetID));
+		SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "Ban da bi %s dua vao biet giam.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua %s vao biet giam.", GetPlayerNameEx(iTargetID));
 
 		format(string, sizeof string, "%s has sent %s to isolation.", GetPlayerNameEx(playerid), GetPlayerNameExt(iTargetID));
  		GroupLog(PlayerInfo[playerid][pMember], string);
 	}
-	else SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: That player is already in isolation.");
+	else SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi choi do da o trong biet giam.");
 
 	return 1;
 }
 
 CMD:unisolateinmate(playerid, params[])
 {
-	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
+	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can la DOC Guard de dung lenh nay.");
 	new iTargetID,
 		string[128];
 
-	if(sscanf(params, "u", iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /unisolateinmate [playerid]");
-	else if(strfind(PlayerInfo[iTargetID][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is not in IC Jail");
-	else if(iTargetID == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You cannot use this command on yourself.");
-	else if(PlayerInfo[iTargetID][pIsolated] == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is not in isolation");
+	if(sscanf(params, "u", iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /unisolateinmate [playerid]");
+	else if(strfind(PlayerInfo[iTargetID][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi choi do khong o IC Jail");
+	else if(iTargetID == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Khong the dung lenh nay cho chinh minh.");
+	else if(PlayerInfo[iTargetID][pIsolated] == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi choi do khong o biet giam");
 	else if(IsPlayerConnected(iTargetID))
 	{
 		PlayerInfo[iTargetID][pIsolated] = 0;
 		PlayerInfo[iTargetID][pVW] = 0;
 
-		SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "You have been released from isolation by %s.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have released %s from isolation.", GetPlayerNameEx(iTargetID));
+		SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "Ban da duoc %s dua ra khoi biet giam.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua %s ra khoi biet giam.", GetPlayerNameEx(iTargetID));
 
 		format(string, sizeof string, "%s has brought %s back from isolation.", GetPlayerNameEx(playerid), GetPlayerNameExt(iTargetID));
  		GroupLog(PlayerInfo[playerid][pMember], string);
 	}
-	else SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: That player is not connected.");
+	else SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Nguoi do chua ket noi.");
 	return 1;
 }
 
@@ -1549,16 +1549,16 @@ CMD:docjudgesubpoena(playerid, params[])
 	new iTargetID,
 		szCaseName[128];
 
-	if(sscanf(params, "us[128]", iTargetID, szCaseName)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /docjudgesubpoena [playerid] [case reason]");
-	if(!IsPlayerConnected(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "ERROR: That player is not connected");
-	if(!IsPlayerInRangeOfPoint(playerid, 15, 525.86, 1427.05, 11001.28)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at the DOC courthouse to use this");
+	if(sscanf(params, "us[128]", iTargetID, szCaseName)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /docjudgesubpoena [playerid] [case reason]");
+	if(!IsPlayerConnected(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "LOI: Nguoi choi do chua ket noi");
+	if(!IsPlayerInRangeOfPoint(playerid, 15, 525.86, 1427.05, 11001.28)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai o toa an DOC de dung tinh nang nay");
 	else if(IsAJudge(playerid))
 	{
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have subpoenaed %s. Case: %s", GetPlayerNameEx(iTargetID), szCaseName);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da trieu tap %s. Vu an: %s", GetPlayerNameEx(iTargetID), szCaseName);
 
-		SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "You have been subpoenaed by %s. Case %s", GetPlayerNameEx(playerid), szCaseName);
+		SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, "Ban da bi %s trieu tap. Vu an %s", GetPlayerNameEx(playerid), szCaseName);
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You must be a judge to use this command");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Ban phai la judge de dung lenh nay");
 	return 1;
 }
 
@@ -1572,10 +1572,10 @@ CMD:docjudgecharge(playerid, params[])
 		szCrime[128],
 		szMessage[128];
 
-	if(sscanf(params, "udds[128]", iTargetID, iTime, iFine, szReason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /docjudgecharge [playerid] [time] [fine] [reason]");
-	if(!IsPlayerInRangeOfPoint(playerid, 15, 525.86, 1427.05, 11001.28)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at the DOC courthouse to use this");
-	if(!IsPlayerConnected(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "ERROR: That player is not connected");
-	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a judge to use this command");
+	if(sscanf(params, "udds[128]", iTargetID, iTime, iFine, szReason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /docjudgecharge [playerid] [time] [fine] [reason]");
+	if(!IsPlayerInRangeOfPoint(playerid, 15, 525.86, 1427.05, 11001.28)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai o toa an DOC de dung tinh nang nay");
+	if(!IsPlayerConnected(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "LOI: Nguoi choi do chua ket noi");
+	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai la judge de dung lenh nay");
 	if(ProxDetectorS(14.0, playerid, iTargetID))
 	{
 		PlayerInfo[iTargetID][pWantedJailTime] += iTime;
@@ -1592,17 +1592,17 @@ CMD:docjudgecharge(playerid, params[])
 		strcat(szCrime, szReason);
 		AddCrime(playerid, iTargetID, szCrime);
 
-		SendClientMessageEx(iTargetID, COLOR_LIGHTRED, "You've commited a crime ( %s ). Reporter: %s.", szCrime, GetPlayerNameEx(playerid));
+		SendClientMessageEx(iTargetID, COLOR_LIGHTRED, "Ban da pham toi ( %s ). Nguoi bao: %s.", szCrime, GetPlayerNameEx(playerid));
 
-		SendClientMessageEx(iTargetID, COLOR_YELLOW, "Current wanted level: %d", PlayerInfo[iTargetID][pWantedLevel]);
+		SendClientMessageEx(iTargetID, COLOR_YELLOW, "Muc truy na hien tai: %d", PlayerInfo[iTargetID][pWantedLevel]);
 
-		format(szMessage, sizeof(szMessage), "You have charged %s with a crime.", GetPlayerNameEx(iTargetID));
+		format(szMessage, sizeof(szMessage), "Ban da cao buoc %s pham toi.", GetPlayerNameEx(iTargetID));
 		SendClientMessage(playerid, COLOR_LIGHTRED, szMessage);
 
-		format(szMessage, sizeof(szMessage), "%s: Time: %i minutes. Fine: %i", szCrime, iTime, iFine);
+		format(szMessage, sizeof(szMessage), "%s: %i phut. Phat: %i", szCrime, iTime, iFine);
 		SendClientMessage(playerid, COLOR_LIGHTRED, szMessage);
 	}
-	else SendClientMessageEx(playerid, COLOR_WHITE, "You must be in range of that player");
+	else SendClientMessageEx(playerid, COLOR_WHITE, "Ban phai o gan nguoi choi do");
 	return 1;
 }
 
@@ -1611,20 +1611,20 @@ CMD:docjudgesentence(playerid, params[])
 	new iSuspect,
 		string[256];
 
-	if(sscanf(params, "u", iSuspect)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /docjudgesentence [suspect]");
-	if(!IsPlayerInRangeOfPoint(playerid, 15, 525.86, 1427.05, 11001.28)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at the DOC courthouse to use this");
-	if(!IsPlayerConnected(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "ERROR: That player is not connected");
-	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a judge to use this command");
+	if(sscanf(params, "u", iSuspect)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /docjudgesentence [suspect]");
+	if(!IsPlayerInRangeOfPoint(playerid, 15, 525.86, 1427.05, 11001.28)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai o toa an DOC de dung tinh nang nay");
+	if(!IsPlayerConnected(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "LOI: Nguoi choi do chua ket noi");
+	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai la judge de dung lenh nay");
 	if(ProxDetectorS(14.0, playerid, iSuspect))
 	{
 		SetPVarInt(playerid, "Arrest_Price", PlayerInfo[iSuspect][pWantedJailFine]);
 		SetPVarInt(playerid, "Arrest_Time", PlayerInfo[iSuspect][pWantedJailTime]);
 		SetPVarInt(playerid, "Arrest_Suspect", iSuspect);
 		SetPVarInt(playerid, "Arrest_Type", 3);
-		format(string, sizeof(string), "Please write a brief report on how %s acted during the process.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(iSuspect));
-		ShowPlayerDialogEx(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", string, "Submit", "");
+		format(string, sizeof(string), "Hay viet bao cao ngan ve cach %s hanh xu trong qua trinh xu ly.\n\nBao cao phai dai tu 30 den 128 ky tu.", GetPlayerNameEx(iSuspect));
+		ShowPlayerDialogEx(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Bao cao bat giu", string, "Gui", "");
 	}
-	else SendClientMessageEx(playerid, COLOR_WHITE, "You must be in range of that player");
+	else SendClientMessageEx(playerid, COLOR_WHITE, "Ban phai o gan nguoi choi do");
 
 	return 1;
 }
@@ -1635,30 +1635,30 @@ CMD:jailcuff(playerid, params[])
 	{
 		if(GetPVarInt(playerid, "Injured") == 1 || GetPVarInt(playerid, "jailcuffs") > 0 || PlayerCuffed[ playerid ] >= 1 || PlayerInfo[ playerid ][ pJailTime ] > 0 || PlayerInfo[playerid][pHospital] > 0)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the lam viec nay.");
 			return 1;
 		}
 
 		if(PlayerInfo[playerid][pHasCuff] < 1)
 		{
-		    SendClientMessageEx(playerid, COLOR_WHITE, "You do not have any pair of cuffs on you!");
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong co cong tay!");
 		    return 1;
 		}
 
 		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /jailcuff [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /jailcuff [player]");
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if (ProxDetectorS(8.0, playerid, giveplayerid))
 			{
-				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot cuff yourself!"); return 1; }
+				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the tu cong minh!"); return 1; }
 				if(GetPlayerSpecialAction(giveplayerid) == SPECIAL_ACTION_HANDSUP || PlayerCuffed[giveplayerid] == 1 || GetPVarInt(playerid, "pBagged") >= 1)
 				{
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You handcuffed %s, till uncuff.", GetPlayerNameEx(giveplayerid));
-					format(string, sizeof(string), "* %s handcuffs %s, tightening the cuffs securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Ban da bi %s cong tay.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da cong tay %s den khi duoc thao.", GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "* %s cong tay %s va siet chat cong.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
+					GameTextForPlayer(giveplayerid, "~r~Da bi cong", 2500, 3);
 					ClearAnimationsEx(giveplayerid);
 					TogglePlayerControllable(giveplayerid, false);
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_CUFFED);
@@ -1668,31 +1668,31 @@ CMD:jailcuff(playerid, params[])
 				}
 				else if(GetPVarType(giveplayerid, "IsTackled"))
 				{
-				    format(string, sizeof(string), "* %s removes a set of cuffs from his belt and attempts to cuff %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				    format(string, sizeof(string), "* %s lay cong tu that lung va co gang cong tay %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					BeginCuffTackled(playerid, giveplayerid);
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't restrained!");
+					SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong bi khong che!");
 					return 1;
 				}
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 				return 1;
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 			return 1;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not a law enforcement officer.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai nhan vien hanh phap.");
 	}
 	return 1;
 }
@@ -1702,8 +1702,8 @@ CMD:jailcuff(playerid, params[])
 CMD:prisonhelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_WHITE, "-------------------------------------------------------------------------------------------------------------------------------------");
- 	SendClientMessageEx(playerid, COLOR_GREY, "GENERAL: /prisonhelp, /getfood, /eatfood, /dropfoodtray, /acceptinmatefood, /jailcall, /jailhangup, /prisoncraft, /prisoninv(entory)");
- 	if(strfind(PlayerInfo[playerid][pPrisonReason], "[DNRL]", true) != -1) { SendClientMessageEx(playerid, COLOR_GREY, "LIFE SENTENCE: /docrelease"); }
+ 	SendClientMessageEx(playerid, COLOR_GREY, "CHUNG: /prisonhelp, /getfood, /eatfood, /dropfoodtray, /acceptinmatefood, /jailcall, /jailhangup, /prisoncraft, /prisoninv(entory)");
+ 	if(strfind(PlayerInfo[playerid][pPrisonReason], "[DNRL]", true) != -1) { SendClientMessageEx(playerid, COLOR_GREY, "AN CHUNG THAN: /docrelease"); }
  	if(IsADocGuard(playerid)) { 
  		SendClientMessageEx(playerid, COLOR_GREY, "GUARD:	/reducesentence, /extendsentence, /(jail)cuff, /(get)(offer)inmatefood, /listprisoners, /inmates, /acceptrelease"); 
  		SendClientMessageEx(playerid, COLOR_GREY, "GUARD:	/denyrelease, /beanbag, /(un)isolateinmate, /oocisolateinmate, /loadinmates, /deliverinmates, /giveprisoncredits"); 
@@ -1712,57 +1712,57 @@ CMD:prisonhelp(playerid, params[])
  		SendClientMessageEx(playerid, COLOR_GREY, "LEADER:	/setbail, /takeprisoncredits, /changeinmatecell, /prisonermotd"); 
  	}
   	if(IsAJudge(playerid)) { SendClientMessageEx(playerid, COLOR_GREY, "JUDGE:	/docjudgesentence, /docjudgecharge, /docjudgesubpoena"); }
-   	if(GetPVarInt(playerid, "pPrisonShank") >= 1) { SendClientMessageEx(playerid, COLOR_GREY, "SHANK:	/shank - increases damage upon punching. | usable 15 times before 'breaking.'"); }
-   	if(GetPVarInt(playerid, "pPrisonCellChisel") >= 1) { SendClientMessageEx(playerid, COLOR_GREY, "CELL:	/celldeposit, /cellwithdraw"); }
-   	if(GetPVarInt(playerid, "pPrisonWine") >= 1 || GetPVarInt(playerid, "pPrisonMWine") >= 1) { SendClientMessageEx(playerid, COLOR_GREY, "WINE:	/finishpruno, /drinkpruno - increases damage upon punching. | forces drunk walk."); }
+   	if(GetPVarInt(playerid, "pPrisonShank") >= 1) { SendClientMessageEx(playerid, COLOR_GREY, "SHANK:	/shank - tang sat thuong khi dam. | Dung duoc 15 lan truoc khi 'hong.'"); }
+   	if(GetPVarInt(playerid, "pPrisonCellChisel") >= 1) { SendClientMessageEx(playerid, COLOR_GREY, "BUONG:	/celldeposit, /cellwithdraw"); }
+   	if(GetPVarInt(playerid, "pPrisonWine") >= 1 || GetPVarInt(playerid, "pPrisonMWine") >= 1) { SendClientMessageEx(playerid, COLOR_GREY, "WINE:	/finishpruno, /drinkpruno - tang sat thuong khi dam. | Buoc di say ruou."); }
     SendClientMessageEx(playerid, COLOR_WHITE, "-------------------------------------------------------------------------------------------------------------------------------------");
 	return 1;
 }
 
 CMD:beanbag(playerid, params[])
 {
-    if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
+    if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can la DOC Guard de dung lenh nay.");
 
     if(GetPlayerWeapon(playerid) == 25)
     {
         new string[128];
     	if(GetPVarInt(playerid, "pBeanBag") >= 1)
     	{
-            format(string, sizeof string, "{FF8000}* {C2A2DA}%s loads their shotgun with live action rounds.", GetPlayerNameEx(playerid));
+            format(string, sizeof string, "{FF8000}* {C2A2DA}%s nap dan that vao shotgun.", GetPlayerNameEx(playerid));
     		SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 6000);
-    		format(string, sizeof string, "{FF8000}> {C2A2DA}%s loads their shotgun with live action rounds.", GetPlayerNameEx(playerid));
+    		format(string, sizeof string, "{FF8000}> {C2A2DA}%s nap dan that vao shotgun.", GetPlayerNameEx(playerid));
     		SendClientMessage(playerid, COLOR_PURPLE, string);
 
     		DeletePVar(playerid, "pBeanBag");
     	}
     	else
     	{
-    		format(string, sizeof string, "{FF8000}* {C2A2DA}%s loads their shotgun with beanbag rounds.", GetPlayerNameEx(playerid));
+    		format(string, sizeof string, "{FF8000}* {C2A2DA}%s nap dan beanbag vao shotgun.", GetPlayerNameEx(playerid));
     		SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 6000);
-    		format(string, sizeof string, "{FF8000}> {C2A2DA}%s loads their shotgun with beanbag rounds.", GetPlayerNameEx(playerid));
+    		format(string, sizeof string, "{FF8000}> {C2A2DA}%s nap dan beanbag vao shotgun.", GetPlayerNameEx(playerid));
     		SendClientMessage(playerid, COLOR_PURPLE, string);
 
     		SetPVarInt(playerid, "pBeanBag", 1);
     	}
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You need to equip a shotgun!");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Ban can cam shotgun!");
 	return 1;
 }
 
 CMD:giveprisoncredits(playerid, params[]) // these NEED to show up on /frisk and /inv (only when the player is in prison)
 {
 	new id, amount, string[128];
-    if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
+    if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can la DOC Guard de dung lenh nay.");
 
-    if(sscanf(params, "ud", id, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /giveprisoncredits [playerid] [amount]");
-    if(strfind(PlayerInfo[id][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not in prison!");
-    if(!(0 < amount < 51)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount (1 - 50).");
+    if(sscanf(params, "ud", id, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /giveprisoncredits [playerid] [amount]");
+    if(strfind(PlayerInfo[id][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi nay khong o trong tu!");
+    if(!(0 < amount < 51)) return SendClientMessageEx(playerid, COLOR_GRAD1, "So luong khong hop le (1 - 50).");
 
     if (ProxDetectorS(16.0, playerid, id))
     {
         if(GetPVarInt(playerid, "pGivePCred") < gettime())
         {
-    		format(string, sizeof string, "{FF8000}* {C2A2DA}%s has handed %s some prison credits.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
+    		format(string, sizeof string, "{FF8000}* {C2A2DA}%s dua cho %s mot it prison credits.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
     		SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 6000);
     		SendClientMessage(playerid, COLOR_PURPLE, string);
 			PlayerInfo[id][pPrisonCredits] += amount; // these need to be added to the db and the enum
@@ -1772,28 +1772,28 @@ CMD:giveprisoncredits(playerid, params[]) // these NEED to show up on /frisk and
 			format(string, sizeof string, "%s has gifted %s %d prison credits.", GetPlayerNameEx(playerid), GetPlayerNameEx(id), amount);
 			GroupLog(PlayerInfo[playerid][pMember], string);
 		}
-		else return SendClientMessageEx(playerid, COLOR_GREY, "  You must wait 10 seconds between each prison credit transaction.");
+		else return SendClientMessageEx(playerid, COLOR_GREY, "  Ban phai cho 10 giay giua cac giao dich prison credits.");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "  You must be near this player.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "  Ban phai o gan nguoi choi nay.");
     return 1;
 }
 
 CMD:takeprisoncredits(playerid, params[])
 {
 	new id, amount, string[128];
-    if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
-    if(PlayerInfo[playerid][pLeader] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a group leader.");
+    if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can la DOC Guard de dung lenh nay.");
+    if(PlayerInfo[playerid][pLeader] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai la lanh dao to chuc.");
 
-    if(sscanf(params, "ud", id, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /takeprisoncredits [playerid] [amount]");
-    if(!(0 < amount < 100)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount (1 - 100).");
-    if(amount > PlayerInfo[id][pPrisonCredits]) return SendClientMessageEx(playerid, COLOR_GRAD1, "  They don't have that many.");
-    if(strfind(PlayerInfo[id][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not in prison!");
+    if(sscanf(params, "ud", id, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /takeprisoncredits [playerid] [amount]");
+    if(!(0 < amount < 100)) return SendClientMessageEx(playerid, COLOR_GRAD1, "So luong khong hop le (1 - 100).");
+    if(amount > PlayerInfo[id][pPrisonCredits]) return SendClientMessageEx(playerid, COLOR_GRAD1, "  Ho khong co du so luong do.");
+    if(strfind(PlayerInfo[id][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi nay khong o trong tu!");
 
     if (ProxDetectorS(16.0, playerid, id))
     {
     	if(GetPVarInt(playerid, "pGivePCred") < gettime())
         {
-    		format(string, sizeof string, "{FF8000}* {C2A2DA}%s has taken some of %s's prison credits.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
+    		format(string, sizeof string, "{FF8000}* {C2A2DA}%s lay mot it prison credits cua %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
     		SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 6000);
     		SendClientMessage(playerid, COLOR_PURPLE, string);
 			PlayerInfo[id][pPrisonCredits] -= amount; // these need to be added to the db and the enum
@@ -1803,26 +1803,26 @@ CMD:takeprisoncredits(playerid, params[])
 			format(string, sizeof string, "%s has taken %d prison credits from %s.", GetPlayerNameEx(playerid), amount, GetPlayerNameEx(id));
 			GroupLog(PlayerInfo[playerid][pMember], string);
 		}
-		else return SendClientMessageEx(playerid, COLOR_GREY, "  You must wait 10 seconds between each prison credit transaction.");
+		else return SendClientMessageEx(playerid, COLOR_GREY, "  Ban phai cho 10 giay giua cac giao dich prison credits.");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "  You must be near this player.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "  Ban phai o gan nguoi choi nay.");
     return 1;
 }
 
 CMD:changeinmatecell(playerid, params[])
 {
 	new id, amount;
-	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
-    if(PlayerInfo[playerid][pLeader] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a group leader.");
-	if(sscanf(params, "ud", id, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /changeinmatecell [playerid] [cell]");
-	if(!(-1 < amount < 30)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount (0 - 29).");
-	if(PlayerInfo[id][pIsolated] >= 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't change the cell of an insolated inmate.");
-	if(strfind(PlayerInfo[id][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not in prison!");
+	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can la DOC Guard de dung lenh nay.");
+    if(PlayerInfo[playerid][pLeader] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai la lanh dao to chuc.");
+	if(sscanf(params, "ud", id, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /changeinmatecell [playerid] [cell]");
+	if(!(-1 < amount < 30)) return SendClientMessageEx(playerid, COLOR_GRAD1, "So luong khong hop le (0 - 29).");
+	if(PlayerInfo[id][pIsolated] >= 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the doi buong cho tu nhan dang biet giam.");
+	if(strfind(PlayerInfo[id][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi nay khong o trong tu!");
 
 	PlayerInfo[id][pPrisonCell] = amount;
 
-	SendClientMessageEx(playerid, COLOR_YELLOW, "You have set %s's cell to: %d", GetPlayerNameEx(id), amount);
-	SendClientMessageEx(id, COLOR_YELLOW, "Your cell has been set to %d by %s", amount, GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Ban da dat buong cua %s thanh: %d", GetPlayerNameEx(id), amount);
+	SendClientMessageEx(id, COLOR_YELLOW, "Buong cua ban da duoc dat thanh %d boi %s", amount, GetPlayerNameEx(playerid));
 
 	format(szMiscArray, sizeof szMiscArray, "%s has set %s's bail price to $%s.", GetPlayerNameEx(playerid), GetPlayerNameEx(id), PlayerInfo[id][pPrisonCell]);
  	GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
@@ -1831,21 +1831,21 @@ CMD:changeinmatecell(playerid, params[])
 
 CMD:setbail(playerid, params[]) { // Can no longer set negative bail prices & bail price deducted significantly.
 
-	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be in DoC to use this command.");
-	if(PlayerInfo[playerid][pLeader] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GREY, "  You must be a group leader.");
+	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai thuoc DoC de dung lenh nay.");
+	if(PlayerInfo[playerid][pLeader] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GREY, "  Ban phai la lanh dao to chuc.");
 
 	new uPlayer,
 		iBail;
 
-	if(sscanf(params, "ud", uPlayer, iBail)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /setbail [player] [amount]");
-	if(strfind(PlayerInfo[uPlayer][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not in prison!");
+	if(sscanf(params, "ud", uPlayer, iBail)) return SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /setbail [player] [amount]");
+	if(strfind(PlayerInfo[uPlayer][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi nay khong o trong tu!");
 
-	if(!(0 < iBail <= 15000000)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount ($1 - $15,000,000).");
+	if(!(0 < iBail <= 15000000)) return SendClientMessageEx(playerid, COLOR_GRAD1, "So luong khong hop le ($1 - $15,000,000).");
 
 	PlayerInfo[uPlayer][pBailPrice] = iBail;
 
-	SendClientMessageEx(playerid, COLOR_YELLOW, "You have set %s's bail to: $%s", GetPlayerNameEx(uPlayer), number_format(iBail));
-	SendClientMessageEx(uPlayer, COLOR_YELLOW, "Your bail has been set to $%s by %s", number_format(iBail), GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Ban da dat tien bao lanh cua %s thanh: $%s", GetPlayerNameEx(uPlayer), number_format(iBail));
+	SendClientMessageEx(uPlayer, COLOR_YELLOW, "Tien bao lanh cua ban duoc dat thanh $%s boi %s", number_format(iBail), GetPlayerNameEx(playerid));
 
 	format(szMiscArray, sizeof szMiscArray, "%s has set %s's bail price to $%s.", GetPlayerNameEx(playerid), GetPlayerNameEx(uPlayer), number_format(PlayerInfo[uPlayer][pBailPrice]));
  	GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
@@ -1862,7 +1862,7 @@ CMD:shank(playerid, params[])
             new string[156];
             if(GetPVarInt(playerid, "pPrisonShankOut") == 1)
             {
-                format(string, sizeof string, "{FF8000}> {C2A2DA}%s secretly holsters a prison shank.", GetPlayerNameEx(playerid));
+                format(string, sizeof string, "{FF8000}> {C2A2DA}%s bi mat cat dao tu che.", GetPlayerNameEx(playerid));
     			SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
     			SendClientMessage(playerid, COLOR_PURPLE, string);
                 DeletePVar(playerid, "pPrisonShankOut");
@@ -1870,40 +1870,40 @@ CMD:shank(playerid, params[])
             }
             else
             {
-                format(string, sizeof string, "{FF8000}> {C2A2DA}%s secretly unholsters a prison shank.", GetPlayerNameEx(playerid));
+                format(string, sizeof string, "{FF8000}> {C2A2DA}%s bi mat rut dao tu che.", GetPlayerNameEx(playerid));
     			SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
     			SendClientMessage(playerid, COLOR_PURPLE, string);
                 SetPVarInt(playerid, "pPrisonShankOut", 1);
                 SetPlayerAttachedObject(playerid, 9, 335, 6);
             }
         }
-        else return SendClientMessageEx(playerid, COLOR_GREY, "   You don't have a shank!");
+        else return SendClientMessageEx(playerid, COLOR_GREY, "   Ban khong co dao tu che!");
     }
-    else SendClientMessageEx(playerid, COLOR_GREY, "   You are not in prison!");
+    else SendClientMessageEx(playerid, COLOR_GREY, "   Ban khong o trong tu!");
 	return 1;
 }
 
 CMD:oocisolateinmate(playerid, params[])
 {
-	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
+	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can la DOC Guard de dung lenh nay.");
 	new id, cell, string[128];
 
-	if(sscanf(params, "ud", id, cell)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /oocisolateinmate [playerid] [cellid]");
-	else if(id == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You cannot use this command on yourself.");
-	else if(!IsPlayerConnected(id)) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: That player is not connected.");
-	else if(strfind(PlayerInfo[id][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is not in IC Jail.");
-	else if(!(0 <= cell < sizeof(DocIsolation))) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: Valid Isolation Cells [0-24]");
+	if(sscanf(params, "ud", id, cell)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /oocisolateinmate [playerid] [cellid]");
+	else if(id == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Khong the dung lenh nay cho chinh minh.");
+	else if(!IsPlayerConnected(id)) return SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Nguoi do chua ket noi.");
+	else if(strfind(PlayerInfo[id][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi choi do khong o IC Jail.");
+	else if(!(0 <= cell < sizeof(DocIsolation))) return SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Buong biet giam hop le [0-24]");
 	else if(PlayerInfo[id][pIsolated] == 0)
 	{
 		DocIsolate(id, cell, 1);
 
-		SendClientMessageEx(id, COLOR_LIGHTBLUE, "You have been sent to OOC isolation by %s.", GetPlayerNameEx(playerid));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have sent %s to OOC isolation.", GetPlayerNameEx(id));
+		SendClientMessageEx(id, COLOR_LIGHTBLUE, "Ban da bi %s dua vao biet giam OOC.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua %s vao biet giam OOC.", GetPlayerNameEx(id));
 
 		format(string, sizeof string, "%s has sent %s to OOC isolation.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
  		GroupLog(PlayerInfo[playerid][pMember], string);
 	}
-	else SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: That player is already in (ooc)isolation.");
+	else SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Nguoi choi do da o trong biet giam (ooc).");
 
 	return 1;
 }
@@ -1914,13 +1914,13 @@ CMD:docrelease(playerid, params)
 	{
 		if(GetPVarInt(playerid, "Injured") == 1 || GetPVarInt(playerid, "jailcuffs") > 0 || GetPVarInt(playerid, "_pBeingReleased") >= 1 || PlayerCuffed[ playerid ] >= 1 || PlayerInfo[playerid][pHospital] > 0)
 		{
-			return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the lam viec nay.");
 		}
 
-		if(GetPVarInt(playerid, "_pBeingReleased") == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait 45 seconds before doing this again.");
+		if(GetPVarInt(playerid, "_pBeingReleased") == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai cho 45 giay truoc khi lam lai.");
 
 		new string[258];
-		format( string, sizeof(string), "ALERT: Inmate %s is requesting to be released. Type /acceptrelease or /denyrelease. They will be released in 45 seconds.", GetPlayerNameEx(playerid));
+		format( string, sizeof(string), "CANH BAO: Tu nhan %s yeu cau duoc tha. Dung /acceptrelease hoac /denyrelease. Ho se duoc tha sau 45 giay.", GetPlayerNameEx(playerid));
 		foreach(new i: Player)
 		{
 			if(IsADocGuard(i)) { SendClientMessageEx(i, COLOR_RED, string); }
@@ -1928,46 +1928,46 @@ CMD:docrelease(playerid, params)
 		SetPVarInt(playerid, "_pBeingReleased", 1);
 		TogglePlayerControllable(playerid, FALSE);
 
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have requested to be released from prison, waiting for a guard to accept...");
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da yeu cau duoc tha tu, dang cho guard chap nhan...");
 		SetTimerEx("_ReleaseTimer", 45000, false, "d", playerid);
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You can only use this command when you're serving a life sentence.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Chi dung lenh nay khi dang thu an chung than.");
 	return 1;
 }
 
 CMD:acceptrelease(playerid, params[])
 {
-    if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
+    if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can la DOC Guard de dung lenh nay.");
     new id;
 
-    if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /acceptrelease [player]");
+    if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /acceptrelease [player]");
 
     if(strfind(PlayerInfo[id][pPrisonReason], "[DNRL]", true) != -1 && GetPVarInt(id, "_pBeingReleased") >= 1)
     {
         ReleasePlayerFromPrison(id);
-        SendClientMessageEx(playerid, COLOR_GREY, "You have accepted %s's release request.", GetPlayerNameEx(id));
+        SendClientMessageEx(playerid, COLOR_GREY, "Ban da chap nhan yeu cau tha tu cua %s.", GetPlayerNameEx(id));
 
         DeletePVar(id, "_pBeingReleased");
 
         format(szMiscArray, sizeof szMiscArray, "%s has accepted %s's release request.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
  		GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
     }
-    else SendClientMessage(playerid, COLOR_GRAD1, "You cannot use this command on an inmate who has not served their initial sentence or does not have a release request.");
+    else SendClientMessage(playerid, COLOR_GRAD1, "Khong the dung lenh nay voi tu nhan chua thu xong an ban dau hoac chua yeu cau duoc tha.");
     return 1;
 }
 
 CMD:denyrelease(playerid, params[])
 {
-    if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
+    if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can la DOC Guard de dung lenh nay.");
     new id, reason[128];
 
-    if(sscanf(params, "us[128]", id, reason)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /denyrelease [player] [reason]");
+    if(sscanf(params, "us[128]", id, reason)) return SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /denyrelease [player] [reason]");
 
     if(strfind(PlayerInfo[id][pPrisonReason], "[DNRL]", true) != -1 && GetPVarInt(id, "_pBeingReleased") >= 1)
     {
-        SendClientMessageEx(playerid, COLOR_GREY, "You have denied %s's release request for: %s.", GetPlayerNameEx(id), reason);
+        SendClientMessageEx(playerid, COLOR_GREY, "Ban da tu choi yeu cau tha tu cua %s vi: %s.", GetPlayerNameEx(id), reason);
 
-        SendClientMessageEx(id, COLOR_GREY, "%s has denied your release request. Reason: %s", GetPlayerNameEx(playerid), reason);
+        SendClientMessageEx(id, COLOR_GREY, "%s da tu choi yeu cau tha tu cua ban. Ly do: %s", GetPlayerNameEx(playerid), reason);
 
         DeletePVar(id, "_pBeingReleased");
 
@@ -1976,7 +1976,7 @@ CMD:denyrelease(playerid, params[])
         format(szMiscArray, sizeof szMiscArray, "%s has denied %s's release request. Reason: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(id), reason);
  		GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
     }
-    else SendClientMessage(playerid, COLOR_GRAD1, "You cannot use this command on an inmate who has not served their initial sentence or does not have a release request.");
+    else SendClientMessage(playerid, COLOR_GRAD1, "Khong the dung lenh nay voi tu nhan chua thu xong an ban dau hoac chua yeu cau duoc tha.");
     return 1;
 }
 
@@ -1986,27 +1986,27 @@ CMD:prisoncraft(playerid, params[])
 	{
 	    if(GetPVarInt(playerid, "Injured") == 1 || GetPVarInt(playerid, "jailcuffs") > 0 || GetPVarInt(playerid, "_pBeingReleased") >= 1 || PlayerCuffed[ playerid ] >= 1 || PlayerInfo[playerid][pHospital] > 0)
 		{
-			return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the lam viec nay.");
 		}
 
 		new value[32], string[128];
 		if(sscanf(params, "s[32]", value))
 		{
 			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-   			SendClientMessageEx(playerid, COLOR_YELLOW, "<< Available prison crafts >>");
+   			SendClientMessageEx(playerid, COLOR_YELLOW, "<< Cac mon co the che tao trong tu >>");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "shank\t\t\t\t\t\t\t\t\t\tpruno");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "radio\t\t\t\t\t\t\t\t\t\tchisel");
 			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /prisoncraft [craftname]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /prisoncraft [craftname]");
 			return 1;
 		}
 
 		if(strcmp(value, "shank", true) == 0)
 		{
-			if(GetPVarInt(playerid, "pPrisonShank") >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "You already have a prison shank.");
-			if(PlayerInfo[playerid][pPrisonMaterials] <= 3) return SendClientMessageEx(playerid, COLOR_GREY, "You need to obtain 4 prison materials.");
+			if(GetPVarInt(playerid, "pPrisonShank") >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da co dao tu che.");
+			if(PlayerInfo[playerid][pPrisonMaterials] <= 3) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can 4 vat lieu trong tu.");
 
-            format(string, sizeof string, "{FF8000}> {C2A2DA}%s secretly crafts a shank.", GetPlayerNameEx(playerid));
+            format(string, sizeof string, "{FF8000}> {C2A2DA}%s bi mat che tao dao tu che.", GetPlayerNameEx(playerid));
 			SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
 			SendClientMessage(playerid, COLOR_PURPLE, string);
 
@@ -2018,18 +2018,18 @@ CMD:prisoncraft(playerid, params[])
 
 		else if(strcmp(value, "pruno", true) == 0)
 		{
-			if(GetPVarInt(playerid, "pPrisonWine") >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "You already have wine.");
-			if(PlayerInfo[playerid][pPrisonMaterials] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You need to obtain a prison material.");
-			if(GetPVarInt(playerid, "pPrisonSugar") < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You need to buy 3 packets of sugar.");
-			if(GetPVarInt(playerid, "pPrisonBread") == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You need to buy a loaf of bread.");
+			if(GetPVarInt(playerid, "pPrisonWine") >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da co ruou.");
+			if(PlayerInfo[playerid][pPrisonMaterials] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can mot vat lieu trong tu.");
+			if(GetPVarInt(playerid, "pPrisonSugar") < 2) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can mua 3 goi duong.");
+			if(GetPVarInt(playerid, "pPrisonBread") == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can mua mot o banh mi.");
 
 			if(IsPlayerInCell(playerid))
 			{
-            	format(string, sizeof string, "{FF8000}> {C2A2DA}%s stuffs some bread into their toilet, pouring sugar over it.", GetPlayerNameEx(playerid));
+            	format(string, sizeof string, "{FF8000}> {C2A2DA}%s nhet banh mi vao bon cau va do duong len.", GetPlayerNameEx(playerid));
 				SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
 				SendClientMessage(playerid, COLOR_PURPLE, string);
 
-				SendClientMessage(playerid, COLOR_GREY, "You have started to make pruno. It will be ready in twelve hours. Use /prisoninv(entory) to check the progress.");
+				SendClientMessage(playerid, COLOR_GREY, "Ban da bat dau u pruno. Ruou se san sang sau muoi hai gio. Dung /prisoninv(entory) de xem tien do.");
 
 				PlayerInfo[playerid][pPrisonMaterials] -= 1;
 				SetPVarInt(playerid, "pPrisonSugar", GetPVarInt(playerid, "pPrisonSugar") - 3);
@@ -2038,33 +2038,33 @@ CMD:prisoncraft(playerid, params[])
 
 				PlayerInfo[playerid][pPrisonWineTime] = gettime()+43200;
 			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "  You are not in your prison cell!");
+			else return SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong o trong buong giam cua minh!");
 		}
 
 		else if(strcmp(value, "radio", true) == 0)
 		{
-			if(PlayerInfo[playerid][pPrisonMaterials] < 9) return SendClientMessageEx(playerid, COLOR_GREY, "You need to obtain ten prison materials.");
-			if(PlayerInfo[playerid][pRadio] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You already have a radio.");
+			if(PlayerInfo[playerid][pPrisonMaterials] < 9) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can muoi vat lieu trong tu.");
+			if(PlayerInfo[playerid][pRadio] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da co radio.");
 
-			format(string, sizeof string, "{FF8000}> {C2A2DA}%s crafts a radio with some materials.", GetPlayerNameEx(playerid));
+			format(string, sizeof string, "{FF8000}> {C2A2DA}%s dung vat lieu che tao radio.", GetPlayerNameEx(playerid));
 			SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
 			SendClientMessage(playerid, COLOR_PURPLE, string);
 			PlayerInfo[playerid][pRadio] = 1;
 
-			SendClientMessage(playerid, COLOR_GREY, "You have crafted a radio. Use /pr to communicate.");
+			SendClientMessage(playerid, COLOR_GREY, "Ban da che tao radio. Dung /pr de lien lac.");
 		}
 
 		else if(strcmp(value, "chisel", true) == 0)
 		{
-			if(GetPVarInt(playerid, "pPrisonChisel") >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "You already have a chisel.");
-			if(PlayerInfo[playerid][pPrisonMaterials] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You need to obtain five prison materials.");
+			if(GetPVarInt(playerid, "pPrisonChisel") >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da co duc.");
+			if(PlayerInfo[playerid][pPrisonMaterials] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can nam vat lieu trong tu.");
 
-			format(string, sizeof string, "{FF8000}> {C2A2DA}%s flattens some metal into an object.", GetPlayerNameEx(playerid));
+			format(string, sizeof string, "{FF8000}> {C2A2DA}%s dap det kim loai thanh mot vat.", GetPlayerNameEx(playerid));
 			SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
 			SendClientMessage(playerid, COLOR_PURPLE, string);
 			SetPVarInt(playerid, "pPrisonChisel", 1);
 
-			SendClientMessage(playerid, COLOR_GREY, "You have crafted a chisel. Press Y in your cell to dig a hole. This chisel will go away after one use.");
+			SendClientMessage(playerid, COLOR_GREY, "Ban da che tao duc. Nhan Y trong buong giam de dao lo. Duc se mat sau mot lan dung.");
 
 			PlayerInfo[playerid][pPrisonMaterials] -= 5;
 		}
@@ -2072,15 +2072,15 @@ CMD:prisoncraft(playerid, params[])
 		else if(isnull(value))
 		{
 			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-			SendClientMessageEx(playerid, COLOR_YELLOW, "<< Available prison crafts >>");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "<< Cac mon co the che tao trong tu >>");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "shank\t\t\t\t\t\t\t\t\t\tpruno");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "radio\t\t\t\t\t\t\t\t\t\tchisel");
 			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /prisoncraft [craftname]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /prisoncraft [craftname]");
 			return 1;
 		}
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "  You are not in prison!");
+	else SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong o trong tu!");
 	return 1;
 }
 
@@ -2093,7 +2093,7 @@ CMD:drinkpruno(playerid, params[])
             new string[256];
     	    SetPVarInt(playerid, "pPrisonWine", GetPVarInt(playerid, "pPrisonWine") - 1);
 
-    	    format(string, sizeof string, "{FF8000}> {C2A2DA}%s drinks some pruno from a bottle.", GetPlayerNameEx(playerid));
+    	    format(string, sizeof string, "{FF8000}> {C2A2DA}%s uong pruno tu chai.", GetPlayerNameEx(playerid));
 			SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
 			SendClientMessage(playerid, COLOR_PURPLE, string);
 
@@ -2103,9 +2103,9 @@ CMD:drinkpruno(playerid, params[])
 			SetTimerEx("_DrinkWineTimer", 30000, false, "d", playerid);
 
 		}
-		else return SendClientMessageEx(playerid, COLOR_GREY, "  You do you not have any wine!");
+		else return SendClientMessageEx(playerid, COLOR_GREY, "   Ban khong co ruou!");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "  You are not in prison!");
+	else SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong o trong tu!");
 	return 1;
 }
 
@@ -2122,21 +2122,21 @@ CMD:finishpruno(playerid, params[]) // add to /interact
 			    	new string[256];
 					SetPVarInt(playerid, "pPrisonWine", GetPVarInt(playerid, "pPrisonWine") + 1);
 					DeletePVar(playerid, "pPrisonMWine");
-					SendClientMessage(playerid, COLOR_WHITE, "You now have pruno, use /prisonhelp to learn how to use it.");
+					SendClientMessage(playerid, COLOR_WHITE, "Ban da co pruno, dung /prisonhelp de hoc cach dung.");
 
 					PlayerInfo[playerid][pPrisonWineTime] = 0;
 
-					format(string, sizeof string, "{FF8000}> {C2A2DA}%s dips a bottle into their toilet, secretly filling it with pruno.", GetPlayerNameEx(playerid));
+					format(string, sizeof string, "{FF8000}> {C2A2DA}%s nhung chai vao bon cau, bi mat lay day pruno.", GetPlayerNameEx(playerid));
 					SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
 					SendClientMessage(playerid, COLOR_PURPLE, string);
 				}
-				else return SendClientMessageEx(playerid, COLOR_GREY, "  You are not in your cell");
+				else return SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong o trong buong cua minh");
 			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "  Your pruno is not finished yet!");
+			else return SendClientMessageEx(playerid, COLOR_GREY, "  Pruno cua ban chua u xong!");
 		}
-		else return SendClientMessageEx(playerid, COLOR_GREY, "  You are not making pruno or your pruno is not finished yet!");
+		else return SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong u pruno hoac pruno chua u xong!");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "  You are not in prison!");
+	else SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong o trong tu!");
 	return 1;
 }
 
@@ -2147,16 +2147,16 @@ CMD:celldeposit(playerid, params[])
     	new value, amount;
      	if(sscanf(params, "dd", value, amount))
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /celldeposit [value] [amount]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Drugs: (1) LSD - (2) Cannabis - (3) Meth - (4) Heroin - (5) Cocaine - (6) Crack - (7) Opium");
-			SendClientMessageEx(playerid, COLOR_GREY, "Drugs: (8) Ecstasy - (9) Speed - (10) Alcohol - (11) Demerol - (12) Morphine - (13) Haloperidol - (14) Aspirin");
+			SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /celldeposit [value] [amount]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ma tuy: (1) LSD - (2) Cannabis - (3) Meth - (4) Heroin - (5) Cocaine - (6) Crack - (7) Opium");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ma tuy: (8) Ecstasy - (9) Speed - (10) Alcohol - (11) Demerol - (12) Morphine - (13) Haloperidol - (14) Aspirin");
 			return 1;
 		}
         if(IsPlayerInCell(playerid))
         {
-			if(amount < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "Your amount must be greater than one.");
+			if(amount < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "So luong phai lon hon mot.");
 
-			if(GetPVarInt(playerid, "pPrisonCellChisel") <= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You need to use a chisel to cut a storage space. Otherwise, the guards will find it.");
+			if(GetPVarInt(playerid, "pPrisonCellChisel") <= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban can dung duc tao cho giau do. Neu khong, guard se tim thay.");
 
 			switch(value)
 			{
@@ -2168,21 +2168,21 @@ CMD:celldeposit(playerid, params[])
 			        	PlayerInfo[playerid][pDrugs][value - 1] -= amount;
 			        	PlayerInfo[playerid][p_iPrisonDrug][value - 1] += amount;
 
-			        	format(string, sizeof string, "{FF8000}> {C2A2DA}%s stashes some drugs in their cell.", GetPlayerNameEx(playerid));
+			        	format(string, sizeof string, "{FF8000}> {C2A2DA}%s giau ma tuy trong buong giam.", GetPlayerNameEx(playerid));
 						SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
 						SendClientMessage(playerid, COLOR_PURPLE, string);
 					}
-					else return SendClientMessage(playerid, COLOR_GREY, "You don't have enough.");
+					else return SendClientMessage(playerid, COLOR_GREY, "Ban khong co du.");
 				}
 				default:
 				{
-				    return SendClientMessageEx(playerid, COLOR_GREY, "Values are 1-14");
+				    return SendClientMessageEx(playerid, COLOR_GREY, "Gia tri tu 1-14");
 				}
 			}
         }
-        else return SendClientMessageEx(playerid, COLOR_GREY, "  You are not in your cell!");
+        else return SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong o trong buong cua minh!");
     }
-    else SendClientMessageEx(playerid, COLOR_GREY, "  You are not in prison!");
+    else SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong o trong tu!");
 	return 1;
 }
 
@@ -2193,16 +2193,16 @@ CMD:cellwithdraw(playerid, params[])
     	new value, amount;
      	if(sscanf(params, "dd", value, amount))
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /prisoncellwithdraw [value] [amount]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Drugs: (1) LSD - (2) Cannabis - (3) Meth - (4) Heroin - (5) Cocaine - (6) Crack - (7) Opium");
-			SendClientMessageEx(playerid, COLOR_GREY, "Drugs: (8) Ecstasy - (9) Speed - (10) Alcohol - (11) Demerol - (12) Morphine - (13) Haloperidol - (14) Aspirin");
+			SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /prisoncellwithdraw [value] [amount]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ma tuy: (1) LSD - (2) Cannabis - (3) Meth - (4) Heroin - (5) Cocaine - (6) Crack - (7) Opium");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ma tuy: (8) Ecstasy - (9) Speed - (10) Alcohol - (11) Demerol - (12) Morphine - (13) Haloperidol - (14) Aspirin");
 			return 1;
 		}
         if(IsPlayerInCell(playerid))
         {
-			if(amount < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "Your amount must be greater than one.");
+			if(amount < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "So luong phai lon hon mot.");
 
-			if(GetPVarInt(playerid, "pPrisonCellChisel") <= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You need to use a chisel to cut a storage space. Otherwise, the guards will find it.");
+			if(GetPVarInt(playerid, "pPrisonCellChisel") <= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban can dung duc tao cho giau do. Neu khong, guard se tim thay.");
 
 			switch(value)
 			{
@@ -2214,21 +2214,21 @@ CMD:cellwithdraw(playerid, params[])
 			        	PlayerInfo[playerid][pDrugs][value - 1] += amount;
 			        	PlayerInfo[playerid][p_iPrisonDrug][value - 1] -= amount;
 
-			        	format(string, sizeof string, "{FF8000}> {C2A2DA}%s takes some drugs stashed their cell.", GetPlayerNameEx(playerid));
+			        	format(string, sizeof string, "{FF8000}> {C2A2DA}%s lay ma tuy giau trong buong giam.", GetPlayerNameEx(playerid));
 						SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
 						SendClientMessage(playerid, COLOR_PURPLE, string);
 					}
-					else return SendClientMessage(playerid, COLOR_GREY, "You don't have enough.");
+					else return SendClientMessage(playerid, COLOR_GREY, "Ban khong co du.");
 				}
 				default:
 				{
-					return SendClientMessageEx(playerid, COLOR_GREY, "Values are 1-14");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Gia tri tu 1-14");
 				}
 			}
         }
-        else return SendClientMessageEx(playerid, COLOR_GREY, "  You are not in your cell!");
+        else return SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong o trong buong cua minh!");
     }
-    else SendClientMessageEx(playerid, COLOR_GREY, "  You are not in prison!");
+    else SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong o trong tu!");
 	return 1;
 }
 
@@ -2238,7 +2238,7 @@ CMD:prisoninv(playerid, params[])
 	{
 		ShowPrisonInventory(playerid);
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "  You are not in prison!");
+	else SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong o trong tu!");
 	return 1;
 }
 
@@ -2248,7 +2248,7 @@ CMD:prisoninventory(playerid, params[])
 	{
 		ShowPrisonInventory(playerid);
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "  You are not in prison!");
+	else SendClientMessageEx(playerid, COLOR_GREY, "  Ban khong o trong tu!");
 	return 1;
 }
 
@@ -2337,7 +2337,7 @@ ShowPrisonInventory(playerid)
 	new string[64];
 	SendClientMessageEx(playerid, COLOR_GREY, "------------------------------------------------------");
 
-	SendClientMessageEx(playerid, COLOR_GREY, "Prison Cell: %d.", PlayerInfo[playerid][pPrisonCell]);
+	SendClientMessageEx(playerid, COLOR_GREY, "Buong giam: %d.", PlayerInfo[playerid][pPrisonCell]);
 	SendClientMessage(playerid, COLOR_WHITE, "");
 
 	if(PlayerInfo[playerid][pPrisonCredits] >= 1)
@@ -2347,22 +2347,22 @@ ShowPrisonInventory(playerid)
 
 	if(PlayerInfo[playerid][pPrisonMaterials] >= 1)
 	{
-	    SendClientMessageEx(playerid, COLOR_WHITE, "Prison Materials: %d.", PlayerInfo[playerid][pPrisonMaterials]);
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Vat lieu trong tu: %d.", PlayerInfo[playerid][pPrisonMaterials]);
 	}
 
 	if(GetPVarInt(playerid, "pPrisonSoap") >= 1)
 	{
-	    SendClientMessageEx(playerid, COLOR_WHITE, "Soap: %d.", GetPVarInt(playerid, "pPrisonSoap"));
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Xa phong: %d.", GetPVarInt(playerid, "pPrisonSoap"));
 	}
 
 	if(GetPVarInt(playerid, "pPrisonSugar") >= 1)
 	{
-	    SendClientMessageEx(playerid, COLOR_WHITE, "Sugar: %d.", GetPVarInt(playerid, "pPrisonSugar"));
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Duong: %d.", GetPVarInt(playerid, "pPrisonSugar"));
 	}
 
 	if(GetPVarInt(playerid, "pPrisonBread") >= 1)
 	{
-	    SendClientMessageEx(playerid, COLOR_WHITE, "Bread: %d.", GetPVarInt(playerid, "pPrisonBread"));
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Banh mi: %d.", GetPVarInt(playerid, "pPrisonBread"));
 	}
 
 	if(GetPVarInt(playerid, "pPrisonWine") >= 1)
@@ -2372,7 +2372,7 @@ ShowPrisonInventory(playerid)
 
 	if(GetPVarInt(playerid, "pPrisonShank") >= 1)
 	{
-	    SendClientMessageEx(playerid, COLOR_WHITE, "Shank: %d | Uses: %d", GetPVarInt(playerid, "pPrisonShank"), GetPVarInt(playerid, "pShankUsages"));
+	    SendClientMessageEx(playerid, COLOR_WHITE, "Dao tu che: %d | Luot dung: %d", GetPVarInt(playerid, "pPrisonShank"), GetPVarInt(playerid, "pShankUsages"));
 	}
 
 	if(GetPVarInt(playerid, "pPrisonMWine") >= 1)
@@ -2380,11 +2380,11 @@ ShowPrisonInventory(playerid)
 	    if(PlayerInfo[playerid][pPrisonWineTime] <= gettime())
 		{
 		    SendClientMessageEx(playerid, COLOR_WHITE, "");
-			SendClientMessageEx(playerid, COLOR_GREY, "Pruno Time Left: 0 seconds.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Pruno con: 0 giay.");
 		}
 		else
 		{
-	    	format(string, sizeof(string), "Pruno Time Left: %s.", TimeConvert(PlayerInfo[playerid][pPrisonWineTime]-gettime()));
+	    	format(string, sizeof(string), "Pruno con: %s.", TimeConvert(PlayerInfo[playerid][pPrisonWineTime]-gettime()));
 	    	SendClientMessageEx(playerid, COLOR_WHITE, "");
 	    	SendClientMessageEx(playerid, COLOR_GREY, string);
 		}
@@ -2429,7 +2429,7 @@ public _ShowerTimer(playerid)
 	{
 		case 1:
 		{
-			SendClientMessage(playerid, COLOR_GREY, "You have finished showering.");
+			SendClientMessage(playerid, COLOR_GREY, "Ban da tam xong.");
 			TogglePlayerControllable(playerid, TRUE);
 			DeletePVar(playerid, "pPrisonShowerStage");
 			DeletePVar(playerid, "IsFrozen");
@@ -2454,7 +2454,7 @@ public _DrinkWineTimer(playerid)
 
 	SetHealth(playerid, 200.0);
 
-	SendClientMessage(playerid, COLOR_GREY, "You begin to stabalize, you also feel stronger.");
+	SendClientMessage(playerid, COLOR_GREY, "Ban dan on dinh va cam thay khoe hon.");
 	SetPVarInt(playerid, "pWineConsumed", 2);
 	SetTimerEx("_DrinkWineTimer2", 60000, false, "d", playerid);
 
@@ -2469,7 +2469,7 @@ public _DrinkWineTimer2(playerid)
 	new Float: health;
 	GetPlayerHealth(playerid, health);
 
-	SendClientMessage(playerid, COLOR_GREY, "The pruno has lost it's effect.");
+	SendClientMessage(playerid, COLOR_GREY, "Pruno da het tac dung.");
 	DeletePVar(playerid, "pWineConsumed");
 
 	SetPlayerDrunkLevel(playerid, 0);
@@ -2481,7 +2481,7 @@ forward _KitchenTimer(playerid);
 public _KitchenTimer(playerid)
 {
 	PlayerInfo[playerid][pMechTime] = gettime()+60;
-	SendClientMessage(playerid, COLOR_GREY, "You have finished preparing food.");
+	SendClientMessage(playerid, COLOR_GREY, "Ban da chuan bi xong thuc an.");
 	TogglePlayerControllable(playerid, TRUE);
 	DeletePVar(playerid, "pDoingPJob");
 
@@ -2553,8 +2553,8 @@ ReleasePlayerFromPrison(playerid)
 	PlayerInfo[playerid][pPrisonCredits] = 0;
 	strcpy(PlayerInfo[playerid][pPrisonReason], "None");
 	PhoneOnline[playerid] = 0;
-	SendClientMessageEx(playerid, COLOR_GRAD1,"   You have paid your debt to society.");
-	GameTextForPlayer(playerid, "~g~Freedom~n~~w~Try to be a better citizen", 5000, 1);
+	SendClientMessageEx(playerid, COLOR_GRAD1,"   Ban da tra het mon no voi xa hoi.");
+	GameTextForPlayer(playerid, "~g~Tu do~n~~w~Hay la cong dan tot hon", 5000, 1);
 	TogglePlayerControllable(playerid, TRUE);
 	SetPlayerToTeamColor(playerid); //For some reason this is a being a bitch now so let's reset their colour to white and let the script decide what colour they should have afterwords
 	ClearCrimes(playerid);
@@ -2566,7 +2566,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     {
         if(IsPlayerInRangeOfPoint(playerid, 2, 567.7756,1450.0720,6000.4751))
         {
-            if(strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) != -1) { ShowPlayerDialogEx(playerid, DIALOG_PRISONCREDS, DIALOG_STYLE_LIST, "Prison Canteen", "Dice\t\t\t\t\t\t5\nPaper\t\t\t\t\t\t5\nSoap\t\t\t\t\t\t5\nSugar\t\t\t\t\t\t5\nBread\t\t\t\t\t\t10\nCigarettes\t\t\t\t\t10\n\nMP3 Player\t\t\t\t\t50\nClothes\t\t\t\t\t250", "Purchase", "Cancel"); }
+            if(strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) != -1) { ShowPlayerDialogEx(playerid, DIALOG_PRISONCREDS, DIALOG_STYLE_LIST, "Prison Canteen", "Xuc xac\t\t\t\t\t\t5\nGiay\t\t\t\t\t\t5\nXa phong\t\t\t\t\t\t5\nDuong\t\t\t\t\t\t5\nBanh mi\t\t\t\t\t\t10\nThuoc la\t\t\t\t\t10\n\nMP3 Player\t\t\t\t\t50\nQuan ao\t\t\t\t\t250", "Mua", "Huy"); }
         }
 
         else if(IsPlayerInRangeOfPoint(playerid, 5, 546.7458,1484.4885,6000.4678))
@@ -2574,16 +2574,16 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
             new string[255];
     		if(gettime() < PlayerInfo[playerid][pMechTime])
 			{
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "You must wait %d seconds!", PlayerInfo[playerid][pMechTime]-gettime());
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban phai cho %d giay!", PlayerInfo[playerid][pMechTime]-gettime());
      		}
-     		if(GetPVarInt(playerid, "pDoingPJob") >= 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "  You are already on a job!");
+     		if(GetPVarInt(playerid, "pDoingPJob") >= 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "  Ban dang lam mot cong viec!");
 
             TogglePlayerControllable(playerid, FALSE);
 			SetTimerEx("_KitchenTimer", 25000, false, "d", playerid);
 
 			SetPVarInt(playerid, "IsFrozen", 1);
 
-			format(string, sizeof string, "{FF8000}> {C2A2DA}%s begins to prepare some food for the kitchen.", GetPlayerNameEx(playerid));
+			format(string, sizeof string, "{FF8000}> {C2A2DA}%s bat dau chuan bi thuc an cho bep.", GetPlayerNameEx(playerid));
     		SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 6000);
     		SendClientMessage(playerid, COLOR_PURPLE, string);
     		SetPVarInt(playerid, "pDoingPJob", 1);
@@ -2599,9 +2599,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				new string[128];
 	        	new Float: health;
 				GetPlayerHealth(playerid, health);
-	        	if(health >= 150.0) return SendClientMessage(playerid, COLOR_GREY, "  You don't need to shower.");
+	        	if(health >= 150.0) return SendClientMessage(playerid, COLOR_GREY, "  Ban khong can tam.");
 
-      	  		format(string, sizeof string, "{FF8000}> {C2A2DA}%s wipes theirselves down with a bar of soap.", GetPlayerNameEx(playerid));
+      	  		format(string, sizeof string, "{FF8000}> {C2A2DA}%s dung xa phong lau nguoi.", GetPlayerNameEx(playerid));
 				SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
 				SendClientMessage(playerid, COLOR_PURPLE, string);
 
@@ -2613,13 +2613,13 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 				PlayAnimEx(playerid, "BD_FIRE", "wash_up", 4.0, true, false, false, false, 0, 1);
 			}
-			else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have any soap.");
+			else return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong co xa phong.");
 	    }
 
 	    else if(GetPVarInt(playerid, "pPrisonChisel") >= 1 && IsPlayerInCell(playerid))
 	    {
 	        new string[255];
-	        format(string, sizeof string, "{FF8000}> {C2A2DA}%s digs at their cell wall with a small object.", GetPlayerNameEx(playerid));
+	        format(string, sizeof string, "{FF8000}> {C2A2DA}%s dung vat nho duc tuong buong giam.", GetPlayerNameEx(playerid));
 			SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
 			SendClientMessage(playerid, COLOR_PURPLE, string);
 
@@ -2628,7 +2628,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 			PlayAnimEx(playerid,"BOMBER","BOM_Plant",4.0,false,false,false,false,0,0);
 
-			SendClientMessage(playerid, COLOR_WHITE, "You have chiseled a hole in your cell, type /celldeposit to deposit contraband.");
+			SendClientMessage(playerid, COLOR_WHITE, "Ban da duc mot lo trong buong giam, dung /celldeposit de giau hang cam.");
 	    }
     }
 	return 1;
@@ -2651,10 +2651,10 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float: amount, weaponid, bodypart)
 	        SetPVarInt(playerid, "pPrisonShank", 0);
 	        SetPVarInt(playerid, "pPrisonShankOut", 0);
 
-	        format(string, sizeof string, "{FF8000}> {C2A2DA}%s shank dulls.", GetPlayerNameEx(playerid));
+	        format(string, sizeof string, "{FF8000}> {C2A2DA}%s co dao tu che da cun.", GetPlayerNameEx(playerid));
     		SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 6000);
 
-    		SendClientMessageEx(playerid, COLOR_GREY, "Your prison shank has exceeded it's uses.");
+    		SendClientMessageEx(playerid, COLOR_GREY, "Dao tu che cua ban da het luot dung.");
 
 	        RemovePlayerAttachedObject(playerid, 9);
 	    }
@@ -2684,17 +2684,17 @@ RandomMaterialChance(playerid)
 	    		case 0 .. 5: 
 	    		{
 	        		PlayerInfo[playerid][pPrisonMaterials] +=1;
-	        		SendClientMessage(playerid, COLOR_WHITE, "You have found a secret prison material. You can use these in /prisoncraft.");
+	        		SendClientMessage(playerid, COLOR_WHITE, "Ban tim thay mot vat lieu bi mat trong tu. Dung trong /prisoncraft.");
 	        	}
 	        	case 6 .. 8: 
 	    		{
 	        		PlayerInfo[playerid][pPrisonMaterials] +=2;
-	        		SendClientMessage(playerid, COLOR_WHITE, "You have found two secret prison materials. You can use these in /prisoncraft.");
+	        		SendClientMessage(playerid, COLOR_WHITE, "Ban tim thay hai vat lieu bi mat trong tu. Dung trong /prisoncraft.");
 	        	}
 	        	default: 
 	    		{
 	        		PlayerInfo[playerid][pPrisonMaterials] +=3;
-	        		SendClientMessage(playerid, COLOR_WHITE, "You have found three secret prison materials. You can use these in /prisoncraft.");
+	        		SendClientMessage(playerid, COLOR_WHITE, "Ban tim thay ba vat lieu bi mat trong tu. Dung trong /prisoncraft.");
 	        	}
 	        }
 	    }

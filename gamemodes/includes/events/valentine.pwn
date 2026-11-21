@@ -42,13 +42,13 @@ CMD:valgifts(playerid, params[])
      	if(ValGifts == 0)
      	{
            	ValGifts = 1;
-			format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has enabled the /bemine command.", GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s da bat lenh /bemine.", GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_LIGHTRED, szMiscArray, 1337);
 		}
 		else
 		{
 		    ValGifts = 0;
-	   		format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has disabled the /bemine command.", GetPlayerNameEx(playerid));
+	   		format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s da tat lenh /bemine.", GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_LIGHTRED, szMiscArray, 1337);
 		}
 	}
@@ -59,33 +59,33 @@ CMD:bemine(playerid, params[])
 {
 	if(ValGifts == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "This command has been disabled!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Lenh nay da bi tat!");
 		return 1;
 	}
 	new giveplayerid, style;
-	if(sscanf(params, "ud", giveplayerid, style)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /bemine [player] [kissing style (1-6)]");
-	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected");
-	if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "It cannot be yourself. </3");
-	if(!(0 < style < 7)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /bemine [player] [kissing style (1-6)]");
+	if(sscanf(params, "ud", giveplayerid, style)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /bemine [player] [kissing style (1-6)]");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do chua ket noi");
+	if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the chon chinh minh. </3");
+	if(!(0 < style < 7)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /bemine [player] [kissing style (1-6)]");
 
 	new Float:ppFloats[3];
 	GetPlayerPos(giveplayerid, ppFloats[0], ppFloats[1], ppFloats[2]);
 
 	if(!IsPlayerInRangeOfPoint(playerid, 2, ppFloats[0], ppFloats[1], ppFloats[2]) || Spectating[giveplayerid] > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're too far away! (get real close!)");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban o qua xa! (hay den sat nhau!)");
 		return 1;
 	}
 	if(PlayerInfo[playerid][pGiftTime] > 0)
 	{
-		format(szMiscArray, sizeof(szMiscArray),"Item: Reset Gift Timer\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[17][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[17][sItemPrice]));
-		ShowPlayerDialogEx(playerid, DIALOG_SHOPGIFTRESET, DIALOG_STYLE_MSGBOX, "Reset Gift Timer", szMiscArray, "Purchase", "Exit" );
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You have already received a gift in the last 5 hours!");
+		format(szMiscArray, sizeof(szMiscArray),"Vat pham: Reset Gift Timer\nCredits: %s\nGia: {FFD700}%s{A9C4E4}\nCredits con: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[17][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[17][sItemPrice]));
+		ShowPlayerDialogEx(playerid, DIALOG_SHOPGIFTRESET, DIALOG_STYLE_MSGBOX, "Dat lai thoi gian qua", szMiscArray, "Mua", "Thoat" );
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da nhan qua trong 5 gio qua!");
 		return 1;
 	}
 	else if(PlayerInfo[giveplayerid][pGiftTime] > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "That player has already received a gift in the last 5 hours!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi choi do da nhan qua trong 5 gio qua!");
 		return 1;
 	}
 	SetPVarInt(playerid, "kissvalstyle", style);
@@ -93,8 +93,8 @@ CMD:bemine(playerid, params[])
 	SetPVarInt(giveplayerid, "ValentineOfferSession", g_arrQueryHandle[playerid]);
 	SetPVarInt(giveplayerid, "kissvalsqlid", GetPlayerSQLId(playerid));
 
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have requested %s to be your valentine, please wait for them to respond.", GetPlayerNameEx(giveplayerid));
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da moi %s lam valentine cua minh, hay cho ho tra loi.", GetPlayerNameEx(giveplayerid));
 
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "%s has requested to be your valentine, please use '/accept valentine' to approve it.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "%s muon lam valentine cua ban, dung '/accept valentine' de dong y.", GetPlayerNameEx(playerid));
 	return 1;
 }

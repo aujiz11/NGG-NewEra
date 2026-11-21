@@ -255,7 +255,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				PlayerInfo[playerid][pPhoneColor] = listitem;
 			}
-			SendClientMessage(playerid, COLOR_LIGHTBLUE, "Use /phone to access your phone. {BBBBBB}(Use /pcl to get the mouse cursor back when accidentally cancelling your interaction.)");
+			SendClientMessage(playerid, COLOR_LIGHTBLUE, "Dung /phone de mo dien thoai. {BBBBBB}(Dung /pcl de lay lai con tro khi vo tinh huy thao tac.)");
 			return 1;
 		}
 		case DIALOG_PHONE_DIAL:
@@ -270,15 +270,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!response) return DeletePVar(playerid, PVAR_PHONEDELCONTACT), 1;
 			switch(listitem)
 			{
-				case 0: ShowPlayerDialogEx(playerid, DIALOG_PHONE_YPAGES, DIALOG_STYLE_TABLIST_HEADERS, "Yellow Pages", "Name\tPhone Number\n\
-					--> Businesses\tMENU ->\n\
+				case 0: ShowPlayerDialogEx(playerid, DIALOG_PHONE_YPAGES, DIALOG_STYLE_TABLIST_HEADERS, "Danh ba doanh nghiep", "Ten\tSo dien thoai\n\
+					--> Doanh nghiep\tMENU ->\n\
 					Government - City Hall/White House\t1-800-4444\n\
 					SA News\t1-800-1800\n\
 					BubbaGump Fish 'n Shrimps Shipment Service\t1-800-6666\n\
 					Frontier Transportation Services\t1-800-8080\n\
 					San Andreas Towing and Repossession\t1-800-1111\n\
 					San Andreas Prison Service\t18001020\n\
-					Farva Car Repair Co.\t1-800-2232 ", "Select", "Cancel");
+					Farva Car Repair Co.\t1-800-2232 ", "Chon", "Huy");
 
 				case 1: PayPhone_Directory(playerid);
 				case 2:	{
@@ -286,7 +286,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `phone_contacts` WHERE id = '%d'", GetPlayerSQLId(playerid));
 					mysql_tquery(MainPipeline, szMiscArray, "Phone_OnGetContacts", "i", playerid);
 				}
-				case 3: ShowPlayerDialogEx(playerid, DIALOG_PHONE_ADDCONTACT, DIALOG_STYLE_INPUT, "Phone | Add Contact", "Please enter the name of the contact you would like to add.\nExample: Sugar Daddy", "Add", "<<");
+				case 3: ShowPlayerDialogEx(playerid, DIALOG_PHONE_ADDCONTACT, DIALOG_STYLE_INPUT, "Dien thoai | Them lien he", "Nhap ten lien he muon them.\nVi du: Sugar Daddy", "Them", "<<");
 				case 4: {
 
 					SetPVarInt(playerid, PVAR_PHONEDELCONTACT, 1);
@@ -302,15 +302,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				case 0: {
 
-					return ShowPlayerDialogEx(playerid, DIALOG_PHONE_BUSINESSES, DIALOG_STYLE_LIST, "Yellow Pages | Businesses", "\
+					return ShowPlayerDialogEx(playerid, DIALOG_PHONE_BUSINESSES, DIALOG_STYLE_LIST, "Danh ba | Doanh nghiep", "\
 						24/7\n\
-						Clothing Stores\n\
-						Restaurants\n\
-						Bars\n\
-						Gun Stores\n\
-						Petrol Stations\n\
-						Car Dealerships\n\
-						Clubs", "Select", "Back");
+						Cua hang quan ao\n\
+						Nha hang\n\
+						Quan bar\n\
+						Cua hang sung\n\
+						Tram xang\n\
+						Dai ly xe\n\
+						Club", "Chon", "Quay lai");
 				}
 				case 1: pc_cmd_call(playerid, "18004444");
 				case 2: pc_cmd_call(playerid, "18001800");
@@ -326,15 +326,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(!response) {
 
-				return ShowPlayerDialogEx(playerid, DIALOG_PHONE_YPAGES, DIALOG_STYLE_TABLIST_HEADERS, "Yellow Pages", "Name\tPhone Number\n\
-					--> Businesses\tMENU ->\n\
+				return ShowPlayerDialogEx(playerid, DIALOG_PHONE_YPAGES, DIALOG_STYLE_TABLIST_HEADERS, "Danh ba doanh nghiep", "Ten\tSo dien thoai\n\
+					--> Doanh nghiep\tMENU ->\n\
 					SA News\t1-800-1800\n\
 					Government - City Hall/White House\t1-800-4444\n\
 					BubbaGump Fish 'n Shrimps Shipment Service\t1-800-6666\n\
 					Frontier Transportation Services\t1-800-8080\n\
 					San Andreas Towing and Repossession\t1-800-1111\n\
 					San Andreas Prison Service\t1-800-1020\n\
-					Farva Car Repair Co.\t1-800-2232 ", "Select", "Cancel");
+					Farva Car Repair Co.\t1-800-2232 ", "Chon", "Huy");
 
 			}
 
@@ -345,15 +345,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(!response) {
 
-				return ShowPlayerDialogEx(playerid, DIALOG_PHONE_BUSINESSES, DIALOG_STYLE_LIST, "Yellow Pages | Businesses", "\
+				return ShowPlayerDialogEx(playerid, DIALOG_PHONE_BUSINESSES, DIALOG_STYLE_LIST, "Danh ba | Doanh nghiep", "\
 					24/7\n\
-					Clothing Stores\n\
-					Restaurants\n\
-					Bars\n\
-					Gun Stores\n\
-					Petrol Stations\n\
-					Car Dealerships\n\
-					Clubs", "Select", "Back");
+					Cua hang quan ao\n\
+					Nha hang\n\
+					Quan bar\n\
+					Cua hang sung\n\
+					Tram xang\n\
+					Dai ly xe\n\
+					Club", "Chon", "Quay lai");
 			}
 
 			new id = ListItemTrackId[playerid][listitem];
@@ -388,8 +388,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			szMiscArray[0] = 0;
 			GetPVarString(playerid, "PHN_CONTACT", szMiscArray, sizeof(szMiscArray));
 			if(strlen(szMiscArray) > 16) {
-				SendClientMessage(playerid, COLOR_YELLOW, "[PHONE] {DDDDDD} The name was too long. Please try again.");
-				return ShowPlayerDialogEx(playerid, DIALOG_PHONE_ADDCONTACT1, DIALOG_STYLE_INPUT, "Add Contact | Number", "Please enter the number of the contact you would like to add.", "Add", "Cancel");
+				SendClientMessage(playerid, COLOR_YELLOW, "[PHONE] {DDDDDD}Ten qua dai. Hay thu lai.");
+				return ShowPlayerDialogEx(playerid, DIALOG_PHONE_ADDCONTACT1, DIALOG_STYLE_INPUT, "Them lien he | So dien thoai", "Nhap so dien thoai lien he muon them.", "Them", "Huy");
 			}
 			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `phone_contacts` (id, `contactname`, `contactnr`) VALUES ('%d', '%e', '%d')", GetPlayerSQLId(playerid), szMiscArray, strval(inputtext));
 			mysql_tquery(MainPipeline, szMiscArray, "Phone_OnAddContactFinish", "i", playerid);
@@ -419,14 +419,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				case 0:
 				{
-					ShowPlayerDialogEx(playerid, DIALOG_PHONE_RINGTONES, DIALOG_STYLE_LIST, "Phone | Ringtones", "\
+					ShowPlayerDialogEx(playerid, DIALOG_PHONE_RINGTONES, DIALOG_STYLE_LIST, "Dien thoai | Nhac chuong", "\
 							Go Go Track!\n\
 							Dual Dual!\n\
 							Bee Bees\n\
 							So many awards!\n\
 							Drive with me\n\
 							While cycling\n\
-							I'm a pilot", "Select", "<<");
+							I'm a pilot", "Chon", "<<");
 				}
 				case 1:
 				{
@@ -439,7 +439,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!response) Phone_Settings(playerid);
 			PlayerPlaySound(playerid, iPhoneRingTone[listitem], 0.0, 0.0, 0.0);
 			SetPVarInt(playerid, PVAR_PLAYINGRINGTONE, listitem);
-			ShowPlayerDialogEx(playerid, DIALOG_PHONE_RINGTONES2, DIALOG_STYLE_MSGBOX, "Phone | Ringtones | Preview", "Press 'Select' to confirm.\nPress 'Cancel' to cancel.", "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_PHONE_RINGTONES2, DIALOG_STYLE_MSGBOX, "Dien thoai | Nghe thu nhac chuong", "Nhan 'Chon' de xac nhan.\nNhan 'Huy' de huy.", "Chon", "Huy");
 		}
 		case DIALOG_PHONE_RINGTONES2:
 		{
@@ -479,8 +479,8 @@ Phone_Businesses(playerid, btype)
 				{
 					switch(Businesses[i][bStatus])
 					{
-						case 0: szStatus = "{FF0000} CLOSED";
-						case 1: szStatus = "{00FF00} OPEN";
+						case 0: szStatus = "{FF0000} DONG";
+						case 1: szStatus = "{00FF00} MO";
 					}
 					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
 					ListItemTrackId[playerid][j++] = i;
@@ -495,8 +495,8 @@ Phone_Businesses(playerid, btype)
 				{
 					switch(Businesses[i][bStatus])
 					{
-						case 0: szStatus = "{FF0000} CLOSED";
-						case 1: szStatus = "{00FF00} OPEN";
+						case 0: szStatus = "{FF0000} DONG";
+						case 1: szStatus = "{00FF00} MO";
 					}
 					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
 					ListItemTrackId[playerid][j++] = i;
@@ -511,14 +511,14 @@ Phone_Businesses(playerid, btype)
 				{
 					switch(Businesses[i][bStatus])
 					{
-						case 0: szStatus = "{FF0000} CLOSED";
-						case 1: szStatus = "{00FF00} OPEN";
+						case 0: szStatus = "{FF0000} DONG";
+						case 1: szStatus = "{00FF00} MO";
 					}
 					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
 					ListItemTrackId[playerid][j++] = i;
 				}
 			}
-			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "There are none.");
+			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "Khong co.");
 		}
 		case 3:
 		{
@@ -528,14 +528,14 @@ Phone_Businesses(playerid, btype)
 				{
 					switch(Businesses[i][bStatus])
 					{
-						case 0: szStatus = "{FF0000} CLOSED";
-						case 1: szStatus = "{00FF00} OPEN";
+						case 0: szStatus = "{FF0000} DONG";
+						case 1: szStatus = "{00FF00} MO";
 					}
 					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
 					ListItemTrackId[playerid][j++] = i;
 				}
 			}
-			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "There are none.");
+			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "Khong co.");
 		}
 		case 4:
 		{
@@ -545,14 +545,14 @@ Phone_Businesses(playerid, btype)
 				{
 					switch(Businesses[i][bStatus])
 					{
-						case 0: szStatus = "{FF0000} CLOSED";
-						case 1: szStatus = "{00FF00} OPEN";
+						case 0: szStatus = "{FF0000} DONG";
+						case 1: szStatus = "{00FF00} MO";
 					}
 					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
 					ListItemTrackId[playerid][j++] = i;
 				}
 			}
-			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "There are none.");
+			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "Khong co.");
 		}
 		case 5:
 		{
@@ -562,14 +562,14 @@ Phone_Businesses(playerid, btype)
 				{
 					switch(Businesses[i][bStatus])
 					{
-						case 0: szStatus = "{FF0000} CLOSED";
-						case 1: szStatus = "{00FF00} OPEN";
+						case 0: szStatus = "{FF0000} DONG";
+						case 1: szStatus = "{00FF00} MO";
 					}
 					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
 					ListItemTrackId[playerid][j++] = i;
 				}
 			}
-			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "There are none.");
+			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "Khong co.");
 		}
 		case 6:
 		{
@@ -579,14 +579,14 @@ Phone_Businesses(playerid, btype)
 				{
 					switch(Businesses[i][bStatus])
 					{
-						case 0: szStatus = "{FF0000} CLOSED";
-						case 1: szStatus = "{00FF00} OPEN";
+						case 0: szStatus = "{FF0000} DONG";
+						case 1: szStatus = "{00FF00} MO";
 					}
 					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
 					ListItemTrackId[playerid][j++] = i;
 				}
 			}
-			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "There are none.");
+			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "Khong co.");
 		}
 		case 7:
 		{
@@ -596,17 +596,17 @@ Phone_Businesses(playerid, btype)
 				{
 					switch(Businesses[i][bStatus])
 					{
-						case 0: szStatus = "{FF0000} CLOSED";
-						case 1: szStatus = "{00FF00} OPEN";
+						case 0: szStatus = "{FF0000} DONG";
+						case 1: szStatus = "{00FF00} MO";
 					}
 					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
 					ListItemTrackId[playerid][j++] = i;
 				}
 			}
-			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "There are none.");
+			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "Khong co.");
 		}
 	}
-	ShowPlayerDialogEx(playerid, DIALOG_PHONE_BUSINESSES2, DIALOG_STYLE_TABLIST, "San Andreas | Map | Businesses", szMiscArray, "Select", "Back");
+	ShowPlayerDialogEx(playerid, DIALOG_PHONE_BUSINESSES2, DIALOG_STYLE_TABLIST, "San Andreas | Ban do | Doanh nghiep", szMiscArray, "Chon", "Quay lai");
 	return 1;
 }
 
@@ -646,34 +646,34 @@ CMD:trace(playerid, const params[]) {
 		GangZoneDestroy(GetPVarInt(playerid, "PTR_GZ"));
 		DeletePVar(playerid, "PTR_GZ");
 		Bit_Off(arrPlayerBits[playerid], phone_bitTraceState);
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "[Phone]: Quit GPS traceroute process. All geographical data has been deleted.");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "[Phone]: Da dung truy vet GPS va xoa du lieu vi tri.");
 	}
 
 	if(!Job_HasJob(playerid, JOB_DETECTIVE)) {
-		return SendClientMessageEx(playerid, COLOR_GREY, "You're not a detective.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai Detective.");
 	}
 	if(gettime() < UsedFind[playerid]) { // || FindTimePoints[playerid] == 0) {
-		return SendClientMessageEx(playerid, COLOR_GREY, "You've already searched for someone - wait a little.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban vua tim mot nguoi, hay cho them.");
 	}
 
 	new iNumber;
 
 	if(sscanf(params, "d", iNumber)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /trace [player's phone number]");
 
-	if(iNumber == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid number.");
+	if(iNumber == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "So dien thoai khong hop le.");
 
 	foreach(new i : Player)	{
 
 		if(PlayerInfo[i][pPnumber] == iNumber) {
 
 			if(GetPlayerInterior(i) != 0)
-				return SendClientMessageEx(playerid, COLOR_GREY, "That person is inside an interior.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do dang o trong noi that.");
 
 			if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 2) && PlayerInfo[i][pTogReports] != 1)
-				return SendClientMessageEx(playerid, COLOR_GREY, "You are unable to find this person.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "Khong the tim nguoi nay.");
 
 			if(GetPVarInt(playerid, "_SwimmingActivity") >= 1)
-				return SendClientMessageEx(playerid, COLOR_GRAD2, "You are unable to find people while swimming.");
+				return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the tim nguoi khi dang boi.");
 
 			if(PhoneOnline[i] == 0) {
 
@@ -701,7 +701,7 @@ CMD:trace(playerid, const params[]) {
 					}
 				}
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot get a trace on this person.");
+			else return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the truy vet nguoi nay.");
 
 			Bit_On(arrPlayerBits[playerid], phone_bitTraceState);
 			SetPVarInt(playerid, "TRC_STP", 0);
@@ -709,7 +709,7 @@ CMD:trace(playerid, const params[]) {
 			return 1;
 		}
 	}
-	SendClientMessage(playerid, COLOR_GRAD1, "No active phone was detected with this number.");
+	SendClientMessage(playerid, COLOR_GRAD1, "Khong phat hien dien thoai hoat dong voi so nay.");
 	return 1;
 }
 
@@ -726,7 +726,7 @@ public Phone_Trace(playerid, i)
 
 	GetPlayerPos(i, fPos[0][0], fPos[0][1], fPos[0][2]);
 
-	if(x == 0) format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Target specified: %d\nGPS Traceroute in progress...\n______________________________________\n\n", PlayerInfo[i][pPnumber]);
+	if(x == 0) format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Muc tieu: %d\nDang truy vet GPS...\n______________________________________\n\n", PlayerInfo[i][pPnumber]);
 
 	if(IsPlayerInDynamicArea(x, arrRadioTowerData[x][rt_iAreaID]))
 	{
@@ -736,12 +736,12 @@ public Phone_Trace(playerid, i)
 
 		switch(fDistance)
 		{
-			case 2501 .. 3000: szStrength = "{FF0000}Weak";
-			case 1501 .. 2500: szStrength = "{FFFF00}Average";
-			case 0 .. 1500: szStrength = "{00FF00}Good";
+			case 2501 .. 3000: szStrength = "{FF0000}Yeu";
+			case 1501 .. 2500: szStrength = "{FFFF00}Vua";
+			case 0 .. 1500: szStrength = "{00FF00}Tot";
 		}
 	}
-	else szStrength = "{FF0000}NONE";
+	else szStrength = "{FF0000}KHONG";
 
 	if(!IsValidDynamicObject(arrRadioTowerData[x][rt_iObjectID]))
 	{
@@ -757,38 +757,38 @@ public Phone_Trace(playerid, i)
 
 		format(szMiscArray, sizeof(szMiscArray), "%s\n\
 			\n_____________________________________\n\n\
-			{FFFFFF}%d's position has been determined: {FFFF00}%s.", szMiscArray, PlayerInfo[i][pPnumber], arrRadioTowerData[x][rt_szName]);
-		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_MSGBOX, "Trace Number", szMiscArray, "-----", "");
-		SendClientMessage(playerid, COLOR_YELLOW, "Use /trace again to stop tracing the number.");
+			{FFFFFF}Da xac dinh vi tri cua %d: {FFFF00}%s.", szMiscArray, PlayerInfo[i][pPnumber], arrRadioTowerData[x][rt_szName]);
+		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_MSGBOX, "Truy vet so", szMiscArray, "-----", "");
+		SendClientMessage(playerid, COLOR_YELLOW, "Dung /trace lan nua de dung truy vet so.");
 		DeletePVar(playerid, "TRC_STP");
 		DeletePVar(playerid, "TRC_STR");
 
 		SetPlayerMarkerForPlayer(playerid, i, FIND_COLOR);
 		GetPlayer3DZone(i, szZone, sizeof(szZone));
-		SendClientMessageEx(playerid, COLOR_GRAD2, "%s has been last seen at %s.", GetPlayerNameEx(i), szZone);
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Lan cuoi thay %s tai %s.", GetPlayerNameEx(i), szZone);
 		FindingPlayer[playerid] = i;
 		FindTime[playerid] = 1;
 
 		if(PlayerInfo[playerid][pDoubleEXP] > 0) {
 
-			SendClientMessageEx(playerid, COLOR_YELLOW, "You have gained 2 detective skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Ban nhan 2 diem Detective thay vi 1. Double EXP token con %d gio.", PlayerInfo[playerid][pDoubleEXP]);
 			PlayerInfo[playerid][pDetSkill] += 2;
 		}
 		else ++PlayerInfo[playerid][pDetSkill];
 
 		switch(PlayerInfo[playerid][pDetSkill]) {
-			case 50: SendClientMessageEx(playerid, COLOR_YELLOW, "* Your Detective Skill is now Level 2, you can find a little faster.");
-			case 100: SendClientMessageEx(playerid, COLOR_YELLOW, "* Your Detective Skill is now Level 3, you can find a little faster.");
-			case 200: SendClientMessageEx(playerid, COLOR_YELLOW, "* Your Detective Skill is now Level 4, you can find a little faster.");
-			case 400: SendClientMessageEx(playerid, COLOR_YELLOW, "* Your Detective Skill is now Level 5, you can find a little faster.");
+			case 50: SendClientMessageEx(playerid, COLOR_YELLOW, "* Ky nang Detective dat cap 2, ban tim nhanh hon.");
+			case 100: SendClientMessageEx(playerid, COLOR_YELLOW, "* Ky nang Detective dat cap 3, ban tim nhanh hon.");
+			case 200: SendClientMessageEx(playerid, COLOR_YELLOW, "* Ky nang Detective dat cap 4, ban tim nhanh hon.");
+			case 400: SendClientMessageEx(playerid, COLOR_YELLOW, "* Ky nang Detective dat cap 5, ban tim nhanh hon.");
 		}
 
 		return 1;
 	}
 	else
 	{
-		format(szMiscArray, sizeof(szMiscArray), "%sRetrieving %d's cellular data from the %s tower \t|\t Signal: %s.{DDDDDD}\n\n", szMiscArray, PlayerInfo[playerid][pPnumber], arrRadioTowerData[x][rt_szName], szStrength);
-		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_MSGBOX, "Trace Number", szMiscArray, "Tracing...", "");
+		format(szMiscArray, sizeof(szMiscArray), "%sDang lay du lieu di dong cua %d tu tram %s \t|\t Tin hieu: %s.{DDDDDD}\n\n", szMiscArray, PlayerInfo[playerid][pPnumber], arrRadioTowerData[x][rt_szName], szStrength);
+		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_MSGBOX, "Truy vet so", szMiscArray, "Dang do...", "");
 	}
 	SetPVarString(playerid, "TRC_STR", szMiscArray);
 	SetPVarInt(playerid, "TRC_STP", x + 1);
@@ -802,13 +802,13 @@ public Phone_OnGetContacts(iPlayerID)
 {
 	new iRows;
 	cache_get_row_count(iRows);
-	if(!iRows) return SendClientMessage(iPlayerID, COLOR_GRAD1, "You do not have any contacts.");
+	if(!iRows) return SendClientMessage(iPlayerID, COLOR_GRAD1, "Ban chua co lien he nao.");
 
 	new idx,
 		iNumber,
 		szResult[64];
 	szMiscArray[0] = 0;
-	szMiscArray = "Name\tNumber";
+	szMiscArray = "Ten\tSo";
 
 	while(idx < iRows)
 	{
@@ -828,8 +828,8 @@ public Phone_OnGetContacts(iPlayerID)
 		}
 		idx++;
 	}
-	if(GetPVarType(iPlayerID, PVAR_PHONEDELCONTACT)) return ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_CONTACTLISTDEL, DIALOG_STYLE_TABLIST_HEADERS, "Phone | Delete Contact", szMiscArray, "Delete", "<<");
-	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_CONTACTLIST, DIALOG_STYLE_TABLIST_HEADERS, "Phone | Contact List", szMiscArray, "Call", "<<");
+	if(GetPVarType(iPlayerID, PVAR_PHONEDELCONTACT)) return ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_CONTACTLISTDEL, DIALOG_STYLE_TABLIST_HEADERS, "Dien thoai | Xoa lien he", szMiscArray, "Xoa", "<<");
+	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_CONTACTLIST, DIALOG_STYLE_TABLIST_HEADERS, "Dien thoai | Danh sach lien he", szMiscArray, "Goi", "<<");
 	return 1;
 }
 
@@ -837,7 +837,7 @@ forward Phone_OnAddContactFinish(iPlayerID);
 public Phone_OnAddContactFinish(iPlayerID)
 {
 	if(mysql_errno()) return Phone_Contacts(iPlayerID), SendClientMessage(iPlayerID, COLOR_GRAD1, "Something went wrong. Please try again later.");
-	SendClientMessage(iPlayerID, COLOR_YELLOW, "[PHONE] {DDDDDD} You have successfully added a new contact.");
+	SendClientMessage(iPlayerID, COLOR_YELLOW, "[PHONE] {DDDDDD}Da them lien he moi.");
 	Phone_Contacts(iPlayerID);
 	return 1;
 }
@@ -846,7 +846,7 @@ forward Phone_OnDeleteContact(iPlayerID);
 public Phone_OnDeleteContact(iPlayerID)
 {
 	if(mysql_errno()) return SendClientMessage(iPlayerID, COLOR_GRAD1, "Something went wrong. Please try again later.");
-	SendClientMessage(iPlayerID, COLOR_YELLOW, "[PHONE] {DDDDDD} You have successfully deleted the contact.");
+	SendClientMessage(iPlayerID, COLOR_YELLOW, "[PHONE] {DDDDDD}Da xoa lien he.");
 	DeletePVar(iPlayerID, PVAR_PHONEDELCONTACT);
 	Phone_Contacts(iPlayerID);
 	return 1;
@@ -859,10 +859,10 @@ public Phone_CheckContacts(iPlayerID, name[])
 	cache_get_row_count(iRows);
 
 	if(iRows > MAX_CONTACTS) {
-		SendClientMessage(iPlayerID, COLOR_GRAD1, "You cannot have more contacts stored in your phone.");
+		SendClientMessage(iPlayerID, COLOR_GRAD1, "Dien thoai khong the luu them lien he.");
 		DeletePVar(iPlayerID, "PHN_CONTACT");
 	}
-	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_ADDCONTACT1, DIALOG_STYLE_INPUT, "Add Contact | Number", "Please enter the number of the contact you would like to add.", "Add", "Cancel");
+	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_ADDCONTACT1, DIALOG_STYLE_INPUT, "Them lien he | So dien thoai", "Nhap so dien thoai lien he muon them.", "Them", "Huy");
 	return 1;
 }
 
@@ -922,18 +922,18 @@ Phone_HangupCall(iPlayerID, iCallerID) {
 
 Phone_Call(iPlayerID)
 {
-	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_DIAL, DIALOG_STYLE_INPUT, "Phone | Dial Number", "Please insert the number you would like to dial.", "Dial", "<<");
+	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_DIAL, DIALOG_STYLE_INPUT, "Dien thoai | Quay so", "Nhap so dien thoai muon goi.", "Quay so", "<<");
 }
 
 Phone_Contacts(iPlayerID)
 {
-	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_CONTACTS, DIALOG_STYLE_LIST, "Phone | Address Book", "\
-		Yellow Pages\n\
-		Pay Phones\n\
-		List contacts\n\
-		Add contact\n\
-		Remove contact",
-		"Dial", "<<");
+	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_CONTACTS, DIALOG_STYLE_LIST, "Dien thoai | Danh ba", "\
+		Danh ba doanh nghiep\n\
+		Dien thoai cong cong\n\
+		Danh sach lien he\n\
+		Them lien he\n\
+		Xoa lien he",
+		"Quay so", "<<");
 	return 1;
 }
 
@@ -944,12 +944,12 @@ Phone_Ads(iPlayerID)
 
 Phone_Camera(iPlayerID)
 {
-	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_CAMERA, DIALOG_STYLE_LIST, "Phone | Camera", "Back camera\nFront camera\nReset", "Select", "<<");
+	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_CAMERA, DIALOG_STYLE_LIST, "Dien thoai | May anh", "Camera sau\nCamera truoc\nDat lai", "Chon", "<<");
 }
 
 Phone_Settings(iPlayerID)
 {
-	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_SETTINGS, DIALOG_STYLE_LIST, "Phone | Settings", "Ringtone\nWallpaper", "Select", "<<");
+	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_SETTINGS, DIALOG_STYLE_LIST, "Dien thoai | Cai dat", "Nhac chuong\nHinh nen", "Chon", "<<");
 }
 
 Phone_Music(iPlayerID)
@@ -985,7 +985,7 @@ Phone_MDC(iPlayerID)
 */
 
 Phone_Events(iPlayerID) {
-	SendClientMessageEx(iPlayerID, COLOR_GRAD1, "This will be a feature soon!");
+	SendClientMessageEx(iPlayerID, COLOR_GRAD1, "Tinh nang nay se co sau!");
 }
 
 
@@ -1009,7 +1009,7 @@ Phone_ShowWallPaper(iPlayerID, i) {
 
 Phone_WallPaperMenu(iPlayerID)
 {
-	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_WALLPAPERS, DIALOG_STYLE_LIST, "Phone | WallPapers", "\
+	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_WALLPAPERS, DIALOG_STYLE_LIST, "Dien thoai | Hinh nen", "\
 		Standard\n\
 		Vice City 1\n\
 		Vice City 2\n\
@@ -1033,7 +1033,7 @@ Phone_WallPaperMenu(iPlayerID)
 		Black Head\n\
 		Stars\n\
 		Clouds",
-		"Select", "<<");
+		"Chon", "<<");
 }
 
 /*
@@ -1064,7 +1064,7 @@ CMD:contacts(playerid, params[]) {
 
 Phone_PhoneColorMenu(playerid) {
 
-	ShowPlayerDialogEx(playerid, DIALOG_PHONE_COLOR, DIALOG_STYLE_LIST, "Phone - Select color", "Black\nWhite\nRed\nPink\nOrange\nBrown\nYellow\nGreen\nBlue\nLight Baby Blue", "Choose", "");
+	ShowPlayerDialogEx(playerid, DIALOG_PHONE_COLOR, DIALOG_STYLE_LIST, "Dien thoai - Chon mau", "Den\nTrang\nDo\nHong\nCam\nNau\nVang\nXanh la\nXanh duong\nXanh da troi nhat", "Chon", "");
 }
 
 Phone_PhoneColor(playerid)
@@ -1129,23 +1129,23 @@ Phone_GetTime() {
 
 Phone_Main(playerid) {
 	if(GetPVarInt(playerid, "EventToken")) {
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung khi dang tham gia su kien.");
 	}
 	else if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) {
-		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+		return SendClientMessage(playerid, COLOR_GRAD2, "Ban chua the lam viec nay!");
 	}
 	else if(GetPVarType(playerid, "FixVehicleTimer")) {
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You are fixing a vehicle!");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban dang sua xe!");
 	}
-	if(PlayerCuffed[playerid] != 0 || GetPVarInt(playerid, "pBagged") >= 1 || PlayerInfo[playerid][pHospital] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use the phone right now.");
-	if(PlayerInfo[playerid][pPnumber] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have a cell phone.");
+	if(PlayerCuffed[playerid] != 0 || GetPVarInt(playerid, "pBagged") >= 1 || PlayerInfo[playerid][pHospital] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Luc nay khong the dung dien thoai.");
+	if(PlayerInfo[playerid][pPnumber] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co dien thoai.");
 	if(!Bit_State(arrPlayerBits[playerid], phone_bitState)) {
 		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT) {
 
 			ApplyAnimation(playerid, "GRAVEYARD", "mrnM_loop", 4.0, true, false, false, false, 0, 1);
 		}
 
-		SendClientMessageEx(playerid, COLOR_WHITE, "[PHONE HELP]: Use ~k~~GO_FORWARD~ to go up, ~k~~GO_BACK~ to go down and ~k~~PED_SPRINT~ to select the item.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "[PHONE HELP]: Dung ~k~~GO_FORWARD~ de len, ~k~~GO_BACK~ de xuong va ~k~~PED_SPRINT~ de chon muc.");
 		Bit_On(arrPlayerBits[playerid], phone_bitState);
 		Phone_PhoneColor(playerid);
 		SetPVarInt(playerid, "PMenuItem", 0);
@@ -1278,15 +1278,15 @@ CMD:picture(playerid, const params[]) {
 
 CMD:selfie(playerid, const params[]) {
 
-	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this inside a vehicle.");
+	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the lam vay trong xe.");
 	if(GetPVarInt(playerid, "EventToken")) {
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung khi dang tham gia su kien.");
 	}
 	else if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarInt(playerid, "pDoingPJob") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital]) {
-		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+		return SendClientMessage(playerid, COLOR_GRAD2, "Ban chua the lam viec nay!");
 	}
 	else if(GetPVarType(playerid, "FixVehicleTimer")) {
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You are fixing a vehicle!");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban dang sua xe!");
 	}
 
 	if(!Bit_State(arrPlayerBits[playerid], phone_bitCamState))
@@ -1307,7 +1307,7 @@ CMD:selfie(playerid, const params[]) {
 
 	    TogglePlayerControllable(playerid, false);
 	    PlayAnimEx(playerid, "PED", "gang_gunstand", 4.1, true, true, true, true, 1, 1);
-	    SendClientMessage(playerid, COLOR_GRAD1, "{DDDDDD}Select the camera app or use /selfie to go back. Use {FFFF00}/headmove {DDDDDD}to disable your head movement (look straight).");
+	    SendClientMessage(playerid, COLOR_GRAD1, "{DDDDDD}Chon ung dung may anh hoac dung /selfie de quay lai. Dung {FFFF00}/headmove {DDDDDD}de dung chuyen dong dau (nhin thang).");
 	    Bit_On(arrPlayerBits[playerid], phone_bitCamState);
 	}
 	else
@@ -1964,7 +1964,7 @@ Phone_InitTD(playerid) {
 	PlayerTextDrawSetSelectable(playerid,phone_PTextDraw[playerid][5], false);
 
 
-	phone_PTextDraw[playerid][6] = CreatePlayerTextDraw(playerid,571.000000, 376.000000, "cancel");
+	phone_PTextDraw[playerid][6] = CreatePlayerTextDraw(playerid,571.000000, 376.000000, "huy");
 	PlayerTextDrawAlignment(playerid,phone_PTextDraw[playerid][6], 2);
 	PlayerTextDrawBackgroundColor(playerid,phone_PTextDraw[playerid][6], 673720520);
 	PlayerTextDrawFont(playerid,phone_PTextDraw[playerid][6], 1);
@@ -2027,7 +2027,7 @@ Phone_InitTD(playerid) {
 	PlayerTextDrawSetShadow(playerid,phone_PTextDraw[playerid][10], 1);
 	PlayerTextDrawSetSelectable(playerid,phone_PTextDraw[playerid][10], false);
 
-	phone_PTextDraw[playerid][11] = CreatePlayerTextDraw(playerid,518.000000, 376.000000, "select");
+	phone_PTextDraw[playerid][11] = CreatePlayerTextDraw(playerid,518.000000, 376.000000, "chon");
 	PlayerTextDrawAlignment(playerid,phone_PTextDraw[playerid][11], 2);
 	PlayerTextDrawBackgroundColor(playerid,phone_PTextDraw[playerid][11], 673720520);
 	PlayerTextDrawFont(playerid,phone_PTextDraw[playerid][11], 1);
@@ -2040,7 +2040,7 @@ Phone_InitTD(playerid) {
 	PlayerTextDrawTextSize(playerid,phone_PTextDraw[playerid][11], 578.000000, -25.000000);
 	PlayerTextDrawSetSelectable(playerid,phone_PTextDraw[playerid][11], false);
 
-	phone_PTextDraw[playerid][12] = CreatePlayerTextDraw(playerid,510.000000, 266.000000, "Call");
+	phone_PTextDraw[playerid][12] = CreatePlayerTextDraw(playerid,510.000000, 266.000000, "Goi");
 	PlayerTextDrawBackgroundColor(playerid,phone_PTextDraw[playerid][12], 0x00000000);
 	PlayerTextDrawFont(playerid,phone_PTextDraw[playerid][12], 1);
 	PlayerTextDrawLetterSize(playerid,phone_PTextDraw[playerid][12], 0.170000, 0.999998);
@@ -2052,7 +2052,7 @@ Phone_InitTD(playerid) {
 	PlayerTextDrawTextSize(playerid,phone_PTextDraw[playerid][12], 578.000000, -61.000000);
 	PlayerTextDrawSetSelectable(playerid,phone_PTextDraw[playerid][12], false);
 
-	phone_PTextDraw[playerid][13] = CreatePlayerTextDraw(playerid,510.000000, 278.000000, "Contacts");
+	phone_PTextDraw[playerid][13] = CreatePlayerTextDraw(playerid,510.000000, 278.000000, "Lien he");
 	PlayerTextDrawBackgroundColor(playerid,phone_PTextDraw[playerid][13], 0x00000000);
 	PlayerTextDrawFont(playerid,phone_PTextDraw[playerid][13], 1);
 	PlayerTextDrawLetterSize(playerid,phone_PTextDraw[playerid][13], 0.170000, 0.999998);
@@ -2064,7 +2064,7 @@ Phone_InitTD(playerid) {
 	PlayerTextDrawTextSize(playerid,phone_PTextDraw[playerid][13], 578.000000, -61.000000);
 	PlayerTextDrawSetSelectable(playerid,phone_PTextDraw[playerid][13], false);
 
-	phone_PTextDraw[playerid][14] = CreatePlayerTextDraw(playerid,510.000000, 290.000000, "Events");
+	phone_PTextDraw[playerid][14] = CreatePlayerTextDraw(playerid,510.000000, 290.000000, "Su kien");
 	PlayerTextDrawBackgroundColor(playerid,phone_PTextDraw[playerid][14], 0x00000000);
 	PlayerTextDrawFont(playerid,phone_PTextDraw[playerid][14], 1);
 	PlayerTextDrawLetterSize(playerid,phone_PTextDraw[playerid][14], 0.170000, 0.999998);
@@ -2076,7 +2076,7 @@ Phone_InitTD(playerid) {
 	PlayerTextDrawTextSize(playerid,phone_PTextDraw[playerid][14], 578.000000, -61.000000);
 	PlayerTextDrawSetSelectable(playerid,phone_PTextDraw[playerid][14], false);
 
-	phone_PTextDraw[playerid][15] = CreatePlayerTextDraw(playerid,510.000000, 302.000000, "Advertisements");
+	phone_PTextDraw[playerid][15] = CreatePlayerTextDraw(playerid,510.000000, 302.000000, "Quang cao");
 	PlayerTextDrawBackgroundColor(playerid,phone_PTextDraw[playerid][15], 0x00000000);
 	PlayerTextDrawFont(playerid,phone_PTextDraw[playerid][15], 1);
 	PlayerTextDrawLetterSize(playerid,phone_PTextDraw[playerid][15], 0.170000, 0.999998);
@@ -2088,7 +2088,7 @@ Phone_InitTD(playerid) {
 	PlayerTextDrawTextSize(playerid,phone_PTextDraw[playerid][15], 578.000000, -61.000000);
 	PlayerTextDrawSetSelectable(playerid,phone_PTextDraw[playerid][15], false);
 
-	phone_PTextDraw[playerid][16] = CreatePlayerTextDraw(playerid,510.000000, 314.000000, "Music");
+	phone_PTextDraw[playerid][16] = CreatePlayerTextDraw(playerid,510.000000, 314.000000, "Nhac");
 	PlayerTextDrawBackgroundColor(playerid,phone_PTextDraw[playerid][16], 0x00000000);
 	PlayerTextDrawFont(playerid,phone_PTextDraw[playerid][16], 1);
 	PlayerTextDrawLetterSize(playerid,phone_PTextDraw[playerid][16], 0.170000, 0.999998);
@@ -2100,7 +2100,7 @@ Phone_InitTD(playerid) {
 	PlayerTextDrawTextSize(playerid,phone_PTextDraw[playerid][16], 578.000000, -61.000000);
 	PlayerTextDrawSetSelectable(playerid,phone_PTextDraw[playerid][16], false);
 
-	phone_PTextDraw[playerid][17] = CreatePlayerTextDraw(playerid,510.000000, 326.000000, "Videos");
+	phone_PTextDraw[playerid][17] = CreatePlayerTextDraw(playerid,510.000000, 326.000000, "Video");
 	PlayerTextDrawBackgroundColor(playerid,phone_PTextDraw[playerid][17], 0x00000000);
 	PlayerTextDrawFont(playerid,phone_PTextDraw[playerid][17], 1);
 	PlayerTextDrawLetterSize(playerid,phone_PTextDraw[playerid][17], 0.170000, 0.999997);
@@ -2124,7 +2124,7 @@ Phone_InitTD(playerid) {
 	PlayerTextDrawTextSize(playerid,phone_PTextDraw[playerid][18], 578.000000, -61.000000);
 	PlayerTextDrawSetSelectable(playerid,phone_PTextDraw[playerid][18], false);
 
-	phone_PTextDraw[playerid][19] = CreatePlayerTextDraw(playerid,510.000000, 350.000000, "Camera");
+	phone_PTextDraw[playerid][19] = CreatePlayerTextDraw(playerid,510.000000, 350.000000, "May anh");
 	PlayerTextDrawBackgroundColor(playerid,phone_PTextDraw[playerid][19], 0x00000000);
 	PlayerTextDrawFont(playerid,phone_PTextDraw[playerid][19], 1);
 	PlayerTextDrawLetterSize(playerid,phone_PTextDraw[playerid][19], 0.170000, 0.999997);
@@ -2136,7 +2136,7 @@ Phone_InitTD(playerid) {
 	PlayerTextDrawTextSize(playerid,phone_PTextDraw[playerid][19], 578.000000, -61.000000);
 	PlayerTextDrawSetSelectable(playerid,phone_PTextDraw[playerid][19], false);
 
-	phone_PTextDraw[playerid][20] = CreatePlayerTextDraw(playerid,510.000000, 362.000000, "Settings");
+	phone_PTextDraw[playerid][20] = CreatePlayerTextDraw(playerid,510.000000, 362.000000, "Cai dat");
 	PlayerTextDrawBackgroundColor(playerid,phone_PTextDraw[playerid][20], 0x00000000);
 	PlayerTextDrawFont(playerid,phone_PTextDraw[playerid][20], 1);
 	PlayerTextDrawLetterSize(playerid,phone_PTextDraw[playerid][20], 0.170000, 0.999997);

@@ -37,6 +37,6 @@
 
 CMD:find(playerid, params[])
 {
-	SendClientMessageEx(playerid, COLOR_YELLOW, "Use /trace [phone number] to trace an active phone.");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Dung /trace [phone number] de do dien thoai hoat dong.");
 	return pc_cmd_trace(playerid, params);
 }

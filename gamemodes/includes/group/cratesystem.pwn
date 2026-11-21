@@ -93,7 +93,7 @@ stock CancelCrateVehicleActions(vehicle) {
 
 stock QueueCrateMove(playerid, box, vehicle, action, delay) {
 	if(CrateAction[playerid][caTimer]) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "Please finish your current crate action first.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Hay xong thao tac thung hang hien tai truoc.");
 	
 	CancelCrateAction(playerid);
 	CrateAction[playerid][caBox] = box;
@@ -200,7 +200,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	{
 		if(CarryCrate[playerid] >= 0) 
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You can't be in any vehicles whilst carrying a crate!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Khong the ngoi trong xe khi mang thung hang!");
 			return RemovePlayerFromVehicle(playerid);
 		}
 	}
@@ -213,7 +213,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
 		GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
 		SetPlayerPos(playerid, pos[0], pos[1], pos[2]+1.3);
 		PlayerPlaySound(playerid, 1130, pos[0], pos[1], pos[2]+1.3);
-		SendClientMessageEx(playerid, COLOR_GREY, "You can't enter any vehicles whilst carrying a crate!");
+		SendClientMessageEx(playerid, COLOR_GREY, "Khong the len xe khi mang thung hang!");
 		return 1;
 	}
 	return 1;
@@ -325,9 +325,9 @@ stock UpdateCrateBox(id)
 	if(CrateBox[id][cbGroup] != -1 && !ValidGroup(CrateBox[id][cbGroup])) return DestroyCrate(id);
 
 	if(CrateBox[id][cbGroup] == -1) {
-		format(string, sizeof(string), "{FFFF00}---- ID: {FF8000}%d\n{FFFF00}Time Remaining: {FF8000}00:00:00\n{FFFF00}Placed By: {FF8000}%s", id, CrateBox[id][cbPlacedBy]);
+		format(string, sizeof(string), "{FFFF00}---- ID: {FF8000}%d\n{FFFF00}Con lai: {FF8000}00:00:00\n{FFFF00}Nguoi dat: {FF8000}%s", id, CrateBox[id][cbPlacedBy]);
 	} else {
-		format(string, sizeof(string), "{FFFF00}ID: {FF8000}%d\n{FFFF00}Crate Owner: {FF8000}%s\n{FFFF00}Placed By: {FF8000}%s", id, arrGroupData[CrateBox[id][cbGroup]][g_szGroupName], CrateBox[id][cbPlacedBy]);
+		format(string, sizeof(string), "{FFFF00}ID: {FF8000}%d\n{FFFF00}Chu thung: {FF8000}%s\n{FFFF00}Nguoi dat: {FF8000}%s", id, arrGroupData[CrateBox[id][cbGroup]][g_szGroupName], CrateBox[id][cbPlacedBy]);
 	}
 	CrateBox[id][cbTextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, CrateBox[id][cbPos][0], CrateBox[id][cbPos][1], CrateBox[id][cbPos][2]+1.5, 20.0, .testlos = 1, .worldid = CrateBox[id][cbVw], .interiorid = CrateBox[id][cbInt], .streamdistance = 20.0);
 	CrateBox[id][cbObject] = CreateDynamicObject(964, CrateBox[id][cbPos][0], CrateBox[id][cbPos][1], CrateBox[id][cbPos][2], 0.00000000, 0.00000000, 0.00000000, CrateBox[id][cbVw], CrateBox[id][cbInt]);
@@ -429,7 +429,7 @@ stock UpdateFacility(id)
 	CrateFacility[id][cfMapIcon] = CreateDynamicMapIcon(CrateFacility[id][cfPos][0], CrateFacility[id][cfPos][1], CrateFacility[id][cfPos][2], 11, 0, CrateFacility[id][cfVw], CrateFacility[id][cfInt], .streamdistance = 1000.0, .style = MAPICON_GLOBAL);
 	// Box Object.
 	CrateFacility[id][cfPickupID] = CreateDynamicObject(964, CrateFacility[id][cfPos][0], CrateFacility[id][cfPos][1], CrateFacility[id][cfPos][2], 0.00000000, 0.00000000, CrateFacility[id][cfPos][3], CrateFacility[id][cfVw], CrateFacility[id][cfInt]);
-	format(string, sizeof(string), "{FFFF00}%s (ID: {1FBDFF}%d{FFFF00})\n{FFFF00}Crates Available: {1FBDFF}%d/%d", CrateFacility[id][cfName], id, CrateFacility[id][cfProdReady], CrateFacility[id][cfProdMax]);
+	format(string, sizeof(string), "{FFFF00}%s (ID: {1FBDFF}%d{FFFF00})\n{FFFF00}So thung: {1FBDFF}%d/%d", CrateFacility[id][cfName], id, CrateFacility[id][cfProdReady], CrateFacility[id][cfProdMax]);
 	CrateFacility[id][cfTextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, CrateFacility[id][cfPos][0], CrateFacility[id][cfPos][1], CrateFacility[id][cfPos][2]+1.5, 20.0, .testlos = 1, .worldid = CrateFacility[id][cfVw], .interiorid = CrateFacility[id][cfInt], .streamdistance = 20.0);
 	FacilityBoxUpdate(id);
 	return 1;
@@ -490,8 +490,8 @@ task UpdateFacilityCrates[1000]()
 					CrateFacilityRaid[i] = 1;
 					foreach(new g: Player) {
 						if(PlayerInfo[g][pMember] == CrateFacility[i][cfGroup]) {
-							SendClientMessageEx(g, COLOR_LIGHTRED, "%s: We're about to go into production mode be advised.", CrateFacility[i][cfName]);
-							SendClientMessageEx(g, COLOR_YELLOW, "** You have 5 minutes to prepare for a facility raid. **");
+							SendClientMessageEx(g, COLOR_LIGHTRED, "%s: Chung toi sap san xuat, hay chu y.", CrateFacility[i][cfName]);
+							SendClientMessageEx(g, COLOR_YELLOW, "** Ban co 5 phut de chuan bi dot kich co so. **");
 						}
 					}
 				}
@@ -502,23 +502,23 @@ task UpdateFacilityCrates[1000]()
 					TriggerGates(i);
 					foreach(new g: Player) {
 						if(IsACriminal(g)) {
-							SendClientMessageEx(g, COLOR_YELLOW, "SMS: Word on the street is that %s facility is processing crates!, Sender: Unknown.", CrateFacility[i][cfName]);
-							SendClientMessageEx(g, COLOR_YELLOW, "** You have 1 hour 30 minutes to raid the facility before it goes into a cooldown. **");
+							SendClientMessageEx(g, COLOR_YELLOW, "SMS: Nghe don co so %s dang xu ly thung hang!, Nguoi gui: Unknown.", CrateFacility[i][cfName]);
+							SendClientMessageEx(g, COLOR_YELLOW, "** Ban co 1 gio 30 phut de dot kich truoc khi co so tam nghi. **");
 						}
 						if(PlayerInfo[g][pMember] == CrateFacility[i][cfGroup]) {
-							SendClientMessageEx(g, COLOR_LIGHTRED, "%s: We're now processing crates!", CrateFacility[i][cfName]);
-							SendClientMessageEx(g, COLOR_YELLOW, "** You have 1 hour 30 minutes to protect the facility before it goes into a cooldown. **");
+							SendClientMessageEx(g, COLOR_LIGHTRED, "%s: Dang xu ly thung hang!", CrateFacility[i][cfName]);
+							SendClientMessageEx(g, COLOR_YELLOW, "** Ban co 1 gio 30 phut de bao ve co so truoc khi tam nghi. **");
 						}
 					}
 				}
 				if((CrateFacility[i][cfRaidTimer] - 300) == gettime() && CrateFacility[i][cfRaidTimer] != 0) {
 					foreach(new g: Player) {
 						if(IsACriminal(g)) {
-							SendClientMessageEx(g, COLOR_YELLOW, "** You have 5 minutes remaining before all gates are closed! **", CrateFacility[i][cfName]);
+							SendClientMessageEx(g, COLOR_YELLOW, "** Con 5 phut truoc khi tat ca cong dong lai! **", CrateFacility[i][cfName]);
 						}
 						if(PlayerInfo[g][pMember] == CrateFacility[i][cfGroup]) {
-							SendClientMessageEx(g, COLOR_LIGHTRED, "%s: Crate production is nearly complete!", CrateFacility[i][cfName]);
-							SendClientMessageEx(g, COLOR_YELLOW, "** You have 5 minutes remaining to protect the facility until the facility goes into lockdown. **");
+							SendClientMessageEx(g, COLOR_LIGHTRED, "%s: San xuat thung hang sap hoan tat!", CrateFacility[i][cfName]);
+							SendClientMessageEx(g, COLOR_YELLOW, "** Con 5 phut bao ve truoc khi co so phong toa. **");
 						}
 					}
 				}
@@ -530,12 +530,12 @@ task UpdateFacilityCrates[1000]()
 					TriggerGates(i, 0);
 					foreach(new g: Player) {
 						if(IsACriminal(g)) {
-							SendClientMessageEx(g, COLOR_YELLOW, "SMS: %s facility is now on lockdown. (( Cooldown Period )), Sender: Unknown.", CrateFacility[i][cfName]);
-							SendClientMessageEx(g, COLOR_YELLOW, "** You can no longer raid the facility, it'll be on cooldown for a random time period. **", CrateFacility[i][cfName]);
+							SendClientMessageEx(g, COLOR_YELLOW, "SMS: Co so %s da phong toa. (( Thoi gian cho )), Nguoi gui: Unknown.", CrateFacility[i][cfName]);
+							SendClientMessageEx(g, COLOR_YELLOW, "** Khong the dot kich nua, co so se tam nghi trong thoi gian ngau nhien. **", CrateFacility[i][cfName]);
 						}
 						if(PlayerInfo[g][pMember] == CrateFacility[i][cfGroup]) {
-							SendClientMessageEx(g, COLOR_LIGHTRED, "%s: Crate Production at this facility has finished!", CrateFacility[i][cfName]);
-							SendClientMessageEx(g, COLOR_YELLOW, "** This facility can no longer be raided, it'll be on a cooldown period for a random amount of time. **");
+							SendClientMessageEx(g, COLOR_LIGHTRED, "%s: Co so da san xuat xong thung hang!", CrateFacility[i][cfName]);
+							SendClientMessageEx(g, COLOR_YELLOW, "** Khong the dot kich co so nua, thoi gian tam nghi duoc chon ngau nhien. **");
 						}
 					}
 				}
@@ -578,7 +578,7 @@ public CrateBoxUpdate(id) {
 	if(!IsValidCrate(id) || !(0 <= CrateBox[id][cbFacility] < MAX_CRATE_FACILITY)) return 0;
 	new string[256];
 	if(IsValidDynamic3DTextLabel(CrateBox[id][cbTextID])) {
-		format(string, sizeof(string), "{FFFF00}%s (ID: {FF8000}%d{FFFF00})\n{FFFF00}Time Remaining: {FF8000}%s\n{FFFF00}Placed By: {FF8000}%s\n{FFFF00}Materials: {FF8000}%d/50", CrateFacility[CrateBox[id][cbFacility]][cfName], id, TimeConvert(CrateBox[id][cbLifespan]), CrateBox[id][cbPlacedBy], CrateBox[id][cbMats]);
+		format(string, sizeof(string), "{FFFF00}%s (ID: {FF8000}%d{FFFF00})\n{FFFF00}Con lai: {FF8000}%s\n{FFFF00}Nguoi dat: {FF8000}%s\n{FFFF00}Vat lieu: {FF8000}%d/50", CrateFacility[CrateBox[id][cbFacility]][cfName], id, TimeConvert(CrateBox[id][cbLifespan]), CrateBox[id][cbPlacedBy], CrateBox[id][cbMats]);
 		//format(string, sizeof(string), "{FFFF00}ID: {FF8000}%d\n{FFFF00}Time Remaining: {FF8000}%s\n{FFFF00}Placed By: {FF8000}%s", id, TimeConvert(CrateBox[id][cbLifespan]), CrateBox[id][cbPlacedBy]);
 		UpdateDynamic3DTextLabelText(CrateBox[id][cbTextID], COLOR_ORANGE, string);
 	}
@@ -592,16 +592,16 @@ public FacilityBoxUpdate(id) {
 	if(CrateFacility[id][cfActive] == 1) {
 		if(CrateFacility[id][cfProdStatus] == 1 && CrateFacility[id][cfProdTimer] > 0) {
 			if(CrateFacility[id][cfProdReady] < CrateFacility[id][cfProdMax] && CrateFacility[id][cfProdPrep] > 0) {
-				format(string, sizeof(string), "{FFFF00}%s (ID: {FF8000}%d{FFFF00})\n{FFFF00}Crates Available: {FF8000}%d/%d\n{FFFF00}Next Production in: {FF8000}%s", CrateFacility[id][cfName], id, CrateFacility[id][cfProdReady], CrateFacility[id][cfProdMax], STimeConvert(CrateFacility[id][cfTimer]));
+				format(string, sizeof(string), "{FFFF00}%s (ID: {FF8000}%d{FFFF00})\n{FFFF00}So thung: {FF8000}%d/%d\n{FFFF00}Dot san xuat sau: {FF8000}%s", CrateFacility[id][cfName], id, CrateFacility[id][cfProdReady], CrateFacility[id][cfProdMax], STimeConvert(CrateFacility[id][cfTimer]));
 			}
 			else if(CrateFacility[id][cfProdReady] < CrateFacility[id][cfProdMax] && CrateFacility[id][cfProdPrep] == 0) {
-				format(string, sizeof(string), "{FFFF00}%s (ID: {FF8000}%d{FFFF00})\n{FFFF00}Crates Available: {FF8000}%d/%d\n{FFFF00}Production stopped all crates\nhave been exported.", CrateFacility[id][cfName], id, CrateFacility[id][cfProdReady], CrateFacility[id][cfProdMax]);
+				format(string, sizeof(string), "{FFFF00}%s (ID: {FF8000}%d{FFFF00})\n{FFFF00}So thung: {FF8000}%d/%d\n{FFFF00}Da dung san xuat, tat ca thung\nda duoc xuat di.", CrateFacility[id][cfName], id, CrateFacility[id][cfProdReady], CrateFacility[id][cfProdMax]);
 			}
-			else format(string, sizeof(string), "{FFFF00}%s (ID: {FF8000}%d{FFFF00})\n{FFFF00}Crates Available: {FF8000}%d/%d", CrateFacility[id][cfName], id, CrateFacility[id][cfProdReady], CrateFacility[id][cfProdMax]);
+			else format(string, sizeof(string), "{FFFF00}%s (ID: {FF8000}%d{FFFF00})\n{FFFF00}So thung: {FF8000}%d/%d", CrateFacility[id][cfName], id, CrateFacility[id][cfProdReady], CrateFacility[id][cfProdMax]);
 		}
-		else format(string, sizeof(string), "{FFFF00}%s (ID: {FF8000}%d{FFFF00})\n{FFFF00}Crates Available: {FF8000}%d/%d\n{FFFF00}Production has been paused\nno crates will be manufactured.", CrateFacility[id][cfName], id, CrateFacility[id][cfProdReady], CrateFacility[id][cfProdMax]);
+		else format(string, sizeof(string), "{FFFF00}%s (ID: {FF8000}%d{FFFF00})\n{FFFF00}So thung: {FF8000}%d/%d\n{FFFF00}Dang tam dung san xuat\nkhong tao them thung hang.", CrateFacility[id][cfName], id, CrateFacility[id][cfProdReady], CrateFacility[id][cfProdMax]);
 	} else {
-		format(string, sizeof(string), "{FFFF00}%s (ID: {FF8000}%d{FFFF00})\n{FFFF00}Production has been stopped.\nThis facility is currently closed.", CrateFacility[id][cfName], id);
+		format(string, sizeof(string), "{FFFF00}%s (ID: {FF8000}%d{FFFF00})\n{FFFF00}Da dung san xuat.\nCo so hien dong cua.", CrateFacility[id][cfName], id);
 	}
 	UpdateDynamic3DTextLabelText(CrateFacility[id][cfTextID], COLOR_YELLOW, string);
 	return 1;
@@ -661,7 +661,7 @@ public LoadForklift(playerid, session, token) {
     szMiscArray[0] = 0;
 	new string[128];
 	SetPVarInt(playerid, "LoadForkliftTime", GetPVarInt(playerid, "LoadForkliftTime")-1);
-	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", GetPVarInt(playerid, "LoadForkliftTime"));
+	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~Con %d giay", GetPVarInt(playerid, "LoadForkliftTime"));
 	GameTextForPlayer(playerid, string, 1100, 3);
 
 	if(GetPVarInt(playerid, "LoadForkliftTime") > 0) {
@@ -672,49 +672,49 @@ public LoadForklift(playerid, session, token) {
 	if(GetPVarInt(playerid, "LoadForkliftTime") <= 0)
 	{
 		CancelCrateAction(playerid);
-		if(!CrateFacility[facility][cfActive] || CrateFacility[facility][cfProdReady] < 1 || CrateFacility[facility][cfProdCost] < 0) return SendClientMessageEx(playerid, COLOR_GREY, "The facility is no longer available.");
-		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || !IsValidVehicle(CrateVehicle[vehicle][cvSpawnID]) || GetPlayerVehicleID(playerid) != CrateVehicle[vehicle][cvSpawnID] || GetVehicleModel(CrateVehicle[vehicle][cvSpawnID]) != 530 || CrateVehicle[vehicle][cvCrate] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "You must remain in the same empty forklift.");
+		if(!CrateFacility[facility][cfActive] || CrateFacility[facility][cfProdReady] < 1 || CrateFacility[facility][cfProdCost] < 0) return SendClientMessageEx(playerid, COLOR_GREY, "Co so khong con kha dung.");
+		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || !IsValidVehicle(CrateVehicle[vehicle][cvSpawnID]) || GetPlayerVehicleID(playerid) != CrateVehicle[vehicle][cvSpawnID] || GetVehicleModel(CrateVehicle[vehicle][cvSpawnID]) != 530 || CrateVehicle[vehicle][cvCrate] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Phai o tren cung xe nang rong.");
 		if(PlayerBusy(playerid)) return 1;
-		if(IsACriminal(playerid) && (!CrateFacility[facility][cfRaidable] || (!AdminOpened[facility] && CrateFacility[facility][cfRaidTimer] <= gettime()))) return SendClientMessageEx(playerid, COLOR_GREY, "This facility cannot be raided right now.");
+		if(IsACriminal(playerid) && (!CrateFacility[facility][cfRaidable] || (!AdminOpened[facility] && CrateFacility[facility][cfRaidTimer] <= gettime()))) return SendClientMessageEx(playerid, COLOR_GREY, "Chua the dot kich co so nay.");
 		if(!ValidGroup(PlayerInfo[playerid][pMember])) {
-			SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to load the crate. You're no longer apart of a group!");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Tai thung that bai. Ban khong con trong to chuc!");
 			return 1;
 		}
  	    if(!IsPlayerInRangeOfPoint(playerid, 3.0, CrateFacility[facility][cfPos][0], CrateFacility[facility][cfPos][1], CrateFacility[facility][cfPos][2])) {
-			SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to load the crate. You're not in range of the facility!");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Tai thung that bai. Ban da roi pham vi co so!");
 			return 1;
 	    }
 	    if(GetPlayerVirtualWorld(playerid) != CrateFacility[facility][cfVw] || GetPlayerInterior(playerid) != CrateFacility[facility][cfInt]) {
-	    	SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to load the crate. You're not in the same virtual/interior world.");
+	    	SendClientMessageEx(playerid, COLOR_GRAD2, "Tai thung that bai. Ban da doi virtual world/interior.");
 	    	return 1;
 	    }
 	    if(playerTabbed[playerid] != 0) {
-	    	SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to load the crate. You were alt-tabbed.");
+	    	SendClientMessageEx(playerid, COLOR_GRAD2, "Tai thung that bai. Ban da alt-tab.");
 	    	return 1;
 	    }
 		new owner = CrateFacility[facility][cfGroup], cost = CrateFacility[facility][cfProdCost], group = PlayerInfo[playerid][pMember];
 		if(owner != -1 && !ValidGroup(owner)) 
-			return SendClientMessageEx(playerid, COLOR_GREY, "The facility owner is invalid.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Chu co so khong hop le.");
 		
 		if(!IsACriminal(playerid) && owner != group && cost > 0) {
 			if(GetGroupBudget(group) < cost) 
-				return SendClientMessageEx(playerid, COLOR_GREY, "Your group cannot afford this crate.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "To chuc khong du tien mua thung.");
 			
 			new balance = ValidGroup(owner) ? GetGroupBudget(owner) : (arrGroupData[group][g_iAllegiance] == 2 ? TRTax : Tax);
 			if(balance > cellmax - cost) 
-				return SendClientMessageEx(playerid, COLOR_GREY, "The receiving balance cannot accept this payment.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "So du ben nhan khong the nhan khoan nay.");
 		}
 		new object = CreateDynamicObject(964, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-		if(!IsValidDynamicObject(object)) return SendClientMessageEx(playerid, COLOR_GREY, "Unable to create the crate object.");
+		if(!IsValidDynamicObject(object)) return SendClientMessageEx(playerid, COLOR_GREY, "Khong tao duoc object thung hang.");
 		if(!AttachDynamicObjectToVehicle(object, CrateVehicle[vehicle][cvSpawnID], 0.0, 0.9, -0.2, 0.0, 0.0, 0.0)) {
 			DestroyDynamicObject(object);
-			return SendClientMessageEx(playerid, COLOR_GREY, "Unable to load the crate object.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Khong tai duoc object thung hang.");
 		}
 		CrateBox[boxid][cbPaid] = IsACriminal(playerid) || cost == 0;
 		if(!IsACriminal(playerid)) {
 			if(CrateFacility[facility][cfProdCost] > 0) {
 				if(PlayerInfo[playerid][pMember] != CrateFacility[facility][cfGroup]) {
-					if(GetGroupBudget(PlayerInfo[playerid][pMember]) < CrateFacility[facility][cfProdCost]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your group doesn't have $%s to purcahse this crate!", number_format(CrateFacility[facility][cfProdCost]));
+					if(GetGroupBudget(PlayerInfo[playerid][pMember]) < CrateFacility[facility][cfProdCost]) return SendClientMessageEx(playerid, COLOR_GRAD1, "To chuc khong co $%s de mua thung nay!", number_format(CrateFacility[facility][cfProdCost]));
 					SetGroupBudget(PlayerInfo[playerid][pMember], -CrateFacility[facility][cfProdCost]);
 					CrateBox[boxid][cbPaid] = 1;
 					format(string, sizeof(string), "%s has purchased a crate from the %s facility costing %s.", GetPlayerNameEx(playerid), CrateFacility[facility][cfName], number_format(CrateFacility[facility][cfProdCost]));
@@ -735,20 +735,21 @@ public LoadForklift(playerid, session, token) {
 						format(string, sizeof(string), "%s has purchased a crate from your facility adding $%s", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], number_format(CrateFacility[facility][cfProdCost]));
 						GroupPayLog(CrateFacility[facility][cfGroup], string);
 					}
-					SendClientMessageEx(playerid, COLOR_YELLOW, "Your group has been charged %s for this crate!", number_format(CrateFacility[facility][cfProdCost]));
+					SendClientMessageEx(playerid, COLOR_YELLOW, "To chuc da bi tru %s cho thung nay!", number_format(CrateFacility[facility][cfProdCost]));
 				}
 				else {
-					SendClientMessageEx(playerid, COLOR_YELLOW, "Your group will not be charged for this crate but if you deposit it into your locker payment is required!");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "To chuc chua bi thu phi, nhung can tra tien neu cat thung vao tu!");
 				}
 			}
 			SaveGroup(PlayerInfo[playerid][pMember]);
         	format(string, sizeof(string), "%s %s has manufactured a crate at %s facility.", arrGroupRanks[PlayerInfo[playerid][pMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateFacility[facility][cfName]);
           	GroupLog(PlayerInfo[playerid][pMember], string);
+        	format(string, sizeof(string), "%s %s da san xuat thung hang tai co so %s.", arrGroupRanks[PlayerInfo[playerid][pMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateFacility[facility][cfName]);
           	ABroadCast(COLOR_LIGHTRED, string, 2);
           	if(ValidGroup(CrateFacility[facility][cfGroup])) {
           		foreach(new i: Player) {
           			if(PlayerInfo[i][pMember] == CrateFacility[facility][cfGroup]) {
-          				SendClientMessageEx(i, COLOR_LIGHTRED, "A crate has been manufactured at %s facility.", CrateFacility[facility][cfName]);
+          				SendClientMessageEx(i, COLOR_LIGHTRED, "Mot thung hang da duoc san xuat tai co so %s.", CrateFacility[facility][cfName]);
           			}
           		}
           	}
@@ -786,8 +787,8 @@ public PlayerCarryCrate(playerid, boxid, vehid, action) {
 	4-5 - Player went to busy mode (Events, Prison, Death etc..)
 	*/
 	if(action == 0) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Press the '{FFFF00}FIRE{BFC0C2}' button to place the crate on the floor");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "or you can use '{FFFF00}/crate store{BFC0C2}' to place it into the designated vehicle.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Nhan nut '{FFFF00}FIRE{BFC0C2}' de dat thung xuong dat");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "hoac dung '{FFFF00}/crate store{BFC0C2}' de cat vao xe phu hop.");
 		if(PlayerHoldingObject[playerid][8] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 8))
 			RemovePlayerAttachedObject(playerid, 8), PlayerHoldingObject[playerid][8] = 0;
 		SetPlayerAttachedObject(playerid, 8, 964, 1, -0.071, 0.536, -0.026999, -2.19999, 87.1999, 0.699999, 0.479999, 0.538999, 0.419999);
@@ -813,8 +814,8 @@ public PlayerCarryCrate(playerid, boxid, vehid, action) {
 		SaveCrate(boxid);
 	}
 	if(action == 2) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Press the '{FFFF00}FIRE{BFC0C2}' button to place the crate on the floor");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "or you can use '{FFFF00}/crate store{BFC0C2}' to place it into the designated vehicle.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Nhan nut '{FFFF00}FIRE{BFC0C2}' de dat thung xuong dat");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "hoac dung '{FFFF00}/crate store{BFC0C2}' de cat vao xe phu hop.");
 		if(PlayerHoldingObject[playerid][8] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 8))
 			RemovePlayerAttachedObject(playerid, 8), PlayerHoldingObject[playerid][8] = 0;
 		SetPlayerAttachedObject(playerid, 8, 964, 1, -0.071, 0.536, -0.026999, -2.19999, 87.1999, 0.699999, 0.479999, 0.538999, 0.419999);
@@ -823,7 +824,7 @@ public PlayerCarryCrate(playerid, boxid, vehid, action) {
 		CarryCrate[playerid] = boxid;
 		BeingMoved[boxid] = playerid;
 		SaveCrate(boxid);
-		format(szMiscArray, sizeof(szMiscArray), "* %s has unloaded a crate from the %s.", GetPlayerNameEx(playerid), GetVehicleName(CrateVehicle[vehid][cvSpawnID]));
+		format(szMiscArray, sizeof(szMiscArray), "* %s da do thung hang khoi %s.", GetPlayerNameEx(playerid), GetVehicleName(CrateVehicle[vehid][cvSpawnID]));
 		ProxDetector(25.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	}
 	if(action == 3) {
@@ -834,13 +835,13 @@ public PlayerCarryCrate(playerid, boxid, vehid, action) {
 		CarryCrate[playerid] = -1;
 		BeingMoved[boxid] = INVALID_PLAYER_ID;
 		SaveCrate(boxid);
-		format(szMiscArray, sizeof(szMiscArray), "* %s has loaded a crate into the %s.", GetPlayerNameEx(playerid), GetVehicleName(CrateVehicle[vehid][cvSpawnID]));
+		format(szMiscArray, sizeof(szMiscArray), "* %s da cat thung hang vao %s.", GetPlayerNameEx(playerid), GetVehicleName(CrateVehicle[vehid][cvSpawnID]));
 		ProxDetector(25.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	}
 	if(action == 4 || action == 5) {
-		if(action == 4) SendClientMessageEx(playerid, COLOR_YELLOW, "SMS: What do you think your doing?! I'll take that box from you as you seem busy to finish the job!, Sender: Unknown");
+		if(action == 4) SendClientMessageEx(playerid, COLOR_YELLOW, "SMS: Dang lam gi vay?! Ta se lay lai thung vi nguoi qua ban de xong viec!, Nguoi gui: Unknown");
 		if(action == 5) {
-			SendClientMessageEx(playerid, COLOR_YELLOW, "SMS: You were prevented from carrying the crate it has been dropped!, Sender: Unknown");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "SMS: Ban khong the mang thung, thung da duoc dat xuong!, Nguoi gui: Unknown");
 			new Float: pcbPos[3];
 			GetPlayerPos(playerid, pcbPos[0], pcbPos[1], pcbPos[2]);
 			GetXYInFrontOfPlayer(playerid, pcbPos[0], pcbPos[1], 1);
@@ -929,41 +930,41 @@ CMD:facility(playerid, params[]) {
 		new choice[32], fac, value;
 		if(sscanf(params, "s[32]iD(-1)", choice, fac, value))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /facility [name] [id]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Names: sync goto, raidable, info");
-			SendClientMessageEx(playerid, COLOR_GREY, "EXTRA: There is only /cfedit if you want to edit a facility.");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /facility [name] [id]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ten: sync goto, raidable, info");
+			SendClientMessageEx(playerid, COLOR_GREY, "THEM: Dung /cfedit neu muon sua co so.");
 			return 1;
 		}
-		if(!(0 <= fac < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid Facility ID. (0 - %d)", MAX_CRATE_FACILITY-1);
+		if(!(0 <= fac < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GREY, "ID co so sai. (0 - %d)", MAX_CRATE_FACILITY-1);
 		if(strcmp(choice, "sync", true) == 0) {
-			if(!CrateFacility[fac][cfActive]) return SendClientMessageEx(playerid, COLOR_GREY, "That crate facility is not active!");
+			if(!CrateFacility[fac][cfActive]) return SendClientMessageEx(playerid, COLOR_GREY, "Co so thung hang chua hoat dong!");
 			SyncFacility(fac);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have sycned the %s facility, if boxes are missing they'll be put into production.", CrateFacility[fac][cfName]);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dong bo co so %s, thung bi thieu se duoc san xuat bu.", CrateFacility[fac][cfName]);
 			return 1;
 		}
 		else if(strcmp(choice, "goto", true) == 0) {
-			if(CrateFacility[fac][cfPos][0] == 0.0) return SendClientMessageEx(playerid, COLOR_GREY, "Unable to go to facility as it's currently not being used!");
+			if(CrateFacility[fac][cfPos][0] == 0.0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the den co so vi chua duoc su dung!");
 			SetPlayerInterior(playerid, CrateFacility[fac][cfInt]);
 			SetPlayerPos(playerid, CrateFacility[fac][cfPos][0], CrateFacility[fac][cfPos][1], CrateFacility[fac][cfPos][2]+1.0);
 			PlayerInfo[playerid][pInt] = CrateFacility[fac][cfInt];
 			SetPlayerVirtualWorld(playerid, CrateFacility[fac][cfVw]);
 			PlayerInfo[playerid][pVW] = CrateFacility[fac][cfVw];
 			if(CrateFacility[fac][cfInt] > 0) Player_StreamPrep(playerid, CrateFacility[fac][cfPos][0], CrateFacility[fac][cfPos][1], CrateFacility[fac][cfPos][2]+1.0, FREEZE_TIME);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have teleported to create facility %d.", fac);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dich chuyen den co so thung hang %d.", fac);
 			return 1;
 		}
 		else if(strcmp(choice, "raidable", true) == 0) {
-			if(!CrateFacility[fac][cfActive]) return SendClientMessageEx(playerid, COLOR_GREY, "That crate facility is not active!");
+			if(!CrateFacility[fac][cfActive]) return SendClientMessageEx(playerid, COLOR_GREY, "Co so thung hang chua hoat dong!");
 			if(AdminOpened[fac]) {
 				if(CrateFacility[fac][cfRaidTimer] == 0) TriggerGates(fac, 0);
-	    		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has made %s facility unable to be raided freely. (ID: %d)", GetPlayerNameEx(playerid), CrateFacility[fac][cfName], fac);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have made %s facility unable to be raided freely.", CrateFacility[fac][cfName]);
+	    		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s da cam dot kich tu do co so %s. (ID: %d)", GetPlayerNameEx(playerid), CrateFacility[fac][cfName], fac);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ban da cam dot kich tu do co so %s.", CrateFacility[fac][cfName]);
 				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 				AdminOpened[fac] = 0;
 			} else {
 				TriggerGates(fac);
-	    		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has made %s facility able to be raided freely. (ID: %d)", GetPlayerNameEx(playerid), CrateFacility[fac][cfName], fac);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have made %s facility able to be raided freely.", CrateFacility[fac][cfName]);
+	    		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s da cho dot kich tu do co so %s. (ID: %d)", GetPlayerNameEx(playerid), CrateFacility[fac][cfName], fac);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ban da cho dot kich tu do co so %s.", CrateFacility[fac][cfName]);
 				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 				AdminOpened[fac] = 1;
 			}
@@ -982,17 +983,17 @@ CMD:facility(playerid, params[]) {
 			} else {
 				format(group, sizeof(group), "--");
 			}
-			SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Facility Info (ID: %d) ___________|", fac);
-			SendClientMessageEx(playerid, COLOR_WHITE, "X: %f | Y: %f | Z: %f | Int: %d | VW: %d | Active: %s", CrateFacility[fac][cfPos][0], CrateFacility[fac][cfPos][1], CrateFacility[fac][cfPos][2], CrateFacility[fac][cfInt], CrateFacility[fac][cfVw], (CrateFacility[fac][cfActive]) ? ("Yes") : ("No"));
-			SendClientMessageEx(playerid, COLOR_WHITE, "Next Raid: %s | Raid Progress: %s | Raidable Status: %s", date(CrateFacility[fac][cfCooldown], 1), (CrateFacilityRaid[fac]) ? ("Active") : ("Not Ready"), (CrateFacility[fac][cfRaidable]) ? ("Active") : ("Disabled"));
-			SendClientMessageEx(playerid, COLOR_WHITE, "Crates Ready: %d | Crates in production: %d | Crates in use: %d | Max Crates: %d", CrateFacility[fac][cfProdReady], CrateFacility[fac][cfProdPrep], crates, CrateFacility[fac][cfProdMax]);
-			SendClientMessageEx(playerid, COLOR_WHITE, "Cost Per Crate: %s | Production status: %s", number_format(CrateFacility[fac][cfProdCost]), (CrateFacility[fac][cfProdStatus]) ? ("Active") : ("Paused"));
-			SendClientMessageEx(playerid, COLOR_WHITE, "Owner: %s | Deliver Multiplier: %d", group, CrateFacility[fac][cfProdMulti]);
+			SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Co so (ID: %d) ___________|", fac);
+			SendClientMessageEx(playerid, COLOR_WHITE, "X: %f | Y: %f | Z: %f | Int: %d | VW: %d | Bat: %s", CrateFacility[fac][cfPos][0], CrateFacility[fac][cfPos][1], CrateFacility[fac][cfPos][2], CrateFacility[fac][cfInt], CrateFacility[fac][cfVw], (CrateFacility[fac][cfActive]) ? ("Co") : ("Khong"));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Dot kich sau: %s | Tien do: %s | Cho dot kich: %s", date(CrateFacility[fac][cfCooldown], 1), (CrateFacilityRaid[fac]) ? ("Bat") : ("Chua san sang"), (CrateFacility[fac][cfRaidable]) ? ("Bat") : ("Tat"));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Thung san sang: %d | Dang tao: %d | Dang dung: %d | Toi da: %d", CrateFacility[fac][cfProdReady], CrateFacility[fac][cfProdPrep], crates, CrateFacility[fac][cfProdMax]);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Gia moi thung: %s | San xuat: %s", number_format(CrateFacility[fac][cfProdCost]), (CrateFacility[fac][cfProdStatus]) ? ("Bat") : ("Tam dung"));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Chu: %s | He so giao: %d", group, CrateFacility[fac][cfProdMulti]);
 			return 1;
 		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Invalid name selected!");
+		else SendClientMessageEx(playerid, COLOR_GREY, "Ten da chon khong hop le!");
 	} else {
-		SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command!");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay!");
 	}
 	return 1;
 }
@@ -1010,23 +1011,23 @@ stock SyncFacility(id) {
 
 CMD:crate(playerid, params[]) {
 	if(CrateAction[playerid][caTimer]) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "Please finish your current crate action first.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Hay xong thao tac thung hang hien tai truoc.");
 	
 	szMiscArray[0] = 0;
 	new string[128], choice[32], box, crate;
 	if(sscanf(params, "s[32]D(-1)", choice, crate))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /crate [name]");
-		SendClientMessageEx(playerid, COLOR_GREY, "(On-Foot): Carry, Take, Contents, Seize");
-		SendClientMessageEx(playerid, COLOR_GREY, "(Forklift): Load, Drop, Store");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /crate [name]");
+		SendClientMessageEx(playerid, COLOR_GREY, "(Di bo): Carry, Take, Contents, Seize");
+		SendClientMessageEx(playerid, COLOR_GREY, "(Xe nang): Load, Drop, Store");
 		if(PlayerInfo[playerid][pAdmin] > 3) SendClientMessageEx(playerid, COLOR_GREY, "Administrator: Destroy, Spawn");
 		return 1;
 	}
-	if(PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do that right now.");
+	if(PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua the lam vay.");
 	if(strcmp(choice, "carry", true) == 0) {
 		GetCrateBox(playerid, box, 2.0);
-		if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You're not near any crate boxes to pickup!");
-		if(CarryCrate[playerid] != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "you're currently carraying a crate either store or drop it before carrying another!");
+		if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan thung hang de nhat!");
+		if(CarryCrate[playerid] != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban dang mang thung, hay cat hoac dat xuong truoc!");
 		ApplyAnimation(playerid, "CARRY", "liftup", 4.1, false, false, false, false, 0, 1);
 		QueueCrateMove(playerid, box, -1, 0, 1000);
 		return 1;
@@ -1034,43 +1035,43 @@ CMD:crate(playerid, params[]) {
 	else if(strcmp(choice, "contents", true) == 0) {
 		new weaponname[32], title[24];
 		GetCrateBox(playerid, box, 2.0);
-		if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You're not in range of any crate boxes!");
-		if(CrateBox[box][cbGroup] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "This crate is not a transfer crate, use /cgun instead!");
-		format(title, sizeof(title), "Crate Contents (ID: %d)", box);
-		format(szMiscArray, sizeof(szMiscArray), "Weapon\tQuantity\n");
+		if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan thung hang!");
+		if(CrateBox[box][cbGroup] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Day khong phai thung chuyen, hay dung /cgun!");
+		format(title, sizeof(title), "Trong thung (ID: %d)", box);
+		format(szMiscArray, sizeof(szMiscArray), "Vu khi\tSo luong\n");
 		for(new w = 0; w < 16; w++) {
 			if(CrateBox[box][cbWep][w] > 0) {
 				GetWeaponName(CrateBox[box][cbWep][w], weaponname, sizeof(weaponname));
 				format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, weaponname, number_format(CrateBox[box][cbWepAmount][w]));
 			}
 		}
-		if(strlen(szMiscArray) == 16) format(szMiscArray, sizeof(szMiscArray), "%sThere are no weapons in this crate.", szMiscArray);
-		Dialog_Show(playerid, -1, DIALOG_STYLE_TABLIST_HEADERS, title, szMiscArray, "Close", "");
+		if(strlen(szMiscArray) == 16) format(szMiscArray, sizeof(szMiscArray), "%sThung khong co vu khi.", szMiscArray);
+		Dialog_Show(playerid, -1, DIALOG_STYLE_TABLIST_HEADERS, title, szMiscArray, "Dong", "");
 		return 1;
 	}
 	else if(strcmp(choice, "load", true) == 0) {
 		new facility, vehicleid = GetPlayerVehicleID(playerid), veh;
 		FetchFacility(playerid, facility, 3.0);
 		GetCrateBox(playerid, box, 3.0);
-		if(!ValidGroup(PlayerInfo[playerid][pMember])) return SendClientMessage(playerid, COLOR_GRAD2, " You need to be apart of a group to use this command!");
-		if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be in a vehicle to do this!");
-		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "You must be driving the forklift.");
-		if(GetVehicleModel(vehicleid) != 530) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be in a forklift vehicle to load crates!");
-		if((veh = IsDynamicCrateVehicle(vehicleid)) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in the designated forklift vehicle for this operation!");
-		if(CrateVehicle[veh][cvCrate] != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "There is already a crate loaded on the forklift!");
+		if(!ValidGroup(PlayerInfo[playerid][pMember])) return SendClientMessage(playerid, COLOR_GRAD2, "Ban phai thuoc mot to chuc de dung lenh nay!");
+		if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban can o trong xe de lam vay!");
+		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai lai xe nang.");
+		if(GetVehicleModel(vehicleid) != 530) return SendClientMessageEx(playerid, COLOR_GRAD2, "Can dung xe nang de tai thung hang!");
+		if((veh = IsDynamicCrateVehicle(vehicleid)) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o tren xe chi dinh cho thao tac nay!");
+		if(CrateVehicle[veh][cvCrate] != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Xe nang da co thung hang!");
 		if(facility != -1) {
-			if(!CrateFacility[facility][cfActive]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This facility is currently not in operation!");
-			if(CrateFacility[facility][cfProdReady] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This facility has no crates available to load!");
-			if(CrateBeingProcessed[facility] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please wait a crate is being procssed!");
+			if(!CrateFacility[facility][cfActive]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Co so chua hoat dong!");
+			if(CrateFacility[facility][cfProdReady] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Co so khong con thung de tai!");
+			if(CrateBeingProcessed[facility] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Vui long cho xu ly thung hang!");
 			if(PlayerInfo[playerid][pConnectHours] < 25)
 		    {
-				format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has attempted to load a crate with only %d playing hours.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pConnectHours]);
+				format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s da thu tai thung khi moi choi %d gio.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pConnectHours]);
 				ABroadCast(COLOR_YELLOW, string, 4);
-		        return SendClientMessageEx(playerid, COLOR_GRAD2, " You've not played long enough in order to load crates!");
+		        return SendClientMessageEx(playerid, COLOR_GRAD2, " Ban chua du gio choi de tai thung hang!");
 		    }
 			if(IsACriminal(playerid)) {
-				if(!CrateFacility[facility][cfRaidable]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This facility can't be raided!");
-				if(!AdminOpened[facility] && !CrateFacility[facility][cfRaidTimer]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This facility is currently on cooldown from raids.");
+				if(!CrateFacility[facility][cfRaidable]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dot kich co so nay!");
+				if(!AdminOpened[facility] && !CrateFacility[facility][cfRaidTimer]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Co so dang trong thoi gian cho giua cac dot kich.");
 			}
 			for(new c = 0; c < MAX_CRATES; c++) {
 				if(!CrateBox[c][cbActive] && CrateBox[c][cbFacility] == -1 && CrateBox[c][cbGroup] == -1) {
@@ -1082,7 +1083,7 @@ CMD:crate(playerid, params[]) {
 					CrateAction[playerid][caVehicle] = veh;
 					SetPVarInt(playerid, "LoadForkliftTime", 5);
 					CrateAction[playerid][caTimer] = SetTimerEx("LoadForklift", 1000, false, "iii", playerid, g_arrQueryHandle[playerid], CrateAction[playerid][caToken]);
-					GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~5 seconds left", 1100, 3);
+					GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~Con 5 giay", 1100, 3);
 					TogglePlayerControllable(playerid, false);
 					break;
 				}
@@ -1091,14 +1092,14 @@ CMD:crate(playerid, params[]) {
 		else if(box != -1) {
 			CrateBox[box][cbOnVeh] = veh;
 			CrateVehicle[veh][cvCrate] = box;
-			format(string, sizeof(string), "* %s has loaded a crate onto the forklift.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s da tai thung hang len xe nang.", GetPlayerNameEx(playerid));
 			ProxDetector(25.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SaveCrateVehicle(veh);
 			SaveCrate(box);
 			UpdateCrateBox(box);
 			CrateVehCheck(veh);
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD2, "You're not near any crate boxes to load onto the forklift!");
+		else SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan thung de tai len xe nang!");
 		return 1;
 	}
 	else if(strcmp(choice, "store", true) == 0) {
@@ -1116,17 +1117,17 @@ CMD:crate(playerid, params[]) {
 				}
 			}
 		}
-		if(VehFound == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not near any designated vehicles that can store crates.");
-		if(CrateVehicle[VehFound][cvCrateMax] < 1) return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't store crates in this vehicle!");
-		if(CreateCount(VehFound) >= CrateVehicle[VehFound][cvCrateMax]) return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't store anymore crates in this vehicle it's at max capacity!");
-		if(VehDelivering[VehFound]) return SendClientMessageEx(playerid, COLOR_GRAD3, "This vehicle is currently unloading crates - Please Wait!");
+		if(VehFound == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan xe co the chua thung hang.");
+		if(CrateVehicle[VehFound][cvCrateMax] < 1) return SendClientMessageEx(playerid, COLOR_GRAD3, "Khong the cat thung hang vao xe nay!");
+		if(CreateCount(VehFound) >= CrateVehicle[VehFound][cvCrateMax]) return SendClientMessageEx(playerid, COLOR_GRAD3, "Xe da day, khong the cat them thung hang!");
+		if(VehDelivering[VehFound]) return SendClientMessageEx(playerid, COLOR_GRAD3, "Xe dang do thung hang, vui long cho!");
 		GetVehicleParamsEx(CrateVehicle[VehFound][cvSpawnID], engine, lights, alarm, doors, bonnet, boot, objective);
 		if(inveh > 0 && GetVehicleModel(inveh) == 530 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER) { // Forklift -> Vehicle
-			if(IsDynamicCrateVehicle(inveh) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your not in the designated forklift vehicle!");
-			if((boxid = CrateVehicle[IsDynamicCrateVehicle(inveh)][cvCrate]) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "There is no crate loaded on the forklift!");
-			if(GetVehicleModel(CrateVehicle[VehFound][cvSpawnID]) != 592 && GetVehicleModel(CrateVehicle[VehFound][cvSpawnID]) != 553 && IsAPlane(CrateVehicle[VehFound][cvSpawnID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't store crates in this vehicle!");
+			if(IsDynamicCrateVehicle(inveh) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o tren xe nang chi dinh!");
+			if((boxid = CrateVehicle[IsDynamicCrateVehicle(inveh)][cvCrate]) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong co thung hang tren xe nang!");
+			if(GetVehicleModel(CrateVehicle[VehFound][cvSpawnID]) != 592 && GetVehicleModel(CrateVehicle[VehFound][cvSpawnID]) != 553 && IsAPlane(CrateVehicle[VehFound][cvSpawnID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the cat thung hang vao xe nay!");
 			if(!IsAPlane(CrateVehicle[VehFound][cvSpawnID])) {
-				if((boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)) return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't load crates into a vehicle whilst the trunk is closed! - '/car trunk' to open it.");
+				if((boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)) return SendClientMessageEx(playerid, COLOR_GRAD3, "Phai mo cop de tai thung hang! - Dung '/car trunk' de mo.");
 			}
 			CrateBox[boxid][cbInVeh] = VehFound;
 			CrateBox[boxid][cbOnVeh] = -1;
@@ -1137,16 +1138,16 @@ CMD:crate(playerid, params[]) {
 			CrateVehCheck(IsDynamicCrateVehicle(inveh));
 			UpdateCrateBox(boxid);
 			Streamer_Update(playerid);
-			format(szMiscArray, sizeof(szMiscArray), "* %s has loaded a crate into the %s.", GetPlayerNameEx(playerid), GetVehicleName(CrateVehicle[VehFound][cvSpawnID]));
+			format(szMiscArray, sizeof(szMiscArray), "* %s da cat thung hang vao %s.", GetPlayerNameEx(playerid), GetVehicleName(CrateVehicle[VehFound][cvSpawnID]));
 			ProxDetector(25.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		else if((boxid = CarryCrate[playerid]) != -1) { // Player -> Vehicle
-			if(IsAPlane(CrateVehicle[VehFound][cvSpawnID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need a forklift to load them into the plane!");
-			if((boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)) return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't load crates into the vehicle whilst the trunk is closed! - '/car trunk' to open it.");
+			if(IsAPlane(CrateVehicle[VehFound][cvSpawnID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "Can xe nang de tai thung len may bay!");
+			if((boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)) return SendClientMessageEx(playerid, COLOR_GRAD3, "Phai mo cop de tai thung hang! - Dung '/car trunk' de mo.");
 			ApplyAnimation(playerid, "CARRY", "putdwn105", 4.1, false, false, false, false, 0, 1);
 			QueueCrateMove(playerid, boxid, VehFound, 3, 700);
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD2, "Your not in possession of any crates that you can store!");
+		else SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong mang thung nao de cat!");
 		return 1;
 	}
 	else if(strcmp(choice, "take", true) == 0) {
@@ -1164,15 +1165,15 @@ CMD:crate(playerid, params[]) {
 				}
 			}
 		}
-		if(VehFound == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not near any designated vehicles that can transport crates!");
-		if(!CreateCount(VehFound)) return SendClientMessageEx(playerid, COLOR_GRAD3, "There are no crates in the vehicle to take!");
-		if(VehDelivering[VehFound]) return SendClientMessageEx(playerid, COLOR_GRAD3, "This vehicle is currently unloading crates - Please Wait!");
+		if(VehFound == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan xe van chuyen thung hang!");
+		if(!CreateCount(VehFound)) return SendClientMessageEx(playerid, COLOR_GRAD3, "Khong con thung hang trong xe de lay!");
+		if(VehDelivering[VehFound]) return SendClientMessageEx(playerid, COLOR_GRAD3, "Xe dang do thung hang, vui long cho!");
 		GetVehicleParamsEx(CrateVehicle[VehFound][cvSpawnID], engine, lights, alarm, doors, bonnet, boot, objective);
 		if(inveh > 0 && GetVehicleModel(inveh) == 530 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER) { // Vehicle -> Forklift
-			if(IsDynamicCrateVehicle(inveh) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in the designated forklift vehicle to unload crates with!");
-			if(CrateVehicle[IsDynamicCrateVehicle(inveh)][cvCrate] != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "There is already a crate loaded on the forklift!");
+			if(IsDynamicCrateVehicle(inveh) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o tren xe nang chi dinh de do thung!");
+			if(CrateVehicle[IsDynamicCrateVehicle(inveh)][cvCrate] != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Xe nang da co thung hang!");
 			if(!IsAPlane(CrateVehicle[VehFound][cvSpawnID])) {
-				if((boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)) return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't unload crates whilst the trunk is closed! - '/car trunk' to open it.");
+				if((boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)) return SendClientMessageEx(playerid, COLOR_GRAD3, "Phai mo cop de do thung hang! - Dung '/car trunk' de mo.");
 			}
 			for(new b = 0; b < MAX_CRATES; b++) {
 				if(CrateBox[b][cbActive] && CrateBox[b][cbInVeh] == VehFound) {
@@ -1184,15 +1185,15 @@ CMD:crate(playerid, params[]) {
 					CrateVehCheck(IsDynamicCrateVehicle(inveh));
 					UpdateCrateBox(b);
 					Streamer_Update(playerid);
-					format(szMiscArray, sizeof(szMiscArray), "* %s has unloaded a crate from the %s.", GetPlayerNameEx(playerid), GetVehicleName(CrateVehicle[VehFound][cvSpawnID]));
+					format(szMiscArray, sizeof(szMiscArray), "* %s da do thung hang khoi %s.", GetPlayerNameEx(playerid), GetVehicleName(CrateVehicle[VehFound][cvSpawnID]));
 					ProxDetector(25.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					break;
 				}
 			}
 		}
 		else if(CarryCrate[playerid] == -1) { // Player -> Vehicle
-			if(IsAPlane(CrateVehicle[VehFound][cvSpawnID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need a forklift to unload crates from planes!");
-			if((boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)) return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't unload crates whilst the trunk is closed! - '/car trunk' to open it.");
+			if(IsAPlane(CrateVehicle[VehFound][cvSpawnID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "Can xe nang de do thung khoi may bay!");
+			if((boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)) return SendClientMessageEx(playerid, COLOR_GRAD3, "Phai mo cop de do thung hang! - Dung '/car trunk' de mo.");
 			for(new b = 0; b < MAX_CRATES; b++) {
 				if(CrateBox[b][cbActive] && CrateBox[b][cbInVeh] == VehFound) {
 					ApplyAnimation(playerid, "CARRY", "liftup105", 4.1, false, false, false, false, 0, 1);
@@ -1201,19 +1202,19 @@ CMD:crate(playerid, params[]) {
 				}
 			}
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD2, "You're already in possession of a crate!");
+		else SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da mang mot thung hang!");
 		return 1;
 	}
 	else if(strcmp(choice, "drop", true) == 0) {
 		new vehicleid = GetPlayerVehicleID(playerid), veh, boxid, area;
 		FetchFacility(playerid, area, 50.0);
-		if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be in a vehicle to do this!");
-		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "You must be driving the forklift.");
-		if(GetVehicleModel(vehicleid) != 530) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be a forklift to drop a crate!");
-		if((veh = IsDynamicCrateVehicle(vehicleid)) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in the designated vehicle for this operation!");
-		if((boxid = CrateVehicle[veh][cvCrate]) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "There is no crate attached to this forklift!");
-		if(CrateBox[boxid][cbTransfer]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't drop the crate it must be loaded into a vehicle first!");
-		if(area != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Crates cannot be unloaded near crate facilities!");
+		if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban can o trong xe de lam vay!");
+		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai lai xe nang.");
+		if(GetVehicleModel(vehicleid) != 530) return SendClientMessageEx(playerid, COLOR_GRAD2, "Can xe nang de dat thung xuong!");
+		if((veh = IsDynamicCrateVehicle(vehicleid)) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o tren xe chi dinh cho thao tac nay!");
+		if((boxid = CrateVehicle[veh][cvCrate]) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Xe nang khong mang thung nao!");
+		if(CrateBox[boxid][cbTransfer]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Phai tai thung vao xe truoc khi dat xuong!");
+		if(area != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the do thung gan co so san xuat!");
 
 	    new Float: vPos[3];
 	    GetVehiclePos(vehicleid, vPos[0], vPos[1], vPos[2]);
@@ -1226,7 +1227,7 @@ CMD:crate(playerid, params[]) {
 		CrateBox[boxid][cbInt] = GetPlayerInterior(playerid);
 		CrateBox[boxid][cbVw] = GetPlayerVirtualWorld(playerid);
 		CrateBox[boxid][cbPlacedBy] = GetPlayerNameEx(playerid);
-		format(string, sizeof(string), "* %s has unloaded the crate from the forklift.", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "* %s da do thung hang khoi xe nang.", GetPlayerNameEx(playerid));
 		ProxDetector(25.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		SaveCrateVehicle(veh);
 		SaveCrate(boxid);
@@ -1236,17 +1237,17 @@ CMD:crate(playerid, params[]) {
 		return 1;
 	}
 	else if(strcmp(choice, "destroy", true) == 0 && PlayerInfo[playerid][pAdmin] > 3) {
-		if(crate == -1) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /crate destroy [id]");
+		if(crate == -1) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /crate destroy [id]");
 		if(0 <= crate < MAX_CRATES) {
-			if(!CrateBox[crate][cbActive]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't destroy a crate that isn't active!");
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have destroyed crate ID: %d", crate);
+			if(!CrateBox[crate][cbActive]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the huy thung khong hoat dong!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da huy thung ID: %d", crate);
 			DestroyCrate(crate);
 		}
-		else SendClientMessageEx(playerid, COLOR_YELLOW, "Invalid crate ID - Can't be lower than 0 or higher than %d.", MAX_CRATES-1);
+		else SendClientMessageEx(playerid, COLOR_YELLOW, "ID thung sai, khong duoc duoi 0 hoac tren %d.", MAX_CRATES-1);
 		return 1;
 	}
 	else if(strcmp(choice, "spawn", true) == 0 && PlayerInfo[playerid][pAdmin] > 3) {
-		if(crate == -1) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /crate spawn [id]"), SendClientMessageEx(playerid, COLOR_GREY, "NOTE: The ID must be a facility ID not a crate ID!");
+		if(crate == -1) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /crate spawn [id]"), SendClientMessageEx(playerid, COLOR_GREY, "CHU Y: ID phai la ID co so, khong phai ID thung!");
 		if(0 <= crate < MAX_CRATE_FACILITY) {
 			new Float: pcbPos[3];
 			GetPlayerPos(playerid, pcbPos[0], pcbPos[1], pcbPos[2]);
@@ -1274,48 +1275,48 @@ CMD:crate(playerid, params[]) {
 							SaveFacility(crate);
 							UpdateCrateBox(c);
 							Streamer_Update(playerid);
-							SendClientMessageEx(playerid, COLOR_WHITE, "You've spawned a crate at your position!");
+							SendClientMessageEx(playerid, COLOR_WHITE, "Da tao thung hang tai vi tri cua ban!");
 							return 1;
 						}
 					}
-					return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: Unable to spawn crate as non are available!");
+					return SendClientMessageEx(playerid, COLOR_GRAD2, "LOI: Het cho trong de tao thung!");
 				} else {
-					SendClientMessageEx(playerid, COLOR_GRAD2, "Error: Crate facility specified has crates available!");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Loi: Co so da chon van con thung kha dung!");
 				}
 			} else {
-				SendClientMessageEx(playerid, COLOR_GRAD2, "Error: Crate facility specified is either not in use or is not active!");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Loi: Co so da chon chua duoc dung hoac khong hoat dong!");
 			}
 		}
-		else SendClientMessageEx(playerid, COLOR_YELLOW, "Invalid Facility ID - Can't be lower than 0 or higher than %d.", MAX_CRATE_FACILITY-1);
+		else SendClientMessageEx(playerid, COLOR_YELLOW, "ID co so sai, khong duoc duoi 0 hoac tren %d.", MAX_CRATE_FACILITY-1);
 		return 1;
 	}
 	else if(strcmp(choice, "orders", true) == 0) {
 		new fac;
-		if(!ValidGroup(PlayerInfo[playerid][pMember])) return SendClientMessage(playerid, COLOR_GRAD2, "You need to be apart of a group to use this command!");
+		if(!ValidGroup(PlayerInfo[playerid][pMember])) return SendClientMessage(playerid, COLOR_GRAD2, "Ban phai thuoc mot to chuc de dung lenh nay!");
 		GetFacility(PlayerInfo[playerid][pMember], fac);
-		if(fac == -1) return SendClientMessage(playerid, COLOR_GRAD2, "Your group doesn't own a facility!");
-		format(szMiscArray, sizeof(szMiscArray), "Group\tCrates (Total Cost)\tDelivered (Money Earned)\n");
+		if(fac == -1) return SendClientMessage(playerid, COLOR_GRAD2, "To chuc khong so huu co so nao!");
+		format(szMiscArray, sizeof(szMiscArray), "To chuc\tSo thung (Tong gia)\tDa giao (Thu nhap)\n");
 		for(new o = 0; o < MAX_GROUPS; o++) {
 			if(CrateOrder[o][coFacility] == fac && CrateOrder[o][coStatus] > 0) {
 				format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d ($%s)\t%d ($%s)\n", szMiscArray, arrGroupData[o][g_szGroupName], CrateOrder[o][coCrates], number_format((CrateOrder[o][coCrates] * CrateOrder[o][coPerCrate])), CrateOrder[o][coDelivered], number_format((CrateOrder[o][coDelivered] * CrateOrder[o][coPerCrate])));
 			}
 		}
-		if(strlen(szMiscArray) == 51) return SendClientMessageEx(playerid, COLOR_LIGHTRED, "%s: There are no crate orders pending!", CrateFacility[fac][cfName]);
-		Dialog_Show(playerid, -1, DIALOG_STYLE_TABLIST_HEADERS, "Crate Orders", szMiscArray, "Close", "");
+		if(strlen(szMiscArray) == 51) return SendClientMessageEx(playerid, COLOR_LIGHTRED, "%s: Khong co don dat thung cho xu ly!", CrateFacility[fac][cfName]);
+		Dialog_Show(playerid, -1, DIALOG_STYLE_TABLIST_HEADERS, "Don dat thung", szMiscArray, "Dong", "");
 	}
 	else if(strcmp(choice, "seize", true) == 0) {
 		new fac;
 		GetCrateBox(playerid, box, 2.0);
 		GetFacility(PlayerInfo[playerid][pMember], fac);
-		if(fac == -1) return SendClientMessage(playerid, COLOR_GRAD2, "Your group doesn't own a facility!");
-		if(CrateFacilityRaid[fac]) return SendClientMessage(playerid, COLOR_GRAD2, "Error: You can't use this command during a raid session.");
-		if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You're not near any crate boxes to seize!");
-		if(CrateBox[box][cbFacility] != fac) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't seize a crate that doesn't belong to your facility!");
+		if(fac == -1) return SendClientMessage(playerid, COLOR_GRAD2, "To chuc khong so huu co so nao!");
+		if(CrateFacilityRaid[fac]) return SendClientMessage(playerid, COLOR_GRAD2, "Loi: Khong the dung lenh nay trong dot kich.");
+		if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan thung de thu giu!");
+		if(CrateBox[box][cbFacility] != fac) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the thu giu thung ngoai co so cua ban!");
 		DestroyCrate(box);
-		format(szMiscArray, sizeof(szMiscArray), "* %s has seized a crate box!", GetPlayerNameEx(playerid));
+		format(szMiscArray, sizeof(szMiscArray), "* %s thu giu thung hang!", GetPlayerNameEx(playerid));
 		ProxDetector(25.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD2, "Unknown choice selected!");
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "Lua chon khong hop le!");
 	return 1;
 }
 
@@ -1334,7 +1335,7 @@ CMD:cfnext(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
 		for(new f = 0; f < MAX_CRATE_FACILITY; f++) {
 			if(CrateFacility[f][cfPos][0] == 0.0) {
-				SendClientMessageEx(playerid, COLOR_YELLOW, "Next crate facility available for use: %d", f);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Co so thung hang trong tiep theo: %d", f);
 				break;
 			}
 		}
@@ -1345,9 +1346,9 @@ CMD:cfnext(playerid, params[]) {
 CMD:gotocrate(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
 		new id, Float:pos[3];
-		if(sscanf(params, "i", id)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotocrate [id]");
-		if(!(0 <= id < MAX_CRATES)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid crate ID. (0 - %d)", MAX_CRATES-1);
-		if(!CrateBox[id][cbActive]) return SendClientMessageEx(playerid, COLOR_GREY, "ERROR: The crate box isn't active.");
+		if(sscanf(params, "i", id)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gotocrate [id]");
+		if(!(0 <= id < MAX_CRATES)) return SendClientMessageEx(playerid, COLOR_GREY, "ID thung sai. (0 - %d)", MAX_CRATES-1);
+		if(!CrateBox[id][cbActive]) return SendClientMessageEx(playerid, COLOR_GREY, "LOI: Thung khong hoat dong.");
 		/*
 		foreach(new i: Player) {
 			if(CarryCrate[i] == id) {
@@ -1370,7 +1371,7 @@ CMD:gotocrate(playerid, params[]) {
 			SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(BeingMoved[id]));
 			PlayerInfo[playerid][pVW] = GetPlayerVirtualWorld(BeingMoved[id]);
 			if(GetPlayerInterior(BeingMoved[id]) > 0) Player_StreamPrep(playerid, pos[0], pos[1], pos[2]+1.0, FREEZE_TIME);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have teleported to crate %d. (It's currently being carried by %s)", id, GetPlayerNameEx(BeingMoved[id]));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da den thung %d. (Dang duoc %s mang)", id, GetPlayerNameEx(BeingMoved[id]));
 			return 1;
 		}
 		if(CrateBox[id][cbInVeh] != -1) {
@@ -1381,7 +1382,7 @@ CMD:gotocrate(playerid, params[]) {
 			SetPlayerVirtualWorld(playerid, CrateVehicle[CrateBox[id][cbInVeh]][cvVw]);
 			PlayerInfo[playerid][pVW] = CrateVehicle[CrateBox[id][cbInVeh]][cvVw];	
 			if(CrateVehicle[CrateBox[id][cbInVeh]][cvInt] > 0) Player_StreamPrep(playerid, pos[0], pos[1], pos[2]+1.0, FREEZE_TIME);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have teleported to crate %d.", id);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dich chuyen den thung %d.", id);
 			return 1;
 		}
 		if(CrateBox[id][cbOnVeh] != -1) {
@@ -1392,7 +1393,7 @@ CMD:gotocrate(playerid, params[]) {
 			SetPlayerVirtualWorld(playerid, CrateVehicle[id][cvVw]);
 			PlayerInfo[playerid][pVW] = CrateVehicle[CrateBox[id][cbOnVeh]][cvVw];	
 			if(CrateVehicle[CrateBox[id][cbOnVeh]][cvInt] > 0) Player_StreamPrep(playerid, pos[0], pos[1], pos[2]+1.0, FREEZE_TIME);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have teleported to crate %d.", id);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dich chuyen den thung %d.", id);
 			return 1;
 		}
 		SetPlayerPos(playerid, CrateBox[id][cbPos][0], CrateBox[id][cbPos][1], CrateBox[id][cbPos][2]+1.0);
@@ -1401,31 +1402,31 @@ CMD:gotocrate(playerid, params[]) {
 		SetPlayerVirtualWorld(playerid, CrateBox[id][cbVw]);
 		PlayerInfo[playerid][pVW] = CrateBox[id][cbVw];	
 		if(CrateBox[id][cbInt] > 0) Player_StreamPrep(playerid, CrateBox[id][cbPos][0], CrateBox[id][cbPos][1], CrateBox[id][cbPos][2]+1.0, FREEZE_TIME);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have teleported to crate %d.", id);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da dich chuyen den thung %d.", id);
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "Your are not authorized to use this command!");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay!");
 	return 1;
 }
 
 CMD:cfname(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
 		new id, name[50];
-		if(sscanf(params, "is[50]", id, name)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cfname [facility] [name]");
-		if(!(0 <= id < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid facility ID.");
+		if(sscanf(params, "is[50]", id, name)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /cfname [facility] [name]");
+		if(!(0 <= id < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GREY, "ID co so khong hop le.");
 		foreach(new p : Player) {
 			if(CrateAction[p][caTimer] && CrateAction[p][caFacility] == id) {
 				CancelCrateAction(p);
 			}
 		}
-		if(!(0 < strlen(name) < 50)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Name must be between 1 - 50 character long in length!");
+		if(!(0 < strlen(name) < 50)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ten phai dai tu 1 - 50 ky tu!");
 		format(szMiscArray, sizeof(szMiscArray), "%s has set %d facility name from %s to %s.", GetPlayerNameEx(playerid), id, CrateFacility[id][cfName], name);
 		strcpy(CrateFacility[id][cfName], name, 50);
 		Log("logs/cfedit.log", szMiscArray);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the facility name to %s.", name);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da dat ten co so thanh %s.", name);
 		SaveFacility(id);
 		UpdateFacility(id);
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command!");
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay!");
 	return 1;
 }
 
@@ -1433,12 +1434,12 @@ CMD:cfedit(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
 		new id, name[32], value;
 		if(sscanf(params, "s[32]iD(-1)", name, id, value)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cfedit [name] [id] [value]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Names: pos, crates, timer, prodstatus, cost, active");
-			SendClientMessageEx(playerid, COLOR_GREY, "Names: owner, raidable, multiplier, delete");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /cfedit [name] [id] [value]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ten: pos, crates, timer, prodstatus, cost, active");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ten: owner, raidable, multiplier, delete");
 			return 1;
 		}
-		if(!(0 <= id < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid facility ID.");
+		if(!(0 <= id < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GREY, "ID co so khong hop le.");
 		if(strcmp(name, "pos", true) == 0) {
 			new Float:pos[3];
 			GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
@@ -1452,14 +1453,14 @@ CMD:cfedit(playerid, params[]) {
 			if(CrateFacility[id][cfCooldown] == 0) {
 				CrateFacility[id][cfCooldown] = gettime()+10800;
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have moved %d crate facility to your location!", id);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri co so %d den cho ban!", id);
 			SaveFacility(id);
 			UpdateFacility(id);
 			return 1;
 		}
 		else if(strcmp(name, "crates", true) == 0) {
-			if(value < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't set the max production lower than 1!");
-			if(value > GetMaxProduction() + CrateFacility[id][cfProdMax]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your unable to set the production to %d as there's only %d slots left!", id, GetMaxProduction());
+			if(value < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "San luong toi da khong duoc duoi 1!");
+			if(value > GetMaxProduction() + CrateFacility[id][cfProdMax]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the dat san luong %d vi chi con %d cho trong!", id, GetMaxProduction());
 			format(szMiscArray, sizeof(szMiscArray), "%s has set %d facility max production from %d to %d.", GetPlayerNameEx(playerid), id, CrateFacility[id][cfProdMax], value);
 			Log("logs/cfedit.log", szMiscArray);
 			CrateFacility[id][cfProdMax] = value;
@@ -1468,117 +1469,117 @@ CMD:cfedit(playerid, params[]) {
 			}
 			UpdateFacility(id);
 			SaveFacility(id);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have set crate facility %d to max production to %d", id, value);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dat san luong toi da co so %d thanh %d", id, value);
 			return 1;
 		}
 		else if(strcmp(name, "timer", true) == 0) {
-			if(value == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Specify in seconds how long a crate will take to be created.");
-			if(value < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't set the max production timer lower than 1!");
+			if(value == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Nhap so giay can de tao mot thung hang.");
+			if(value < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Thoi gian san xuat toi da khong duoc duoi 1!");
 			format(szMiscArray, sizeof(szMiscArray), "%s has set %d facility production timer from %d to %d seconds.", GetPlayerNameEx(playerid), id, CrateFacility[id][cfProdTimer], value);
 			Log("logs/cfedit.log", szMiscArray);
 			CrateFacility[id][cfProdTimer] = value;
 			SaveFacility(id);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have set crate facility %d production to %d seconds.", id, value);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dat thoi gian san xuat co so %d thanh %d giay.", id, value);
 			return 1;
 		}
 		else if(strcmp(name, "prodstatus", true) == 0) {
-			if(value == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "0 - Disable | 1 - Active");
-			if(!(0 <= value < 2)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only choose the following: 0 - Disable | 1 - Active");
+			if(value == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "0 - Tat | 1 - Bat");
+			if(!(0 <= value < 2)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Chi duoc chon: 0 - Tat | 1 - Bat");
 			format(szMiscArray, sizeof(szMiscArray), "%s has set %d facility production status from %s to %s.", GetPlayerNameEx(playerid), id, (CrateFacility[id][cfProdStatus]) ? ("Active") : ("Paused"), (value) ? ("Active") : ("Disabled"));
 			Log("logs/cfedit.log", szMiscArray);
 			CrateFacility[id][cfProdStatus] = value;
 			SaveFacility(id);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have set crate facility %d production status to %s.", id, (value) ? ("Active") : ("Paused"));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dat san xuat co so %d thanh %s.", id, (value) ? ("Bat") : ("Tam dung"));
 			return 1;
 		}
 		else if(strcmp(name, "cost", true) == 0) {
-			if(value < 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't set the crate cost lower than 0!");
+			if(value < 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Gia thung khong duoc duoi 0!");
 			format(szMiscArray, sizeof(szMiscArray), "%s has set %d facility production cost per crate from $%s to $%s.", GetPlayerNameEx(playerid), id, number_format(CrateFacility[id][cfProdCost]), number_format(value));
 			Log("logs/cfedit.log", szMiscArray);
 			CrateFacility[id][cfProdCost] = value;
 			SaveFacility(id);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have set the facility %d to cost $%s per crate.", id, number_format(value));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dat gia co so %d thanh $%s moi thung.", id, number_format(value));
 			return 1;
 		}
 		else if(strcmp(name, "active", true) == 0) {
-			if(value == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "0 - Disable | 1 - Active");
-			if(!(0 <= value < 2)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only choose the following: 0 - Disable | 1 - Active");
+			if(value == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "0 - Tat | 1 - Bat");
+			if(!(0 <= value < 2)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Chi duoc chon: 0 - Tat | 1 - Bat");
 			format(szMiscArray, sizeof(szMiscArray), "%s has set %d facility status from %s to %s.", GetPlayerNameEx(playerid), id, (CrateFacility[id][cfActive]) ? ("Active") : ("Disabled"), (value) ? ("Active") : ("Disabled"));
 			Log("logs/cfedit.log", szMiscArray);
 			CrateFacility[id][cfActive] = value;
 			SaveFacility(id);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have set crate facility %d status to %s.", id, (value) ? ("Active") : ("Disabled"));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dat trang thai co so %d thanh %s.", id, (value) ? ("Bat") : ("Tat"));
 			return 1;
 		}
 		else if(strcmp(name, "cooldown", true) == 0) {
-			if(CrateFacility[id][cfRaidTimer] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: There is a raid on-going, try again after %s.", date(CrateFacility[id][cfRaidTimer], 1));
-			if(value < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't set the cooldown lower than 1 second!");
+			if(CrateFacility[id][cfRaidTimer] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "LOI: Dang co dot kich, thu lai sau %s.", date(CrateFacility[id][cfRaidTimer], 1));
+			if(value < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Thoi gian cho khong duoc duoi 1 giay!");
 			CrateFacility[id][cfCooldown] = gettime()+value;
 			SaveFacility(id);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have set crate facility %d cooldown to %d.", id, value);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dat thoi gian cho co so %d thanh %d.", id, value);
 			return 1;
 		}
 		else if(strcmp(name, "raid", true) == 0) {
-			if(CrateFacility[id][cfRaidTimer] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "There is no raid on-going.");
-			if(value < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't set the raid timer lower than 1 second!");
+			if(CrateFacility[id][cfRaidTimer] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong co dot kich nao.");
+			if(value < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Thoi gian dot kich khong duoc duoi 1 giay!");
 			CrateFacility[id][cfRaidTimer] = gettime()+value;
 			SaveFacility(id);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have set crate facility %d raid timer to %d.", id, value);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dat thoi gian dot kich co so %d thanh %d.", id, value);
 			return 1;
 		}
 		else if(strcmp(name, "multiplier", true) == 0) {
-			if(value < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't set the crate multiplier lower than 1!");
+			if(value < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "He so thung hang khong duoc duoi 1!");
 			format(szMiscArray, sizeof(szMiscArray), "%s has set %d facility crate delivery multiplier from %d to %d.", GetPlayerNameEx(playerid), id, CrateFacility[id][cfProdMulti], value);
 			Log("logs/cfedit.log", szMiscArray);
 			CrateFacility[id][cfProdMulti] = value;
 			SaveFacility(id);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have set crate facility %d delivery multiplier to %d.", id, value);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dat he so giao hang co so %d thanh %d.", id, value);
 			return 1;
 		}
 		else if(strcmp(name, "raidable", true) == 0) {
-			if(!(0 <= value < 2)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only choose the following: 0 - Disable | 1 - Active");
-			if(CrateFacility[id][cfRaidTimer] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: There is a raid on-going, try again after %s.", date(CrateFacility[id][cfRaidTimer], 1));
+			if(!(0 <= value < 2)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Chi duoc chon: 0 - Tat | 1 - Bat");
+			if(CrateFacility[id][cfRaidTimer] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "LOI: Dang co dot kich, thu lai sau %s.", date(CrateFacility[id][cfRaidTimer], 1));
 			if(value && !CrateFacility[id][cfRaidable]) CrateFacility[id][cfCooldown] = gettime()+10800;
 			format(szMiscArray, sizeof(szMiscArray), "%s has set %d facility raidable status from %s to %s.", GetPlayerNameEx(playerid), id, (CrateFacility[id][cfRaidable]) ? ("Active") : ("Disabled"), (value) ? ("Active") : ("Disabled"));
 			Log("logs/cfedit.log", szMiscArray);
 			CrateFacility[id][cfRaidable] = value;
 			SaveFacility(id);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have set crate facility %d raid status to %s.", id, (value) ? ("Active") : ("Disabled"));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dat cho phep dot kich co so %d thanh %s.", id, (value) ? ("Bat") : ("Tat"));
 			return 1;
 		}
 		else if(strcmp(name, "owner", true) == 0) {
 			new fac;
 			GetFacility(value, fac);
 			if(value == -1) {
-				if(CrateFacility[id][cfGroup] == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "No group is currently assigned to this facility!");
+				if(CrateFacility[id][cfGroup] == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Chua co to chuc duoc gan cho co so!");
 				format(szMiscArray, sizeof(szMiscArray), "%s has removed %s's ownership over %s facility (ID: %d).", GetPlayerNameEx(playerid), arrGroupData[CrateFacility[id][cfGroup]][g_szGroupName], CrateFacility[id][cfName], id);
 				Log("logs/cfedit.log", szMiscArray);
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You have removed %s's ownership over %s facility (ID: %d).", arrGroupData[CrateFacility[id][cfGroup]][g_szGroupName], CrateFacility[id][cfName], id);
-				if(!DeleteOrder(id, "The crate facility ownership was removed.")) return SendClientMessageEx(playerid, COLOR_RED, "Unable to settle outstanding crate orders.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Da go quyen so huu cua %s tai co so %s (ID: %d).", arrGroupData[CrateFacility[id][cfGroup]][g_szGroupName], CrateFacility[id][cfName], id);
+				if(!DeleteOrder(id, "The crate facility ownership was removed.")) return SendClientMessageEx(playerid, COLOR_RED, "Khong the quyet toan don dat thung con lai.");
 				CrateFacility[id][cfGroup] = -1;
 			} else {
-				if(!(0 <= value < MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group Id. (0 - %d)", MAX_GROUPS);
-				if(CrateFacility[id][cfPos][0] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't assign a group to facility %d it's currently not in use.", id);
+				if(!(0 <= value < MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GRAD2, "ID to chuc sai. (0 - %d)", MAX_GROUPS);
+				if(CrateFacility[id][cfPos][0] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the gan to chuc cho co so %d vi chua duoc dung.", id);
 				if(fac != -1) {
 					format(szMiscArray, sizeof(szMiscArray), "%s was removed from %s facility (ID: %d) to prevent duplicate ownership.", arrGroupData[CrateFacility[fac][cfGroup]][g_szGroupName], CrateFacility[fac][cfName], fac);
 					Log("logs/cfedit.log", szMiscArray);
-					SendClientMessageEx(playerid, COLOR_YELLOW, "%s ownership was removed from %s facility (ID: %d) as they can only own 1 faciltiy at a time!", arrGroupData[CrateFacility[fac][cfGroup]][g_szGroupName], CrateFacility[fac][cfName], fac);
-					if(!DeleteOrder(fac, "The crate facility ownership was removed.")) return SendClientMessageEx(playerid, COLOR_RED, "Unable to settle outstanding crate orders.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Da go quyen cua %s tai co so %s (ID: %d) vi chi duoc so huu 1 co so!", arrGroupData[CrateFacility[fac][cfGroup]][g_szGroupName], CrateFacility[fac][cfName], fac);
+					if(!DeleteOrder(fac, "The crate facility ownership was removed.")) return SendClientMessageEx(playerid, COLOR_RED, "Khong the quyet toan don dat thung con lai.");
 					CrateFacility[fac][cfGroup] = -1;
 					SaveFacility(fac);
 				}
-				if(CrateFacility[id][cfGroup] != value && !DeleteOrder(id, "Crate facility ownership has changed.")) return SendClientMessageEx(playerid, COLOR_RED, "Unable to settle outstanding crate orders.");
+				if(CrateFacility[id][cfGroup] != value && !DeleteOrder(id, "Crate facility ownership has changed.")) return SendClientMessageEx(playerid, COLOR_RED, "Khong the quyet toan don dat thung con lai.");
 				CrateFacility[id][cfGroup] = value;
 				format(szMiscArray, sizeof(szMiscArray), "%s has assigned %s's ownership over %s facility (ID: %d).", GetPlayerNameEx(playerid), arrGroupData[value][g_szGroupName], CrateFacility[id][cfName], id);
 				Log("logs/cfedit.log", szMiscArray);
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You have assigned %s ownership over %s facility (ID: %d).", arrGroupData[value][g_szGroupName], CrateFacility[id][cfName], id);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Da gan quyen so huu cua %s tai co so %s (ID: %d).", arrGroupData[value][g_szGroupName], CrateFacility[id][cfName], id);
 			}
 			SaveFacility(id);
 			return 1;
 		}
 		else if(strcmp(name, "delete", true) == 0) {
-			if(CrateFacility[id][cfPos][0] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't delete a non-active facility!");
-			if(!DeleteOrder(id, "Crate facility has been deleted.")) return SendClientMessageEx(playerid, COLOR_RED, "Unable to settle outstanding crate orders.");
+			if(CrateFacility[id][cfPos][0] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the xoa co so khong hoat dong!");
+			if(!DeleteOrder(id, "Crate facility has been deleted.")) return SendClientMessageEx(playerid, COLOR_RED, "Khong the quyet toan don dat thung con lai.");
 			for(new c = 0; c < MAX_CRATES; c++) {
 				if(CrateBox[c][cbFacility] == id) {
 					DestroyCrate(c);
@@ -1616,18 +1617,23 @@ CMD:cfedit(playerid, params[]) {
 			CrateFacilityRaid[id] = 0;
 			UpdateFacility(id);
 			SaveFacility(id);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted crate facility %d", id);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da xoa co so thung hang %d", id);
 			format(szMiscArray, sizeof(szMiscArray), "%s has deleted facility id %d.", GetPlayerNameEx(playerid), id);
 			Log("logs/cfedit.log", szMiscArray);
 			return 1;
 		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Invalid name given.");
+		else SendClientMessageEx(playerid, COLOR_GREY, "Ten khong hop le.");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "Your are not authorized to use this command!");
+	else SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay!");
 	return 1;
 }
 
 stock DeleteOrder(facility, const reason[]) {
+	new displayReason[64];
+	if(!strcmp(reason, "The crate facility ownership was removed.")) displayReason = "Da go quyen so huu co so thung hang.";
+	else if(!strcmp(reason, "Crate facility ownership has changed.")) displayReason = "Quyen so huu co so da thay doi.";
+	else if(!strcmp(reason, "Crate facility has been deleted.")) displayReason = "Da xoa co so thung hang.";
+	else format(displayReason, sizeof displayReason, "%s", reason);
 	if(!(0 <= facility < MAX_CRATE_FACILITY)) return 0;
 	foreach(new playerid : Player) {
 		if(CrateAction[playerid][caTimer] && CrateAction[playerid][caFacility] == facility) CancelCrateAction(playerid);
@@ -1647,13 +1653,13 @@ stock DeleteOrder(facility, const reason[]) {
 			if(payee == g && GetGroupBudget(g) > cellmax - refund - earnings) return 0;
 			foreach(new p: Player) {
 				if(PlayerInfo[p][pMember] == CrateFacility[CrateOrder[g][coFacility]][cfGroup]) {
-					SendClientMessageEx(p, COLOR_LIGHTRED, "%s order was auto canceled, %d/%d crates were delivered earning: $%s.", arrGroupData[g][g_szGroupName], CrateOrder[g][coDelivered], CrateOrder[g][coCrates], number_format(CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]));
-					SendClientMessageEx(p, COLOR_LIGHTRED, "Reason: %s", reason);
+					SendClientMessageEx(p, COLOR_LIGHTRED, "Don cua %s tu huy, %d/%d thung da giao, thu: $%s.", arrGroupData[g][g_szGroupName], CrateOrder[g][coDelivered], CrateOrder[g][coCrates], number_format(CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "Ly do: %s", displayReason);
 				}
 				if(PlayerInfo[p][pLeader] == g) {
-					SendClientMessageEx(p, COLOR_LIGHTRED, "* Your crate order was auto canceled, %d/%d crates were delivered costing: $%s", CrateOrder[g][coDelivered], CrateOrder[g][coCrates], number_format(CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]));
-					SendClientMessageEx(p, COLOR_LIGHTRED, "* $%s was refunded back into the vault for undelivered crates.", number_format(refund));
-					SendClientMessageEx(p, COLOR_LIGHTRED, "* Reason: %s", reason);
+					SendClientMessageEx(p, COLOR_LIGHTRED, "* Don tu huy, %d/%d thung da giao, gia: $%s", CrateOrder[g][coDelivered], CrateOrder[g][coCrates], number_format(CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "* Da hoan $%s vao quy cho so thung chua giao.", number_format(refund));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "* Ly do: %s", displayReason);
 				}
 			}
 			format(szMiscArray, sizeof(szMiscArray), "Your crate order was auto canceled, %d/%d crates were delivered costing: $%s ($%s was refunded)", CrateOrder[g][coDelivered], CrateOrder[g][coCrates], number_format(CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]), number_format(refund));
@@ -1683,8 +1689,8 @@ stock GetMaxProduction() {
 CMD:ordercrates(playerid, params[]) {
 	new group = PlayerInfo[playerid][pMember];
 	if(ValidGroup(group)) {
-		if(!IsGroupLeader(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be a group leader to order crates!");
-		if(IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're unable to order crates from any facility.");
+		if(!IsGroupLeader(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban phai la lanh dao to chuc de dat thung!");
+		if(IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the dat thung tu bat ky co so nao.");
 		//if(CrateOrder[group][coFacility] != -1 && CrateOrder[group][coStatus] > 1 && CrateOrder[group][coTime] > gettime()) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your order is currently being processed, You can cancel it after %s", date(CrateOrder[group][coTime], 1));
 		if(!CrateOrder[group][coStatus]) {
 			PrepOrder(playerid, group);
@@ -1692,7 +1698,7 @@ CMD:ordercrates(playerid, params[]) {
 			CancelOrder(playerid);
 		}
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be a group use this command!");
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "Ban phai thuoc to chuc de dung lenh nay!");
 	return 1;
 }
 
@@ -1701,7 +1707,7 @@ stock CancelOrder(playerid) {
 	if(!IsGroupLeader(playerid)) return 1;
 	new group = PlayerInfo[playerid][pMember];
 	if(!ValidGroup(group) || !(0 <= CrateOrder[group][coFacility] < MAX_CRATE_FACILITY)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "The crate order has no valid facility.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Don dat thung khong co co so hop le.");
 	
 	if(!(1 <= CrateOrder[group][coCrates] <= 50) || !(0 <= CrateOrder[group][coDelivered] <= CrateOrder[group][coCrates]) || CrateOrder[group][coPerCrate] < 1 || CrateOrder[group][coPerCrate] > cellmax / CrateOrder[group][coCrates]) 
 	{
@@ -1709,33 +1715,33 @@ stock CancelOrder(playerid) {
 	}
 
 	new refund = ((CrateOrder[group][coCrates] - CrateOrder[group][coDelivered]) * CrateOrder[group][coPerCrate]);
-	format(szMiscArray, sizeof(szMiscArray), "Are you sure you want to cancel the order you made at %s?\n", CrateFacility[CrateOrder[group][coFacility]][cfName]);
-	format(szMiscArray, sizeof(szMiscArray), "%sPlease see transaction information below:\n\n", szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "%sCrates Ordered: %d\nTotal Cost: $%s\nCrates Delivered: %d\nTotal Spent: $%s\nOrdered By: %s\nTotal to Refund: $%s.\n\n", szMiscArray, CrateOrder[group][coCrates], number_format((CrateOrder[group][coCrates] * CrateOrder[group][coPerCrate])), CrateOrder[group][coDelivered], number_format((CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate])), CrateOrder[group][coOrderBy], number_format(refund));
-	format(szMiscArray, sizeof(szMiscArray), "%sPress 'Confirm' to cancel further crates from being delivered.", szMiscArray, number_format(refund));
-	return Dialog_Show(playerid, order_refund, DIALOG_STYLE_MSGBOX, "Cancel Order?", szMiscArray, "Confirm", "Exit");
+	format(szMiscArray, sizeof(szMiscArray), "Ban chac muon huy don da dat tai %s?\n", CrateFacility[CrateOrder[group][coFacility]][cfName]);
+	format(szMiscArray, sizeof(szMiscArray), "%sXem thong tin giao dich ben duoi:\n\n", szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%sThung da dat: %d\nTong gia: $%s\nThung da giao: %d\nDa chi: $%s\nNguoi dat: %s\nHoan tra: $%s.\n\n", szMiscArray, CrateOrder[group][coCrates], number_format((CrateOrder[group][coCrates] * CrateOrder[group][coPerCrate])), CrateOrder[group][coDelivered], number_format((CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate])), CrateOrder[group][coOrderBy], number_format(refund));
+	format(szMiscArray, sizeof(szMiscArray), "%sNhan 'Xac nhan' de huy giao so thung con lai.", szMiscArray, number_format(refund));
+	return Dialog_Show(playerid, order_refund, DIALOG_STYLE_MSGBOX, "Huy don?", szMiscArray, "Xac nhan", "Thoat");
 }
 
 Dialog:order_refund(playerid, response, listitem, inputtext[]) {
-	if(!IsGroupLeader(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be a group leader to order crates!");
+	if(!IsGroupLeader(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban phai la lanh dao to chuc de dat thung!");
 	new group = PlayerInfo[playerid][pMember];
 	if(response) {
 		if(!ValidGroup(group) || !(0 <= CrateOrder[group][coFacility] < MAX_CRATE_FACILITY)) return 1;
-		if(!CrateOrder[group][coStatus]) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: You don't have any crate orders pending!");
+		if(!CrateOrder[group][coStatus]) return SendClientMessageEx(playerid, COLOR_RED, "LOI: Ban khong co don dat thung nao cho xu ly!");
 		if(!(1 <= CrateOrder[group][coCrates] <= 50) || !(0 <= CrateOrder[group][coDelivered] <= CrateOrder[group][coCrates]) || CrateOrder[group][coPerCrate] < 1 || CrateOrder[group][coPerCrate] > cellmax / CrateOrder[group][coCrates]) return 0;
 		new refund = ((CrateOrder[group][coCrates] - CrateOrder[group][coDelivered]) * CrateOrder[group][coPerCrate]), type = (arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2) ? 8 : 5;
 		new payee = CrateFacility[CrateOrder[group][coFacility]][cfGroup], earnings = CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate];
 		if(payee == group) payee = type;
-		if(!ValidGroup(payee) || GetGroupBudget(group) > cellmax - refund || GetGroupBudget(payee) > cellmax - earnings) return SendClientMessageEx(playerid, COLOR_RED, "The group balances cannot accept this settlement.");
-		if(payee == group && GetGroupBudget(group) > cellmax - refund - earnings) return SendClientMessageEx(playerid, COLOR_RED, "The group budget cannot accept this settlement.");
+		if(!ValidGroup(payee) || GetGroupBudget(group) > cellmax - refund || GetGroupBudget(payee) > cellmax - earnings) return SendClientMessageEx(playerid, COLOR_RED, "So du to chuc khong the quyet toan khoan nay.");
+		if(payee == group && GetGroupBudget(group) > cellmax - refund - earnings) return SendClientMessageEx(playerid, COLOR_RED, "Ngan sach to chuc khong the quyet toan khoan nay.");
 		if(CrateFacility[CrateOrder[group][coFacility]][cfGroup] == PlayerInfo[playerid][pMember]) {
 			foreach(new p: Player) {
 				if(PlayerInfo[p][pMember] == type) {
-					SendClientMessageEx(p, COLOR_LIGHTRED, "%s has canceled their own order, %d/%d crates were delivered earning: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "Don cua %s da huy, %d/%d thung da giao, thu: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
 				}
 				if(PlayerInfo[p][pLeader] == group) {
-					SendClientMessageEx(p, COLOR_LIGHTRED, "* %s %s has canceled the crate order, %d/%d crates were delivered costing: $%s", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
-					SendClientMessageEx(p, COLOR_LIGHTRED, "* $%s was refunded back into the vault for undelivered crates.", number_format(refund));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "* %s %s da huy don, %d/%d thung da giao, gia: $%s", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "* Da hoan $%s vao quy cho so thung chua giao.", number_format(refund));
 				}
 			}
 			format(szMiscArray, sizeof(szMiscArray), "%s %s has canceled the crate order, %d/%d crates were delivered costing: $%s ($%s was refunded)", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
@@ -1747,11 +1753,11 @@ Dialog:order_refund(playerid, response, listitem, inputtext[]) {
 		} else {
 			foreach(new p: Player) {
 				if(PlayerInfo[p][pMember] == CrateFacility[CrateOrder[group][coFacility]][cfGroup]) {
-					SendClientMessageEx(p, COLOR_LIGHTRED, "%s has canceled their order, %d/%d crates were delivered earning: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "Don cua %s da huy, %d/%d thung da giao, thu: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
 				}
 				if(PlayerInfo[p][pLeader] == group) {
-					SendClientMessageEx(p, COLOR_LIGHTRED, "* %s %s has canceled the crate order, %d/%d crates were delivered costing: $%s", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
-					SendClientMessageEx(p, COLOR_LIGHTRED, "* $%s was refunded back into the vault for undelivered crates.", number_format(refund));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "* %s %s da huy don, %d/%d thung da giao, gia: $%s", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "* Da hoan $%s vao quy cho so thung chua giao.", number_format(refund));
 				}
 			}
 			format(szMiscArray, sizeof(szMiscArray), "%s %s has canceled the crate order, %d/%d crates were delivered costing: $%s ($%s was refunded)", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
@@ -1775,23 +1781,23 @@ stock PrepOrder(playerid, group) {
 	if(0 <= CrateOrder[group][coFacility] < MAX_CRATE_FACILITY) {
 		format(fname, sizeof(fname), "%s", CrateFacility[CrateOrder[group][coFacility]][cfName]);
 	} else {
-		format(fname, sizeof(fname), "Not Selected");
+		format(fname, sizeof(fname), "Chua chon");
 	}
 
 	format(szMiscArray, sizeof(szMiscArray),
-		"{BBBBBB}Which facility?:\t{FFFFFF}%s\n\
-		{BBBBBB}How many crates?:\t{FFFFFF}%s ($%s)\n\
-		{40FFFF}How it works\n\
-		{FFD700}Confirm Order",
+		"{BBBBBB}Chon co so?:\t{FFFFFF}%s\n\
+		{BBBBBB}Bao nhieu thung?:\t{FFFFFF}%s ($%s)\n\
+		{40FFFF}Cach hoat dong\n\
+		{FFD700}Xac nhan don",
 		fname,
 		number_format(CrateOrder[group][coCrates]), number_format((CrateOrder[group][coCrates] * CrateOrder[group][coPerCrate]))
 	);
-	return Dialog_Show(playerid, place_order, DIALOG_STYLE_TABLIST, "Place Order", szMiscArray, "Select", "Cancel");
+	return Dialog_Show(playerid, place_order, DIALOG_STYLE_TABLIST, "Dat thung", szMiscArray, "Chon", "Huy");
 }
 
 Dialog:place_order(playerid, response, listitem, inputtext[]) {
 	if(!IsGroupLeader(playerid)) return 1;
-	if(CrateOrder[PlayerInfo[playerid][pMember]][coStatus]) return SendClientMessageEx(playerid, COLOR_GREY, "Your group already has an active crate order.");
+	if(CrateOrder[PlayerInfo[playerid][pMember]][coStatus]) return SendClientMessageEx(playerid, COLOR_GREY, "To chuc da co mot don dat thung dang xu ly.");
 	if(response) {
 		szMiscArray[0] = 0;
 		new group = PlayerInfo[playerid][pMember];
@@ -1800,39 +1806,39 @@ Dialog:place_order(playerid, response, listitem, inputtext[]) {
 				ListFacility(playerid);
 			}
 			case 1: {
-				if(!(0 <= CrateOrder[group][coFacility] < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must choose a facility to order crates from!"), PrepOrder(playerid, group);
-				format(szMiscArray, sizeof(szMiscArray), "Please specify how many crates you'd like to order.\n\nPrice per crate: $%s", number_format(CrateFacility[CrateOrder[group][coFacility]][cfProdCost]));
-				Dialog_Show(playerid, crate_total, DIALOG_STYLE_INPUT, "How many Crates would you like?", szMiscArray, "Ok", "Go Back");
+				if(!(0 <= CrateOrder[group][coFacility] < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Phai chon co so de dat thung hang!"), PrepOrder(playerid, group);
+				format(szMiscArray, sizeof(szMiscArray), "Nhap so thung muon dat.\n\nGia moi thung: $%s", number_format(CrateFacility[CrateOrder[group][coFacility]][cfProdCost]));
+				Dialog_Show(playerid, crate_total, DIALOG_STYLE_INPUT, "Ban muon bao nhieu thung?", szMiscArray, "Dong y", "Quay lai");
 			}
 			case 2: {
 				szMiscArray = "{FFFFFF}_______________________________________________________________________________________________________________________________________________________\n\n";
-				strcat(szMiscArray, "{40FFFF}Information: How ordering crates works{FFFFFF}\n\n");
-				strcat(szMiscArray, "When ordering crates you'll see an overview of which 'Facility' you would like to order from along with how much each crate will cost.\n");
-				strcat(szMiscArray, "Once you've selected your facility of choice you'll be able to enter how many 'Crates' you would like (Max of 50 crates can be ordered at once)\n\n");
-				strcat(szMiscArray, "You'll see how much in total it will charge your group in brackets once you've confirm your order the money will taken out the vault to pay\n");
-				strcat(szMiscArray, "for each crate delivered, the price per crate will also locked so if the facility was to adjust the price your price per crate at the time of\n");
-				strcat(szMiscArray, "ordering will not change! (This is to prevent abuse from facility owners)\n\n");
-				strcat(szMiscArray, "You may cancel your order at any time by using /ordercrates again, when cancelling an order you'll see a transaction of how many were delivered\n");
-				strcat(szMiscArray, "and how much money will be refunded back into your vault.\n\n");
+				strcat(szMiscArray, "{40FFFF}Huong dan dat thung hang{FFFFFF}\n\n");
+				strcat(szMiscArray, "Khi dat thung hang, ban se thay danh sach 'Facility' va gia moi thung.\n");
+				strcat(szMiscArray, "Chon co so roi nhap so 'Crates' can dat (toi da 50 thung moi don)\n\n");
+				strcat(szMiscArray, "Tong gia hien trong ngoac. Khi xac nhan, tien duoc tru tu quy de tra\n");
+				strcat(szMiscArray, "cho moi thung duoc giao. Gia moi thung duoc chot tai thoi diem dat don,\n");
+				strcat(szMiscArray, "nen khong doi neu chu co so dieu chinh gia! (De tranh lam dung)\n\n");
+				strcat(szMiscArray, "Ban co the huy don bat ky luc nao bang /ordercrates. Khi huy, ban se thay so thung da giao\n");
+				strcat(szMiscArray, "va so tien duoc hoan tra vao quy.\n\n");
 				strcat(szMiscArray, "{FFFFFF}_______________________________________________________________________________________________________________________________________________________");
-				Dialog_Show(playerid, how_crates_work, DIALOG_STYLE_MSGBOX, "How crate ordering works", szMiscArray, "Go Back", "");
+				Dialog_Show(playerid, how_crates_work, DIALOG_STYLE_MSGBOX, "Huong dan dat thung", szMiscArray, "Quay lai", "");
 			}
 			case 3: {
-				if(!(0 <= CrateOrder[group][coFacility] < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: Facility selection is required!"), PrepOrder(playerid, group);
-				if(CrateOrder[group][coCrates] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: You must select how many crates you'd like!"), PrepOrder(playerid, group);
-				if(!CrateFacility[CrateOrder[group][coFacility]][cfActive] || CrateFacility[CrateOrder[group][coFacility]][cfGroup] == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The selected facility is unaviliable to take orders!"), PrepOrder(playerid, group);
-				if(CrateFacility[CrateOrder[group][coFacility]][cfProdCost] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The facility your trying to select hasn't got a production cost setup!"), PrepOrder(playerid, group);
+				if(!(0 <= CrateOrder[group][coFacility] < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GRAD2, "LOI: Phai chon co so!"), PrepOrder(playerid, group);
+				if(CrateOrder[group][coCrates] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "LOI: Phai chon so thung muon dat!"), PrepOrder(playerid, group);
+				if(!CrateFacility[CrateOrder[group][coFacility]][cfActive] || CrateFacility[CrateOrder[group][coFacility]][cfGroup] == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Co so da chon khong nhan don dat hang!"), PrepOrder(playerid, group);
+				if(CrateFacility[CrateOrder[group][coFacility]][cfProdCost] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Co so da chon chua thiet lap gia san xuat!"), PrepOrder(playerid, group);
 				//if(CrateFacility[CrateOrder[group][coFacility]][cfGroup] == group) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't order from your own facility, You can deliver them manually."), PrepOrder(playerid, group);
-				if(!(1 <= CrateOrder[group][coCrates] <= 50) || CrateOrder[group][coPerCrate] < 1 || CrateOrder[group][coPerCrate] > cellmax / CrateOrder[group][coCrates]) return SendClientMessageEx(playerid, COLOR_RED, "The crate order amount is invalid.");
+				if(!(1 <= CrateOrder[group][coCrates] <= 50) || CrateOrder[group][coPerCrate] < 1 || CrateOrder[group][coPerCrate] > cellmax / CrateOrder[group][coCrates]) return SendClientMessageEx(playerid, COLOR_RED, "So thung dat khong hop le.");
 				new cost = (CrateOrder[group][coCrates] * CrateOrder[group][coPerCrate]);
-				if(GetGroupBudget(group) < cost) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: Your group can't afford that many crates!"), PrepOrder(playerid, group);
+				if(GetGroupBudget(group) < cost) return SendClientMessageEx(playerid, COLOR_RED, "LOI: To chuc khong du tien dat tung ay thung!"), PrepOrder(playerid, group);
 				if(ValidGroup(CrateOrder[group][coFacility])) {
 					foreach(new p: Player) {
 						if(PlayerInfo[p][pMember] == CrateFacility[CrateOrder[group][coFacility]][cfGroup]) {
-							SendClientMessageEx(p, COLOR_LIGHTRED, "%s has placed an order for %d crates! (( /crate orders ))", arrGroupData[group][g_szGroupName], CrateOrder[group][coCrates]);
+							SendClientMessageEx(p, COLOR_LIGHTRED, "%s da dat %d thung hang! (( /crate orders ))", arrGroupData[group][g_szGroupName], CrateOrder[group][coCrates]);
 						}
 						if(PlayerInfo[p][pLeader] == group) {
-							SendClientMessageEx(p, COLOR_LIGHTRED, "%s %s has placed an order for %d crates at %s.", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coCrates], CrateFacility[CrateOrder[group][coFacility]][cfName]);
+							SendClientMessageEx(p, COLOR_LIGHTRED, "%s %s da dat %d thung tai %s.", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coCrates], CrateFacility[CrateOrder[group][coFacility]][cfName]);
 						}
 					}
 				}
@@ -1841,9 +1847,9 @@ Dialog:place_order(playerid, response, listitem, inputtext[]) {
 				SaveOrder(group);
 				SetGroupBudget(group, -cost);
 				SaveGroup(group);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have placed an order for %d crates at %s costing $%s", CrateOrder[group][coCrates], CrateFacility[CrateOrder[group][coFacility]][cfName], number_format(cost));
-				SendClientMessageEx(playerid, COLOR_WHITE, "$%s has been deducted from your group vault in preparation for the order.", number_format(cost));
-				SendClientMessageEx(playerid, COLOR_YELLOW, "INFO: You can manage your order via the /ordercrates again.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da dat %d thung tai %s voi gia $%s", CrateOrder[group][coCrates], CrateFacility[CrateOrder[group][coFacility]][cfName], number_format(cost));
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da tru $%s tu quy to chuc de chuan bi don hang.", number_format(cost));
+				SendClientMessageEx(playerid, COLOR_YELLOW, "CHU Y: Dung lai /ordercrates de quan ly don hang.");
 				format(szMiscArray, sizeof(szMiscArray), "%s %s has placed order for %d crates at %s costing $%s", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coCrates], CrateFacility[CrateOrder[group][coFacility]][cfName], number_format(cost));
 				GroupPayLog(group, szMiscArray);
 			}
@@ -1855,26 +1861,26 @@ Dialog:place_order(playerid, response, listitem, inputtext[]) {
 stock ListFacility(playerid) {
 	if(!IsGroupLeader(playerid)) return 1;
 	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "Facility\tCost per crate\tActive\n");
+	format(szMiscArray, sizeof(szMiscArray), "Co so\tGia moi thung\tHoat dong\n");
 	for(new f = 0; f < MAX_CRATE_FACILITY; f++) {
-		format(szMiscArray, sizeof(szMiscArray), "%s%s\t$%s\t%s\n", szMiscArray, CrateFacility[f][cfName], number_format(CrateFacility[f][cfProdCost]), (CrateFacility[f][cfActive]) ? ("Yes") : ("No"));
+		format(szMiscArray, sizeof(szMiscArray), "%s%s\t$%s\t%s\n", szMiscArray, CrateFacility[f][cfName], number_format(CrateFacility[f][cfProdCost]), (CrateFacility[f][cfActive]) ? ("Co") : ("Khong"));
 	}
-	return Dialog_Show(playerid, select_facility, DIALOG_STYLE_TABLIST_HEADERS, "Which Facility to use?", szMiscArray, "Select", "Go Back");
+	return Dialog_Show(playerid, select_facility, DIALOG_STYLE_TABLIST_HEADERS, "Chon co so nao?", szMiscArray, "Chon", "Quay lai");
 }
 
 Dialog:select_facility(playerid, response, listitem, inputtext[]) {
 	if(!IsGroupLeader(playerid)) return 1;
-	if(CrateOrder[PlayerInfo[playerid][pMember]][coStatus]) return SendClientMessageEx(playerid, COLOR_GREY, "Your group already has an active crate order.");
+	if(CrateOrder[PlayerInfo[playerid][pMember]][coStatus]) return SendClientMessageEx(playerid, COLOR_GREY, "To chuc da co mot don dat thung dang xu ly.");
 	new group = PlayerInfo[playerid][pMember];
 	if(response) {
-		if(!(0 <= listitem < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_RED, "ERROR - Something went wrong, Please try again!"), ListFacility(playerid);
-		if(!CrateFacility[listitem][cfActive] || CrateFacility[listitem][cfGroup] == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The facility your trying to select isn't available to take orders!"), ListFacility(playerid);
-		if(CrateFacility[listitem][cfProdCost] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The facility your trying to select hasn't got a production cost setup!"), ListFacility(playerid);
+		if(!(0 <= listitem < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_RED, "LOI - Da xay ra loi, hay thu lai!"), ListFacility(playerid);
+		if(!CrateFacility[listitem][cfActive] || CrateFacility[listitem][cfGroup] == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Co so da chon khong nhan don dat hang!"), ListFacility(playerid);
+		if(CrateFacility[listitem][cfProdCost] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Co so da chon chua thiet lap gia san xuat!"), ListFacility(playerid);
 		//if(CrateFacility[listitem][cfGroup] == group) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't order from your own facility, You can deliver them manually."), ListFacility(playerid);
 		CrateOrder[group][coFacility] = listitem;
 		CrateOrder[group][coCrates] = 0;
 		CrateOrder[group][coPerCrate] = 0;
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have selected to order crates from %s.", CrateFacility[listitem][cfName]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da chon dat thung tu %s.", CrateFacility[listitem][cfName]);
 		SaveOrder(group);
 		PrepOrder(playerid, group);
 	} else {
@@ -1885,27 +1891,27 @@ Dialog:select_facility(playerid, response, listitem, inputtext[]) {
 
 Dialog:crate_total(playerid, response, listitem, inputtext[]) {
 	if(!IsGroupLeader(playerid)) return 1;
-	if(CrateOrder[PlayerInfo[playerid][pMember]][coStatus]) return SendClientMessageEx(playerid, COLOR_GREY, "Your group already has an active crate order.");
+	if(CrateOrder[PlayerInfo[playerid][pMember]][coStatus]) return SendClientMessageEx(playerid, COLOR_GREY, "To chuc da co mot don dat thung dang xu ly.");
 	new group = PlayerInfo[playerid][pMember];
 	if(!(0 <= CrateOrder[group][coFacility] < MAX_CRATE_FACILITY)) return PrepOrder(playerid, group);
 	szMiscArray[0] = 0;
 	if(response) {
 		new total = strval(inputtext);
 		if(!(0 < total < 51)) {
-			format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Please specify how many crates you'd like to order.\n\nPrice per crate: $%s\n\n{FF0000}ERROR: You can only order between 1 to 50 crates at once!", number_format(CrateFacility[CrateOrder[group][coFacility]][cfProdCost]));
-			Dialog_Show(playerid, crate_total, DIALOG_STYLE_INPUT, "How many Crates would you like?", szMiscArray, "Ok", "Go Back");
+			format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Nhap so thung muon dat.\n\nGia moi thung: $%s\n\n{FF0000}LOI: Chi duoc dat tu 1 den 50 thung moi don!", number_format(CrateFacility[CrateOrder[group][coFacility]][cfProdCost]));
+			Dialog_Show(playerid, crate_total, DIALOG_STYLE_INPUT, "Ban muon bao nhieu thung?", szMiscArray, "Dong y", "Quay lai");
 			return 1;
 		}
-		if(CrateFacility[CrateOrder[group][coFacility]][cfProdCost] < 1 || CrateFacility[CrateOrder[group][coFacility]][cfProdCost] > cellmax / total) return SendClientMessageEx(playerid, COLOR_RED, "The crate price is invalid.");
+		if(CrateFacility[CrateOrder[group][coFacility]][cfProdCost] < 1 || CrateFacility[CrateOrder[group][coFacility]][cfProdCost] > cellmax / total) return SendClientMessageEx(playerid, COLOR_RED, "Gia thung khong hop le.");
 		if(GetGroupBudget(group) < (CrateFacility[CrateOrder[group][coFacility]][cfProdCost] * total)) {
-			format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Please specify how many crates you'd like to order.\n\nPrice per crate: $%s\n\n{FF0000}ERROR: Your group can't afford %s crates!\n{FFFFFF}Budget: $%s | Cost Amount: $%s", number_format(CrateFacility[CrateOrder[group][coFacility]][cfProdCost]), number_format(total), number_format(GetGroupBudget(group)), number_format(CrateFacility[CrateOrder[group][coFacility]][cfProdCost] * total));
-			Dialog_Show(playerid, crate_total, DIALOG_STYLE_INPUT, "How many Crates would you like?", szMiscArray, "Ok", "Go Back");
+			format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Nhap so thung muon dat.\n\nGia moi thung: $%s\n\n{FF0000}LOI: To chuc khong du tien mua %s thung!\n{FFFFFF}Ngan sach: $%s | Chi phi: $%s", number_format(CrateFacility[CrateOrder[group][coFacility]][cfProdCost]), number_format(total), number_format(GetGroupBudget(group)), number_format(CrateFacility[CrateOrder[group][coFacility]][cfProdCost] * total));
+			Dialog_Show(playerid, crate_total, DIALOG_STYLE_INPUT, "Ban muon bao nhieu thung?", szMiscArray, "Dong y", "Quay lai");
 			return 1;
 		}
 		CrateOrder[group][coCrates] = total;
 		CrateOrder[group][coPerCrate] = CrateFacility[CrateOrder[group][coFacility]][cfProdCost];
 		SaveOrder(group);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have selected to order %d crates from %s.", total, CrateFacility[CrateOrder[group][coFacility]][cfName]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da chon dat %d thung tu %s.", total, CrateFacility[CrateOrder[group][coFacility]][cfName]);
 		PrepOrder(playerid, group);
 	} else {
 		PrepOrder(playerid, group);
@@ -1959,18 +1965,18 @@ stock GetDeliverPoint(playerid, &point, Float:range)
 }
 
 CMD:delivercrate(playerid, params[]) {
-	if(CrateAction[playerid][caTimer]) return SendClientMessageEx(playerid, COLOR_GREY, "Please finish your current crate action first.");
-	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be driving the delivery vehicle.");
+	if(CrateAction[playerid][caTimer]) return SendClientMessageEx(playerid, COLOR_GREY, "Hay xong thao tac thung hang hien tai truoc.");
+	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai lai xe giao hang.");
 	new fac, veh, crates, point;
-	if(!ValidGroup(PlayerInfo[playerid][pMember])) return SendClientMessage(playerid, COLOR_GRAD2, "You need to be apart of a group to use this command!");
+	if(!ValidGroup(PlayerInfo[playerid][pMember])) return SendClientMessage(playerid, COLOR_GRAD2, "Ban phai thuoc mot to chuc de dung lenh nay!");
 	GetDeliverPoint(playerid, point, 6);
 	GetFacility(PlayerInfo[playerid][pMember], fac);
-	if(fac == -1) return SendClientMessage(playerid, COLOR_GRAD2, "You group doesn't own a crate facility, you can't process orders!");
-	if((veh = IsDynamicCrateVehicle(GetPlayerVehicleID(playerid))) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in the designated vehicle for this operation!");
-	if(point == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not near any crate delivery points!");
-	if(VehDelivering[veh]) return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle is already unloading crates.");
-	if(CrateBeingDelivered[point]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Someone else is currently delivering crates! - Please Wait.");
-	if(!CrateOrder[point][coStatus] || CrateOrder[point][coFacility] != fac) return SendClientMessageEx(playerid, COLOR_GRAD2, "%s hasn't made any crate orders at your facility.", arrGroupData[point][g_szGroupName]);
+	if(fac == -1) return SendClientMessage(playerid, COLOR_GRAD2, "To chuc khong co co so thung hang, khong the xu ly don!");
+	if((veh = IsDynamicCrateVehicle(GetPlayerVehicleID(playerid))) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o tren xe chi dinh cho thao tac nay!");
+	if(point == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan diem giao thung hang!");
+	if(VehDelivering[veh]) return SendClientMessageEx(playerid, COLOR_GREY, "Xe dang do thung hang.");
+	if(CrateBeingDelivered[point]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Co nguoi khac dang giao thung hang, vui long cho.");
+	if(!CrateOrder[point][coStatus] || CrateOrder[point][coFacility] != fac) return SendClientMessageEx(playerid, COLOR_GRAD2, "%s chua dat thung hang tai co so cua ban.", arrGroupData[point][g_szGroupName]);
 	for(new c = 0; c < MAX_CRATES; c++) {
 		if(CrateBox[c][cbActive]) {
 			if(CrateBox[c][cbFacility] == fac && CrateBox[c][cbInVeh] == veh) {
@@ -1978,7 +1984,7 @@ CMD:delivercrate(playerid, params[]) {
 			}
 		}
 	}
-	if(!crates) return SendClientMessageEx(playerid, COLOR_GRAD2, "There are no crates from your facility in this vehicle to deliver!");
+	if(!crates) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong co thung thuoc co so cua ban trong xe de giao!");
 	CancelCrateAction(playerid);
 	CrateBeingDelivered[point] = playerid + 1;
 	VehDelivering[veh] = 1;
@@ -1987,7 +1993,7 @@ CMD:delivercrate(playerid, params[]) {
 	CrateAction[playerid][caPoint] = point;
 	SetPVarInt(playerid, "DeliverCrateTime", 8);
 	CrateAction[playerid][caTimer] = SetTimerEx("DeliverCrate", 1000, false, "iii", playerid, g_arrQueryHandle[playerid], CrateAction[playerid][caToken]);
-	GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~8 seconds left", 1100, 3);
+	GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~Con 8 giay", 1100, 3);
 	TogglePlayerControllable(playerid, false);
 	return 1;
 }
@@ -2001,7 +2007,7 @@ public DeliverCrate(playerid, session, token) {
     szMiscArray[0] = 0;
 	new string[128];
 	SetPVarInt(playerid, "DeliverCrateTime", GetPVarInt(playerid, "DeliverCrateTime")-1);
-	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", GetPVarInt(playerid, "DeliverCrateTime"));
+	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~Con %d giay", GetPVarInt(playerid, "DeliverCrateTime"));
 	GameTextForPlayer(playerid, string, 1100, 3);
 
 	if(GetPVarInt(playerid, "DeliverCrateTime") > 0) {
@@ -2013,52 +2019,52 @@ public DeliverCrate(playerid, session, token) {
 		CancelCrateAction(playerid);
 		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || PlayerBusy(playerid)) return 1;
 		if(!ValidGroup(PlayerInfo[playerid][pMember])) {
-			SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to deliver any crates. You're no longer apart of a group!");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Giao thung that bai. Ban khong con trong to chuc!");
 			return 1;
 		}
 		if(IsDynamicCrateVehicle(GetPlayerVehicleID(playerid)) != veh) {
-			SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to deliver any crates, You're no longer in the vehicle that you were delivering from!");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Giao thung that bai, ban da roi xe dang giao hang!");
 			return 1;
 		}
 		if(PlayerInfo[playerid][pMember] != CrateFacility[fac][cfGroup]) {
-			SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to deliver any crates, Your group no longer owns the facility!");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Giao thung that bai, to chuc khong con so huu co so!");
 			return 1;
 		}
  	    if(!IsPlayerInRangeOfPoint(playerid, 6.0, arrGroupData[point][g_fCratePos][0], arrGroupData[point][g_fCratePos][1], arrGroupData[point][g_fCratePos][2])) {
-			SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to deliver any crates, You're no longer at the delivery point!");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Giao thung that bai, ban da roi diem giao hang!");
 			return 1;
 	    }
 	    if(playerTabbed[playerid] != 0) {
-	    	SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to deliver any crates, you were alt-tabbed.");
+	    	SendClientMessageEx(playerid, COLOR_GRAD2, "Giao thung that bai, ban da alt-tab.");
 	    	return 1;
 	    }
 	    if(!CrateOrder[point][coStatus] || CrateOrder[point][coFacility] != fac) {
-	    	SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to deliver any crates, %s has canceled their order.", arrGroupData[point][g_szGroupName]);
+	    	SendClientMessageEx(playerid, COLOR_GRAD2, "Giao thung that bai, %s da huy don.", arrGroupData[point][g_szGroupName]);
 	    	return 1;
 	    }
 		new remaining = CrateOrder[point][coCrates] - CrateOrder[point][coDelivered], crates, materials;
 		new multiplier = CrateFacility[fac][cfProdMulti], payee = CrateFacility[fac][cfGroup];
 		if(!(1 <= CrateOrder[point][coCrates] <= 50) || !(0 <= CrateOrder[point][coDelivered] < CrateOrder[point][coCrates]) || remaining < 1 || CrateOrder[point][coPerCrate] < 1 || CrateOrder[point][coCrates] > cellmax / CrateOrder[point][coPerCrate] || multiplier < 1) 
-			return SendClientMessageEx(playerid, COLOR_RED, "The crate order settings are invalid.");
+			return SendClientMessageEx(playerid, COLOR_RED, "Thiet lap don dat thung khong hop le.");
 
 		for(new c = 0; c < MAX_CRATES && crates < remaining; c++) {
 			if(!CrateBox[c][cbActive] || CrateBox[c][cbFacility] != fac || CrateBox[c][cbInVeh] != veh) 
 				continue;
 			
 			if(CrateBox[c][cbMats] < 0 || CrateBox[c][cbMats] > (cellmax - materials) / multiplier) 
-				return SendClientMessageEx(playerid, COLOR_RED, "The crate material amount is too large.");
+				return SendClientMessageEx(playerid, COLOR_RED, "So vat lieu trong thung qua lon.");
 			
 			materials += CrateBox[c][cbMats] * multiplier;
 			++crates;
 		}
-		if(!crates) return SendClientMessageEx(playerid, COLOR_GREY, "There are no matching crates left to deliver.");
+		if(!crates) return SendClientMessageEx(playerid, COLOR_GREY, "Khong con thung phu hop de giao.");
 		if(arrGroupData[point][g_iLockerStock] < 0 || arrGroupData[point][g_iLockerStock] > cellmax - materials) 
-			return SendClientMessageEx(playerid, COLOR_RED, "The locker cannot accept these materials.");
+			return SendClientMessageEx(playerid, COLOR_RED, "Tu khong nhan duoc vat lieu nay.");
 		
 		if(point == payee) payee = arrGroupData[payee][g_iAllegiance] == 2 ? 8 : 5;
 		new payment = CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate];
 		if(crates == remaining && GetGroupBudget(payee) > cellmax - payment) 
-			return SendClientMessageEx(playerid, COLOR_RED, "The facility budget cannot accept this payment.");
+			return SendClientMessageEx(playerid, COLOR_RED, "Ngan sach co so khong the nhan khoan nay.");
 		
 		arrGroupData[point][g_iLockerStock] += materials;
 		CrateOrder[point][coDelivered] += crates;
@@ -2076,10 +2082,10 @@ public DeliverCrate(playerid, session, token) {
 				new type = (arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2) ? 8 : 5; 
 				foreach(new p: Player) {
 					if(PlayerInfo[p][pMember] == type) {
-						SendClientMessageEx(p, COLOR_LIGHTRED, "* %s's own crate order has been completed, %d crates were delivered earning: $%s.", arrGroupData[point][g_szGroupName], CrateOrder[point][coCrates], number_format(CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
+						SendClientMessageEx(p, COLOR_LIGHTRED, "* Don cua %s da xong, %d thung da giao, thu: $%s.", arrGroupData[point][g_szGroupName], CrateOrder[point][coCrates], number_format(CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
 					}
 					if(PlayerInfo[p][pLeader] == point) {
-						SendClientMessageEx(p, COLOR_LIGHTRED, "* %s facility has completed your crate order, You can now submit a new order.", CrateFacility[fac][cfName]);
+						SendClientMessageEx(p, COLOR_LIGHTRED, "* Co so %s da giao xong don, ban co the dat don moi.", CrateFacility[fac][cfName]);
 					}
 				}
 				SetGroupBudget(type, (CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
@@ -2090,10 +2096,10 @@ public DeliverCrate(playerid, session, token) {
 			} else {
 				foreach(new p: Player) {
 					if(PlayerInfo[p][pMember] == CrateFacility[CrateOrder[point][coFacility]][cfGroup]) {
-						SendClientMessageEx(p, COLOR_LIGHTRED, "* %s's crate order has been completed, %d crates were delivered earning: $%s.", arrGroupData[point][g_szGroupName], CrateOrder[point][coCrates], number_format(CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
+						SendClientMessageEx(p, COLOR_LIGHTRED, "* Don cua %s da xong, %d thung da giao, thu: $%s.", arrGroupData[point][g_szGroupName], CrateOrder[point][coCrates], number_format(CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
 					}
 					if(PlayerInfo[p][pLeader] == point) {
-						SendClientMessageEx(p, COLOR_LIGHTRED, "* %s facility has completed your crate order, You can now submit a new order.", CrateFacility[fac][cfName]);
+						SendClientMessageEx(p, COLOR_LIGHTRED, "* Co so %s da giao xong don, ban co the dat don moi.", CrateFacility[fac][cfName]);
 					}
 				}
 				SetGroupBudget(CrateFacility[CrateOrder[point][coFacility]][cfGroup], (CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
@@ -2107,11 +2113,11 @@ public DeliverCrate(playerid, session, token) {
 		} else {
 			format(szMiscArray, sizeof(szMiscArray), "%s has delivered %d crates to %s (Total delivered: %d/%d)", GetPlayerNameEx(playerid), crates, arrGroupData[point][g_szGroupName], CrateOrder[point][coDelivered], CrateOrder[point][coCrates]);
 			CrateLog(CrateFacility[CrateOrder[point][coFacility]][cfGroup], szMiscArray);
-			SendClientMessageEx(playerid, COLOR_LIGHTRED, "* You have delivered %d crates to %s, Total delivered: %d/%d", crates, arrGroupData[point][g_szGroupName], CrateOrder[point][coDelivered], CrateOrder[point][coCrates]);
+			SendClientMessageEx(playerid, COLOR_LIGHTRED, "* Da giao %d thung cho %s, tong da giao: %d/%d", crates, arrGroupData[point][g_szGroupName], CrateOrder[point][coDelivered], CrateOrder[point][coCrates]);
 		}
 		if(CrateOrder[point][coStatus]) SaveOrder(point);
 		new left = CreateCount(veh);
-		if(left > 0) SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have %d crate(s) remaining that were not used for the delivery.", left);
+		if(left > 0) SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban con %d thung khong duoc dung cho dot giao nay.", left);
 	}
 	return 1;
 }
@@ -2119,28 +2125,28 @@ public DeliverCrate(playerid, session, token) {
 CMD:cgun(playerid, params[]) {
 	szMiscArray[0] = 0;
 	new box, title[32];
-	if(!ValidGroup(PlayerInfo[playerid][pMember])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be apart of a group to use this command!");
-	if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
-	if(PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't take weapons out as you're currently weapon restricted!");
-	if(PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do that right now.");
+	if(!ValidGroup(PlayerInfo[playerid][pMember])) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban phai thuoc mot to chuc de dung lenh nay!");
+	if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Tai khoan cua ban bi han che!");
+	if(PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban dang bi han che vu khi, khong the lay vu khi!");
+	if(PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua the lam vay.");
 	GetCrateBox(playerid, box, 2.0);
-	if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You're not near any crate boxes.");
-	if(CrateBox[box][cbGroup] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "This is a transfer crate use \"/crate contents\" instead!");
-	if(!(0 <= CrateBox[box][cbFacility] < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GREY, "This crate has no valid source facility.");
+	if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan thung hang.");
+	if(CrateBox[box][cbGroup] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Day la thung chuyen, hay dung \"/crate contents\"!");
+	if(!(0 <= CrateBox[box][cbFacility] < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GREY, "Thung khong co co so nguon hop le.");
 	if(IsInRangeOfPoint(CrateFacility[CrateBox[box][cbFacility]][cfPos][0], CrateFacility[CrateBox[box][cbFacility]][cfPos][1], CrateFacility[CrateBox[box][cbFacility]][cfPos][2], CrateBox[box][cbPos][0], CrateBox[box][cbPos][1], CrateBox[box][cbPos][2], 500.0))
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR:  This crate has been sealed shut by the Crate Island's security system!");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "LOI: He thong an ninh Crate Island da niem phong thung nay!");
 	SetPVarInt(playerid, "Cgunbox", box);
 	SetPVarInt(playerid, "CgunGeneration", CrateGeneration[box]);
 	SetPVarInt(playerid, "CgunGroup", PlayerInfo[playerid][pMember]);
-	format(title, sizeof(title), "Crate Box Withdraw - Mats: %d", CrateBox[box][cbMats]);
-	format(szMiscArray, sizeof(szMiscArray), "Weapon\tCost");
+	format(title, sizeof(title), "Rut tu thung - Vat lieu: %d", CrateBox[box][cbMats]);
+	format(szMiscArray, sizeof(szMiscArray), "Vu khi\tGia");
 	for(new i = 0; i != MAX_GROUP_WEAPONS; ++i) {
 		if(arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerGuns][i]) {
 			format(szMiscArray, sizeof szMiscArray, "%s\n%s\t%d", szMiscArray, Weapon_ReturnName(arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerGuns][i]), arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerCost][i]);
 		}
-		else strcat(szMiscArray, "\nEmpty\t--");
+		else strcat(szMiscArray, "\nTrong\t--");
 	}
-	Dialog_Show(playerid, cgun_take, DIALOG_STYLE_TABLIST_HEADERS, title, szMiscArray, "Select", "Go Back");
+	Dialog_Show(playerid, cgun_take, DIALOG_STYLE_TABLIST_HEADERS, title, szMiscArray, "Chon", "Quay lai");
 	return 1;
 }
 
@@ -2152,21 +2158,21 @@ Dialog:cgun_take(playerid, response, listitem, inputtext[]) {
 	if(response) {
 		if(!(0 <= listitem < MAX_GROUP_WEAPONS) || PlayerInfo[playerid][pAccountRestricted] || PlayerInfo[playerid][pWRestricted] || PlayerBusy(playerid)) return 1;
 		GetCrateBox(playerid, box, 2.0);
-		if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Crate box went out of reach - Please stay close to the crate box.");
-		if(box != GetPVarInt(playerid, "Cgunbox")) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: Box ID differs from accessed crate, please try again.");
+		if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Thung da ngoai tam voi, hay dung gan thung.");
+		if(box != GetPVarInt(playerid, "Cgunbox")) return SendClientMessageEx(playerid, COLOR_RED, "LOI: ID thung khac thung da mo, hay thu lai.");
 		if(CrateGeneration[box] != GetPVarInt(playerid, "CgunGeneration") || group != GetPVarInt(playerid, "CgunGroup") || CrateBox[box][cbGroup] != -1) return 1;
 		new facility = CrateBox[box][cbFacility];
 		if(!(0 <= facility < MAX_CRATE_FACILITY)) return 1;
-		if(IsInRangeOfPoint(CrateFacility[facility][cfPos][0], CrateFacility[facility][cfPos][1], CrateFacility[facility][cfPos][2], CrateBox[box][cbPos][0], CrateBox[box][cbPos][1], CrateBox[box][cbPos][2], 500.0)) return SendClientMessageEx(playerid, COLOR_GREY, "This crate is sealed near its source facility.");
+		if(IsInRangeOfPoint(CrateFacility[facility][cfPos][0], CrateFacility[facility][cfPos][1], CrateFacility[facility][cfPos][2], CrateBox[box][cbPos][0], CrateBox[box][cbPos][1], CrateBox[box][cbPos][2], 500.0)) return SendClientMessageEx(playerid, COLOR_GREY, "Thung bi niem phong gan co so nguon.");
 		new GunID = arrGroupData[group][g_iLockerGuns][listitem];
 		new slot = GetLoadoutWeaponSlot(GunID), cost = arrGroupData[group][g_iLockerCost][listitem];
 		if(!(0 <= slot < 12) || cost < 0) return 1;
-		if(!GunID) return SendClientMessageEx(playerid, COLOR_WHITE, "Theres no weapon assigned to that slot!");
-		if(CrateBox[box][cbMats] < arrGroupData[group][g_iLockerCost][listitem]) return SendClientMessageEx(playerid, COLOR_GRAD2, "There isn't enough materials in the crate for that weapon!");
+		if(!GunID) return SendClientMessageEx(playerid, COLOR_WHITE, "O nay chua co vu khi!");
+		if(CrateBox[box][cbMats] < arrGroupData[group][g_iLockerCost][listitem]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Thung khong du vat lieu cho vu khi nay!");
 		if(PlayerInfo[playerid][pGuns][slot] != GunID) {
 			GivePlayerValidWeapon(playerid, GunID);
 			CrateBox[box][cbMats] -= arrGroupData[group][g_iLockerCost][listitem];
-			format(szMiscArray, sizeof(szMiscArray), "* %s reaches into the weapon crate box and takes out a %s.", GetPlayerNameEx(playerid), Weapon_ReturnName(GunID));
+			format(szMiscArray, sizeof(szMiscArray), "* %s lay tu thung vu khi ra mot %s.", GetPlayerNameEx(playerid), Weapon_ReturnName(GunID));
 			ProxDetector(25.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			if(CrateBox[box][cbMats] < 1) DestroyCrate(box);
 			else {
@@ -2174,7 +2180,7 @@ Dialog:cgun_take(playerid, response, listitem, inputtext[]) {
 				CrateBoxUpdate(box);
 			}
 		} else {
-			SendClientMessageEx(playerid, COLOR_RED, "You already have a %s on you!", Weapon_ReturnName(GunID));
+			SendClientMessageEx(playerid, COLOR_RED, "Ban da mang %s roi!", Weapon_ReturnName(GunID));
 		}
 	}
 	DeletePVar(playerid, "Cgunbox");

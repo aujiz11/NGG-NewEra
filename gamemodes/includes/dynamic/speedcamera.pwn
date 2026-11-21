@@ -47,16 +47,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			case 0:
 			{
 				if (SpeedCameras[MAX_SPEEDCAMERAS - 1][_scActive])
-					return SendClientMessageEx(playerid, COLOR_GREY, "No more static speed cameras can be created.");
-				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_RANGEC, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the range of your camera.", "OK", "Back");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Khong the tao them camera toc do co dinh.");
+				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_RANGEC, DIALOG_STYLE_INPUT, "{FFFF00}Tao camera toc do", "{FFFFFF}Nhap pham vi camera.", "Dong y", "Quay lai");
 			}
 			case 1:
 			{
-				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to edit.", "OK", "Back");
+				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Sua camera toc do", "{FFFFFF}Nhap ID camera toc do can sua.", "Dong y", "Quay lai");
 			}
 			case 2:
 			{
-				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Delete a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to delete.", "OK", "Back");
+				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Xoa camera toc do", "{FFFFFF}Nhap ID camera toc do can xoa.", "Dong y", "Quay lai");
 			}
 			case 3:
 			{
@@ -97,13 +97,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				if (lowest_index == -1) // no cameras exist, the closest cannot be calculated
 				{
-					ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_GETNEAREST, DIALOG_STYLE_MSGBOX, "{FFFF00}Nearest speed camera", "{FFFFFF}No speed cameras exist, and thus the closest cannot be found.", "OK", "");
+					ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_GETNEAREST, DIALOG_STYLE_MSGBOX, "{FFFF00}Camera toc do gan nhat", "{FFFFFF}Khong co camera toc do de tim camera gan nhat.", "Dong y", "");
 				}
 				else
 				{
 					new msg[128];
-					format(msg, sizeof(msg), "{FFFFFF}The nearest speed camera is: {FFFF00}%i\n\n{FFFFFF}With a distance of {FFFF00}%f", lowest_index, distances[lowest_index]);
-					ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_GETNEAREST, DIALOG_STYLE_MSGBOX, "{FFFF00}Nearest speed camera", msg, "OK", "");
+					format(msg, sizeof(msg), "{FFFFFF}Camera toc do gan nhat: {FFFF00}%i\n\n{FFFFFF}Cach ban {FFFF00}%f", lowest_index, distances[lowest_index]);
+					ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_GETNEAREST, DIALOG_STYLE_MSGBOX, "{FFFF00}Camera toc do gan nhat", msg, "Dong y", "");
 				}
 			}
 		}
@@ -111,34 +111,34 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	if (dialogid == SPEEDCAM_DIALOG_RANGEC)
 	{
 		if (!response)
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", \
-					"Create a speed camera\nEdit a speed camera\nDelete a speed camera\nGet nearest speedcamera", "Select", "Cancel");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Camera toc do", \
+					"Tao camera toc do\nSua camera toc do\nXoa camera toc do\nTim camera gan nhat", "Chon", "Huy");
 
 		new Float:range;
 		if (sscanf(inputtext, "f", range))
 		{
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_RANGEC, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the range of your camera.\
-					\n\n{FFFF00}Value must be a number (decimal places allowed).", "OK", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_RANGEC, DIALOG_STYLE_INPUT, "{FFFF00}Tao camera toc do", "{FFFFFF}\
+					Nhap pham vi camera.\n\n{FFFF00}Gia tri phai la so (cho phep thap phan).", "Dong y", "Quay lai");
 		}
 		SetPVarFloat(playerid, "_scCacheRange", range);
-		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the limit of your camera (mph).", "OK", "Back");
+		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Tao camera toc do", "{FFFFFF}Nhap gioi han toc do camera (mph).", "Dong y", "Quay lai");
 	}
 	if (dialogid == SPEEDCAM_DIALOG_LIMIT)
 	{
 		if (!response)
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_RANGEC, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the range of your camera.", "OK", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_RANGEC, DIALOG_STYLE_INPUT, "{FFFF00}Tao camera toc do", "{FFFFFF}Nhap pham vi camera.", "Dong y", "Quay lai");
 
 		new Float:limit;
 		if (sscanf(inputtext, "f", limit))
 		{
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the limit of your camera (mph).\
-				\n\n{FFFF00}Value must be a number (decimal places allowed).", "OK", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Tao camera toc do", "{FFFFFF}\
+				Nhap gioi han toc do camera (mph).\n\n{FFFF00}Gia tri phai la so (cho phep thap phan).", "Dong y", "Quay lai");
 		}
 		SetPVarFloat(playerid, "_scCacheLimit", limit);
 		new Float:range = GetPVarFloat(playerid, "_scCacheRange");
 		new content[256];
-		format(content, sizeof(content), "{FFFF00}Range: {FFFFFF}%f\n{FFFF00}Limit: {FFFFFF}%f mph\n\nAre you sure you want to create this speed camera?", range, limit);
-		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_OVERVIEW, DIALOG_STYLE_MSGBOX, "{FFFF00}Speed camera overview", content, "Confirm", "Cancel");
+		format(content, sizeof(content), "{FFFF00}Pham vi: {FFFFFF}%f\n{FFFF00}Gioi han: {FFFFFF}%f mph\n\nBan chac chan muon tao camera toc do nay?", range, limit);
+		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_OVERVIEW, DIALOG_STYLE_MSGBOX, "{FFFF00}Thong tin camera toc do", content, "Xac nhan", "Huy");
 	}
 	if (dialogid == SPEEDCAM_DIALOG_OVERVIEW)
 	{
@@ -146,13 +146,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			DeletePVar(playerid, "_scCacheRange");
 			DeletePVar(playerid, "_scCacheLimit");
-			return SendClientMessageEx(playerid, COLOR_RED, "Cancelled creation of speed camera.");
+			return SendClientMessageEx(playerid, COLOR_RED, "Da huy tao camera toc do.");
 		}
 		if (SpeedCameras[MAX_SPEEDCAMERAS - 1][_scActive])
 		{
 			DeletePVar(playerid, "_scCacheRange");
 			DeletePVar(playerid, "_scCacheLimit");
-			return SendClientMessageEx(playerid, COLOR_RED, "Error: Limit was reached whilst you were creating this camera.");
+			return SendClientMessageEx(playerid, COLOR_RED, "Loi: Da dat gioi han trong luc tao camera nay.");
 		}
 		new Float:range = GetPVarFloat(playerid, "_scCacheRange");
 		new Float:limit = GetPVarFloat(playerid, "_scCacheLimit");
@@ -167,7 +167,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		angle += 180; // flip the angle
 
 		new cam = CreateSpeedCamera(x, y, z, angle, range, limit);
-		SendClientMessageEx(playerid, COLOR_GREEN, "Speed camera created!");
+		SendClientMessageEx(playerid, COLOR_GREEN, "Da tao camera toc do!");
 
 		new logText[128];
 		format(logText, sizeof(logText), "%s(%d) has placed speed camera %d at [%f, %f, %f] with limit %f and range %f.",
@@ -177,34 +177,34 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	if (dialogid == SPEEDCAM_DIALOG_EDIT)
 	{
 		if (!response)
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
-				Get nearest speedcamera", \
-				"Select", "Cancel");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Camera toc do", "Tao camera toc do\nSua camera toc do\nXoa camera toc do\n\
+				Tim camera gan nhat", \
+				"Chon", "Huy");
 
 		new id;
 		if (sscanf(inputtext, "i", id))
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to edit.\n\n\
-				{FFFF00}ID must be a number.", "OK", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Sua camera toc do", "{FFFFFF}Nhap ID camera toc do can sua.\n\n\
+				{FFFF00}ID phai la so.", "Dong y", "Quay lai");
 
 		if (id >= MAX_SPEEDCAMERAS || id < 0)
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to edit.\n\n\
-				{FFFF00}ID must not be above the maximum or below 0.", "OK", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Sua camera toc do", "{FFFFFF}Nhap ID camera toc do can sua.\n\n\
+				{FFFF00}ID khong duoc vuot gioi han hoac duoi 0.", "Dong y", "Quay lai");
 
 		if (SpeedCameras[id][_scActive] == false)
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to edit.\n\n\
-				{FFFF00}No active speed camera with that ID.", "OK", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Sua camera toc do", "{FFFFFF}Nhap ID camera toc do can sua.\n\n\
+				{FFFF00}Khong co camera hoat dong voi ID do.", "Dong y", "Quay lai");
 
 		SetPVarInt(playerid, "_scCacheEditId", id);
-		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Sua camera toc do", "Doi vi tri ve cho ban\nDat goc\nDat pham vi\nDat gioi han", "Chon", "Quay lai");
 	}
 	if (dialogid == SPEEDCAM_DIALOG_EDIT_IDX)
 	{
 		if (!response)
 		{
 			DeletePVar(playerid, "_scCacheEditId");
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
-				Get nearest speedcamera", \
-				"Select", "Cancel");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Camera toc do", "Tao camera toc do\nSua camera toc do\nXoa camera toc do\n\
+				Tim camera gan nhat", \
+				"Chon", "Huy");
 		}
 
 		switch (listitem)
@@ -225,26 +225,26 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetDynamicObjectRot(SpeedCameras[id][_scObjectId], 0, 0, angle - 180);
 				SetPlayerPos(playerid, x + 1, y, z);
 				SaveSpeedCamera(id);
-				SendClientMessageEx(playerid, COLOR_WHITE, "Speed camera moved.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri camera toc do.");
 
 				new logText[128];
 				format(logText, sizeof(logText), "%s(%d) has moved speed camera %d to [%f, %f, %f]",
 					GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), SpeedCameras[id][_scDatabase], SpeedCameras[id][_scPosX], SpeedCameras[id][_scPosY], SpeedCameras[id][_scPosZ]);
 				Log("logs/speedcam.log", logText);
 
-				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Sua camera toc do", "Doi vi tri ve cho ban\nDat goc\nDat pham vi\nDat gioi han", "Chon", "Quay lai");
 			}
 			case 1:
 			{
-				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_ROT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new (Z) angle of the speed camera.", "OK", "Back");
+				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_ROT, DIALOG_STYLE_INPUT, "{FFFF00}Sua camera toc do", "{FFFFFF}Nhap goc (Z) moi cua camera toc do.", "Dong y", "Quay lai");
 			}
 			case 2:
 			{
-				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_RANGE, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new range of the speed camera.", "OK", "Back");
+				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_RANGE, DIALOG_STYLE_INPUT, "{FFFF00}Sua camera toc do", "{FFFFFF}Nhap pham vi moi cua camera toc do.", "Dong y", "Quay lai");
 			}
 			case 3:
 			{
-				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new speed limit of the speed camera (mph).", "OK", "Back");
+				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Sua camera toc do", "{FFFFFF}Nhap gioi han toc do moi cua camera (mph).", "Dong y", "Quay lai");
 			}
 		}
 	}
@@ -252,116 +252,116 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	{
 		if (!response)
 		{
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Sua camera toc do", "Doi vi tri ve cho ban\nDat goc\nDat pham vi\nDat gioi han", "Chon", "Quay lai");
 		}
 
 		new Float:angle;
 		if (sscanf(inputtext, "f", angle))
 		{
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_ROT, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new (Z) angle of the speed camera.\n\n\
-				{FFFF00}The angle must be a number (decimals allowed).", "OK", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_ROT, DIALOG_STYLE_LIST, "{FFFF00}Sua camera toc do", "{FFFFFF}Nhap goc (Z) moi cua camera toc do.\n\n\
+				{FFFF00}Goc phai la so (cho phep thap phan).", "Dong y", "Quay lai");
 		}
 
 		new id = GetPVarInt(playerid, "_scCacheEditId");
 		SetDynamicObjectRot(SpeedCameras[id][_scObjectId], 0, 0, angle);
 		SpeedCameras[id][_scRotation] = angle;
 		SaveSpeedCamera(id);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Speed camera's Z-angle changed.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi goc Z cua camera toc do.");
 
 		new logText[128];
 		format(logText, sizeof(logText), "%s(%d) has changed speed camera %d's z-angle to %f",
 			GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), SpeedCameras[id][_scDatabase], SpeedCameras[id][_scRotation]);
 		Log("logs/speedcam.log", logText);
-		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Sua camera toc do", "Doi vi tri ve cho ban\nDat goc\nDat pham vi\nDat gioi han", "Chon", "Quay lai");
 	}
 	if (dialogid == SPEEDCAM_DIALOG_EDIT_RANGE)
 	{
 		if (!response)
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Sua camera toc do", "Doi vi tri ve cho ban\nDat goc\nDat pham vi\nDat gioi han", "Chon", "Quay lai");
 
 		new Float:range;
 		if (sscanf(inputtext, "f", range))
 		{
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_RANGE, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new range of the speed camera.\n\n\
-				{FFFF00}Range must be a number (decimals allowed).", "OK", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_RANGE, DIALOG_STYLE_INPUT, "{FFFF00}Sua camera toc do", "{FFFFFF}Nhap pham vi moi cua camera toc do.\n\n\
+				{FFFF00}Pham vi phai la so (cho phep thap phan).", "Dong y", "Quay lai");
 		}
 
 		new id = GetPVarInt(playerid, "_scCacheEditId");
 		SpeedCameras[id][_scRange] = range;
 		SaveSpeedCamera(id);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Speed camera's ranged changed.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi pham vi camera toc do.");
 
 		new logText[128];
 		format(logText, sizeof(logText), "%s(%d) has changed speed camera %d's range to %f",
 			GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), SpeedCameras[id][_scDatabase], SpeedCameras[id][_scRange]);
 		Log("logs/speedcam.log", logText);
-		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Sua camera toc do", "Doi vi tri ve cho ban\nDat goc\nDat pham vi\nDat gioi han", "Chon", "Quay lai");
 	}
 	if (dialogid == SPEEDCAM_DIALOG_EDIT_LIMIT)
 	{
 		if (!response)
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Sua camera toc do", "Doi vi tri ve cho ban\nDat goc\nDat pham vi\nDat gioi han", "Chon", "Quay lai");
 
 		new Float:limit;
 		if (sscanf(inputtext, "f", limit))
 		{
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new speed limit of the speed camera (mph).\n\n\
-				{FFFF00}Limit must be a number (decimals allowed).", "OK", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Sua camera toc do", "{FFFFFF}Nhap gioi han toc do moi cua camera (mph).\n\n\
+				{FFFF00}Gioi han phai la so (cho phep thap phan).", "Dong y", "Quay lai");
 		}
 
 		new id = GetPVarInt(playerid, "_scCacheEditId");
 		SpeedCameras[id][_scLimit] = limit;
 
 		new szLimit[50];
-		format(szLimit, sizeof(szLimit), "{FFFFFF}Speed Limit\n{FF0000}%i {FFFFFF}MPH", floatround(SpeedCameras[id][_scLimit], floatround_round));
+		format(szLimit, sizeof(szLimit), "{FFFFFF}Toc do\n{FF0000}%i {FFFFFF}MPH", floatround(SpeedCameras[id][_scLimit], floatround_round));
 		UpdateDynamic3DTextLabelText(SpeedCameras[id][_scTextID], COLOR_TWWHITE, szLimit);
 		SaveSpeedCamera(id);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Speed camera's limit changed.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi gioi han cua camera toc do.");
 
 		new logText[128];
 		format(logText, sizeof(logText), "%s(%d) has changed speed camera %d's limit to %f",
 			GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), SpeedCameras[id][_scDatabase], SpeedCameras[id][_scLimit]);
 		Log("logs/speedcam.log", logText);
-		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Sua camera toc do", "Doi vi tri ve cho ban\nDat goc\nDat pham vi\nDat gioi han", "Chon", "Quay lai");
 	}
 	if (dialogid == SPEEDCAM_DIALOG_DELETE)
 	{
 		if (!response)
 		{
 			DeletePVar(playerid, "_scCacheDeleteId");
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
-				Get nearest speedcamera (static only)", \
-				"Select", "Cancel");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Camera toc do", "Tao camera toc do\nSua camera toc do\nXoa camera toc do\n\
+				Tim camera gan nhat (chi co dinh)", \
+				"Chon", "Huy");
 		}
 
 		new id;
 		if (sscanf(inputtext, "i", id))
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Delete a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to delete.\n\n\
-				{FFFF00}ID must be a number.", "OK", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Xoa camera toc do", "{FFFFFF}Nhap ID camera toc do can xoa.\n\n\
+				{FFFF00}ID phai la so.", "Dong y", "Quay lai");
 
 		if (id >= MAX_SPEEDCAMERAS || id < 0)
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Delete a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to delete.\n\n\
-				{FFFF00}ID must not be above the maximum or below 0.", "OK", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Xoa camera toc do", "{FFFFFF}Nhap ID camera toc do can xoa.\n\n\
+				{FFFF00}ID khong duoc vuot gioi han hoac duoi 0.", "Dong y", "Quay lai");
 
 		if (SpeedCameras[id][_scActive] == false)
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Delete a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to delete.\n\n\
-				{FFFF00}No active camera with that ID.", "OK", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Xoa camera toc do", "{FFFFFF}Nhap ID camera toc do can xoa.\n\n\
+				{FFFF00}Khong co camera hoat dong voi ID do.", "Dong y", "Quay lai");
 
 		SetPVarInt(playerid, "_scCacheDeleteId", id);
 
 		new msg[256];
-		format(msg, sizeof(msg), "{FFFFFF}Are you sure you want to delete speed camera %i?\n\n{FFFF00}Range: {FFFFFF}%f\n\
-			{FFFF00}Limit: {FFFFFF}%f", id, SpeedCameras[id][_scRange], SpeedCameras[id][_scLimit]);
-		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_CONFIRMDEL, DIALOG_STYLE_MSGBOX, "{FFFF00}Delete a speed camera", msg, "Delete", "Cancel");
+		format(msg, sizeof(msg), "{FFFFFF}Ban chac chan muon xoa camera toc do %i?\n\n{FFFF00}Pham vi: {FFFFFF}%f\n\
+			{FFFF00}Gioi han: {FFFFFF}%f", id, SpeedCameras[id][_scRange], SpeedCameras[id][_scLimit]);
+		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_CONFIRMDEL, DIALOG_STYLE_MSGBOX, "{FFFF00}Xoa camera toc do", msg, "Xoa", "Huy");
 	}
 	if (dialogid == SPEEDCAM_DIALOG_CONFIRMDEL)
 	{
 		if (!response)
 		{
 			DeletePVar(playerid, "_scCacheDeleteId");
-			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
-				Get nearest speedcamera", \
-				"Select", "Cancel");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Camera toc do", "Tao camera toc do\nSua camera toc do\nXoa camera toc do\n\
+				Tim camera gan nhat", \
+				"Chon", "Huy");
 		}
 
 		new id = GetPVarInt(playerid, "_scCacheDeleteId");
@@ -372,7 +372,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		mysql_format(MainPipeline, query, sizeof(query), "DELETE FROM speed_cameras WHERE id=%i", SpeedCameras[id][_scDatabase]);
 		mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 		//SaveSpeedCamera(id); dafuq is this doing here
-		SendClientMessageEx(playerid, COLOR_RED, "Speed camera deleted.");
+		SendClientMessageEx(playerid, COLOR_RED, "Da xoa camera toc do.");
 		DeletePVar(playerid, "_scCacheDeleteId");
 
 		new logText[56];
@@ -382,9 +382,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	}
 	if (dialogid == SPEEDCAM_DIALOG_GETNEAREST)
 	{
-		return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
-			Get nearest speedcamera", \
-			"Select", "Cancel");
+		return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Camera toc do", "Tao camera toc do\nSua camera toc do\nXoa camera toc do\n\
+			Tim camera gan nhat", \
+			"Chon", "Huy");
 	}
 	return 0;
 }
@@ -431,7 +431,7 @@ stock SpawnSpeedCamera(i)
 	{
 		SpeedCameras[i][_scObjectId] = CreateDynamicObject(18880, SpeedCameras[i][_scPosX], SpeedCameras[i][_scPosY], SpeedCameras[i][_scPosZ], 0, 0, SpeedCameras[i][_scRotation]);
 		new szLimit[50];
-		format(szLimit, sizeof(szLimit), "{FFFFFF}Speed Limit\n{FF0000}%i {FFFFFF}MPH", floatround(SpeedCameras[i][_scLimit], floatround_round));
+		format(szLimit, sizeof(szLimit), "{FFFFFF}Toc do\n{FF0000}%i {FFFFFF}MPH", floatround(SpeedCameras[i][_scLimit], floatround_round));
 		SpeedCameras[i][_scTextID] = CreateDynamic3DTextLabel(szLimit, COLOR_TWWHITE, SpeedCameras[i][_scPosX], SpeedCameras[i][_scPosY], SpeedCameras[i][_scPosZ]+5, 30.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, -1, -1, -1);
 	}
 }
@@ -457,16 +457,16 @@ stock SaveSpeedCameras()
 CMD:speedcam(playerid, params[])
 {
 	if (IsPlayerInAnyVehicle(playerid))
-		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot manage speed cameras whilst inside a vehicle.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Khong the quan ly camera toc do khi o trong xe.");
 
 	if (IsAGovernment(playerid) && PlayerInfo[playerid][pRank] == Group_GetMaxRank(PlayerInfo[playerid][pLeader]) || PlayerInfo[playerid][pAdmin] >= 1337)
 	{
-		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
-			Get nearest speedcamera", "Select", "Cancel");
+		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Camera toc do", "Tao camera toc do\nSua camera toc do\nXoa camera toc do\n\
+			Tim camera gan nhat", "Chon", "Huy");
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You do not have permission to use this command.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
@@ -477,8 +477,8 @@ CMD:gotospeedcam(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 	    new i;
-	    if(sscanf(params, "d", i)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotospeedcam [Speedcam id]");
-		if(i < 0 || i > MAX_SPEEDCAMERAS) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotospeedcam [Speedcam id]");
+	    if(sscanf(params, "d", i)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gotospeedcam [Speedcam id]");
+		if(i < 0 || i > MAX_SPEEDCAMERAS) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gotospeedcam [Speedcam id]");
     	if (SpeedCameras[i][_scActive] == true)
     	{
 			if (GetPlayerState(playerid) == 2)
@@ -493,18 +493,18 @@ CMD:gotospeedcam(playerid, params[]) {
 			{
 				SetPlayerPos(playerid, SpeedCameras[i][_scPosX], SpeedCameras[i][_scPosY], SpeedCameras[i][_scPosZ]);
 			}
-			SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(playerid,0);
 			PlayerInfo[playerid][pInt] = 0;
 			SetPlayerVirtualWorld(playerid, 0);
 			PlayerInfo[playerid][pVW] = 0;
 			return 1;
     	}
-	    else return SendClientMessageEx(playerid, COLOR_GRAD2, "That speed camera isn't active!");
+	    else return SendClientMessageEx(playerid, COLOR_GRAD2, "Camera toc do do khong hoat dong!");
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GRAD2, " You are not authorized.");
+	    SendClientMessageEx(playerid, COLOR_GRAD2, " Ban khong co quyen.");
 	}
 	return 1;
 }
@@ -606,7 +606,7 @@ stock UpdateSpeedCamerasForPlayer(p)
 							mysql_format(MainPipeline, string, sizeof(string), "UPDATE `vehicles` SET `pvTicket` = '%d' WHERE `id` = '%d'", GetPVarInt(p, "VLPTickets"), GetPVarInt(p, "LockPickVehicleSQLId"));
 							mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, p);
 							PlayerInfo[p][pTicketTime] = 60;
-							SendClientMessageEx(p, COLOR_WHITE, "You were caught speeding and have received a speeding ticket of $%s", number_format(Amount));
+							SendClientMessageEx(p, COLOR_WHITE, "Ban bi ghi nhan chay qua toc do va nhan ve phat $%s", number_format(Amount));
 							PlayerPlaySound(p, 1132, 0.0, 0.0, 0.0);
 							PlayerTextDrawShow(p, _vhudFlash[p]);
 							SetTimerEx("TurnOffFlash", 500, false, "i", p);
@@ -619,7 +619,7 @@ stock UpdateSpeedCamerasForPlayer(p)
 								new Amount = floatround(125*(vehicleSpeed-speedLimit), floatround_round)+2000;
 								PlayerVehicleInfo[i][v][pvTicket] += Amount;
 								PlayerInfo[p][pTicketTime] = 60;
-								SendClientMessageEx(p, COLOR_WHITE, "You were caught speeding and have received a speeding ticket of $%s", number_format(Amount));
+								SendClientMessageEx(p, COLOR_WHITE, "Ban bi ghi nhan chay qua toc do va nhan ve phat $%s", number_format(Amount));
 								PlayerPlaySound(p, 1132, 0.0, 0.0, 0.0);
 								PlayerTextDrawShow(p, _vhudFlash[p]);
 								SetTimerEx("TurnOffFlash", 500, false, "i", p);

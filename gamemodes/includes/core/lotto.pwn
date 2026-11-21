@@ -42,7 +42,7 @@ public Lotto(number)
 {
 	new JackpotFallen = 0, TotalWinners = 0, string[128];
 
-	format(string, sizeof(string), "Lottery News: Today the winning number has fallen on... %d!.", number);
+	format(string, sizeof(string), "Tin xo so: So trung thuong hom nay la... %d!", number);
 	OOCOff(COLOR_WHITE, string);
 
 	foreach(new i: Player)
@@ -61,7 +61,7 @@ public Lotto(number)
 				{
 					LottoNumbers[i][t] = 0;
 					if(t == 4) {
-						SendClientMessageEx(i, COLOR_GREY, "Sorry your lottery tickets have not been selected this drawing.");
+						SendClientMessageEx(i, COLOR_GREY, "Rat tiec, ve cua ban khong trung ky nay.");
 					}
 				}
 			}
@@ -69,7 +69,7 @@ public Lotto(number)
 			PlayerInfo[i][pLottoNr] = 0;
 		}
 		else {
-			SendClientMessageEx(i, COLOR_GREY, "You did not participate in this drawing.");
+			SendClientMessageEx(i, COLOR_GREY, "Ban khong tham gia ky quay nay.");
 		}
 	}	
 	if(TotalWinners == 1)
@@ -85,9 +85,9 @@ public Lotto(number)
 					AddFlag(i, INVALID_PLAYER_ID, LottoPrize);
 				}
 				JackpotFallen = 1;
-				format(string, sizeof(string), "Lottery News: %s has won the Jackpot of $%s with their lottery ticket.", GetPlayerNameEx(i), number_format(Jackpot));
+				format(string, sizeof(string), "Tin xo so: %s trung Jackpot $%s voi ve so cua minh.", GetPlayerNameEx(i), number_format(Jackpot));
 				OOCOff(COLOR_WHITE, string);
-				SendClientMessageEx(i, COLOR_YELLOW, "* You have won $%s with your lottery ticket - congratulations!", number_format(Jackpot));
+				SendClientMessageEx(i, COLOR_YELLOW, "* Ban trung $%s voi ve so, xin chuc mung!", number_format(Jackpot));
 				GivePlayerCash(i, Jackpot);
 				DeletePVar(i, "Winner");
 			}
@@ -106,9 +106,9 @@ public Lotto(number)
 					AddFlag(i, INVALID_PLAYER_ID, LottoPrize);
 				}
 				JackpotFallen = 1;
-				format(string, sizeof(string), "Lottery News: %s has won the Jackpot of $%s with their lottery ticket.", GetPlayerNameEx(i), number_format(Jackpot/TotalWinners));
+				format(string, sizeof(string), "Tin xo so: %s trung Jackpot $%s voi ve so cua minh.", GetPlayerNameEx(i), number_format(Jackpot/TotalWinners));
 				OOCOff(COLOR_WHITE, string);
-				SendClientMessageEx(i, COLOR_YELLOW, "* You have won $%s with your lottery ticket - congratulations!", number_format(Jackpot/TotalWinners));
+				SendClientMessageEx(i, COLOR_YELLOW, "* Ban trung $%s voi ve so, xin chuc mung!", number_format(Jackpot/TotalWinners));
 				GivePlayerCash(i, Jackpot/TotalWinners);
 				DeletePVar(i, "Winner");
 			}
@@ -119,13 +119,13 @@ public Lotto(number)
 	if(!JackpotFallen)
 	{
 		Misc_Save();
-		format(string, sizeof(string), "Lottery News: The Jackpot has been raised to $%s.", number_format(Jackpot));
+		format(string, sizeof(string), "Tin xo so: Jackpot da tang len $%s.", number_format(Jackpot));
 		OOCOff(COLOR_WHITE, string);
 	}
 	else
 	{
 	    Jackpot = 50000;
-	    format(string, sizeof(string), "Lottery News: The new Jackpot has been started with $%s.", number_format(Jackpot));
+	    format(string, sizeof(string), "Tin xo so: Jackpot moi bat dau voi $%s.", number_format(Jackpot));
 		OOCOff(COLOR_WHITE, string);
 	}
 	return 1;
@@ -147,7 +147,7 @@ public StartLotto(stage)
 	    if(stage == 1) minutes = 6;
 	    else if(stage == 2) minutes = 4;
 	    else if(stage == 3) minutes = 2;
-		format(string, sizeof(string), "Lottery News: A Lottery Election is about to start, please get a lottery ticket at any 24/7. %d minutes left.", minutes);
+		format(string, sizeof(string), "Tin xo so: Sap quay thuong, hay mua ve tai bat ky 24/7 nao. Con %d phut.", minutes);
 		OOCOff(COLOR_WHITE, string);
 		if(stage > 0)
 		{
@@ -167,13 +167,13 @@ public EndLotto(secondt)
 	new string[128];
 	if(secondt != 0)
 	{
-		format(string, sizeof(string), "Lottery News Countdown: %d.", secondt);
+		format(string, sizeof(string), "Dem nguoc xo so: %d.", secondt);
 		OOCOff(COLOR_WHITE, string);
 		SetTimerEx("EndLotto", 1000, false, "d", secondt-1);
 	}
 	else
 	{
-	    format(string, sizeof(string), "Lottery News: We have started the Lottery Election.");
+	    format(string, sizeof(string), "Tin xo so: Da bat dau quay thuong.");
 		OOCOff(COLOR_WHITE, string);
 		new rand = Random(1, 300);
 		Lotto(rand);
@@ -194,16 +194,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(lotto < 1 || lotto > 300)
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "   Lottery Number not below 1 or above 300!");
-					ShowPlayerDialogEx( playerid, LOTTOMENU, DIALOG_STYLE_INPUT, "Lottery Ticket Selection","Please enter a Lotto Number!", "Buy", "Cancel" );
+					SendClientMessageEx(playerid, COLOR_GREY, "So du thuong phai tu 1 den 300!");
+					ShowPlayerDialogEx( playerid, LOTTOMENU, DIALOG_STYLE_INPUT, "Chon ve so","Hay nhap so du thuong!", "Mua", "Huy" );
 				}
 				else
 				{
 					if(PlayerInfo[playerid][pLottoNr] >= 5) {
-						SendClientMessageEx(playerid, COLOR_GREY, "You can only buy up to 5 tickets.");
+						SendClientMessageEx(playerid, COLOR_GREY, "Chi duoc mua toi da 5 ve.");
 						return 1;
 					}
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You bought a Lottery Ticket with number: %d.", lotto);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da mua ve so: %d.", lotto);
 					AddTicket(playerid, lotto);
 					for(new i = 0; i < 5; i++) {
 						if(LottoNumbers[playerid][i] == 0) {
@@ -225,7 +225,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 CMD:lottoinfo(playerid, params[])
 {
 	new szMessage[128];
-	format(szMessage, sizeof(szMessage), "Next drawing is at %i:00, tickets sold %i, and total Jackpot is $%s.", NextDrawing, TicketsSold, number_format(Jackpot));
+	format(szMessage, sizeof(szMessage), "Ky quay tiep theo luc %i:00, da ban %i ve, Jackpot tong $%s.", NextDrawing, TicketsSold, number_format(Jackpot));
 	SendClientMessage(playerid, COLOR_WHITE, szMessage);
 	return 1;
 }
@@ -233,10 +233,10 @@ CMD:lottoinfo(playerid, params[])
 CMD:speclotto(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
-	    SendClientMessage(playerid, COLOR_GREY, "You don't have access to this command.");
+	    SendClientMessage(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	}
 	else if(SpecLotto) {
-	    SendClientMessage(playerid, COLOR_GREY, "A special lottery has already been started.");
+	    SendClientMessage(playerid, COLOR_GREY, "Da co dot xo so dac biet.");
 	}
 	else {
 
@@ -245,12 +245,12 @@ CMD:speclotto(playerid, params[])
 	        string[128];
 
 	    if(sscanf(params, "s[64]", prize)) {
-	        SendClientMessage(playerid, COLOR_GREY, "USAGE: /speclotto [text]");
+	        SendClientMessage(playerid, COLOR_GREY, "CACH DUNG: /speclotto [text]");
 		}
 		else {
 		    SpecLotto = 1;
 		    LottoPrize = prize;
-		    format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has started a special lottery. (Prize: %s)", GetPlayerNameEx(playerid), prize);
+		    format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s mo dot xo so dac biet. (Giai: %s)", GetPlayerNameEx(playerid), prize);
 			ABroadCast(COLOR_YELLOW, string, 4);
 			return 1;
 		}
@@ -261,10 +261,10 @@ CMD:speclotto(playerid, params[])
 CMD:cancelspeclotto(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
-	    SendClientMessage(playerid, COLOR_GREY, "You don't have access to this command.");
+	    SendClientMessage(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 	}
 	else if(!SpecLotto) {
-	    SendClientMessage(playerid, COLOR_GREY, "No special lottery.");
+	    SendClientMessage(playerid, COLOR_GREY, "Khong co xo so dac biet.");
 	}
 	else {
 	    SpecLotto = 0;

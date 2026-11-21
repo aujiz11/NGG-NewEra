@@ -41,28 +41,28 @@ CMD:sex(playerid, params[])
 	{
 		if(!IsPlayerInAnyVehicle(playerid))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   You can only have Sex in a Car!");
+			SendClientMessageEx(playerid, COLOR_GREY, "   Chi duoc quan he trong xe!");
 			return 1;
 		}
 		new Car = GetPlayerVehicleID(playerid);
 
 		new giveplayerid, money;
-		if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sex [player] [price]");
+		if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /sex [player] [price]");
 
-		if(money < 1 || money > 10000) { SendClientMessageEx(playerid, COLOR_GREY, "   Price not lower then $1 or above $10,000!"); return 1; }
+		if(money < 1 || money > 10000) { SendClientMessageEx(playerid, COLOR_GREY, "   Gia phai tu $1 den $10,000!"); return 1; }
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if(giveplayerid != INVALID_PLAYER_ID)
 			{
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
-					if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot have Sex with yourself!"); return 1; }
+					if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "Khong the tu quan he voi minh!"); return 1; }
 					if(IsPlayerInAnyVehicle(playerid) && IsPlayerInVehicle(giveplayerid, Car))
 					{
 						if(gettime() >= PlayerInfo[playerid][pSexTime])
 						{
-							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to have sex with you, for $%s.", GetPlayerNameEx(giveplayerid), number_format(money));
-							SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Whore %s has offered you to have sex with them, for $%s (type /accept sex) to accept.", GetPlayerNameEx(playerid), number_format(money));
+							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban moi %s quan he voi gia $%s.", GetPlayerNameEx(giveplayerid), number_format(money));
+							SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Whore %s moi ban quan he voi gia $%s (dung /accept sex) de dong y.", GetPlayerNameEx(playerid), number_format(money));
 							SetPVarInt(playerid, "SexOfferTo", giveplayerid);
 							SexOffer[giveplayerid] = playerid;
 							SetPVarInt(giveplayerid, "SexOfferSession", g_arrQueryHandle[playerid]);
@@ -71,32 +71,32 @@ CMD:sex(playerid, params[])
 						}
 						else
 						{
-							SendClientMessageEx(playerid, COLOR_GRAD2, " You have already had sex, wait for your reload time to finish!");
+							SendClientMessageEx(playerid, COLOR_GRAD2, " Ban da quan he, hay cho het thoi gian hoi!");
 							return 1;
 						}
 					}
 					else
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "   You or the other person must be in a Car together!");
+						SendClientMessageEx(playerid, COLOR_GREY, "   Hai nguoi phai o trong cung xe!");
 						return 1;
 					}
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+					SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 					return 1;
 				}
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 			return 1;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Whore!");
+		SendClientMessageEx(playerid, COLOR_GREY, "   Ban khong phai Whore!");
 	}
 	return 1;
 }

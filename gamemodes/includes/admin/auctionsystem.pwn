@@ -47,7 +47,7 @@ stock HigherBid(playerid)
 			if(IsPlayerConnected(Player) && GetPlayerSQLId(Player) == Auctions[AuctionItem][Bidder])
 			{
 	  			GivePlayerCash(Player, Auctions[AuctionItem][Bid]);
-	    		SendClientMessageEx(Player, COLOR_WHITE, "Someone has outbid you, your money has been returned.");
+	    		SendClientMessageEx(Player, COLOR_WHITE, "Co nguoi tra gia cao hon, tien cua ban da duoc hoan lai.");
 		    	new szMessage[128];
 		    	format(szMessage, sizeof(szMessage), "Amount of $%d has been returned to %s(%d) (IP:%s) for being outbid", Auctions[AuctionItem][Bid], GetPlayerNameEx(Player), GetPlayerSQLId(Player), GetPlayerIpEx(Player));
 				Log("logs/auction.log", szMessage);
@@ -57,7 +57,7 @@ stock HigherBid(playerid)
 				Auctions[AuctionItem][Bidder] = GetPlayerSQLId(playerid);
 				strcpy(Auctions[AuctionItem][Wining], GetPlayerNameExt(playerid), MAX_PLAYER_NAME);
 
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have placed a bid of $%i on %s.", GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ban da tra $%i cho %s.", GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
 
 				format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has placed a bid of $%i on %s(%i)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor], AuctionItem);
 				Log("logs/auction.log", szMessage);
@@ -84,7 +84,7 @@ stock HigherBid(playerid)
 			Auctions[AuctionItem][Bidder] = GetPlayerSQLId(playerid);
 			strcpy(Auctions[AuctionItem][Wining], GetPlayerNameExt(playerid), MAX_PLAYER_NAME);
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have placed a bid of $%i on %s.", GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da tra $%i cho %s.", GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
 
 			format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has placed a bid of $%i on %s(%i)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor], AuctionItem);
 			Log("logs/auction.log", szMessage);
@@ -105,7 +105,7 @@ public EndAuction(auction)
 		if(Auctions[auction][Expires] == 0) {
 
 			new string[128];
-		    format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s has won the auction for %s with the amount of $%d", Auctions[auction][Wining], Auctions[auction][BiddingFor], Auctions[auction][Bid]);
+		    format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s thang dau gia %s voi gia $%d", Auctions[auction][Wining], Auctions[auction][BiddingFor], Auctions[auction][Bid]);
 			ABroadCast( COLOR_YELLOW, string, 2 );
 
 			format(string, sizeof(string), "%s(%d) has won the auction for item %s(%i) and has paid $%d", Auctions[auction][Wining], Auctions[auction][Bidder], Auctions[auction][BiddingFor], auction, Auctions[auction][Bid]);
@@ -114,14 +114,14 @@ public EndAuction(auction)
 			new Player = ReturnUser(Auctions[auction][Wining]);
 			if(IsPlayerConnected(Player) && GetPlayerSQLId(Player) == Auctions[auction][Bidder])
 			{
-	 			format(string, sizeof(string), "(Auction Winner) %s %s", Auctions[auction][Wining], Auctions[auction][BiddingFor]);
+	 			format(string, sizeof(string), "(Thang dau gia) %s %s", Auctions[auction][Wining], Auctions[auction][BiddingFor]);
 			   	AddFlag(Player, INVALID_PLAYER_ID, string);
 
-				SendClientMessageEx(Player, COLOR_GREEN, "You have won the auction for the %s!", Auctions[auction][BiddingFor]);
+				SendClientMessageEx(Player, COLOR_GREEN, "Ban da thang dau gia %s!", Auctions[auction][BiddingFor]);
 			}
 			else
 			{
-		 		format(string, sizeof(string), "(Auction Winner) %s %s", Auctions[auction][Wining], Auctions[auction][BiddingFor]);
+		 		format(string, sizeof(string), "(Thang dau gia) %s %s", Auctions[auction][Wining], Auctions[auction][BiddingFor]);
 		   		AddOFlag(Auctions[auction][Bidder], INVALID_PLAYER_ID, string);
 			}
 
@@ -154,9 +154,9 @@ CMD:editauctions(playerid, params[]) {
 
 		for (new i; i < sizeof(Auctions); i++)
     	{
-            format(szDialog, sizeof(szDialog), "%s\n Auction: %i | Item: %s | Highest Bid: $%i | Wining: %s(%i)", szDialog, i+1, Auctions[i][BiddingFor], Auctions[i][Bid], Auctions[i][Wining], Auctions[i][Bidder]);
+            format(szDialog, sizeof(szDialog), "%s\n Phien: %i | Hang: %s | Gia dan dau: $%i | Dan dau: %s(%i)", szDialog, i+1, Auctions[i][BiddingFor], Auctions[i][Bid], Auctions[i][Wining], Auctions[i][Bidder]);
     	}
-    	ShowPlayerDialogEx(playerid, DIALOG_ADMINAUCTIONS, DIALOG_STYLE_LIST, "Auctions", szDialog, "Edit", "Close");
+    	ShowPlayerDialogEx(playerid, DIALOG_ADMINAUCTIONS, DIALOG_STYLE_LIST, "Dau gia", szDialog, "Sua", "Dong");
 	}
 	return 1;
 }
@@ -168,8 +168,8 @@ CMD:auctions(playerid, params[]) {
 
     for (new i; i < sizeof(Auctions); i++)
     {
-    	format(szDialog, sizeof(szDialog), "%s\n Auction: %i | Item: %s | Highest Bid: $%i", szDialog, i+1, Auctions[i][BiddingFor], Auctions[i][Bid]);
+    	format(szDialog, sizeof(szDialog), "%s\n Phien: %i | Hang: %s | Gia dan dau: $%i", szDialog, i+1, Auctions[i][BiddingFor], Auctions[i][Bid]);
     }
-	ShowPlayerDialogEx(playerid, DIALOG_AUCTIONS, DIALOG_STYLE_LIST, "Auctions", szDialog, "More Info", "Close");
+	ShowPlayerDialogEx(playerid, DIALOG_AUCTIONS, DIALOG_STYLE_LIST, "Dau gia", szDialog, "Xem them", "Dong");
 	return 1;
 }

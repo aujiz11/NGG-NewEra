@@ -158,18 +158,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(arrFurnitureCatalog[i][fc_iModelID] <= 0 || arrFurnitureCatalog[i][fc_iTypeID] != listitem) continue;
 				format(line, sizeof(line), "%s%s ($%s){FFFFFF}\n", arrFurnitureCatalog[i][fc_iVIP] > 0 ? ("{FFFF00}(VIP) ") : (""), arrFurnitureCatalog[i][fc_szName], number_format(arrFurnitureCatalog[i][fc_iPrice]));
 				if(count >= sizeof(ListItemTrackId[]) || strlen(szMiscArray) + strlen(line) >= sizeof(szMiscArray)) {
-					SendClientMessageEx(playerid, COLOR_GRAD1, "This category exceeds the menu capacity, some items are not displayed.");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Danh muc vuot suc chua menu, mot so vat pham khong duoc hien thi.");
 					break;
 				}
 				strcat(szMiscArray, line, sizeof(szMiscArray));
 				ListItemTrackId[playerid][count++] = arrFurnitureCatalog[i][fc_iModelID];
 			}
-			if(!count) return SendClientMessageEx(playerid, COLOR_GRAD1, "No furniture is available in this category.");
+			if(!count) return SendClientMessageEx(playerid, COLOR_GRAD1, "Danh muc nay khong co noi that.");
 			SetPVarInt(playerid, "FurnitureBuyRows", count);
 			new title[48];
 			strunpack(furnitureCategoryName, szFurnitureCategories[listitem], sizeof(furnitureCategoryName));
-			format(title, sizeof(title), "Furniture - %s", furnitureCategoryName);
-			ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_BUYSELECT, DIALOG_STYLE_LIST, title, szMiscArray, "Buy", "Cancel");
+			format(title, sizeof(title), "Noi that - %s", furnitureCategoryName);
+			ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_BUYSELECT, DIALOG_STYLE_LIST, title, szMiscArray, "Mua", "Huy");
 		}
 		case DIALOG_FURNITURE_BUYSELECT: {
 			new count = GetPVarInt(playerid, "FurnitureBuyRows");
@@ -180,18 +180,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			
 			new i = GetFurnitureCatalogIndex(ListItemTrackId[playerid][listitem]);
 			if(i == -1) {
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "The catalog has changed. Please select the furniture again.");
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "Danh muc da thay doi. Hay chon lai noi that.");
 			}
 
 			if(PlayerInfo[playerid][pDonateRank] < arrFurnitureCatalog[i][fc_iVIP] && PlayerInfo[playerid][pAdmin] < 4) {
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "Your VIP level is not high enough to buy this piece of furniture.");
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "Cap VIP cua ban khong du de mua noi that nay.");
 			}
 
 			PreviewFurniture(playerid, arrFurnitureCatalog[i][fc_iModelID], true);
 			SetPVarInt(playerid, PVAR_FURNITURE_BUYMODEL, arrFurnitureCatalog[i][fc_iModelID]);
 			SetPVarInt(playerid, "FurnitureBuyPrice", arrFurnitureCatalog[i][fc_iPrice]);
-			format(szMiscArray, sizeof(szMiscArray), "Would you like to buy this %s for $%s and %s materials?", arrFurnitureCatalog[i][fc_szName], number_format(arrFurnitureCatalog[i][fc_iPrice]), number_format(arrFurnitureCatalog[i][fc_iPrice] / 10));
-			ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_BUYCONFIRM, DIALOG_STYLE_MSGBOX, "Furniture Menu | Confirm Purchase", szMiscArray, "Buy", "Cancel");
+			format(szMiscArray, sizeof(szMiscArray), "Ban muon mua %s nay voi $%s va %s vat lieu?", arrFurnitureCatalog[i][fc_szName], number_format(arrFurnitureCatalog[i][fc_iPrice]), number_format(arrFurnitureCatalog[i][fc_iPrice] / 10));
+			ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_BUYCONFIRM, DIALOG_STYLE_MSGBOX, "Menu noi that | Xac nhan mua", szMiscArray, "Mua", "Huy");
 		}
 		case DIALOG_FURNITURE_BUYCONFIRM: {
 			PreviewFurniture(playerid, -1, false);
@@ -203,7 +203,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			
 			new entry = GetFurnitureCatalogIndex(modelid);
 			if(entry == -1 || arrFurnitureCatalog[entry][fc_iPrice] != price) {
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "The catalog or price has changed. Please select the furniture again.");
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "Danh muc hoac gia da thay doi. Hay chon lai noi that.");
 			}
 
 			new houseid = GetHouseID(playerid), slotid = GetNextFurnitureSlotID(playerid, houseid);
@@ -232,7 +232,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					case 2: SetPVarInt(playerid, "color", 1);
 				}
-				return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT, DIALOG_STYLE_LIST, "Furniture Menu | Slot", "Slot 1\nSlot 2\nSlot 3\nSlot 4\nSlot 5\n{EE0000}Remove All", "Select", "Cancel");
+				return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT, DIALOG_STYLE_LIST, "Menu noi that | O", "O 1\nO 2\nO 3\nO 4\nO 5\n{EE0000}Xoa het", "Chon", "Huy");
 			}
 			else {
 
@@ -241,9 +241,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPVarInt(playerid, PVAR_FURNITURE_SLOT, listitem);
 					SetPVarInt(playerid, PVAR_FURNITURE_EDITING, HouseInfo[iHouseID][hFurniture][listitem]);
 					//return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_EDIT, DIALOG_STYLE_LIST, "Furniture Menu | Edit", "Move position\nChange texture\nChange color", "Select", "Back");
-					return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_EDIT, DIALOG_STYLE_LIST, "Furniture Menu | Edit", "Move position\nChange texture", "Select", "Back");
+					return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_EDIT, DIALOG_STYLE_LIST, "Menu noi that | Sua", "Doi vi tri\nDoi texture", "Chon", "Quay lai");
 				}
-				else SendClientMessage(playerid, COLOR_GRAD1, "There's no furniture in that slot.");			
+				else SendClientMessage(playerid, COLOR_GRAD1, "O nay khong co noi that.");			
 			}
 		}
 		case DIALOG_FURNITURE_SELL: {
@@ -264,8 +264,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!response) return 1;
 
 			//return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Furniture Menu | Slot", "Slot 1\nSlot 2\nSlot 3\nSlot 4\nSlot 5\n{EE0000}Remove All", "Select", "Cancel");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "** Use ~k~~GROUP_CONTROL_BWD~ and ~k~~CONVERSATION_NO~ to browse. Press ~k~~CONVERSATION_YES~ to choose.");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "** Press ~k~~PED_LOOKBEHIND~ to cancel. Press ~k~~PED_DUCK~ to remove all textures.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "** Dung ~k~~GROUP_CONTROL_BWD~ va ~k~~CONVERSATION_NO~ de duyet. Nhan ~k~~CONVERSATION_YES~ de chon.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "** Nhan ~k~~PED_LOOKBEHIND~ de huy. Nhan ~k~~PED_DUCK~ de xoa het texture.");
 			PlayerTextureMenuInfo[playerid][ptextm_TPreviewState] = PREVIEW_STATE_SELECT;
 			textm_SelectedTile[playerid] = 0;
 
@@ -289,9 +289,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				*/
 			}
-			PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][2], "Slot: 1");
+			PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][2], "O: 1");
 			PlayerTextDrawShow(playerid, Furniture_PTD[playerid][2]);
-			format(szMiscArray, sizeof(szMiscArray), "Name: %s", szTextureName[0]);
+			format(szMiscArray, sizeof(szMiscArray), "Ten: %s", szTextureName[0]);
 			PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][3], szMiscArray);
 			PlayerTextDrawShow(playerid, Furniture_PTD[playerid][3]);
 			CancelSelectTextDraw(playerid);
@@ -313,11 +313,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 						SetPVarInt(playerid, "color", 1);
 						format(szMiscArray, sizeof(szMiscArray), "%s", MakeColorMenu());
-						return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Furniture Menu | Select Color", szMiscArray, "Select", "Cancel"); 
+						return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Menu noi that | Chon mau", szMiscArray, "Chon", "Huy"); 
 					}
 				}
 				SetPVarInt(playerid, "processtext", 1);
-				return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_INPUT, "Furniture Menu | Search Texture", "Please insert a keyword for your texture. Leave it empty if you want to browse all.", "Select", "Cancel");
+				return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_INPUT, "Menu noi that | Tim texture", "Nhap tu khoa tim texture. De trong de xem tat ca.", "Chon", "Huy");
 				
 			}
 			if(GetPVarType(playerid, "processtext")) {
@@ -327,7 +327,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(isnull(inputtext) && GetPVarType(playerid, "studio"))  {
 
 					PlayerTextureMenuInfo[playerid][ptextm_TPreviewState] = PREVIEW_STATE_ALLTEXTURES;
-					SendClientMessageEx(playerid, COLOR_GRAD1, "[Furniture]: Displaying all textures.");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "[Furniture]: Dang hien thi tat ca texture.");
 				}
 				else {
 
@@ -337,7 +337,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 							if(x > MAX_SEARCH_TEXTURES) {
 
-								format(szMiscArray, sizeof(szMiscArray), "** Your search contains more than %d results. Therefore the maximum will be displayed.", MAX_SEARCH_TEXTURES);
+								format(szMiscArray, sizeof(szMiscArray), "** Tim thay hon %d ket qua. Chi hien thi toi da so luong cho phep.", MAX_SEARCH_TEXTURES);
 								SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 								break;
 							}
@@ -351,7 +351,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(GetPVarType(playerid, "studio")) {
 					
 					DeletePVar(playerid, "studio");
-					if(PlayerTextureMenuInfo[playerid][ptextm_Menus3D] != -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have an in-world texture menu.");
+					if(PlayerTextureMenuInfo[playerid][ptextm_Menus3D] != -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da co menu texture trong the gioi.");
 
 					if(PlayerTextureMenuInfo[playerid][ptextm_TPreviewState] != PREVIEW_STATE_ALLTEXTURES) {
 						PlayerTextureMenuInfo[playerid][ptextm_TPreviewState] = PREVIEW_STATE_SEARCH;
@@ -366,7 +366,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					fPos[0] = (fPos[0] + 2.0 * floatsin(-fPos[3], degrees));
 					fPos[1] = (fPos[1] + 2.0 * floatcos(-fPos[3], degrees));
 
-					SendClientMessageEx(playerid, COLOR_GRAD1, "** Next series: ~k~~GROUP_CONTROL_BWD~ and ~k~~SNEAK_ABOUT~ - Previous series:  ~k~~CONVERSATION_NO~ and ~k~~SNEAK_ABOUT~.");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "** Nhom tiep: ~k~~GROUP_CONTROL_BWD~ va ~k~~SNEAK_ABOUT~ - Nhom truoc:  ~k~~CONVERSATION_NO~ va ~k~~SNEAK_ABOUT~.");
 					PlayerTextureMenuInfo[playerid][ptextm_Menus3D] = Create3DTextureMenu(playerid, fPos[0], fPos[1], fPos[2], fPos[3], 16);
 					// Update textures
 					switch(PlayerTextureMenuInfo[playerid][ptextm_TPreviewState]) {
@@ -397,15 +397,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				if(GetPVarType(playerid, "textsearch")) {
 
-					if(!x) return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_INPUT, "Furniture Menu | Search Texture", "Your keyword didn't come up with any results. Please try again.", "Select", "Cancel");
+					if(!x) return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_INPUT, "Menu noi that | Tim texture", "Khong tim thay ket qua voi tu khoa nay. Hay thu lai.", "Chon", "Huy");
 					DeletePVar(playerid, "textsearch");
-					return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Furniture Menu | Select Texture", szMiscArray, "Select", "Cancel");
+					return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Menu noi that | Chon texture", szMiscArray, "Chon", "Huy");
 				}
 			}
 
 			if(!GetPVarType(playerid, "textslot")) {
 
-				if(strcmp(inputtext, "Remove All", true) == 0) return ReloadFurniture(playerid);
+				if(strcmp(inputtext, "Xoa het", true) == 0) return ReloadFurniture(playerid);
 
 				szMiscArray[0] = 0;
 				SetPVarInt(playerid, "textslot", listitem);
@@ -416,9 +416,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						//for(new i; i < sizeof(szFurnitureTextures); ++i) format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, szFurnitureTextures[i][0]);
 						//return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Furniture Menu | Texture Lab", szMiscArray, "Select", "Cancel");
 						SetPVarInt(playerid, "studorfind", 1);
-						return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Furniture Menu | Texturing", "Texture Studio\nSearch Texture", "Select", "Cancel");
+						return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Menu noi that | Texture", "Texture Studio\nTim texture", "Chon", "Huy");
 					}
-					case 1: return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_INPUT, "Furniture Menu | Color Lab", "Please enter a HEX color code.", "Select", "Cancel");
+					case 1: return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_INPUT, "Menu noi that | Pha mau", "Nhap ma mau HEX.", "Chon", "Huy");
 				}
 			}
 			else {
@@ -438,7 +438,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				DeletePVar(playerid, PVAR_FURNITURE_SLOT);
 				DeletePVar(playerid, "textslot");
 				DeletePVar(playerid, "color");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture]: {CCCCCC}You successfully painted the furniture.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture]: {CCCCCC}Ban da son noi that thanh cong.");
 				return 1;
 			}
 		}
@@ -450,12 +450,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				new uPlayer;
 				sscanf(inputtext, "u", uPlayer);
-				if(!IsPlayerConnected(uPlayer)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid player id.");
+				if(!IsPlayerConnected(uPlayer)) return SendClientMessageEx(playerid, COLOR_GRAD1, "ID nguoi choi khong hop le.");
 
 				SetPVarInt(playerid, "PRMBLD", uPlayer);
-				format(szMiscArray, sizeof(szMiscArray), "[Furniture]: {DDDDDD}Which house would like like to permit {FFFF00}%s {DDDDDD}to build in?", GetPlayerNameEx(uPlayer));
+				format(szMiscArray, sizeof(szMiscArray), "[Furniture]: {DDDDDD}Ban muon cho phep {FFFF00}%s {DDDDDD}xay dung trong nha nao?", GetPlayerNameEx(uPlayer));
 				SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
-				ShowPlayerDialogEx(playerid, DIALOG_PERMITBUILDER, DIALOG_STYLE_LIST, "Furniture | Permit Builder", "House 1\nHouse 2\nHouse3", "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_PERMITBUILDER, DIALOG_STYLE_LIST, "Noi that | Cap quyen xay", "Nha 1\nNha 2\nNha3", "Chon", "Huy");
 			}
 			else {
 
@@ -463,26 +463,26 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				switch(listitem) {
 					case 0: {
-						if(PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have a house in this slot."), DeletePVar(playerid, "PRMBLD");
+						if(PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co nha tai o nay."), DeletePVar(playerid, "PRMBLD");
 						iHouseID = PlayerInfo[playerid][pPhousekey];
 					}
 					case 1: {
-						if(PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have a house in this slot."), DeletePVar(playerid, "PRMBLD");
+						if(PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co nha tai o nay."), DeletePVar(playerid, "PRMBLD");
 						iHouseID = PlayerInfo[playerid][pPhousekey2];
 					}
 					case 2: {
-						if(PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have a house in this slot."), DeletePVar(playerid, "PRMBLD");
+						if(PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co nha tai o nay."), DeletePVar(playerid, "PRMBLD");
 						iHouseID = PlayerInfo[playerid][pPhousekey3];
 					}
-					default: return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid house ID."), DeletePVar(playerid, "PRMBLD");
+					default: return SendClientMessageEx(playerid, COLOR_GRAD1, "ID nha khong hop le."), DeletePVar(playerid, "PRMBLD");
 				}
 
 				new giveplayerid = GetPVarInt(playerid, "PRMBLD");
 				PlayerInfo[giveplayerid][pHouseBuilder] = iHouseID;
 
 				DeletePVar(playerid, "PRMBLD");
-				SendClientMessageEx(giveplayerid, COLOR_YELLOW, "%s granted you the permission to build in their house. Your previous home permissions have been replaced.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You have granted %s the permission to build in your house.", GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(giveplayerid, COLOR_YELLOW, "%s da cho phep ban xay trong nha cua ho. Quyen tai nha truoc da bi thay the.", GetPlayerNameEx(playerid));
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Ban da cho phep %s xay trong nha cua minh.", GetPlayerNameEx(giveplayerid));
 			}
 		}
 		case DIALOG_FURNITURE_DESCONFIRM: {
@@ -490,11 +490,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response) {
 				
 				new iHouseID = GetHouseID(playerid);
-				if(iHouseID == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a house.");
+				if(iHouseID == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o trong nha.");
 				for(new i; i < MAX_FURNITURE_SLOTS; ++i) DestroyFurniture(iHouseID, i);
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You successfully destroyed all the house's furniture.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Ban da pha huy tat ca noi that cua nha.");
 			}
-			else SendClientMessageEx(playerid, COLOR_GRAD1, "You cancelled destroying all the house's furniture.");
+			else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da huy pha huy tat ca noi that cua nha.");
 		}
 	}
 	return 0;
@@ -511,17 +511,17 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 			iData;
 
 		iData = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_EXTRA_ID);
-		if(iHouseID != iData) return SendClientMessageEx(playerid, COLOR_GRAD1, "This object is not a piece of furniture.");
+		if(iHouseID != iData) return SendClientMessageEx(playerid, COLOR_GRAD1, "Object nay khong phai noi that.");
 		for(i = 0; i < MAX_FURNITURE_SLOTS; ++i) if(HouseInfo[iHouseID][hFurniture][i] == objectid) break;
 
 		if(IsValidFurniture(iHouseID, i, 1)) {
 
 			DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][i]);
 			DeletePVar(playerid, "copdestroyfur");
-			format(szMiscArray, sizeof(szMiscArray), "** %s destroyed a piece of furniture.", GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "** %s da pha huy mot mon noi that.", GetPlayerNameEx(playerid));
 			SendGroupMessage(GROUP_TYPE_LEA, COLOR_DBLUE, szMiscArray);
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD1, "You didn't specify a piece of furniture.");
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban chua chon noi that.");
 	}
 	if(GetPVarType(playerid, PVAR_FURNITURE)) {
 
@@ -532,16 +532,16 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 			iData;
 
 		iData = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_EXTRA_ID);
-		if(iHouseID != iData) return SendClientMessageEx(playerid, COLOR_GRAD1, "This object is not a piece of furniture.");
+		if(iHouseID != iData) return SendClientMessageEx(playerid, COLOR_GRAD1, "Object nay khong phai noi that.");
 		for(i = 0; i < MAX_FURNITURE_SLOTS; ++i) if(HouseInfo[iHouseID][hFurniture][i] == objectid) break;
 
 		if(GetPVarType(playerid, "SellFurniture")) { 
 
 			SetPVarInt(playerid, PVAR_FURNITURE_SLOT, i);
-			format(szMiscArray, sizeof(szMiscArray), "Are you sure you want to sell the %s for $%s?", 
+			format(szMiscArray, sizeof(szMiscArray), "Ban chac chan muon ban %s voi gia $%s?", 
 				GetFurnitureName(GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][i])), number_format(GetFurniturePrice(GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][i]))));
 			
-			ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_SELL, DIALOG_STYLE_MSGBOX, "Furniture Menu | Confirm", szMiscArray, "Sell", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_SELL, DIALOG_STYLE_MSGBOX, "Menu noi that | Xac nhan", szMiscArray, "Ban", "Huy");
 			return 1;
 		}
 		else if(GetPVarType(playerid, "paint")) {
@@ -561,8 +561,8 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 			//ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Furniture Menu | Texture Slot", "Slot 1\nSlot 2\nSlot 3\nSlot 4\nSlot 5\n{EE0000}Remove All", "Select", "Cancel");
 
 			// New texture browser on the object:
-			SendClientMessageEx(playerid, COLOR_GRAD1, "** Use ~k~~GROUP_CONTROL_BWD~ and ~k~~CONVERSATION_NO~ to browse. Press ~k~~CONVERSATION_YES~ to choose.");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "** Press ~k~~PED_LOOKBEHIND~ to cancel. Press ~k~~PED_DUCK~ to remove all textures.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "** Dung ~k~~GROUP_CONTROL_BWD~ va ~k~~CONVERSATION_NO~ de duyet. Nhan ~k~~CONVERSATION_YES~ de chon.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "** Nhan ~k~~PED_LOOKBEHIND~ de huy. Nhan ~k~~PED_DUCK~ de xoa het texture.");
 			PlayerTextureMenuInfo[playerid][ptextm_TPreviewState] = PREVIEW_STATE_SELECT;
 			textm_SelectedTile[playerid] = 0;
 
@@ -590,9 +590,9 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 				}
 				*/
 			}
-			PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][2], "Slot: 1");
+			PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][2], "O: 1");
 			PlayerTextDrawShow(playerid, Furniture_PTD[playerid][2]);
-			format(szMiscArray, sizeof(szMiscArray), "Name: %s", szTextureName[0]);
+			format(szMiscArray, sizeof(szMiscArray), "Ten: %s", szTextureName[0]);
 			PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][3], szMiscArray);
 			PlayerTextDrawShow(playerid, Furniture_PTD[playerid][3]);
 			CancelSelectTextDraw(playerid);
@@ -629,7 +629,7 @@ timer FurnitureEditObject[5000](playerid) {
 		DeletePVar(playerid, "furnfirst");
 		new iHouseID = GetPVarInt(playerid, PVAR_INHOUSE);
 		Player_StreamPrep(playerid, HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ], FREEZE_TIME);
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You went too far away.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da di qua xa.");
 		return 1;
 	}
 	if(fPos[5] > (fPos[2] + 2.0)) {
@@ -638,7 +638,7 @@ timer FurnitureEditObject[5000](playerid) {
 		DeletePVar(playerid, "furnfirst");
 		new iHouseID = GetPVarInt(playerid, PVAR_INHOUSE);
 		Player_StreamPrep(playerid, HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ], FREEZE_TIME);
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You went too far away.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da di qua xa.");
 		return 1;
 	}
 	return 1;
@@ -846,11 +846,11 @@ FurnitureMenu(playerid, menu = 0) {
 	if(iHouseID == INVALID_HOUSE_ID) {
 
 		pc_cmd_furniture(playerid, "");
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a house anymore.");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong con o trong nha.");
 	}
 	if(!HousePermissionCheck(playerid, iHouseID)) {
 		pc_cmd_furniture(playerid, "");
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not allowed to modify this house's furniture.");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong duoc phep sua noi that nha nay.");
 	}
 	switch(menu) {
 
@@ -901,7 +901,7 @@ FurnitureMenu(playerid, menu = 0) {
 		}
 		case 1: { // Buy furniture.
 
-			return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_BUY, DIALOG_STYLE_LIST, "Furniture Menu | Categories", FurnitureCatalog(), "Select", "Back");
+			return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_BUY, DIALOG_STYLE_LIST, "Menu noi that | Danh muc", FurnitureCatalog(), "Chon", "Quay lai");
 		}
 		case 2: { // Edit your own furniture.
 
@@ -914,8 +914,8 @@ FurnitureMenu(playerid, menu = 0) {
 				if(IsValidFurniture(iHouseID, i, 1)) format(szMiscArray, sizeof(szMiscArray), "%s[%d] %s\n", szMiscArray, i, GetFurnitureName(Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][i], E_STREAMER_MODEL_ID)));
 				else format(szMiscArray, sizeof(szMiscArray), "%s[%d] %s\n", szMiscArray, i, "None");
 			}
-			if(isnull(szMiscArray)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have any furniture.");
-			return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_EDIT, DIALOG_STYLE_LIST, "Furniture Menu | Edit", szMiscArray, "Select", "Cancel");
+			if(isnull(szMiscArray)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co noi that.");
+			return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_EDIT, DIALOG_STYLE_LIST, "Menu noi that | Sua", szMiscArray, "Chon", "Huy");
 		}
 		case 3: { // Sell furniture.
 
@@ -981,7 +981,7 @@ GetFurniturePrice(iModelID) {
 SellFurniture(playerid, iHouseID, iSlotID, iPrice) {
 	// TODO: Confirm the refund policy and credit the approved amount when furniture is sold.
 
-	format(szMiscArray, sizeof(szMiscArray), "You have sold the %s for $%s", GetFurnitureName(GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][iSlotID])), number_format(iPrice));
+	format(szMiscArray, sizeof(szMiscArray), "Ban da ban %s voi gia $%s", GetFurnitureName(GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][iSlotID])), number_format(iPrice));
 	SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
 	DestroyFurniture(iHouseID, iSlotID);
 }
@@ -1025,7 +1025,7 @@ Furniture_ResetPVars(playerid) {
 
 FurniturePermit(playerid) {
 
-	ShowPlayerDialogEx(playerid, DIALOG_PERMITBUILDER, DIALOG_STYLE_INPUT, "Furniture | Permit Builder", "Enter the ID or name of the person you would like to permit to build in your house.", "Select", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_PERMITBUILDER, DIALOG_STYLE_INPUT, "Noi that | Cap quyen xay", "Nhap ID hoac ten nguoi ban muon cho phep xay trong nha.", "Chon", "Huy");
 
 }
 
@@ -1112,33 +1112,33 @@ CreateFurniture(playerid, iHouseID, iSlotID, iModelID, Float:X, Float:Y, Float:Z
 	if(iHouseID < 0 || iHouseID >= MAX_HOUSES || GetHouseID(playerid) != iHouseID || !GetPVarInt(playerid, PVAR_FURNITURE)
 		|| GetPVarInt(playerid, PVAR_INHOUSE) != iHouseID || !HousePermissionCheck(playerid, iHouseID)) 
 	{
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not allowed to buy furniture in this house."), 0;
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong duoc phep mua noi that trong nha nay."), 0;
 	}
 
 	if(HouseInfo[iHouseID][hFurnitureLoaded] != 1) {
 		House_VistorCheck(iHouseID);
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "This house's furniture is still loading. Please try again."), 0;
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Noi that nha nay van dang tai. Hay thu lai."), 0;
 	}
 
 	if(iSlotID < 0 || iSlotID >= MAX_FURNITURE_SLOTS || iSlotID >= GetMaxFurnitureSlots(playerid) || IsValidFurniture(iHouseID, iSlotID, 0)) {
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have any furniture slots left."), 0;
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da het o noi that trong."), 0;
 	}
 
 	new entry = GetFurnitureCatalogIndex(iModelID);
-	if(entry == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This furniture is no longer in the catalog."), 0;
+	if(entry == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Noi that nay khong con trong danh muc."), 0;
 	if(PlayerInfo[playerid][pDonateRank] < arrFurnitureCatalog[entry][fc_iVIP] && PlayerInfo[playerid][pAdmin] < 4)
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "Your VIP level is not high enough to buy this piece of furniture."), 0;
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Cap VIP cua ban khong du de mua noi that nay."), 0;
 	
 	new price = arrFurnitureCatalog[entry][fc_iPrice], materials = price / 10;
 	if(price <= 0 || GetPlayerCash(playerid) < price)
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough money to buy this."), 0;
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong du tien de mua."), 0;
 	
 	if(PlayerInfo[playerid][pMats] < materials)
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough materials to make this."), 0;
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong du vat lieu de che tao."), 0;
 	
 	if(!FurnitureSystem || restarting || !gAccountsInnoDB || !gFurnitureInnoDB || mysql_unprocessed_queries(MainPipeline)
 		|| GetPVarInt(playerid, "FurniturePurchaseUncertain"))
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "Furniture storage is unavailable or busy. Please try again."), 0;
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Kho noi that khong kha dung hoac dang ban. Hay thu lai."), 0;
 
 	new account = GetPlayerSQLId(playerid), cash = GetPlayerCash(playerid) - price, mats = PlayerInfo[playerid][pMats] - materials;
 	new query[1024], connection[24];
@@ -1149,17 +1149,17 @@ CreateFurniture(playerid, iHouseID, iSlotID, iModelID, Float:X, Float:Y, Float:Z
 	}
 	
 	if(!connection[0]) {
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "The furniture purchase was not confirmed."), 0;
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Giao dich mua noi that chua duoc xac nhan."), 0;
 	}
 	
 	new objectid = CreateDynamicObject(iModelID, X, Y, Z, RX, RY, RZ, HouseInfo[iHouseID][hIntVW], HouseInfo[iHouseID][hIntIW]);
-	if(!IsValidDynamicObject(objectid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "The furniture object could not be created."), 0;
+	if(!IsValidDynamicObject(objectid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the tao object noi that."), 0;
 	new areaid = INVALID_STREAMER_ID;
 	if(IsADoor(iModelID)) {
 		areaid = CreateDynamicSphere(X, Y, Z, 5.0, HouseInfo[iHouseID][hIntVW], HouseInfo[iHouseID][hIntIW]);
 		if(!IsValidDynamicArea(areaid)) {
 			DestroyDynamicObject(objectid);
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "The furniture door area could not be created."), 0;
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the tao vung cua noi that."), 0;
 		}
 		new data[3];
 		data[0] = iHouseID;
@@ -1201,14 +1201,14 @@ CreateFurniture(playerid, iHouseID, iSlotID, iModelID, Float:X, Float:Y, Float:Z
 		if(!committed) {
 			SetPVarInt(playerid, "FurniturePurchaseUncertain", 1);
 			HouseInfo[iHouseID][hFurnitureLoaded] = 0;
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Your purchase could not be verified. Reconnect to reload your saved data.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the xac minh giao dich. Hay ket noi lai de tai du lieu da luu.");
 			Kick(playerid);
 		}
 	}
 	if(!committed) {
 		if(IsValidDynamicArea(areaid)) DestroyDynamicArea(areaid);
 		DestroyDynamicObject(objectid);
-		if(failed) SendClientMessageEx(playerid, COLOR_GRAD1, "The furniture purchase was not confirmed. Your money and materials were not charged.");
+		if(failed) SendClientMessageEx(playerid, COLOR_GRAD1, "Giao dich mua noi that chua duoc xac nhan. Tien va vat lieu cua ban chua bi tru.");
 		return 0;
 	}
 	HouseInfo[iHouseID][hFurniture][iSlotID] = objectid;
@@ -1362,7 +1362,7 @@ FurniturePlayerTDInit(playerid) {
 	PlayerTextDrawSetPreviewRot(playerid,  Furniture_PTD[playerid][1], -16.000000, 0.000000, -55.000000, 1.000000);
 	PlayerTextDrawSetSelectable(playerid, Furniture_PTD[playerid][1], false);
 
-	Furniture_PTD[playerid][2] = CreatePlayerTextDraw(playerid,627.000000, 287.000000, "Slot: 1");
+	Furniture_PTD[playerid][2] = CreatePlayerTextDraw(playerid,627.000000, 287.000000, "O: 1");
 	PlayerTextDrawAlignment(playerid, Furniture_PTD[playerid][2], 3);
 	PlayerTextDrawBackgroundColor(playerid, Furniture_PTD[playerid][2], 255);
 	PlayerTextDrawFont(playerid, Furniture_PTD[playerid][2], 2);
@@ -1480,7 +1480,7 @@ FurnitureTDInit() {
 	TextDrawTextSize(Furniture_TD[6], 32.000000, 36.000000);
 	TextDrawSetSelectable(Furniture_TD[6], true);
 
-	Furniture_TD[7] = TextDrawCreate(528.000000, 339.000000, "Building mode");
+	Furniture_TD[7] = TextDrawCreate(528.000000, 339.000000, "Che do xay");
 	TextDrawBackgroundColor(Furniture_TD[7], 0);
 	TextDrawFont(Furniture_TD[7], 5);
 	TextDrawLetterSize(Furniture_TD[7], 0.169999, 1.200000);
@@ -1496,7 +1496,7 @@ FurnitureTDInit() {
 	TextDrawSetSelectable(Furniture_TD[7], true);
 
 	
-	Furniture_TD[8] = TextDrawCreate(515.000000, 372.000000, "Sell Mode");
+	Furniture_TD[8] = TextDrawCreate(515.000000, 372.000000, "Che do ban");
 	TextDrawBackgroundColor(Furniture_TD[8], 0);
 	TextDrawFont(Furniture_TD[8], 5);
 	TextDrawLetterSize(Furniture_TD[8], 0.169999, 1.200000);
@@ -1511,7 +1511,7 @@ FurnitureTDInit() {
 	TextDrawSetPreviewRot(Furniture_TD[8], 0.000000, 0.000000, 180.000000, 1.000000);
 	TextDrawSetSelectable(Furniture_TD[8], true);
 
-	Furniture_TD[9] = TextDrawCreate(570.000000, 324.000000, "Buy Mode");
+	Furniture_TD[9] = TextDrawCreate(570.000000, 324.000000, "Che do mua");
 	TextDrawBackgroundColor(Furniture_TD[9], 0);
 	TextDrawFont(Furniture_TD[9], 5);
 	TextDrawLetterSize(Furniture_TD[9], 0.169999, 1.200000);
@@ -1526,7 +1526,7 @@ FurnitureTDInit() {
 	TextDrawSetPreviewRot(Furniture_TD[9], 0.000000, 0.000000, 180.000000, 1.000000);
 	TextDrawSetSelectable(Furniture_TD[9], true);
 
-	Furniture_TD[10] = TextDrawCreate(602.000000, 332.000000, "Permit Builder");
+	Furniture_TD[10] = TextDrawCreate(602.000000, 332.000000, "Cap quyen xay");
 	TextDrawBackgroundColor(Furniture_TD[10], 0);
 	TextDrawFont(Furniture_TD[10], 5);
 	TextDrawLetterSize(Furniture_TD[10], 0.169999, 1.200000);
@@ -1580,7 +1580,7 @@ FurnitureTDInit() {
 	TextDrawTextSize(Furniture_TD[13], 12.000000, 12.000000);
 	TextDrawSetSelectable(Furniture_TD[13], true);
 
-	Furniture_TD[14] = TextDrawCreate(604.000000, 425.000000, "Info");
+	Furniture_TD[14] = TextDrawCreate(604.000000, 425.000000, "Thong tin");
 	TextDrawBackgroundColor(Furniture_TD[14], 0);
 	TextDrawFont(Furniture_TD[14], 5);
 	TextDrawLetterSize(Furniture_TD[14], 0.169999, 1.200000);
@@ -1681,7 +1681,7 @@ FurnitureTDInit() {
 	TextDrawSetPreviewRot(Furniture_TD[20], -16.000000, 0.000000, 0.000000, 1.000000);
 	TextDrawSetSelectable(Furniture_TD[20], true);
 
-	Furniture_TD[21] = TextDrawCreate(540.000000, 310.000000, "Paint");
+	Furniture_TD[21] = TextDrawCreate(540.000000, 310.000000, "Son");
 	TextDrawBackgroundColor(Furniture_TD[21], -256);
 	TextDrawFont(Furniture_TD[21], 5);
 	TextDrawLetterSize(Furniture_TD[21], 0.169999, 1.200000);
@@ -1696,7 +1696,7 @@ FurnitureTDInit() {
 	TextDrawSetPreviewRot(Furniture_TD[21], 0.000000, 0.000000, 180.000000, 1.000000);
 	TextDrawSetSelectable(Furniture_TD[21], true);
 
-	Furniture_TD[22] = TextDrawCreate(517.000000, 333.000000, "Build");
+	Furniture_TD[22] = TextDrawCreate(517.000000, 333.000000, "Xay");
 	TextDrawBackgroundColor(Furniture_TD[22], -256);
 	TextDrawFont(Furniture_TD[22], 5);
 	TextDrawLetterSize(Furniture_TD[22], 0.169999, 1.200000);
@@ -1711,7 +1711,7 @@ FurnitureTDInit() {
 	TextDrawSetPreviewRot(Furniture_TD[22], 0.000000, 45.000000, 0.000000, 1.000000);
 	TextDrawSetSelectable(Furniture_TD[22], true);
 
-	Furniture_TD[23] = TextDrawCreate(523.000000, 426.000000, "Building Mode");
+	Furniture_TD[23] = TextDrawCreate(523.000000, 426.000000, "Che do xay");
 	TextDrawAlignment(Furniture_TD[23], 2);
 	TextDrawBackgroundColor(Furniture_TD[23], 255);
 	TextDrawFont(Furniture_TD[23], 2);
@@ -1722,7 +1722,7 @@ FurnitureTDInit() {
 	TextDrawSetShadow(Furniture_TD[23], 1);
 	TextDrawSetSelectable(Furniture_TD[23], true);
 
-	Furniture_TD[24] = TextDrawCreate(448.000000, 437.000000, "Use the CROUCH & SPRINT key to move the object to you.");
+	Furniture_TD[24] = TextDrawCreate(448.000000, 437.000000, "Dung phim CROUCH & SPRINT de dua object den cho ban.");
 	TextDrawAlignment(Furniture_TD[24], 2);
 	TextDrawBackgroundColor(Furniture_TD[24], 255);
 	TextDrawFont(Furniture_TD[24], 2);
@@ -2096,10 +2096,10 @@ GetFurnitureColorCode(id) {
 
 CMD:furniturehelp(playerid, const params[]) {
 
-	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/furniture | /myslots | /furnitureresetpos | /permitbuilder | /revokebuilders | /destroyallfurniture | {FF2222}Press ~k~~PED_LOOKBEHIND~ (twice) to toggle the mouse cursor.");
-	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/unfurnishhouse (remove default GTA:SA furniture) | /furnishhouse (add default GTA:SA furniture)");
-	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}Blue House = Buy Furniture | Hammer = Build Mode (wrench = position, bucket = painting). | !-icon = Panic Button.");
-	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}Dollar Icon = Sell Furniture | Green House = List of your furniture. | Red Puppets = Assign Build Permissions to Player.");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/furniture | /myslots | /furnitureresetpos | /permitbuilder | /revokebuilders | /destroyallfurniture | {FF2222}Nhan ~k~~PED_LOOKBEHIND~ (hai lan) de bat/tat con tro chuot.");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/unfurnishhouse (xoa noi that GTA:SA mac dinh) | /furnishhouse (them noi that GTA:SA mac dinh)");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}Nha xanh duong = Mua noi that | Bua = Che do xay (co le = vi tri, xo = son). | Bieu tuong ! = Nut cuu nguy.");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}Bieu tuong Dollar = Ban noi that | Nha xanh la = Danh sach noi that. | Hinh nguoi do = Cap quyen xay cho nguoi choi.");
 	if(IsAdminLevel(playerid, ADMIN_GENERAL, 0)) SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {FFFF00}/destroyfuniture | /destroyallfurniture | /rehashcatalog");
 	return 1;
 }
@@ -2110,12 +2110,12 @@ CMD:furnituresystem(playerid, params[]) {
 
 	if(FurnitureSystem) {
 		FurnitureSystem = 0;
-		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) disabled the Furniture System", GetPlayerNameEx(playerid), playerid);
+		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) da tat Furniture System", GetPlayerNameEx(playerid), playerid);
 		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 	}
 	else {
 		FurnitureSystem = 1;
-		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) enabled the Furniture System", GetPlayerNameEx(playerid), playerid);
+		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) da bat Furniture System", GetPlayerNameEx(playerid), playerid);
 		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 	}
 	return 1;
@@ -2123,7 +2123,7 @@ CMD:furnituresystem(playerid, params[]) {
 
 CMD:myslots(playerid, params[]) {
 
-	SendClientMessageEx(playerid, COLOR_GRAD1, "** You have %d furniture slots you can use.", GetMaxFurnitureSlots(playerid));
+	SendClientMessageEx(playerid, COLOR_GRAD1, "** Ban con %d o noi that co the dung.", GetMaxFurnitureSlots(playerid));
 	return 1;
 }
 
@@ -2177,8 +2177,8 @@ CMD:furniture(playerid, const params[]) {
 	}			
 	else {
 		new i = GetHouseID(playerid);
-		if(i == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a house.");
-		if(!HousePermissionCheck(playerid, i)) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have the permission to edit this house's furniture.");
+		if(i == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban phai o trong nha.");
+		if(!HousePermissionCheck(playerid, i)) return SendClientMessage(playerid, COLOR_GRAD1, "Ban khong co quyen sua noi that nha nay.");
 		FurnitureMenu(playerid, 0);
 		SetPVarInt(playerid, PVAR_INHOUSE, i);
 	}
@@ -2194,23 +2194,23 @@ CMD:setfurnitureslots(playerid, params[]) {
 		new uPlayer,
 			iAmount;
 
-		if(sscanf(params, "ud", uPlayer, iAmount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /setfurnitureslots [playerid] [slots]");
-		if(!IsPlayerConnected(uPlayer)) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player is not online.");
-		if(!(0 < iAmount < MAX_FURNITURE_SLOTS)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount.");
+		if(sscanf(params, "ud", uPlayer, iAmount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /setfurnitureslots [playerid] [slots]");
+		if(!IsPlayerConnected(uPlayer)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi nay khong online.");
+		if(!(0 < iAmount < MAX_FURNITURE_SLOTS)) return SendClientMessageEx(playerid, COLOR_GRAD1, "So luong khong hop le.");
 		
 		PlayerInfo[uPlayer][pFurnitureSlots] = iAmount;
 
-		SendClientMessageEx(uPlayer, COLOR_YELLOW, "Administrator %s set your furniture slots to %d.", GetPlayerNameEx(playerid), iAmount);
+		SendClientMessageEx(uPlayer, COLOR_YELLOW, "Administrator %s da dat so o noi that cua ban thanh %d.", GetPlayerNameEx(playerid), iAmount);
 
-		SendClientMessageEx(playerid, COLOR_YELLOW, "You set %s's furniture slots to %d.", GetPlayerNameEx(uPlayer), iAmount);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Ban da dat so o noi that cua %s thanh %d.", GetPlayerNameEx(uPlayer), iAmount);
 
-		format(szMiscArray, sizeof(szMiscArray), "Administrator %s set %s's furniture slots to %d.", GetPlayerNameEx(playerid), GetPlayerNameEx(uPlayer), iAmount);
+		format(szMiscArray, sizeof(szMiscArray), "Administrator %s da dat so o noi that cua %s thanh %d.", GetPlayerNameEx(playerid), GetPlayerNameEx(uPlayer), iAmount);
 		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 
 		format(szMiscArray, sizeof(szMiscArray), "%s set %s's (%d) furniture slots to %d.", GetPlayerNameExt(playerid), GetPlayerNameExt(uPlayer), PlayerInfo[uPlayer][pId], iAmount);
 		Log("logs/furniture.log", szMiscArray);
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have the authority to use this command.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -2219,9 +2219,9 @@ CMD:destroyallfurniture(playerid, params[]) {
 	if(!FurnitureSystem) return 1;
 	
 	new iHouseID = GetHouseID(playerid);
-	if(iHouseID == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a house.");
-	if(HouseInfo[iHouseID][hOwnerID] != GetPlayerSQLId(playerid) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Only the house owner can do this.");
-	ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_DESCONFIRM, DIALOG_STYLE_MSGBOX, "Destroy Furniture", "{FFFFFF}Are you sure you want to {FF0000}permantenly destroy {FFFFFF}this house's furniture?", "Yes", "No");
+	if(iHouseID == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o trong nha.");
+	if(HouseInfo[iHouseID][hOwnerID] != GetPlayerSQLId(playerid) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Chi chu nha moi duoc lam viec nay.");
+	ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_DESCONFIRM, DIALOG_STYLE_MSGBOX, "Pha huy noi that", "{FFFFFF}Ban chac chan muon {FF0000}pha huy vinh vien {FFFFFF}noi that nha nay?", "Co", "Khong");
 	return 1;
 }
 
@@ -2234,7 +2234,7 @@ CMD:unfurnishhouse(playerid, params[]) {
 		fDistance;
 
 	// if(!HousePermissionCheck(playerid, iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this in this house.");
-	if(HouseInfo[iHouseID][hOwnerID] != GetPlayerSQLId(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Only the house owner can do this.");
+	if(HouseInfo[iHouseID][hOwnerID] != GetPlayerSQLId(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Chi chu nha moi duoc lam viec nay.");
 	for(new i; i < sizeof(InteriorsList); ++i) {
 		fDistance = floatround(GetDistanceBetweenPoints(HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ],
 			InteriorsList[i][0], InteriorsList[i][1], InteriorsList[i][2]), floatround_round);
@@ -2246,9 +2246,9 @@ CMD:unfurnishhouse(playerid, params[]) {
 		}
 	}
 
-	if(fHouseZ == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This task cannot be completed for your house interior type.");
+	if(fHouseZ == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the lam viec nay voi loai noi that nha cua ban.");
 
-	if(HouseInfo[iHouseID][hInteriorZ] > fHouseZ + 25.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your house is already unfurnished.");
+	if(HouseInfo[iHouseID][hInteriorZ] > fHouseZ + 25.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nha cua ban da bo noi that san co.");
 	HouseInfo[iHouseID][hInteriorZ] = fHouseZ + 30;
 	HouseInfo[iHouseID][hCustomInterior] = 1;
 	SaveHouse(iHouseID);
@@ -2289,7 +2289,7 @@ CMD:unfurnishhouse(playerid, params[]) {
 
 		if(PlayerInfo[p][pVW] == PlayerInfo[playerid][pVW] && ProxDetectorS(50, playerid, p)) {
 
-			SendClientMessageEx(p, COLOR_GRAD1, "You will be moved to the unfurnished version of the house.");
+			SendClientMessageEx(p, COLOR_GRAD1, "Ban se duoc chuyen den phien ban nha khong co noi that san co.");
 			defer Furniture_HousePosition(p, iHouseID);
 		}
 	}
@@ -2305,7 +2305,7 @@ CMD:furnishhouse(playerid, params[]) {
 		fDistance;
 
 	// if(!HousePermissionCheck(playerid, iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this in this house.");
-	if(HouseInfo[iHouseID][hOwnerID] != GetPlayerSQLId(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Only the house owner can do this.");
+	if(HouseInfo[iHouseID][hOwnerID] != GetPlayerSQLId(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Chi chu nha moi duoc lam viec nay.");
 	for(new i; i < sizeof(InteriorsList); ++i) {
 		fDistance = floatround(GetDistanceBetweenPoints(HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ],
 			InteriorsList[i][0], InteriorsList[i][1], InteriorsList[i][2]), floatround_round);
@@ -2317,8 +2317,8 @@ CMD:furnishhouse(playerid, params[]) {
 		}
 	}
 
-	if(fHouseZ == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This task cannot be completed for your house interior type.");
-	if(HouseInfo[iHouseID][hInteriorZ] < fHouseZ + 25.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your house is already furnished.");
+	if(fHouseZ == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the lam viec nay voi loai noi that nha cua ban.");
+	if(HouseInfo[iHouseID][hInteriorZ] < fHouseZ + 25.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nha cua ban da co noi that san co.");
 	HouseInfo[iHouseID][hInteriorZ] = fHouseZ;
 	HouseInfo[iHouseID][hCustomInterior] = 0;
 	SaveHouse(iHouseID);
@@ -2359,7 +2359,7 @@ CMD:furnishhouse(playerid, params[]) {
 
 		if(PlayerInfo[p][pVW] == PlayerInfo[playerid][pVW] && ProxDetectorS(50, playerid, p)) {
 
-			SendClientMessageEx(p, COLOR_GRAD1, "You will be moved to the unfurnished version of the house.");
+			SendClientMessageEx(p, COLOR_GRAD1, "Ban se duoc chuyen den phien ban nha khong co noi that san co.");
 			defer Furniture_HousePosition(p, iHouseID);
 		}
 	}
@@ -2383,13 +2383,13 @@ CMD:furnitureresetpos(playerid, const params[]) {
 		if(i == INVALID_HOUSE_ID) {
 
 			pc_cmd_furniture(playerid, "");
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a house.");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban phai o trong nha.");
 		}
 
 		new iHouseID = GetPVarInt(playerid, PVAR_INHOUSE);
 		Player_StreamPrep(playerid, HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ], FREEZE_TIME);
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You can only use this when you are falling while positioning a piece of furniture.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Chi dung khi ban dang roi luc dat noi that.");
 	return 1;
 }
 
@@ -2401,9 +2401,9 @@ CMD:destroyfurniture(playerid, params[]) {
 		iSlotID;
 
 	if(!IsAdminLevel(playerid, ADMIN_GENERAL, 1)) return 1;
-	if(iHouseID == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a house");
-	if(sscanf(params, "d", iSlotID)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /destroyfurniture [slot].");
-	if(!IsValidFurniture(iHouseID, iSlotID, 1)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid slot.");
+	if(iHouseID == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o trong nha");
+	if(sscanf(params, "d", iSlotID)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /destroyfurniture [slot].");
+	if(!IsValidFurniture(iHouseID, iSlotID, 1)) return SendClientMessageEx(playerid, COLOR_GRAD1, "O khong hop le.");
 	DestroyFurniture(iHouseID, iSlotID);
 	return 1;
 }
@@ -2413,8 +2413,8 @@ CMD:copdestroy(playerid, params[]) {
 	if(!FurnitureSystem) return 1;
 
 	new iHouseID = GetHouseID(playerid);
-	if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not a cop.");
-	if(iHouseID == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a house");
+	if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong phai canh sat.");
+	if(iHouseID == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o trong nha");
 	SetPVarInt(playerid, "copdestroyfur", 1);
 	SelectObject(playerid);
 	return 1;
@@ -2425,33 +2425,33 @@ CMD:revokebuilders(playerid, params[]) {
 	if(!FurnitureSystem) return 1;
 
 	new iHouseID;
-	if(sscanf(params, "d", iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /revokebuilder [house (1, 2, 3)]");
+	if(sscanf(params, "d", iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /revokebuilder [house (1, 2, 3)]");
 	switch(iHouseID) {
 		case 1: {
-			if(PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This house slot is not being used.");
+			if(PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "O nha nay khong duoc su dung.");
 			iHouseID = PlayerInfo[playerid][pPhousekey];
 		}
 		case 2: {
-			if(PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This house slot is not being used.");
+			if(PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "O nha nay khong duoc su dung.");
 			iHouseID = PlayerInfo[playerid][pPhousekey2];
 		}
 		case 3: {
-			if(PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This house slot is not being used.");
+			if(PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "O nha nay khong duoc su dung.");
 			iHouseID = PlayerInfo[playerid][pPhousekey3];
 		}
-		default: return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid house ID.");
+		default: return SendClientMessageEx(playerid, COLOR_GRAD1, "ID nha khong hop le.");
 	}
 
 	foreach(new i : Player) if(PlayerInfo[playerid][pHouseBuilder] == iHouseID) PlayerInfo[playerid][pHouseBuilder] = INVALID_HOUSE_ID;
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `id` FROM `accounts` WHERE `HouseBuilder` = '%d'", iHouseID);
 	mysql_tquery(MainPipeline, szMiscArray, "OnRevokeBuildPerms", "");
-	SendClientMessageEx(playerid, COLOR_YELLOW, "All builder's permissions have been revoked.");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Da thu hoi quyen cua tat ca nguoi xay.");
 	return 1;
 }
 
 CMD:door(playerid, params[]) {
 	
-	if(GetHouseID(playerid) == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a house.");
+	if(GetHouseID(playerid) == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o trong nha.");
 	
 	if(IsPlayerInAnyDynamicArea(playerid)) {
 
@@ -2497,7 +2497,7 @@ CMD:rehashcatalog(playerid, params[]) {
 
 	if(IsAdminLevel(playerid, ADMIN_HEAD, 1)) {
 		FurnitureListInit();
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Rehasing the furniture catalog...");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Dang tai lai danh muc noi that...");
 	}
 	return 1;
 }
@@ -2687,10 +2687,10 @@ OnPlayerKeyStateChange3DMenu(playerid, newkeys, oldkeys) {
 						else SetDynamicObjectMaterial(iObjectID, iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], 0xFF999999);						
 					}
 				}
-				format(szMiscArray, sizeof(szMiscArray), "Slot: %d", textm_SelectedTile[playerid]+1);
+				format(szMiscArray, sizeof(szMiscArray), "O: %d", textm_SelectedTile[playerid]+1);
 				PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][2], szMiscArray);
 				PlayerTextDrawShow(playerid, Furniture_PTD[playerid][2]);
-				format(szMiscArray, sizeof(szMiscArray), "Name: %s", szTextureName[textm_SelectedTile[playerid]]);
+				format(szMiscArray, sizeof(szMiscArray), "Ten: %s", szTextureName[textm_SelectedTile[playerid]]);
 				PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][3], szMiscArray);
 				PlayerTextDrawShow(playerid, Furniture_PTD[playerid][3]);
 				return 1;
@@ -2716,10 +2716,10 @@ OnPlayerKeyStateChange3DMenu(playerid, newkeys, oldkeys) {
 						else SetDynamicObjectMaterial(iObjectID, iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], 0xFF999999);						
 					}
 				}
-				format(szMiscArray, sizeof(szMiscArray), "Slot: %d", textm_SelectedTile[playerid]+1);
+				format(szMiscArray, sizeof(szMiscArray), "O: %d", textm_SelectedTile[playerid]+1);
 				PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][2], szMiscArray);
 				PlayerTextDrawShow(playerid, Furniture_PTD[playerid][2]);
-				format(szMiscArray, sizeof(szMiscArray), "Name: %s", szTextureName[textm_SelectedTile[playerid]]);
+				format(szMiscArray, sizeof(szMiscArray), "Ten: %s", szTextureName[textm_SelectedTile[playerid]]);
 				PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][3], szMiscArray);
 				PlayerTextDrawShow(playerid, Furniture_PTD[playerid][3]);
 				return 1;
@@ -2742,7 +2742,7 @@ OnPlayerKeyStateChange3DMenu(playerid, newkeys, oldkeys) {
 				}
 	
 				SetPVarInt(playerid, "studorfind", 1);
-				ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Furniture Menu | Texturing", "Texture Studio\nSearch Texture\nColor Studio", "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Menu noi that | Texture", "Texture Studio\nTim texture\nColor Studio", "Chon", "Huy");
 				return 1;
 			}
 			if(newkeys == KEY_LOOK_BEHIND) { // Cancel
@@ -2752,7 +2752,7 @@ OnPlayerKeyStateChange3DMenu(playerid, newkeys, oldkeys) {
 				DeletePVar(playerid, "maxtextslots");
 				DeletePVar(playerid, PVAR_FURNITURE_SLOT);
 				DeletePVar(playerid, PVAR_FURNITURE_EDITING);
-				SendClientMessageEx(playerid, COLOR_GRAD1, "** You stopped texturizing the object.");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "** Ban da dung gan texture cho object.");
 				PlayerTextDrawHide(playerid, Furniture_PTD[playerid][2]);
 				PlayerTextDrawHide(playerid, Furniture_PTD[playerid][3]);
 
@@ -2973,9 +2973,9 @@ OnPlayerKeyStateChangeMenu(playerid,newkeys,oldkeys) {
 	    if(PlayerTextureMenuInfo[playerid][ptextm_TPreviewState] == PREVIEW_STATE_ALLTEXTURES) {
 
 			new addt = AddTextureToTheme(playerid, PlayerTextureMenuInfo[playerid][ptextm_CurrTextureIndex] + textm_SelectedTile[playerid]);
-			if(addt >= 0) SendClientMessage(playerid, COLOR_GRAD1, "You successfully added the texture to your theme.");
-			else if(addt == -1) SendClientMessage(playerid, COLOR_GRAD1, "This texture already exists in your theme.");
-			else if(addt == -2) SendClientMessage(playerid, COLOR_GRAD1, "You cannot add more textures to your theme.");
+			if(addt >= 0) SendClientMessage(playerid, COLOR_GRAD1, "Ban da them texture vao bo mau.");
+			else if(addt == -1) SendClientMessage(playerid, COLOR_GRAD1, "Texture nay da co trong bo mau.");
+			else if(addt == -2) SendClientMessage(playerid, COLOR_GRAD1, "Khong the them texture vao bo mau.");
 			return 1;
 		}
 	}
@@ -2996,7 +2996,7 @@ OnPlayerKeyStateChangeMenu(playerid,newkeys,oldkeys) {
 		DeletePVar(playerid, PVAR_FURNITURE_SLOT);
 		DeletePVar(playerid, "textslot");
 		DeletePVar(playerid, "color");
-		SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture]: {CCCCCC}You successfully painted the furniture.");
+		SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture]: {CCCCCC}Ban da son noi that thanh cong.");
 		SelectTextDraw(playerid, 0xF6FBFCFF);
 		return 1;
 

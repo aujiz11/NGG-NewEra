@@ -57,20 +57,20 @@ MetDet_CreateMetDet(playerid)
 			return 1;
 		}
 	}
-	return SendClientMessageEx(playerid, COLOR_GRAD1, "You have reached the maximum metal detector spawn quotum.");
+	return SendClientMessageEx(playerid, COLOR_GRAD1, "Da dat gioi han tao may do kim loai.");
 }
 
 forward MetDet_OnCreateMetDet(playerid, i, Float:X, Float:Y, Float:Z, iVW, iINT);
 public MetDet_OnCreateMetDet(playerid, i, Float:X, Float:Y, Float:Z, iVW, iINT)
 {
-	SendClientMessageEx(playerid, COLOR_WHITE, "Successfully created a Metal Detector with ID %d", i);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Da tao may do kim loai ID %d", i);
 	MetDet_Process(i, X, Y, Z, 0.0, 0.0, 0.0, iVW, iINT);
 	return 1;
 }
 
 MetDet_DeleteMetDet(playerid, i)
 {
-	if(!IsValidDynamicObject(arrMetalDetector[i][metdet_iObjectID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "This is an invalid metal detector ID.");
+	if(!IsValidDynamicObject(arrMetalDetector[i][metdet_iObjectID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "ID may do kim loai khong hop le.");
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "DELETE FROM `metaldetectors` WHERE `id` = %d", i);
 	return mysql_tquery(MainPipeline, szMiscArray, "MetDet_OnDeleteMetDet", "ii", playerid, i);
 }
@@ -78,7 +78,7 @@ MetDet_DeleteMetDet(playerid, i)
 forward MetDet_OnDeleteMetDet(playerid, i);
 public MetDet_OnDeleteMetDet(playerid, i)
 {
-	if(mysql_errno(MainPipeline) == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your query could not be processed.");
+	if(mysql_errno(MainPipeline) == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the xu ly truy van cua ban.");
 	DestroyDynamicObject(arrMetalDetector[i][metdet_iObjectID]);
 	DestroyDynamic3DTextLabel(arrMetalDetector[i][metdet_iTextID]);
 	DestroyDynamicArea(arrMetalDetector[i][metdet_iAreaID]);
@@ -97,12 +97,12 @@ public MetDet_OnCheckMetDets(playerid)
 	new iRows, value;
 	cache_get_row_count(iRows);
 
-	if(!iRows) return SendClientMessageEx(playerid, COLOR_GRAD1, "There are no metaldetectors in the database.");
+	if(!iRows) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong co may do kim loai trong co so du lieu.");
 	for(new row; row < iRows; ++row)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "%sMetal Detector ID: %d\n", szMiscArray, cache_get_value_name_int(row, "id", value));
+		format(szMiscArray, sizeof(szMiscArray), "%sMay do kim loai: %d\n", szMiscArray, cache_get_value_name_int(row, "id", value));
 	}
-	ShowPlayerDialogEx(playerid, DIALOG_METDET_LIST, DIALOG_STYLE_LIST, "Metal Detectors | Listing all", szMiscArray, "Select", "");
+	ShowPlayerDialogEx(playerid, DIALOG_METDET_LIST, DIALOG_STYLE_LIST, "May do kim loai | Danh sach", szMiscArray, "Chon", "");
 	return 1;
 }
 
@@ -138,7 +138,7 @@ MetDet_Process(id, Float:X = 0.0, Float:Y = 0.0, Float:Z = 0.0, Float:RX = 0.0, 
 	if(IsValidDynamicObject(arrMetalDetector[id][metdet_iObjectID])) DestroyDynamicObject(arrMetalDetector[id][metdet_iObjectID]);
 	arrMetalDetector[id][metdet_iObjectID] = CreateDynamicObject(1892, X-0.6, Y, Z, RX, RY, RZ, .worldid = iVW, .interiorid = iINT);
 	if(IsValidDynamic3DTextLabel(arrMetalDetector[id][metdet_iTextID])) DestroyDynamic3DTextLabel(arrMetalDetector[id][metdet_iTextID]);
-	format(szMiscArray, sizeof(szMiscArray), "Metal Detector (ID: %d)\n\n{FFFF00}Normal", id);
+	format(szMiscArray, sizeof(szMiscArray), "May do kim loai (ID: %d)\n\n{FFFF00}Binh thuong", id);
 	arrMetalDetector[id][metdet_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_WHITE, X, Y, Z+1.0, 10.0);
 	if(IsValidDynamicArea(arrMetalDetector[id][metdet_iAreaID])) DestroyDynamicArea(arrMetalDetector[id][metdet_iAreaID]);
 	arrMetalDetector[id][metdet_iAreaID] = CreateDynamicSphere(X, Y, Z, 3.0, .worldid = iVW, .interiorid = iINT);
@@ -149,7 +149,7 @@ MetDet_Process(id, Float:X = 0.0, Float:Y = 0.0, Float:Z = 0.0, Float:RX = 0.0, 
 MetDet_Alarm(i)
 {
 	// ProxDetector(20.0, playerid, "** [Metal Detector]: ** ALARM **", COLOR_LIGHTRED, COLOR_LIGHTRED, COLOR_LIGHTRED, COLOR_LIGHTRED, COLOR_LIGHTRED);
-	UpdateDynamic3DTextLabelText(arrMetalDetector[i][metdet_iTextID], COLOR_WHITE, "Metal Detector \n\n{FF0000}** ALARM **");
+	UpdateDynamic3DTextLabelText(arrMetalDetector[i][metdet_iTextID], COLOR_WHITE, "May do kim loai \n\n{FF0000}** BAO DONG **");
 	SetTimerEx("MetDet_Restore", 5000, false, "i", i);
 }
 
@@ -157,7 +157,7 @@ forward MetDet_Restore(i);
 public MetDet_Restore(i)
 {
 	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "Metal Detector (ID: %d)\n\n{FFFF00}Normal", i);
+	format(szMiscArray, sizeof(szMiscArray), "May do kim loai (ID: %d)\n\n{FFFF00}Binh thuong", i);
 	UpdateDynamic3DTextLabelText(arrMetalDetector[i][metdet_iTextID], COLOR_WHITE, szMiscArray);
 }
 
@@ -196,7 +196,7 @@ public MetDet_OnSaveMetDet(id)
 CMD:createmetaldetector(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] > 2) MetDet_CreateMetDet(playerid);
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -207,13 +207,13 @@ CMD:metaldetector(playerid, params[])
 		id,
 		amount,
 		iAssignData[2];
-	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	if(sscanf(params, "s[32]dD(1)", choice, id, amount))
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /metaldetector [choice] [ID] [value]");
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "Available names: tome, goto, Position, Delete");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "DUNG: /metaldetector [choice] [ID] [value]");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Tuy chon: tome, goto, Position, Delete");
 	}
-	if(!IsValidDynamicObject(arrMetalDetector[id][metdet_iObjectID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "This metal detector doesn't exist.");
+	if(!IsValidDynamicObject(arrMetalDetector[id][metdet_iObjectID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "May do kim loai nay khong ton tai.");
 	if(strcmp(choice, "tome", true) == 0)
 	{
 		GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
@@ -234,7 +234,7 @@ CMD:metaldetector(playerid, params[])
 	if(strcmp(choice, "position", true) == 0)
 	{
 		GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-		if(!IsPlayerInRangeOfPoint(playerid, 10.0,  fPos[0], fPos[1], fPos[2])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in range of the metal detector.");
+		if(!IsPlayerInRangeOfPoint(playerid, 10.0,  fPos[0], fPos[1], fPos[2])) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o gan may do kim loai.");
 		SetPVarInt(playerid, PVAR_EMETDET, id);
 		EditDynamicObject(playerid, arrMetalDetector[id][metdet_iObjectID]);
 	}
@@ -248,6 +248,6 @@ CMD:metaldetector(playerid, params[])
 CMD:metdets(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] > 2) MetDet_CheckMetDets(playerid);
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }

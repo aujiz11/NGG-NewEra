@@ -58,7 +58,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 
 			SetPVarInt(playerid, "CALL_CHOICE", listitem);
-			ShowPlayerDialogEx(playerid, DIALOG_CALLS_MENU2, DIALOG_STYLE_INPUT, "Calls | Specify ID", "Please specify the caller ID (seen in /ac)", "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_CALLS_MENU2, DIALOG_STYLE_INPUT, "Cuoc goi | Nhap ID", "Nhap ID nguoi goi (xem trong /ac)", "Chon", "Huy");
 		}
 		case DIALOG_CALLS_MENU2: {
 
@@ -114,32 +114,32 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 						if((type == 0 || type == 4) && IsACop(i))
 						{
 							PlayCrimeReportForPlayer(i, callfrom, 7);
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Location: %s, Description: %s", area, description);
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Moi don vi APB: Nguoi bao: %s", GetPlayerNameEx(callfrom));
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Vi tri: %s, Mo ta: %s", area, description);
 						}
 						if(type == 1 && IsAMedic(i))
 						{
 							PlayCrimeReportForPlayer(i, callfrom, 7);
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Location: %s, Description: %s", area, description);
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Moi don vi APB: Nguoi bao: %s", GetPlayerNameEx(callfrom));
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Vi tri: %s, Mo ta: %s", area, description);
 						}
 						if(type == 2 && IsACop(i))
 						{
 							PlayCrimeReportForPlayer(i, callfrom, 7);
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Location: %s, Description: %s", area, description);
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Moi don vi APB: Nguoi bao: %s", GetPlayerNameEx(callfrom));
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Vi tri: %s, Mo ta: %s", area, description);
 						}
 						if(type == 3 && (IsACop(i) || IsATowman(i)))
 						{
 							PlayCrimeReportForPlayer(i, callfrom, 7);
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Location: %s, Description: %s", area, description);
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Moi don vi APB: Nguoi bao: %s", GetPlayerNameEx(callfrom));
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Vi tri: %s, Mo ta: %s", area, description);
 						}
 						if(type == 5 && (IsACop(i) || IsAMedic(i)))
 						{
 							PlayCrimeReportForPlayer(i, callfrom, 7);
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Location: %s, Description: %s", area, description);
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Moi don vi APB: Nguoi bao: %s", GetPlayerNameEx(callfrom));
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: Vi tri: %s, Mo ta: %s", area, description);
 						}
 					}
 				}
@@ -150,8 +150,8 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 
 					if(PlayerInfo[i][pMember] == x) {
 
-						SendClientMessageEx(i, COLOR_PINK, "Landline: Caller: %s | %d", GetPlayerNameEx(callfrom), PlayerInfo[callfrom][pPnumber]);
-						SendClientMessageEx(i, COLOR_PINK, "Landline: Location: %s, Description: %s", area, description);
+						SendClientMessageEx(i, COLOR_PINK, "May ban: Nguoi goi: %s | %d", GetPlayerNameEx(callfrom), PlayerInfo[callfrom][pPnumber]);
+						SendClientMessageEx(i, COLOR_PINK, "Dien thoai ban: Vi tri: %s, Mo ta: %s", area, description);
 					}
 				}
 				if(type == 7)
@@ -161,8 +161,8 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 
 					if(PlayerInfo[i][pBusiness] == x) {
 
-						SendClientMessageEx(i, COLOR_PINK, "Landline: Caller: %s | %d", GetPlayerNameEx(callfrom), PlayerInfo[callfrom][pPnumber]);
-						SendClientMessageEx(i, COLOR_PINK, "Landline: Location: %s, Description: %s", area, description);
+						SendClientMessageEx(i, COLOR_PINK, "May ban: Nguoi goi: %s | %d", GetPlayerNameEx(callfrom), PlayerInfo[callfrom][pPnumber]);
+						SendClientMessageEx(i, COLOR_PINK, "Dien thoai ban: Vi tri: %s, Mo ta: %s", area, description);
 						
 					}
 				}
@@ -235,8 +235,8 @@ Calls_Group(playerid) {
 
 		switch(arrGroupData[iGroupID][g_iGroupType]) {
 
-			case GROUP_TYPE_NEWS: SendClientMessageEx(playerid, arrGroupData[iGroupID][g_hDutyColour] * 256 + 170, "____________________ HOTLINE ____________________");
-			default: SendClientMessageEx(playerid, arrGroupData[iGroupID][g_hDutyColour] * 256 + 170, "____________________ LANDLINE ____________________");
+			case GROUP_TYPE_NEWS: SendClientMessageEx(playerid, arrGroupData[iGroupID][g_hDutyColour] * 256 + 170, "____________________ DUONG DAY NONG ____________________");
+			default: SendClientMessageEx(playerid, arrGroupData[iGroupID][g_hDutyColour] * 256 + 170, "____________________ DIEN THOAI BAN ____________________");
 		}
 		for(new i = 999; i >= 0; i--)
 		{
@@ -244,7 +244,7 @@ Calls_Group(playerid) {
 			{
 				if(Calls[i][Type] == 6 && Calls[i][c_iGroupID] == iGroupID)	{
 					
-					SendClientMessageEx(playerid, COLOR_WHITE, "%s | Call #%i | Description: %s | Location: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+					SendClientMessageEx(playerid, COLOR_WHITE, "%s | Cuoc #%i | Mo ta: %s | Vi tri: %s | Cho: %d phut", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
 				}
 				else {
 
@@ -254,27 +254,27 @@ Calls_Group(playerid) {
 						{
 							if(Calls[i][Type] == 0 && IsACop(playerid))
 							{
-								SendClientMessageEx(playerid, COLOR_YELLOW, "[EMERGENCY] %s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+								SendClientMessageEx(playerid, COLOR_YELLOW, "[EMERGENCY] %s | Cuoc #%i | Mo ta: %s | 10-20: %s | Cho: %d phut", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
 							}
 							else if(Calls[i][Type] == 1 && IsAMedic(playerid))
 							{
-								SendClientMessageEx(playerid, COLOR_WHITE, "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+								SendClientMessageEx(playerid, COLOR_WHITE, "%s | Cuoc #%i | Mo ta: %s | 10-20: %s | Cho: %d phut", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
 							}
 							else if(Calls[i][Type] == 2 && IsACop(playerid))
 							{
-								SendClientMessageEx(playerid, COLOR_WHITE, "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+								SendClientMessageEx(playerid, COLOR_WHITE, "%s | Cuoc #%i | Mo ta: %s | 10-20: %s | Cho: %d phut", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
 							}
 							else if(Calls[i][Type] == 3 && (IsATowman(playerid)))
 							{
-								SendClientMessageEx(playerid, COLOR_WHITE, "[TOWING] %s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+								SendClientMessageEx(playerid, COLOR_WHITE, "[TOWING] %s | Cuoc #%i | Mo ta: %s | 10-20: %s | Cho: %d phut", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
 							}
 							else if(Calls[i][Type] == 4 && IsACop(playerid))
 							{
-								SendClientMessageEx(playerid, COLOR_WHITE, "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+								SendClientMessageEx(playerid, COLOR_WHITE, "%s | Cuoc #%i | Mo ta: %s | 10-20: %s | Cho: %d phut", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
 							}
 							else if(Calls[i][Type] == 5 && (IsACop(playerid) || IsAMedic(playerid)))
 							{
-								SendClientMessageEx(playerid, COLOR_WHITE, "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+								SendClientMessageEx(playerid, COLOR_WHITE, "%s | Cuoc #%i | Mo ta: %s | 10-20: %s | Cho: %d phut", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
 							}
 						}
 					}
@@ -290,14 +290,14 @@ Calls_Business(playerid) {
 	if(PlayerInfo[playerid][pBusiness] != INVALID_BUSINESS_ID)
 	{
 
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "____________________ COMPANY LINE ____________________");
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "____________________ DUONG DAY CONG TY ____________________");
 		for(new i = 999; i >= 0; i--)
 		{
 			if(Calls[i][BeingUsed] == 1)
 			{
 				if(Calls[i][Type] == 7 && Calls[i][c_iBusinessID] == PlayerInfo[playerid][pBusiness])
 				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "%s | Call #%i | Description: %s | Location: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+					SendClientMessageEx(playerid, COLOR_WHITE, "%s | Cuoc #%i | Mo ta: %s | Vi tri: %s | Cho: %d phut", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
 				}
 			}
 		}
@@ -308,9 +308,9 @@ Calls_Business(playerid) {
 CMD:calls(playerid, params[])
 {
 	
-	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID && PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");
+	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID && PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong the dung tinh nang nay.");
 	SetPVarInt(playerid, "Calls", 1);
-	ShowPlayerDialogEx(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Landline Calls", "Group\nBusiness", "Select", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Cuoc goi dien thoai ban", "To chuc\nDoanh nghiep", "Chon", "Huy");
 	return 1;
 }
 
@@ -322,13 +322,13 @@ AcceptCall_Group(playerid, callid) {
 	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)
 	{
 
-		if(callid < 0 || callid > 999) return SendClientMessageEx(playerid, COLOR_GREY, "   Call number cannot be below 0 or above 999!");
-		if(Calls[callid][BeingUsed] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   There is no pending call with that number!");
-		if(playerid == Calls[callid][CallFrom]) return SendClientMessageEx(playerid, COLOR_GREY, "   You can't accept your own call!");
-		if(((Calls[callid][Type] == 0 || Calls[callid][Type] == 4) && !IsACop(playerid)) || (Calls[callid][Type] == 1 && !IsAMedic(playerid)) || (Calls[callid][Type] == 2 && !IsACop(playerid)) || (Calls[callid][Type] == 3 && !IsACop(playerid) && !IsATowman(playerid))) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot answer this call!");
+		if(callid < 0 || callid > 999) return SendClientMessageEx(playerid, COLOR_GREY, "   So cuoc goi khong duoc duoi 0 hoac tren 999!");
+		if(Calls[callid][BeingUsed] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   Khong co cuoc goi dang cho voi so do!");
+		if(playerid == Calls[callid][CallFrom]) return SendClientMessageEx(playerid, COLOR_GREY, "   Khong the nhan cuoc goi cua minh!");
+		if(((Calls[callid][Type] == 0 || Calls[callid][Type] == 4) && !IsACop(playerid)) || (Calls[callid][Type] == 1 && !IsAMedic(playerid)) || (Calls[callid][Type] == 2 && !IsACop(playerid)) || (Calls[callid][Type] == 3 && !IsACop(playerid) && !IsATowman(playerid))) return SendClientMessageEx(playerid, COLOR_GREY, "   Ban khong the tra loi cuoc goi nay!");
 		if(!IsPlayerConnected(Calls[callid][CallFrom]))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   The caller has disconnected!");
+			SendClientMessageEx(playerid, COLOR_GREY, "   Nguoi goi da ngat ket noi!");
 			Calls[callid][CallFrom] = INVALID_PLAYER_ID;
 			Calls[callid][BeingUsed] = 0;
 			return 1;
@@ -344,7 +344,7 @@ AcceptCall_Group(playerid, callid) {
 							new zone[MAX_ZONE_NAME], mainzone[MAX_ZONE_NAME];
 							Get3DZone(carPos[0], carPos[1], carPos[2], zone, sizeof(zone));
 							Get2DMainZone(carPos[0], carPos[1], mainzone, sizeof(mainzone));
-							SendClientMessageEx(playerid, COLOR_YELLOW, "This %s(%d) is located in %s(%s).", GetVehicleName(Calls[callid][CallVehicleId]), zone, mainzone);
+							SendClientMessageEx(playerid, COLOR_YELLOW, "%s(%d) nay o tai %s(%s).", GetVehicleName(Calls[callid][CallVehicleId]), zone, mainzone);
 						}
 						case 2: {
 							if(PlayerVehicleInfo[targetid][targetslot][pvAlarmTriggered]) {
@@ -354,14 +354,14 @@ AcceptCall_Group(playerid, callid) {
 									GetVehiclePos(PlayerVehicleInfo[targetid][targetslot][pvId], carPos[0], carPos[1], carPos[2]);
 									if(CheckPointCheck(playerid))
 									{
-										return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
+										return SendClientMessageEx(playerid, COLOR_WHITE, "Hay huy checkpoint hien tai truoc (ban dang giu goi vat lieu hoac co checkpoint khac).");
 									}
 									else
 									{
 										new zone[MAX_ZONE_NAME], mainzone[MAX_ZONE_NAME];
 										Get3DZone(carPos[0], carPos[1], carPos[2], zone, sizeof(zone));
 										Get2DMainZone(carPos[0], carPos[1], mainzone, sizeof(mainzone));
-										SendClientMessageEx(playerid, COLOR_YELLOW, "This %s(%d) is located in %s(%s).", GetVehicleName(Calls[callid][CallVehicleId]), zone, mainzone);
+										SendClientMessageEx(playerid, COLOR_YELLOW, "%s(%d) nay o tai %s(%s).", GetVehicleName(Calls[callid][CallVehicleId]), zone, mainzone);
 										
 										SetPVarFloat(playerid, "CarLastX", carPos[0]);
 										SetPVarFloat(playerid, "CarLastY", carPos[1]);
@@ -369,13 +369,13 @@ AcceptCall_Group(playerid, callid) {
 										SetPVarInt(playerid, "TrackVehicleBurglary", 120);
 										SetPVarInt(playerid, "CallId", callid);
 										SetPlayerCheckpoint(playerid, carPos[0], carPos[1], carPos[2], 15.0);
-										SendClientMessageEx(playerid, COLOR_WHITE, "Hint: Make your way to the checkpoint to find the vehicle(Will only last 2 minutes)!");
+										SendClientMessageEx(playerid, COLOR_WHITE, "Goi y: Den checkpoint de tim xe(Chi ton tai 2 phut)!");
 									}
 								}
-								else if(PlayerVehicleInfo[targetid][targetslot][pvImpounded]) SendClientMessageEx(playerid, COLOR_WHITE, "You can not track an impounded vehicle.");
-								else if(PlayerVehicleInfo[targetid][targetslot][pvDisabled] == 1) SendClientMessageEx(playerid, COLOR_WHITE, "You can not track a disabled vehicle.");
-								else if(PlayerVehicleInfo[targetid][targetslot][pvSpawned] == 0) SendClientMessageEx(playerid, COLOR_WHITE, "You can not track a stored vehicle.");
-								else SendClientMessageEx(playerid, COLOR_WHITE, "You can not track a non-existent vehicle.");
+								else if(PlayerVehicleInfo[targetid][targetslot][pvImpounded]) SendClientMessageEx(playerid, COLOR_WHITE, "Khong the theo doi xe bi tam giu.");
+								else if(PlayerVehicleInfo[targetid][targetslot][pvDisabled] == 1) SendClientMessageEx(playerid, COLOR_WHITE, "Khong the theo doi xe bi vo hieu hoa.");
+								else if(PlayerVehicleInfo[targetid][targetslot][pvSpawned] == 0) SendClientMessageEx(playerid, COLOR_WHITE, "Khong the theo doi xe da cat.");
+								else SendClientMessageEx(playerid, COLOR_WHITE, "Khong the theo doi xe khong ton tai.");
 							}
 						}
 					}
@@ -383,16 +383,16 @@ AcceptCall_Group(playerid, callid) {
 				foreach(new i: Player)
 				{
 					if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iRadioAccess]) {
-						SendClientMessageEx(i, COLOR_DBLUE, "%s has accepted %s's call from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]), Calls[callid][Area]);
+						SendClientMessageEx(i, COLOR_DBLUE, "%s da nhan cuoc goi cua %s tu %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]), Calls[callid][Area]);
 					}
 					if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == PlayerInfo[playerid][pMember]) {
-						SendClientMessageEx(i, COLOR_DBLUE, "(BE) %s has accepted %s's call from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]), Calls[callid][Area]);
+						SendClientMessageEx(i, COLOR_DBLUE, "(BE) %s da nhan cuoc goi cua %s tu %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]), Calls[callid][Area]);
 					}
 				}	
 				PlayCrimeReportForPlayer(playerid, Calls[callid][CallFrom], 8);
 				AddCallToken(playerid);
-				SendClientMessageEx(Calls[callid][CallFrom], COLOR_WHITE, "%s has accepted your call. You are now in a direct call with them. (/h to hang up)", GetPlayerNameEx(playerid));
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have accepted %s's call. You are now in a direct call with them. (/h to hang up)", GetPlayerNameEx(Calls[callid][CallFrom]));
+				SendClientMessageEx(Calls[callid][CallFrom], COLOR_WHITE, "%s da nhan cuoc goi cua ban. Hai nguoi dang noi may truc tiep. (/h de gac may)", GetPlayerNameEx(playerid));
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ban da nhan cuoc goi cua %s. Hai nguoi dang noi may truc tiep. (/h de gac may)", GetPlayerNameEx(Calls[callid][CallFrom]));
 				Mobile[playerid] = Calls[callid][CallFrom];
 				SetPlayerAttachedObject(playerid, 8, 330, 6);
 				SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
@@ -414,7 +414,7 @@ AcceptCall_Group(playerid, callid) {
 				return 1;
 			}
 		}
-		return SendClientMessageEx(playerid, COLOR_GREY, "   This call is not within your jurisdiction!");
+		return SendClientMessageEx(playerid, COLOR_GREY, "   Cuoc goi nay khong thuoc tham quyen cua ban!");
 	}
 	return 1;
 }
@@ -423,13 +423,13 @@ AcceptCall_Business(playerid, callid) {
 
 	if(0 <= PlayerInfo[playerid][pBusiness] < MAX_BUSINESSES) {
 			
-		if(callid < 0 || callid > 999) return SendClientMessageEx(playerid, COLOR_GREY, "   Call number cannot be below 0 or above 999!");
-		if(Calls[callid][BeingUsed] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   There is no pending call with that number!");
-		if(playerid == Calls[callid][CallFrom]) return SendClientMessageEx(playerid, COLOR_GREY, "   You can't accept your own call!");
-		if(Calls[callid][Type] != 7) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot answer this call!");
+		if(callid < 0 || callid > 999) return SendClientMessageEx(playerid, COLOR_GREY, "   So cuoc goi khong duoc duoi 0 hoac tren 999!");
+		if(Calls[callid][BeingUsed] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   Khong co cuoc goi dang cho voi so do!");
+		if(playerid == Calls[callid][CallFrom]) return SendClientMessageEx(playerid, COLOR_GREY, "   Khong the nhan cuoc goi cua minh!");
+		if(Calls[callid][Type] != 7) return SendClientMessageEx(playerid, COLOR_GREY, "   Ban khong the tra loi cuoc goi nay!");
 		if(!IsPlayerConnected(Calls[callid][CallFrom]))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   The caller has disconnected!");
+			SendClientMessageEx(playerid, COLOR_GREY, "   Nguoi goi da ngat ket noi!");
 			Calls[callid][CallFrom] = INVALID_PLAYER_ID;
 			Calls[callid][BeingUsed] = 0;
 			return 1;
@@ -438,18 +438,18 @@ AcceptCall_Business(playerid, callid) {
 		foreach(new i: Player)
 		{
 			if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iRadioAccess]) {
-				SendClientMessageEx(i, COLOR_DBLUE, "%s has accepted %s's call from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]), Calls[callid][Area]);
+				SendClientMessageEx(i, COLOR_DBLUE, "%s da nhan cuoc goi cua %s tu %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]), Calls[callid][Area]);
 			}
 			if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == PlayerInfo[playerid][pMember]) {
-				SendClientMessageEx(i, COLOR_DBLUE, "(BE) %s has accepted %s's call from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]), Calls[callid][Area]);
+				SendClientMessageEx(i, COLOR_DBLUE, "(BE) %s da nhan cuoc goi cua %s tu %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]), Calls[callid][Area]);
 			}
 		}
 
 		new Float: fPos[3];
 		PlayCrimeReportForPlayer(playerid, Calls[callid][CallFrom], 8);
 		AddCallToken(playerid);
-		SendClientMessageEx(Calls[callid][CallFrom], COLOR_WHITE, "%s has accepted your call. You are now in a direct call with them. (/h to hang up)", GetPlayerNameEx(playerid));
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have accepted %s's call. You are now in a direct call with them. (/h to hang up)", GetPlayerNameEx(Calls[callid][CallFrom]));
+		SendClientMessageEx(Calls[callid][CallFrom], COLOR_WHITE, "%s da nhan cuoc goi cua ban. Hai nguoi dang noi may truc tiep. (/h de gac may)", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da nhan cuoc goi cua %s. Hai nguoi dang noi may truc tiep. (/h de gac may)", GetPlayerNameEx(Calls[callid][CallFrom]));
 		Mobile[playerid] = Calls[callid][CallFrom];
 		SetPlayerAttachedObject(playerid, 8, 330, 6);
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
@@ -478,13 +478,13 @@ IgnoreCall_Group(playerid, callid) {
 	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)
 	{
 
-		if(callid < 0 || callid > 999) return SendClientMessageEx(playerid, COLOR_GREY, "   Call number cannot be below 0 or above 999!");
-		if(Calls[callid][BeingUsed] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   There is no pending call with that number!");
-		if(playerid == Calls[callid][CallFrom]) return SendClientMessageEx(playerid, COLOR_GREY, "   You can't drop your own call!");
-		if((Calls[callid][Type] == 0 && !IsACop(playerid)) || (Calls[callid][Type] == 1 && !IsAMedic(playerid)) || (Calls[callid][Type] == 2 && !IsACop(playerid)) || (Calls[callid][Type] == 3 && !IsACop(playerid) && !IsATowman(playerid))) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot answer this call!");
+		if(callid < 0 || callid > 999) return SendClientMessageEx(playerid, COLOR_GREY, "   So cuoc goi khong duoc duoi 0 hoac tren 999!");
+		if(Calls[callid][BeingUsed] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   Khong co cuoc goi dang cho voi so do!");
+		if(playerid == Calls[callid][CallFrom]) return SendClientMessageEx(playerid, COLOR_GREY, "   Khong the bo cuoc goi cua minh!");
+		if((Calls[callid][Type] == 0 && !IsACop(playerid)) || (Calls[callid][Type] == 1 && !IsAMedic(playerid)) || (Calls[callid][Type] == 2 && !IsACop(playerid)) || (Calls[callid][Type] == 3 && !IsACop(playerid) && !IsATowman(playerid))) return SendClientMessageEx(playerid, COLOR_GREY, "   Ban khong the tra loi cuoc goi nay!");
 		if(!IsPlayerConnected(Calls[callid][CallFrom]))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   The caller has disconnected!");
+			SendClientMessageEx(playerid, COLOR_GREY, "   Nguoi goi da ngat ket noi!");
 			Calls[callid][CallFrom] = INVALID_PLAYER_ID;
 			Calls[callid][BeingUsed] = 0;
 			return 1;
@@ -494,10 +494,10 @@ IgnoreCall_Group(playerid, callid) {
 			foreach(new i: Player)
 			{
 				if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iRadioAccess]) {
-					SendClientMessageEx(i, COLOR_DBLUE, "%s has dropped %s's call.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]));
+					SendClientMessageEx(i, COLOR_DBLUE, "%s da bo cuoc goi cua %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]));
 				}
 				if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == PlayerInfo[playerid][pMember]) {
-					SendClientMessageEx(i, COLOR_DBLUE, "(BE) %s has dropped %s's call.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]));
+					SendClientMessageEx(i, COLOR_DBLUE, "(BE) %s da bo cuoc goi cua %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]));
 				}
 			}	
 			DeletePVar(Calls[callid][CallFrom], "Has911Call");
@@ -509,7 +509,7 @@ IgnoreCall_Group(playerid, callid) {
 			strmid(Calls[callid][Description], "None", 0, 4, 4);
 			return 1;
 		}
-		return SendClientMessageEx(playerid, COLOR_GREY, "   This call is not within your jurisdiction!");
+		return SendClientMessageEx(playerid, COLOR_GREY, "   Cuoc goi nay khong thuoc tham quyen cua ban!");
 	}
 	return 1;
 }
@@ -519,13 +519,13 @@ IgnoreCall_Business(playerid, callid) {
 	if(0 <= PlayerInfo[playerid][pBusiness] < MAX_BUSINESSES)
 	{
 
-		if(callid < 0 || callid > 999) return SendClientMessageEx(playerid, COLOR_GREY, "   Call number cannot be below 0 or above 999!");
-		if(Calls[callid][BeingUsed] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   There is no pending call with that number!");
-		if(playerid == Calls[callid][CallFrom]) return SendClientMessageEx(playerid, COLOR_GREY, "   You can't drop your own call!");
-		if(Calls[callid][Type] != 7) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot ignore this call!");
+		if(callid < 0 || callid > 999) return SendClientMessageEx(playerid, COLOR_GREY, "   So cuoc goi khong duoc duoi 0 hoac tren 999!");
+		if(Calls[callid][BeingUsed] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   Khong co cuoc goi dang cho voi so do!");
+		if(playerid == Calls[callid][CallFrom]) return SendClientMessageEx(playerid, COLOR_GREY, "   Khong the bo cuoc goi cua minh!");
+		if(Calls[callid][Type] != 7) return SendClientMessageEx(playerid, COLOR_GREY, "   Ban khong the bo qua cuoc goi nay!");
 		if(!IsPlayerConnected(Calls[callid][CallFrom]))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   The caller has disconnected!");
+			SendClientMessageEx(playerid, COLOR_GREY, "   Nguoi goi da ngat ket noi!");
 			Calls[callid][CallFrom] = INVALID_PLAYER_ID;
 			Calls[callid][BeingUsed] = 0;
 			return 1;
@@ -535,10 +535,10 @@ IgnoreCall_Business(playerid, callid) {
 			foreach(new i: Player)
 			{
 				if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iRadioAccess]) {
-					SendClientMessageEx(i, COLOR_DBLUE, "%s has dropped %s's call.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]));
+					SendClientMessageEx(i, COLOR_DBLUE, "%s da bo cuoc goi cua %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]));
 				}
 				if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == PlayerInfo[playerid][pMember]) {
-					SendClientMessageEx(i, COLOR_DBLUE, "(BE) %s has dropped %s's call.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]));
+					SendClientMessageEx(i, COLOR_DBLUE, "(BE) %s da bo cuoc goi cua %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]));
 				}
 			}	
 			DeletePVar(Calls[callid][CallFrom], "Has911Call");
@@ -550,7 +550,7 @@ IgnoreCall_Business(playerid, callid) {
 			strmid(Calls[callid][Description], "None", 0, 4, 4);
 			return 1;
 		}
-		return SendClientMessageEx(playerid, COLOR_GREY, "   This call is not within your jurisdiction!");
+		return SendClientMessageEx(playerid, COLOR_GREY, "   Cuoc goi nay khong thuoc tham quyen cua ban!");
 	}
 	return 1;
 }
@@ -559,9 +559,9 @@ IgnoreCall_Business(playerid, callid) {
 alias:acceptcall("ac")
 CMD:acceptcall(playerid, params[])
 {	
-	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID && PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");
+	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID && PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong the dung tinh nang nay.");
 	SetPVarInt(playerid, "AC", 1);
-	ShowPlayerDialogEx(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Landline Calls", "Group\nBusiness", "Select", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Cuoc goi dien thoai ban", "To chuc\nDoanh nghiep", "Chon", "Huy");
 	return 1;
 }
 
@@ -570,9 +570,9 @@ CMD:acceptcall(playerid, params[])
 alias:ignorecall("ic")
 CMD:ignorecall(playerid, params[])
 {
-	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID && PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");
+	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID && PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong the dung tinh nang nay.");
 	SetPVarInt(playerid, "IC", 1);
-	ShowPlayerDialogEx(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Landline Calls", "Group\nBusiness", "Select", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Cuoc goi dien thoai ban", "To chuc\nDoanh nghiep", "Chon", "Huy");
 	return 1;
 }
 
@@ -589,10 +589,10 @@ CMD:cancelcall(playerid, const params[])
 			strmid(Calls[i][MainZone], "None", 0, 4, 4);
 			strmid(Calls[i][Description], "None", 0, 4, 4);
 			DeletePVar(playerid, "Has911Call");
-			return SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped your call." );
+			return SendClientMessageEx(playerid, COLOR_WHITE, "Ban da huy cuoc goi cua minh." );
 		}
 	}
-	SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have any pending calls.");
+	SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co cuoc goi dang cho.");
 	return 1;
 }
 
@@ -601,10 +601,10 @@ CMD:clearallcalls(playerid, params[])
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1) {
         new string[128];
         ClearCalls();
-        SendClientMessageEx(playerid,COLOR_GRAD1, "You have cleared all pending calls.");
-        format(string, sizeof(string), "AdmCmd: %s has cleared all pending calls.", GetPlayerNameEx(playerid));
+        SendClientMessageEx(playerid,COLOR_GRAD1, "Ban da xoa moi cuoc goi dang cho.");
+        format(string, sizeof(string), "AdmCmd: %s da xoa moi cuoc goi dang cho.", GetPlayerNameEx(playerid));
         ABroadCast(COLOR_LIGHTRED, string, 3);
     }
-    else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+    else SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
     return 1;
 }

@@ -100,18 +100,18 @@ CMD:namechanges(playerid, params[])
 }*/
 CMD:changename(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[playerid][pSMod] > 0) return ShowPlayerDialogEx( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Free Name Change","Please enter your new desired name!\n\nNote: Name Changes are free because you are a Senior Moderator.", "Change", "Cancel" );
-	if(!IsAtNameChange(playerid)) return SendClientMessageEx( playerid, COLOR_WHITE, "You are not in the Name Change Place!" );
-	if(!isnull(PlayerInfo[playerid][pWarrant]) || PlayerInfo[playerid][pWarrant] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cant name change, while warranted.");
-	if(gettime()-GetPVarInt(playerid, "LastNameChange") < 120) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only request a name change every two minutes.");
+	if(PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[playerid][pSMod] > 0) return ShowPlayerDialogEx( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Doi ten mien phi","Nhap ten moi mong muon!\n\nLuu y: Senior Moderator duoc doi ten mien phi.", "Doi", "Huy" );
+	if(!IsAtNameChange(playerid)) return SendClientMessageEx( playerid, COLOR_WHITE, "Ban khong o diem doi ten!" );
+	if(!isnull(PlayerInfo[playerid][pWarrant]) || PlayerInfo[playerid][pWarrant] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the doi ten khi dang bi truy na.");
+	if(gettime()-GetPVarInt(playerid, "LastNameChange") < 120) return SendClientMessageEx(playerid, COLOR_GRAD2, "Chi duoc yeu cau doi ten moi hai phut.");
 	new iGroupID = PlayerInfo[playerid][pMember];
 	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] && (PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv] || arrGroupData[iGroupID][g_iFreeNameChangeDiv] == INVALID_DIVISION)))
 	{
-		ShowPlayerDialogEx( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Free Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Cancel" );
+		ShowPlayerDialogEx( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Doi ten mien phi","Nhap ten moi mong muon!\n\nLuu y: To chuc cua ban duoc doi ten mien phi.", "Doi", "Huy" );
 	}
 	else if(gettime() >= PlayerInfo[playerid][pNextNameChange])
 	{
-		ShowPlayerDialogEx(playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Free Name Change", "Please enter your new desired name!\n\nNote: Name Changes are free every 120 days.", "Change", "Cancel");
+		ShowPlayerDialogEx(playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Doi ten mien phi", "Nhap ten moi mong muon!\n\nLuu y: Duoc doi ten mien phi moi 120 ngay.", "Doi", "Huy");
 	}
 	else
 	{
@@ -123,18 +123,18 @@ CMD:changename(playerid, const params[])
 			case 3: string = "20,000";
 			default: string = number_format((PlayerInfo[playerid][pLevel]-3)*50000);
 		}
-		format(string, sizeof(string), "Please enter your new desired name!\n\nCost of a currnet name change is: $%s\nUse /nextnamechange to see the next free change.", string);	
-		ShowPlayerDialogEx(playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change", string, "Change", "Cancel");
+		format(string, sizeof(string), "Nhap ten moi mong muon!\n\nPhi doi ten hien tai: $%s\nDung /nextnamechange de xem lan mien phi tiep theo.", string);	
+		ShowPlayerDialogEx(playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Doi ten", string, "Doi", "Huy");
 	}
 	return 1;
 }
 
 CMD:nextnamechange(playerid, params[])
 {
-	if(PlayerInfo[playerid][pNextNameChange] == 0 || gettime() >= PlayerInfo[playerid][pNextNameChange]) return SendClientMessageEx(playerid, -1, "You can change your name for free now.");
+	if(PlayerInfo[playerid][pNextNameChange] == 0 || gettime() >= PlayerInfo[playerid][pNextNameChange]) return SendClientMessageEx(playerid, -1, "Ban co the doi ten mien phi ngay bay gio.");
 	else
 	{
-		SendClientMessageEx(playerid, -1, "Your next free name change will be on %s", date(PlayerInfo[playerid][pNextNameChange], 4));
+		SendClientMessageEx(playerid, -1, "Lan doi ten mien phi tiep theo vao %s", date(PlayerInfo[playerid][pNextNameChange], 4));
 	}
 	return 1;
 }

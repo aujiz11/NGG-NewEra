@@ -147,7 +147,7 @@ public UpdateJobPoint(id)
 	JobData[id][jMapMarker] = CreateDynamicMapIcon(JobData[id][jPos][0], JobData[id][jPos][1], JobData[id][jPos][2], (JobData[id][jMarkerID] < 5 || JobData[id][jMarkerID] > 63) ? 56 : JobData[id][jMarkerID], 0,
 		.worldid = JobData[id][jVw], .interiorid = JobData[id][jInt], .streamdistance = 500.0, .style = MAPICON_GLOBAL);
 	JobData[id][jPickupID] = CreateDynamicPickup(1239, 23, JobData[id][jPos][0], JobData[id][jPos][1], JobData[id][jPos][2], .worldid = JobData[id][jVw], .interiorid = JobData[id][jInt], .streamdistance = 200.0);
-	format(szMiscArray, sizeof(szMiscArray), "{FFFF00}Job Point ({FFFFFF}ID: %i{FFFF00})\n\nName: {FFFFFF}%s\n{FFFF00}Press {FFFFFF}~k~~CONVERSATION_YES~ {FFFF00}to obtain the job.", id, GetJobName(JobData[id][jType]));
+	format(szMiscArray, sizeof(szMiscArray), "{FFFF00}Diem cong viec ({FFFFFF}ID: %i{FFFF00})\n\nTen: {FFFFFF}%s\n{FFFF00}Nhan {FFFFFF}~k~~CONVERSATION_YES~ {FFFF00}de xin viec.", id, GetJobName(JobData[id][jType]));
 	JobData[id][jTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_YELLOW, JobData[id][jPos][0], JobData[id][jPos][1], JobData[id][jPos][2] + 0.6, 10.0, .testlos = true, .worldid = JobData[id][jVw], .interiorid = JobData[id][jInt], .streamdistance = 10.0);
 	return 1;
 }
@@ -157,21 +157,21 @@ stock Job_CheckApplication(playerid, point)
 	if(!gPlayerLogged{playerid} || GetPlayerState(playerid) != PLAYER_STATE_ONFOOT || PlayerIsDead[playerid]
 		|| GetPVarInt(playerid, "Injured") || PlayerInfo[playerid][pJailTime] > 0 || PlayerCuffed[playerid] || PlayerTied[playerid]
 		|| GetPVarInt(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged"))
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be available on foot to apply for a job."), 0;
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Phai san sang va di bo de xin viec."), 0;
 	if(!(0 <= point < MAX_JOBPOINTS) || JobData[point][jId] != point + 1 || !Job_IsKnownType(JobData[point][jType])
 		|| !IsValidDynamicArea(JobData[point][jAreaID]))
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "This job point is no longer available."), 0;
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Diem xin viec khong con hop le."), 0;
 	if(GetPlayerVirtualWorld(playerid) != JobData[point][jVw] || GetPlayerInterior(playerid) != JobData[point][jInt]
 		|| !IsPlayerInRangeOfPoint(playerid, 3.0, JobData[point][jPos][0], JobData[point][jPos][1], JobData[point][jPos][2]))
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be at the job point to apply."), 0;
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Phai o tai diem xin viec."), 0;
 	if(PlayerInfo[playerid][pLevel] < JobData[point][jLevel])
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be level %i to get this job.", JobData[point][jLevel]), 0;
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Can cap %i de xin cong viec nay.", JobData[point][jLevel]), 0;
 	new job = JobData[point][jType];
-	if(!Job_IsAvailable(job)) return SendClientMessageEx(playerid, COLOR_GRAD1, "This legacy job is not accepting new applications."), 0;
+	if(!Job_IsAvailable(job)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Cong viec cu nay khong nhan nguoi moi."), 0;
 	if(Job_HasJob(playerid, job))
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have this job."), 0;
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da co cong viec nay."), 0;
 	for(new slot = 1; slot <= 3; ++slot) if(Job_CanUseSlot(playerid, slot) && Job_GetSlot(playerid, slot) == JOB_NONE) return slot;
-	return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot take another job. Use /quitjob to leave an existing job first."), 0;
+	return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the nhan them cong viec. Dung /quitjob de nghi cong viec cu truoc."), 0;
 }
 
 stock Job_GetJob(playerid, i)
@@ -179,8 +179,8 @@ stock Job_GetJob(playerid, i)
 	if(!Job_CheckApplication(playerid, i)) return 1;
 	SetPVarInt(playerid, PVAR_JOB_OBTAINING, JobData[i][jType]);
 	SetPVarInt(playerid, PVAR_JOB_POINT, i);
-	format(szMiscArray, sizeof(szMiscArray), "Would you like to start a career as a {FFFF00}%s{FFFFFF}?", GetJobName(JobData[i][jType]));
-	return Dialog_Show(playerid, acceptjob, DIALOG_STYLE_MSGBOX, "Job Point", szMiscArray, "Yes", "No");
+	format(szMiscArray, sizeof(szMiscArray), "Ban muon bat dau lam {FFFF00}%s{FFFFFF}?", GetJobName(JobData[i][jType]));
+	return Dialog_Show(playerid, acceptjob, DIALOG_STYLE_MSGBOX, "Diem cong viec", szMiscArray, "Co", "Khong");
 }
 
 Dialog:acceptjob(playerid, response, listitem, inputtext[])
@@ -191,17 +191,17 @@ Dialog:acceptjob(playerid, response, listitem, inputtext[])
 	DeletePVar(playerid, PVAR_JOB_POINT);
 	if(!response) return 1;
 	if(!(0 <= point < MAX_JOBPOINTS) || JobData[point][jType] != job)
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "This job application is no longer valid.");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Don xin viec khong con hop le.");
 	new slot = Job_CheckApplication(playerid, point);
 	if(!slot) return 1;
 	if(!Job_SetPlayerSlot(playerid, slot, job)) return 1;
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have joined %s. Use /jobhelp for job information.", GetJobName(job));
-	if(slot > 1) SendClientMessageEx(playerid, COLOR_YELLOW, "You have taken this as job slot %d.", slot);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da nhan cong viec %s. Dung /jobhelp de xem.", GetJobName(job));
+	if(slot > 1) SendClientMessageEx(playerid, COLOR_YELLOW, "Da dat cong viec nay vao o %d.", slot);
 	if(job == JOB_PIZZA)
 	{
 		SetPlayerSkin(playerid, 155);
 		PlayerInfo[playerid][pModel] = 155;
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da duoc cap dong phuc Pizza Stack!");
 	}
 	return 1;
 }
@@ -226,29 +226,29 @@ stock Job_GetEditPoint(playerid)
 
 CMD:getjob(playerid, params[])
 {
-	return SendClientMessageEx(playerid, COLOR_GRAD1, "Press Y near a job point or use /join to apply for a job.");
+	return SendClientMessageEx(playerid, COLOR_GRAD1, "Nhan Y gan diem xin viec hoac dung /join de xin viec.");
 }
 
 CMD:jobpointhelp(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorised to use this command.");
-	SendClientMessageEx(playerid, COLOR_GREEN, "Job Point Commands: /gotojob");
-	if(Job_CanEdit(playerid)) SendClientMessageEx(playerid, COLOR_GRAD2, "Job editing: /editjobpoint, /editjob");
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
+	SendClientMessageEx(playerid, COLOR_GREEN, "Lenh diem cong viec: /gotojob");
+	if(Job_CanEdit(playerid)) SendClientMessageEx(playerid, COLOR_GRAD2, "Sua cong viec: /editjobpoint, /editjob");
 	return 1;
 }
 
 CMD:gotojob(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorised to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	new id;
-	if(sscanf(params, "i", id)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /gotojob [job point ID]");
-	if(!(0 <= id < MAX_JOBPOINTS) || !IsValidDynamicArea(JobData[id][jAreaID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "That job point is not placed.");
+	if(sscanf(params, "i", id)) return SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /gotojob [job point ID]");
+	if(!(0 <= id < MAX_JOBPOINTS) || !IsValidDynamicArea(JobData[id][jAreaID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "Diem cong viec chua duoc dat.");
 	SetPlayerPos(playerid, JobData[id][jPos][0], JobData[id][jPos][1], JobData[id][jPos][2]);
 	SetPlayerInterior(playerid, JobData[id][jInt]);
 	PlayerInfo[playerid][pInt] = JobData[id][jInt];
 	SetPlayerVirtualWorld(playerid, JobData[id][jVw]);
 	PlayerInfo[playerid][pVW] = JobData[id][jVw];
-	return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have teleported to job point ID %i.", id);
+	return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da toi diem cong viec ID %i.", id);
 }
 
 CMD:editjobpoint(playerid, params[])
@@ -258,9 +258,9 @@ CMD:editjobpoint(playerid, params[])
 
 CMD:editjob(playerid, params[])
 {
-	if(!Job_CanEdit(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to do this.");
+	if(!Job_CanEdit(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen lam vay.");
 	Job_BuildMenu(szMiscArray, sizeof(szMiscArray));
-	return Dialog_Show(playerid, job_name, DIALOG_STYLE_LIST, "Edit Job Name", szMiscArray, "Select", "Cancel");
+	return Dialog_Show(playerid, job_name, DIALOG_STYLE_LIST, "Sua ten cong viec", szMiscArray, "Chon", "Huy");
 }
 
 Dialog:job_name(playerid, response, listitem, inputtext[])
@@ -269,8 +269,8 @@ Dialog:job_name(playerid, response, listitem, inputtext[])
 	new type = Job_GetMenuType(listitem);
 	if(type == JOB_NONE) return 1;
 	SetPVarInt(playerid, "JobEditName", type);
-	format(szMiscArray, sizeof(szMiscArray), "Enter a new name for %s (ID: %d), between 1 and %d characters.", GetJobName(type), type, sizeof(JobName[]) - 1);
-	return Dialog_Show(playerid, job_name_confirm, DIALOG_STYLE_INPUT, "Edit Job Name", szMiscArray, "Edit", "Close");
+	format(szMiscArray, sizeof(szMiscArray), "Nhap ten moi cho %s (ID: %d), dai tu 1 den %d ky tu.", GetJobName(type), type, sizeof(JobName[]) - 1);
+	return Dialog_Show(playerid, job_name_confirm, DIALOG_STYLE_INPUT, "Sua ten cong viec", szMiscArray, "Sua", "Dong");
 }
 
 Dialog:job_name_confirm(playerid, response, listitem, inputtext[])
@@ -279,7 +279,7 @@ Dialog:job_name_confirm(playerid, response, listitem, inputtext[])
 	new id = GetPVarInt(playerid, "JobEditName");
 	if(!response || !Job_IsAvailable(id)) return DeletePVar(playerid, "JobEditName");
 	if(!(1 <= strlen(inputtext) < sizeof(JobName[])) || strfind(inputtext, "\n") != -1 || strfind(inputtext, "\r") != -1 || strfind(inputtext, "\t") != -1)
-		return Dialog_Show(playerid, job_name_confirm, DIALOG_STYLE_INPUT, "Edit Job Name", "Use 1 to 31 characters on a single line.", "Edit", "Close");
+		return Dialog_Show(playerid, job_name_confirm, DIALOG_STYLE_INPUT, "Sua ten cong viec", "Dung tu 1 den 31 ky tu tren mot dong.", "Sua", "Dong");
 	format(szMiscArray, sizeof(szMiscArray), "%s changed job %d's name from %s to %s.", GetPlayerNameEx(playerid), id, GetJobName(id), inputtext);
 	Log("logs/jobedit.log", szMiscArray);
 	format(JobName[id], sizeof(JobName[]), "%s", inputtext);
@@ -287,24 +287,24 @@ Dialog:job_name_confirm(playerid, response, listitem, inputtext[])
 	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 	DeletePVar(playerid, "JobEditName");
 	for(new point; point < MAX_JOBPOINTS; ++point) if(JobData[point][jType] == id) UpdateJobPoint(point);
-	return SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed job %d's name to %s.", id, GetJobName(id));
+	return SendClientMessageEx(playerid, COLOR_YELLOW, "Da doi ten cong viec %d thanh %s.", id, GetJobName(id));
 }
 
 stock ListJobPoints(playerid, page = 0)
 {
-	if(!Job_CanEdit(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to do this.");
+	if(!Job_CanEdit(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen lam vay.");
 	if(!(0 <= page <= (MAX_JOBPOINTS - 1) / JOBPOINT_PAGE_SIZE)) return 1;
 	SetPVarInt(playerid, "JobPointPage", page);
 	szMiscArray[0] = EOS;
 	new line[64], first = page * JOBPOINT_PAGE_SIZE, last = min(first + JOBPOINT_PAGE_SIZE, MAX_JOBPOINTS);
 	for(new id = first; id < last; ++id)
 	{
-		format(line, sizeof(line), "%s(%d) %s{FFFFFF}", id > first ? "\n" : "", id, IsValidDynamicArea(JobData[id][jAreaID]) ? GetJobName(JobData[id][jType]) : "(Not Placed)");
+		format(line, sizeof(line), "%s(%d) %s{FFFFFF}", id > first ? "\n" : "", id, IsValidDynamicArea(JobData[id][jAreaID]) ? GetJobName(JobData[id][jType]) : "(Chua dat)");
 		strcat(szMiscArray, line, sizeof(szMiscArray));
 	}
-	if(page > 0) strcat(szMiscArray, "\nPrevious page", sizeof(szMiscArray));
-	if(last < MAX_JOBPOINTS) strcat(szMiscArray, "\nNext page", sizeof(szMiscArray));
-	return Dialog_Show(playerid, jobpoints, DIALOG_STYLE_LIST, "Edit Job Point", szMiscArray, "Select", "Close");
+	if(page > 0) strcat(szMiscArray, "\nTrang truoc", sizeof(szMiscArray));
+	if(last < MAX_JOBPOINTS) strcat(szMiscArray, "\nTrang sau", sizeof(szMiscArray));
+	return Dialog_Show(playerid, jobpoints, DIALOG_STYLE_LIST, "Sua diem cong viec", szMiscArray, "Chon", "Dong");
 }
 
 Dialog:jobpoints(playerid, response, listitem, inputtext[])
@@ -323,12 +323,12 @@ Dialog:jobpoints(playerid, response, listitem, inputtext[])
 stock JobEditID(playerid, jobid)
 {
 	if(!Job_CanEdit(playerid) || !(0 <= jobid < MAX_JOBPOINTS)) return 1;
-	if(JobData[jobid][jId] != jobid + 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This job point's backing database row is not loaded.");
+	if(JobData[jobid][jId] != jobid + 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Chua tai ban ghi nen cua diem cong viec nay.");
 	SetPVarInt(playerid, "JobEditID", jobid);
 	new title[64];
-	format(title, sizeof(title), "Editing %s | Point %d", GetJobName(JobData[jobid][jType]), jobid);
-	format(szMiscArray, sizeof(szMiscArray), "Job Type:\t%s\nMove job point to my position\nPlayer Level Required:\t%d\nDelete Job Position", GetJobName(JobData[jobid][jType]), JobData[jobid][jLevel]);
-	return Dialog_Show(playerid, editjob, DIALOG_STYLE_TABLIST, title, szMiscArray, "Select", "Back");
+	format(title, sizeof(title), "Sua %s | Diem %d", GetJobName(JobData[jobid][jType]), jobid);
+	format(szMiscArray, sizeof(szMiscArray), "Loai cong viec:\t%s\nChuyen diem cong viec den cho toi\nCap nguoi choi toi thieu:\t%d\nXoa vi tri cong viec", GetJobName(JobData[jobid][jType]), JobData[jobid][jLevel]);
+	return Dialog_Show(playerid, editjob, DIALOG_STYLE_TABLIST, title, szMiscArray, "Chon", "Quay lai");
 }
 
 Dialog:editjob(playerid, response, listitem, inputtext[])
@@ -345,11 +345,11 @@ Dialog:editjob(playerid, response, listitem, inputtext[])
 		case 0:
 		{
 			Job_BuildMenu(szMiscArray, sizeof(szMiscArray));
-			Dialog_Show(playerid, job_type, DIALOG_STYLE_LIST, "Edit Job Type", szMiscArray, "Select", "Back");
+			Dialog_Show(playerid, job_type, DIALOG_STYLE_LIST, "Sua loai cong viec", szMiscArray, "Chon", "Quay lai");
 		}
-		case 1: Dialog_Show(playerid, moveconfirm, DIALOG_STYLE_MSGBOX, "Move Job Point", "Move this job point to your current position, interior and world?", "Yes", "No");
-		case 2: Dialog_Show(playerid, job_level, DIALOG_STYLE_INPUT, "Job Level Requirement", "Enter the minimum player level, at least 1.", "Save", "Back");
-		case 3: Dialog_Show(playerid, pointdeleteconfirm, DIALOG_STYLE_MSGBOX, "Delete Job Position", "Remove this job point from the world? Its database row will remain available for reuse.", "Yes", "No");
+		case 1: Dialog_Show(playerid, moveconfirm, DIALOG_STYLE_MSGBOX, "Chuyen diem cong viec", "Chuyen diem cong viec den vi tri, interior va world hien tai cua ban?", "Co", "Khong");
+		case 2: Dialog_Show(playerid, job_level, DIALOG_STYLE_INPUT, "Yeu cau cap do", "Nhap cap nguoi choi toi thieu, tu 1 tro len.", "Luu", "Quay lai");
+		case 3: Dialog_Show(playerid, pointdeleteconfirm, DIALOG_STYLE_MSGBOX, "Xoa vi tri cong viec", "Xoa diem cong viec khoi the gioi? Ban ghi database duoc giu de tai su dung.", "Co", "Khong");
 	}
 	return 1;
 }
@@ -378,10 +378,10 @@ Dialog:job_level(playerid, response, listitem, inputtext[])
 	for(new n; inputtext[n] != EOS; ++n)
 	{
 		if(!('0' <= inputtext[n] <= '9') || level > (cellmax - (inputtext[n] - '0')) / 10)
-			return Dialog_Show(playerid, job_level, DIALOG_STYLE_INPUT, "Job Level Requirement", "Enter a valid whole number, at least 1.", "Save", "Back");
+			return Dialog_Show(playerid, job_level, DIALOG_STYLE_INPUT, "Yeu cau cap do", "Nhap so nguyen hop le, tu 1 tro len.", "Luu", "Quay lai");
 		level = level * 10 + inputtext[n] - '0';
 	}
-	if(level < 1) return Dialog_Show(playerid, job_level, DIALOG_STYLE_INPUT, "Job Level Requirement", "The minimum player level must be at least 1.", "Save", "Back");
+	if(level < 1) return Dialog_Show(playerid, job_level, DIALOG_STYLE_INPUT, "Yeu cau cap do", "Cap nguoi choi toi thieu phai tu 1 tro len.", "Luu", "Quay lai");
 	format(szMiscArray, sizeof(szMiscArray), "%s changed job point %d's level from %d to %d.", GetPlayerNameEx(playerid), id, JobData[id][jLevel], level);
 	Log("logs/jobedit.log", szMiscArray);
 	JobData[id][jLevel] = level;

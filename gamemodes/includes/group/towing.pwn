@@ -42,33 +42,33 @@ stock Towing_GetReward(price, tickets) {
 
 CMD:impound(playerid, params[]) {
 	if(!IsACop(playerid) && !IsATowman(playerid)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to impound vehicles.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen tam giu xe.");
 	
 	new 
 		group = PlayerInfo[playerid][pMember], 
 		truck = GetPlayerVehicleID(playerid);
 	
 	if(!ValidGroup(group) || PlayerBusy(playerid) || PlayerTied[playerid] || PlayerInfo[playerid][pJailTime]) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot impound a vehicle right now.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the tam giu xe luc nay.");
 	
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || !(0 < truck < MAX_VEHICLES) || !IsValidVehicle(truck)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You must be driving the vehicle that is towing the suspect vehicle.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai lai xe dang keo xe cua nghi pham.");
 	
 	if(!IsAtImpoundingPoint(playerid)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You are not near an impound point.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan diem tam giu xe.");
 	
 	if(!IsTrailerAttachedToVehicle(truck)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You are not towing a vehicle.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong keo xe nao.");
 	
 	new target = GetVehicleTrailer(truck);
 	if(!(0 < target < MAX_VEHICLES) || target == truck || !IsValidVehicle(target)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "The vehicle in tow is no longer available.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Xe dang keo khong con ton tai.");
 	
 	if(GetVehicleVirtualWorld(target) != GetPlayerVirtualWorld(playerid) || GetVehicleInterior(target) != GetPlayerInterior(playerid)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "The towed vehicle is not in your world and interior.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Xe dang keo khong o cung world va interior voi ban.");
 	
 	foreach(new i : Player) {
-		if(GetPlayerVehicleID(i) == target) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot impound an occupied vehicle.");
+		if(GetPlayerVehicleID(i) == target) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the tam giu xe dang co nguoi.");
 	}
 
 	new owner = INVALID_PLAYER_ID, slot = -1, crate = -1, price, tickets, vehicleName[18], ownerName[GROUP_MAX_NAME_LEN];
@@ -81,7 +81,7 @@ CMD:impound(playerid, params[]) {
 	if(owner != INVALID_PLAYER_ID) {
 		if(!gPlayerLogged{owner} || GetPVarInt(owner, "PropertySaleUncertain") || PlayerVehicleInfo[owner][slot][pvImpounded] || !PlayerVehicleInfo[owner][slot][pvSpawned] || PlayerVehicleInfo[owner][slot][pvModelId] != GetVehicleModel(target)) 
 		{
-			return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle's registration is not available for impounding.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Dang ky xe nay khong kha dung de tam giu.");
 		}
 		
 		price = PlayerVehicleInfo[owner][slot][pvPrice];
@@ -91,11 +91,11 @@ CMD:impound(playerid, params[]) {
 	else if((crate = IsDynamicCrateVehicle(target)) != -1) {
 		if(!(0 <= crate < MAX_CRATE_VEHCILES) || !ValidGroup(CrateVehicle[crate][cvGroupID]) || !CrateVehicle[crate][cvSpawned] || CrateVehicle[crate][cvImpound] || CrateVehicle[crate][cvModel] != GetVehicleModel(target)) 
 		{
-			return SendClientMessageEx(playerid, COLOR_GREY, "This crate vehicle's registration is not available for impounding.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Dang ky xe crate nay khong kha dung de tam giu.");
 		}
 		
 		if(group == CrateVehicle[crate][cvGroupID]) 
-			return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your group owns this vehicle. You cannot impound it.");
+			return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Day la xe cua to chuc ban, khong the tam giu.");
 		
 		price = 2000000;
 		tickets = CrateVehicle[crate][cvTickets];
@@ -106,12 +106,12 @@ CMD:impound(playerid, params[]) {
 		arr_Towing[playerid] = INVALID_VEHICLE_ID;
 		DetachTrailerFromVehicle(truck);
 		SetVehicleToRespawn(target);
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "The impound administration could not find a registration and has returned the vehicle.");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban quan ly bai giu xe khong tim thay dang ky va da tra xe.");
 	}
 
 	new reward = Towing_GetReward(price, tickets);
 	if(reward < 0 || arrGroupData[group][g_iBudget] > cellmax - reward) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "The impound reward cannot be credited safely. No vehicle was impounded.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Khong the cong tien thuong an toan. Chua tam giu xe nao.");
 	
 	vehicleName = GetVehicleName(target);
 	foreach(new i : Player) if(arr_Towing[i] == target) arr_Towing[i] = INVALID_VEHICLE_ID;
@@ -130,7 +130,7 @@ CMD:impound(playerid, params[]) {
 		if(PlayerCars > 0) --PlayerCars;
 		if(VehicleSpawned[owner] > 0) --VehicleSpawned[owner];
 		g_mysql_SaveVehicle(owner, slot);
-		SendClientMessageEx(owner, COLOR_LIGHTBLUE, "Your %s has been impounded. You may release it at the DMV in Dillimore.", vehicleName);
+		SendClientMessageEx(owner, COLOR_LIGHTBLUE, "Xe %s cua ban bi tam giu. Den DMV tai Dillimore de lay xe.", vehicleName);
 	}
 	else {
 		GetVehicleHealth(target, CrateVehicle[crate][cvHealth]);
@@ -138,21 +138,21 @@ CMD:impound(playerid, params[]) {
 		CrateVehicle[crate][cvImpound] = 1;
 		CancelCrateVehicleActions(crate);
 		new count = CreateCount(crate);
-		if(count > 0) AnnounceRespawn(CrateVehicle[crate][cvGroupID], "impounded", crate, count);
+		if(count > 0) AnnounceRespawn(CrateVehicle[crate][cvGroupID], "tam giu", crate, count);
 		DestroyVehicle(target);
 		CrateVehicle[crate][cvSpawned] = 0;
 		CrateVehicle[crate][cvSpawnID] = INVALID_VEHICLE_ID;
 		CrateVehCheck(crate);
 		SaveCrateVehicle(crate);
 		foreach(new i : Player) {
-			if(PlayerInfo[i][pLeader] == CrateVehicle[crate][cvGroupID]) ChatTrafficProcess(i, arrGroupData[CrateVehicle[crate][cvGroupID]][g_hRadioColour] * 256 + 255, "Your group vehicle has been impounded. Recover it with /cvstorage.", CHAT_GROUP_RADIO);
+			if(PlayerInfo[i][pLeader] == CrateVehicle[crate][cvGroupID]) ChatTrafficProcess(i, arrGroupData[CrateVehicle[crate][cvGroupID]][g_hRadioColour] * 256 + 255, "Xe to chuc cua ban bi tam giu. Dung /cvstorage de lay xe.", CHAT_GROUP_RADIO);
 		}
 	}
 	SetGroupBudget(group, reward);
 	SaveGroup(group);
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have impounded %s's %s.", ownerName, vehicleName);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da tam giu xe cua %s: %s.", ownerName, vehicleName);
 	new message[160];
-	format(message, sizeof message, "HQ: %s has impounded %s's %s ($%s unpaid tickets).", GetPlayerNameEx(playerid), ownerName, vehicleName, number_format(tickets));
+	format(message, sizeof message, "HQ: %s tam giu xe cua %s: %s ($%s phat chua tra).", GetPlayerNameEx(playerid), ownerName, vehicleName, number_format(tickets));
 	SendGroupMessage(arrGroupData[group][g_iGroupType], RADIO, message);
 	format(message, sizeof message, "IMPOUND: %s has impounded %s's %s and gained $%s.", GetPlayerNameEx(playerid), ownerName, vehicleName, number_format(reward));
 	GroupLog(group, message);

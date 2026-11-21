@@ -50,7 +50,7 @@ PayDay(i) {
  	if(PlayerInfo[i][pLevel] > 0 && (PlayerInfo[i][pTogReports] == 1 || PlayerInfo[i][pAdmin] < 2)) {
 		if(GetPVarType(i, "debtMsg")) {
 			if(GetPlayerCash(i) < 0 && PlayerInfo[i][pJailTime] < 1 && !IsACop(i) && PlayerInfo[i][pWantedLevel] < 6) {
-				format(string,sizeof(string),"You're in debt $%s - find a way to pay back the money or you might get in trouble!", number_format(GetPlayerCash(i)));
+				format(string,sizeof(string),"Ban dang no $%s, hay tim cach tra de tranh gap rac roi!", number_format(GetPlayerCash(i)));
 				SendClientMessageEx(i, COLOR_LIGHTRED, string);
 			}
 			else DeletePVar(i, "debtMsg");
@@ -59,7 +59,7 @@ PayDay(i) {
 		if(0 <= PlayerInfo[i][pRenting] < sizeof HouseInfo) {
 			if(HouseInfo[PlayerInfo[i][pRenting]][hRentFee] > PlayerInfo[i][pAccount]) {
 				PlayerInfo[i][pRenting] = INVALID_HOUSE_ID;
-				SendClientMessageEx(i, COLOR_WHITE, "You have been evicted from your residence for failing to pay rent fees.");
+				SendClientMessageEx(i, COLOR_WHITE, "Ban da bi duoi khoi nha vi khong tra tien thue.");
 			}
 			else {
 				HouseInfo[PlayerInfo[i][pRenting]][hSafeMoney] += HouseInfo[PlayerInfo[i][pRenting]][hRentFee];
@@ -74,12 +74,12 @@ PayDay(i) {
 				PlayerInfo[i][pDutyHours]++;
 			}
 			if(SpecTimer) AddSpecialToken(i);
-			SendClientMessageEx(i, COLOR_WHITE, "________ BANK STATEMENT ________");
+			SendClientMessageEx(i, COLOR_WHITE, "________ SAO KE NGAN HANG ________");
 			if(PlayerInfo[i][pNation] == 0)
 			{
 				if(PlayerInfo[i][pDonateRank] < 4)
 				{
-					format(string, sizeof(string), "  Paycheck: $%s  |  SA Gov Tax: $%s (%d percent)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * TaxValue), TaxValue);
+					format(string, sizeof(string), "Luong: $%s  |  Thue SA Gov: $%s (%d phan tram)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * TaxValue), TaxValue);
 					PlayerInfo[i][pAccount] -= (PlayerInfo[i][pPayCheck] / 100) * TaxValue;
 					Tax += (PlayerInfo[i][pPayCheck] / 100) * TaxValue;
 				}
@@ -87,7 +87,7 @@ PayDay(i) {
 				{
 					pVIPTax = TaxValue - 15;
 					if(pVIPTax < 0) { pVIPTax = 0; }
-					format(string, sizeof(string), "  Paycheck: $%s  |  SA Gov Tax: $%s (%d percent) {FFFF00}(Platinum VIP: 15 percent off)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * pVIPTax), pVIPTax);
+					format(string, sizeof(string), "Luong: $%s | Thue SA Gov: $%s (%d phan tram) {FFFF00}(Platinum VIP: giam 15 phan tram)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * pVIPTax), pVIPTax);
 					PlayerInfo[i][pAccount] -= (PlayerInfo[i][pPayCheck] / 100) * pVIPTax;
 					Tax += (PlayerInfo[i][pPayCheck] / 100) * pVIPTax;
 				}
@@ -96,7 +96,7 @@ PayDay(i) {
 			{
 				if(PlayerInfo[i][pDonateRank] < 4)
 				{
-					format(string, sizeof(string), "  Paycheck: $%s  |  NE Gov Tax: $%s (%d percent)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * TRTaxValue), TRTaxValue);	
+					format(string, sizeof(string), "Luong: $%s  |  Thue NE Gov: $%s (%d phan tram)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * TRTaxValue), TRTaxValue);	
 					PlayerInfo[i][pAccount] -= (PlayerInfo[i][pPayCheck] / 100) * TRTaxValue;
 					TRTax += (PlayerInfo[i][pPayCheck] / 100) * TRTaxValue;
 				}
@@ -104,7 +104,7 @@ PayDay(i) {
 				{
 					pVIPTax = TRTaxValue - 15;
 					if(pVIPTax < 0) { pVIPTax = 0; }
-					format(string, sizeof(string), "  Paycheck: $%s  |  NE Gov Tax: $%s (%d percent) {FFFF00}(Platinum VIP: 15 percent off)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * pVIPTax), pVIPTax);	
+					format(string, sizeof(string), "Luong: $%s | Thue NE Gov: $%s (%d phan tram) {FFFF00}(Platinum VIP: giam 15 phan tram)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * pVIPTax), pVIPTax);	
 					PlayerInfo[i][pAccount] -= (PlayerInfo[i][pPayCheck] / 100) * pVIPTax;
 					TRTax += (PlayerInfo[i][pPayCheck] / 100) * pVIPTax;
 				}
@@ -115,29 +115,29 @@ PayDay(i) {
 			switch(PlayerInfo[i][pDonateRank]) {
 				case 0: {
 					if(interest > 50000) interest = 50000;
-					SendClientMessageEx(i, COLOR_GRAD1, "  Balance: $%s  |  Interest rate: 0.1 percent (50k max)", number_format(PlayerInfo[i][pAccount]));
+					SendClientMessageEx(i, COLOR_GRAD1, "So du: $%s  |  Lai suat: 0.1 phan tram (toi da 50k)", number_format(PlayerInfo[i][pAccount]));
 				}
 				case 1: {
 					if(interest > 100000) interest = 100000;
-					SendClientMessageEx(i, COLOR_GRAD1, "  Balance: $%s  |  Interest rate: 0.1 percent {FFFF00}(Bronze VIP: 100k max)", number_format(PlayerInfo[i][pAccount]));
+					SendClientMessageEx(i, COLOR_GRAD1, "So du: $%s  |  Lai suat: 0.1 phan tram {FFFF00}(Bronze VIP: toi da 100k)", number_format(PlayerInfo[i][pAccount]));
 				}
 				case 2:	{
 					if(interest > 150000) interest = 150000;
-					SendClientMessageEx(i, COLOR_GRAD1, "  Balance: $%s  |  Interest rate: 0.1 percent {FFFF00}(Silver VIP: 150k max)", number_format(PlayerInfo[i][pAccount]));
+					SendClientMessageEx(i, COLOR_GRAD1, "So du: $%s  |  Lai suat: 0.1 phan tram {FFFF00}(Silver VIP: toi da 150k)", number_format(PlayerInfo[i][pAccount]));
 				}
 				case 3: {
 					if(interest > 200000) interest = 200000;
-					SendClientMessageEx(i, COLOR_GRAD1, "  Balance: $%s  |  Interest rate: 0.1 percent {FFFF00}(Gold VIP: 200k max)", number_format(PlayerInfo[i][pAccount]));
+					SendClientMessageEx(i, COLOR_GRAD1, "So du: $%s  |  Lai suat: 0.1 phan tram {FFFF00}(Gold VIP: toi da 200k)", number_format(PlayerInfo[i][pAccount]));
 				}
 				case 4, 5: {
 					if(interest > 250000) interest = 250000;
-					SendClientMessageEx(i, COLOR_GRAD1, "  Balance: $%s  |  Interest rate: 0.1 percent {FFFF00}(Platinum VIP: 250k max)", number_format(PlayerInfo[i][pAccount]));
+					SendClientMessageEx(i, COLOR_GRAD1, "So du: $%s  |  Lai suat: 0.1 phan tram {FFFF00}(Platinum VIP: toi da 250k)", number_format(PlayerInfo[i][pAccount]));
 				}
 			}
 			if(PlayerInfo[i][pTaxiLicense] == 1) {
 				PlayerInfo[i][pAccount] -= (PlayerInfo[i][pPayCheck] / 100) * 5;
 				Tax += (PlayerInfo[i][pPayCheck] / 100) * 5;
-				SendClientMessageEx(i, COLOR_GRAD2, "  Taxi licensing fee (5 percent): $%s", number_format((PlayerInfo[i][pPayCheck] / 100) * 5));
+				SendClientMessageEx(i, COLOR_GRAD2, "Phi giay phep Taxi (5 phan tram): $%s", number_format((PlayerInfo[i][pPayCheck] / 100) * 5));
 			}
 			for(new iGroupID; iGroupID < MAX_GROUPS; iGroupID++)
 			{
@@ -175,9 +175,9 @@ PayDay(i) {
 				}
 			}
 			PlayerInfo[i][pAccount] += interest;
-			SendClientMessageEx(i, COLOR_GRAD3, "  Interest gained: $%s", number_format(interest));
+			SendClientMessageEx(i, COLOR_GRAD3, "Tien lai: $%s", number_format(interest));
 			SendClientMessageEx(i, COLOR_GRAD4, "______________________________________");
-			SendClientMessageEx(i, COLOR_GRAD5, "  New balance: $%s  |  Rent paid: $%s", number_format(PlayerInfo[i][pAccount]), number_format((0 <= PlayerInfo[i][pRenting] < sizeof HouseInfo) ? (HouseInfo[PlayerInfo[i][pRenting]][hRentFee]) : (0)));
+			SendClientMessageEx(i, COLOR_GRAD5, "So du moi: $%s  |  Tien thue: $%s", number_format(PlayerInfo[i][pAccount]), number_format((0 <= PlayerInfo[i][pRenting] < sizeof HouseInfo) ? (HouseInfo[PlayerInfo[i][pRenting]][hRentFee]) : (0)));
 
 			//GivePlayerCash(i, PlayerInfo[i][pPayCheck]);
 			GivePlayerCashEx(i, TYPE_BANK, PlayerInfo[i][pPayCheck]);
@@ -221,24 +221,24 @@ PayDay(i) {
    			if (PlayerInfo[i][pBusiness] != INVALID_BUSINESS_ID) {
 				if (Businesses[PlayerInfo[i][pBusiness]][bAutoPay] && PlayerInfo[i][pBusinessRank] >= 0 && PlayerInfo[i][pBusinessRank] < 5) {
 				    if (Businesses[PlayerInfo[i][pBusiness]][bSafeBalance] < Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]]) {
-				    	SendClientMessageEx(i,COLOR_RED,"Business doesn't have enough cash for your pay.");
+				    	SendClientMessageEx(i,COLOR_RED,"Doanh nghiep khong du tien tra luong cho ban.");
 				    }
 					else {
 						//GivePlayerCash(i, Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]]);
 						GivePlayerCashEx(i, TYPE_BANK, Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]]);
 						Businesses[PlayerInfo[i][pBusiness]][bSafeBalance] -= Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]];
 						SaveBusiness(PlayerInfo[i][pBusiness]);
-						SendClientMessageEx(i, COLOR_GRAD2, "  Business pay: $%s", number_format(Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]]));
+						SendClientMessageEx(i, COLOR_GRAD2, "Luong DN: $%s", number_format(Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]]));
 					}
 				}
 			}
 			
-			GameTextForPlayer(i, "~y~PayDay~n~~w~Paycheck", 5000, 1);
+			GameTextForPlayer(i, "~y~PayDay~n~~w~Tien luong", 5000, 1);
 			//SendAudioToPlayer(i, 63, 100);
 			PlayerInfo[i][pConnectSeconds] = 0;
 			PlayerInfo[i][pPayCheck] = 0;
 			if(++PlayerInfo[i][pConnectHours] == 2) {
-				SendClientMessageEx(i, COLOR_LIGHTRED, "You may now possess/use weapons!");
+				SendClientMessageEx(i, COLOR_LIGHTRED, "Ban da duoc phep giu/dung vu khi!");
 			}
 			if(PlayerInfo[i][pDonateRank] > 0 && ++PlayerInfo[i][pPayDayHad] >= 5) {
 				PlayerInfo[i][pExp]++;
@@ -280,7 +280,7 @@ PayDay(i) {
 			if(month == 5 && day == 25) //Memorial Day 2015
 			{
 				if(++PlayerInfo[i][pTrickortreat] == 3)
-					SendClientMessageEx(i, -1, "You have been given 1 Double EXP Token for playing 3 hours!"), PlayerInfo[i][pEXPToken]++, PlayerInfo[i][pTrickortreat] = 0;
+					SendClientMessageEx(i, -1, "Ban nhan 1 Double EXP Token vi da choi 3 gio!"), PlayerInfo[i][pEXPToken]++, PlayerInfo[i][pTrickortreat] = 0;
 			}
 			//Weekday Madness for Fall Into Fun event; re-using Trickortreat variable to check connected time
 			/*if(month == 10 && (day == 9 || day == 16))
@@ -302,24 +302,24 @@ PayDay(i) {
 				PlayerInfo[i][pRewardHours]++;
 				if(floatround(PlayerInfo[i][pRewardHours]) % 16 == 0) {
 					PlayerInfo[i][pGoldBoxTokens]++;
-					SendClientMessage(i, COLOR_LIGHTBLUE, "You have received 1 Gold Giftbox token!  #FallIntoFun");
+					SendClientMessage(i, COLOR_LIGHTBLUE, "Ban nhan 1 Gold Giftbox token!  #FallIntoFun");
 				}
-				SendClientMessageEx(i, COLOR_YELLOW, "You currently have %d Reward Hours, please check /rewards for more information.", floatround(PlayerInfo[i][pRewardHours]));
+				SendClientMessageEx(i, COLOR_YELLOW, "Ban co %d Reward Hours, dung /rewards de xem them.", floatround(PlayerInfo[i][pRewardHours]));
 			}
 
 			if(PlayerInfo[i][pDoubleEXP] > 0) {
 				PlayerInfo[i][pDoubleEXP]--;
-				SendClientMessageEx(i, COLOR_YELLOW, "You have gained 2 respect points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[i][pDoubleEXP]);
+				SendClientMessageEx(i, COLOR_YELLOW, "Ban nhan 2 diem kinh nghiem thay vi 1. Double EXP token con %d gio.", PlayerInfo[i][pDoubleEXP]);
 				PlayerInfo[i][pExp] += 2;
 			}
 			else PlayerInfo[i][pExp]++;
 
 			if(GetPVarInt(i, "pBirthday") == 1) {
-				SendClientMessageEx(i, COLOR_YELLOW, "Gold VIP: You have received x2 paycheck as a birthday gift!");
+				SendClientMessageEx(i, COLOR_YELLOW, "Gold VIP: Ban nhan x2 luong lam qua sinh nhat!");
 			}
 			
 			if(PlayerInfo[i][pWRestricted] > 0 && --PlayerInfo[i][pWRestricted] == 0) {
-				SendClientMessageEx(i, COLOR_LIGHTRED, "Your weapons are no longer restricted!");
+				SendClientMessageEx(i, COLOR_LIGHTRED, "Vu khi cua ban khong con bi han che!");
 			}
 			
 			if(PlayerInfo[i][pShopNotice] > 0) PlayerInfo[i][pShopNotice]--;
@@ -359,7 +359,7 @@ PayDay(i) {
 						if(GThursChances == 23)
 						{
 							PlayerInfo[i][pGVIPVoucher] += 1;
-							SendClientMessageEx(i, COLOR_WHITE, "You have won a 1 Month Gold VIP Voucher for Fall Into Fun! To claim it, type /myvouchers.");
+							SendClientMessageEx(i, COLOR_WHITE, "Ban trung 1 Month Gold VIP Voucher tu Fall Into Fun! Dung /myvouchers de nhan.");
 							GThursChances = 0;
 							format(string, sizeof(string), "%s(%d) won a 1 Month GVIP Voucher", GetPlayerNameEx(i), GetPlayerSQLId(i));
 							Log("logs/fif.log", string);
@@ -368,7 +368,7 @@ PayDay(i) {
 					if(FIFGP3 == 1 && PlayerInfo[i][pDonateRank] >= 3)
 					{
 						FIFInfo[i][FIFChances] += 3;
-						SendClientMessageEx(i, COLOR_WHITE, "You have earned 3 FIF Chances! You now have %d chances!", FIFInfo[i][FIFChances]);
+						SendClientMessageEx(i, COLOR_WHITE, "Ban nhan 3 FIF Chances! Hien co %d luot!", FIFInfo[i][FIFChances]);
 						format(string, sizeof(string), "%s(%d) won 3 FIF Chances", GetPlayerNameEx(i), GetPlayerSQLId(i));
 						Log("logs/fif.log", string);
 					}
@@ -379,21 +379,21 @@ PayDay(i) {
 							case 1:
 							{
 								FIFInfo[i][FIFChances] += 1;
-								SendClientMessageEx(i, COLOR_WHITE, "You have earned 1 FIF Chance! You now have %d chances!", FIFInfo[i][FIFChances]);
+								SendClientMessageEx(i, COLOR_WHITE, "Ban nhan 1 FIF Chance! Hien co %d luot!", FIFInfo[i][FIFChances]);
 								format(string, sizeof(string), "%s(%d) won 1 FIF Chance.", GetPlayerNameEx(i), GetPlayerSQLId(i));
 								Log("logs/fif.log", string);
 							}
 							case 2:
 							{
 								FIFInfo[i][FIFChances] += 2;
-								SendClientMessageEx(i, COLOR_WHITE, "You have earned 2 FIF Chance's! You now have %d chances!", FIFInfo[i][FIFChances]);
+								SendClientMessageEx(i, COLOR_WHITE, "Ban nhan 2 FIF Chance's! Hien co %d luot!", FIFInfo[i][FIFChances]);
 								format(string, sizeof(string), "%s(%d) won 2 FIF Chances.", GetPlayerNameEx(i), GetPlayerSQLId(i));
 								Log("logs/fif.log", string);
 							}
 							case 3:
 							{
 								FIFInfo[i][FIFChances] += 3;
-								SendClientMessageEx(i, COLOR_WHITE, "You have earned 3 FIF Chance's! You now have %d chances!", FIFInfo[i][FIFChances]);
+								SendClientMessageEx(i, COLOR_WHITE, "Ban nhan 3 FIF Chances! Hien co %d luot!", FIFInfo[i][FIFChances]);
 								format(string, sizeof(string), "%s(%d) won 3 FIF Chances.", GetPlayerNameEx(i), GetPlayerSQLId(i));
 								Log("logs/fif.log", string);
 							}
@@ -405,7 +405,7 @@ PayDay(i) {
 					if(FIFInfo[i][FIFHours] % 28 == 0)
 					{
 						PlayerInfo[i][pGoldBoxTokens] += 1;
-						SendClientMessageEx(i, COLOR_WHITE, "You have won a Gold Box Token for Fall Into Fun! To claim it, type /getrewardgift.");
+						SendClientMessageEx(i, COLOR_WHITE, "Ban trung Gold Box Token tu Fall Into Fun! Dung /getrewardgift de nhan.");
 						format(string, sizeof(string), "%s(%d) won a Gold Box Token", GetPlayerNameEx(i), GetPlayerSQLId(i));
 						Log("logs/fif.log", string);
 					}
@@ -414,17 +414,17 @@ PayDay(i) {
 			}
 			if(month == 4 && (day == 25 || day == 26)) // NGG B-Day 2015
 			{
-				SendClientMessageEx(i, -1, "You have earned 3 event tokens for playing 1 hour! Use /inv to view your total token amount.");
+				SendClientMessageEx(i, -1, "Ban nhan 3 event tokens vi da choi 1 gio! Dung /inv de xem so token.");
 				PlayerInfo[i][pEventTokens] += 3;
 			}
 			CallLocalFunction("InactivityCounter", "i", i);
 		}
-		else SendClientMessageEx(i, COLOR_LIGHTRED, "* You haven't played long enough to obtain a paycheck.");
+		else SendClientMessageEx(i, COLOR_LIGHTRED, "* Ban chua choi du lau de nhan luong.");
 	}
 
 	if (GetPVarType(i, "UnreadMails") && HasMailbox(i))
 	{
-		SendClientMessageEx(i, COLOR_YELLOW, "You have unread items in your mailbox");
+		SendClientMessageEx(i, COLOR_YELLOW, "Ban co thu chua doc trong hop thu");
 	}
 	return 1;
 }
@@ -477,15 +477,15 @@ public GiveHtoy(giveplayerid, toyid, const name[]) {
 				
 				g_mysql_NewToy(giveplayerid, i); 
 				
-				SendClientMessageEx(giveplayerid, COLOR_GRAD1, "Due to you not having any available slots, we've temporarily gave you an additional slot to use/sell/trade your %s.", name);
-				SendClientMessageEx(giveplayerid, COLOR_RED, "Note: Please take note that after selling the %s, the temporarily additional toy slot will be removed.", name);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD1, "Vi da het o trong, ban duoc them tam mot o de dung/ban/doi %s.", name);
+				SendClientMessageEx(giveplayerid, COLOR_RED, "Luu y: O toy them tam se bi xoa sau khi ban %s.", name);
 				break;
 			}	
 		}
 	}
 
-	SendClientMessageEx(giveplayerid, COLOR_GRAD2, "For playing %d hours you have recived a %s!", PlayerInfo[giveplayerid][pTrickortreat], name);
-	format(string, sizeof(string), "* %s was just gifted a %s!", GetPlayerNameEx(giveplayerid), name);
+	SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Choi du %d gio, ban nhan duoc %s!", PlayerInfo[giveplayerid][pTrickortreat], name);
+	format(string, sizeof(string), "* %s vua duoc tang %s!", GetPlayerNameEx(giveplayerid), name);
 	ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 	format(string, sizeof(string), "* %s(%d) was just gifted a %s for playing %d hours during the zombie event.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), name, PlayerInfo[giveplayerid][pTrickortreat]);
 	Log("logs/giftbox.log", string), OnPlayerStatsUpdate(giveplayerid);
@@ -556,34 +556,34 @@ stock IsAtATM(playerid)
 CMD:pay(playerid, params[])
 {
 	new id, amount, amountText[32];
-	if(sscanf(params, "us[32]", id, amountText)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pay [player] [amount]");
-	if(!ParseBankTransferAmount(amountText, amount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot pay below $1, or above $99,999,999 at once.");
+	if(sscanf(params, "us[32]", id, amountText)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /pay [player] [amount]");
+	if(!ParseBankTransferAmount(amountText, amount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "So tien moi lan phai tu $1 den $99,999,999.");
 	return Interact_PayPlayer(playerid, id, amount);
 }
 
 CMD:writecheck(playerid, params[])
 {
 	new string[128], giveplayerid, monies, reason[64];
-	if(sscanf(params, "uds[64]", giveplayerid, monies, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /writecheck [Playerid/PartOfName] [Amount] [Reason]");
+	if(sscanf(params, "uds[64]", giveplayerid, monies, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /writecheck [Playerid/PartOfName] [Amount] [Reason]");
 
-    if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+    if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
     if(monies < 1 || monies > 99999999)
 	{
-        SendClientMessageEx(playerid, COLOR_GRAD1, "   You can't write a check for under $1 or over $99,999,999!");
+        SendClientMessageEx(playerid, COLOR_GRAD1, "Gia tri sec phai tu $1 den $99,999,999!");
         return 1;
     }
 	if(PlayerInfo[playerid][pCash] < 0 || PlayerInfo[playerid][pAccount] < 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Your cash on-hand or in the bank is currently at a negative value!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Tien mat hoac so du ngan hang cua ban dang am!");
 	}
     if(PlayerInfo[playerid][pChecks] == 0)
 	{
-        SendClientMessageEx(playerid, COLOR_GRAD1, "   You must have a checkbook to write a check!");
+        SendClientMessageEx(playerid, COLOR_GRAD1, "Can co so sec de viet sec!");
         return 1;
     }
-    if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");
-    if(strlen(reason) > 64) return SendClientMessageEx(playerid, COLOR_GRAD1, "Check details may not be longer than 64 characters in length.");
-    if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You can't write a check to yourself!"); return 1; }
+    if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "Chi duoc giao dich moi 10 giay, hay cho!");
+    if(strlen(reason) > 64) return SendClientMessageEx(playerid, COLOR_GRAD1, "Noi dung sec khong duoc vuot 64 ky tu.");
+    if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "Khong the viet sec cho chinh minh!"); return 1; }
     if(ProxDetectorS(5.0, playerid, giveplayerid))
 	{
      	new playermoney = PlayerInfo[playerid][pAccount];
@@ -597,18 +597,18 @@ CMD:writecheck(playerid, params[])
 			{
    				new fee = (monies*8)/100;
        			GivePlayerCash(playerid, (0 - fee));
-				SendClientMessageEx(playerid, COLOR_GRAD1, "   You have written a check for $%d to %s (for %s) and have been charged an 8 percent fee.",monies,GetPlayerNameEx(giveplayerid),reason);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Da viet sec $%d cho %s (vi %s), thu phi 8 phan tram.",monies,GetPlayerNameEx(giveplayerid),reason);
              	PlayerInfo[playerid][pChecks]--;
-				SendClientMessageEx(playerid, COLOR_GRAD1, "   You now have %d checks left.",PlayerInfo[playerid][pChecks]);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Ban con %d to sec.",PlayerInfo[playerid][pChecks]);
       		}
           	else
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "   You have written a check for $%d to %s (for %s) and have not been charged the 8 percent fee.",monies,GetPlayerNameEx(giveplayerid),reason);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Da viet sec $%d cho %s (vi %s), mien phi 8 phan tram.",monies,GetPlayerNameEx(giveplayerid),reason);
           		PlayerInfo[playerid][pChecks]--;
-				SendClientMessageEx(playerid, COLOR_GRAD1, "   You now have %d checks left.",PlayerInfo[playerid][pChecks]);
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Ban con %d to sec.",PlayerInfo[playerid][pChecks]);
 			}
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have recieved a check for $%d from %s for: %s", monies,GetPlayerNameEx(playerid),reason);
-        	format(string, sizeof(string), "* %s takes out a checkbook, fills out a check and hands it to %s.",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "Ban nhan sec $%d tu %s voi noi dung: %s", monies,GetPlayerNameEx(playerid),reason);
+        	format(string, sizeof(string), "* %s lay so sec, viet va dua mot to sec cho %s.",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
          	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
           	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
            	PlayerPlaySound(giveplayerid, 1052, 0.0, 0.0, 0.0);
@@ -625,12 +625,12 @@ CMD:writecheck(playerid, params[])
 		}
   		else
 		{
-  			SendClientMessageEx(playerid, COLOR_GRAD1, "   Invalid transaction amount, or you do not have enough money to give that much!");
+  			SendClientMessageEx(playerid, COLOR_GRAD1, "So tien khong hop le hoac ban khong du tien!");
      	}
 	}
  	else
 	{
- 		SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+ 		SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
    	}
     return 1;
 }
@@ -638,12 +638,12 @@ CMD:writecheck(playerid, params[])
 CMD:charity(playerid, params[])
 {
 	new moneys;
-	if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /charity [amount]");
-	if(moneys < 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "That is not enough.");
-	if(GetPlayerCash(playerid) < moneys) return SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have that much money.");
+	if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /charity [amount]");
+	if(moneys < 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "So tien chua du.");
+	if(GetPlayerCash(playerid) < moneys) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co du tien.");
 	GivePlayerCash(playerid, -moneys);
 
-	format(szMiscArray, sizeof(szMiscArray), "%s, thank you for your donation of $%s.", GetPlayerNameEx(playerid), number_format(moneys));
+	format(szMiscArray, sizeof(szMiscArray), "%s, cam on ban da quyen gop $%s.", GetPlayerNameEx(playerid), number_format(moneys));
 	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 	format(szMiscArray, sizeof(szMiscArray), "[CHARITY] %s has donated $%s", GetPlayerNameEx(playerid), number_format(moneys));
@@ -653,8 +653,8 @@ CMD:charity(playerid, params[])
 
 CMD:nextpaycheck(playerid, params[])
 {
-	SendClientMessageEx(playerid, COLOR_YELLOW, "Total Minutes since last Paycheck: %d  Approximate time until next Paycheck: %d", floatround(PlayerInfo[playerid][pConnectSeconds]/60), floatround((3600-PlayerInfo[playerid][pConnectSeconds]) / 60));
-	SendClientMessageEx(playerid, COLOR_GRAD2, "Please note that you will not accrue time if your game is paused.");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "So phut tu lan nhan luong truoc: %d  Con khoang %d phut de nhan luong", floatround(PlayerInfo[playerid][pConnectSeconds]/60), floatround((3600-PlayerInfo[playerid][pConnectSeconds]) / 60));
+	SendClientMessageEx(playerid, COLOR_GRAD2, "Luu y, thoi gian khong duoc tinh khi ban tam dung game.");
 	return 1;
 }
 
@@ -699,36 +699,36 @@ CommitBankTransfer(playerid, targetid, amount, debit) {
 
 TransferBankAccount(playerid, targetid, amount, bool:atATM) {
 	if(restarting) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Giao dich da tam dung de khoi dong lai may chu bao tri.");
 		return atATM ? ShowATMMenu(playerid, 3) : ShowBankMenu(playerid, 3);
 	}
 	if(PlayerInfo[playerid][pLevel] < 3) {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "   You must be at least level 3 to use this feature!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Can dat cap 3 de dung tinh nang nay!");
 		return atATM ? ShowATMMenu(playerid, 3) : ShowBankMenu(playerid, 3);
 	}
 	if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Chi duoc giao dich moi 10 giay, hay cho!");
 		return atATM ? ShowATMMenu(playerid, 3) : ShowBankMenu(playerid, 3);
 	}
 
 	new fee, debit = BankTransferDebit(amount, atATM && PlayerInfo[playerid][pDonateRank] == 0, fee);
 	if(!debit || debit > PlayerInfo[playerid][pAccount] || PlayerInfo[targetid][pAccount] > cellmax - amount)
-		return SendClientMessageEx(playerid, COLOR_WHITE, "Insufficient funds including fees, or recipient balance limit exceeded.");
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Khong du tien gom ca phi, hoac so du nguoi nhan vuot gioi han.");
 	
 	DeletePVar(playerid, atATM ? ("ATMTransferTo") : ("BankTransferTo"));
 	DeletePVar(playerid, atATM ? ("ATMTransferAccount") : ("BankTransferAccount"));
 	DeletePVar(playerid, atATM ? ("ATMTransferSession") : ("BankTransferSession"));
 	
 	if(!CommitBankTransfer(playerid, targetid, amount, debit)) {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Transfer was not confirmed. Wait and select the recipient again.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Chuyen tien chua duoc xac nhan. Hay cho va chon lai nguoi nhan.");
 		return atATM ? ShowATMMenu(playerid, 3) : ShowBankMenu(playerid, 3);
 	}
 	if(fee) {
-		SendClientMessageEx(playerid, COLOR_YELLOW, "  You have been charged a 3 percent transfer fee: -$%d.", fee);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Phi chuyen tien 3 phan tram: -$%d.", fee);
 	}
 
-	SendClientMessageEx(playerid, COLOR_YELLOW, "   You have transferred $%s to %s's account.", number_format(amount), GetPlayerNameEx(targetid));
-	SendClientMessageEx(targetid, COLOR_YELLOW, "   $%s has been transferred to your bank account from %s.", number_format(amount), GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Da chuyen $%s vao tai khoan cua %s.", number_format(amount), GetPlayerNameEx(targetid));
+	SendClientMessageEx(targetid, COLOR_YELLOW, "Ban nhan $%s vao tai khoan ngan hang tu %s.", number_format(amount), GetPlayerNameEx(playerid));
 	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 	PlayerPlaySound(targetid, 1052, 0.0, 0.0, 0.0);
 

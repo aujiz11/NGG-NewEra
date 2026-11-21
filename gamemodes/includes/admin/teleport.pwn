@@ -5,16 +5,16 @@ CMD:goto(playerid, params[])
 		new location[25], vw, int;
 		if(sscanf(params, "s[25]D(0)D(0)", location, vw, int))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /goto [location] [(optional) virtual world] [(optional) interior]");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Locations 1: LS,SF,LV,RC,ElQue,Bayside,LSVIP,SFVIP,LVVIP,Famed,MHC,stadium1");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "Locations 2: stadium2,stadium3,stadium4,int1,mark,mark2,sfairport,dillimore,cave,doc,bank,mall,allsaints");
-			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 3: countygen,cracklab,gym,rodeo,flint,idlewood,fbi,island,demorgan,doc,icprison,oocprison");
-			SendClientMessageEx(playerid, COLOR_GRAD4, "Locations 4: garagesm,garagemed,garagelg,garagexlg,glenpark,palomino,nggshop, fc, unity, (l)os(c)olinas, SFDocks");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /goto [location] [(optional) virtual world] [(optional) interior]");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Vi tri 1: LS,SF,LV,RC,ElQue,Bayside,LSVIP,SFVIP,LVVIP,Famed,MHC,stadium1");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Vi tri 2: stadium2,stadium3,stadium4,int1,mark,mark2,sfairport,dillimore,cave,doc,bank,mall,allsaints");
+			SendClientMessageEx(playerid, COLOR_GRAD3, "Vi tri 3: countygen,cracklab,gym,rodeo,flint,idlewood,fbi,island,demorgan,doc,icprison,oocprison");
+			SendClientMessageEx(playerid, COLOR_GRAD4, "Vi tri 4: garagesm,garagemed,garagelg,garagexlg,glenpark,palomino,nggshop, fc, unity, (l)os(c)olinas, SFDocks");
 			return 1;
 		}
 		if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD2, "You can not do this while spectating.");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the lam vay khi dang theo doi.");
 			return 1;
 		}
         if(strcmp(location, "lascolinas", true) == 0 || strcmp(location, "lc", true) == 0)
@@ -338,7 +338,7 @@ CMD:goto(playerid, params[])
 			PlayerInfo[playerid][pInt] = 1;
 			SetPlayerVirtualWorld(playerid, 0);
 			PlayerInfo[playerid][pVW] = 0;
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 		}
 		else if(strcmp(location, "doc", true) == 0)
 		{
@@ -359,7 +359,7 @@ CMD:goto(playerid, params[])
 			PlayerInfo[playerid][pInt] = 1;
 			SetPlayerVirtualWorld(playerid, 0);
 			PlayerInfo[playerid][pVW] = 0;
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 		}
 		else if(strcmp(location,"stadium1",true) == 0)
 		{
@@ -376,7 +376,7 @@ CMD:goto(playerid, params[])
 				SetPlayerPos(playerid, -1424.93, -664.59, 1059.86);
 				SetPlayerInterior(playerid, 4);
 				SetPlayerVirtualWorld(playerid, vw);
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been teleported!");
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da duoc dich chuyen!");
 			}
 		}
 		else if(strcmp(location,"stadium2",true) == 0)
@@ -394,7 +394,7 @@ CMD:goto(playerid, params[])
 				SetPlayerPos(playerid, -1395.96, -208.20, 1051.28);
 				SetPlayerInterior(playerid, 7);
 				SetPlayerVirtualWorld(playerid, vw);
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been teleported!");
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da duoc dich chuyen!");
 			}
 		}
 		else if(strcmp(location,"stadium3",true) == 0)
@@ -412,7 +412,7 @@ CMD:goto(playerid, params[])
 				SetPlayerPos(playerid, -1410.72, 1591.16, 1052.53);
 				SetPlayerInterior(playerid, 14);
 				SetPlayerVirtualWorld(playerid, vw);
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been teleported!");
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da duoc dich chuyen!");
 			}
 		}
 		else if(strcmp(location,"stadium4",true) == 0)
@@ -430,7 +430,7 @@ CMD:goto(playerid, params[])
 				SetPlayerPos(playerid, -1394.20, 987.62, 1023.96);
 				SetPlayerInterior(playerid, 15);
 				SetPlayerVirtualWorld(playerid, vw);
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been teleported!");
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da duoc dich chuyen!");
 			}
 		}
 		else if(strcmp(location,"int1",true) == 0)
@@ -448,7 +448,7 @@ CMD:goto(playerid, params[])
 				SetPlayerPos(playerid, 1416.107000,0.268620,1000.926000);
 				SetPlayerInterior(playerid, 1);
 				SetPlayerVirtualWorld(playerid, vw);
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been teleported!");
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da duoc dich chuyen!");
 			}
 		}
 		else if(strcmp(location,"mark",true) == 0)
@@ -464,7 +464,7 @@ CMD:goto(playerid, params[])
 				SetPlayerPos(playerid, GetPVarFloat(playerid, "tpPosX1"), GetPVarFloat(playerid, "tpPosY1"), GetPVarFloat(playerid, "tpPosZ1"));
 			}
 			SetPlayerInterior(playerid, GetPVarInt(playerid, "tpInt1"));
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been teleported!");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da duoc dich chuyen!");
 		}
 		else if(strcmp(location,"mark2",true) == 0)
 		{
@@ -479,7 +479,7 @@ CMD:goto(playerid, params[])
 				SetPlayerPos(playerid, GetPVarFloat(playerid, "tpPosX2"), GetPVarFloat(playerid, "tpPosY2"), GetPVarFloat(playerid, "tpPosZ2"));
 			}
 			SetPlayerInterior(playerid, GetPVarInt(playerid, "tpInt2"));
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been teleported!");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da duoc dich chuyen!");
 		}
 		else if(strcmp(location,"mall",true) == 0)
 		{
@@ -617,22 +617,22 @@ CMD:goto(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /goto [location] [(optional) virtual world] [(optional) interior]");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Locations 1: LS,SF,LV,RC,ElQue,Bayside,LSVIP,SFVIP,LVVIP,Famed,MHC,stadium1");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "Locations 2: stadium2,stadium3,stadium4,int1,mark,mark2,sfairport,dillimore,cave,doc,bank,mall,allsaints");
-			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 3: countygen,cracklab,gym,rodeo,flint,idlewood,fbi,island,demorgan,doc,icprison,oocprison");
-			return SendClientMessageEx(playerid, COLOR_GRAD4, "Locations 4: garagesm,garagemed,garagelg,garagexlg,glenpark,palomino,nggshop, fc, unity, (l)os(c)olinas");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /goto [location] [(optional) virtual world] [(optional) interior]");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Vi tri 1: LS,SF,LV,RC,ElQue,Bayside,LSVIP,SFVIP,LVVIP,Famed,MHC,stadium1");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Vi tri 2: stadium2,stadium3,stadium4,int1,mark,mark2,sfairport,dillimore,cave,doc,bank,mall,allsaints");
+			SendClientMessageEx(playerid, COLOR_GRAD3, "Vi tri 3: countygen,cracklab,gym,rodeo,flint,idlewood,fbi,island,demorgan,doc,icprison,oocprison");
+			return SendClientMessageEx(playerid, COLOR_GRAD4, "Vi tri 4: garagesm,garagemed,garagelg,garagexlg,glenpark,palomino,nggshop, fc, unity, (l)os(c)olinas");
 		}
 		SetPlayerVirtualWorld(playerid, vw);
 		SetPlayerInterior(playerid, int);
 		PlayerInfo[playerid][pVW] = vw;
 		PlayerInfo[playerid][pInt] = int;
 
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You have been teleported!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da duoc dich chuyen!");
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -644,33 +644,33 @@ CMD:sendto(playerid, params[])
 		new string[128], location[32], giveplayerid;
 		if(sscanf(params, "s[32]u", location, giveplayerid))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sendto [location] [player]");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Locations 1: LS,SF,LV,RC,ElQue,Bayside,LSVIP,SFVIP,LVVIP,MHC,Famed,stadium1");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "Locations 2: stadium2,stadium3,stadium4,int1,mark,mark2,sfairport,dillimore,cave,doc,bank,mall,allsaints");
-			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 3: countygen,cracklab,gym,rodeo,flint,idlewood,fbi,island,demorgan,doc,icprison,oocprison");
-			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 4: glenpark, palomino, nggshop, fc, unity, LC (loscolinas), SFDocks");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /sendto [location] [player]");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Vi tri 1: LS,SF,LV,RC,ElQue,Bayside,LSVIP,SFVIP,LVVIP,MHC,Famed,stadium1");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Vi tri 2: stadium2,stadium3,stadium4,int1,mark,mark2,sfairport,dillimore,cave,doc,bank,mall,allsaints");
+			SendClientMessageEx(playerid, COLOR_GRAD3, "Vi tri 3: countygen,cracklab,gym,rodeo,flint,idlewood,fbi,island,demorgan,doc,icprison,oocprison");
+			SendClientMessageEx(playerid, COLOR_GRAD3, "Vi tri 4: glenpark, palomino, nggshop, fc, unity, LC (loscolinas), SFDocks");
 			return 1;
 		}
 		if (!IsPlayerConnected(giveplayerid))
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 			return 1;
 		}
 		if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin])
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay voi Admin ngang hoac cao cap hon.");
 			return 1;
 		}
 		if(GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING)
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD2, "This person is currently in spectate mode.");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do dang o che do theo doi.");
 			return 1;
 		}
 		if(GetPVarType(giveplayerid, "IsInArena"))
 		{
 		    SetPVarInt(playerid, "tempPBP", giveplayerid);
-		    format(string, sizeof(string), "%s (ID: %d) is currently in an active Paintball game.\n\nDo you want to force this player out?", GetPlayerNameEx(giveplayerid), giveplayerid);
-		    ShowPlayerDialogEx(playerid, PBFORCE, DIALOG_STYLE_MSGBOX, "Paintball", string, "Yes", "No");
+		    format(string, sizeof(string), "%s (ID: %d) dang choi Paintball.\n\nBan muon dua nguoi nay ra ngoai khong?", GetPlayerNameEx(giveplayerid), giveplayerid);
+		    ShowPlayerDialogEx(playerid, PBFORCE, DIALOG_STYLE_MSGBOX, "Paintball", string, "Co", "Khong");
 		    return 1;
 		}
         else if(strcmp(location,"loscolinas",true) == 0 || strcmp(location,"lc",true) == 0)
@@ -687,8 +687,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 2155.5400, -1011.4443, 62.9631);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Los Colinas.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Los Colinas.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -708,8 +708,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1986.69, -1300.49, 25.03);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Glen Park.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Glen Park.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -729,8 +729,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 2231.578613, -48.729660, 26.484375);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Palomino Creek.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Palomino Creek.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -750,8 +750,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 2957.967041, -1459.404541, 10.809198);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to the NGG Shop.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den NGG Shop.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 1);
@@ -771,8 +771,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1576.40, 79.49, 3.55);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to the SF Docks.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den SF Docks.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -792,8 +792,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1529.6,-1691.2,13.3);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Los Santos.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Los Santos.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -813,8 +813,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1993.01, -1580.44, 86.39);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to crate cave.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den crate cave.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -834,8 +834,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1412.5375,-301.8998,14.1411);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to SF Airport.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den SF Airport.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -855,8 +855,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1435.95, -2695.33, 13.59);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to DoC.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den DoC.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -876,8 +876,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 2348.2871, -1146.8298, 27.3183);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Crack Lab.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Crack Lab.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -897,8 +897,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1605.0,720.0,12.0);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to San Fierro.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den San Fierro.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -918,8 +918,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 634.9734, -594.6402, 16.3359);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Dillimore.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Dillimore.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -939,8 +939,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1699.2,1435.1, 10.7);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Las Venturas.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Las Venturas.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -961,8 +961,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -14.3755,-4472.8506, 4);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to the Crate Island.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Crate Island.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -983,8 +983,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1487.91, -1030.60, 23.66);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to the bank.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den ngan hang.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1005,8 +1005,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1192.78, -1292.68, 13.38);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to All Saints.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den All Saints.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1027,8 +1027,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 2000.05, -1409.36, 16.99);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to County General.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den County General.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1049,8 +1049,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 2227.60, -1674.89, 14.62);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Ganton Gym.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Ganton Gym.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1069,8 +1069,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 344.77,-1526.08,33.28);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to the FBI HQ.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den FBI HQ.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1091,8 +1091,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1253.70, 343.73, 19.41);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Red County.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Red County.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1113,8 +1113,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1810.39, -1601.15, 13.54);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to LS VIP.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den LS VIP.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1134,8 +1134,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -2433.63, 511.45, 30.38);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to SF VIP.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den SF VIP.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1155,8 +1155,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1875.7731, 1366.0796, 16.8998);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to LV VIP.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den LV VIP.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1176,8 +1176,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 112.67, 1917.55, 18.72);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to DeMorgan.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den DeMorgan.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1209,8 +1209,8 @@ CMD:sendto(playerid, params[])
 				SetPlayerVirtualWorld(giveplayerid, 0);
 				PlayerInfo[giveplayerid][pVW] = 0;
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to IC prison.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den nha tu IC.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 
 		}
 		else if(strcmp(location,"oocprison",true) == 0)
@@ -1238,8 +1238,8 @@ CMD:sendto(playerid, params[])
 				SetPlayerVirtualWorld(giveplayerid, 0);
 				PlayerInfo[giveplayerid][pVW] = 0;
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to OOC prison.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den nha tu OOC.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 
 		}
 		else if(strcmp(location,"stadium1",true) == 0)
@@ -1256,8 +1256,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1424.93, -664.59, 1059.86);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Stadium 1.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Stadium 1.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(playerid,4);
 			PlayerInfo[giveplayerid][pInt] = 4;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1278,8 +1278,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1395.96, -208.20, 1051.28);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Stadium 2.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Stadium 2.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(playerid,7);
 			PlayerInfo[giveplayerid][pInt] = 7;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1300,8 +1300,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1410.72, 1591.16, 1052.53);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Stadium 3.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Stadium 3.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(playerid,14);
 			PlayerInfo[giveplayerid][pInt] = 14;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1322,8 +1322,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1394.20, 987.62, 1023.96);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Stadium 4.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Stadium 4.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(playerid,15);
 			PlayerInfo[giveplayerid][pInt] = 15;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1344,8 +1344,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1416.107000,0.268620,1000.926000);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Int 1.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Int 1.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(playerid,1);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1365,9 +1365,9 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, GetPVarFloat(playerid, "tpPosX1"), GetPVarFloat(playerid, "tpPosY1"), GetPVarFloat(playerid, "tpPosZ1"));
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to your first marked position.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den vi tri danh dau thu nhat.", GetPlayerNameEx(giveplayerid));
 			SetPlayerInterior(playerid, GetPVarInt(playerid, "tpInt1"));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 		}
 		else if(strcmp(location,"mark2",true) == 0)
 		{
@@ -1382,9 +1382,9 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, GetPVarFloat(playerid, "tpPosX2"), GetPVarFloat(playerid, "tpPosY2"), GetPVarFloat(playerid, "tpPosZ2"));
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to your second marked position.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den vi tri danh dau thu hai.", GetPlayerNameEx(giveplayerid));
 			SetPlayerInterior(playerid, GetPVarInt(playerid, "tpInt2"));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 		}
 		else if(strcmp(location,"mall",true) == 0)
 		{
@@ -1400,8 +1400,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1133.71,-1464.52,15.77);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to the mall.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den trung tam mua sam.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1422,8 +1422,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -1446.5997,2608.4478,55.8359);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to El Quebrados.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den El Quebrados.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1444,8 +1444,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -2465.1348,2333.6572,4.8359);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Bayside.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Bayside.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1465,8 +1465,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1020.29, -1129.06, 23.87);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to the Famed HQ.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Famed HQ.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1486,8 +1486,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 587.0106,-1238.3374,17.8049);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Rodeo.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Rodeo.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1507,8 +1507,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -108.1058,-1172.5293,2.8906);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Flint County Gas Station.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Flint County Gas Station.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1528,8 +1528,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1955.1357,-1796.8896,13.5469);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Idlewood Gas Station.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Idlewood Gas Station.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1550,8 +1550,8 @@ CMD:sendto(playerid, params[])
 			{
 				Player_StreamPrep(giveplayerid, 1649.7531, 1463.1614, 1151.9687, FREEZE_TIME);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to the Mile High Club.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Mile High Club.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1571,8 +1571,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, -203.2537, 1105.27, 18.73);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Fort Carson.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Fort Carson.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1592,8 +1592,8 @@ CMD:sendto(playerid, params[])
 			{
 				SetPlayerPos(giveplayerid, 1811.48, -1891.17, 12.3936);
 			}
-			SendClientMessageEx(playerid, COLOR_WHITE, " You have sent %s to Unity Station.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SendClientMessageEx(playerid, COLOR_WHITE, " Ban da dua %s den Unity Station.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   Ban da duoc dich chuyen!");
 			SetPlayerInterior(giveplayerid,0);
 			PlayerInfo[giveplayerid][pInt] = 0;
 			SetPlayerVirtualWorld(giveplayerid, 0);
@@ -1602,7 +1602,7 @@ CMD:sendto(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }

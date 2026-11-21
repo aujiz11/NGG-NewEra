@@ -37,7 +37,7 @@
 
 CMD:nextwatch(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Please use /spec to avoid issues.");
+	if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Hay dung /spec de tranh loi.");
 	if(PlayerInfo[playerid][pWatchdog] >= 1)
 	{
 		if(GetPVarInt(playerid, "StartedWatching") == 0) return pc_cmd_startwatch(playerid, params);
@@ -46,65 +46,65 @@ CMD:nextwatch(playerid, params[])
 		else if(PlayerInfo[playerid][pWatchdog] >= 2) return mysql_tquery(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", "WatchWatchlist", "i", playerid);
 		else
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't skip a player yet, you have to wait %d seconds!", GetPVarInt(playerid, "NextWatch")-gettime());
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Chua the bo qua nguoi choi, hay cho %d giay!", GetPVarInt(playerid, "NextWatch")-gettime());
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	}
 	return true;
 }
 
 CMD:watchspec(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Please use /spec to avoid issues.");
+	if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Hay dung /spec de tranh loi.");
 	if(PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new giveplayerid;
-		if(GetPVarInt(playerid, "StartedWatching") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You already started watching.");
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /watchspec [player]");
-		if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot spectate yourself!");
-		if(PlayerInfo[giveplayerid][pWatchlist] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player is not on the watchlist!");
+		if(GetPVarInt(playerid, "StartedWatching") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: Ban da bat dau theo doi.");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /watchspec [player]");
+		if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the theo doi chinh minh!");
+		if(PlayerInfo[giveplayerid][pWatchlist] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong nam trong danh sach theo doi!");
 		
 		SpectatePlayer(playerid, giveplayerid);
-		SendClientMessageEx(playerid, -1, "WATCHDOG: You have started watching.");
+		SendClientMessageEx(playerid, -1, "WATCHDOG: Ban da bat dau theo doi.");
 		SetPVarInt(playerid, "SpectatingWatch", giveplayerid);
 		SetPVarInt(playerid, "StartedWatching", 1);
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	}
 	return true;
 }		
 
 CMD:startwatch(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Please use /spec to avoid issues.");
+	if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Hay dung /spec de tranh loi.");
 	if(PlayerInfo[playerid][pWatchdog] >= 1)
 	{
-		if(GetPVarInt(playerid, "StartedWatching") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You already started watching.");
+		if(GetPVarInt(playerid, "StartedWatching") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: Ban da bat dau theo doi.");
 		if(gettime() >= GetPVarInt(playerid, "NextWatch")) return mysql_tquery(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", "WatchWatchlist", "i", playerid);
 		else if(PlayerInfo[playerid][pWatchdog] >= 2) return mysql_tquery(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", "WatchWatchlist", "i", playerid);
 		else
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't skip a player yet, you have to wait %d seconds!", GetPVarInt(playerid, "NextWatch")-gettime());
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Chua the bo qua nguoi choi, hay cho %d giay!", GetPVarInt(playerid, "NextWatch")-gettime());
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	}
 	return true;
 }
 
 CMD:stopwatch(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Please use /spec to avoid issues.");
+	if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Hay dung /spec de tranh loi.");
 	if(PlayerInfo[playerid][pWatchdog] >= 1)
 	{
-		if(GetPVarInt(playerid, "StartedWatching") == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You aren't spectating anybody.");
+		if(GetPVarInt(playerid, "StartedWatching") == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: Ban khong dang theo doi ai.");
 		
 		SetPVarInt(playerid, "StartedWatching", 0);
 		if(Spectating[playerid] > 0)
@@ -118,13 +118,13 @@ CMD:stopwatch(playerid, params[])
 			TogglePlayerSpectating(playerid, false);
 			SetCameraBehindPlayer(playerid);
 			DeletePVar(playerid, "SpectatingWatch");
-			SendClientMessageEx(playerid, -1, "WATCHDOG: You have stopped watching.");
+			SendClientMessageEx(playerid, -1, "WATCHDOG: Ban da dung theo doi.");
 		}
-		else return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You're not watching anybody.");
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: Ban khong dang theo doi ai.");
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	}
 	return true;
 }
@@ -134,26 +134,26 @@ CMD:dmrmute(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 3)
 	{
 		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dmrmute [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /dmrmute [player]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if(PlayerInfo[giveplayerid][pDMRMuted] == 0)
 			{
 			    PlayerInfo[giveplayerid][pDMRMuted] = 1;
-				format(string, sizeof(string), "AdmCmd: %s has indefinitely blocked %s from submitting DM reports.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "AdmCmd: %s da cam vo thoi han %s gui bao cao DM.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ABroadCast(COLOR_LIGHTRED,string,2);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been blocked from submitting /dmreports by %s.", GetPlayerNameEx(playerid));
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Ban bi %s cam gui /dmreports.", GetPlayerNameEx(playerid));
 				format(string, sizeof(string), "AdmCmd: %s(%d) was blocked from /dmreport by %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/mute.log", string);
 			}
 			else
 			{
-			    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a senior admin to unmute others from submitting DM reports");
+			    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Chi Senior Admin duoc go cam gui bao cao DM");
 				PlayerInfo[giveplayerid][pDMRMuted] = 0;
-				format(string, sizeof(string), "AdmCmd: %s has been re-allowed to submit DM reports by %s",GetPlayerNameEx(giveplayerid),GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s da duoc %s cho phep gui bao cao DM tro lai",GetPlayerNameEx(giveplayerid),GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_LIGHTRED,string,2);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been re-allowed to submitting /dmreports again by %s.", GetPlayerNameEx(playerid));
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Ban duoc %s cho phep gui /dmreports tro lai.", GetPlayerNameEx(playerid));
 				format(string, sizeof(string), "AdmCmd: %s(%d) was unblocked from /dmreport by %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/mute.log", string);
 			}
@@ -161,28 +161,28 @@ CMD:dmrmute(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
 
 CMD:dmreport(playerid, params[])
 {
-	if(PlayerInfo[playerid][pDMRMuted] != 0) return SendClientMessage(playerid, COLOR_GRAD2, "You are blocked from submitting DM reports.");
+	if(PlayerInfo[playerid][pDMRMuted] != 0) return SendClientMessage(playerid, COLOR_GRAD2, "Ban dang bi cam gui bao cao DM.");
 	new giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_WHITE,"USAGE: /dmreport [playerid]");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_WHITE,"CACH DUNG: /dmreport [playerid]");
 	if(IsPlayerConnected(giveplayerid))
 	{
-		if(playerid == giveplayerid) return SendClientMessage(playerid, COLOR_WHITE, "You can't use this command on yourself!");
-		if(PlayerInfo[giveplayerid][pAdmin] >= 2 && PlayerInfo[giveplayerid][pTogReports] != 1) return SendClientMessage(playerid, COLOR_WHITE, "You can't use this command on admins!");
+		if(playerid == giveplayerid) return SendClientMessage(playerid, COLOR_WHITE, "Khong the dung lenh nay cho chinh minh!");
+		if(PlayerInfo[giveplayerid][pAdmin] >= 2 && PlayerInfo[giveplayerid][pTogReports] != 1) return SendClientMessage(playerid, COLOR_WHITE, "Khong the dung lenh nay voi Admin!");
 		if(gettime() - ShotPlayer[giveplayerid][playerid] < 300)
 	    {
 			SetPVarInt(playerid, "pDMReport", giveplayerid);
-			ShowPlayerDialogEx(playerid, DMRCONFIRM, DIALOG_STYLE_MSGBOX, "DM Report", "You personally witnessed the reported player death matching within the last 60 seconds. Abuse of this command could result in a temporary ban.", "Confirm", "Cancel");
+			ShowPlayerDialogEx(playerid, DMRCONFIRM, DIALOG_STYLE_MSGBOX, "Bao cao DM", "Ban xac nhan da tan mat thay nguoi nay DM trong 60 giay qua. Lam dung lenh co the bi cam tam thoi.", "Xac nhan", "Huy");
 		}
 		else
 		{
-		    SendClientMessage(playerid, COLOR_WHITE, "You have not been shot by that person or have already reported them in the last 5 minutes.");
+		    SendClientMessage(playerid, COLOR_WHITE, "Nguoi do chua ban ban hoac ban da bao cao ho trong 5 phut qua.");
 			SendClientMessage(playerid, COLOR_WHITE, "As a reminder, abuse of this system could lead to punishment up to a temporary ban.");
 		}
 	}
@@ -192,24 +192,24 @@ CMD:dmreport(playerid, params[])
 
 CMD:dmalert(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't submit reports as an administrator.");
-	if(PlayerInfo[playerid][pWatchdog] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command!");
-	if(!GetPVarType(playerid, "SpectatingWatch")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use this command when you are spectating someone!");
-	if(PlayerInfo[playerid][pRMuted] != 0) return ShowPlayerDialogEx(playerid,7955,DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
-	if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time.");
+	if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD2, "Admin khong duoc gui bao cao.");
+	if(PlayerInfo[playerid][pWatchdog] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay!");
+	if(!GetPVarType(playerid, "SpectatingWatch")) return SendClientMessageEx(playerid, COLOR_GRAD2, "Chi dung duoc lenh nay khi dang theo doi nguoi choi!");
+	if(PlayerInfo[playerid][pRMuted] != 0) return ShowPlayerDialogEx(playerid,7955,DIALOG_STYLE_MSGBOX,"Da chan bao cao","Ban dang bi cam gui bao cao!\n\nLuu y khi bao cao:\n- Neu ro viec can ho tro, khong yeu cau ten Admin.\n- Mo ta cu the van de.\n- Khong bao cao sai su that.\n- Khong xuc pham Admin.\n- Chi bao cao van de trong game.\n- Don hang shop dung lenh /shoporder","Dong", "");
+	if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "Moi luc chi duoc co 1 bao cao dang cho.");
 	JustReported[playerid]=25;
 	new giveplayerid = GetPVarInt(playerid, "SpectatingWatch");
 	new string[128];
-	format(string, sizeof(string), "{FF0000}(DM Alert) %s (ID %d) is deathmatching.{FFFF91}", GetPlayerNameEx(giveplayerid), giveplayerid);
+	format(string, sizeof(string), "{FF0000}(Canh bao DM) %s (ID %d) dang DM.{FFFF91}", GetPlayerNameEx(giveplayerid), giveplayerid);
 	SendReportToQue(playerid, string, 2, 1);
 	SetPVarInt(playerid, "AlertedThisPlayer", giveplayerid);
 	SetPVarInt(playerid, "AlertType", 1);
 	AlertTime[playerid] = 300;
 	foreach(new i : Player) if(PlayerInfo[i][pWatchdog] >= 1) SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
-	SendClientMessageEx(playerid, COLOR_YELLOW, "Your DM report message was sent to the Admins & Watchdogs.");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Da gui bao cao DM den Admin va Watchdog.");
 	SetPVarInt(playerid, "WDReport", 1);
-	format(string, sizeof(string), "Please write a brief report on what you watched %s do.\n * 30 characters min", GetPlayerNameEx(giveplayerid));
-	return ShowPlayerDialogEx(playerid, DIALOG_WDREPORT, DIALOG_STYLE_INPUT, "Incident Report - DM Alert", string, "Submit", "");
+	format(string, sizeof(string), "Mo ta ngan gon hanh vi ban da thay %s thuc hien.\n * It nhat 30 ky tu", GetPlayerNameEx(giveplayerid));
+	return ShowPlayerDialogEx(playerid, DIALOG_WDREPORT, DIALOG_STYLE_INPUT, "Bao cao su viec - Canh bao DM", string, "Gui", "");
 }
 
 CMD:watchlistadd(playerid, params[])
@@ -217,29 +217,29 @@ CMD:watchlistadd(playerid, params[])
 	if(PlayerInfo[playerid][pWatchdog] >= 4 || PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		new points = 0, days, giveplayerid, string[128];
-		if(sscanf(params, "ddI(0)", giveplayerid, days, points)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /watchlistadd [playerid] [days] [points (optional)]");
+		if(sscanf(params, "ddI(0)", giveplayerid, days, points)) return SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /watchlistadd [playerid] [days] [points (optional)]");
 		
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot put an administrator on the watchlist!");
-			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot put yourself on the watchlist!");
-			if(days < 1 || days > 365) return SendClientMessageEx(playerid, COLOR_GRAD1, "Please specify an amount of days (1 to 365 Days).");
-			if(points < 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Points Specified!");
-			if(PlayerInfo[giveplayerid][pWatchlist] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player is already on the watchlist!");
+			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dua Admin vao danh sach theo doi!");
+			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dua chinh minh vao danh sach theo doi!");
+			if(days < 1 || days > 365) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nhap so ngay (1 den 365 ngay).");
+			if(points < 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "So diem khong hop le!");
+			if(PlayerInfo[giveplayerid][pWatchlist] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi da nam trong danh sach theo doi!");
 			
 			if(points > 0) AddNonRPPoint(giveplayerid, points, gettime()+2592000, "Manually Added", playerid, 1);
 			PlayerInfo[giveplayerid][pWatchlist] = 1;
 			PlayerInfo[giveplayerid][pNonRPMeter] += points;
 			PlayerInfo[giveplayerid][pWatchlistTime] = gettime() + 86400 / days;
 			
-			SendClientMessageEx(playerid, COLOR_CYAN, "You have manually added %s to the watchlist for %d days", GetPlayerNameEx(giveplayerid), days);
+			SendClientMessageEx(playerid, COLOR_CYAN, "Ban da them %s vao danh sach theo doi trong %d ngay", GetPlayerNameEx(giveplayerid), days);
 			
 			format(string, sizeof(string), "%s has added %s(%d) to the watchlist", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 			Log("logs/watchlist.log", string);
 		}
-		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified!");
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le!");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	return true;
 }
 
@@ -248,25 +248,25 @@ CMD:watchlistremove(playerid, params[])
 	if(PlayerInfo[playerid][pWatchdog] >= 4 || PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		new giveplayerid, string[128];
-		if(sscanf(params, "d", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /watchlistremove [playerid]");
+		if(sscanf(params, "d", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /watchlistremove [playerid]");
 		
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot perform this command on an administrator!");
-			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot perform this command on yourself!");
-			if(PlayerInfo[giveplayerid][pWatchlist] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player is not on the watchlist!");
+			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay voi Admin!");
+			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay voi chinh minh!");
+			if(PlayerInfo[giveplayerid][pWatchlist] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong nam trong danh sach theo doi!");
 			
 			PlayerInfo[giveplayerid][pWatchlist] = 0;
 			PlayerInfo[giveplayerid][pWatchlistTime] = 0;
 			
-			SendClientMessageEx(playerid, COLOR_CYAN, "You have removed %s from the watchlist.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_CYAN, "Da go %s khoi danh sach theo doi.", GetPlayerNameEx(giveplayerid));
 			
 			format(string, sizeof(string), "%s has removed %s(%d) from the watchlist", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 			Log("logs/watchlist.log", string);
 		}
-		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified!");
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le!");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	return true;
 }
 
@@ -275,32 +275,32 @@ CMD:restrictaccount(playerid, params[])
 	if(PlayerInfo[playerid][pWatchdog] >= 3 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new giveplayerid, reason[64], string[128];
-		if(sscanf(params, "ds[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /restrictaccount [playerid] [reason]");
+		if(sscanf(params, "ds[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /restrictaccount [playerid] [reason]");
 		
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if(PlayerInfo[giveplayerid][pAccountRestricted] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player account is already restricted!");
-			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot restrict an administrator account!");
-			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot restrict your own account!");
+			if(PlayerInfo[giveplayerid][pAccountRestricted] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Tai khoan nay da bi han che!");
+			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the han che tai khoan Admin!");
+			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the han che tai khoan cua chinh minh!");
 			
 			PlayerInfo[giveplayerid][pAccountRestricted] = 1;
 			ResetPlayerWeaponsEx(giveplayerid);
-			SendClientMessageEx(playerid, COLOR_CYAN, "You have restricted %s account.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_CYAN, "Your account has been restricted by %s. You will not be able to drive a vehicle, give/take any damage or own any weapons", GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_RED, "Note: To lift this restriction, please contact a member of the RP Improvement Team.");
+			SendClientMessageEx(playerid, COLOR_CYAN, "Da han che tai khoan %s.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_CYAN, "Tai khoan bi %s han che. Ban khong the lai xe, gay hoac nhan sat thuong, hay so huu vu khi", GetPlayerNameEx(playerid));
+			SendClientMessageEx(giveplayerid, COLOR_RED, "Luu y: Lien he thanh vien RP Improvement Team de go han che.");
 			
 			PlayerTextDrawShow(giveplayerid, AccountRestriction[giveplayerid]);
 			PlayerTextDrawShow(giveplayerid, AccountRestrictionEx[giveplayerid]);
 			
-			format(string, sizeof(string), "AdmCmd: %s has restricted %s account, reason: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s da han che tai khoan %s, ly do: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
 			ABroadCast(COLOR_LIGHTRED, string, 2);
 			
 			format(string, sizeof(string), "%s has restricted %s(%d) account, reason: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);
 			Log("logs/restrictaccount.log", string);
 		}
-		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	return true;
 }
 
@@ -309,21 +309,21 @@ CMD:unrestrictaccount(playerid, params[])
 	if(PlayerInfo[playerid][pWatchdog] >= 3 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new giveplayerid, string[128];
-		if(sscanf(params, "d", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /unrestrictaccount [playerid]");
+		if(sscanf(params, "d", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /unrestrictaccount [playerid]");
 		
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if(PlayerInfo[giveplayerid][pAccountRestricted] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player account is not restricted!");
-			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot unrestrict an administrator account!");
-			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot unrestrict your own account!");
+			if(PlayerInfo[giveplayerid][pAccountRestricted] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Tai khoan nay khong bi han che!");
+			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the go han che tai khoan Admin!");
+			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the go han che tai khoan cua chinh minh!");
 			
 			PlayerInfo[giveplayerid][pAccountRestricted] = 0;
 			PlayerInfo[giveplayerid][pNonRPMeter] = 0; //fix for bug where non-rp points would remain after being unrestricted.
 			
-			SendClientMessageEx(playerid, COLOR_CYAN, "You have unrestricted %s account.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(giveplayerid, COLOR_CYAN, "Your account has been unrestricted by %s.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_CYAN, "Da go han che tai khoan %s.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(giveplayerid, COLOR_CYAN, "Tai khoan cua ban duoc %s go han che.", GetPlayerNameEx(playerid));
 			
-			format(string, sizeof(string), "AdmCmd: %s has unrestricted %s account.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			format(string, sizeof(string), "AdmCmd: %s da go han che tai khoan %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ABroadCast(COLOR_LIGHTRED, string, 2);
 			
 			PlayerTextDrawHide(giveplayerid, AccountRestriction[giveplayerid]);
@@ -332,9 +332,9 @@ CMD:unrestrictaccount(playerid, params[])
 			format(string, sizeof(string), "%s has unrestricted %s(%d) account", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 			Log("logs/restrictaccount.log", string);
 		}
-		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	return true;
 }
 
@@ -343,7 +343,7 @@ CMD:watchdogs(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 1)
 	{
 		new string[128];
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Watchdogs Online:");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Watchdog dang online:");
 		foreach(new i : Player)
 		{	
 			if(PlayerInfo[i][pWatchdog] > 0)
@@ -352,13 +352,13 @@ CMD:watchdogs(playerid, params[])
 				else if(PlayerInfo[i][pWatchdog] == 2) format(string, sizeof(string), "Senior Watchdog %s (ID %i)", GetPlayerNameEx(i), i);
 				else if(PlayerInfo[i][pWatchdog] == 3) format(string, sizeof(string), "RP Specialist %s (ID %i)", GetPlayerNameEx(i), i);
 				else if(PlayerInfo[i][pWatchdog] == 4) format(string, sizeof(string), "Director of RP Improvement %s (ID %i)", GetPlayerNameEx(i), i);
-				if((i == playerid || PlayerInfo[playerid][pWatchdog] >= 3) && PlayerInfo[i][pAdmin] < 2) format(string, sizeof(string), "%s (This Hour: %d | Today: %d)", string, WDReportHourCount[i], WDReportCount[i]);
-				if(PlayerInfo[playerid][pToggledChats][CHAT_WATCHDOG]) strcat(string, " (WD Chat Toggled)");
+				if((i == playerid || PlayerInfo[playerid][pWatchdog] >= 3) && PlayerInfo[i][pAdmin] < 2) format(string, sizeof(string), "%s (Gio nay: %d | Hom nay: %d)", string, WDReportHourCount[i], WDReportCount[i]);
+				if(PlayerInfo[playerid][pToggledChats][CHAT_WATCHDOG]) strcat(string, " (Da tat chat WD)");
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	return true;
 }
 
@@ -372,7 +372,7 @@ CMD:wd(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 1) 
 	{
 		if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pWatchdog] < 3) PlayerInfo[playerid][pToggledChats][CHAT_WATCHDOG] = 0;
-		if(PlayerInfo[playerid][pToggledChats][CHAT_WATCHDOG]) return SendClientMessageEx(playerid, COLOR_GREY, "You have watchdog chat disabled - /togwd to enable it.");
+		if(PlayerInfo[playerid][pToggledChats][CHAT_WATCHDOG]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da tat chat Watchdog, dung /togwd de bat lai.");
 		if(!isnull(params)) 
 		{
 			szMiscArray[0] = 0;
@@ -396,33 +396,33 @@ CMD:wd(playerid, params[])
 				}
 			}
 		}
-		else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wd [watchdog chat]");
+		else return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /wd [watchdog chat]");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	return true;
 }
 
 CMD:refer(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't submit reports as an administrator.");
+	if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD2, "Admin khong duoc gui bao cao.");
 	new reason[100];
-	if(PlayerInfo[playerid][pWatchdog] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command!");
-	if(!GetPVarType(playerid, "SpectatingWatch")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use this command when you are spectating someone!");
-	if(sscanf(params, "s[100]", reason)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /refer [details]");
-	if(PlayerInfo[playerid][pRMuted] != 0) return ShowPlayerDialogEx(playerid,7955,DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
- 	if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time.");
+	if(PlayerInfo[playerid][pWatchdog] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay!");
+	if(!GetPVarType(playerid, "SpectatingWatch")) return SendClientMessageEx(playerid, COLOR_GRAD2, "Chi dung duoc lenh nay khi dang theo doi nguoi choi!");
+	if(sscanf(params, "s[100]", reason)) return SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /refer [details]");
+	if(PlayerInfo[playerid][pRMuted] != 0) return ShowPlayerDialogEx(playerid,7955,DIALOG_STYLE_MSGBOX,"Da chan bao cao","Ban dang bi cam gui bao cao!\n\nLuu y khi bao cao:\n- Neu ro viec can ho tro, khong yeu cau ten Admin.\n- Mo ta cu the van de.\n- Khong bao cao sai su that.\n- Khong xuc pham Admin.\n- Chi bao cao van de trong game.\n- Don hang shop dung lenh /shoporder","Dong", "");
+ 	if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "Moi luc chi duoc co 1 bao cao dang cho.");
 	JustReported[playerid] = 25;
 	new giveplayerid = GetPVarInt(playerid, "SpectatingWatch");
 	new string[128];
-	format(string, sizeof(string), "{FF0000}(Watchdog Alert) %s (ID %d) | Details: %s{FFFF91}", GetPlayerNameEx(giveplayerid), giveplayerid, reason);
+	format(string, sizeof(string), "{FF0000}(Watchdog) %s (ID %d) | Chi tiet: %s{FFFF91}", GetPlayerNameEx(giveplayerid), giveplayerid, reason);
 	SendReportToQue(playerid, string, 2, 1);
 	SetPVarInt(giveplayerid, "BeenAlerted", 1);
 	SetPVarInt(playerid, "AlertedThisPlayer", giveplayerid);
 	foreach(new i : Player) if(PlayerInfo[i][pWatchdog] >= 1) SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
-	SendClientMessageEx(playerid, COLOR_YELLOW, "Your Watch Dog Alert was sent to the Admins & Watchdogs.");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Da gui canh bao Watchdog den Admin va Watchdog.");
 	SetPVarInt(playerid, "WDReport", 2);
-	format(string, sizeof(string), "Please write a brief report on what you watched %s do.\n * 30 characters min", GetPlayerNameEx(giveplayerid));
-	return ShowPlayerDialogEx(playerid, DIALOG_WDREPORT, DIALOG_STYLE_INPUT, "Incident Report - Refer", string, "Submit", "");
+	format(string, sizeof(string), "Mo ta ngan gon hanh vi ban da thay %s thuc hien.\n * It nhat 30 ky tu", GetPlayerNameEx(giveplayerid));
+	return ShowPlayerDialogEx(playerid, DIALOG_WDREPORT, DIALOG_STYLE_INPUT, "Bao cao su viec - Chuyen tiep", string, "Gui", "");
 }
 
 CMD:wdwhitelist(playerid, params[])
@@ -432,7 +432,7 @@ CMD:wdwhitelist(playerid, params[])
 		new query[256], giveplayer[MAX_PLAYER_NAME], ip[16];
 		if(sscanf(params, "s[24]s[16]", giveplayer, ip))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wdwhitelist [watchdog name] [IP]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /wdwhitelist [watchdog name] [IP]");
 			return 1;
 		}
 
@@ -444,9 +444,9 @@ CMD:wdwhitelist(playerid, params[])
 		mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `SecureIP`='%s' WHERE `Username`='%s' AND `Watchdog` <= %d", tmpIP, tmpName, PlayerInfo[playerid][pWatchdog]);
 		mysql_tquery(MainPipeline, query, "OnWDWhitelist", "i", playerid);
 
-		SendClientMessageEx(playerid, COLOR_YELLOW, "Attempting to whitelist %s on %s's account...", tmpIP, tmpName);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Dang cho phep IP %s vao tai khoan %s...", tmpIP, tmpName);
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	return true;
 }
 
@@ -454,34 +454,34 @@ CMD:watchlist(playerid, params[])
 {
 	if(PlayerInfo[playerid][pWatchdog] >= 1 || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pSMod] == 1)
 	{
-		if(FetchingWatchlist == 1) return SendClientMessageEx(playerid, COLOR_RED, "Please try again later, someone is already fetching the watchlist.");
+		if(FetchingWatchlist == 1) return SendClientMessageEx(playerid, COLOR_RED, "Co nguoi dang tai danh sach theo doi, hay thu lai sau.");
 		PublicSQLString = "";
 		mysql_tquery(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' AND `manual` = '1' ORDER BY `point` DESC", "FetchWatchlist", "i", playerid);
 		
-		SendClientMessageEx(playerid, COLOR_CYAN, "Fetching the watchlist...");
+		SendClientMessageEx(playerid, COLOR_CYAN, "Dang tai danh sach theo doi...");
 		FetchingWatchlist = 1;
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	return true;
 }
 
 CMD:makewatchdog(playerid, params[])  {
-	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pWatchdog] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pWatchdog] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	new ivalue, iTargetID;
-	if(sscanf(params, "ui", iTargetID, ivalue)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /makewatchdog [player] [level]");
-	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
-	if(ivalue > 0 && IsStaffBanned(iTargetID)) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is currently staff banned.");
-	if(PlayerInfo[iTargetID][pHelper] >= 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot make Advisors Watchdogs!");
-	if(PlayerInfo[iTargetID][pWatchdog] == ivalue) return SendClientMessageEx(playerid, COLOR_GREY, "This person already has this watchdog level.");
-	if(PlayerInfo[playerid][pWatchdog] == 3 && ivalue >= 4) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot promote players to Watchdog Level 4+.");
+	if(sscanf(params, "ui", iTargetID, ivalue)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /makewatchdog [player] [level]");
+	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi choi khong hop le.");
+	if(ivalue > 0 && IsStaffBanned(iTargetID)) return SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi do dang bi cam lam staff.");
+	if(PlayerInfo[iTargetID][pHelper] >= 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the bo nhiem Advisor lam Watchdog!");
+	if(PlayerInfo[iTargetID][pWatchdog] == ivalue) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co cap Watchdog nay.");
+	if(PlayerInfo[playerid][pWatchdog] == 3 && ivalue >= 4) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the thang chuc nguoi choi len Watchdog cap 4+.");
 	new szRank[128];
 	switch(ivalue) {
-		case 0: format(szRank, sizeof(szRank), "AdmCmd: %s has removed %s's watchdog rank.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
-		case 1: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a Watchdog.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
-		case 2: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a Senior Watchdog.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
-		case 3: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a RP Specialist.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
-		case 4: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s the Director of RP Improvement.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
-		default: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s an undefined level watchdog.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+		case 0: format(szRank, sizeof(szRank), "AdmCmd: %s da go chuc vu Watchdog cua %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+		case 1: format(szRank, sizeof(szRank), "AdmCmd: %s bo nhiem %s: Watchdog.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+		case 2: format(szRank, sizeof(szRank), "AdmCmd: %s bo nhiem %s: Senior Watchdog.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+		case 3: format(szRank, sizeof(szRank), "AdmCmd: %s bo nhiem %s: RP Specialist.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+		case 4: format(szRank, sizeof(szRank), "AdmCmd: %s bo nhiem %s: Director of RP Improvement.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+		default: format(szRank, sizeof(szRank), "AdmCmd: %s bo nhiem %s: Watchdog cap chua xac dinh.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 	}
 	ABroadCast(COLOR_LIGHTRED, szRank, 2);
 	switch(ivalue)
@@ -498,22 +498,22 @@ CMD:makewatchdog(playerid, params[])  {
 	Log("logs/makewatchdog.log", szRank);
 
 	switch(ivalue) {
-		case 0: format(szRank, sizeof(szRank), "Your watchdog rank has been removed by %s.", GetPlayerNameEx(playerid));
-		case 1: format(szRank, sizeof(szRank), "You have been made a Watchdog by %s.", GetPlayerNameEx(playerid));
-		case 2: format(szRank, sizeof(szRank), "You have been made a Senior Watchdog by %s.", GetPlayerNameEx(playerid));
-		case 3: format(szRank, sizeof(szRank), "You have been made a RP Specialist by %s.", GetPlayerNameEx(playerid));
-		case 4: format(szRank, sizeof(szRank), "You have been made the Director of RP Improvement by %s.", GetPlayerNameEx(playerid));
-		default: format(szRank, sizeof(szRank), "You have been made an undefined level watchdog by %s.", GetPlayerNameEx(playerid));
+		case 0: format(szRank, sizeof(szRank), "Chuc vu Watchdog cua ban da bi %s go bo.", GetPlayerNameEx(playerid));
+		case 1: format(szRank, sizeof(szRank), "Ban duoc %s bo nhiem lam Watchdog.", GetPlayerNameEx(playerid));
+		case 2: format(szRank, sizeof(szRank), "Ban duoc %s bo nhiem lam Senior Watchdog.", GetPlayerNameEx(playerid));
+		case 3: format(szRank, sizeof(szRank), "Ban duoc %s bo nhiem lam RP Specialist.", GetPlayerNameEx(playerid));
+		case 4: format(szRank, sizeof(szRank), "Ban duoc %s bo nhiem lam Director of RP Improvement.", GetPlayerNameEx(playerid));
+		default: format(szRank, sizeof(szRank), "Ban duoc %s bo nhiem lam Watchdog cap chua xac dinh.", GetPlayerNameEx(playerid));
 	}
 	SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szRank);
 
 	switch(ivalue) {
-		case 0: format(szRank, sizeof(szRank), "You have removed %s's watchdog rank.", GetPlayerNameEx(iTargetID));
-		case 1: format(szRank, sizeof(szRank), "You have made %s a Watchdog.", GetPlayerNameEx(iTargetID));
-		case 2: format(szRank, sizeof(szRank), "You have made %s a Senior Watchdog.", GetPlayerNameEx(iTargetID));
-		case 3: format(szRank, sizeof(szRank), "You have made %s a RP Specialist.", GetPlayerNameEx(iTargetID));
-		case 4: format(szRank, sizeof(szRank), "You have made %s the Director of RP Improvement.", GetPlayerNameEx(iTargetID));
-		default: format(szRank, sizeof(szRank), "You have made %s an undefined level watchdog.", GetPlayerNameEx(iTargetID));
+		case 0: format(szRank, sizeof(szRank), "Ban da go chuc vu Watchdog cua %s.", GetPlayerNameEx(iTargetID));
+		case 1: format(szRank, sizeof(szRank), "Da bo nhiem %s lam Watchdog.", GetPlayerNameEx(iTargetID));
+		case 2: format(szRank, sizeof(szRank), "Da bo nhiem %s lam Senior Watchdog.", GetPlayerNameEx(iTargetID));
+		case 3: format(szRank, sizeof(szRank), "Da bo nhiem %s lam RP Specialist.", GetPlayerNameEx(iTargetID));
+		case 4: format(szRank, sizeof(szRank), "Da bo nhiem %s lam Director of RP Improvement.", GetPlayerNameEx(iTargetID));
+		default: format(szRank, sizeof(szRank), "Da bo nhiem %s lam Watchdog cap chua xac dinh.", GetPlayerNameEx(iTargetID));
 	}
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szRank);
 	return 1;

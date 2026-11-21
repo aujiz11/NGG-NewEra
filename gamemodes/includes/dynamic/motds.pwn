@@ -39,12 +39,12 @@ CMD:motd(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 1337)
     {
-		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /motd [message]");
+		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /motd [message]");
 		new string[128];
-    	format(string, sizeof(string), "AdmCmd: %s has changed the global motd to: %s.", GetPlayerNameEx(playerid), params);
+    	format(string, sizeof(string), "AdmCmd: %s da doi MOTD chung thanh: %s.", GetPlayerNameEx(playerid), params);
 		ABroadCast( COLOR_LIGHTRED, string, 4);
 		format(GlobalMOTD, sizeof(GlobalMOTD), "%s", params);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the Global MOTD.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi MOTD chung.");
 		g_mysql_SaveMOTD();
 	}
 	return 1;
@@ -54,12 +54,12 @@ CMD:amotd(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 1337)
     {
-		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /amotd [message]");
+		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /amotd [message]");
 		new string[128];
 		format(AdminMOTD, sizeof(AdminMOTD), "%s", params);
-		format(string, sizeof(string), "AdmCmd: %s has changed the admin motd to: %s.", GetPlayerNameEx(playerid), params);
+		format(string, sizeof(string), "AdmCmd: %s da doi MOTD Admin thanh: %s.", GetPlayerNameEx(playerid), params);
 		ABroadCast( COLOR_LIGHTRED, string, 4);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the Admin MOTD.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi MOTD Admin.");
 		g_mysql_SaveMOTD();
 		//IRC_SetChannelTopic(BotID[0], IRC_CHANNEL_ADMIN, AdminMOTD);
 	}
@@ -70,12 +70,12 @@ CMD:vipmotd(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 1337)
     {
-		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vipmotd [message]");
+		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /vipmotd [message]");
 		new string[128];
 		format(VIPMOTD, sizeof(VIPMOTD), "%s", params);
-		format(string, sizeof(string), "AdmCmd: %s has changed the VIP motd to: %s.", GetPlayerNameEx(playerid), params);
+		format(string, sizeof(string), "AdmCmd: %s da doi MOTD VIP thanh: %s.", GetPlayerNameEx(playerid), params);
 		ABroadCast( COLOR_LIGHTRED, string, 4);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the VIP MOTD.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi MOTD VIP.");
 		g_mysql_SaveMOTD();
 	}
 	return 1;
@@ -85,20 +85,20 @@ CMD:advisormotd(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pHelper] >= 4 || PlayerInfo[playerid][pPR] > 0)
     {
-		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /advisormotd [message]");
+		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /advisormotd [message]");
 		new string[128];
 		format(CAMOTD, sizeof(CAMOTD), "%s", params);
 		if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pPR] > 0)
 		{
-			format(string, sizeof(string), "AdmCmd: %s has changed the Advisor motd to: %s.", GetPlayerNameEx(playerid), params);
+			format(string, sizeof(string), "AdmCmd: %s da doi MOTD Advisor thanh: %s.", GetPlayerNameEx(playerid), params);
 			ABroadCast( COLOR_LIGHTRED, string, 4);
 		}
 		else if(PlayerInfo[playerid][pHelper] >= 4)
 		{
-		    format(string, sizeof(string), "CACmd: %s has changed the Advisor motd to: %s.", GetPlayerNameEx(playerid), params);
+		    format(string, sizeof(string), "CACmd: %s da doi MOTD Advisor thanh: %s.", GetPlayerNameEx(playerid), params);
 			CBroadCast( COLOR_YELLOW, string, 2);
 		}
-		SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the Advisor MOTD.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi MOTD Advisor.");
 		g_mysql_SaveMOTD();
 	}
 	return 1;
@@ -108,24 +108,24 @@ CMD:pmotd(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 99999 || PlayerInfo[playerid][pShopTech] >= 3 || PlayerInfo[playerid][pPR] >= 2)
     {
-		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pmotd [message/off]");
+		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /pmotd [message/off]");
 		new string[128];
 		if(strcmp(params, "off", true) == 0)
 		{
 		    format(pMOTD, sizeof(pMOTD), "");
-		    format(string, sizeof(string), "AdmCmd: %s has turned off the Global MOTD", GetPlayerNameEx(playerid));
+		    format(string, sizeof(string), "AdmCmd: %s da tat MOTD chung", GetPlayerNameEx(playerid));
 			ABroadCast( COLOR_LIGHTRED, string, 4);
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the pMOTD.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi pMOTD.");
 			g_mysql_SaveMOTD();
 			return 1;
 		}
 		format(pMOTD, sizeof(pMOTD), "%s", params);
 
-		format(string, sizeof(string), "AdmCmd: %s has changed the global motd to: %s.", GetPlayerNameEx(playerid), params);
+		format(string, sizeof(string), "AdmCmd: %s da doi MOTD chung thanh: %s.", GetPlayerNameEx(playerid), params);
 		ABroadCast( COLOR_LIGHTRED, string, 4);
 
-		SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the pMOTD.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi pMOTD.");
 		g_mysql_SaveMOTD();
 	}
 	return 1;
@@ -139,16 +139,16 @@ CMD:gmotd(playerid, params[])
 		iSlot;
 
 	if (0 <= iGroupID < MAX_GROUPS) {
-		if(sscanf(params, "ds[128]", iSlot, string)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gmotd [motd slot] [message]");
-		if(strlen(string) > 128) return SendClientMessageEx( playerid, COLOR_GRAD1, "That MOTD is too long, please refrain from using more than 128 characters." );
+		if(sscanf(params, "ds[128]", iSlot, string)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gmotd [motd slot] [message]");
+		if(strlen(string) > 128) return SendClientMessageEx( playerid, COLOR_GRAD1, "MOTD qua dai, khong duoc vuot qua 128 ky tu." );
 		if (1 <= iSlot <= 3) {
 		    strmid(gMOTD[iGroupID][iSlot-1], string, 0, strlen(string), 128);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the group MOTD.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi MOTD to chuc.");
 			SaveGroup(iGroupID);
 			format(string,sizeof(string),"%s (%d) has changed MOTD for %s to: %s in slot %i", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), gMOTD[iGroupID][iSlot-1], string, iSlot);
 			GroupLog(iGroupID, string);
-		} else SendClientMessageEx(playerid, COLOR_GREY, "Invalid slot specified.");
-	} else SendClientMessageEx(playerid, COLOR_GREY, "Only group leaders may use this command.");
+		} else SendClientMessageEx(playerid, COLOR_GREY, "O duoc chon khong hop le.");
+	} else SendClientMessageEx(playerid, COLOR_GREY, "Chi lanh dao to chuc duoc dung lenh nay.");
 	return 1;
 }
 
@@ -159,19 +159,19 @@ CMD:prisonermotd(playerid, params[])
 		string[128],
 		iSlot;
 
-	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
+	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban can la DOC Guard de dung lenh nay.");
 
 	if (0 <= iGroupID < MAX_GROUPS) {
-		if(sscanf(params, "ds[128]", iSlot, string)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /prisonermotd [motd slot] [message]");
-		if(strlen(string) > 128) return SendClientMessageEx( playerid, COLOR_GRAD1, "That MOTD is too long, please refrain from using more than 128 characters." );
+		if(sscanf(params, "ds[128]", iSlot, string)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /prisonermotd [motd slot] [message]");
+		if(strlen(string) > 128) return SendClientMessageEx( playerid, COLOR_GRAD1, "MOTD qua dai, khong duoc vuot qua 128 ky tu." );
 		if (1 <= iSlot <= 3) {
 		    strmid(prisonerMOTD[iSlot-1], string, 0, strlen(string), 128);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the prisoner MOTD.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi MOTD tu nhan.");
 			g_mysql_SaveMOTD();
 			format(string,sizeof(string),"%s (%d) has changed the prisoner MOTD to: %s in slot %i", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), string, iSlot);
 			GroupLog(iGroupID, string);
-		} else SendClientMessageEx(playerid, COLOR_GREY, "Invalid slot specified.");
-	} else SendClientMessageEx(playerid, COLOR_GREY, "Only group leaders may use this command.");
+		} else SendClientMessageEx(playerid, COLOR_GREY, "O duoc chon khong hop le.");
+	} else SendClientMessageEx(playerid, COLOR_GREY, "Chi lanh dao to chuc duoc dung lenh nay.");
 	return 1;
 }
 
@@ -180,8 +180,8 @@ CMD:viewmotd(playerid, params[])
 	new string[128], option[16];
 	if(sscanf(params, "s[16]", option)) 
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /viewmotd [option]");
-		strcat(string, "Available Options: global, player");
+		SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /viewmotd [option]");
+		strcat(string, "Tuy chon: global, player");
 		if(PlayerInfo[playerid][pDonateRank] >= 1) strcat(string, ", vip");
 		if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID) strcat(string, ", group");
 		if(PlayerInfo[playerid][pHelper] >= 1) strcat(string, ", advisor");

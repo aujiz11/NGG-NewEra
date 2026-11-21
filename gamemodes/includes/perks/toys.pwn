@@ -60,8 +60,8 @@ stock CompleteToyTrade(playerid)
 
 	if(!toyCountCheck(playerid))
 	{
-		SendClientMessageEx(sellerid, COLOR_GREY, "%s has declined the toy offer. (no free toy slots)", GetPlayerNameEx(playerid));
-		SendClientMessageEx(playerid, COLOR_GREY, "You don't have any free toy slots.");
+		SendClientMessageEx(sellerid, COLOR_GREY, "%s tu choi de nghi toy. (het o toy trong)", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong con o toy trong.");
 		DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttBuyer");
 		DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttCost");
 		DeletePVar(playerid, "ttSeller");
@@ -72,8 +72,8 @@ stock CompleteToyTrade(playerid)
 
 	if(GetPlayerCash(playerid) < GetPVarInt(sellerid, "ttCost"))
 	{
-		SendClientMessageEx(sellerid, COLOR_GREY, "%s has declined the toy offer. (Not enough money)", GetPlayerNameEx(playerid));
-		SendClientMessageEx(playerid, COLOR_GREY, "You do not have enough money on you.");
+		SendClientMessageEx(sellerid, COLOR_GREY, "%s tu choi de nghi toy. (khong du tien)", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du tien mat.");
 		DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttBuyer");
 		DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttCost");
 		DeletePVar(playerid, "ttSeller");
@@ -173,8 +173,8 @@ stock CompleteToyTrade(playerid)
 	OnPlayerStatsUpdate(playerid);
 	OnPlayerStatsUpdate(sellerid);
 
-	SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, "%s has accepted your offer and purchased your toy for $%s. %s", GetPlayerNameEx(playerid), number_format(GetPVarInt(sellerid, "ttCost")), name);
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have accepted %s's offer and purchased the toy for $%s. %s", GetPlayerNameEx(sellerid), number_format(GetPVarInt(sellerid, "ttCost")), name);
+	SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, "%s da nhan de nghi, mua toy cua ban gia $%s. %s", GetPlayerNameEx(playerid), number_format(GetPVarInt(sellerid, "ttCost")), name);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban nhan de nghi cua %s, mua toy gia $%s. %s", GetPlayerNameEx(sellerid), number_format(GetPVarInt(sellerid, "ttCost")), name);
 	format(string, sizeof(string), "[S %s(%d)][IP %s][B %s(%d)][IP %s][P $%s][T: %s(%d)]", GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid),
 	GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(sellerid, "ttCost")), name, toyid);
 	Log("logs/toys.log", string);
@@ -217,10 +217,10 @@ stock ShowEditMenu(playerid)
 		PlayerToyInfo[playerid][iIndex][ptScaleZ] = 1.0;
 	}
 	if(IsPlayerInAnyVehicle(playerid) && PlayerToyInfo[playerid][iIndex][ptSpecial] == 2)
-		return ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_MSGBOX, "Edit your toy", "You cannot edit toys while you are inside a vehicle!", "Okay", "");
+		return ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_MSGBOX, "Sua toy cua ban", "Khong the sua toy khi dang trong xe!", "Dong y", "");
 	new toycount = GetFreeToySlot(playerid);
-	if(toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You currently have 10 objects attached, please deattach an object.");
-	if(toycount == 9 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach an object to slot 10 since you have a backpack equipped.");
+	if(toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban da gan 10 object, hay thao bot object.");
+	if(toycount == 9 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the gan object vao o 10 khi dang deo ba lo.");
 	PlayerHoldingObject[playerid][toycount] = iIndex;
 	SetPlayerAttachedObject(playerid, toycount, PlayerToyInfo[playerid][iIndex][ptModelID],
 	PlayerToyInfo[playerid][iIndex][ptBone], PlayerToyInfo[playerid][iIndex][ptPosX],
@@ -231,8 +231,8 @@ stock ShowEditMenu(playerid)
 
     new stringg[128];
     strunpack(boneName, HoldingBones[PlayerToyInfo[playerid][iIndex][ptBone]], sizeof(boneName));
-    format(stringg, sizeof(stringg), "Bone (%s)\nOffset\nToggle Auto-Attach", boneName);
- 	ShowPlayerDialogEx(playerid, EDITTOYS2, DIALOG_STYLE_LIST, "Toy Menu: Edit", stringg, "Select", "Cancel");
+    format(stringg, sizeof(stringg), "Xuong (%s)\nDo lech\nBat/tat tu dong gan", boneName);
+ 	ShowPlayerDialogEx(playerid, EDITTOYS2, DIALOG_STYLE_LIST, "Menu toy: Sua", stringg, "Chon", "Huy");
 	return 1;
 }
 
@@ -305,12 +305,12 @@ AttachToy(playerid, toyid, msg = 1)
 	new toycount = GetFreeToySlot(playerid);
 	if(toycount == -1)
 	{
-		if(msg) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot attach more than 10 objects.");
+		if(msg) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the gan hon 10 object.");
 		else return 1;
 	}
 	if(toycount == 9 && PlayerInfo[playerid][pBEquipped])
 	{
-		if(msg) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach an object to slot 10 since you have a backpack equipped.");
+		if(msg) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the gan object vao o 10 khi dang deo ba lo.");
 		else return 1;
 	}
 
@@ -333,7 +333,7 @@ AttachToy(playerid, toyid, msg = 1)
 	{
 		new boneName[16];
 		strunpack(boneName, HoldingBones[PlayerToyInfo[playerid][toyid][ptBone]], sizeof(boneName));
-		SendClientMessageEx(playerid, COLOR_RED, "Successfully attached %s (Bone: %s) (Slot: %d)", name, boneName, toyid);
+		SendClientMessageEx(playerid, COLOR_RED, "Da gan %s (Xuong: %s) (O: %d)", name, boneName, toyid);
 	}
 	PlayerHoldingObject[playerid][toycount] = toyid;
 	SetPlayerAttachedObject(playerid, toycount, PlayerToyInfo[playerid][toyid][ptModelID], PlayerToyInfo[playerid][toyid][ptBone], PlayerToyInfo[playerid][toyid][ptPosX], PlayerToyInfo[playerid][toyid][ptPosY], PlayerToyInfo[playerid][toyid][ptPosZ],
@@ -361,7 +361,7 @@ stock player_remove_vip_toys(iTargetID)
 			}
 		}
 	}
-	SendClientMessageEx(iTargetID, COLOR_WHITE, "All accessories/toys that were property of your former employer have been removed.");
+	SendClientMessageEx(iTargetID, COLOR_WHITE, "Da go moi phu kien/toy thuoc co quan cu cua ban.");
 	return 1;
 }
 
@@ -369,19 +369,19 @@ CMD:shopvest(playerid, params[])
 {
 	if (PlayerInfo[playerid][pShopTech] < 1 && PlayerInfo[playerid][pAdmin] < 1338)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, " You are not allowed to use this command.");
+		SendClientMessageEx(playerid, COLOR_GREY, " Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new string[128], giveplayerid, slot, invoice[64];
-	if(sscanf(params, "uds[64]", giveplayerid, slot, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shopvest [player] [slot(0-9)] [invoice #]");
+	if(sscanf(params, "uds[64]", giveplayerid, slot, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /shopvest [player] [slot(0-9)] [invoice #]");
 
 	PlayerToyInfo[giveplayerid][slot][ptModelID] = 19142;
 	PlayerToyInfo[giveplayerid][slot][ptBone] = 1;
 	PlayerToyInfo[giveplayerid][slot][ptTradable] = 1;
 	g_mysql_NewToy(giveplayerid, slot);
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTGREEN, "You have been given a police vest in slot %d, use /toys to manage it", slot);
-	SendClientMessageEx(playerid, COLOR_LIGHTGREEN, "You have given %s a police vest in slot %d", GetPlayerNameEx(giveplayerid), slot);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTGREEN, "Ban nhan ao giap canh sat tai o %d, dung /toys de quan ly", slot);
+	SendClientMessageEx(playerid, COLOR_LIGHTGREEN, "Ban cap cho %s ao giap canh sat tai o %d", GetPlayerNameEx(giveplayerid), slot);
 	format(string, sizeof(string), "[SHOPVEST] %s has given %s(%d) a police vest toy - Invoice %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 	Log("logs/shoplog.log", string);
 
@@ -395,7 +395,7 @@ CMD:listtoys(playerid, params[]) {
 		new giveplayerid, string[64];
 		szMiscArray[0] = 0;
 		if(sscanf(params, "u", giveplayerid)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /listtoys [player]");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /listtoys [player]");
 		}
 		else if(IsPlayerConnected(giveplayerid))
 		{
@@ -418,13 +418,13 @@ CMD:listtoys(playerid, params[]) {
 				    format(name, sizeof(name), "ID: %d", PlayerToyInfo[giveplayerid][x][ptModelID]);
 				}
 				strunpack(boneName, HoldingBones[PlayerToyInfo[giveplayerid][x][ptBone]], sizeof(boneName));
-				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s%s)\n", szMiscArray, x, name, boneName, (PlayerToyInfo[giveplayerid][x][ptSpecial] > 1) ? (", Special") : (""));
+				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Gan: %s%s)\n", szMiscArray, x, name, boneName, (PlayerToyInfo[giveplayerid][x][ptSpecial] > 1) ? (", Dac biet") : (""));
 			}
-			format(string, sizeof(string), "Listing %s's Toys - Select a Slot", GetPlayerNameEx(giveplayerid));
-			ShowPlayerDialogEx(playerid, LISTTOYS_DELETETOY, DIALOG_STYLE_LIST, string, szMiscArray, "Delete", "Cancel");
+			format(string, sizeof(string), "Toy cua %s - Chon o", GetPlayerNameEx(giveplayerid));
+			ShowPlayerDialogEx(playerid, LISTTOYS_DELETETOY, DIALOG_STYLE_LIST, string, szMiscArray, "Xoa", "Huy");
 			SetPVarInt(playerid, "listtoys_giveplayerid", giveplayerid);
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
+		else SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi choi khong hop le.");
 	}
 	return 1;
 }
@@ -433,12 +433,12 @@ CMD:shoplaser(playerid, params[])
 {
 	if (PlayerInfo[playerid][pShopTech] < 1 && PlayerInfo[playerid][pAdmin] < 1338)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, " You are not allowed to use this command.");
+		SendClientMessageEx(playerid, COLOR_GREY, " Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new string[128], giveplayerid, slot, color[32], invoice[64];
-	if(sscanf(params, "udss[64]", giveplayerid, slot, color, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shoplaser [player] [slot(0-9)] [red/green/orange/yellow/pink/blue] [invoice #]");
+	if(sscanf(params, "udss[64]", giveplayerid, slot, color, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /shoplaser [player] [slot(0-9)] [red/green/orange/yellow/pink/blue] [invoice #]");
 
 	if(strcmp(color,"red",true) == 0)
 	{
@@ -482,8 +482,8 @@ CMD:shoplaser(playerid, params[])
 		PlayerToyInfo[giveplayerid][slot][ptTradable] = 1;
 		g_mysql_NewToy(giveplayerid, slot);
 	}
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTGREEN, "You have been given a %s laser in slot %d, use /toys to manage it", color, slot);
-	SendClientMessageEx(playerid, COLOR_LIGHTGREEN, "You have given %s a %s laser in slot %d", GetPlayerNameEx(giveplayerid), color, slot);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTGREEN, "Ban nhan laser %s tai o %d, dung /toys de quan ly", color, slot);
+	SendClientMessageEx(playerid, COLOR_LIGHTGREEN, "Ban cap cho %s laser %s tai o %d", GetPlayerNameEx(giveplayerid), color, slot);
 	format(string, sizeof(string), "[SHOPLASER] %s has given %s(%d) a laser toy - Invoice %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 	Log("logs/shoplog.log", string);
 
@@ -496,8 +496,8 @@ CMD:giveobject(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4)
 	{
 		new giveplayerid, object;
-		if(sscanf(params, "ud", giveplayerid, object)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /giveobject [player] [object]");
-		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified");
+		if(sscanf(params, "ud", giveplayerid, object)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /giveobject [player] [object]");
+		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le");
 		szMiscArray[0] = 0;
 		SetPVarInt(playerid, "giveplayeridtoy", giveplayerid);
 		SetPVarInt(playerid, "toyid", object);
@@ -520,12 +520,12 @@ CMD:giveobject(playerid, params[])
 			    format(name, sizeof(name), "ID: %d", PlayerToyInfo[giveplayerid][x][ptModelID]);
 			}
 			strunpack(boneName, HoldingBones[PlayerToyInfo[giveplayerid][x][ptBone]], sizeof(boneName));
-			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x, name, boneName);
+			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Gan: %s)\n", szMiscArray, x, name, boneName);
 		}
-   		ShowPlayerDialogEx(playerid, GIVETOY, DIALOG_STYLE_LIST, "Select a slot", szMiscArray, "Select", "Cancel");
+   		ShowPlayerDialogEx(playerid, GIVETOY, DIALOG_STYLE_LIST, "Chon o", szMiscArray, "Chon", "Huy");
 	}
 	else {
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	}
 	return 1;
 }
@@ -534,11 +534,11 @@ CMD:shopobject(playerid, params[])
 {
 	if(PlayerInfo[playerid][pShopTech] >= 1)
 	{
-		ShowPlayerDialogEx(playerid, SHOPOBJECT_ORDERID, DIALOG_STYLE_INPUT, "Shop Objects - Order ID", "Please enter the Order ID", "OK", "Cancel");
+		ShowPlayerDialogEx(playerid, SHOPOBJECT_ORDERID, DIALOG_STYLE_INPUT, "Shop Objects - Ma don", "Nhap Order ID", "Dong y", "Huy");
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 	return 1;
@@ -550,29 +550,29 @@ CMD:buytoys(playerid, params[])
 	{
 		if(PlayerInfo[playerid][pDonateRank] < 3)
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "* You are not a Gold or Platinum VIP!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "* Ban khong phai Gold hoac Platinum VIP!");
 		}
 		else
 		{
-			ShowPlayerDialogEx( playerid, BUYTOYSGOLD, DIALOG_STYLE_MSGBOX, "Toy Store", "Welcome to the VIP toy store! Here you can buy accessories to attach to your player.\n\nFirst, we will choose a slot to store the toy in.","Continue", "Cancel" );
+			ShowPlayerDialogEx( playerid, BUYTOYSGOLD, DIALOG_STYLE_MSGBOX, "Toy Store", "Chao mung den VIP toy store! Mua phu kien de gan len nhan vat.\n\nTruoc tien, chon o de cat toy.","Tiep tuc", "Huy" );
 		}
 	}
 	else
 	{
 		new biz = InBusiness(playerid);
 	   	if (biz == INVALID_BUSINESS_ID || Businesses[biz][bType] != BUSINESS_TYPE_CLOTHING) {
-	        SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not in a clothing shop!");
+	        SendClientMessageEx(playerid, COLOR_GRAD2, "   Ban khong o trong cua hang quan ao!");
 	        return 1;
 	    }
 		if (Businesses[biz][bInventory] < 1) {
-	    	SendClientMessageEx(playerid, COLOR_GRAD2, "   Store does not have any clothes!");
+	    	SendClientMessageEx(playerid, COLOR_GRAD2, "   Cua hang khong co quan ao!");
 		    return 1;
 		}
 		if (!Businesses[biz][bStatus]) {
-		    SendClientMessageEx(playerid, COLOR_GRAD2, "   This clothing store is closed!");
+		    SendClientMessageEx(playerid, COLOR_GRAD2, "   Cua hang quan ao nay dang dong cua!");
 		    return 1;
 		}
-		ShowPlayerDialogEx( playerid, BUYTOYS, DIALOG_STYLE_MSGBOX, "Toy Store", "Welcome to the toy store! Here you can buy accessories to attach to your player.\n\nFirst, we will choose a slot to store the toy in.","Continue", "Cancel" );
+		ShowPlayerDialogEx( playerid, BUYTOYS, DIALOG_STYLE_MSGBOX, "Toy Store", "Chao mung den toy store! Mua phu kien de gan len nhan vat.\n\nTruoc tien, chon o de cat toy.","Tiep tuc", "Huy" );
 	}
 	return 1;
 }
@@ -587,30 +587,30 @@ CMD:toyhelp(playerid, params[])
 CMD:otoyhelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** TOY HELP ***");
-	SendClientMessageEx(playerid, COLOR_GRAD3,"To buy a toy, go to any clothing store and type {AA3333}/buytoys");
-	SendClientMessageEx(playerid, COLOR_GRAD3,"To attach/dettach, edit, or delete a toy type {AA3333}/toys");
-	SendClientMessageEx(playerid, COLOR_GRAD3,"To quickly attach all your toys, type {AA3333}/wat");
-	SendClientMessageEx(playerid, COLOR_GRAD3,"To quickly detach all your toys, type {AA3333}/dat");
-	SendClientMessageEx(playerid, COLOR_GRAD3,"To quickly attach a specfic toy slot, type {AA3333}/wt [toyslot]");
-	SendClientMessageEx(playerid, COLOR_GRAD3,"To quickly detach a specfic toy slot, type {AA3333}/dt [toyslot]");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** HUONG DAN TOY ***");
+	SendClientMessageEx(playerid, COLOR_GRAD3,"Den cua hang quan ao va dung {AA3333}/buytoys de mua toy");
+	SendClientMessageEx(playerid, COLOR_GRAD3,"De gan/thao, sua hoac xoa toy, dung {AA3333}/toys");
+	SendClientMessageEx(playerid, COLOR_GRAD3,"De gan nhanh tat ca toy, dung {AA3333}/wat");
+	SendClientMessageEx(playerid, COLOR_GRAD3,"De thao nhanh tat ca toy, dung {AA3333}/dat");
+	SendClientMessageEx(playerid, COLOR_GRAD3,"De gan nhanh toy tai mot o, dung {AA3333}/wt [toyslot]");
+	SendClientMessageEx(playerid, COLOR_GRAD3,"De thao nhanh toy tai mot o, dung {AA3333}/dt [toyslot]");
 	return 1;
 }
 
 CMD:toys(playerid, params[])
 {
-	if(GetPVarInt(playerid, "EventToken" ) == 1 || PlayerInfo[playerid][pJailTime] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command at the moment.");
-	ShowPlayerDialogEx( playerid, TOYS, DIALOG_STYLE_LIST, "Toy Menu", "Attach/Dettach a Toy\nEdit a Toy\nDelete a Toy","Select", "Cancel" );
+	if(GetPVarInt(playerid, "EventToken" ) == 1 || PlayerInfo[playerid][pJailTime] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua the dung lenh nay.");
+	ShowPlayerDialogEx( playerid, TOYS, DIALOG_STYLE_LIST, "Menu toy", "Gan/Thao toy\nSua toy\nXoa toy","Chon", "Huy" );
 	return 1;
 }
 
 CMD:wt(playerid, params[])
 {
 	new toyslot;
-	if(sscanf(params, "d", toyslot)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wt [toyslot]");
+	if(sscanf(params, "d", toyslot)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /wt [toyslot]");
 
-	if(toyslot < 1 || toyslot > MAX_PLAYERTOYS+1) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wt [toyslot]");
-	if(GetPVarInt(playerid, "EventToken" ) == 1 || PlayerInfo[playerid][pJailTime] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command at the moment.");
+	if(toyslot < 1 || toyslot > MAX_PLAYERTOYS+1) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /wt [toyslot]");
+	if(GetPVarInt(playerid, "EventToken" ) == 1 || PlayerInfo[playerid][pJailTime] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua the dung lenh nay.");
 
 	for(new i; i < 10; i++)
 	{
@@ -632,7 +632,7 @@ CMD:wt(playerid, params[])
 	if(PlayerToyInfo[playerid][toyslot-1][ptModelID] != 0 && PlayerToyInfo[playerid][toyslot-1][ptSpecial] != 2)
 	{
 		new toycount = GetFreeToySlot(playerid);
-		if(PlayerInfo[playerid][pBEquipped] && toycount == 9) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use attach this toy since you have your backpack equipped.");
+		if(PlayerInfo[playerid][pBEquipped] && toycount == 9) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the gan toy nay khi dang deo ba lo.");
 		PlayerHoldingObject[playerid][toycount] = toyslot;
 		SetPlayerAttachedObject(playerid, toycount,
 			PlayerToyInfo[playerid][toyslot-1][ptModelID],
@@ -654,9 +654,9 @@ CMD:wt(playerid, params[])
 CMD:dt(playerid, params[])
 {
 	new toyslot;
-	if(sscanf(params, "d", toyslot)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dt [toyslot]");
+	if(sscanf(params, "d", toyslot)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /dt [toyslot]");
 
-	if(toyslot < 1 || toyslot > MAX_PLAYERTOYS) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dt [toyslot]");
+	if(toyslot < 1 || toyslot > MAX_PLAYERTOYS) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /dt [toyslot]");
 
 
 	for(new i; i < 10; i++)
@@ -678,9 +678,9 @@ CMD:dt(playerid, params[])
 
 CMD:wat(playerid, params[])
 {
-	if(GetPVarInt(playerid, "EventToken" ) == 1 || PlayerInfo[playerid][pJailTime] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command at the moment");
+	if(GetPVarInt(playerid, "EventToken" ) == 1 || PlayerInfo[playerid][pJailTime] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua the dung lenh nay");
 	new count = 0;
-	SendClientMessageEx(playerid, COLOR_WHITE, "* Attached max toys allowed.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "* Da gan so toy toi da.");
 	for(new x;x<MAX_PLAYERTOYS;x++)
 	{
 		if(PlayerToyInfo[playerid][x][ptScaleX] == 0) {
@@ -704,7 +704,7 @@ CMD:wat(playerid, params[])
 
 CMD:dat(playerid, params[])
 {
-	SendClientMessageEx(playerid, COLOR_WHITE, "* Detached all toys.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "* Da thao tat ca toy.");
 	for(new i; i < 10; i++)
 	{
 		if((IsPlayerAttachedObjectSlotUsed(playerid, i) || PlayerHoldingObject[playerid][i]) && PlayerToyInfo[playerid][PlayerHoldingObject[playerid][i]][ptSpecial] != 2)
@@ -721,19 +721,19 @@ CMD:dat(playerid, params[])
 CMD:selltoy(playerid, params[])
 {
 	new name[24], targetid, cost;
-	if(GetPVarType(playerid, "ttBuyer")) return SendClientMessageEx(playerid, COLOR_GREY, "You're already trading with someone else.");
-	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot do this while being in an arena!");
-   	if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
-	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while being cuffed.");
-    if(GetPVarInt(playerid, "WatchingTV")) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");
-    if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid,COLOR_GREY,"You can not do this while in jail or prison!");
-    if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this right now.");
-	if(sscanf(params, "ud", targetid, cost)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /selltoy [playerid] [price]");
-	if(!IsPlayerConnected(targetid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-	if(targetid == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command on yourself.");
-	if(!ProxDetectorS(5.0, playerid, targetid)) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not near you.");
-	if(InsideTradeToys[targetid] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This person is currently trading at the moment, please try again later.");
-	if(cost < 1 || cost > 1000000000) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot sell a toy for less than $1.");
+	if(GetPVarType(playerid, "ttBuyer")) return SendClientMessageEx(playerid, COLOR_GREY, "Ban dang giao dich voi nguoi khac.");
+	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid,COLOR_GREY,"Khong the lam vay trong dau truong!");
+   	if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung khi dang trong su kien.");
+	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung khi bi cong.");
+    if(GetPVarInt(playerid, "WatchingTV")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the lam vay khi dang xem TV!");
+    if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid,COLOR_GREY,"Khong the lam vay khi dang o tu!");
+    if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the lam viec nay.");
+	if(sscanf(params, "ud", targetid, cost)) return SendClientMessageEx(playerid, COLOR_GRAD1, "CACH DUNG: /selltoy [playerid] [price]");
+	if(!IsPlayerConnected(targetid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
+	if(targetid == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung lenh nay voi chinh minh.");
+	if(!ProxDetectorS(5.0, playerid, targetid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
+	if(InsideTradeToys[targetid] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do dang giao dich, hay thu lai sau.");
+	if(cost < 1 || cost > 1000000000) return SendClientMessageEx(playerid, COLOR_GREY, "Gia ban toy khong duoc duoi $1.");
 
 	SetPVarInt(targetid, "ttSeller", playerid);
 	SetPVarInt(playerid, "ttBuyer", targetid);
@@ -756,6 +756,6 @@ CMD:selltoy(playerid, params[])
 		}
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s\n", szMiscArray, x+1, name);
 	}
-	ShowPlayerDialogEx(playerid, SELLTOY, DIALOG_STYLE_LIST, "Select a toy to sell", szMiscArray, "Sell", "Cancel"); // x+1 since toys list starts off from 1 (From players view)
+	ShowPlayerDialogEx(playerid, SELLTOY, DIALOG_STYLE_LIST, "Chon toy de ban", szMiscArray, "Ban", "Huy"); // x+1 since toys list starts off from 1 (From players view)
 	return 1;
 }

@@ -83,7 +83,7 @@ GangTag_BeginWrite(playerid, i, operation)
 {
 	if(i < 0 || i >= MAX_GANGTAGS || !IsPlayerConnected(playerid)) return 0;
 	if(gGangTagsLoading || arrGangTags[i][gt_iWrite])
-		return SendClientMessage(playerid, COLOR_GRAD1, "Gang tags are busy. Try again later."), 0;
+		return SendClientMessage(playerid, COLOR_GRAD1, "Gang Tags dang ban. Hay thu lai sau."), 0;
 	arrGangTags[i][gt_iWrite] = operation;
 	arrGangTags[i][gt_iRequester] = playerid;
 	arrGangTags[i][gt_iSession] = gGangTagSession[playerid];
@@ -95,7 +95,7 @@ GangTag_BeginWrite(playerid, i, operation)
 GangTag_FailWrite(i, revision)
 {
 	if(!GangTag_WriteMatches(i, revision)) return 0;
-	if(GangTag_Requester(i)) SendClientMessage(arrGangTags[i][gt_iRequester], COLOR_GRAD1, "Gang tag save failed. Ask an administrator to rehash before retrying.");
+	if(GangTag_Requester(i)) SendClientMessage(arrGangTags[i][gt_iRequester], COLOR_GRAD1, "Luu Gang Tag that bai. Nho Admin rehash truoc khi thu lai.");
 	arrGangTags[i][gt_iWrite] = 0;
 	printf("[Gang Tags] Write/read failed for ID %d; committed world state retained. Rehash may be required.", i);
 	return 1;
@@ -166,7 +166,7 @@ GangTag_AdmProcess(i, Float:X, Float:Y, Float:Z, Float:RX, Float:RY, Float:RZ, c
 	new fontName[19];
 	if(i < 0 || i >= MAX_GANGTAGS || fontid < 0 || fontid >= sizeof(szFonts) || !strlen(text) || strlen(text) >= MAX_GANGTAGS_LEN) return 0;
 	new objectid = CreateDynamicObject(GANGTAGS_OBJECTID, X, Y, Z, RX, RY, RZ), label[48];
-	format(label, sizeof(label), "Gang Tag Point (ID %d)", i);
+	format(label, sizeof(label), "Diem Gang Tag (ID %d)", i);
 	new Text3D:textid = CreateDynamic3DTextLabel(label, COLOR_YELLOW, X, Y, Z+2.75, 4.0);
 	if(!IsValidDynamicObject(objectid) || !IsValidDynamic3DTextLabel(textid))
 	{
@@ -202,12 +202,12 @@ GangTag_Create(playerid)
 		if(!mysql_tquery(MainPipeline, query, "GangTag_OnWrite", "ii", i, arrGangTags[i][gt_iRevision])) GangTag_FailWrite(i, arrGangTags[i][gt_iRevision]);
 		return 1;
 	}
-	return SendClientMessage(playerid, COLOR_GRAD1, "You cannot create any more gang tags.");
+	return SendClientMessage(playerid, COLOR_GRAD1, "Khong the tao them Gang Tag.");
 }
 
 GangTag_Save(playerid, i, const text[], fontid)
 {
-	if(!GangTag_Valid(i)) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid gang tag ID.");
+	if(!GangTag_Valid(i)) return SendClientMessage(playerid, COLOR_GRAD1, "ID Gang Tag khong hop le.");
 	if(!strlen(text) || strlen(text) >= MAX_GANGTAGS_LEN || fontid < 0 || fontid >= sizeof(szFonts)) return 0;
 	if(!GangTag_BeginWrite(playerid, i, GANGTAG_WRITE_TEXT)) return 0;
 	new groupid = PlayerInfo[playerid][pMember], color = GANGTAGS_DEFAULTCOL, query[768];
@@ -231,7 +231,7 @@ GangTag_AdmSave(playerid, i, Float:x, Float:y, Float:z, Float:rx, Float:ry, Floa
 
 GangTag_Delete(playerid, i)
 {
-	if(!GangTag_Valid(i)) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid gang tag ID.");
+	if(!GangTag_Valid(i)) return SendClientMessage(playerid, COLOR_GRAD1, "ID Gang Tag khong hop le.");
 	if(!GangTag_BeginWrite(playerid, i, GANGTAG_WRITE_DELETE)) return 0;
 	new query[128];
 	mysql_format(MainPipeline, query, sizeof(query), "/*gangtags %d %d */ DELETE FROM `gangtags` WHERE `id`=%d", i, arrGangTags[i][gt_iRevision], i);
@@ -272,7 +272,7 @@ GangTag_CompleteWrite(i)
 	if(GangTag_Requester(i))
 	{
 		new message[96];
-		format(message, sizeof(message), "Gang tag ID %d saved successfully.", i);
+		format(message, sizeof(message), "Da luu Gang Tag ID %d.", i);
 		SendClientMessage(arrGangTags[i][gt_iRequester], COLOR_YELLOW, message);
 	}
 	if(arrGangTags[i][gt_iWrite] == GANGTAG_WRITE_TEXT)
@@ -298,10 +298,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!response || !strlen(inputtext) || strlen(inputtext) >= MAX_GANGTAGS_LEN)
 			{
 				GangTag_Cancel(playerid);
-				return SendClientMessage(playerid, COLOR_GRAD1, "Tag text must contain 1 to 47 bytes.");
+				return SendClientMessage(playerid, COLOR_GRAD1, "Noi dung tag phai tu 1 den 47 byte.");
 			}
 			for(new j; inputtext[j]; ++j) if(inputtext[j] < 32) return GangTag_Cancel(playerid);
-			format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) (T:%d) sprayed %s", GetPlayerNameEx(playerid), playerid, GetPVarInt(playerid, PVAR_GANGTAGID), inputtext);
+			format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) (T:%d) da xit %s", GetPlayerNameEx(playerid), playerid, GetPVarInt(playerid, PVAR_GANGTAGID), inputtext);
 			ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 			SetPVarString(playerid, PVAR_GANGTAGTEXT, inputtext);
 			szMiscArray[0] = 0;
@@ -309,7 +309,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				strunpack(fontName, szFonts[j], sizeof(fontName));
 				format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, fontName);
 			}
-			ShowPlayerDialogEx(playerid, DIALOG_GANGTAGS_FONT, DIALOG_STYLE_LIST, "Gang Tags | Font", szMiscArray, "Select", "");
+			ShowPlayerDialogEx(playerid, DIALOG_GANGTAGS_FONT, DIALOG_STYLE_LIST, "Gang Tags | Phong chu", szMiscArray, "Chon", "");
 			return 1;
 		}
 		case DIALOG_GANGTAGS_FONT:
@@ -318,7 +318,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!response || !GetPVarType(playerid, PVAR_GANGTAGTEXT) || listitem < 0 || listitem >= sizeof(szFonts)) return GangTag_Cancel(playerid);
 			new i = GetPVarInt(playerid, PVAR_GANGTAGID);
 			if(!GangTag_Valid(i) || gGangTagActionRevision[playerid] != arrGangTags[i][gt_iRevision]) return GangTag_Cancel(playerid);
-			SendClientMessage(playerid, COLOR_GREEN, "[Gang Tags] {DDDDDD}Spraying... Use /tag again to stop tagging.");
+			SendClientMessage(playerid, COLOR_GREEN, "[Gang Tags] {DDDDDD}Dang xit... Dung /tag lan nua de dung.");
 			GangTag_Tick(playerid, gGangTagSession[playerid], GetPlayerSQLId(playerid), gGangTagAction[playerid], i, arrGangTags[i][gt_iRevision], GANGTAG_TIME, listitem, 0);
 			return 1;
 		}
@@ -359,7 +359,7 @@ public GangTag_Tick(playerid, session, account, action, i, revision, time, fonti
 		return GangTag_Cancel(playerid);
 	}
 	new message[64];
-	format(message, sizeof(message), "~g~ Spraying... ~w~ %d", time / 1000);
+	format(message, sizeof(message), "~g~ Dang xit... ~w~ %d", time / 1000);
 	GameTextForPlayer(playerid, message, 4000, 3);
 	gGangTagTimer[playerid] = SetTimerEx("GangTag_Tick", 1000, false, "iiiiiiiii", playerid, session, account, action, i, revision, time-1000, fontid, cleaning);
 	return 1;
@@ -368,26 +368,26 @@ public GangTag_Tick(playerid, session, account, action, i, revision, time, fonti
 stock GetGangTags(playerid)
 {
 	new line[160];
-	szMiscArray = "Group Name(ID)\tText\n";
+	szMiscArray = "Ten to chuc(ID)\tNoi dung\n";
 	gGangTagListCount[playerid] = 0;
 	foreach(new i : GangTags)
 	{
 		new groupid = arrGangTags[i][gt_iGroup];
 		if(0 <= groupid < MAX_GROUPS) format(line, sizeof(line), "(%d) %s (%d)\t%s\n", i, arrGroupData[groupid][g_szGroupName], groupid, arrGangTags[i][gt_szText]);
-		else format(line, sizeof(line), "(%d) Unassigned\t%s\n", i, arrGangTags[i][gt_szText]);
+		else format(line, sizeof(line), "(%d) Chua gan\t%s\n", i, arrGangTags[i][gt_szText]);
 		for(new j; line[j]; ++j) if(line[j] == '\r') line[j] = ' ';
 		if(strlen(szMiscArray) + strlen(line) >= sizeof(szMiscArray)) break;
 		strcat(szMiscArray, line, sizeof(szMiscArray));
 		gGangTagList[playerid][gGangTagListCount[playerid]++] = i;
 	}
-	if(!gGangTagListCount[playerid]) return SendClientMessage(playerid, COLOR_GRAD1, "There are no loaded gang tags.");
-	return ShowPlayerDialogEx(playerid, DIALOG_GANGTAGS_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Gang Tags | List", szMiscArray, "Select", "");
+	if(!gGangTagListCount[playerid]) return SendClientMessage(playerid, COLOR_GRAD1, "Chua tai Gang Tag nao.");
+	return ShowPlayerDialogEx(playerid, DIALOG_GANGTAGS_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Gang Tags | Danh sach", szMiscArray, "Chon", "");
 }
 
 CMD:gangtaghelp(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_GREEN, "______________________________");
-	SendClientMessage(playerid, COLOR_GRAD1, "Gang Tags | Commands");
+	SendClientMessage(playerid, COLOR_GRAD1, "Gang Tags | Lenh");
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pGangModerator] > 0) SendClientMessage(playerid, COLOR_LIGHTRED, "[ADM] /createtagpoint | /edittagpoint | /deletetagpoint | /rehashgangtags");
 	SendClientMessage(playerid, COLOR_GRAD1, "/tag | /cleantag");
 	SendClientMessage(playerid, COLOR_GREEN, "______________________________");
@@ -413,16 +413,16 @@ CMD:cleantag(playerid)
 			{
 				TogglePlayerControllable(playerid, false);
 				ApplyAnimation(playerid, "SPRAYCAN", "spraycan_fire", 4.1, true, true, true, true, 0, 0);
-				GameTextForPlayer(playerid, "~y~Cleaning...", 5000, 3);
+				GameTextForPlayer(playerid, "~y~Dang don...", 5000, 3);
 				++gGangTagAction[playerid];
 				SetPVarInt(playerid, PVAR_GANGTAGID, i);
 				gGangTagTimer[playerid] = SetTimerEx("GangTag_Tick", 15000, false, "iiiiiiiii", playerid, gGangTagSession[playerid], GetPlayerSQLId(playerid), gGangTagAction[playerid], i, arrGangTags[i][gt_iRevision], 0, 0, 1);
 				return 1;
 			}
 		}
-		return SendClientMessage(playerid, COLOR_GRAD1, "You must be near a sprayed wall to clean it.");
+		return SendClientMessage(playerid, COLOR_GRAD1, "Ban phai o gan tuong da xit de lau.");
 	}
-	else SendClientMessage(playerid, COLOR_GRAD1, "You must be a street sweeper or other cleaning company to use this command.");
+	else SendClientMessage(playerid, COLOR_GRAD1, "Ban phai thuoc Street Sweeper hoac cong ty ve sinh khac de dung lenh nay.");
 	return 1;
 }
 
@@ -431,12 +431,12 @@ CMD:tag(playerid, params[])
 	if(GetPVarType(playerid, PVAR_GANGTAGID))
 	{
 		GangTag_Cancel(playerid);
-		GameTextForPlayer(playerid, "~r~Cancelled!", 5000, 3);
+		GameTextForPlayer(playerid, "~r~Da huy!", 5000, 3);
 		return 1;
 	}
-	if(!IsACriminal(playerid)) return SendClientMessage(playerid, COLOR_GRAD1, "You must be in a gang to use this command.");
-	if(PlayerInfo[playerid][pRank] == 0) return SendClientMessage(playerid, COLOR_GRAD1, "You need to be at least rank 1 to tag.");
-	if(GetPlayerWeapon(playerid) != 41) return SendClientMessage(playerid, COLOR_GRAD1, "You need a spray can to tag a wall.");
+	if(!IsACriminal(playerid)) return SendClientMessage(playerid, COLOR_GRAD1, "Ban phai o trong gang de dung lenh nay.");
+	if(PlayerInfo[playerid][pRank] == 0) return SendClientMessage(playerid, COLOR_GRAD1, "Can it nhat rank 1 de xit tag.");
+	if(GetPlayerWeapon(playerid) != 41) return SendClientMessage(playerid, COLOR_GRAD1, "Can binh son de xit len tuong.");
 	new Float:gtPos[3];
 	foreach(new i : GangTags)
 	{
@@ -449,18 +449,18 @@ CMD:tag(playerid, params[])
 			gGangTagActionRevision[playerid] = arrGangTags[i][gt_iRevision];
 			TogglePlayerControllable(playerid, false);
 			ApplyAnimation(playerid, "SPRAYCAN", "spraycan_fire", 4.1, true, true, true, true, 0, 0);
-			ShowPlayerDialogEx(playerid, DIALOG_GANGTAGS_INPUT, DIALOG_STYLE_INPUT, "Gang Tag Point | Insert text", "Insert the text you would like to spray on the wall", "Spray", "");
+			ShowPlayerDialogEx(playerid, DIALOG_GANGTAGS_INPUT, DIALOG_STYLE_INPUT, "Diem Gang Tag | Nhap noi dung", "Nhap noi dung ban muon xit len tuong", "Xit", "");
 			return 1;
 		}
 	}
-	SendClientMessage(playerid, COLOR_GRAD1, "You are not near a tag point.");
+	SendClientMessage(playerid, COLOR_GRAD1, "Ban khong o gan diem tag.");
 	return 1;
 }
 
 CMD:gangtags(playerid)
 {
 	if(PlayerInfo[playerid][pAdmin] > 1 || PlayerInfo[playerid][pGangModerator] > 0) GetGangTags(playerid);
-	else SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+	else SendClientMessage(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -468,9 +468,9 @@ CMD:rehashgangtags(playerid)
 {
 	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pGangModerator] > 0)
 	{
-		if(!GangTag_Load()) SendClientMessage(playerid, COLOR_GRAD1, "Gang tags are busy. Try again later.");
+		if(!GangTag_Load()) SendClientMessage(playerid, COLOR_GRAD1, "Gang Tags dang ban. Hay thu lai sau.");
 	}
-	else SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+	else SendClientMessage(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -478,10 +478,10 @@ CMD:createtagpoint(playerid)
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pGangModerator] > 0)
 	{
-		if(Iter_Count(GangTags) == MAX_GANGTAGS) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot create more gang tag points.");
+		if(Iter_Count(GangTags) == MAX_GANGTAGS) return SendClientMessage(playerid, COLOR_GRAD1, "Khong the tao them diem Gang Tag.");
 		GangTag_Create(playerid);
 	}
-	else SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+	else SendClientMessage(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -490,14 +490,14 @@ CMD:edittagpoint(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pGangModerator] == 2)
 	{
 		new i;
-		if(sscanf(params, "d", i)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /edittag [ID]");
-		if(!GangTag_Valid(i)) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid gang tag ID.");
-		if(gGangTagsLoading || arrGangTags[i][gt_iWrite]) return SendClientMessage(playerid, COLOR_GRAD1, "Gang tags are busy. Try again later.");
+		if(sscanf(params, "d", i)) return SendClientMessage(playerid, COLOR_GRAD1, "DUNG: /edittag [ID]");
+		if(!GangTag_Valid(i)) return SendClientMessage(playerid, COLOR_GRAD1, "ID Gang Tag khong hop le.");
+		if(gGangTagsLoading || arrGangTags[i][gt_iWrite]) return SendClientMessage(playerid, COLOR_GRAD1, "Gang Tags dang ban. Hay thu lai sau.");
 		gGangTagEditRevision[playerid] = arrGangTags[i][gt_iRevision];
 		SetPVarInt(playerid, PVAR_GANGTAGEDITING, i);
 		EditDynamicObject(playerid, arrGangTags[i][gt_iObjectID]);
 	}
-	else SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+	else SendClientMessage(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -506,10 +506,10 @@ CMD:deletetagpoint(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pGangModerator] == 2)
 	{
 		new i;
-		if(sscanf(params, "d", i)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /deletetag [ID]");
+		if(sscanf(params, "d", i)) return SendClientMessage(playerid, COLOR_GRAD1, "DUNG: /deletetag [ID]");
 		GangTag_Delete(playerid, i);
 	}
-	else SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+	else SendClientMessage(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -518,11 +518,11 @@ CMD:erasetag(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pGangModerator] == 2)
 	{
 		new i;
-		if(sscanf(params, "d", i)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /erasetag [ID]");
+		if(sscanf(params, "d", i)) return SendClientMessage(playerid, COLOR_GRAD1, "DUNG: /erasetag [ID]");
 		GangTag_Save(playerid, i, "Cheeky Nandos", 0);
 		return 1;
 	}
-	else SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+	else SendClientMessage(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 

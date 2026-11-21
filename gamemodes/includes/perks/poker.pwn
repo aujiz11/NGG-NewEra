@@ -570,7 +570,7 @@ PlacePokerTable(tableid, skipmisc, Float:x, Float:y, Float:z, Float:rx, Float:ry
 
 	// Create 3D Text Label
 	new szString[64];
-	format(szString, sizeof(szString), "Poker Table %d", tableid);
+	format(szString, sizeof(szString), "Ban Poker %d", tableid);
 	PokerTable[tableid][pkrText3DID] = Create3DTextLabel(szString, COLOR_YELLOW, x, y, z+1.3, DRAWDISTANCE_POKER_MISC, virtualworld, false);
 
 	return tableid;
@@ -585,7 +585,7 @@ DestroyPokerTable(tableid)
 		new playerid = PokerFindPlayerOrder(tableid, slot);
 		if(playerid == -1) continue;
 		LeavePokerTable(playerid);
-		SendClientMessageEx(playerid, COLOR_YELLOW, "The poker table owner has destroyed the table.");
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Chu ban Poker da huy ban.");
 	}
 	if(PokerTable[tableid][pkrPlaced] == 1) {
 		// Delete Table
@@ -933,23 +933,23 @@ public PokerPulse(tableid)
 			} else if(PokerTable[tableid][pkrActive] == 4 && PokerTable[tableid][pkrDelay] <= 19) {
 				new paid;
 				for(new slot; slot < 6; ++slot) paid += PokerTable[tableid][pkrPayout][slot];
-				format(tmpString, sizeof(tmpString), "Hand complete: $%d returned", paid);
+				format(tmpString, sizeof(tmpString), "Het van: Da tra $%d", paid);
 				PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][37], tmpString);
 			} else {
 				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][37], "Texas Holdem Poker");
 			}
 			// Bet
 			if(PokerTable[tableid][pkrDelay] > 0 && PokerTable[tableid][pkrActive] == 3) {
-				format(tmpString, sizeof(tmpString), "Round Begins in ~r~%d~w~...", PokerTable[tableid][pkrDelay]);
+				format(tmpString, sizeof(tmpString), "Van moi sau ~r~%d~w~...", PokerTable[tableid][pkrDelay]);
 				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][46], tmpString);
 			} else if(PokerTable[tableid][pkrActive] == 2) {
-				format(tmpString, sizeof(tmpString), "Waiting for players...", PokerTable[tableid][pkrPot]);
+				format(tmpString, sizeof(tmpString), "Dang cho nguoi choi...", PokerTable[tableid][pkrPot]);
 				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][46], tmpString);
 			} else if(PokerTable[tableid][pkrActive] == 3) {
-				format(tmpString, sizeof(tmpString), "Bet: $%d", PokerTable[tableid][pkrActiveBet]);
+				format(tmpString, sizeof(tmpString), "Cuoc: $%d", PokerTable[tableid][pkrActiveBet]);
 				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][46], tmpString);
 			} else if(PokerTable[tableid][pkrActive] == 4) {
-				PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][46], "Hand complete");
+				PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][46], "Het van");
 			} else {
 				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][46], "Texas Holdem Poker");
 			}
@@ -1044,13 +1044,13 @@ ShowCasinoGamesMenu(playerid, dialogid)
 				new actualBet = PokerTable[tableid][pkrActiveBet]-GetPVarInt(playerid, "pkrCurrentBet");
 
 				if(actualBet > GetPVarInt(playerid, "pkrChips")) {
-					format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Are you sure you want to call $%s (All-In)?:", number_format(GetPVarInt(playerid, "pkrChips")));
-					return ShowPlayerDialogEx(playerid, DIALOG_CGAMESCALLPOKER, DIALOG_STYLE_MSGBOX, "{FFFFFF}Texas Holdem Poker - (Call)", szMiscArray, "All-In", "Cancel");
+					format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Ban chac muon Call $%s (All-In)?:", number_format(GetPVarInt(playerid, "pkrChips")));
+					return ShowPlayerDialogEx(playerid, DIALOG_CGAMESCALLPOKER, DIALOG_STYLE_MSGBOX, "{FFFFFF}Texas Holdem Poker - (Call)", szMiscArray, "All-In", "Huy");
 				}
-				format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Are you sure you want to call $%s?:", number_format(actualBet));
-				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESCALLPOKER, DIALOG_STYLE_MSGBOX, "{FFFFFF}Texas Holdem Poker - (Call)", szMiscArray, "Call", "Cancel");
+				format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Ban chac muon Call $%s?:", number_format(actualBet));
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESCALLPOKER, DIALOG_STYLE_MSGBOX, "{FFFFFF}Texas Holdem Poker - (Call)", szMiscArray, "Goi", "Huy");
 			} else {
-				SendClientMessage(playerid, COLOR_WHITE, "DEALER: You do not have enough funds to call.");
+				SendClientMessage(playerid, COLOR_WHITE, "DEALER: Ban khong du tien de Call.");
 				new noFundsSoundID[] = {5823, 5824, 5825};
 				new randomNoFundsSoundID = random(sizeof(noFundsSoundID));
 				PlayerPlaySound(playerid, noFundsSoundID[randomNoFundsSoundID], 0.0, 0.0, 0.0);
@@ -1060,22 +1060,22 @@ ShowCasinoGamesMenu(playerid, dialogid)
 			if(!PokerCanAct(playerid)) return 0;
 			new tableid = GetPVarInt(playerid, "pkrTableID")-1, slot = GetPVarInt(playerid, "pkrSlot");
 			new acted = PokerTable[tableid][pkrActedBet][slot], active = PokerTable[tableid][pkrActiveBet];
-			if(acted >= 0 && active-acted < PokerTable[tableid][pkrMinRaise] && !(acted == 0 && active > 0)) return SendClientMessageEx(playerid, COLOR_GREY, "This short all-in has not reopened raising for you.");
+			if(acted >= 0 && active-acted < PokerTable[tableid][pkrMinRaise] && !(acted == 0 && active > 0)) return SendClientMessageEx(playerid, COLOR_GREY, "All-in nho nay chua mo lai quyen Raise cho ban.");
 			new maximum = GetPVarInt(playerid, "pkrCurrentBet")+GetPVarInt(playerid, "pkrChips");
-			if(maximum <= active) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have enough chips to raise.");
+			if(maximum <= active) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du chips de Raise.");
 			new minimum = active > maximum-PokerTable[tableid][pkrMinRaise] ? maximum : active+PokerTable[tableid][pkrMinRaise];
 			SetPVarInt(playerid, "pkrActionChoice", 1);
-			format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}How much do you want to Raise? ($%d-$%d):", minimum, maximum);
-			return ShowPlayerDialogEx(playerid, DIALOG_CGAMESRAISEPOKER, DIALOG_STYLE_INPUT, "{FFFFFF}Texas Holdem Poker - (Raise)", szMiscArray, "Raise", "Cancel");
+			format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Ban muon Raise bao nhieu? ($%d-$%d):", minimum, maximum);
+			return ShowPlayerDialogEx(playerid, DIALOG_CGAMESRAISEPOKER, DIALOG_STYLE_INPUT, "{FFFFFF}Texas Holdem Poker - (Raise)", szMiscArray, "Raise", "Huy");
 		}
 		case DIALOG_CGAMESBUYINPOKER: {
 
-			format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Please input a buy-in amount for the table:\n\nCurrent Casino Chips: {00FF00}$%d{FFFFFF}\nCurrent Poker Chips: {00FF00}$%d{FFFFFF}\nBuy-In Maximum/Minimum: {00FF00}$%d{FFFFFF}/{00FF00}$%d{FFFFFF}", GetPlayerCash(playerid), GetPVarInt(playerid, "pkrChips"), PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrBuyInMax], PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrBuyInMin]);
-			return ShowPlayerDialogEx(playerid, DIALOG_CGAMESBUYINPOKER, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (BuyIn Menu)", szMiscArray, "Buy In", "Leave");
+			format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Nhap so tien Buy-In cho ban:\n\nCasino Chips: {00FF00}$%d{FFFFFF}\nPoker Chips: {00FF00}$%d{FFFFFF}\nBuy-In Toi da/Toi thieu: {00FF00}$%d{FFFFFF}/{00FF00}$%d{FFFFFF}", GetPlayerCash(playerid), GetPVarInt(playerid, "pkrChips"), PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrBuyInMax], PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrBuyInMin]);
+			return ShowPlayerDialogEx(playerid, DIALOG_CGAMESBUYINPOKER, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Menu BuyIn)", szMiscArray, "Buy In", "Roi di");
 		}
 		case DIALOG_CGAMESADMINMENU: {
 
-			return ShowPlayerDialogEx(playerid, DIALOG_CGAMESADMINMENU, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Admin Menu)", "{FFFFFF}Setup Poker Minigame...\nLine2\nCredits", "Select", "Close");
+			return ShowPlayerDialogEx(playerid, DIALOG_CGAMESADMINMENU, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Menu Admin)", "{FFFFFF}Thiet lap Poker Minigame...\nDong2\nTac gia", "Chon", "Dong");
 		}
 		case DIALOG_CGAMESSELECTPOKER: {
 
@@ -1083,25 +1083,25 @@ ShowCasinoGamesMenu(playerid, dialogid)
 			new szPlaced[64];
 
 			for(new i = 0; i < MAX_POKERTABLES; i++) {
-				if(PokerTable[i][pkrPlaced] == 1) { format(szPlaced, sizeof(szPlaced), "{00FF00}Active{FFFFFF}"); }
-				if(PokerTable[i][pkrPlaced] == 0) { format(szPlaced, sizeof(szPlaced), "{FF0000}Deactived{FFFFFF}"); }
-				format(szMiscArray, sizeof(szMiscArray), "%sPoker Table %d (%s)\n", szMiscArray, i, szPlaced, PokerTable[i][pkrPlayers]);
+				if(PokerTable[i][pkrPlaced] == 1) { format(szPlaced, sizeof(szPlaced), "{00FF00}Bat{FFFFFF}"); }
+				if(PokerTable[i][pkrPlaced] == 0) { format(szPlaced, sizeof(szPlaced), "{FF0000}Tat{FFFFFF}"); }
+				format(szMiscArray, sizeof(szMiscArray), "%sBan Poker %d (%s)\n", szMiscArray, i, szPlaced, PokerTable[i][pkrPlayers]);
 			}
-			return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSELECTPOKER, DIALOG_STYLE_LIST, "Casino Games - (Select Poker Table)", szMiscArray, "Select", "Back");
+			return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSELECTPOKER, DIALOG_STYLE_LIST, "Casino Games - (Chon ban Poker)", szMiscArray, "Chon", "Quay lai");
 		}
 		case DIALOG_CGAMESSETUPPOKER: {
 
 			new tableid = GetPVarInt(playerid, "tmpEditPokerTableID")-1;
 
 			if(PokerTable[tableid][pkrPlaced] == 0) {
-				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPOKER, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Setup Poker Minigame)", "{FFFFFF}Place Table...", "Select", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPOKER, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Thiet lap Poker Minigame)", "{FFFFFF}Dat ban...", "Chon", "Quay lai");
 			} else {
-				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPOKER, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Setup Poker Minigame)", "{FFFFFF}Edit Table...\nDelete Table...", "Select", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPOKER, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Thiet lap Poker Minigame)", "{FFFFFF}Sua ban...\nXoa ban...", "Chon", "Quay lai");
 			}
 		}
 		case DIALOG_CGAMESCREDITS: {
 
-			return ShowPlayerDialogEx(playerid, DIALOG_CGAMESCREDITS, DIALOG_STYLE_MSGBOX, "{FFFFFF}Casino Games - (Credits)", "{FFFFFF}Developed By: Dan 'GhoulSlayeR' Reed", "Back", "");
+			return ShowPlayerDialogEx(playerid, DIALOG_CGAMESCREDITS, DIALOG_STYLE_MSGBOX, "{FFFFFF}Casino Games - (Tac gia)", "{FFFFFF}Phat trien boi: Dan 'GhoulSlayeR' Reed", "Quay lai", "");
 		}
 		case DIALOG_CGAMESSETUPPGAME: {
 
@@ -1111,7 +1111,7 @@ ShowCasinoGamesMenu(playerid, dialogid)
 				new szString[512];
 
 				if(PokerTable[tableid][pkrPass][0] == EOS) {
-					format(szString, sizeof(szString), "{FFFFFF}Buy-In Max\t({00FF00}$%d{FFFFFF})\nBuy-In Min\t({00FF00}$%d{FFFFFF})\nBlind\t\t({00FF00}$%d{FFFFFF} / {00FF00}$%d{FFFFFF})\nLimit\t\t(%d)\nPassword\t(%s)\nRound Delay\t(%d)\nStart Game",
+					format(szString, sizeof(szString), "{FFFFFF}Buy-In Max\t({00FF00}$%d{FFFFFF})\nBuy-In Min\t({00FF00}$%d{FFFFFF})\nBlind\t\t({00FF00}$%d{FFFFFF} / {00FF00}$%d{FFFFFF})\nGioi han\t\t(%d)\nMat khau\t(%s)\nCho giua van\t(%d)\nBat dau",
 						PokerTable[tableid][pkrBuyInMax],
 						PokerTable[tableid][pkrBuyInMin],
 						PokerTable[tableid][pkrBlind],
@@ -1121,7 +1121,7 @@ ShowCasinoGamesMenu(playerid, dialogid)
 						PokerTable[tableid][pkrSetDelay]
 					);
 				} else {
-					format(szString, sizeof(szString), "{FFFFFF}Buy-In Max\t({00FF00}$%d{FFFFFF})\nBuy-In Min\t({00FF00}$%d{FFFFFF})\nBlind\t\t({00FF00}$%d{FFFFFF} / {00FF00}$%d{FFFFFF})\nLimit\t\t(%d)\nPassword\t(%s)\nRound Delay\t(%d)\nStart Game",
+					format(szString, sizeof(szString), "{FFFFFF}Buy-In Max\t({00FF00}$%d{FFFFFF})\nBuy-In Min\t({00FF00}$%d{FFFFFF})\nBlind\t\t({00FF00}$%d{FFFFFF} / {00FF00}$%d{FFFFFF})\nGioi han\t\t(%d)\nMat khau\t(%s)\nCho giua van\t(%d)\nBat dau",
 						PokerTable[tableid][pkrBuyInMax],
 						PokerTable[tableid][pkrBuyInMin],
 						PokerTable[tableid][pkrBlind],
@@ -1131,43 +1131,43 @@ ShowCasinoGamesMenu(playerid, dialogid)
 						PokerTable[tableid][pkrSetDelay]
 					);
 				}
-				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Setup Poker Room)", szString, "Select", "Quit");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Thiet lap phong Poker)", szString, "Chon", "Thoat");
 			}
 		}
 		case DIALOG_CGAMESSETUPPGAME2:
 		{
 			if(GetPVarType(playerid, "pkrTableID")) {
-				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME2, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Buy-In Max)", "{FFFFFF}Please input a Buy-In Max:", "Change", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME2, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Buy-In Max)", "{FFFFFF}Nhap Buy-In Max:", "Doi", "Quay lai");
 			}
 		}
 		case DIALOG_CGAMESSETUPPGAME3:
 		{
 			if(GetPVarType(playerid, "pkrTableID")) {
-				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME3, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Buy-In Min)", "{FFFFFF}Please input a Buy-In Min:", "Change", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME3, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Buy-In Min)", "{FFFFFF}Nhap Buy-In Min:", "Doi", "Quay lai");
 			}
 		}
 		case DIALOG_CGAMESSETUPPGAME4:
 		{
 			if(GetPVarType(playerid, "pkrTableID")) {
-				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME4, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Blinds)", "{FFFFFF}Please input Blinds:\n\nNote: Small blinds are automatically half of a big blind.", "Change", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME4, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Blinds)", "{FFFFFF}Nhap Blinds:\n\nChu y: Small blinds tu dong bang nua big blind.", "Doi", "Quay lai");
 			}
 		}
 		case DIALOG_CGAMESSETUPPGAME5:
 		{
 			if(GetPVarType(playerid, "pkrTableID")) {
-				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME5, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Limit)", "{FFFFFF}Please input a Player Limit (2-6):", "Change", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME5, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Gioi han)", "{FFFFFF}Nhap gioi han nguoi choi (2-6):", "Doi", "Quay lai");
 			}
 		}
 		case DIALOG_CGAMESSETUPPGAME6:
 		{
 			if(GetPVarType(playerid, "pkrTableID")) {
-				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME6, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Password)", "{FFFFFF}Please input a Password:\n\nNote: Leave blank to have a public room", "Change", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME6, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Mat khau)", "{FFFFFF}Nhap mat khau:\n\nChu y: De trong de mo phong cong khai", "Doi", "Quay lai");
 			}
 		}
 		case DIALOG_CGAMESSETUPPGAME7:
 		{
 			if(GetPVarType(playerid, "pkrTableID")) {
-				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME7, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Round Delay)", "{FFFFFF}Please input a Round Delay (15-120sec):", "Change", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME7, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Cho giua van)", "{FFFFFF}Nhap thoi gian cho giua van (15-120sec):", "Doi", "Quay lai");
 			}
 		}
 	}
@@ -1176,13 +1176,13 @@ ShowCasinoGamesMenu(playerid, dialogid)
 
 JoinPokerTable(playerid, tableid) {
 	if(tableid < 0 || tableid >= MAX_POKERTABLES || GetPVarType(playerid, "pkrTableID")) return 0;
-	if(PokerTable[tableid][pkrRound] || PokerTable[tableid][pkrActive] == 4) return SendClientMessageEx(playerid, COLOR_GREY, "Please wait until the hand finishes before joining.");
+	if(PokerTable[tableid][pkrRound] || PokerTable[tableid][pkrActive] == 4) return SendClientMessageEx(playerid, COLOR_GREY, "Hay cho het van de vao ban.");
 
 	// Check if there is room for the player
 	if(PokerTable[tableid][pkrPlayers] < PokerTable[tableid][pkrLimit]) {
 		// Check if table is not joinable.
 		if(PokerTable[tableid][pkrActive] == 1) {
-			SendClientMessage(playerid, COLOR_WHITE, "Someone is setting up this table, try again later.");
+			SendClientMessage(playerid, COLOR_WHITE, "Co nguoi dang thiet lap ban, hay thu lai sau.");
 			return 1;
 		}
 
@@ -1267,7 +1267,7 @@ LeavePokerTable(playerid, bool:disconnecting = false) {
 		TogglePlayerControllable(playerid, true);
 		ApplyAnimation(playerid, "CARRY", "crry_prtial", 2.0, false, false, false, false, 0);
 		CancelSelectTextDraw(playerid);
-		ShowPlayerDialogEx(playerid, -1, DIALOG_STYLE_MSGBOX, "Close", "Close", "Close", "Close");
+		ShowPlayerDialogEx(playerid, -1, DIALOG_STYLE_MSGBOX, "Dong", "Close", "Dong", "Dong");
 		SetTimerEx("PokerExit", 250, false, "ii", playerid, g_arrQueryHandle[playerid]);
 	}
 	DeletePVar(playerid, "pkrWinner");
@@ -1305,7 +1305,7 @@ LeavePokerTable(playerid, bool:disconnecting = false) {
 CMD:jointable(playerid, params[])
 {
 	if(PlayerInfo[playerid][pConnectHours] < 5) {
-	    SendClientMessageEx(playerid, COLOR_GREY, "You need 5 playing hours to join a poker table.");
+	    SendClientMessageEx(playerid, COLOR_GREY, "Can choi 5 gio de vao ban Poker.");
 	    return 1;
 	}
 	if(GetPVarType(playerid, "pkrTableID") == 0) {
@@ -1315,7 +1315,7 @@ CMD:jointable(playerid, params[])
 					if(!strcmp(params, PokerTable[t][pkrPass], false, 32)) {
 						JoinPokerTable(playerid, t);
 					} else {
-						return SendClientMessage(playerid, COLOR_WHITE, "Usage: /jointable (password)");
+						return SendClientMessage(playerid, COLOR_WHITE, "Cach dung: /jointable (password)");
 					}
 				} else {
 					JoinPokerTable(playerid, t);
@@ -1324,7 +1324,7 @@ CMD:jointable(playerid, params[])
 			}
 		}
 	} else {
-		SendClientMessage(playerid, COLOR_WHITE, "You are already at a Poker Table! You must /leavetable before you join another one!");
+		SendClientMessage(playerid, COLOR_WHITE, "Ban dang o ban Poker! Dung /leavetable truoc khi vao ban khac!");
 	}
 	return 1;
 }
@@ -1341,11 +1341,11 @@ CMD:placetable(playerid, params[])
 {
 	if(PlayerInfo[playerid][pTable] == 1 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
 
-	    if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this while being in an arena!");
-		if(GetPVarInt(playerid, "WatchingTV")) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");
-		if(GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pHospital] > 0 || IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now.");
-		if(PlayerInfo[playerid][pVW] == 0 || PlayerInfo[playerid][pInt] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can only place poker tables inside interiors.");
-		if(GetPVarType(playerid, "pTable")) return SendClientMessageEx(playerid, COLOR_GREY, "You already have a poker table out, use /destroytable.");
+	    if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the lam vay trong dau truong!");
+		if(GetPVarInt(playerid, "WatchingTV")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the lam vay khi dang xem TV!");
+		if(GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pHospital] > 0 || IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the lam vay.");
+		if(PlayerInfo[playerid][pVW] == 0 || PlayerInfo[playerid][pInt] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Chi duoc dat ban Poker trong noi that.");
+		if(GetPVarType(playerid, "pTable")) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da dat ban Poker, dung /destroytable.");
 
 		foreach(new i: Player)
 		{
@@ -1353,13 +1353,13 @@ CMD:placetable(playerid, params[])
 			{
 				if(IsPlayerInRangeOfPoint(playerid, 7.0, PokerTable[GetPVarInt(i, "pTable")][pkrX], PokerTable[GetPVarInt(i, "pTable")][pkrY], PokerTable[GetPVarInt(i, "pTable")][pkrZ]))
 				{
-					SendClientMessage(playerid, COLOR_GREY, "You are in range of another poker table, you can't place one here!");
+					SendClientMessage(playerid, COLOR_GREY, "Co ban Poker khac o gan, khong the dat tai day!");
 					return 1;
 				}
 			}
 		}	
 
-		format(szMiscArray, sizeof(szMiscArray), "%s has placed a poker table!", GetPlayerNameEx(playerid));
+		format(szMiscArray, sizeof(szMiscArray), "%s da dat ban Poker!", GetPlayerNameEx(playerid));
 	    ProxDetector(30.0, playerid, szMiscArray, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
 
 	    new Float:fPos[4];
@@ -1379,7 +1379,7 @@ CMD:placetable(playerid, params[])
 		}
 	}
 	else {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot place a poker table.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong the dat ban Poker.");
 	}
 	return 1;
 }
@@ -1389,11 +1389,11 @@ CMD:destroytable(playerid, params[])
 	if(GetPVarType(playerid, "pTable"))
 	{
 	    if(PokerTable[GetPVarInt(playerid, "pTable")][pkrPlayers] != 0)
-			return SendClientMessageEx(playerid, COLOR_GREY, "You can't destroy your table while a game is in progress.");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Khong the huy ban khi dang choi.");
 
 	    DestroyPokerTable(GetPVarInt(playerid, "pTable"));
 		DeletePVar(playerid, "pTable");
-		SendClientMessage(playerid, COLOR_GREY, "You've destroyed your poker table!");
+		SendClientMessage(playerid, COLOR_GREY, "Ban da huy ban Poker!");
 	}
 	return 1;
 }
@@ -1402,18 +1402,18 @@ CMD:shoptable(playerid, params[])
 {
 	if (PlayerInfo[playerid][pShopTech] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, " You are not allowed to use this command.");
+		SendClientMessageEx(playerid, COLOR_GREY, " Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new giveplayerid, invoice;
-	if(sscanf(params, "ui", giveplayerid, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shoptable [player] [invoice #]");
+	if(sscanf(params, "ui", giveplayerid, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /shoptable [player] [invoice #]");
 	new string[128];
 
 	if(PlayerInfo[giveplayerid][pTable] == 1)
 	{
 	    PlayerInfo[giveplayerid][pTable] = 0;
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Your poker table has been taken by Shop Tech %s. ", GetPlayerNameEx(playerid));
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Ban Poker cua ban da bi Shop Tech %s thu hoi. ", GetPlayerNameEx(playerid));
 		format(string, sizeof(string), "[SHOPPOKERTABLE] %s has taken %s(%d) poker table - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 		SendClientMessageEx(playerid, COLOR_GRAD1, string);
 		Log("logs/shoplog.log", string);
@@ -1421,7 +1421,7 @@ CMD:shoptable(playerid, params[])
 	else
 	{
 		PlayerInfo[giveplayerid][pTable] = 1;
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have been given a poker table from Shop Tech %s. ", GetPlayerNameEx(playerid));
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Ban duoc Shop Tech %s cap ban Poker.", GetPlayerNameEx(playerid));
 		format(string, sizeof(string), "[SHOPPOKERTABLE] %s has given %s(%d) a poker table - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 		SendClientMessageEx(playerid, COLOR_GRAD1, string);
 		Log("logs/shoplog.log", string);

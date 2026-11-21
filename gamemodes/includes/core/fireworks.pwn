@@ -52,7 +52,7 @@ public Firework(playerid, type)
     if (type == TYPE_COUNTDOWN)
     {
         new string[128];
-		format(string, sizeof(string), "STAND BACK! 5 seconds till launch!", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "LUI LAI! Phong sau 5 giay!", GetPlayerNameEx(playerid));
 	    ProxDetector(30.0, playerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
 	    SetTimerEx("Firework", 5000, false, "ii", playerid, TYPE_LAUNCH);
     }
@@ -102,13 +102,13 @@ public Firework(playerid, type)
 
 CMD:placefirework(playerid, params[])
 {
-	if(fireworktog == 0 || GetPVarInt(playerid, "camerasc") == 1 || GetPVarInt(playerid, "rccam") == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot currently launch fireworks.");
-	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be Level 3+ to place a firework!");
-	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
-	if(GetPVarInt(playerid, "WatchingTV")) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this while watching TV!");
-	if(GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pHospital] > 0 || IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
-	if(RocketExplosions[playerid] != -1) return SendClientMessageEx(playerid, COLOR_WHITE, "You are already using another firework!");
-	if (PlayerInfo[playerid][pVW] != 0 || PlayerInfo[playerid][pInt] != 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't launch fireworks indoors!");
+	if(fireworktog == 0 || GetPVarInt(playerid, "camerasc") == 1 || GetPVarInt(playerid, "rccam") == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Luc nay khong the phong phao hoa.");
+	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "Can cap 3+ de dat phao hoa!");
+	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay khi o dau truong!");
+	if(GetPVarInt(playerid, "WatchingTV")) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the lam vay khi dang xem TV!");
+	if(GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pHospital] > 0 || IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban chua the lam viec nay.");
+	if(RocketExplosions[playerid] != -1) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban dang dung mot phao hoa khac!");
+	if (PlayerInfo[playerid][pVW] != 0 || PlayerInfo[playerid][pInt] != 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Khong the phong phao hoa trong nha!");
 	if(PlayerInfo[playerid][pFirework] > 0 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new Float:x, Float:y, Float:z, Float:a;
@@ -121,14 +121,14 @@ CMD:placefirework(playerid, params[])
 			GetDynamicObjectPos(dynamicgift, Pos[0], Pos[1], Pos[2]);
 			
 			if(IsPlayerInRangeOfPoint(playerid, 50.0, Pos[0], Pos[1], Pos[2]))
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot place a firework down near the giftbox.");
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dat phao hoa gan giftbox.");
 		}		
 	    if (PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	    {
 	    	PlayerInfo[playerid][pFirework]--;
 	    }
 		new string[128];
-		format(string, sizeof(string), "%s has placed a firework which will go off in 30 seconds!", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "%s dat phao hoa, se no sau 30 giay!", GetPlayerNameEx(playerid));
 	    ProxDetector(30.0, playerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
 	    ApplyAnimation(playerid,"BOMBER","BOM_Plant_Crouch_In", 4.0, false, false, false, false, 0, 1);
 	    x += (2 * floatsin(-a, degrees));
@@ -144,7 +144,7 @@ CMD:placefirework(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have any fireworks!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co phao hoa!");
 	}
 	return 1;
 }
@@ -156,15 +156,15 @@ CMD:togfireworks(playerid, params[])
 		if(fireworktog == 0)
 		{
 			fireworktog = 1;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled the placement of fireworks.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da cho phep dat phao hoa.");
 		}
 		else
 		{
 			fireworktog = 0;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the placement of fireworks.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da cam dat phao hoa.");
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	return 1;
 }
 
@@ -173,7 +173,7 @@ CMD:fireworknear(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new Float: pos[3];
-		SendClientMessageEx(playerid, COLOR_RED, "* Listing all fireworks within 50 meters of you...");
+		SendClientMessageEx(playerid, COLOR_RED, "* Liet ke phao hoa trong ban kinh 50 met...");
 		foreach(new i : Player)
 		{
 			if(RocketExplosions[i] != -1)
@@ -184,12 +184,12 @@ CMD:fireworknear(playerid, params[])
 				pos[2] = GetPVarFloat(i, "fzpos");
 				if(IsPlayerInRangeOfPoint(playerid, 50, pos[0], pos[1], pos[2]))
 				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "** Firework Owner: %s | %f from you", GetPlayerNameEx(i), GetPlayerDistanceFromPoint(playerid, GetPVarFloat(i, "fxpos"), GetPVarFloat(i, "fypos"), GetPVarFloat(i, "fzpos")));
+					SendClientMessageEx(playerid, COLOR_WHITE, "** Chu phao hoa: %s | Cach ban %f", GetPlayerNameEx(i), GetPlayerDistanceFromPoint(playerid, GetPVarFloat(i, "fxpos"), GetPVarFloat(i, "fypos"), GetPVarFloat(i, "fzpos")));
 				}
 			}
 		}
 	}
 	else 
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	return true;
 }

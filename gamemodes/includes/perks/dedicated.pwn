@@ -59,23 +59,23 @@ HourDedicatedPlayer(playerid)
 	if(PlayerInfo[playerid][pDedicatedHours] >= 50 && PlayerInfo[playerid][pDedicatedPlayer] == 0)
 	{
 		if(PlayerInfo[playerid][pDedicatedPlayer] != 4) PlayerInfo[playerid][pDedicatedPlayer] = 1;
-		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Tier 1 Dedicated Player!");
-		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Tier 1 Dedicated Player after playing 50 hours!", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Chuc mung ban la Tier 1 Dedicated Player!");
+		format(szMiscArray, sizeof(szMiscArray), "%s dat Tier 1 Dedicated Player sau 50 gio choi!", GetPlayerNameEx(playerid));
 		SendClientMessageToAll(-1, szMiscArray);
 	}
 	else if(PlayerInfo[playerid][pDedicatedHours] >= 75 && PlayerInfo[playerid][pDedicatedPlayer] == 1)
 	{
 		if(PlayerInfo[playerid][pDedicatedPlayer] != 4) PlayerInfo[playerid][pDedicatedPlayer] = 2;
 		format(PlayerInfo[playerid][pDedicatedTimestamp], 11, "%d-%02d-%02d", thedate[0], thedate[1], thedate[2]);
-		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Tier 2 Dedicated Player!");
-		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Tier 2 Dedicated Player after playing 75 hours!", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Chuc mung ban la Tier 2 Dedicated Player!");
+		format(szMiscArray, sizeof(szMiscArray), "%s dat Tier 2 Dedicated Player sau 75 gio choi!", GetPlayerNameEx(playerid));
 		SendClientMessageToAll(-1, szMiscArray);
 	} 
 	else if(PlayerInfo[playerid][pDedicatedHours] >= 90 && PlayerInfo[playerid][pDedicatedPlayer] == 2)
 	{
 		if(PlayerInfo[playerid][pDedicatedPlayer] != 4) PlayerInfo[playerid][pDedicatedPlayer] = 3;
-		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Tier 3 Dedicated Player!");
-		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Tier 3 Dedicated Player after playing 90 hours!.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Chuc mung ban la Tier 3 Dedicated Player!");
+		format(szMiscArray, sizeof(szMiscArray), "%s dat Tier 3 Dedicated Player sau 90 gio choi!.", GetPlayerNameEx(playerid));
 		SendClientMessageToAll(-1, szMiscArray);	
 	} 
 }
@@ -139,8 +139,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 	if(dialogid == DIALOG_LOCKER_DP1)
 	{
-		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the locker.");
-		if(!IsPlayerInRangeOfPoint(playerid, 4.0, 166.6046,-2001.0406,3499.6482))  return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the DP Locker.");// Need co-ordinates
+		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da roi tu do.");
+		if(!IsPlayerInRangeOfPoint(playerid, 4.0, 166.6046,-2001.0406,3499.6482))  return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan DP Locker.");// Need co-ordinates
 		if(listitem == 0)
 		{
 			new Float:health;
@@ -148,12 +148,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new hpint = floatround( health, floatround_round );
 			if( hpint >= 100 )
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "You already have full health.");
+				SendClientMessageEx(playerid, COLOR_GREY, "Ban da day mau.");
 				return 1;
 			}
 			else {
 				SetHealth(playerid, 100);
-				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You have used a first aid kit, you now have 100.0 HP.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] Ban da dung bo so cuu, hien co 100.0 HP.");
 			}
 		}
 		if(listitem == 1)
@@ -162,26 +162,26 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			GetArmour(playerid, armour);
 			if(armour >= 100)
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "You already have full armor.");
+				SendClientMessageEx(playerid, COLOR_GREY, "Ban da day giap.");
 				return 1;
 			}
 			else if(GetPlayerCash(playerid) < 10000)
 			{
-				SendClientMessageEx(playerid, COLOR_GREY,"You don't have $10,000");
+				SendClientMessageEx(playerid, COLOR_GREY,"Ban khong co $10,000");
 				return 1;
 			}
 			else 
 			{
 				GivePlayerCash(playerid, -10000);
 				SetArmour(playerid, 100);
-				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You paid $10,000 for a kevlar vest.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] Ban tra $10,000 cho kevlar vest.");
 			}
 		}
 	}
 	else if(dialogid == DIALOG_LOCKER_DP2)
 	{
-		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the locker.");
-		if(!IsPlayerInRangeOfPoint(playerid, 4.0, 166.6046,-2001.0406,3499.6482))  return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the DP Locker.");// Need co-ordinates
+		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da roi tu do.");
+		if(!IsPlayerInRangeOfPoint(playerid, 4.0, 166.6046,-2001.0406,3499.6482))  return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan DP Locker.");// Need co-ordinates
 		if(listitem == 0)
 		{
 			new Float:health;
@@ -189,12 +189,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new hpint = floatround( health, floatround_round );
 			if( hpint >= 100 )
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "You already have full health.");
+				SendClientMessageEx(playerid, COLOR_GREY, "Ban da day mau.");
 				return 1;
 			}
 			else {
 				SetHealth(playerid, 100);
-				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You have used a first aid kit, you now have 100.0 HP.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] Ban da dung bo so cuu, hien co 100.0 HP.");
 			}
 		}
 		if(listitem == 1)
@@ -203,12 +203,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			GetArmour(playerid, armour);
 			if(armour >= 100)
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "You already have full armor.");
+				SendClientMessageEx(playerid, COLOR_GREY, "Ban da day giap.");
 				return 1;
 			}
 			else if(GetPlayerCash(playerid) < 5000 && PlayerInfo[playerid][pDedicatedPlayer] < 3)
 			{
-				SendClientMessageEx(playerid, COLOR_GREY,"You don't have $5,000");
+				SendClientMessageEx(playerid, COLOR_GREY,"Ban khong co $5,000");
 				return 1;
 			}
 			else 
@@ -217,41 +217,41 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SetArmour(playerid, 100);
 				if(PlayerInfo[playerid][pDedicatedPlayer] < 3)
 				{
-					SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You paid $5,000 for a kevlar vest.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] Ban tra $5,000 cho kevlar vest.");
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You take a kevlar vest from the locker.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] Ban lay kevlar vest tu tu do.");
 				}
 			}
 		}
 		if(listitem == 2)
 		{
-			if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
-			if(PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't take weapons out as you're currently weapon restricted!");
-			ShowPlayerDialogEx(playerid, DIALOG_DEDICATED_WEAPON, DIALOG_STYLE_LIST, "Dedicated Weapon Inventory", "Desert Eagle (Free)\nSemi-Automatic MP5 (Free)\nPump Shotgun (Free)", "Take", "Cancel");
+			if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Tai khoan cua ban bi han che!");
+			if(PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban dang bi han che vu khi, khong the lay vu khi!");
+			ShowPlayerDialogEx(playerid, DIALOG_DEDICATED_WEAPON, DIALOG_STYLE_LIST, "Kho vu khi Dedicated", "Desert Eagle (Mien phi)\nSemi-Automatic MP5 (Mien phi)\nPump Shotgun (Mien phi)", "Lay", "Huy");
 		}
 	}
 	else if(dialogid == DIALOG_DEDICATED_WEAPON)
 	{
-		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the locker.");
-		if(!IsPlayerInRangeOfPoint(playerid, 4.0, 166.6046,-2001.0406,3499.6482))  return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the DP Locker.");// Need co-ordinates
+		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da roi tu do.");
+		if(!IsPlayerInRangeOfPoint(playerid, 4.0, 166.6046,-2001.0406,3499.6482))  return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan DP Locker.");// Need co-ordinates
 		switch(listitem)
 		{
 			case 0: //Deagle
 			{
 				GivePlayerValidWeapon(playerid, 24);
-				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You have taken a Desert Eagle from the locker.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] Ban da lay Desert Eagle tu tu do.");
 			}
 			case 1: //MP5
 			{
 				GivePlayerValidWeapon(playerid, 29);
-				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You have taken a Semi-Automatic MP5 from the locker.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] Ban da lay Semi-Automatic MP5 tu tu do.");
 			}
 			case 2: //Shotgun
 			{
 				GivePlayerValidWeapon(playerid, 25);
-				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You have taken a Pump Shotgun from the locker.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] Ban da lay Pump Shotgun tu tu do.");
 			}
 		}
 
@@ -263,13 +263,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 CMD:dp(playerid, params[]) 
 {
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && !PlayerInfo[playerid][pDedicatedPlayer]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Dedicated player.");
-	if(PlayerInfo[playerid][pDedicatedEnabled] != 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must enable Dedicated chat before using it. (/togdp)");
-	if(PlayerInfo[playerid][pDedicatedMuted] != 0 || PlayerInfo[playerid][pDedicatedWarn] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently muted from the Dedicated chat.");
-	if(GetPVarInt(playerid, "LastDPChat") > gettime()) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait 5 seconds between messages.");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "Tu nhan OOC chi duoc noi trong /b");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && !PlayerInfo[playerid][pDedicatedPlayer]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong phai Dedicated player.");
+	if(PlayerInfo[playerid][pDedicatedEnabled] != 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Phai bat chat Dedicated de su dung. (/togdp)");
+	if(PlayerInfo[playerid][pDedicatedMuted] != 0 || PlayerInfo[playerid][pDedicatedWarn] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban dang bi cam chat Dedicated.");
+	if(GetPVarInt(playerid, "LastDPChat") > gettime()) return SendClientMessageEx(playerid, COLOR_GRAD2, "Phai cho 5 giay giua cac tin nhan.");
 	new szMessage[128];
-	if(sscanf(params, "s[128", szMessage)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /dp [message]");
+	if(sscanf(params, "s[128", szMessage)) return SendClientMessageEx(playerid, COLOR_GRAD2, "CACH DUNG: /dp [message]");
 	format(szMessage, sizeof(szMessage), "%s %s: %s", GetDPRankName(playerid), GetPlayerNameEx(playerid), szMessage);
 	SendDedicatedMessage(0x2FC660FF, szMessage);
 	SetPVarInt(playerid, "LastDPChat", gettime()+5);
@@ -283,17 +283,17 @@ CMD:togdp(playerid, params[])
 		if(PlayerInfo[playerid][pDedicatedEnabled] == 0) 
 		{
 			PlayerInfo[playerid][pDedicatedEnabled] = 1;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled the Dedicated chat.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da bat chat Dedicated.");
 		}
 		else 
 		{
 			PlayerInfo[playerid][pDedicatedEnabled] = 0;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled Dedicated chat and will no longer recieve messages.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da tat chat Dedicated va khong nhan tin nua.");
 		}
 	}
 	else 
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Dedicated player.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong phai Dedicated player.");
 	}
 	return 1;
 }
@@ -301,19 +301,19 @@ CMD:togdp(playerid, params[])
 CMD:dplocker(playerid, params[])
 {
 	#if defined zombiemode
-	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
+	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombie khong the dung.");
 	#endif
 	if(IsPlayerInRangeOfPoint(playerid, 4.0, 166.6540, -2001.0413, 3499.6482)) // Need co-ordinates
 	{
 	    switch(PlayerInfo[playerid][pDedicatedPlayer])
 	    {
-			case 0: SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a dedicated player!");
-			case 1: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_DP1, DIALOG_STYLE_LIST, "Dedicated Player 1", "First Aid Kit (Free)\nKevlar Vest ($10,000)", "Select", "Cancel");
-			case 2: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_DP2, DIALOG_STYLE_LIST, "Dedicated Player 2", "First Aid Kit (Free)\nKevlar Vest ($5,000)\nWeapons (Free)", "Select", "Cancel");
-			default:  ShowPlayerDialogEx(playerid, DIALOG_LOCKER_DP2, DIALOG_STYLE_LIST, "Dedicated Player 3", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons (Free)", "Select", "Cancel");
+			case 0: SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong phai Dedicated player!");
+			case 1: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_DP1, DIALOG_STYLE_LIST, "Dedicated Player 1", "First Aid Kit (Mien phi)\nKevlar Vest ($10,000)", "Chon", "Huy");
+			case 2: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_DP2, DIALOG_STYLE_LIST, "Dedicated Player 2", "First Aid Kit (Mien phi)\nKevlar Vest ($5,000)\nVu khi (Mien phi)", "Chon", "Huy");
+			default:  ShowPlayerDialogEx(playerid, DIALOG_LOCKER_DP2, DIALOG_STYLE_LIST, "Dedicated Player 3", "First Aid Kit (Mien phi)\nKevlar Vest (Mien phi)\nVu khi (Mien phi)", "Chon", "Huy");
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not at the dedicated locker!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o tai Dedicated Locker!");
 	return 1;
 }
 /*
@@ -380,30 +380,31 @@ CMD:dpwarn(playerid, params[])
 		if(!sscanf(params, "us[24]", giveplayerid, reason))
 		{
 			if(!IsPlayerConnected(giveplayerid))
-				return SendClientMessageEx(playerid, COLOR_GREY, "That person is not connected.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do chua ket noi.");
 			if(PlayerInfo[giveplayerid][pDedicatedMuted] != 0) 
-				return SendClientMessageEx(playerid, COLOR_GREY, "That person is muted from the chat.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do dang bi cam chat.");
 			if(PlayerInfo[giveplayerid][pDedicatedWarn] > 0)
-				return SendClientMessageEx(playerid, COLOR_GREY, "That person is already serving a warning.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do dang chiu canh cao.");
 			
-			format(string, sizeof(string), "AdmCmd: %s has temporarily muted %s from Dedicated chat, reason: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s tam cam %s chat Dedicated, ly do: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
 			ABroadCast(COLOR_LIGHTRED, string, 4);
 			SendDedicatedMessage(COLOR_LIGHTRED, string);
+			format(string, sizeof(string), "AdmCmd: %s has temporarily muted %s from Dedicated chat, reason: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
 			Log("logs/dedicated.log", string);
 
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been warned from the Dedicated chat by %s, reason: %s", GetPlayerNameEx(playerid), reason);
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, "This action lasts for two hours. To appeal, please visit our forums: www.ng-gaming.net/forums");
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Ban bi %s canh cao tren chat Dedicated, ly do: %s", GetPlayerNameEx(playerid), reason);
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, "Hinh phat keo dai hai gio. Khieu nai tai dien dan: www.ng-gaming.net/forums");
 
 			PlayerInfo[giveplayerid][pDedicatedWarn] = 120;
 		}	
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /dpwarn [playerid] [reason]");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Cach dung: /dpwarn [playerid] [reason]");
 		}
 	}	
 	else 
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -415,7 +416,7 @@ CMD:setdedicated(playerid, params[])
         new string[128], targetid, level;
 	    if(sscanf(params, "ui", targetid, level)) 
 	    {
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /setdedicated [player] [level]");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Cach dung: /setdedicated [player] [level]");
 			SendClientMessageEx(playerid, COLOR_GRAD2, "(1) Tier 1 Dedicated - (2) Tier 2 Dedicated - (3) Tier 3 Dedicated 3 - (4) DP Moderator");
 			return 1;
 		}
@@ -425,23 +426,24 @@ CMD:setdedicated(playerid, params[])
 		    if(targetid != INVALID_PLAYER_ID)
 		    {
 			    if(PlayerInfo[targetid][pDedicatedPlayer] > PlayerInfo[playerid][pDedicatedPlayer])
-			        return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command on this person!");
+			        return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay cho nguoi nay!");
 
 				PlayerInfo[targetid][pDedicatedPlayer] = level;
-				format(string, sizeof(string), "AdmCmd: %s has set %s Dedicated level to %d.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), level);
+				format(string, sizeof(string), "AdmCmd: %s da dat cap Dedicated cua %s thanh %d.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), level);
 				ABroadCast(COLOR_LIGHTRED, string, 4);
 				SendDedicatedMessage(COLOR_LIGHTRED, string);
+				format(string, sizeof(string), "AdmCmd: %s has set %s Dedicated level to %d.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), level);
 				Log("logs/dedicated.log", string);
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 		} 
 	}
 	else 
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	}
 	return 1;
 }
@@ -452,12 +454,12 @@ CMD:osetdedicated(playerid, params[])
     {
         new pname[MAX_PLAYER_NAME], level;
 	    if(sscanf(params, "s[32]i", pname, level))
-			return SendClientMessageEx(playerid, COLOR_WHITE, "Usage: /osetdedicated [player] [level]");
+			return SendClientMessageEx(playerid, COLOR_WHITE, "Cach dung: /osetdedicated [player] [level]");
 
         new targetid = ReturnUser(pname);
 		if(IsPlayerConnected(targetid))
 		{
-		    SendClientMessageEx(playerid, COLOR_WHITE, "This player is connected, please use /setdedicated.");
+		    SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi do dang online, hay dung /setdedicated.");
 		}
 		else 
 		{
@@ -472,12 +474,12 @@ CMD:osetdedicated(playerid, params[])
             mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT `pDedicatedPlayer` FROM `accounts` WHERE `Username` = '%s'", szPlayerName);
 			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", OFFLINE_DEDICATED_THREAD, playerid, g_arrQueryHandle[playerid]);
  			
-			SendClientMessageEx(playerid, COLOR_WHITE, "Attempting to offline set %s account to level %d Dedicated.", szPlayerName, level);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Dang dat tai khoan %s ngoai tuyen thanh Dedicated cap %d.", szPlayerName, level);
  		}
  	}
  	else 
  	{
- 		SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+ 		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
  	}
  	return 1;
 }
@@ -488,7 +490,7 @@ CMD:dpmute(playerid, params[])
 	{
 	    new string[128], targetid, reason[64];
 	    if(sscanf(params, "us[64]", targetid, reason))
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /dpmute [player] [reason]");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Cach dung: /dpmute [player] [reason]");
 
 		if(IsPlayerConnected(targetid))
 		{
@@ -497,29 +499,30 @@ CMD:dpmute(playerid, params[])
 		        if(targetid != INVALID_PLAYER_ID)
 		        {
 			        if(PlayerInfo[targetid][pDedicatedPlayer] > PlayerInfo[playerid][pDedicatedPlayer] && PlayerInfo[playerid][pAdmin] <= 0 || PlayerInfo[targetid][pAdmin] > PlayerInfo[playerid][pAdmin])
-		 				return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command on this person!");
+		 				return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung lenh nay cho nguoi nay!");
 
 					PlayerInfo[targetid][pDedicatedMuted] = 1;
-					SendClientMessageEx(targetid, COLOR_GRAD2, "You were muted from the Dedicated chat by %s, reason: %s. You may appeal this mute at www.ng-gaming.net/forums", GetPlayerNameEx(playerid), reason);
-					format(string, sizeof(string), "AdmCmd: %s has muted %s from the Dedicated chat, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), reason);
+					SendClientMessageEx(targetid, COLOR_GRAD2, "Ban bi %s cam chat Dedicated, ly do: %s. Khieu nai tai www.ng-gaming.net/forums", GetPlayerNameEx(playerid), reason);
+					format(string, sizeof(string), "AdmCmd: %s cam %s chat Dedicated, ly do: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), reason);
 					ABroadCast(COLOR_LIGHTRED, string, 4);
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
+					format(string, sizeof(string), "AdmCmd: %s has muted %s from the Dedicated chat, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), reason);
 					Log("logs/dedicated.log", string);
 				}
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "This person is already muted from the Dedicated chat!");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi do da bi cam chat Dedicated!");
 			}
 		}
 		else 
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 		}
 	}
 	else 
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	}
 	return 1;
 }
@@ -530,7 +533,7 @@ CMD:dpunmute(playerid, params[])
 	{
 	    new string[128], targetid, reason[64];
 	    if(sscanf(params, "us[64]", targetid, reason))
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /dpunmute [player] [reason]");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Cach dung: /dpunmute [player] [reason]");
 
 		if(IsPlayerConnected(targetid))
 		{
@@ -542,26 +545,27 @@ CMD:dpunmute(playerid, params[])
 		 			//	return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command on this person!");
 
 					PlayerInfo[targetid][pDedicatedMuted] = 0;
-					SendClientMessageEx(targetid, COLOR_GRAD2, "You were unmuted from the Dedicated chat by %s, reason: %s.", GetPlayerNameEx(playerid), reason);
-					format(string, sizeof(string), "AdmCmd: %s has unmuted %s from the Dedicated chat, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), reason);
+					SendClientMessageEx(targetid, COLOR_GRAD2, "Ban duoc %s go cam chat Dedicated, ly do: %s.", GetPlayerNameEx(playerid), reason);
+					format(string, sizeof(string), "AdmCmd: %s go cam %s chat Dedicated, ly do: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), reason);
 					ABroadCast(COLOR_LIGHTRED, string, 4);
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
+					format(string, sizeof(string), "AdmCmd: %s has unmuted %s from the Dedicated chat, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), reason);
 					Log("logs/dedicated.log", string);
 				}
 			}
 			else 
 			{  
-				SendClientMessageEx(playerid, COLOR_GRAD1, "This person is not muted from the Dedicated chat!");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi do khong bi cam chat Dedicated!");
 			}
 		}
 		else 
 		{ 
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 		}
 	}
 	else 
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	}
 	return 1;
 }
@@ -575,14 +579,14 @@ CMD:dedicatedplayers(playerid, params[])
 		{
 			if(PlayerInfo[i][pDedicatedPlayer] >= 1)
 			{
-				format(string, sizeof(string), "%s\nLevel %d Dedicated %s", string, PlayerInfo[i][pDedicatedPlayer], GetPlayerNameEx(i));
+				format(string, sizeof(string), "%s\nDedicated cap %d %s", string, PlayerInfo[i][pDedicatedPlayer], GetPlayerNameEx(i));
 			}
 		}
-		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_LIST, "Online Dedicated Players", string, "Close", "");
+		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_LIST, "Dedicated Player online", string, "Dong", "");
 	}
 	else
 	{
-		 SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+		 SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay!");
 	}
 	return 1;
 }
@@ -599,7 +603,7 @@ CMD:dpdraw(playerid, params[])
 
 		if(sscanf(params, "d", iBroadcast)) 
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /dpdraw [broadcast(0-1)]");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Cach dung: /dpdraw [broadcast(0-1)]");
 			return 1;
 		}
 
@@ -617,12 +621,12 @@ CMD:dpdraw(playerid, params[])
 
 			if(iBroadcast == 1) 
 			{
-				format(szMessage, sizeof(szMessage), "%s was just randomly selected! Congratulations! (Dedicated Player Draw)", GetPlayerNameEx(iWinrar));
+				format(szMessage, sizeof(szMessage), "%s vua duoc chon ngau nhien! Chuc mung! (Dedicated Player Draw)", GetPlayerNameEx(iWinrar));
 				SendDedicatedMessage(COLOR_WHITE, szMessage);
 			}
 			else 
 			{
-				format(szMessage, sizeof(szMessage), "%s (ID %d) was randomly selected (/dpdraw).", GetPlayerNameEx(iWinrar), iWinrar);
+				format(szMessage, sizeof(szMessage), "%s (ID %d) duoc chon ngau nhien (/dpdraw).", GetPlayerNameEx(iWinrar), iWinrar);
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMessage);
 				ABroadCast(COLOR_YELLOW, szMessage, 1338);
 			}
@@ -631,7 +635,7 @@ CMD:dpdraw(playerid, params[])
 		}
 		else 
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "Nobody online can win!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Khong co nguoi online du dieu kien thang!");
 		}
 	}
 	return 1;

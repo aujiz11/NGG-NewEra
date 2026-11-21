@@ -95,27 +95,27 @@ stock ConvertTimeS(seconds, TYPE = 0)
 	if(TYPE == 0) {
 		if(seconds > 86400)
 		{
-			if(floatround((seconds/86400), floatround_floor) > 1) format(string, sizeof(string), "%d days", floatround((seconds/86400), floatround_floor));
-			else format(string, sizeof(string), "%d day", floatround((seconds/86400), floatround_floor));
+			if(floatround((seconds/86400), floatround_floor) > 1) format(string, sizeof(string), "%d ngay", floatround((seconds/86400), floatround_floor));
+			else format(string, sizeof(string), "%d ngay", floatround((seconds/86400), floatround_floor));
 			seconds=seconds-((floatround((seconds/86400), floatround_floor))*86400);
 		}
 		if(seconds > 3600)
 		{
 			if(strlen(string) > 0) format(string, sizeof(string), "%s, ", string);
-			if(floatround((seconds/3600), floatround_floor) > 1) format(string, sizeof(string), "%s%d hours", string, floatround((seconds/3600), floatround_floor));
-			else format(string, sizeof(string), "%s%d hour", string, floatround((seconds/3600), floatround_floor));
+			if(floatround((seconds/3600), floatround_floor) > 1) format(string, sizeof(string), "%s%d gio", string, floatround((seconds/3600), floatround_floor));
+			else format(string, sizeof(string), "%s%d gio", string, floatround((seconds/3600), floatround_floor));
 			seconds=seconds-((floatround((seconds/3600), floatround_floor))*3600);
 		}
 		if(seconds > 60)
 		{
 			if(strlen(string) > 0) format(string, sizeof(string), "%s, ", string);
-			if(floatround((seconds/60), floatround_floor) > 1) format(string, sizeof(string), "%s%d minutes", string, floatround((seconds/60), floatround_floor));
-			else format(string, sizeof(string), "%s%d minute", string, floatround((seconds/60), floatround_floor));
+			if(floatround((seconds/60), floatround_floor) > 1) format(string, sizeof(string), "%s%d phut", string, floatround((seconds/60), floatround_floor));
+			else format(string, sizeof(string), "%s%d phut", string, floatround((seconds/60), floatround_floor));
 			seconds=seconds-((floatround((seconds/60), floatround_floor))*60);
 		}
 		if(strlen(string) > 0) format(string, sizeof(string), "%s, ", string);
-		if(seconds > 1) format(string, sizeof(string), "%s%d seconds", string, seconds);
-		else if(seconds != 0) format(string, sizeof(string), "%s%d second", string, seconds);
+		if(seconds > 1) format(string, sizeof(string), "%s%d giay", string, seconds);
+		else if(seconds != 0) format(string, sizeof(string), "%s%d giay", string, seconds);
 	}
 	else {
 		if(seconds > 60)
@@ -159,40 +159,40 @@ stock ConvertTime(cts, &ctm=-1,&cth=-1,&ctd=-1,&ctw=-1,&ctmo=-1,&cty=-1)
     if(cty != -1)
     {
         CT(cty); CT(ctmo); CT(ctw); CT(ctd); CT(cth); CT(ctm);
-        format(strii, sizeof(strii), "%d %s, %d %s, %d %s, %d %s, %d %s, %d %s, and %d %s",PLUR(cty,"year","years"),PLUR(ctmo,"month","months"),PLUR(ctw,"week","weeks"),PLUR(ctd,"day","days"),PLUR(cth,"hour","hours"),PLUR(ctm,"minute","minutes"),PLUR(cts,"second","seconds"));
+        format(strii, sizeof(strii), "%d %s, %d %s, %d %s, %d %s, %d %s, %d %s, va %d %s",PLUR(cty,"nam","nam"),PLUR(ctmo,"thang","thang"),PLUR(ctw,"tuan","tuan"),PLUR(ctd,"ngay","ngay"),PLUR(cth,"gio","gio"),PLUR(ctm,"phut","phut"),PLUR(cts,"giay","giay"));
         return strii;
     }
     if(ctmo != -1)
     {
         CT(ctmo); CT(ctw); CT(ctd); CT(cth); CT(ctm);
-        format(strii, sizeof(strii), "%d %s, %d %s, %d %s, %d %s, %d %s, and %d %s",PLUR(ctmo,"month","months"),PLUR(ctw,"week","weeks"),PLUR(ctd,"day","days"),PLUR(cth,"hour","hours"),PLUR(ctm,"minute","minutes"),PLUR(cts,"second","seconds"));
+        format(strii, sizeof(strii), "%d %s, %d %s, %d %s, %d %s, %d %s, va %d %s",PLUR(ctmo,"thang","thang"),PLUR(ctw,"tuan","tuan"),PLUR(ctd,"ngay","ngay"),PLUR(cth,"gio","gio"),PLUR(ctm,"phut","phut"),PLUR(cts,"giay","giay"));
         return strii;
     }
     if(ctw != -1)
     {
         CT(ctw); CT(ctd); CT(cth); CT(ctm);
-        format(strii, sizeof(strii), "%d %s, %d %s, %d %s, %d %s, and %d %s",PLUR(ctw,"week","weeks"),PLUR(ctd,"day","days"),PLUR(cth,"hour","hours"),PLUR(ctm,"minute","minutes"),PLUR(cts,"second","seconds"));
+        format(strii, sizeof(strii), "%d %s, %d %s, %d %s, %d %s, va %d %s",PLUR(ctw,"tuan","tuan"),PLUR(ctd,"ngay","ngay"),PLUR(cth,"gio","gio"),PLUR(ctm,"phut","phut"),PLUR(cts,"giay","giay"));
         return strii;
     }
     if(ctd != -1)
     {
         CT(ctd); CT(cth); CT(ctm);
-        format(strii, sizeof(strii), "%d %s, %d %s, %d %s, and %d %s",PLUR(ctd,"day","days"),PLUR(cth,"hour","hours"),PLUR(ctm,"minute","minutes"),PLUR(cts,"second","seconds"));
+        format(strii, sizeof(strii), "%d %s, %d %s, %d %s, va %d %s",PLUR(ctd,"ngay","ngay"),PLUR(cth,"gio","gio"),PLUR(ctm,"phut","phut"),PLUR(cts,"giay","giay"));
         return strii;
     }
     if(cth != -1)
     {
         CT(cth); CT(ctm);
-        format(strii, sizeof(strii), "%d %s, %d %s, and %d %s",PLUR(cth,"hour","hours"),PLUR(ctm,"minute","minutes"),PLUR(cts,"second","seconds"));
+        format(strii, sizeof(strii), "%d %s, %d %s, va %d %s",PLUR(cth,"gio","gio"),PLUR(ctm,"phut","phut"),PLUR(cts,"giay","giay"));
         return strii;
     }
     if(ctm != -1)
     {
         CT(ctm);
-        format(strii, sizeof(strii), "%d %s, and %d %s",PLUR(ctm,"minute","minutes"),PLUR(cts,"second","seconds"));
+        format(strii, sizeof(strii), "%d %s, va %d %s",PLUR(ctm,"phut","phut"),PLUR(cts,"giay","giay"));
         return strii;
     }
-    format(strii, sizeof(strii), "%d %s", PLUR(cts,"second","seconds"));
+    format(strii, sizeof(strii), "%d %s", PLUR(cts,"giay","giay"));
     return strii;
 }
 
@@ -216,7 +216,7 @@ TimeConvert(time) {
     }
     else{
         jsec = floatround(time);
-        format(string,sizeof(string),"%02d seconds",jsec);
+        format(string,sizeof(string),"%02d giay",jsec);
     }
     return string;
 }

@@ -3,9 +3,9 @@ CMD:togcountrycheck(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 1337) return 0;
 	if(cCheck)
-		cCheck = false, SendClientMessageEx(playerid, -1, "Disabled");
+		cCheck = false, SendClientMessageEx(playerid, -1, "Da tat");
 	else
-		cCheck = true, SendClientMessageEx(playerid, -1, "Enabled");
+		cCheck = true, SendClientMessageEx(playerid, -1, "Da bat");
 	return 1;
 }
 
@@ -45,19 +45,19 @@ public CountryCheckResponse(playerid, response_code, data[]) {
 				 print("GEOCHECK WARNING: Invalid ID or IP input");
 			}
 			case 3: {
-				format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has failed their countrycode check and was auto-kicked.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pIP]);
+				format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) khong qua kiem tra quoc gia va da bi tu dong kick.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pIP]);
 				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 				format(szMiscArray, sizeof(szMiscArray), "WARNING: %s(%d) (IP:%s) has failed their countrycode check and was auto-kicked.", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pSQLID"), PlayerInfo[playerid][pIP]);
 				Log("logs/geocheck.log", szMiscArray);
-				SendClientMessage(playerid, COLOR_RED, "Your account is not set to log in from your current country. Make an Admin Request @ http://ng-gaming.net/forums");
+				SendClientMessage(playerid, COLOR_RED, "Tai khoan chua cho phep dang nhap tu quoc gia nay. Gui Admin Request tai http://ng-gaming.net/forums");
 				SetTimerEx("KickEx", 5000, false, "i", playerid);
 			}
 			case 4: {
-				format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has attempted to log in while locked by the Geosecurity system, and was auto-kicked.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pIP]);
+				format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) dang nhap khi bi Geosecurity khoa va da bi tu dong kick.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pIP]);
 				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 				format(szMiscArray, sizeof(szMiscArray), "WARNING: %s(%d) (IP:%s) has attempted to log in while locked by the Geosecurity system.", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pSQLID"), PlayerInfo[playerid][pIP]);
 				Log("logs/geocheck.log", szMiscArray);
-				SendClientMessage(playerid, COLOR_RED, "Your account is locked due to numerous logins from incorrect countries. Make an Admin Request @ http://ng-gaming.net/forums");
+				SendClientMessage(playerid, COLOR_RED, "Tai khoan bi khoa do nhieu lan dang nhap sai quoc gia. Gui Admin Request tai http://ng-gaming.net/forums");
 				SetTimerEx("KickEx", 5000, false, "i", playerid);
 			}
 			default: {

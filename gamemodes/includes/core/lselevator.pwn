@@ -129,7 +129,7 @@ stock Elevator_Initialize()
 	Obj_ElevatorDoors[0] 	= CreateDynamicObject(18757, X_DOOR_CLOSED, -1303.459472, GROUND_Z_COORD, 0.000000, 0.000000, 270.000000);
 	Obj_ElevatorDoors[1] 	= CreateDynamicObject(18756, X_DOOR_CLOSED, -1303.459472, GROUND_Z_COORD, 0.000000, 0.000000, 270.000000);
 
-	Label_Elevator          = CreateDynamic3DTextLabel("Press '~k~~GROUP_CONTROL_BWD~' to use elevator", COLOR_YELLOW, 1784.9822, -1302.0426, 13.6491, 4.0);
+	Label_Elevator          = CreateDynamic3DTextLabel("Nhan '~k~~GROUP_CONTROL_BWD~' de dung thang may", COLOR_YELLOW, 1784.9822, -1302.0426, 13.6491, 4.0);
 
 
 	new string[128],
@@ -140,7 +140,7 @@ stock Elevator_Initialize()
 	    Obj_FloorDoors[i][0] 	= CreateDynamicObject(18757, X_DOOR_CLOSED, -1303.171142, GetDoorsZCoordForFloor(i), 0.000000, 0.000000, 270.000000);
 		Obj_FloorDoors[i][1] 	= CreateDynamicObject(18756, X_DOOR_CLOSED, -1303.171142, GetDoorsZCoordForFloor(i), 0.000000, 0.000000, 270.000000);
 
-		format(string, sizeof(string), "%s\nPress '~k~~GROUP_CONTROL_BWD~' to call", LAElevatorFloorData[0][i]);
+		format(string, sizeof(string), "%s\nNhan '~k~~GROUP_CONTROL_BWD~' de goi", LAElevatorFloorData[0][i]);
 
 		if(i == 0)
 		    z = 13.4713;
@@ -307,7 +307,7 @@ stock ShowElevatorDialog(playerid, elev)
   		format(string, sizeof(string), "%s%d - %s\n", string, (x+1), LAElevatorFloorData[0][x]);
 	}
 
-	ShowPlayerDialogEx(playerid, LAELEVATOR, DIALOG_STYLE_LIST, "Elevator", string, "Select", "Cancel");
+	ShowPlayerDialogEx(playerid, LAELEVATOR, DIALOG_STYLE_LIST, "Elevator", string, "Chon", "Huy");
 }
 
 stock CallElevator(playerid, floorid)
@@ -351,7 +351,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					PlayerPlaySound(playerid, 1083, 0.0, 0.0, 0.0);
 					ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, false, false, false, false, 0);
 					CallElevator(playerid, i + 1);
-					GameTextForPlayer(playerid, "~r~Elevator called", 3500, 4);
+					GameTextForPlayer(playerid, "~r~Da goi thang may", 3500, 4);
 				}
 			}
 		}
@@ -364,18 +364,18 @@ CMD:floorpass(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new floor, tmp[24];
 	if(sscanf(params, "is[24]", floor, tmp))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /floorpass [floor] [pass]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /floorpass [floor] [pass]");
 		return 1;
 	}
 	format(LAElevatorFloorData[1][floor-1],24, "%s", tmp);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Floor %d pass set to %s", floor, LAElevatorFloorData[1][floor-1]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Da dat mat khau tang %d la %s", floor, LAElevatorFloorData[1][floor-1]);
 	SaveElevatorStuff();
 	return 1;
 }
@@ -384,26 +384,26 @@ CMD:floorpassr(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new floor;
 	if(sscanf(params, "i", floor))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /floorpassr [floor]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /floorpassr [floor]");
 		return 1;
 	}
 	new string[128];
 	floor = floor  - 1;
 	format(LAElevatorFloorData[1][floor-1],24, "");
-	SendClientMessageEx(playerid, COLOR_WHITE, "Floor %d pass removed", floor);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa mat khau tang %d", floor);
 	SaveElevatorStuff();
 
 	new Float:z;
 	for(new i; i < sizeof(Obj_FloorDoors); i ++)
 	{
-		format(string, sizeof(string), "%s\nPress '~k~~GROUP_CONTROL_BWD~' to call", LAElevatorFloorData[0][i]);
+		format(string, sizeof(string), "%s\nNhan '~k~~GROUP_CONTROL_BWD~' de goi", LAElevatorFloorData[0][i]);
 
 		if(i == 0)
 		    z = 13.4713;
@@ -420,24 +420,24 @@ CMD:floornamer(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new floor;
 	if(sscanf(params, "i", floor))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /floornamer [floor]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /floornamer [floor]");
 		return 1;
 	}
 	new string[128];
 	format(LAElevatorFloorData[0][floor-1],24, "");
-	SendClientMessageEx(playerid, COLOR_WHITE, "Floor %d name removed", floor);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa ten tang %d", floor);
 	SaveElevatorStuff();
 	new Float:z;
 	for(new i; i < sizeof(Obj_FloorDoors); i ++)
 	{
-		format(string, sizeof(string), "%s\nPress '~k~~GROUP_CONTROL_BWD~' to call", LAElevatorFloorData[0][i]);
+		format(string, sizeof(string), "%s\nNhan '~k~~GROUP_CONTROL_BWD~' de goi", LAElevatorFloorData[0][i]);
 
 		if(i == 0)
 		    z = 13.4713;
@@ -454,25 +454,25 @@ CMD:floorname(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new floor, tmp[24];
 	if(sscanf(params, "is[24]", floor, tmp))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /floorname [floor] [name]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /floorname [floor] [name]");
 		return 1;
 	}
 	new string[128];
 	format(LAElevatorFloorData[0][floor-1],24, "%s", tmp);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Renamed Floor %d to %s", floor, LAElevatorFloorData[0][floor-1]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Da doi ten tang %d thanh %s", floor, LAElevatorFloorData[0][floor-1]);
 	SaveElevatorStuff();
 
 	new Float:z;
 	for(new i; i < sizeof(Obj_FloorDoors); i ++)
 	{
-		format(string, sizeof(string), "%s\nPress '~k~~GROUP_CONTROL_BWD~' to call", LAElevatorFloorData[0][i]);
+		format(string, sizeof(string), "%s\nNhan '~k~~GROUP_CONTROL_BWD~' de goi", LAElevatorFloorData[0][i]);
 
 		if(i == 0)
 		    z = 13.4713;

@@ -29,7 +29,7 @@
 
 Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 
-	if(giveplayerid < 0 || giveplayerid >= MAX_PLAYERS || !IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+	if(giveplayerid < 0 || giveplayerid >= MAX_PLAYERS || !IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 
 	// if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot interact with yourself.");
 
@@ -37,7 +37,7 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 
 	new szTitle[64];
 
-	format(szTitle, sizeof(szTitle), "Interaction - %s", GetPlayerNameEx(giveplayerid));
+	format(szTitle, sizeof(szTitle), "Tuong tac - %s", GetPlayerNameEx(giveplayerid));
 
 	switch(menu) {
 		case 0: {
@@ -53,16 +53,16 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 			SetPVarInt(playerid, "Interact_Target", giveplayerid);
 			SetPVarInt(playerid, "Interact_TargetSession", g_arrQueryHandle[giveplayerid]);
 
-			format(szMiscArray, sizeof(szMiscArray), "Pay\nGive Item\nSell Item\nFrisk\nShow License");
+			format(szMiscArray, sizeof(szMiscArray), "Tra tien\nDua vat pham\nBan vat pham\nKham xet\nXem giay phep");
 
 			if(IsACop(playerid)) { // LEO-related interaction commands
-				strcat(szMiscArray, "\nCuff\nDrag\nDetain\nTicket\nUncuff\nDrug Test\nConfiscate Drugs");
+				strcat(szMiscArray, "\nCong tay\nKeo\nGiam giu\nPhat tien\nThao cong\nXet nghiem ma tuy\nTich thu ma tuy");
 			}
 
 			if(IsAMedic(playerid)) { // Medical-related commands.
-				strcat(szMiscArray, "\nPrescribe Drug\nLoad Patient\nTriage\nHeal\nMove Patient\nDrug Test");
+				strcat(szMiscArray, "\nKe don thuoc\nDua benh nhan len xe\nPhan loai cap cuu\nChua tri\nDi chuyen benh nhan\nXet nghiem ma tuy");
 			}
-			return ShowPlayerDialogEx(playerid, INTERACT_MAIN, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Close");
+			return ShowPlayerDialogEx(playerid, INTERACT_MAIN, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Chon", "Dong");
 		}
 		case 1: {
 			/*Ingredients\n\
@@ -70,30 +70,30 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 				Rifle Ammo\t%d\n\
 				Deagle Ammo\t%d\n\
 				Shotgun Ammo\t%d\n\*/
-			format(szMiscArray, sizeof(szMiscArray), "Item\tCurrent Amount\n\
-				Drugs\n\
-				Materials\t%d\n\
-				Fireworks\t%d\n\
-				Syringes\t%d\n\
+			format(szMiscArray, sizeof(szMiscArray), "Vat pham\tSo luong\n\
+				Ma tuy\n\
+				Vat lieu\t%d\n\
+				Phao hoa\t%d\n\
+				Ong tiem\t%d\n\
 				Sprunk\t%d\n\
 				PB Tokens\t%d\n\
-				Weapon",
+				Vu khi",
 				PlayerInfo[playerid][pMats],
 				PlayerInfo[playerid][pFirework],
 				PlayerInfo[playerid][pSyringes],
 				PlayerInfo[playerid][pSprunk],
 				PlayerInfo[playerid][pPaintTokens]
 			);
-			return ShowPlayerDialogEx(playerid, INTERACT_GIVE, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "Select", "Back");
+			return ShowPlayerDialogEx(playerid, INTERACT_GIVE, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "Chon", "Quay lai");
 		}
 		case 2: {
 			new itemid = GetPVarInt(playerid, "Interact_GiveItem");
 
 			if(GetPVarType(playerid, "Interact_Drug")) {
-				format(szMiscArray, sizeof(szMiscArray), "How many pieces of %s do you want to give %s", Drugs[GetPVarInt(playerid, "Interact_Drug")], GetPlayerNameEx(giveplayerid));
+				format(szMiscArray, sizeof(szMiscArray), "Ban muon dua bao nhieu %s cho %s", Drugs[GetPVarInt(playerid, "Interact_Drug")], GetPlayerNameEx(giveplayerid));
 			}
-			else format(szMiscArray, sizeof(szMiscArray), "How much %s do you want to give %s", Item_Getname(itemid), GetPlayerNameEx(giveplayerid));
-			return ShowPlayerDialogEx(playerid, INTERACT_AMOUNT, DIALOG_STYLE_INPUT, szTitle, szMiscArray, "Select", "Back");
+			else format(szMiscArray, sizeof(szMiscArray), "Ban muon dua bao nhieu %s cho %s", Item_Getname(itemid), GetPlayerNameEx(giveplayerid));
+			return ShowPlayerDialogEx(playerid, INTERACT_AMOUNT, DIALOG_STYLE_INPUT, szTitle, szMiscArray, "Chon", "Quay lai");
 		}
 		case 3: {
 
@@ -102,7 +102,7 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 					format(szMiscArray, sizeof(szMiscArray), "%s\n%s(%i)", szMiscArray, Weapon_ReturnName(PlayerInfo[playerid][pGuns][g]), PlayerInfo[playerid][pGuns][g]);
 				}
 			}
-			return ShowPlayerDialogEx(playerid, INTERACT_WEAPON, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Give", "Back");
+			return ShowPlayerDialogEx(playerid, INTERACT_WEAPON, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Cho", "Quay lai");
 		}
 		case 4: {
 			new itemid = GetPVarInt(playerid, "Interact_GiveItem");
@@ -111,17 +111,17 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 			if(GetPVarType(playerid, "Interact_SellGun")) {
 				new weaponid = GetPVarInt(playerid, "Interact_SellGun");
 
-				format(szMiscArray, sizeof(szMiscArray), "How much do you want to sell %s to %s for?", ReturnWeaponName(weaponid), GetPlayerNameEx(giveplayerid));
+				format(szMiscArray, sizeof(szMiscArray), "Ban muon ban %s cho %s voi gia bao nhieu?", ReturnWeaponName(weaponid), GetPlayerNameEx(giveplayerid));
 			}
 			if(GetPVarType(playerid, "Interact_Drug")) {
 
 				new drugid = GetPVarInt(playerid, "Interact_Drug");
 
-				format(szMiscArray, sizeof(szMiscArray), "How much do you want to sell %dg of %s to %s for?", amount, Drugs[drugid], GetPlayerNameEx(giveplayerid));
+				format(szMiscArray, sizeof(szMiscArray), "Ban muon ban %dg %s cho %s voi gia bao nhieu?", amount, Drugs[drugid], GetPlayerNameEx(giveplayerid));
 			}
-			else format(szMiscArray, sizeof(szMiscArray), "How much do you want to sell %d %s to %s for?", amount, Item_Getname(itemid), GetPlayerNameEx(giveplayerid));
+			else format(szMiscArray, sizeof(szMiscArray), "Ban muon ban %d %s cho %s voi gia bao nhieu?", amount, Item_Getname(itemid), GetPlayerNameEx(giveplayerid));
 
-			return ShowPlayerDialogEx(playerid, INTERACT_SELL, DIALOG_STYLE_INPUT, szTitle, szMiscArray, "Sell", "Back");
+			return ShowPlayerDialogEx(playerid, INTERACT_SELL, DIALOG_STYLE_INPUT, szTitle, szMiscArray, "Ban", "Quay lai");
 		}
 
 		case 5: {
@@ -134,34 +134,34 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 
 				new weaponid = GetPVarInt(playerid, "Interact_SellGun");
 
-				format(szMiscArray, sizeof(szMiscArray), "[Interact]: You have offered %s to buy a %s for $%s", GetPlayerNameEx(giveplayerid), Item_Getname(itemid), number_format(offerprice));
+				format(szMiscArray, sizeof(szMiscArray), "[Interact]: Ban de nghi %s mua %s gia $%s", GetPlayerNameEx(giveplayerid), Item_Getname(itemid), number_format(offerprice));
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
-				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy a %s for $%s", GetPlayerNameEx(playerid), ReturnWeaponName(weaponid), number_format(offerprice));
+				format(szMiscArray, sizeof(szMiscArray), "%s de nghi ban mua %s gia $%s", GetPlayerNameEx(playerid), ReturnWeaponName(weaponid), number_format(offerprice));
 			}
 			else if(GetPVarType(playerid, "Interact_Drug")) {
 				new drugid = GetPVarInt(playerid, "Interact_Drug");
 
-				format(szMiscArray, sizeof(szMiscArray), "[Interact]: You have offered %s to buy %dg of %s {FFFFFF}for $%s", GetPlayerNameEx(giveplayerid), amount, Drugs[drugid], number_format(offerprice));
+				format(szMiscArray, sizeof(szMiscArray), "[Interact]: Ban de nghi %s mua %dg %s {FFFFFF}gia $%s", GetPlayerNameEx(giveplayerid), amount, Drugs[drugid], number_format(offerprice));
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
-				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %dg of %s {FFFFFF}for $%s", GetPlayerNameEx(playerid), amount, Drugs[drugid], number_format(offerprice));
+				format(szMiscArray, sizeof(szMiscArray), "%s de nghi ban mua %dg %s {FFFFFF}gia $%s", GetPlayerNameEx(playerid), amount, Drugs[drugid], number_format(offerprice));
 			}
 			else {
-				format(szMiscArray, sizeof(szMiscArray), "[Interact]: You have offered %s to buy %d %s for $%s", GetPlayerNameEx(giveplayerid), amount, Item_Getname(itemid), number_format(offerprice));
+				format(szMiscArray, sizeof(szMiscArray), "[Interact]: Ban de nghi %s mua %d %s gia $%s", GetPlayerNameEx(giveplayerid), amount, Item_Getname(itemid), number_format(offerprice));
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
-				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %d %s for $%s", GetPlayerNameEx(playerid), amount, Item_Getname(itemid), number_format(offerprice));
+				format(szMiscArray, sizeof(szMiscArray), "%s de nghi ban mua %d %s gia $%s", GetPlayerNameEx(playerid), amount, Item_Getname(itemid), number_format(offerprice));
 			}
-			ShowPlayerDialogEx(giveplayerid, INTERACT_SELLCONFIRM, DIALOG_STYLE_MSGBOX, szTitle, szMiscArray, "Buy", "Reject");
+			ShowPlayerDialogEx(giveplayerid, INTERACT_SELLCONFIRM, DIALOG_STYLE_MSGBOX, szTitle, szMiscArray, "Mua", "Tu choi");
 
 
 		}
 		case 6: {
 
-			szMiscArray = "Drug\tAmount\n";
+			szMiscArray = "Ma tuy\tSo luong\n";
 			for(new d; d < sizeof(Drugs); ++d) {
 
 				format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, Drugs[d], PlayerInfo[playerid][pDrugs][d]);
 			}
-			return ShowPlayerDialogEx(playerid, INTERACT_DRUGS, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "Select", "Back");
+			return ShowPlayerDialogEx(playerid, INTERACT_DRUGS, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "Chon", "Quay lai");
 		}
 	}
 
@@ -174,21 +174,21 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 
 	szMiscArray[0] = 0;
 
-	if(amount <= 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot give nothing.");
+	if(amount <= 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dua so luong bang khong.");
 
-	if(restarting) return SendClientMessageEx(playerid, COLOR_RED, "Server restart in progress, trading is disabled.");
+	if(restarting) return SendClientMessageEx(playerid, COLOR_RED, "May chu dang khoi dong lai, giao dich da tam dung.");
 
-	if(saleprice != 0 && (GetPlayerCash(giveplayerid) < saleprice || saleprice < 0)) return SendClientMessage(giveplayerid, COLOR_GRAD2, "You do not have enough money");
+	if(saleprice != 0 && (GetPlayerCash(giveplayerid) < saleprice || saleprice < 0)) return SendClientMessage(giveplayerid, COLOR_GRAD2, "Ban khong du tien");
 
 	switch(itemid) {
 
 		case ITEM_DRUG: {
 
 			new drugid = GetPVarInt(playerid, "Interact_Drug");
-			if(PlayerInfo[playerid][pDrugs][drugid] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much.");
+			if(PlayerInfo[playerid][pDrugs][drugid] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong co du so luong nay.");
 
 			if(amount + PlayerInfo[giveplayerid][pDrugs][drugid] > Player_MaxCapacity(giveplayerid, itemid)) {
-				SendClientMessageEx(playerid, COLOR_GRAD2, "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do chi co the giu them %d vat pham nay.", Player_LeftCapacity(giveplayerid, itemid));
 				return Player_InteractMenu(playerid, giveplayerid);
 			}
 
@@ -198,10 +198,10 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 		}
 		case ITEM_MATS: {
 
-			if(PlayerInfo[playerid][pMats] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many materials.");
+			if(PlayerInfo[playerid][pMats] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du vat lieu.");
 
 			if(amount + PlayerInfo[giveplayerid][pMats] > Player_MaxCapacity(giveplayerid, itemid)) {
-				SendClientMessageEx(playerid, COLOR_GRAD2, "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do chi co the giu them %d vat pham nay.", Player_LeftCapacity(giveplayerid, itemid));
 				return Player_InteractMenu(playerid, giveplayerid);
 			}
 
@@ -210,10 +210,10 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 		}
 		case ITEM_FIREWORK: {
 
-			if(PlayerInfo[playerid][pFirework] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many fireworks.");
+			if(PlayerInfo[playerid][pFirework] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du phao hoa.");
 
 			if(amount + PlayerInfo[giveplayerid][pFirework] > Player_MaxCapacity(giveplayerid, itemid)) {
-				SendClientMessageEx(playerid, COLOR_GRAD2, "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do chi co the giu them %d vat pham nay.", Player_LeftCapacity(giveplayerid, itemid));
 				return Player_InteractMenu(playerid, giveplayerid);
 			}
 
@@ -222,10 +222,10 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 		}
 		case ITEM_SYRINGES: {
 
-			if(PlayerInfo[playerid][pSyringes] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much syringes.");
+			if(PlayerInfo[playerid][pSyringes] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du ong tiem.");
 
 			if(amount + PlayerInfo[giveplayerid][pSyringes] > Player_MaxCapacity(giveplayerid, itemid)) {
-				SendClientMessageEx(playerid, COLOR_GRAD2, "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do chi co the giu them %d vat pham nay.", Player_LeftCapacity(giveplayerid, itemid));
 				return Player_InteractMenu(playerid, giveplayerid);
 			}
 
@@ -234,10 +234,10 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 		}
 		case ITEM_SPRUNKDRINK: {
 
-			if(PlayerInfo[playerid][pSprunk] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much sprunk soda.");
+			if(PlayerInfo[playerid][pSprunk] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du Sprunk.");
 
 			if(amount + PlayerInfo[giveplayerid][pSprunk] > Player_MaxCapacity(giveplayerid, itemid)) {
-				SendClientMessageEx(playerid, COLOR_GRAD2, "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do chi co the giu them %d vat pham nay.", Player_LeftCapacity(giveplayerid, itemid));
 				return Player_InteractMenu(playerid, giveplayerid);
 			}
 
@@ -247,10 +247,10 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 		}
 		case ITEM_PBTOKENS: {
 
-			if(PlayerInfo[playerid][pPaintTokens] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many PB tokens.");
+			if(PlayerInfo[playerid][pPaintTokens] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du PB tokens.");
 
 			if(amount + PlayerInfo[giveplayerid][pPaintTokens] > Player_MaxCapacity(giveplayerid, itemid)) {
-				SendClientMessageEx(playerid, COLOR_GRAD2, "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do chi co the giu them %d vat pham nay.", Player_LeftCapacity(giveplayerid, itemid));
 				return Player_InteractMenu(playerid, giveplayerid);
 			}
 
@@ -261,11 +261,11 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 
 	if(saleprice == 0) {
 
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have given %s %d %s", GetPlayerNameEx(giveplayerid), amount, Item_Getname(itemid));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban dua cho %s %d %s", GetPlayerNameEx(giveplayerid), amount, Item_Getname(itemid));
 
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has given you %d %s", GetPlayerNameEx(playerid), amount, Item_Getname(itemid));
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s dua ban %d %s", GetPlayerNameEx(playerid), amount, Item_Getname(itemid));
 
-		format(szMiscArray, sizeof(szMiscArray), "%s hands %s some %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), Item_Getname(itemid));
+		format(szMiscArray, sizeof(szMiscArray), "%s dua %s it %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), Item_Getname(itemid));
 		SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 5, 5000);
 
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has given %d %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], amount, Item_Getname(itemid), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
@@ -282,11 +282,11 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 		//TurfWars_TurfTax(giveplayerid, Item_Getname(itemid), saleprice); // Tax the buyer, not the seller.
 		ExtortionTurfsWarsZone(playerid, 7, saleprice); // Back to taxing the seller. 
 
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %s %d %s for $%s", GetPlayerNameEx(giveplayerid), amount, Item_Getname(itemid), number_format(saleprice));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban ban cho %s %d %s gia $%s", GetPlayerNameEx(giveplayerid), amount, Item_Getname(itemid), number_format(saleprice));
 
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has sold you %d %s for $%s", GetPlayerNameEx(playerid), amount, Item_Getname(itemid), number_format(saleprice));
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s ban cho ban %d %s gia $%s", GetPlayerNameEx(playerid), amount, Item_Getname(itemid), number_format(saleprice));
 
-		format(szMiscArray, sizeof(szMiscArray), "%s hands %s some %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), Item_Getname(itemid));
+		format(szMiscArray, sizeof(szMiscArray), "%s dua %s it %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), Item_Getname(itemid));
 		SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 5, 5000);
 
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has sold %d %s $%s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], amount, Item_Getname(itemid), number_format(saleprice), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
@@ -381,7 +381,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else if(strcmp(inputtext, "Detain") == 0) return Interact_DetainPlayer(playerid, giveplayerid);
 			else if(strcmp(inputtext, "Ticket") == 0) return Interact_GiveTicket(playerid, giveplayerid, "");
 			else if(strcmp(inputtext, "Uncuff") == 0) return Interact_UncuffPlayer(playerid, giveplayerid);
-			else if(strcmp(inputtext, "Drug Test") == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Drug tests have been disabled and will later be removed completely.");
+			else if(strcmp(inputtext, "Drug Test") == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Xet nghiem ma tuy da tat va se duoc go bo hoan toan.");
 			else if(strcmp(inputtext, "Confiscate Drugs") == 0) return Interact_TakeDrugs(playerid, giveplayerid);
 			else if(strcmp(inputtext, "Prescribe Drug") == 0) return Interact_Prescribe(playerid, 0);
 			else if(strcmp(inputtext, "Load Patient") == 0) Interact_LoadPatient(playerid, giveplayerid);
@@ -415,7 +415,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				itemid = GetPVarInt(playerid, "Interact_GiveItem");
 
 			if(amount < 1) {
-				SendClientMessageEx(playerid, COLOR_RED, "You must offer an item greater than 0!");
+				SendClientMessageEx(playerid, COLOR_RED, "So luong de nghi phai lon hon 0!");
 				return Player_InteractMenu(playerid, giveplayerid, 0);
 			}
 
@@ -440,7 +440,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new seatid = strval(inputtext);
 
 			if(!(2 <= seatid <= 3)) {
-				SendClientMessageEx(playerid, COLOR_GRAD2, "Seat id must be 2 or 3.");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "ID ghe phai la 2 hoac 3.");
 				return Interact_DetainPlayer(playerid, giveplayerid);
 			}
 
@@ -456,7 +456,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new amount = strval(inputtext);
 
 			if(!(0 < amount <= 25000)) {
-				SendClientMessageEx(playerid, COLOR_GRAD2, "Ticket price must be between $0 and $25,000.");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Tien phat phai tu $0 den $25,000.");
 				return Interact_GiveTicket(playerid, giveplayerid, "");
 			}
 
@@ -485,7 +485,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new seatid = strval(inputtext);
 
 			if(!(2 <= seatid <= 3)) {
-				SendClientMessageEx(playerid, COLOR_GRAD2, "Seat id must be 2 or 3.");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "ID ghe phai la 2 hoac 3.");
 				return Interact_LoadPatient(playerid, giveplayerid);
 			}
 
@@ -496,11 +496,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!GetPVarType(playerid, "Interact_Target") || !GetPVarType(playerid, "Interact_TargetSession")) return 1;
 			new giveplayerid = GetPVarInt(playerid, "Interact_Target"), session = GetPVarInt(playerid, "Interact_TargetSession");
 			DeletePVar(playerid, "Interact_TargetSession");
-			if(giveplayerid < 0 || giveplayerid >= MAX_PLAYERS || !IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-			if(session != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GRAD1, "That player has reconnected. Please open the interaction menu again.");
+			if(giveplayerid < 0 || giveplayerid >= MAX_PLAYERS || !IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
+			if(session != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi do da ket noi lai. Hay mo lai menu tuong tac.");
 			if(!response) return Player_InteractMenu(playerid, giveplayerid, 0);
 			new amount;
-			if(!ParseBankTransferAmount(inputtext, amount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot pay below $1, or above $99,999,999 at once.");
+			if(!ParseBankTransferAmount(inputtext, amount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "So tien moi lan phai tu $1 den $99,999,999.");
 			Interact_PayPlayer(playerid, giveplayerid, amount);
 		}
 
@@ -553,8 +553,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new buyingfrom = GetPVarInt(playerid, "Interact_Buying");
 
 			if(!response) {
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have rejected the trade offer.");
-				SendClientMessageEx(buyingfrom, COLOR_WHITE, "That person has rejected the trade offer.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ban da tu choi giao dich.");
+				SendClientMessageEx(buyingfrom, COLOR_WHITE, "Nguoi do da tu choi giao dich.");
 
 				DeletePVar(playerid, "Interact_Buying");
 				DeletePVar(buyingfrom, "Interact_SellPrice");
@@ -574,25 +574,25 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				new weaponid = GetPVarInt(buyingfrom, "Interact_SellGun");
 
-				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy a %s for $%s\n\nPlease confirm again if you really are sure you want to complete this transaction!", GetPlayerNameEx(buyingfrom), ReturnWeaponName(weaponid), number_format(offerprice));
+				format(szMiscArray, sizeof(szMiscArray), "%s de nghi ban mua %s gia $%s\n\nHay xac nhan lai neu chac chan muon hoan tat giao dich!", GetPlayerNameEx(buyingfrom), ReturnWeaponName(weaponid), number_format(offerprice));
 			}
 			else if(GetPVarType(buyingfrom, "Interact_Drug")) {
 				new drugid = GetPVarInt(buyingfrom, "Interact_Drug");
-				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %dg of %s {FFFFFF}for $%s\n\nPlease confirm again if you really are sure you want to complete this transaction!", GetPlayerNameEx(buyingfrom), amount, Drugs[drugid], number_format(offerprice));
+				format(szMiscArray, sizeof(szMiscArray), "%s de nghi ban mua %dg %s {FFFFFF}gia $%s\n\nHay xac nhan lai neu chac chan muon hoan tat giao dich!", GetPlayerNameEx(buyingfrom), amount, Drugs[drugid], number_format(offerprice));
 			}
 			else {
-				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %d %s for $%s\n\nPlease confirm again if you really are sure you want to complete this transaction!", GetPlayerNameEx(playerid), amount, Item_Getname(itemid), number_format(offerprice));
+				format(szMiscArray, sizeof(szMiscArray), "%s de nghi ban mua %d %s gia $%s\n\nHay xac nhan lai neu chac chan muon hoan tat giao dich!", GetPlayerNameEx(playerid), amount, Item_Getname(itemid), number_format(offerprice));
 			}			
 
-			ShowPlayerDialogEx(playerid, INTERACT_SELLCONFIRM2, DIALOG_STYLE_MSGBOX, "Are you really sure?", szMiscArray, "Buy", "Reject");
+			ShowPlayerDialogEx(playerid, INTERACT_SELLCONFIRM2, DIALOG_STYLE_MSGBOX, "Ban chac chan chu?", szMiscArray, "Mua", "Tu choi");
 		}
 		case INTERACT_SELLCONFIRM2: {
 
 			new buyingfrom = GetPVarInt(playerid, "Interact_Buying");
 
 			if(!response) {
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have rejected the trade offer.");
-				SendClientMessageEx(buyingfrom, COLOR_WHITE, "That person has rejected the trade offer.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ban da tu choi giao dich.");
+				SendClientMessageEx(buyingfrom, COLOR_WHITE, "Nguoi do da tu choi giao dich.");
 
 				DeletePVar(playerid, "Interact_Buying");
 				DeletePVar(buyingfrom, "Interact_SellPrice");
@@ -641,7 +641,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			Interact_Prescribe(playerid, 1);
 		}
 		case INTERACT_PRESCRIBE1: {
-			if(strval(inputtext) <= 0 || !IsNumericString(inputtext)) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid value.");
+			if(strval(inputtext) <= 0 || !IsNumericString(inputtext)) return SendClientMessage(playerid, COLOR_GRAD1, "Gia tri khong hop le.");
 			SetPVarInt(playerid, "DR_PAM", strval(inputtext));
 			Interact_ProcessPrescription(playerid);
 		}
@@ -651,14 +651,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 Interact_GivePlayerValidWeapon(playerid, giveplayerid, weaponid, saleprice = 0) {
 
-	if(PlayerInfo[giveplayerid][pGuns][GetLoadoutWeaponSlot(weaponid)] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "That player already has a weapon in that slot");
-	if(PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(weaponid)] != weaponid) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have a weapon in your possession.");
-	if(weaponid == WEAPON_KNIFE) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot give knives!");
-	if(GetPVarType(giveplayerid, "IsInArena") || GetPVarInt(giveplayerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this right now!");
-	if(PlayerInfo[giveplayerid][pConnectHours] < 2 || PlayerInfo[giveplayerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "That person is currently restricted from carrying weapons");
+	if(PlayerInfo[giveplayerid][pGuns][GetLoadoutWeaponSlot(weaponid)] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co vu khi trong o nay");
+	if(PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(weaponid)] != weaponid) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi nao.");
+	if(weaponid == WEAPON_KNIFE) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dua dao!");
+	if(GetPVarType(giveplayerid, "IsInArena") || GetPVarInt(giveplayerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the lam viec nay!");
+	if(PlayerInfo[giveplayerid][pConnectHours] < 2 || PlayerInfo[giveplayerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do dang bi cam giu vu khi");
 
 
-	if(saleprice != 0 && (GetPlayerCash(giveplayerid) < saleprice || saleprice < 0)) return SendClientMessage(giveplayerid, COLOR_GRAD2, "You do not have enough money");
+	if(saleprice != 0 && (GetPlayerCash(giveplayerid) < saleprice || saleprice < 0)) return SendClientMessage(giveplayerid, COLOR_GRAD2, "Ban khong du tien");
 	PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(weaponid)] = 0;
 	SetPlayerWeaponsEx(playerid);
 
@@ -672,9 +672,9 @@ Interact_GivePlayerValidWeapon(playerid, giveplayerid, weaponid, saleprice = 0) 
 		//TurfWars_TurfTax(giveplayerid, ReturnWeaponName(weaponid), saleprice);
 		ExtortionTurfsWarsZone(playerid, 3, saleprice);
 
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %s a %s for $%s", GetPlayerNameEx(giveplayerid), ReturnWeaponName(weaponid), number_format(saleprice));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban ban cho %s mot %s gia $%s", GetPlayerNameEx(giveplayerid), ReturnWeaponName(weaponid), number_format(saleprice));
 
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has sold you a %s $%s", GetPlayerNameEx(playerid), ReturnWeaponName(weaponid), number_format(saleprice));
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s ban cho ban %s $%s", GetPlayerNameEx(playerid), ReturnWeaponName(weaponid), number_format(saleprice));
 
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has sold a %s for $%s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], ReturnWeaponName(weaponid), number_format(saleprice), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
@@ -683,9 +683,9 @@ Interact_GivePlayerValidWeapon(playerid, giveplayerid, weaponid, saleprice = 0) 
 		DBLog(playerid, giveplayerid, "ItemTransfer", szMiscArray);
 	}
 	else {
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have given %s a %s", GetPlayerNameEx(giveplayerid), ReturnWeaponName(weaponid));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban dua cho %s mot %s", GetPlayerNameEx(giveplayerid), ReturnWeaponName(weaponid));
 
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has given you a %s", GetPlayerNameEx(playerid), ReturnWeaponName(weaponid));
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s dua ban mot %s", GetPlayerNameEx(playerid), ReturnWeaponName(weaponid));
 
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has given a %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], ReturnWeaponName(weaponid), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
@@ -694,7 +694,7 @@ Interact_GivePlayerValidWeapon(playerid, giveplayerid, weaponid, saleprice = 0) 
 		DBLog(playerid, giveplayerid, "ItemTransfer", szMiscArray);
 	}
 
-	format(szMiscArray, sizeof(szMiscArray), "%s gave %s a %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), ReturnWeaponName(weaponid));
+	format(szMiscArray, sizeof(szMiscArray), "%s dua %s %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), ReturnWeaponName(weaponid));
 	SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 10, 5000);
 
 
@@ -708,14 +708,14 @@ Interact_GivePlayerDrug(playerid, giveplayerid, drugid, saleprice = 0) {
 	new amount = GetPVarInt(playerid, "Interact_SellAmt");
 	if(amount < 0) return 1;
 
-	if(restarting) return SendClientMessageEx(playerid, COLOR_RED, "Server restart in progress, trading is disabled.");
+	if(restarting) return SendClientMessageEx(playerid, COLOR_RED, "May chu dang khoi dong lai, giao dich da tam dung.");
 
-	if(saleprice != 0 && (GetPlayerCash(giveplayerid) < saleprice || saleprice < 0)) return SendClientMessage(giveplayerid, COLOR_GRAD2, "You do not have enough money");
+	if(saleprice != 0 && (GetPlayerCash(giveplayerid) < saleprice || saleprice < 0)) return SendClientMessage(giveplayerid, COLOR_GRAD2, "Ban khong du tien");
 
-	if(PlayerInfo[playerid][pDrugs][drugid] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much.");
+	if(PlayerInfo[playerid][pDrugs][drugid] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong co du so luong nay.");
 
 	if(amount + PlayerInfo[giveplayerid][pDrugs][drugid] > Player_MaxCapacity(giveplayerid, ITEM_DRUG)) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, ITEM_DRUG));
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do chi co the giu them %d vat pham nay.", Player_LeftCapacity(giveplayerid, ITEM_DRUG));
 		return Player_InteractMenu(playerid, giveplayerid);
 	}
 
@@ -731,9 +731,9 @@ Interact_GivePlayerDrug(playerid, giveplayerid, drugid, saleprice = 0) {
 		//TurfWars_TurfTax(giveplayerid, Drugs[drugid], saleprice);
 		ExtortionTurfsWarsZone(playerid, 1, saleprice);
 
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have sold %s %dg of %s for $%s", GetPlayerNameEx(giveplayerid), amount, Drugs[drugid], number_format(saleprice));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban ban cho %s %dg %s gia $%s", GetPlayerNameEx(giveplayerid), amount, Drugs[drugid], number_format(saleprice));
 
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has sold you %dg of %s for $%s", GetPlayerNameEx(playerid), amount, Drugs[drugid], number_format(saleprice));
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s ban cho ban %dg %s gia $%s", GetPlayerNameEx(playerid), amount, Drugs[drugid], number_format(saleprice));
 
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has sold %dg of %s for $%s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], amount, Drugs[drugid], number_format(saleprice), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
@@ -742,9 +742,9 @@ Interact_GivePlayerDrug(playerid, giveplayerid, drugid, saleprice = 0) {
 		DBLog(playerid, giveplayerid, "ItemTransfer", szMiscArray);
 	}
 	else {
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have given %s %dg of %s", GetPlayerNameEx(giveplayerid), amount, Drugs[drugid]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban dua cho %s %dg %s", GetPlayerNameEx(giveplayerid), amount, Drugs[drugid]);
 
-		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s has given you %dg of %s", GetPlayerNameEx(playerid), amount, Drugs[drugid]);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "%s dua ban %dg %s", GetPlayerNameEx(playerid), amount, Drugs[drugid]);
 
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has given %dg of %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], amount, Drugs[drugid], GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
@@ -753,7 +753,7 @@ Interact_GivePlayerDrug(playerid, giveplayerid, drugid, saleprice = 0) {
 		DBLog(playerid, giveplayerid, "ItemTransfer", szMiscArray);
 	}
 
-	format(szMiscArray, sizeof(szMiscArray), "%s gave %s some %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), Drugs[drugid]);
+	format(szMiscArray, sizeof(szMiscArray), "%s dua %s it %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), Drugs[drugid]);
 	SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 10, 5000);
 	return 1;
 }
@@ -761,33 +761,33 @@ Interact_GivePlayerDrug(playerid, giveplayerid, drugid, saleprice = 0) {
 Interact_PayPlayer(playerid, giveplayerid, amount = -1) {
 	if(playerid < 0 || playerid >= MAX_PLAYERS) return 0;
 	if(!IsPlayerConnected(playerid) || IsPlayerNPC(playerid) || !gPlayerLogged{playerid}) 
-		return SendClientMessageEx(playerid, COLOR_RED, "You are not logged in.");
+		return SendClientMessageEx(playerid, COLOR_RED, "Ban chua dang nhap.");
 	
-	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
+	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Giao dich da tam dung de khoi dong lai may chu bao tri.");
 	if(giveplayerid < 0 || giveplayerid >= MAX_PLAYERS || !IsPlayerConnected(giveplayerid) || IsPlayerNPC(giveplayerid) || !gPlayerLogged{giveplayerid}) 
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 	
-	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You can not pay yourself!");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the tra tien cho chinh minh!");
 
 	if(amount == -1) {
-		if(!GetPVarType(playerid, "Interact_TargetSession") || GetPVarInt(playerid, "Interact_TargetSession") != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GRAD1, "That player has reconnected. Please open the interaction menu again.");
-		format(szMiscArray, sizeof(szMiscArray), "Please enter an amount to give %s.", GetPlayerNameEx(giveplayerid));
-		return ShowPlayerDialogEx(playerid, PAY_PLAYER, DIALOG_STYLE_INPUT, "Pay Player", szMiscArray, "Pay", "");
+		if(!GetPVarType(playerid, "Interact_TargetSession") || GetPVarInt(playerid, "Interact_TargetSession") != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi do da ket noi lai. Hay mo lai menu tuong tac.");
+		format(szMiscArray, sizeof(szMiscArray), "Nhap so tien muon dua cho %s.", GetPlayerNameEx(giveplayerid));
+		return ShowPlayerDialogEx(playerid, PAY_PLAYER, DIALOG_STYLE_INPUT, "Tra tien nguoi choi", szMiscArray, "Tra", "");
 	}
 
-	if(!(1 <= amount <= 99999999)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot pay below $1, or above $99,999,999 at once.");
-	if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");
-	if(PlayerInfo[playerid][pCash] < 0 || PlayerInfo[playerid][pAccount] < 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your cash on-hand or in the bank is currently at a negative value!");
+	if(!(1 <= amount <= 99999999)) return SendClientMessageEx(playerid, COLOR_GRAD1, "So tien moi lan phai tu $1 den $99,999,999.");
+	if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "Chi duoc giao dich moi 10 giay, hay cho!");
+	if(PlayerInfo[playerid][pCash] < 0 || PlayerInfo[playerid][pAccount] < 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Tien mat hoac so du ngan hang cua ban dang am!");
 	if(2 <= PlayerInfo[playerid][pAdmin] <= 4 || 2 <= PlayerInfo[giveplayerid][pAdmin] <= 4) return 1;
-	if(PlayerInfo[playerid][pCash] < amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
-	if(PlayerInfo[giveplayerid][pCash] > cellmax - amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "That player cannot hold this much cash.");
+	if(PlayerInfo[playerid][pCash] < amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co du tien mat.");
+	if(PlayerInfo[giveplayerid][pCash] > cellmax - amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi do khong the giu nhieu tien mat nhu vay.");
 
 	new Float:pos[3];
 	GetPlayerPos(giveplayerid, pos[0], pos[1], pos[2]);
 	if((Spectating[giveplayerid] != 0 && PlayerInfo[playerid][pAdmin] < 2)
 		|| GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(giveplayerid)
 		|| GetPlayerInterior(playerid) != GetPlayerInterior(giveplayerid)
-		|| !IsPlayerInRangeOfPoint(playerid, 5.0, pos[0], pos[1], pos[2])) return SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+		|| !IsPlayerInRangeOfPoint(playerid, 5.0, pos[0], pos[1], pos[2])) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 
 	if(!TransferStorage(giveplayerid, 0, playerid, 0, 1, amount, -1, -1)) return 1;
 	SetPVarInt(playerid, "LastTransaction", gettime());
@@ -841,68 +841,68 @@ Interact_TakeDrugs(playerid, giveplayerid) {
 		PlayerInfo[giveplayerid][pBDrugs][i] = 0;
 	}
 
-	format(szMiscArray, sizeof(szMiscArray), "** %s has confiscated %s's drugs.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+	format(szMiscArray, sizeof(szMiscArray), "** %s tich thu ma tuy cua %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	return 1;
 }
 
 Interact_ShowLicenses(playerid, giveplayerid) {
 
-	if (!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not near you.");
+	if (!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 	new text1[40], text2[20], text3[20], text4[20], text5[40];
-	if(PlayerInfo[playerid][pCarLic] == 0) { text1 = "Not acquired"; }
+	if(PlayerInfo[playerid][pCarLic] == 0) { text1 = "Chua co"; }
 	else { text1 = date(PlayerInfo[playerid][pCarLic], 1); }
-	if(PlayerInfo[playerid][pFlyLic]) { text4 = "Acquired"; } else { text4 = "Not acquired"; }
-	if(PlayerInfo[playerid][pBoatLic]) { text2 = "Acquired"; } else { text2 = "Not acquired"; }
-	if(PlayerInfo[playerid][pTaxiLicense]) { text3 = "Acquired"; } else { text3 = "Not acquired"; }
-	if(PlayerInfo[playerid][pGunLic] == 0) {text5 = "Not acquired"; }
+	if(PlayerInfo[playerid][pFlyLic]) { text4 = "Da co"; } else { text4 = "Chua co"; }
+	if(PlayerInfo[playerid][pBoatLic]) { text2 = "Da co"; } else { text2 = "Chua co"; }
+	if(PlayerInfo[playerid][pTaxiLicense]) { text3 = "Da co"; } else { text3 = "Chua co"; }
+	if(PlayerInfo[playerid][pGunLic] == 0) {text5 = "Chua co"; }
 	else {text5 = date(PlayerInfo[playerid][pGunLic], 1);}
 
 	switch(PlayerInfo[playerid][pNation]) {
-		case 0: SendClientMessageEx(giveplayerid, COLOR_WHITE, "** Citizen of San Andreas **");
-		case 1: SendClientMessageEx(giveplayerid, COLOR_TR, "** Citizen of New Robada **");
-		case 2: SendClientMessageEx(giveplayerid, COLOR_TR, "** No citizenship **");
+		case 0: SendClientMessageEx(giveplayerid, COLOR_WHITE, "** Cong dan San Andreas **");
+		case 1: SendClientMessageEx(giveplayerid, COLOR_TR, "** Cong dan New Robada **");
+		case 2: SendClientMessageEx(giveplayerid, COLOR_TR, "** Khong co quoc tich **");
 	}
-	SendClientMessageEx(giveplayerid, COLOR_WHITE, "Listing %s's licenses...", GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_WHITE, "Date of Birth: %s", PlayerInfo[playerid][pBirthDate]);
-	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Driver's license: %s.", text1);
-	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Pilot license: %s.", text4);
-	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Boating license: %s.", text2);
-	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Taxi license: %s.", text3);
-	SendClientMessageEx(giveplayerid, COLOR_GREY, "** SA Firearm license: %s.", text5);
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s has shown their licenses to you.", GetPlayerNameEx(playerid));
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have shown your licenses to %s.", GetPlayerNameEx(giveplayerid));
+	SendClientMessageEx(giveplayerid, COLOR_WHITE, "Danh sach giay phep cua %s...", GetPlayerNameEx(playerid));
+	SendClientMessageEx(giveplayerid, COLOR_WHITE, "Ngay sinh: %s", PlayerInfo[playerid][pBirthDate]);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Giay phep lai xe: %s.", text1);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Giay phep phi cong: %s.", text4);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Giay phep lai thuyen: %s.", text2);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Giay phep Taxi: %s.", text3);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, "** Giay phep sung SA: %s.", text5);
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s cho ban xem giay phep.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban cho %s xem giay phep.", GetPlayerNameEx(giveplayerid));
 	return 1;
 }
 
 Interact_FriskPlayer(playerid, giveplayerid) {
 
-	if (!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not in range of that player");
-	if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot frisk yourself!"); return 1; }
+	if (!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi do khong o trong pham vi");
+	if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "Khong the tu kham xet!"); return 1; }
 
 	new packages = GetPVarInt(giveplayerid, "Packages");
 	new crates = PlayerInfo[giveplayerid][pCrates];
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
-	SendClientMessageEx(playerid, COLOR_YELLOW, "Listing pocket for %s.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_WHITE, "** Items **");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Kiem tra tui cua %s.", GetPlayerNameEx(giveplayerid));
+	SendClientMessageEx(playerid, COLOR_WHITE, "** Vat pham **");
 	if(PlayerInfo[giveplayerid][pMats] > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d materials.", PlayerInfo[giveplayerid][pMats]);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Tui) %d vat lieu.", PlayerInfo[giveplayerid][pMats]);
 	}
 	if(PlayerInfo[giveplayerid][pSyringes] > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d syringes.", PlayerInfo[giveplayerid][pSyringes]);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Tui) %d ong tiem.", PlayerInfo[giveplayerid][pSyringes]);
 	}
     if(packages > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d material packages.", packages);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Tui) %d kien vat lieu.", packages);
 	}
 	if(crates > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d drug crates.", crates);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Tui) %d thung ma tuy.", crates);
 	}
 
-	SendClientMessageEx(playerid, COLOR_WHITE, "** Drugs **");
+	SendClientMessageEx(playerid, COLOR_WHITE, "** Ma tuy **");
 	for(new i = 0; i < sizeof(Drugs); i++) {
 
 		if(PlayerInfo[giveplayerid][pDrugs][i] > 0) {
@@ -912,24 +912,24 @@ Interact_FriskPlayer(playerid, giveplayerid) {
 
 	if(PlayerInfo[giveplayerid][pFishWeight] > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) %d lbs of fish.", PlayerInfo[giveplayerid][pFishWeight]);
+		SendClientMessageEx(playerid, COLOR_GREY, "(Tui) %d lbs ca.", PlayerInfo[giveplayerid][pFishWeight]);
 	}
-	SendClientMessageEx(playerid, COLOR_WHITE, "** Misc **");
-	if(PlayerInfo[giveplayerid][pPhoneBook] > 0) SendClientMessageEx(playerid, COLOR_GREY, "Phone book.");
-	if(PlayerInfo[giveplayerid][pCDPlayer] > 0) SendClientMessageEx(playerid, COLOR_GREY, "Music player.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "** Khac **");
+	if(PlayerInfo[giveplayerid][pPhoneBook] > 0) SendClientMessageEx(playerid, COLOR_GREY, "Danh ba dien thoai.");
+	if(PlayerInfo[giveplayerid][pCDPlayer] > 0) SendClientMessageEx(playerid, COLOR_GREY, "May nghe nhac.");
 	new weaponname[50];
-	SendClientMessageEx(playerid, COLOR_WHITE, "** Weapons **");
+	SendClientMessageEx(playerid, COLOR_WHITE, "** Vu khi **");
 	for (new i = 0; i < 12; i++)
 	{
 		if(PlayerInfo[giveplayerid][pGuns][i] > 0)
 		{
 			GetWeaponName(PlayerInfo[giveplayerid][pGuns][i], weaponname, sizeof(weaponname));
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Weapon: %s.", weaponname);
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Vu khi: %s.", weaponname);
 		}
 	}
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
 
-	format(szMiscArray, sizeof(szMiscArray), "* %s has frisked %s for any illegal items.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
+	format(szMiscArray, sizeof(szMiscArray), "* %s kham xet %s tim hang cam.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
 	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	return 1;
 
@@ -942,8 +942,8 @@ Interact_DragPlayer(playerid, giveplayerid) {
 Interact_DetainPlayer(playerid, giveplayerid, seatid = -1) {
 
 	if(seatid == -1) {
-		format(szMiscArray, sizeof(szMiscArray), "Please enter a seat id (1-3) to detain %s into.", GetPlayerNameEx(giveplayerid));
-		return ShowPlayerDialogEx(playerid, DETAIN_SEAT, DIALOG_STYLE_INPUT, "Detain Player", szMiscArray, "Detain", "");
+		format(szMiscArray, sizeof(szMiscArray), "Nhap ID ghe (1-3) de giam giu %s.", GetPlayerNameEx(giveplayerid));
+		return ShowPlayerDialogEx(playerid, DETAIN_SEAT, DIALOG_STYLE_INPUT, "Giam giu nguoi choi", szMiscArray, "Ap giai", "");
 	}
 	else {
 		if(!(0 <= giveplayerid < MAX_PLAYERS) || !IsPlayerConnected(giveplayerid)) return 1;
@@ -955,12 +955,12 @@ Interact_DetainPlayer(playerid, giveplayerid, seatid = -1) {
 
 Interact_GiveTicket(playerid, giveplayerid, const reason[], amount = -1) {
 	if(amount == -1) {
-		format(szMiscArray, sizeof(szMiscArray), "Please enter an amount to fine %s", GetPlayerNameEx(giveplayerid));
-		return ShowPlayerDialogEx(playerid, GIVE_TICKET, DIALOG_STYLE_INPUT, "Ticket Player", szMiscArray, "Next", "");
+		format(szMiscArray, sizeof(szMiscArray), "Nhap so tien phat %s", GetPlayerNameEx(giveplayerid));
+		return ShowPlayerDialogEx(playerid, GIVE_TICKET, DIALOG_STYLE_INPUT, "Phat tien nguoi choi", szMiscArray, "Tiep", "");
 	}
 	if(isnull(reason)) {
-		format(szMiscArray, sizeof(szMiscArray), "Please enter a fine reason for %s", GetPlayerNameEx(giveplayerid));
-		return ShowPlayerDialogEx(playerid, TICKET_REASON, DIALOG_STYLE_INPUT, "Ticket Player", szMiscArray, "Issue", "");
+		format(szMiscArray, sizeof(szMiscArray), "Nhap ly do phat %s", GetPlayerNameEx(giveplayerid));
+		return ShowPlayerDialogEx(playerid, TICKET_REASON, DIALOG_STYLE_INPUT, "Phat tien nguoi choi", szMiscArray, "Cap", "");
 	}
 	else {
 		if(!(0 <= giveplayerid < MAX_PLAYERS) || !IsPlayerConnected(giveplayerid)) return 1;
@@ -971,10 +971,10 @@ Interact_GiveTicket(playerid, giveplayerid, const reason[], amount = -1) {
 }
 
 Interact_LoadPatient(playerid, giveplayerid, seatid = -1) {
-	if(!IsPlayerConnected(giveplayerid) || !GetPVarType(playerid, "Interact_TargetSession") || GetPVarInt(playerid, "Interact_TargetSession") != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Please open the interaction menu again.");
+	if(!IsPlayerConnected(giveplayerid) || !GetPVarType(playerid, "Interact_TargetSession") || GetPVarInt(playerid, "Interact_TargetSession") != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Hay mo lai menu tuong tac.");
 	if(seatid == -1) {
-		format(szMiscArray, sizeof(szMiscArray), "Please enter a seat id (2-3) to load %s into.", GetPlayerNameEx(giveplayerid));
-		return ShowPlayerDialogEx(playerid, PATIENT_SEAT, DIALOG_STYLE_INPUT, "Load Patient", szMiscArray, "Load", "Cancel");
+		format(szMiscArray, sizeof(szMiscArray), "Nhap ID ghe (2-3) de dua %s len xe.", GetPlayerNameEx(giveplayerid));
+		return ShowPlayerDialogEx(playerid, PATIENT_SEAT, DIALOG_STYLE_INPUT, "Dua benh nhan len xe", szMiscArray, "Len xe", "Huy");
 	}
 	new params[24];
 	format(params, sizeof(params), "%d %d", giveplayerid, seatid);
@@ -982,21 +982,21 @@ Interact_LoadPatient(playerid, giveplayerid, seatid = -1) {
 }
 
 Interact_Triage(playerid, giveplayerid) {
-	if(!IsPlayerConnected(giveplayerid) || !GetPVarType(playerid, "Interact_TargetSession") || GetPVarInt(playerid, "Interact_TargetSession") != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Please open the interaction menu again.");
+	if(!IsPlayerConnected(giveplayerid) || !GetPVarType(playerid, "Interact_TargetSession") || GetPVarInt(playerid, "Interact_TargetSession") != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Hay mo lai menu tuong tac.");
 	new params[12];
 	format(params, sizeof(params), "%d", giveplayerid);
 	return pc_cmd_triage(playerid, params);
 }
 
 Interact_Heal(playerid, giveplayerid) {
-	if(!IsPlayerConnected(giveplayerid) || !GetPVarType(playerid, "Interact_TargetSession") || GetPVarInt(playerid, "Interact_TargetSession") != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Please open the interaction menu again.");
+	if(!IsPlayerConnected(giveplayerid) || !GetPVarType(playerid, "Interact_TargetSession") || GetPVarInt(playerid, "Interact_TargetSession") != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Hay mo lai menu tuong tac.");
 	new params[12];
 	format(params, sizeof(params), "%d", giveplayerid);
 	return pc_cmd_heal(playerid, params);
 }
 
 Interact_MovePatient(playerid, giveplayerid) {
-	if(!IsPlayerConnected(giveplayerid) || !GetPVarType(playerid, "Interact_TargetSession") || GetPVarInt(playerid, "Interact_TargetSession") != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Please open the interaction menu again.");
+	if(!IsPlayerConnected(giveplayerid) || !GetPVarType(playerid, "Interact_TargetSession") || GetPVarInt(playerid, "Interact_TargetSession") != g_arrQueryHandle[giveplayerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Hay mo lai menu tuong tac.");
 	new params[12];
 	format(params, sizeof(params), "%d", giveplayerid);
 	return pc_cmd_movept(playerid, params);
@@ -1008,15 +1008,15 @@ Interact_Prescribe(playerid, stage = 0) {
 
 		case 0: {
 
-			ShowPlayerDialogEx(playerid, DIALOG_STYLE_LIST, INTERACT_PRESCRIBE, "Type | Drug Prescription", "Demerol\n\
+			ShowPlayerDialogEx(playerid, DIALOG_STYLE_LIST, INTERACT_PRESCRIBE, "Loai | Ke don thuoc", "Demerol\n\
 				Morphine\n\
 				Haloperidol\n\
 				Aspirin",
-				"Select", "Cancel");
+				"Chon", "Huy");
 		}
 		case 1: {
 
-			ShowPlayerDialogEx(playerid, DIALOG_STYLE_INPUT, INTERACT_PRESCRIBE1, "Grams | Drug Prescription", "How many pieces would you like to prescribe?", "Prescribe", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_STYLE_INPUT, INTERACT_PRESCRIBE1, "Grams | Ke don thuoc", "Ban muon ke bao nhieu don vi?", "Ke don", "Huy");
 		}
 	}
 	return 1;
@@ -1031,14 +1031,14 @@ Interact_ProcessPrescription(playerid) {
 	new iDrugID = GetDrugID(szMiscArray);
 
 	if(iAmount + PlayerInfo[giveplayerid][pDrugs][iDrugID] > Player_MaxCapacity(giveplayerid, ITEM_DRUG)) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, ITEM_DRUG));
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do chi co the giu them %d vat pham nay.", Player_LeftCapacity(giveplayerid, ITEM_DRUG));
 		return Player_InteractMenu(playerid, giveplayerid);
 	}
 
-	if(PlayerInfo[playerid][pDrugs][iDrugID] < iAmount) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have enough of that on you.");
-	format(szMiscArray, sizeof(szMiscArray), "You have prescribed %s %d pc of %s.", GetPlayerNameEx(giveplayerid), iAmount, szMiscArray);
+	if(PlayerInfo[playerid][pDrugs][iDrugID] < iAmount) return SendClientMessage(playerid, COLOR_GRAD1, "Ban khong co du so luong do.");
+	format(szMiscArray, sizeof(szMiscArray), "Ban ke cho %s %d pc %s.", GetPlayerNameEx(giveplayerid), iAmount, szMiscArray);
 	SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "%s has prescribed you %d pc of %s.", GetPlayerNameEx(playerid), iAmount, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s ke cho ban %d pc %s.", GetPlayerNameEx(playerid), iAmount, szMiscArray);
 	SendClientMessage(giveplayerid, COLOR_GRAD2, szMiscArray);
 	PlayerInfo[playerid][pDrugs][iDrugID] += iAmount;
 	return 1;
@@ -1067,14 +1067,14 @@ Player_DropItem(playerid) {
 CMD:interact(playerid, params[]) {
 
 
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /interact [playerid]");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /interact [playerid]");
 
 	new giveplayerid = strval(params);
-	if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot interact with yourself.");
-	if(giveplayerid == INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GREY, "This player isn't online.");
+	if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the tu tuong tac voi minh.");
+	if(giveplayerid == INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi nay dang offline.");
 	if(GetPVarInt(playerid, "Injured") == 1) return 1;
-	if(!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not near you.");
-	if(PlayerInfo[giveplayerid][pAdmin] >= 2 && !PlayerInfo[giveplayerid][pTogReports]) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not near you.");
+	if(!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
+	if(PlayerInfo[giveplayerid][pAdmin] >= 2 && !PlayerInfo[giveplayerid][pTogReports]) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 	Player_InteractMenu(playerid, giveplayerid);
 	return 1;
 }

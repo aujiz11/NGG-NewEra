@@ -40,7 +40,7 @@ stock EntExit_GetID(playerid)
 	new count = GetPlayerNumberDynamicAreas(playerid);
 	if(count > sizeof(areas))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "Entrance unavailable. Please contact an administrator.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Loi vao chua san sang. Hay lien he Admin.");
 		return 1;
 	}
 	count = GetPlayerDynamicAreas(playerid, areas, sizeof(areas));
@@ -159,7 +159,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate) {
 
 stock Vehicle_Enter(playerid, i) {
 
-	if(CarryCrate[playerid] != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't take crates into this type of interior!");
+	if(CarryCrate[playerid] != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the mang crate vao loai noi that nay!");
 	ClearAnimationsEx(playerid);
 
 	switch(GetVehicleModel(i)) {
@@ -240,62 +240,62 @@ stock Vehicle_Exit(playerid) {
 DDoor_Enter(playerid, i)
 {
 	if(!IsDynamicDoorActive(i)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "This door is no longer available.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Cua nay khong con kha dung.");
 	
 	if(DDoorsInfo[i][ddInteriorX] == 0.0 && DDoorsInfo[i][ddInteriorY] == 0.0 && DDoorsInfo[i][ddInteriorZ] == 0.0)
-		return SendClientMessageEx(playerid, COLOR_GREY, "The interior of this door has not been configured.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Noi that cua nay chua duoc cau hinh.");
 	
 	if(GetPVarType(playerid, "StreamPrep")) 
-		return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Chua the lam vay. Hay cho tai xong tai nguyen.");
 	
 	if(gettime() < DoorTimer[playerid]) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to enter this door.", DoorTimer[playerid]-gettime());
+		return SendClientMessageEx(playerid, COLOR_GREY, "Can cho %d giay truoc khi vao cua nay.", DoorTimer[playerid]-gettime());
 	
 	if(DDoorsInfo[i][ddVIP] > 0 && PlayerInfo[playerid][pDonateRank] < DDoorsInfo[i][ddVIP]) 
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, you are not a high enough VIP level.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Cap VIP chua du de vao.");
 		return 1;
 	}
 	
 	if(DDoorsInfo[i][ddFamed] > 0 && PlayerInfo[playerid][pFamed] < DDoorsInfo[i][ddFamed]) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, you're not a high enough famed level.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Cap Famed chua du de vao.");
 		return 1;
 	}
 
 	if(DDoorsInfo[i][ddDPC] > 0 && PlayerInfo[playerid][pDedicatedPlayer] < 2) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, you are not a high enough Dedicated Player.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Cap Dedicated Player chua du de vao.");
 		return 1;
 	}
 
 	if(DDoorsInfo[i][ddAllegiance] > 0) {
-		if(!(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) || arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] != DDoorsInfo[i][ddAllegiance]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is nation restricted.");
-		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not high enough rank to enter this door.");
+		if(!(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) || arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] != DDoorsInfo[i][ddAllegiance]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Cua nay chi danh cho quoc gia duoc chi dinh.");
+		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Cap bac chua du de vao cua nay.");
 	}
 
 	if(DDoorsInfo[i][ddGroupType] > 0) {
 		if(!(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != DDoorsInfo[i][ddGroupType]) {
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is faction restricted.");
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Cua nay chi danh cho to chuc duoc chi dinh.");
 		}
-		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not high enough rank to enter this door.");
+		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Cap bac chua du de vao cua nay.");
 	}
 
 	if(DDoorsInfo[i][ddFaction] != INVALID_GROUP_ID) {
-		if(PlayerInfo[playerid][pMember] != DDoorsInfo[i][ddFaction]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is faction restricted.");
-		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not high enough rank to enter this door.");
+		if(PlayerInfo[playerid][pMember] != DDoorsInfo[i][ddFaction]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Cua nay chi danh cho to chuc duoc chi dinh.");
+		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Cap bac chua du de vao cua nay.");
 	}
 
 	if(DDoorsInfo[i][ddAdmin] > 0 && PlayerInfo[playerid][pAdmin] < DDoorsInfo[i][ddAdmin]) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, you are not a high enough admin level.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Cap Admin chua du de vao.");
 		return 1;
 	}
 
 	if(DDoorsInfo[i][ddWanted] > 0 && PlayerInfo[playerid][pWantedLevel] != 0) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door restricts those with wanted levels.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Cua nay khong cho phep nguoi dang bi truy na.");
 		return 1;
 	}
 
 	if(DDoorsInfo[i][ddLocked] == 1) {
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "This door is currently locked.");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Cua dang khoa.");
 	}
 
 	PlayerInfo[playerid][pInt] = DDoorsInfo[i][ddInteriorInt];
@@ -366,59 +366,59 @@ DDoor_Enter(playerid, i)
 DDoor_Exit(playerid, i)
 {
 	if(!IsDynamicDoorActive(i)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "This door is no longer available.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Cua nay khong con kha dung.");
 	
 	if(GetPVarType(playerid, "StreamPrep")) 
-		return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
+		return SendClientMessageEx(playerid, COLOR_WHITE, "Chua the lam vay. Hay cho tai xong tai nguyen.");
 	
 	if(gettime() < DoorTimer[playerid]) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to exit this door.", DoorTimer[playerid]-gettime());
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai cho %d giay truoc khi ra cua nay.", DoorTimer[playerid]-gettime());
 	
 	if(DDoorsInfo[i][ddVIP] > 0 && PlayerInfo[playerid][pDonateRank] < DDoorsInfo[i][ddVIP]) 
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, you are not a high enough VIP level.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Cap VIP chua du de vao.");
 		return 1;
 	}
 	
 	if(DDoorsInfo[i][ddFamed] > 0 && PlayerInfo[playerid][pFamed] < DDoorsInfo[i][ddFamed]) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, you're not a high enough famed level.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Cap Famed chua du de vao.");
 		return 1;
 	}
 
 	if(DDoorsInfo[i][ddDPC] > 0 && PlayerInfo[playerid][pDedicatedPlayer] < 2) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, you are not a Dedicated Player.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong phai Dedicated Player, khong the vao.");
 		return 1;
 	}
 
 	if(DDoorsInfo[i][ddAllegiance] > 0) {
-		if(!(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) || arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] != DDoorsInfo[i][ddAllegiance]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is nation restricted.");
-		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not high enough rank to enter this door.");
+		if(!(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) || arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] != DDoorsInfo[i][ddAllegiance]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Cua nay chi danh cho quoc gia duoc chi dinh.");
+		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Cap bac chua du de vao cua nay.");
 	}
 
 	if(DDoorsInfo[i][ddGroupType] > 0) {
 		if(!(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != DDoorsInfo[i][ddGroupType]) {
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is faction restricted.");
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Cua nay chi danh cho to chuc duoc chi dinh.");
 		}
-		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not high enough rank to enter this door.");
+		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Cap bac chua du de vao cua nay.");
 	}
 
 	if(DDoorsInfo[i][ddFaction] != INVALID_GROUP_ID) {
-		if(PlayerInfo[playerid][pMember] != DDoorsInfo[i][ddFaction]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is faction restricted.");
-		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not high enough rank to enter this door.");
+		if(PlayerInfo[playerid][pMember] != DDoorsInfo[i][ddFaction]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Cua nay chi danh cho to chuc duoc chi dinh.");
+		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Cap bac chua du de vao cua nay.");
 	}
 
 	if(DDoorsInfo[i][ddAdmin] > 0 && PlayerInfo[playerid][pAdmin] < DDoorsInfo[i][ddAdmin]) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, you are not a high enough admin level.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Cap Admin chua du de vao.");
 		return 1;
 	}
 
 	if(DDoorsInfo[i][ddWanted] > 0 && PlayerInfo[playerid][pWantedLevel] != 0) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door restricts those with wanted levels.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Cua nay khong cho phep nguoi dang bi truy na.");
 		return 1;
 	}
 
 	if(DDoorsInfo[i][ddLocked] == 1) {
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "This door is currently locked.");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Cua dang khoa.");
 	}
 
 
@@ -484,11 +484,11 @@ DDoor_Exit(playerid, i)
 House_Enter(playerid, i) {
 
 	if(HouseInfo[i][hInteriorX] == 0.0 && HouseInfo[i][hInteriorY] == 0.0 && HouseInfo[i][hInteriorZ] == 0.0)
-		return SendClientMessageEx(playerid, COLOR_GREY, "The interior of this house has not been configured.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Noi that nha chua duoc cau hinh.");
 
 	if(PlayerInfo[playerid][pPhousekey] == i || PlayerInfo[playerid][pPhousekey2] == i || HouseInfo[i][hLock] == 0 || PlayerInfo[playerid][pRenting] == i) {
-		if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to enter this door.", DoorTimer[playerid]-gettime());
-		if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
+		if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Can cho %d giay truoc khi vao cua nay.", DoorTimer[playerid]-gettime());
+		if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "Chua the lam vay. Hay cho tai xong tai nguyen.");
 		House_VistorCheck(i);
 		SetPlayerInterior(playerid,HouseInfo[i][hIntIW]);
 		PlayerInfo[playerid][pInt] = HouseInfo[i][hIntIW];
@@ -497,19 +497,19 @@ House_Enter(playerid, i) {
 		SetPlayerPos(playerid,HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ]);
 		SetPlayerFacingAngle(playerid,HouseInfo[i][hInteriorA]);
 		SetCameraBehindPlayer(playerid);
-		GameTextForPlayer(playerid, "~w~Welcome Home", 5000, 1);
+		GameTextForPlayer(playerid, "~w~Chao mung ve nha", 5000, 1);
 		if(HouseInfo[i][h_iLights] == 1) TextDrawShowForPlayer(playerid, g_tHouseLights);
 		if(HouseInfo[i][hCustomInterior] == 1) Player_StreamPrep(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ], FREEZE_TIME);
 		DoorTimer[playerid] = gettime()+2;
 	}
-	else GameTextForPlayer(playerid, "~r~Locked", 5000, 1);
+	else GameTextForPlayer(playerid, "~r~Da khoa", 5000, 1);
 	return 1;
 }
 
 House_Exit(playerid, i) {
 
-	if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
-	if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to exit this door.", DoorTimer[playerid]-gettime());
+	if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "Chua the lam vay. Hay cho tai xong tai nguyen.");
+	if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai cho %d giay truoc khi ra cua nay.", DoorTimer[playerid]-gettime());
 	if(GetPVarType(playerid, PVAR_FURNITURE)) pc_cmd_furniture(playerid, "");
 	House_VistorCheck(i);
 	SetPlayerInterior(playerid,0);
@@ -530,18 +530,18 @@ House_Exit(playerid, i) {
 Business_Enter(playerid, i)
 {
 	if(Businesses[i][bIntPos][0] == 0.0 && Businesses[i][bIntPos][1] == 0.0 && Businesses[i][bIntPos][2] == 0.0)
-		return SendClientMessageEx(playerid, COLOR_GREY, "The interior of this business has not been configured.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Noi that doanh nghiep chua duoc cau hinh.");
 
-	if(PlayerInfo[playerid][pLevel] < 3 && Businesses[i][bType] == BUSINESS_TYPE_CASINO) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "Sadly, you can't enter the Casino");
-	if(Businesses[i][bExtPos][1] == 0.0) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot enter this business.");
+	if(PlayerInfo[playerid][pLevel] < 3 && Businesses[i][bType] == BUSINESS_TYPE_CASINO) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "Ban khong the vao Casino");
+	if(Businesses[i][bExtPos][1] == 0.0) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong the vao doanh nghiep nay.");
 	if(Businesses[i][bStatus]) {
-		if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
-		if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to exit this door.", DoorTimer[playerid]-gettime());
+		if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "Chua the lam vay. Hay cho tai xong tai nguyen.");
+		if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai cho %d giay truoc khi ra cua nay.", DoorTimer[playerid]-gettime());
 		if (Businesses[i][bType] == BUSINESS_TYPE_GYM)
 		{
 			if (Businesses[i][bGymEntryFee] > 0 && PlayerInfo[playerid][pCash] < Businesses[i][bGymEntryFee])
 			{
-				GameTextForPlayer(playerid, "~r~You need more money to enter this gym", 5000, 1);
+				GameTextForPlayer(playerid, "~r~Can them tien de vao phong tap", 5000, 1);
 				return 1;
 			}
 		}
@@ -560,30 +560,30 @@ Business_Enter(playerid, i)
 
 		if (Businesses[i][bType] == BUSINESS_TYPE_GYM)
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "You entered a gym and were charged $%i.", Businesses[i][bGymEntryFee]);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban vao Gym va tra phi $%i.", Businesses[i][bGymEntryFee]);
 			GivePlayerCash(playerid, -Businesses[i][bGymEntryFee]);
 			Businesses[i][bSafeBalance] += Businesses[i][bGymEntryFee];
 
 			if (Businesses[i][bGymType] == 1)
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "Type /beginswimming to start using the swimming pool.");
-				SendClientMessageEx(playerid, COLOR_WHITE, "Type /joinboxing to join the boxing queue.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Dung /beginswimming de bat dau boi.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Dung /joinboxing de vao hang cho quyen Anh.");
 			}
 			else if (Businesses[i][bGymType] == 2)
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "Type /beginparkour to begin the bike parkour track.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Dung /beginparkour de bat dau duong dua xe dap.");
 			}
 		}
 		DoorTimer[playerid] = gettime()+2;
 	}
-	else GameTextForPlayer(playerid, "~r~Closed", 5000, 1);
+	else GameTextForPlayer(playerid, "~r~Da dong", 5000, 1);
 	return 1;
 }
 
 Business_Exit(playerid, i)
 {
-	if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
-	if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to exit this door.", DoorTimer[playerid]-gettime());
+	if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "Chua the lam vay. Hay cho tai xong tai nguyen.");
+	if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai cho %d giay truoc khi ra cua nay.", DoorTimer[playerid]-gettime());
 	SetPlayerInterior(playerid, 0);
 	SetPlayerVirtualWorld(playerid, 0);
 	SetPlayerPos(playerid,Businesses[i][bExtPos][0],Businesses[i][bExtPos][1],Businesses[i][bExtPos][2]);
@@ -600,11 +600,11 @@ Business_Exit(playerid, i)
 Garage_Enter(playerid, i) {
 
 	if(GarageInfo[i][gar_InteriorX] == 0.0 && GarageInfo[i][gar_InteriorY] == 0.0 && GarageInfo[i][gar_InteriorZ] == 0.0)
-		return SendClientMessageEx(playerid, COLOR_GREY, "The interior of this garage has not been configured.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Noi that garage chua duoc cau hinh.");
 
-	if(GarageInfo[i][gar_Locked] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "This garage is currently locked.");
-	if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
-	if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to enter this door.", DoorTimer[playerid]-gettime());
+	if(GarageInfo[i][gar_Locked] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Garage dang khoa.");
+	if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "Chua the lam vay. Hay cho tai xong tai nguyen.");
+	if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Can cho %d giay truoc khi vao cua nay.", DoorTimer[playerid]-gettime());
 	PlayerInfo[playerid][pVW] = GarageInfo[i][gar_InteriorVW];
 	SetPlayerVirtualWorld(playerid, GarageInfo[i][gar_InteriorVW]);
 	SetPlayerInterior(playerid, 1);
@@ -663,8 +663,8 @@ Garage_Enter(playerid, i) {
 }
 
 Garage_Exit(playerid, i) {
-	if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
-	if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to exit this door.", DoorTimer[playerid]-gettime());
+	if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "Chua the lam vay. Hay cho tai xong tai nguyen.");
+	if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai cho %d giay truoc khi ra cua nay.", DoorTimer[playerid]-gettime());
 	SetPlayerInterior(playerid, GarageInfo[i][gar_ExteriorInt]);
 	PlayerInfo[playerid][pInt] = GarageInfo[i][gar_ExteriorInt];
 	SetPlayerVirtualWorld(playerid, GarageInfo[i][gar_ExteriorVW]);

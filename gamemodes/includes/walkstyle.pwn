@@ -254,18 +254,18 @@ CMD:walkstyle(playerid, params[])
 {
 	if(isnull(params))
 	{
-	    SendClientMessage(playerid, COLOR_GRAD2, "USAGE: /walkstyle [1-26]");
+	    SendClientMessage(playerid, COLOR_GRAD2, "CACH DUNG: /walkstyle [1-26]");
 		return 1;
 	}
 	new string[64], styleid = strval(params);
 	if(styleid == 0)
 	{
 		ResetPlayerWalkingStyle(playerid);
-		return SendClientMessage(playerid, COLOR_WHITE, "* Walking style has been reset!");
+		return SendClientMessage(playerid, COLOR_WHITE, "* Da dat lai dang di!");
 	}
-	if(styleid < 1 || styleid > 26) return SendClientMessage(playerid, COLOR_GRAD2, "Style can't be below 1, or above 26.");
+	if(styleid < 1 || styleid > 26) return SendClientMessage(playerid, COLOR_GRAD2, "Dang di phai tu 1 den 26.");
 	SetPlayerWalkingStyle(playerid, PlayerWalkStyle[styleid]);
-	format(string, sizeof(string), "* Walking style set to %d.", styleid);
+	format(string, sizeof(string), "* Da dat dang di thanh %d.", styleid);
 	SendClientMessage(playerid, COLOR_WHITE, string);
 	return 1;
 }

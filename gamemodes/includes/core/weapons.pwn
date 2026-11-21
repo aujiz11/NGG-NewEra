@@ -47,7 +47,7 @@ stock GetWeaponParam(id, WeaponsEnum: param)
 stock GivePlayerValidWeapon( playerid, WeaponID )
 {
     #if defined zombiemode
-   	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't have guns.");
+   	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombie khong the mang sung.");
 	#endif
 	if(GetPVarType(playerid, "IsInArena") || GetPVarType(playerid, "EventToken")) {
 		GivePlayerWeapon(playerid, WeaponID, 99999);
@@ -211,13 +211,13 @@ public UnholsterWeapon(playerid, iWeaponSlot)
 	if(iWeaponSlot == 0)
 	{
 		SetPVarInt(playerid, "WeaponsHolstered", 1);
-		format(string, sizeof(string), "* %s holsters their weapon.", GetPlayerNameEx(playerid), ReturnWeaponName(PlayerInfo[playerid][pGuns][iWeaponSlot]));
+		format(string, sizeof(string), "* %s cat vu khi.", GetPlayerNameEx(playerid), ReturnWeaponName(PlayerInfo[playerid][pGuns][iWeaponSlot]));
 		
 	}
 	else
 	{
 		SetPVarInt(playerid, "WeaponsHolstered", 0);
-		format(string, sizeof(string), "* %s unholsters their %s.", GetPlayerNameEx(playerid), ReturnWeaponName(PlayerInfo[playerid][pGuns][iWeaponSlot]));
+		format(string, sizeof(string), "* %s rut %s.", GetPlayerNameEx(playerid), ReturnWeaponName(PlayerInfo[playerid][pGuns][iWeaponSlot]));
 	}
 	
 	SetPlayerArmedWeapon(playerid, PlayerInfo[playerid][pGuns][iWeaponSlot]);
@@ -356,7 +356,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 		if(newweapon == WEAPON_PARACHUTE) PlayerInfo[playerid][pGuns][11] = 46;
 
 		if(PlayerInfo[playerid][pGuns][GetLoadoutWeaponSlot(newweapon)] != newweapon) {
-			SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: Client weapon detected. Admins were notified: refrain from doing it again.");
+			SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: Phat hien vu khi tu client. Da bao Admin, khong duoc tai pham.");
 			ExecuteHackerAction(playerid, newweapon);
 			SetPlayerWeaponsEx(playerid);
 			new iWarnings = GetPVarInt(playerid, "WpnHack_Warnings");
@@ -493,7 +493,7 @@ CMD:myguns(playerid, params[])
 
 	GetPlayerName(playerid, name, sizeof(name));
 	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-	SendClientMessageEx(playerid, COLOR_WHITE, "Weapons on %s:", name);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Vu khi cua %s:", name);
 	for (new i = 0; i < 13; i++)
 	{
 		GetPlayerWeaponData(playerid, i, myweapons[i][0], myweapons[i][1]);
@@ -521,12 +521,12 @@ CMD:switchgun(playerid, params[])
 	new weapon[16], id, weapons[13][2];
 	if(sscanf(params, "s[16]", weapon))
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "SYNTAX: /switchgun [weapon]");
-		return SendClientMessageEx(playerid, COLOR_GREY, "Weapons: Fist, 9mm, Shotgun, Sawnoff, Spas12, UZI, MP5, M4, AK47, Tec9");
+		SendClientMessageEx(playerid, COLOR_WHITE, "CU PHAP: /switchgun [weapon]");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Vu khi: Fist, 9mm, Shotgun, Sawnoff, Spas12, UZI, MP5, M4, AK47, Tec9");
 	}
 	else
 	{
-		if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || PlayerTied[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, -1, "You cannot do this right now!");
+		if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || PlayerTied[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, -1, "Ban chua the lam viec nay!");
 
 		if(IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_PASSENGER)
 		{
@@ -540,7 +540,7 @@ CMD:switchgun(playerid, params[])
 			else if(strcmp(weapon, "AK47", true) == 0) id = 30;
 			else if(strcmp(weapon, "M4", true) == 0) id = 31;
 			else if(strcmp(weapon, "Tec9", true) == 0) id = 32;
-			else return SendClientMessageEx(playerid, COLOR_GREY, "Weapons: Fist, 9mm, Shotgun, Sawnoff, Spas12, UZI, MP5, M4, AK47, Tec9");
+			else return SendClientMessageEx(playerid, COLOR_GREY, "Vu khi: Fist, 9mm, Shotgun, Sawnoff, Spas12, UZI, MP5, M4, AK47, Tec9");
 
 			for (new i = 0; i <= 12; i++) 
 			{
@@ -552,84 +552,84 @@ CMD:switchgun(playerid, params[])
 					return 1;
 				}
 			}
-			return SendClientMessageEx(playerid, -1, "You do not have that weapon.");
+			return SendClientMessageEx(playerid, -1, "Ban khong co vu khi do.");
 		}
-		else SendClientMessageEx(playerid, -1, "You can only do this as a passenger.");
+		else SendClientMessageEx(playerid, -1, "Chi hanh khach moi duoc lam vay.");
 	}
 	return 1;
 }
 
 CMD:giveweapon(playerid, params[])
 {
-	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
+	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   Khong the lam vay trong Hunger Games Event!");
 	if(GetPVarType(playerid, "IsInArena"))
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay khi dang o dau truong!");
 		return 1;
 	}
 	if(GetPVarInt( playerid, "EventToken") != 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung khi dang tham gia su kien.");
 		return 1;
 	}
 	new Float:health;
 	GetHealth(playerid, health);
 	if (health < 80)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give weapons if your health is below 80!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dua vu khi khi mau duoi 80!");
 		return 1;
 	}
 
 	if(GetPVarInt(playerid, "Injured") != 0||PlayerCuffed[playerid]!=0||PlayerInfo[playerid][pHospital]!=0||GetPlayerState(playerid) == 7)
 	{
-		SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
+		SendClientMessageEx (playerid, COLOR_GRAD2, "Ban chua the lam viec nay.");
 		return 1;
 	}
 	if(IsPlayerInAnyVehicle(playerid))
 	{
-		SendClientMessageEx (playerid, COLOR_GRAD2, "You can not give weapons in a vehicle!");
+		SendClientMessageEx (playerid, COLOR_GRAD2, "Khong the dua vu khi khi dang o trong xe!");
 		return 1;
 	}
 
 	if (GetPVarInt(playerid, "GiveWeaponTimer") > 0)
 	{
-		SendClientMessageEx(playerid,COLOR_GREY,"You must wait %d seconds before giving another weapon.", GetPVarInt(playerid, "GiveWeaponTimer"));
+		SendClientMessageEx(playerid,COLOR_GREY,"Can cho %d giay truoc khi dua them vu khi.", GetPVarInt(playerid, "GiveWeaponTimer"));
 		return 1;
 	}
 
 	new string[128], giveplayerid, weapon[64];
 	if(sscanf(params, "us[64]", giveplayerid, weapon))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /giveweapon [player] [weapon name]");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Names: sdpistol, shotgun, 9mm, mp5, uzi, tec9, rifle, deagle, ak47, m4, spas12, sniper");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Names: flowers, knuckles, baseballbat, cane, shovel, poolcue, golfclub, katana, dildo, parachute");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /giveweapon [player] [weapon name]");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Lua chon: sdpistol, shotgun, 9mm, mp5, uzi, tec9, rifle, deagle, ak47, m4, spas12, sniper");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Lua chon: flowers, knuckles, baseballbat, cane, shovel, poolcue, golfclub, katana, dildo, parachute");
 		return 1;
 	}
 	if (!IsPlayerConnected(giveplayerid)) {
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 	}
 	if(IsPlayerInAnyVehicle(giveplayerid))
 	{
-		SendClientMessageEx (playerid, COLOR_GRAD2, "You can not give weapons to players in vehicles!");
+		SendClientMessageEx (playerid, COLOR_GRAD2, "Khong the dua vu khi cho nguoi trong xe!");
 		return 1;
 	}
 	if(giveplayerid == playerid)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give a weapon to yourself!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dua vu khi cho chinh minh!");
 		return 1;
 	}
 	if(!ProxDetectorS(3.0, playerid, giveplayerid))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 		return 1;
 	}
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL && PlayerInfo[playerid][pMember] != PlayerInfo[giveplayerid][pMember])
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give weapons to players outside your faction!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dua vu khi cho nguoi ngoai to chuc!");
 		return 1;
 	}
-	if(PlayerInfo[giveplayerid][pConnectHours] < 2 || PlayerInfo[giveplayerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is currently restricted from possessing weapons");
-	if(IsPlayerInAnyVehicle(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please exit the vehicle, before using this command.");
+	if(PlayerInfo[giveplayerid][pConnectHours] < 2 || PlayerInfo[giveplayerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do dang bi cam giu vu khi");
+	if(IsPlayerInAnyVehicle(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Hay ra khoi xe truoc khi dung lenh.");
 	if(strcmp(weapon, "sdpistol", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 2 ] == 23)
@@ -638,8 +638,8 @@ CMD:giveweapon(playerid, params[])
 			{
 				//if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
 
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your silenced pistol.");
-				format(string, sizeof(string), "* %s has given %s their silenced pistol.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua silenced pistol.");
+				format(string, sizeof(string), "* %s dua cho %s silenced pistol.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerLoadoutWeapon(playerid, 23);
 				GivePlayerValidWeapon(giveplayerid, 23);
@@ -651,12 +651,12 @@ CMD:giveweapon(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That person already has a silenced pistol or Desert Eeagle!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co silenced pistol or Desert Eeagle!");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	if(strcmp(weapon, "9mm", true) == 0)
@@ -665,8 +665,8 @@ CMD:giveweapon(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pGuns][ 2 ] != 22 && PlayerInfo[giveplayerid][pGuns][ 2 ] != 24)
 			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your 9mm pistol.");
-				format(string, sizeof(string), "* %s has given %s their 9mm pistol.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua 9mm pistol.");
+				format(string, sizeof(string), "* %s dua cho %s 9mm pistol.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerLoadoutWeapon(playerid, 22);
 				GivePlayerValidWeapon(giveplayerid, 22);
@@ -678,12 +678,12 @@ CMD:giveweapon(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That person already has a silenced pistol or Desert Eeagle!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co silenced pistol or Desert Eeagle!");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "shotgun", true) == 0)
@@ -694,8 +694,8 @@ CMD:giveweapon(playerid, params[])
 			{
 				//if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
 
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your shotgun.");
-				format(string, sizeof(string), "* %s has given %s their shotgun.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua shotgun.");
+				format(string, sizeof(string), "* %s dua cho %s shotgun.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerLoadoutWeapon(playerid, 25);
 				GivePlayerValidWeapon(giveplayerid, 25);
@@ -707,12 +707,12 @@ CMD:giveweapon(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That person already has a MP5, Micro SMG or Tec-9!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co MP5, Micro SMG or Tec-9!");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "mp5", true) == 0)
@@ -723,8 +723,8 @@ CMD:giveweapon(playerid, params[])
 			{
 				//if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
 
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your MP5.");
-				format(string, sizeof(string), "* %s has given %s their MP5.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua MP5.");
+				format(string, sizeof(string), "* %s dua cho %s MP5.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerLoadoutWeapon(playerid, 29);
 				GivePlayerValidWeapon(giveplayerid, 29);
@@ -736,12 +736,12 @@ CMD:giveweapon(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That person already has a MP5!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co MP5!");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "uzi", true) == 0)
@@ -750,8 +750,8 @@ CMD:giveweapon(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pGuns][ 4 ] != 28 && PlayerInfo[giveplayerid][pGuns][ 4 ] != 29 && PlayerInfo[giveplayerid][pGuns][ 4 ] != 32)
 			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your Micro SMG.");
-				format(string, sizeof(string), "* %s has given %s their Micro SMG.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua Micro SMG.");
+				format(string, sizeof(string), "* %s dua cho %s Micro SMG.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerLoadoutWeapon(playerid, 28);
 				GivePlayerValidWeapon(giveplayerid, 28);
@@ -763,12 +763,12 @@ CMD:giveweapon(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That person already has a MP5, Micro SMG or Tec-9!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co MP5, Micro SMG or Tec-9!");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "tec9", true) == 0)
@@ -777,8 +777,8 @@ CMD:giveweapon(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pGuns][ 4 ] != 28 && PlayerInfo[giveplayerid][pGuns][ 4 ] != 29 && PlayerInfo[giveplayerid][pGuns][ 4 ] != 32)
 			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your Tec-9.");
-				format(string, sizeof(string), "* %s has given %s their Tec-9.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua Tec-9.");
+				format(string, sizeof(string), "* %s dua cho %s Tec-9.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerLoadoutWeapon(playerid, 32);
 				GivePlayerValidWeapon(giveplayerid, 32);
@@ -790,12 +790,12 @@ CMD:giveweapon(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That person already has a MP5, Micro SMG or Tec-9!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co MP5, Micro SMG or Tec-9!");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "deagle", true) == 0)
@@ -806,8 +806,8 @@ CMD:giveweapon(playerid, params[])
 			{
 				//if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
 
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your Desert Eagle.");
-				format(string, sizeof(string), "* %s has given %s their Desert Eagle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua Desert Eagle.");
+				format(string, sizeof(string), "* %s dua cho %s Desert Eagle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerLoadoutWeapon(playerid, 24);
 				GivePlayerValidWeapon(giveplayerid, 24);
@@ -819,12 +819,12 @@ CMD:giveweapon(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That person already has a Desert Eeagle!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co Desert Eeagle!");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "rifle", true) == 0)
@@ -834,8 +834,8 @@ CMD:giveweapon(playerid, params[])
 			if(PlayerInfo[giveplayerid][pGuns][ 6 ] != 33 && PlayerInfo[giveplayerid][pGuns][ 6 ] != 34)
 			{
 				//if(PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away this weapon as you're Famed+!");
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your rifle.");
-				format(string, sizeof(string), "* %s has given %s their rifle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua rifle.");
+				format(string, sizeof(string), "* %s dua cho %s rifle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerLoadoutWeapon(playerid, 33);
 				GivePlayerValidWeapon(giveplayerid, 33);
@@ -847,12 +847,12 @@ CMD:giveweapon(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That person already has a rifle!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co rifle!");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "ak47", true) == 0)
@@ -861,8 +861,8 @@ CMD:giveweapon(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pGuns][ 5 ] != 30 && PlayerInfo[giveplayerid][pGuns][ 5 ] != 31)
 			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your AK-47.");
-				format(string, sizeof(string), "* %s has given %s their AK-47.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua AK-47.");
+				format(string, sizeof(string), "* %s dua cho %s AK-47.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerLoadoutWeapon(playerid, 30);
 				GivePlayerValidWeapon(giveplayerid, 30);
@@ -874,12 +874,12 @@ CMD:giveweapon(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That person already has a AK-47 or M4!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co AK-47 or M4!");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "m4", true) == 0)
@@ -888,8 +888,8 @@ CMD:giveweapon(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pGuns][ 5 ] != 31)
 			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your M4.");
-				format(string, sizeof(string), "* %s has given %s their M4.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua M4.");
+				format(string, sizeof(string), "* %s dua cho %s M4.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerLoadoutWeapon(playerid, 31);
 				GivePlayerValidWeapon(giveplayerid, 31);
@@ -901,12 +901,12 @@ CMD:giveweapon(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That person already has a M4!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co M4!");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "spas12", true) == 0)
@@ -915,8 +915,8 @@ CMD:giveweapon(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pGuns][ 3 ] != 27)
 			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your SPAS-12.");
-				format(string, sizeof(string), "* %s has given %s their SPAS-12.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua SPAS-12.");
+				format(string, sizeof(string), "* %s dua cho %s SPAS-12.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerLoadoutWeapon(playerid, 27);
 				GivePlayerValidWeapon(giveplayerid, 27);
@@ -928,12 +928,12 @@ CMD:giveweapon(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That person already has a SPAS-12!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co SPAS-12!");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "sniper", true) == 0)
@@ -942,8 +942,8 @@ CMD:giveweapon(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pGuns][ 6 ] != 34)
 			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your sniper rifle.");
-				format(string, sizeof(string), "* %s has given %s their sniper rifle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua sniper rifle.");
+				format(string, sizeof(string), "* %s dua cho %s sniper rifle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerLoadoutWeapon(playerid, 34);
 				GivePlayerValidWeapon(giveplayerid, 34);
@@ -955,20 +955,20 @@ CMD:giveweapon(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That person already has a sniper rifle!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do da co sniper rifle!");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "flowers", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 10 ] == 14)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your flowers.");
-			format(string, sizeof(string), "* %s has given %s their flowers.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua flowers.");
+			format(string, sizeof(string), "* %s dua cho %s flowers.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 14);
 			GivePlayerValidWeapon(giveplayerid, 14);
@@ -980,15 +980,15 @@ CMD:giveweapon(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "knuckles", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 0 ] == 1)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your brass knuckles.");
-			format(string, sizeof(string), "* %s has given %s their brass knuckles.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua brass knuckles.");
+			format(string, sizeof(string), "* %s dua cho %s brass knuckles.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 1);
 			GivePlayerValidWeapon(giveplayerid, 1);
@@ -1000,15 +1000,15 @@ CMD:giveweapon(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "baseballbat", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 1 ] == 5)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your baseball bat.");
-			format(string, sizeof(string), "* %s has given %s their baseball bat.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua baseball bat.");
+			format(string, sizeof(string), "* %s dua cho %s baseball bat.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 5);
 			GivePlayerValidWeapon(giveplayerid, 5);
@@ -1020,15 +1020,15 @@ CMD:giveweapon(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "cane", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 10 ] == 15)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your cane.");
-			format(string, sizeof(string), "* %s has given %s their cane.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua cane.");
+			format(string, sizeof(string), "* %s dua cho %s cane.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 15);
 			GivePlayerValidWeapon(giveplayerid, 15);
@@ -1040,15 +1040,15 @@ CMD:giveweapon(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "shovel", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 6 ] == 6)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your shovel.");
-			format(string, sizeof(string), "* %s has given %s their shovel.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua shovel.");
+			format(string, sizeof(string), "* %s dua cho %s shovel.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 6);
 			GivePlayerValidWeapon(giveplayerid, 6);
@@ -1060,17 +1060,17 @@ CMD:giveweapon(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "golfclub", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 1 ] == 2)
 		{
-			if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
+			if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Gold+ VIP/Famed+ khong duoc dua vu khi!");
 
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your golf club.");
-			format(string, sizeof(string), "* %s has given %s golf club.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua golf club.");
+			format(string, sizeof(string), "* %s dua cho %s golf club.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 2);
 			GivePlayerValidWeapon(giveplayerid, 2);
@@ -1082,17 +1082,17 @@ CMD:giveweapon(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "katana") == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 1 ] == 8)
 		{
-			if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
+			if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Gold+ VIP/Famed+ khong duoc dua vu khi!");
 
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your katana.");
-			format(string, sizeof(string), "* %s has given %s their katana.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua katana.");
+			format(string, sizeof(string), "* %s dua cho %s katana.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 8);
 			GivePlayerValidWeapon(giveplayerid, 8);
@@ -1104,17 +1104,17 @@ CMD:giveweapon(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "dildo", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 10 ] == 10)
 		{
-			if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
+			if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Gold+ VIP/Famed+ khong duoc dua vu khi!");
 
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your dildo.");
-			format(string, sizeof(string), "* %s has given %s their dildo.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua dildo.");
+			format(string, sizeof(string), "* %s dua cho %s dildo.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 10);
 			GivePlayerValidWeapon(giveplayerid, 10);
@@ -1126,15 +1126,15 @@ CMD:giveweapon(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(weapon, "parachute", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 11 ] == 46)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your parachute.");
-			format(string, sizeof(string), "* %s has given %s their parachute.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da dua parachute.");
+			format(string, sizeof(string), "* %s dua cho %s parachute.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 46);
 			GivePlayerValidWeapon(giveplayerid, 46);
@@ -1147,12 +1147,12 @@ CMD:giveweapon(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You have entered an invalid weapon name.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ten vu khi khong hop le.");
 	}
 	return 1;
 }
@@ -1161,16 +1161,16 @@ CMD:dropgun(playerid, params[])
 {
 	if(isnull(params))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dropgun [weapon name]");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Names: sdpistol, shotgun, 9mm, mp5, uzi, tec9, rifle, deagle, ak47, m4, spas12, sniper, camera");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Names: flowers, knuckles, baseballbat, cane, shovel, poolcue, golfclub, katana, dildo, parachute, goggles");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /dropgun [weapon name]");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Lua chon: sdpistol, shotgun, 9mm, mp5, uzi, tec9, rifle, deagle, ak47, m4, spas12, sniper, camera");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Lua chon: flowers, knuckles, baseballbat, cane, shovel, poolcue, golfclub, katana, dildo, parachute, goggles");
 		if (IsAHitman(playerid))
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD2, "Available Names: knife");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Lua chon: knife");
 		}
 		if(IsACop(playerid))
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD2, "Available Names: nitestick, mace, smoke, chainsaw, fire");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Lua chon: nitestick, mace, smoke, chainsaw, fire");
 		}
 
 		return 1;
@@ -1178,17 +1178,17 @@ CMD:dropgun(playerid, params[])
 
 	if(IsPlayerInAnyVehicle(playerid))
 	{
-		SendClientMessageEx (playerid, COLOR_GRAD2, "You can not drop weapons in a vehicle!");
+		SendClientMessageEx (playerid, COLOR_GRAD2, "Khong the bo vu khi khi o trong xe!");
 		return 1;
 	}
 	if(GetPVarType(playerid, "IsInArena"))
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Khong the lam vay khi dang o dau truong!");
 		return 1;
 	}
 	if(GetPVarInt( playerid, "EventToken") != 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung khi dang tham gia su kien.");
 		return 1;
 	}
 	new string[128];
@@ -1196,441 +1196,441 @@ CMD:dropgun(playerid, params[])
 	{
 		if(PlayerInfo[playerid][pGuns][ 2 ] == 23)
 		{
-			if(pTazer{playerid} == 1) return SendClientMessageEx(playerid, COLOR_RED, "You cannot drop your tazer.");
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your silenced pistol.");
-			format(string, sizeof(string), "* %s has dropped their silenced pistol.", GetPlayerNameEx(playerid));
+			if(pTazer{playerid} == 1) return SendClientMessageEx(playerid, COLOR_RED, "Khong the bo sung dien.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo silenced pistol.");
+			format(string, sizeof(string), "* %s bo silenced pistol.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 23);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "camera", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 9 ] == 43)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your camera.");
-			format(string, sizeof(string), "* %s has dropped their camera.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo camera.");
+			format(string, sizeof(string), "* %s bo camera.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 43);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "nitestick", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][1] == 3)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your nitestick.");
-			format(string, sizeof(string), "* %s has dropped their nitestick.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo nitestick.");
+			format(string, sizeof(string), "* %s bo nitestick.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 3);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "mace", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][9] == 41)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your mace.");
-			format(string, sizeof(string), "* %s has dropped their mace.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo mace.");
+			format(string, sizeof(string), "* %s bo mace.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 41);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "knife", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 1 ] == 4)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your knife.");
-			format(string, sizeof(string), "* %s has dropped their knife.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo knife.");
+			format(string, sizeof(string), "* %s bo knife.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 4);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "9mm", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 2 ] == 22)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your 9mm pistol.");
-			format(string, sizeof(string), "* %s has dropped their 9mm pistol.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo 9mm pistol.");
+			format(string, sizeof(string), "* %s bo 9mm pistol.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 22);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "shotgun", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 3 ] == 25)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your shotgun.");
-			format(string, sizeof(string), "* %s has dropped their shotgun.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo shotgun.");
+			format(string, sizeof(string), "* %s bo shotgun.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 25);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "mp5", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 4 ] == 29)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your MP5.");
-			format(string, sizeof(string), "* %s has dropped their MP5.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo MP5.");
+			format(string, sizeof(string), "* %s bo MP5.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 29);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "uzi", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 4 ] == 28)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your Micro SMG.");
-			format(string, sizeof(string), "* %s has dropped their Micro SMG.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo Micro SMG.");
+			format(string, sizeof(string), "* %s bo Micro SMG.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 28);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "tec9", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 4 ] == 32)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your Tec-9.");
-			format(string, sizeof(string), "* %s has dropped their Tec-9.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo Tec-9.");
+			format(string, sizeof(string), "* %s bo Tec-9.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 32);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "deagle", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 2 ] == 24)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your Desert Eagle.");
-			format(string, sizeof(string), "* %s has dropped their Desert Eagle.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo Desert Eagle.");
+			format(string, sizeof(string), "* %s bo Desert Eagle.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 24);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "rifle", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 6 ] == 33)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your rifle.");
-			format(string, sizeof(string), "* %s has dropped their rifle.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo rifle.");
+			format(string, sizeof(string), "* %s bo rifle.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 33);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "ak47", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 5 ] == 30)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your AK-47.");
-			format(string, sizeof(string), "* %s has dropped their AK-47.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo AK-47.");
+			format(string, sizeof(string), "* %s bo AK-47.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 30);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "m4", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 5 ] == 31)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your M4.");
-			format(string, sizeof(string), "* %s has dropped their M4.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo M4.");
+			format(string, sizeof(string), "* %s bo M4.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 31);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "spas12", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 3 ] == 27)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your SPAS-12.");
-			format(string, sizeof(string), "* %s has dropped their SPAS-12.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo SPAS-12.");
+			format(string, sizeof(string), "* %s bo SPAS-12.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 27);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "sniper", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 6 ] == 34)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your sniper rifle.");
-			format(string, sizeof(string), "* %s has dropped their sniper rifle.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo sniper rifle.");
+			format(string, sizeof(string), "* %s bo sniper rifle.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 34);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "flowers", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 10 ] == 14)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your flowers.");
-			format(string, sizeof(string), "* %s has dropped their flowers.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo flowers.");
+			format(string, sizeof(string), "* %s bo flowers.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 14);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "knuckles", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 0 ] == 1)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your brass knuckles.");
-			format(string, sizeof(string), "* %s has dropped their brass knuckles.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo brass knuckles.");
+			format(string, sizeof(string), "* %s bo brass knuckles.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 1);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "baseballbat", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 1 ] == 5)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your baseball bat.");
-			format(string, sizeof(string), "* %s has dropped their baseball bat.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo baseball bat.");
+			format(string, sizeof(string), "* %s bo baseball bat.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 5);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "cane", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 10 ] == 15)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your cane.");
-			format(string, sizeof(string), "* %s has dropped their cane.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo cane.");
+			format(string, sizeof(string), "* %s bo cane.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			PlayerInfo[playerid][pGuns][ 10 ] = 0;
 			RemovePlayerLoadoutWeapon(playerid, 15);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "shovel", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 1 ] == 6)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your shovel.");
-			format(string, sizeof(string), "* %s has dropped their shovel.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo shovel.");
+			format(string, sizeof(string), "* %s bo shovel.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 6);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "golfclub", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 1 ] == 2)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your golf club.");
-			format(string, sizeof(string), "* %s has dropped their golf club.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo golf club.");
+			format(string, sizeof(string), "* %s bo golf club.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 2);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "katana") == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 1 ] == 8)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your katana.");
-			format(string, sizeof(string), "* %s has dropped their katana.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo katana.");
+			format(string, sizeof(string), "* %s bo katana.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 8);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "dildo", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 10 ] == 10)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your dildo.");
-			format(string, sizeof(string), "* %s has dropped their dildo.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo dildo.");
+			format(string, sizeof(string), "* %s bo dildo.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 10);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "parachute", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 11 ] == 46)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your parachute.");
-			format(string, sizeof(string), "* %s has dropped their parachute.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo parachute.");
+			format(string, sizeof(string), "* %s bo parachute.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 46);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "smoke", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 8 ] == 17)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your smoke grenade.");
-			format(string, sizeof(string), "* %s has dropped their smoke grenade.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo smoke grenade.");
+			format(string, sizeof(string), "* %s bo smoke grenade.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 17);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "chainsaw", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 1 ] == 9)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your chainsaw.");
-			format(string, sizeof(string), "* %s has dropped their chainsaw.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo chainsaw.");
+			format(string, sizeof(string), "* %s bo chainsaw.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 9);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "fire", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 9 ] == 42)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your fire extinguisher.");
-			format(string, sizeof(string), "* %s has dropped their fire extinguisher.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo fire extinguisher.");
+			format(string, sizeof(string), "* %s bo fire extinguisher.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 42);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "minigun", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 7 ] == 38)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your minigun.");
-			format(string, sizeof(string), "* %s has dropped their minigun.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo minigun.");
+			format(string, sizeof(string), "* %s bo minigun.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 38);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "poolcue", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 1 ] == 7)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your pool cue.");
-			format(string, sizeof(string), "* %s has dropped their pool cue.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo pool cue.");
+			format(string, sizeof(string), "* %s bo pool cue.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 7);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else if(strcmp(params, "goggles", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][11] == 44 || PlayerInfo[playerid][pGuns][11] == 45)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your goggles.");
-			format(string, sizeof(string), "* %s has dropped their goggles.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da bo goggles.");
+			format(string, sizeof(string), "* %s bo goggles.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerLoadoutWeapon(playerid, 44);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co vu khi do!");
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You have entered an invalid weapon name.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ten vu khi khong hop le.");
 	}
 	return 1;
 }
@@ -1642,7 +1642,7 @@ CMD:holster(playerid, params[])
     {
         SetPlayerArmedWeapon(playerid, 0);
         SetPVarInt(playerid, "WeaponsHolstered", 1);
-    	format(string, sizeof(string), "* %s holsters their weapon.", GetPlayerNameEx(playerid));
+    	format(string, sizeof(string), "* %s cat vu khi.", GetPlayerNameEx(playerid));
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		return 1;
     }
@@ -1651,13 +1651,13 @@ CMD:holster(playerid, params[])
 	    if(GetPVarInt(playerid, "TackleMode") == 0)
 		{
 			DeletePVar(playerid, "WeaponsHolstered");
-			format(string, sizeof(string), "* %s unholsters their weapon.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s rut vu khi.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			return 1;
 		}
 		else
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You must disable tackling before unholstering");
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Can tat tackling truoc khi rut vu khi");
 		}
 	}
 }

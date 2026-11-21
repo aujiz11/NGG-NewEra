@@ -162,16 +162,16 @@ CMD:gotomapicon(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pBM] < 2)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay!");
 		return 1;
 	}
 
 	new mapiconid;
-	if(sscanf(params, "d", mapiconid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotomapicon [mapiconid]");
+	if(sscanf(params, "d", mapiconid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gotomapicon [mapiconid]");
 
 	if(mapiconid >= MAX_DMAPICONS || mapiconid < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotomapicon [mapiconid]");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /gotomapicon [mapiconid]");
 		return 1;
 	}
 	SetPlayerPos(playerid, DMPInfo[mapiconid][dmpPosX], DMPInfo[mapiconid][dmpPosY], DMPInfo[mapiconid][dmpPosZ]);
@@ -184,7 +184,7 @@ CMD:dmpnear(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pBM] == 2)
 	{
-		SendClientMessageEx(playerid, COLOR_RED, "* Listing all map icons within 30 meters of you");
+		SendClientMessageEx(playerid, COLOR_RED, "* Cac bieu tuong ban do trong ban kinh 30 met");
 		new Float:X, Float:Y, Float:Z;
   		GetPlayerPos(playerid, X, Y, Z);
 		for(new i=1;i<MAX_DMAPICONS;i++)
@@ -193,14 +193,14 @@ CMD:dmpnear(playerid, params[])
 			{
 				if(DMPInfo[i][dmpMarkerType] != 0)
 				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "MapIcon ID %d | %f from you", i, GetDistanceBetweenPoints(DMPInfo[i][dmpPosX], DMPInfo[i][dmpPosY], DMPInfo[i][dmpPosZ], X, Y, Z));
+					SendClientMessageEx(playerid, COLOR_WHITE, "ID bieu tuong %d | Cach %f", i, GetDistanceBetweenPoints(DMPInfo[i][dmpPosX], DMPInfo[i][dmpPosY], DMPInfo[i][dmpPosZ], X, Y, Z));
 				}
 			}
 		}
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	    SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -209,19 +209,19 @@ CMD:dmpnext(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pBM] == 2)
 	{
-		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available map icon...");
+		SendClientMessageEx(playerid, COLOR_RED, "* Dang tim bieu tuong ban do trong tiep theo...");
 		for(new x=1;x<MAX_DMAPICONS;x++)
 		{
 		    if(DMPInfo[x][dmpMarkerType] == 0)
 		    {
-		        SendClientMessageEx(playerid, COLOR_WHITE, "%d is available to use.", x);
+		        SendClientMessageEx(playerid, COLOR_WHITE, "%d co the su dung.", x);
 		        break;
 			}
 		}
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	    SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 	return 1;
@@ -231,21 +231,21 @@ CMD:dmpedit(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pBM] < 2)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new string[128], choice[32], mapiconid, amount;
 	if(sscanf(params, "s[32]dD", choice, mapiconid, amount))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dmpedit [name] [mapiconid] [(Optional)amount]");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Position, Type, Color, Delete");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /dmpedit [name] [mapiconid] [(Optional)amount]");
+		SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: Position, Type, Color, Delete");
 		return 1;
 	}
 
 	if(mapiconid < 1 || mapiconid >= MAX_DMAPICONS)
 	{
-		SendClientMessageEx( playerid, COLOR_WHITE, "Invalid Map Icon ID!");
+		SendClientMessageEx( playerid, COLOR_WHITE, "ID bieu tuong ban do khong hop le!");
 	}
 
 	if(strcmp(choice, "position", true) == 0)
@@ -253,7 +253,7 @@ CMD:dmpedit(playerid, params[])
 		GetPlayerPos(playerid, DMPInfo[mapiconid][dmpPosX], DMPInfo[mapiconid][dmpPosY], DMPInfo[mapiconid][dmpPosZ]);
 		DMPInfo[mapiconid][dmpInt] = GetPlayerInterior(playerid);
 		DMPInfo[mapiconid][dmpVW] = GetPlayerVirtualWorld(playerid);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the position!");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da doi vi tri!");
 		if(IsValidDynamicMapIcon(DMPInfo[mapiconid][dmpMapIconID])) DestroyDynamicMapIcon(DMPInfo[mapiconid][dmpMapIconID]);
 		DMPInfo[mapiconid][dmpMapIconID] = CreateDynamicMapIcon(DMPInfo[mapiconid][dmpPosX], DMPInfo[mapiconid][dmpPosY], DMPInfo[mapiconid][dmpPosZ], DMPInfo[mapiconid][dmpMarkerType], DMPInfo[mapiconid][dmpColor], DMPInfo[mapiconid][dmpVW], DMPInfo[mapiconid][dmpInt], -1, 500.0);
 		SaveDynamicMapIcon(mapiconid);
@@ -263,7 +263,7 @@ CMD:dmpedit(playerid, params[])
 	}
 	else if(strcmp(choice, "delete", true) == 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted the map icon!");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da xoa bieu tuong ban do!");
 		DMPInfo[mapiconid][dmpPosX] = 0.0;
 		DMPInfo[mapiconid][dmpPosY] = 0.0;
 		DMPInfo[mapiconid][dmpPosZ] = 0.0;
@@ -281,7 +281,7 @@ CMD:dmpedit(playerid, params[])
 	else if(strcmp(choice, "type", true) == 0)
 	{
 		DMPInfo[mapiconid][dmpMarkerType] = amount;
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the marker type to %d.", amount);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da dat loai bieu tuong thanh %d.", amount);
 		if(IsValidDynamicMapIcon(DMPInfo[mapiconid][dmpMapIconID])) DestroyDynamicMapIcon(DMPInfo[mapiconid][dmpMapIconID]);
 		DMPInfo[mapiconid][dmpMapIconID] = CreateDynamicMapIcon(DMPInfo[mapiconid][dmpPosX], DMPInfo[mapiconid][dmpPosY], DMPInfo[mapiconid][dmpPosZ], DMPInfo[mapiconid][dmpMarkerType], DMPInfo[mapiconid][dmpColor], DMPInfo[mapiconid][dmpVW], DMPInfo[mapiconid][dmpInt], -1, 500.0);
 		format(string, sizeof(string), "%s has edited MapIconID %d's Marker Type to %d.", GetPlayerNameEx(playerid), mapiconid, amount);
@@ -290,7 +290,7 @@ CMD:dmpedit(playerid, params[])
 	else if(strcmp(choice, "color", true) == 0)
 	{
 		DMPInfo[mapiconid][dmpColor] = amount;
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have set the color to %d.", amount);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da dat mau thanh %d.", amount);
 		if(IsValidDynamicMapIcon(DMPInfo[mapiconid][dmpMapIconID])) DestroyDynamicMapIcon(DMPInfo[mapiconid][dmpMapIconID]);
 		DMPInfo[mapiconid][dmpMapIconID] = CreateDynamicMapIcon(DMPInfo[mapiconid][dmpPosX], DMPInfo[mapiconid][dmpPosY], DMPInfo[mapiconid][dmpPosZ], DMPInfo[mapiconid][dmpMarkerType], DMPInfo[mapiconid][dmpColor], DMPInfo[mapiconid][dmpVW], DMPInfo[mapiconid][dmpInt], -1, 500.0);
 		format(string, sizeof(string), "%s has edited MapIconID %d's Color to %d.", GetPlayerNameEx(playerid), mapiconid, amount);

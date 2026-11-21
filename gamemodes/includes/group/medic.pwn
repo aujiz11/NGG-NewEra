@@ -178,7 +178,7 @@ public SendEMSQueue(playerid,type)
 			SetPVarInt(playerid, "EMSAttempt", -1);
 
 			if(GetPlayerInterior(playerid) > 0) Player_StreamPrep(playerid, GetPVarFloat(playerid,"MedicX"), GetPVarFloat(playerid,"MedicY"), GetPVarFloat(playerid,"MedicZ"), FREEZE_TIME);
-			GameTextForPlayer(playerid, "~r~Injured~n~~w~/accept death or /service ems", 5000, 3);
+			GameTextForPlayer(playerid, "~r~Bi thuong~n~~w~/accept death hoac /service ems", 5000, 3);
 			ClearAnimationsEx(playerid);
 			PlayDeathAnimation(playerid);
 			SetHealth(playerid, 100);
@@ -216,42 +216,42 @@ PlayDeathAnimation(playerid) {
 
 Medic_GetPatient(playerid, const params[]) {
 	if(PlayerBusy(playerid)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot provide medical assistance right now.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the cuu chua luc nay.");
 
 	if(IsAMedic(playerid) || IsFirstAid(playerid))
 	{
 		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /getpt(patient) [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /getpt(patient) [player]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
 		    if (giveplayerid == playerid)
 		    {
-		        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You cannot accept your own Emergency Dispatch call!");
+		        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Khong the nhan cuoc goi Emergency Dispatch cua minh!");
 				return 1;
 		    }
 			if(GetPVarInt(giveplayerid,"MedicCall") == 1 && GetPVarInt(giveplayerid, "Injured") == 1 && GetPVarInt(giveplayerid, "EMSAttempt") <= 1)
 			{
-				if(PlayerInfo[giveplayerid][pJailTime] > 0 && strfind(PlayerInfo[giveplayerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command on jailed players.");
-				if(EMSCallTime[playerid] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Finish or cancel your current EMS call first.");
+				if(PlayerInfo[giveplayerid][pJailTime] > 0 && strfind(PlayerInfo[giveplayerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the dung lenh nay voi nguoi choi trong tu.");
+				if(EMSCallTime[playerid] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Hay hoan tat hoac huy cuoc goi EMS hien tai.");
 				foreach(new i : Player)
 				{
-					if(EMSCallTime[i] > 0 && EMSAccepted[i] == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "Another medic has already accepted this call.");
+					if(EMSCallTime[i] > 0 && EMSAccepted[i] == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "Medic khac da nhan cuoc goi nay.");
 				}
-				format(string, sizeof(string), "EMS Driver %s (%s, R%d) has accepted the Emergency Dispatch call for (%d) %s.", GetPlayerNameEx(playerid), arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], PlayerInfo[playerid][pRank], giveplayerid, GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "EMS Driver %s (%s, R%d) da nhan cuoc goi Emergency Dispatch cho (%d) %s.", GetPlayerNameEx(playerid), arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], PlayerInfo[playerid][pRank], giveplayerid, GetPlayerNameEx(giveplayerid));
 				SendMedicMessage(TEAM_MED_COLOR, string);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have accepted EMS Call from %s, you will see the marker until you have reached it.",GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* EMS Driver %s has accepted your EMS Call, please wait at your current position.",GetPlayerNameEx(playerid));
-				GameTextForPlayer(playerid, "~w~EMS Caller~n~~r~Go to the red marker.", 5000, 1);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da nhan cuoc goi EMS tu %s, diem danh dau hien den khi ban den noi.",GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* EMS Driver %s da nhan cuoc goi EMS, hay cho tai vi tri hien tai.",GetPlayerNameEx(playerid));
+				GameTextForPlayer(playerid, "~w~Nguoi goi EMS~n~~r~Den diem do.", 5000, 1);
 				EMSCallTime[playerid] = 1;
 				EMSAccepted[playerid] = giveplayerid;
 				SetPVarInt(giveplayerid, "EMSAttempt", 1);
 				PlayerInfo[playerid][pCallsAccepted]++;
-				if(GetPlayerInterior(giveplayerid)) SendClientMessageEx(playerid, COLOR_GRAD1, "This person is currently in an interior.");
+				if(GetPlayerInterior(giveplayerid)) SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi nay dang o trong interior.");
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "The person has not requested any EMS attention!");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Nguoi do chua yeu cau EMS!");
 			}
 		}
 	}
@@ -288,7 +288,7 @@ CMD:aid(playerid, params[]) {
 CMD:emslist(playerid, params[])
 {
 	if(!IsAMedic(playerid) && !IsFirstAid(playerid)) 
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not a medic.");
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong phai Medic.");
 	
 	new zone[MAX_ZONE_NAME], row[160], key[32], count;
 	for(new i = 0; i < GetPVarInt(playerid, "EMSListCount"); i++)
@@ -305,10 +305,10 @@ CMD:emslist(playerid, params[])
 		GetPlayer3DZone(i, zone, sizeof(zone));
 		switch(status)
 		{
-			case -1: format(row, sizeof(row), "{FF0000}Emergency - %s - %s\n", GetPlayerNameEx(i), zone);
-			case 1: format(row, sizeof(row), "{FF0000}Emergency - %s - %s\n", GetPlayerNameEx(i), zone);
-			case 2: format(row, sizeof(row), "{FFFF00}Treated - %s - %s\n", GetPlayerNameEx(i), zone);
-			case 3: format(row, sizeof(row), "{FF00FF}Rescued - %s - %s\n", GetPlayerNameEx(i), zone);
+			case -1: format(row, sizeof(row), "{FF0000}Cap cuu - %s - %s\n", GetPlayerNameEx(i), zone);
+			case 1: format(row, sizeof(row), "{FF0000}Cap cuu - %s - %s\n", GetPlayerNameEx(i), zone);
+			case 2: format(row, sizeof(row), "{FFFF00}Da chua - %s - %s\n", GetPlayerNameEx(i), zone);
+			case 3: format(row, sizeof(row), "{FF00FF}Da cuu - %s - %s\n", GetPlayerNameEx(i), zone);
 		}
 		if(count >= sizeof(ListItemTrackId[]) || strlen(szMiscArray) + strlen(row) >= sizeof(szMiscArray)) break;
 		strcat(szMiscArray, row, sizeof(szMiscArray));
@@ -318,27 +318,27 @@ CMD:emslist(playerid, params[])
 		count++;
 	}
 	SetPVarInt(playerid, "EMSListCount", count);
-	if(!count) return SendClientMessageEx(playerid, COLOR_GREY, "There are currently no active EMS calls.");
-	ShowPlayerDialogEx(playerid, DIALOG_MEDIC_LIST, DIALOG_STYLE_LIST, "Medic | Dispatch List", szMiscArray, "Enroute", "Cancel");
+	if(!count) return SendClientMessageEx(playerid, COLOR_GREY, "Hien khong co cuoc goi EMS.");
+	ShowPlayerDialogEx(playerid, DIALOG_MEDIC_LIST, DIALOG_STYLE_LIST, "Medic | Dispatch", szMiscArray, "Len duong", "Huy");
 	return 1;
 }
 
 CMD:loadpt(playerid, params[])
 {
 	if(PlayerBusy(playerid)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot provide medical assistance right now.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the cuu chua luc nay.");
     
 	if(IsAMedic(playerid) || IsFirstAid(playerid))
 	{
         if(IsPlayerInAnyVehicle(playerid))
 		{
-            SendClientMessageEx(playerid, COLOR_GREY, "   Cannot use this while you're in a car!");
+            SendClientMessageEx(playerid, COLOR_GREY, "   Khong the dung khi o trong xe!");
             return 1;
         }
 
         new string[128], giveplayerid, seat;
         if(sscanf(params, "ud", giveplayerid, seat)) 
-			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /loadpt [player] [seatid]");
+			return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /loadpt [player] [seatid]");
 
         if(IsPlayerConnected(giveplayerid))
 		{
@@ -346,37 +346,37 @@ CMD:loadpt(playerid, params[])
 			{
                 if(!(2 <= seat <= 3))
 				{
-                    SendClientMessageEx(playerid, COLOR_GRAD1, "The seat ID cannot be above 3 or below 2.");
+                    SendClientMessageEx(playerid, COLOR_GRAD1, "ID ghe khong duoc tren 3 hoac duoi 2.");
                     return 1;
                 }
                 if(GetPVarInt(giveplayerid, "Injured") != 1)
 				{
-                    SendClientMessageEx(playerid, COLOR_GREY, "That patient not injured - you can't load them.");
+                    SendClientMessageEx(playerid, COLOR_GREY, "Benh nhan khong bi thuong, khong the dua len xe.");
                     return 1;
                 }
                 if(IsPlayerInAnyVehicle(giveplayerid))
 				{
-                    SendClientMessageEx(playerid, COLOR_GREY, "That patient is inside a car - you can't load them.");
+                    SendClientMessageEx(playerid, COLOR_GREY, "Benh nhan dang trong xe, khong the dua len xe.");
                     return 1;
                 }
                 new Float:x, Float:y, Float:z;
 				GetPlayerPos(giveplayerid, x, y, z);
                 if (GetPlayerInterior(playerid) == GetPlayerInterior(giveplayerid) && GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(giveplayerid) && IsPlayerInRangeOfPoint(playerid, 8.0, x, y, z))
 				{
-                    if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot load yourself!"); return 1; }
-                    if(PlayerInfo[giveplayerid][pJailTime] > 0 && strfind(PlayerInfo[giveplayerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command on jailed players.");
+                    if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "Khong the tu dua minh len xe!"); return 1; }
+                    if(PlayerInfo[giveplayerid][pJailTime] > 0 && strfind(PlayerInfo[giveplayerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the dung lenh nay voi nguoi choi trong tu.");
                     // if(GetPVarType(playerid, "MedicAid")) return SendClientMessage(playerid, COLOR_GREY, "This patient requires aid! Use /aid [playerid] to aid them.");
                     new carid = gLastCar[playerid];
                     if(IsAnAmbulance(carid))
 					{
                         if(IsVehicleSeatOccupied(carid, seat)) {
-							SendClientMessageEx(playerid, COLOR_GREY, "That seat is occupied.");
+							SendClientMessageEx(playerid, COLOR_GREY, "Ghe do da co nguoi.");
 							return 1;
 						}
 						if(GetVehicleInterior(carid) == GetPlayerInterior(playerid) && GetVehicleVirtualWorld(carid) == GetPlayerVirtualWorld(playerid) && IsPlayerInRangeOfVehicle(giveplayerid, carid, 10.0) && IsPlayerInRangeOfVehicle(playerid, carid, 10.0)) {
-							SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You were loaded by paramedic %s.", GetPlayerNameEx(playerid));
-							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You loaded patient %s.", GetPlayerNameEx(giveplayerid));
-							format(string, sizeof(string), "* %s loads %s in the %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetVehicleName(carid));
+							SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Ban duoc paramedic %s dua len xe.", GetPlayerNameEx(playerid));
+							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Da dua benh nhan %s len xe.", GetPlayerNameEx(giveplayerid));
+							format(string, sizeof(string), "* %s dua %s len %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetVehicleName(carid));
 							ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 							Medic_CancelStretcher(giveplayerid);
 							SetPVarInt(giveplayerid, "EMSAttempt", 3);
@@ -385,50 +385,50 @@ CMD:loadpt(playerid, params[])
 							PutPlayerInVehicle(giveplayerid,carid,seat);
 							TogglePlayerControllable(giveplayerid, false);
 						}
-						else SendClientMessageEx(playerid, COLOR_GREY, "Both you and your patient must be near the ambulance.");
+						else SendClientMessageEx(playerid, COLOR_GREY, "Ban va benh nhan phai o gan xe cuu thuong.");
                     }
                     else
 					{
-                        SendClientMessageEx(playerid, COLOR_GRAD2, "Your last car needs to be an ambulance!");
+                        SendClientMessageEx(playerid, COLOR_GRAD2, "Xe gan nhat cua ban phai la xe cuu thuong!");
                     }
                 }
                 else
 				{
-                    SendClientMessageEx(playerid, COLOR_GREY, " You're not close enough to the person or your car!");
+                    SendClientMessageEx(playerid, COLOR_GREY, " Ban khong o du gan nguoi do hoac xe cua minh!");
                     return 1;
                 }
             }
         }
         else
 		{
-            SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+            SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
             return 1;
         }
     }
     else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a medic!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "   Ban khong phai Medic!");
     }
     return 1;
 }
 
 CMD:triage(playerid, params[])
 {
-	if(PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot provide medical assistance right now.");
+	if(PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the cuu chua luc nay.");
     if(IsAMedic(playerid) || IsFirstAid(playerid))
 	{
  		if(PlayerInfo[playerid][pTriageTime] != 0)
    		{
-     		SendClientMessageEx(playerid, COLOR_GREY, "You must wait for 2 minutes to use this command.");
+     		SendClientMessageEx(playerid, COLOR_GREY, "Phai cho 2 phut de dung lenh nay.");
        		return 1;
 	    }
 
 	    new string[128], giveplayerid;
-	    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /triage [player]");
+	    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /triage [player]");
 
    		if(IsPlayerConnected(giveplayerid))
    		{
-    	    if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command on yourself.");
+    	    if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the dung lenh nay voi chinh minh.");
 			new Float:x, Float:y, Float:z;
 			GetPlayerPos(giveplayerid, x, y, z);
 			if (GetPlayerInterior(playerid) == GetPlayerInterior(giveplayerid) && GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(giveplayerid) && IsPlayerInRangeOfPoint(playerid, 5.0, x, y, z))
@@ -437,13 +437,13 @@ CMD:triage(playerid, params[])
 	    	    GetHealth(giveplayerid, health);
 	    	    if(health >= 85) SetHealth(giveplayerid, 100);
 				else SetHealth(giveplayerid, health+15.0);
-	    	    format(string, sizeof(string), "* %s has given %s 15 health.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+	    	    format(string, sizeof(string), "* %s da hoi cho %s 15 mau.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    	    ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				PlayerInfo[playerid][pTriageTime] = 120;
 			}
 			else
 			{
-			    SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+			    SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 			}
  		}
 	}
@@ -452,17 +452,17 @@ CMD:triage(playerid, params[])
 
 CMD:heal(playerid, params[])
 {
-	if(PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot provide medical assistance right now.");
+	if(PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the cuu chua luc nay.");
 	new giveplayerid, price = 1000;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /heal [player]");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /heal [player]");
 
 	if (giveplayerid == playerid)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You can't heal yourself.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the tu chua cho minh.");
 		return 1;
 	}
 
-	if(gettime() < GetPVarInt(playerid, "pHealTimer")) return SendClientMessage(playerid, COLOR_GRAD1, "You must wait 1 minute before you can heal again.");
+	if(gettime() < GetPVarInt(playerid, "pHealTimer")) return SendClientMessage(playerid, COLOR_GRAD1, "Phai cho 1 phut truoc khi chua tiep.");
 
 	if (IsPlayerConnected(giveplayerid))
 	{
@@ -471,44 +471,44 @@ CMD:heal(playerid, params[])
 			new Float:X, Float:Y, Float:Z;
 	   		GetPlayerPos(giveplayerid, X, Y, Z);
 
-			if(GetPlayerInterior(playerid) != GetPlayerInterior(giveplayerid) || GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(giveplayerid) || !IsPlayerInRangeOfPoint(playerid, 10, X, Y, Z)) return SendClientMessageEx(playerid, TEAM_GREEN_COLOR," You are not near them!");
+			if(GetPlayerInterior(playerid) != GetPlayerInterior(giveplayerid) || GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(giveplayerid) || !IsPlayerInRangeOfPoint(playerid, 10, X, Y, Z)) return SendClientMessageEx(playerid, TEAM_GREEN_COLOR," Ban khong o gan ho!");
 
-			if(GetPlayerCash(giveplayerid) < 1000) return SendClientMessage(playerid, COLOR_GRAD1, "That player cannot afford this treatment.");
+			if(GetPlayerCash(giveplayerid) < 1000) return SendClientMessage(playerid, COLOR_GRAD1, "Nguoi choi do khong du tien dieu tri.");
 
-			if(GetPlayerCash(playerid) > cellmax - price / 2 || Tax > cellmax - price / 2) return SendClientMessageEx(playerid, COLOR_GREY, "This payment would exceed the balance limit.");
+			if(GetPlayerCash(playerid) > cellmax - price / 2 || Tax > cellmax - price / 2) return SendClientMessageEx(playerid, COLOR_GREY, "Thanh toan nay se vuot gioi han so du.");
 			new Float:tempheal;
 			GetHealth(giveplayerid,tempheal);
 			if(tempheal >= 100.0)
 			{
-				SendClientMessageEx(playerid, TEAM_GREEN_COLOR,"That person is fully healed.");
+				SendClientMessageEx(playerid, TEAM_GREEN_COLOR,"Nguoi do da day mau.");
 				return 1;
 			}
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You healed %s for $%d.", GetPlayerNameEx(giveplayerid), price);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Da chua %s, gia $%d.", GetPlayerNameEx(giveplayerid), price);
 			GivePlayerCash(playerid, price / 2);
 			Tax += price / 2;
 			GivePlayerCash(giveplayerid, -price);
 			SetHealth(giveplayerid, 100);
 			PlayerPlaySound(playerid, 1150, 0.0, 0.0, 0.0);
 			PlayerPlaySound(giveplayerid, 1150, 0.0, 0.0, 0.0);
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have been healed to 100 health for $%d by %s.",price, GetPlayerNameEx(playerid));
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Ban duoc hoi 100 mau voi gia $%d boi %s.",price, GetPlayerNameEx(playerid));
 
 			SetPVarInt(playerid, "pHealTimer", gettime() + 60); // Adding a minute check.
 
 			if(GetPVarType(giveplayerid, "STD"))
 			{
 				DeletePVar(giveplayerid, "STD");
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You are no longer infected with a STD because of the medic's help.");
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Ban da khoi STD nho Medic.");
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 			return 1;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi choi khong hop le.");
 	}
 	return 1;
 }
@@ -521,23 +521,23 @@ CMD:getpt(playerid, params[])
 
 CMD:movept(playerid, params[])
 {
-	if(PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot provide medical assistance right now.");
+	if(PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the cuu chua luc nay.");
 	if(IsAMedic(playerid) || IsFirstAid(playerid))
 	{
 		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /movepatient [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /movepatient [player]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if(giveplayerid == playerid || IsPlayerInAnyVehicle(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Choose another injured player outside a vehicle.");
-			if(GetPVarType(playerid, "MovingStretcher")) return SendClientMessageEx(playerid, COLOR_GREY, "You are already moving a patient.");
+			if(giveplayerid == playerid || IsPlayerInAnyVehicle(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Chon nguoi choi khac bi thuong o ngoai xe.");
+			if(GetPVarType(playerid, "MovingStretcher")) return SendClientMessageEx(playerid, COLOR_GREY, "Ban dang di chuyen benh nhan.");
 			if(GetPVarInt(giveplayerid,"Injured") == 1)
 			{
-				if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command while in a vehicle.");
-				if(PlayerInfo[giveplayerid][pJailTime] > 0 && strfind(PlayerInfo[giveplayerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command on jailed players.");
+				if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the dung lenh nay khi o trong xe.");
+				if(PlayerInfo[giveplayerid][pJailTime] > 0 && strfind(PlayerInfo[giveplayerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the dung lenh nay voi nguoi choi trong tu.");
 				if(GetPVarInt(giveplayerid, "OnStretcher") == 1)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "The person is already on a stretcher, you can't do this right now!");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do da o tren cang, chua the lam viec nay!");
 					return 1;
 				}
 
@@ -545,13 +545,13 @@ CMD:movept(playerid, params[])
 				GetPlayerPos(giveplayerid, mX, mY, mZ);
 				if(GetPlayerInterior(playerid) != GetPlayerInterior(giveplayerid) || GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(giveplayerid) || !IsPlayerInRangeOfPoint(playerid, 5.0, mX, mY, mZ))
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD2, "You have to be close to the patient to be able to move them!");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Ban phai o gan benh nhan de di chuyen ho!");
 					return 1;
 				}
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You have 30 seconds to move to another location or you can either press the '{AA3333}FIRE{BFC0C2}' button.");
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been put on a stretcher by %s.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have put %s on a stretcher, you may move them now.", GetPlayerNameEx(giveplayerid));
-				format(string, sizeof(string), "* %s puts %s on a stretcher, tightening the belts securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Ban co 30 giay de di chuyen hoac nhan nut '{AA3333}FIRE{BFC0C2}'.");
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Ban duoc %s dat len cang.", GetPlayerNameEx(playerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da dat %s len cang, co the di chuyen ho.", GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "* %s dat %s len cang va that chat day an toan.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
 				SetPVarInt(giveplayerid, "OnStretcher", 1);
@@ -561,7 +561,7 @@ CMD:movept(playerid, params[])
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD2, "The person has to be injured in-order to move them!");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do phai bi thuong moi di chuyen duoc!");
 			}
 		}
 	}
@@ -570,15 +570,15 @@ CMD:movept(playerid, params[])
 
 CMD:deliverpt(playerid, params[])
 {
-	if(PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot provide medical assistance right now.");
+	if(PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the cuu chua luc nay.");
     if(IsAMedic(playerid) || IsFirstAid(playerid))
 	{
         if(IsPlayerInAnyVehicle(playerid))
 		{
 			new string[128], giveplayerid;
-		    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deliverpt [player]");
+		    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /deliverpt [player]");
 
-            if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+            if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
 			new carid = GetPlayerVehicleID(playerid);
             new caridex = GetPlayerVehicleID(giveplayerid);
             if(IsAnAmbulance(carid))
@@ -589,37 +589,37 @@ CMD:deliverpt(playerid, params[])
 					{
                         if(playerid == giveplayerid)
 						{
-                            SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot deliver yourself to the hospital!");
+                            SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the tu giao minh den benh vien!");
                             return 1;
                         }
                         if(GetPVarInt(giveplayerid, "Injured") == 0)
 						{
-                            return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is not injured!");
+                            return SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do khong bi thuong!");
                         }
                         if(playerTabbed[giveplayerid] >= 1)
 						{
-                            SendClientMessageEx(playerid, COLOR_GRAD2, "That person is paused, you can't currently deliver him!");
+                            SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi do dang tam dung, chua the giao ho!");
                             return 1;
                         }
                         new group = PlayerInfo[playerid][pMember];
-						if(!(0 <= group < MAX_GROUPS) || arrGroupData[group][g_iBudget] < 20000) return SendClientMessageEx(playerid, COLOR_GREY, "Your group cannot afford the delivery reward.");
+						if(!(0 <= group < MAX_GROUPS) || arrGroupData[group][g_iBudget] < 20000) return SendClientMessageEx(playerid, COLOR_GREY, "To chuc khong du tien tra thuong giao benh nhan.");
 						new iHospitalDeliver = GetClosestDeliverPatientPoint(playerid);
 						new iHospital = ReturnDeliveryPoint(iHospitalDeliver);
 						new nation = ReturnDeliveryPointNation(iHospitalDeliver);
-						if(arrHospitalBedData[iHospital][bBedOccupied][GetFreeHospitalBed(iHospital)]) return SendClientMessageEx(playerid, COLOR_GREY, "This hospital has no free beds.");
+						if(arrHospitalBedData[iHospital][bBedOccupied][GetFreeHospitalBed(iHospital)]) return SendClientMessageEx(playerid, COLOR_GREY, "Benh vien nay khong con giuong trong.");
 						if(GetPlayerCash(playerid) > cellmax - 20000 || GetPlayerCash(giveplayerid) < cellmin + 1000
-							|| (nation == 0 && Tax > cellmax - 1000) || (nation == 1 && TRTax > cellmax - 1000)) return SendClientMessageEx(playerid, COLOR_GREY, "This payment would exceed the balance limit.");
+							|| (nation == 0 && Tax > cellmax - 1000) || (nation == 1 && TRTax > cellmax - 1000)) return SendClientMessageEx(playerid, COLOR_GREY, "Thanh toan nay se vuot gioi han so du.");
                         SetHealth(giveplayerid, 100);
                         if(GetPVarType(giveplayerid, "STD"))
 						{
 							DeletePVar(giveplayerid, "STD");
-                            SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You are no longer infected with a STD anymore because of the hospital's help!");
+                            SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Ban da khoi STD nho benh vien!");
                         }
                         GivePlayerCash(giveplayerid, -1000);
 						GivePlayerCash(playerid, 20000);
 
 						//SendClientMessageEx(giveplayerid, TEAM_CYAN_COLOR, "Doc: Your medical bill comes in at $1000. Have a nice day!");
-                        SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "You received $20,000 for successfully delivering the patient!");
+                        SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Ban nhan $20,000 vi giao benh nhan thanh cong!");
 						
                         KillEMSQueue(giveplayerid);
                         SetPVarInt(giveplayerid, "_HospitalBeingDelivered", 1);
@@ -637,8 +637,9 @@ CMD:deliverpt(playerid, params[])
                         PlayerInfo[playerid][pPatientsDelivered]++;
                         
 						format(string, sizeof(string), "EMS Driver %s has successfully delivered Patient %s to the hospital.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-						SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_MED_COLOR, string);
 						GroupLog(PlayerInfo[playerid][pMember], string);
+						format(string, sizeof(string), "EMS Driver %s da giao benh nhan %s den benh vien.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+						SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_MED_COLOR, string);
 						foreach(new i: Player)
 						{
 							if(IsFirstAid(i))
@@ -650,17 +651,17 @@ CMD:deliverpt(playerid, params[])
 					}
                     else
 					{
-                        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near a deliver point - look out near the hospitals.");
+                        SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan diem giao benh nhan, hay tim gan benh vien.");
                     }
                 }
                 else
 				{
-                    SendClientMessageEx(playerid, COLOR_GRAD2, "Patient must be in your car in order to deliver him.");
+                    SendClientMessageEx(playerid, COLOR_GRAD2, "Benh nhan phai o trong xe cua ban de giao.");
                 }
             }
             else
 			{
-                SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in an FDSA vehicle.");
+                SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o trong xe FDSA.");
             }
         }
     }
@@ -669,24 +670,24 @@ CMD:deliverpt(playerid, params[])
 
 CMD:renderaid(playerid, params[])
 {
-	if(PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot provide medical assistance right now.");
-	if(!(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not in a group.");
-	if(GetPVarInt(playerid, "MedVestKit") != 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You aren't carrying a kit.");
+	if(PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua the cuu chua luc nay.");
+	if(!(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong thuoc to chuc nao.");
+	if(GetPVarInt(playerid, "MedVestKit") != 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong mang bo cuu thuong.");
 	new target;
-	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /renderaid [player]");
-	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
-	if(target == playerid) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not aid yourself!");
+	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "CACH DUNG: /renderaid [player]");
+	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi choi khong hop le.");
+	if(target == playerid) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the tu so cuu minh!");
 	new Float:x, Float:y, Float:z;
 	GetPlayerPos(target, x, y, z);
 	if(GetPlayerInterior(playerid) != GetPlayerInterior(target) || GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(target) || !IsPlayerInRangeOfPoint(playerid, 5.0, x, y, z)) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "That player is not near you.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi do khong o gan ban.");
 	
 	if(!GetPVarType(target, "Injured")) 
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "Player is not in a injured state.");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi choi khong bi thuong.");
 	
 	SetPVarInt(target, "renderaid", playerid);
 	SetPVarInt(target, "RenderAidSession", g_arrQueryHandle[playerid]);
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have offered %s assistance.", GetPlayerNameEx(target));
-	SendClientMessageEx(target, COLOR_LIGHTBLUE, "* %s wants to assist you, (type /accept renderaid) to accept.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban de nghi so cuu %s.", GetPlayerNameEx(target));
+	SendClientMessageEx(target, COLOR_LIGHTBLUE, "* %s muon so cuu ban, dung (/accept renderaid) de dong y.", GetPlayerNameEx(playerid));
 	return 1;
 }

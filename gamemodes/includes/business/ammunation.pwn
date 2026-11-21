@@ -5,11 +5,11 @@ CMD:buygun(playerid, params[])
 	szMiscArray[0] = 0;
 	new business = InBusiness(playerid);
 
-	if(business == INVALID_BUSINESS_ID || Businesses[business][bType] != BUSINESS_TYPE_GUNSHOP) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not at a gunshop!");
-	if(PlayerInfo[playerid][pConnectHours] < 8) return SendClientMessageEx(playerid, COLOR_WHITE, "You have not played enough to obtain a weapon!");
+	if(business == INVALID_BUSINESS_ID || Businesses[business][bType] != BUSINESS_TYPE_GUNSHOP) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong o cua hang sung!");
+	if(PlayerInfo[playerid][pConnectHours] < 8) return SendClientMessageEx(playerid, COLOR_WHITE, "Thoi gian choi chua du de mua vu khi!");
 
-	format(szMiscArray, sizeof(szMiscArray), "Weapon\tPrice\n9mm Pistol\t$%s\nPump Shotgun\t$%s\nDeagle\t$%s", number_format(GunPrices[0]), number_format(GunPrices[1]), number_format(GunPrices[2]));
-	ShowPlayerDialogEx(playerid, DIALOG_AMMUNATION_GUNS, DIALOG_STYLE_TABLIST_HEADERS, "Ammunation Menu - Weapons", szMiscArray, "Select", "Back");
+	format(szMiscArray, sizeof(szMiscArray), "Vu khi\tGia\n9mm Pistol\t$%s\nPump Shotgun\t$%s\nDeagle\t$%s", number_format(GunPrices[0]), number_format(GunPrices[1]), number_format(GunPrices[2]));
+	ShowPlayerDialogEx(playerid, DIALOG_AMMUNATION_GUNS, DIALOG_STYLE_TABLIST_HEADERS, "Ammunation - Vu khi", szMiscArray, "Chon", "Quay lai");
 	return 1;
 }
 
@@ -21,11 +21,11 @@ CMD:editgsprices(playerid, params[]) {
 		choice[32], 
 		amount;
 
-	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to use that command!");
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong co quyen dung lenh nay!");
 
 	if(sscanf(params, "s[32]d", choice, amount)) {
-		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /editgsprices [choice] [amount]"); 
-		SendClientMessageEx(playerid, COLOR_WHITE, "Available choices: colt45, shotgun, deagle");
+		SendClientMessageEx(playerid, COLOR_WHITE, "CACH DUNG: /editgsprices [choice] [amount]"); 
+		SendClientMessageEx(playerid, COLOR_WHITE, "Lua chon: colt45, shotgun, deagle");
 		return SendClientMessageEx(playerid, COLOR_WHITE, "colt45: $%s | shotgun: $%s | Deagle: $%s", number_format(GunPrices[0]), number_format(GunPrices[1]), number_format(GunPrices[2]));
 	}
 	if(strcmp(choice, "colt45", true) == 0) {
@@ -59,7 +59,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case DIALOG_AMMUNATION_GUNS:
 		{
 			if(PlayerInfo[playerid][pGunLic] <= gettime())
-				return SendClientMessageEx(playerid, COLOR_GREY, "You must have an active license to purchase guns from a gun-shop!");
+				return SendClientMessageEx(playerid, COLOR_GREY, "Can giay phep con hieu luc de mua sung!");
 			
 			if(!response)
 				return 1;
@@ -71,8 +71,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new iWeaponMats = GetWeaponParam(WEAPON_COLT45, WeaponMats);
 					new business = InBusiness(playerid);
 
-					if(PlayerInfo[playerid][pCash] < GunPrices[0]) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough money!");
-					if(Businesses[business][bInventory] < iWeaponMats) return SendClientMessageEx(playerid, COLOR_WHITE, "The business has run out of stock");
+					if(PlayerInfo[playerid][pCash] < GunPrices[0]) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du tien!");
+					if(Businesses[business][bInventory] < iWeaponMats) return SendClientMessageEx(playerid, COLOR_WHITE, "Doanh nghiep da het hang");
 					
 					Businesses[business][bInventory] -= iWeaponMats;
 					Businesses[business][bTotalSales]++;
@@ -84,8 +84,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					GivePlayerCash(playerid, -GunPrices[0]);
 					GivePlayerValidWeapon(playerid, WEAPON_COLT45);
 
-					format(szMiscArray, sizeof(szMiscArray), "%s has purchased 9mm pistol for $%s at %s", GetPlayerNameEx(playerid), number_format(GunPrices[0]), Businesses[business][bName]);
+					format(szMiscArray, sizeof(szMiscArray), "%s da mua 9mm pistol gia $%s tai %s", GetPlayerNameEx(playerid), number_format(GunPrices[0]), Businesses[business][bName]);
 					SendClientMessageEx(playerid, -1, szMiscArray);
+					format(szMiscArray, sizeof(szMiscArray), "%s has purchased 9mm pistol for $%s at %s", GetPlayerNameEx(playerid), number_format(GunPrices[0]), Businesses[business][bName]);
 					Log("logs/business.log", szMiscArray);
 				}
 				case 1: // Pump Shotgun 
@@ -93,8 +94,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new iWeaponMats = GetWeaponParam(WEAPON_SHOTGUN, WeaponMats);
 					new business = InBusiness(playerid);
 
-					if(PlayerInfo[playerid][pCash] < GunPrices[1]) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough money!");
-					if(Businesses[business][bInventory] < iWeaponMats) return SendClientMessageEx(playerid, COLOR_WHITE, "The business has run out of stock");
+					if(PlayerInfo[playerid][pCash] < GunPrices[1]) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du tien!");
+					if(Businesses[business][bInventory] < iWeaponMats) return SendClientMessageEx(playerid, COLOR_WHITE, "Doanh nghiep da het hang");
 					
 					Businesses[business][bInventory] -= iWeaponMats;
 					Businesses[business][bTotalSales]++;
@@ -106,8 +107,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					GivePlayerCash(playerid, -GunPrices[1]);
 					GivePlayerValidWeapon(playerid, WEAPON_SHOTGUN);
 
-					format(szMiscArray, sizeof(szMiscArray), "%s has purchased shotgun for $%s at %s", GetPlayerNameEx(playerid), number_format(GunPrices[1]), Businesses[business][bName]);
+					format(szMiscArray, sizeof(szMiscArray), "%s da mua shotgun gia $%s tai %s", GetPlayerNameEx(playerid), number_format(GunPrices[1]), Businesses[business][bName]);
 					SendClientMessageEx(playerid, -1, szMiscArray);
+					format(szMiscArray, sizeof(szMiscArray), "%s has purchased shotgun for $%s at %s", GetPlayerNameEx(playerid), number_format(GunPrices[1]), Businesses[business][bName]);
 					Log("logs/business.log", szMiscArray);
 				}
 				case 2: // Deagle
@@ -115,8 +117,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new iWeaponMats = GetWeaponParam(WEAPON_DEAGLE, WeaponMats);
 					new business = InBusiness(playerid);
 
-					if(PlayerInfo[playerid][pCash] < GunPrices[2]) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough money!");
-					if(Businesses[business][bInventory] < iWeaponMats) return SendClientMessageEx(playerid, COLOR_WHITE, "The business has run out of stock");
+					if(PlayerInfo[playerid][pCash] < GunPrices[2]) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du tien!");
+					if(Businesses[business][bInventory] < iWeaponMats) return SendClientMessageEx(playerid, COLOR_WHITE, "Doanh nghiep da het hang");
 					
 					Businesses[business][bInventory] -= iWeaponMats;
 					Businesses[business][bTotalSales]++;
@@ -128,8 +130,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					GivePlayerCash(playerid, -GunPrices[2]);
 					GivePlayerValidWeapon(playerid, WEAPON_DEAGLE);
 
-					format(szMiscArray, sizeof(szMiscArray), "%s has purchased deagle for $%s at %s", GetPlayerNameEx(playerid), number_format(GunPrices[2]), Businesses[business][bName]);
+					format(szMiscArray, sizeof(szMiscArray), "%s da mua deagle gia $%s tai %s", GetPlayerNameEx(playerid), number_format(GunPrices[2]), Businesses[business][bName]);
 					SendClientMessageEx(playerid, -1, szMiscArray);
+					format(szMiscArray, sizeof(szMiscArray), "%s has purchased deagle for $%s at %s", GetPlayerNameEx(playerid), number_format(GunPrices[2]), Businesses[business][bName]);
 					Log("logs/business.log", szMiscArray);
 				}
 			}

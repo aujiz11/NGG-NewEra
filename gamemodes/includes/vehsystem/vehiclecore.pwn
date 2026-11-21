@@ -1077,10 +1077,10 @@ TriggerVehicleAlarm(triggerid, ownerid, vehicleid)
 {
 	new szCarLocation[MAX_ZONE_NAME], slot = GetPlayerVehicle(ownerid, vehicleid), Float: CarPos[3], engine, lights, alarm, doors, bonnet, boot, objective;
 	if(PlayerVehicleInfo[ownerid][slot][pvAlarm] > 0) {
-		ProxDetector(30.0, triggerid, "(( A vehicle alarm has been triggered. ))", COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+		ProxDetector(30.0, triggerid, "(( Bao dong xe da duoc kich hoat. ))", COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		GetVehiclePos(vehicleid, CarPos[0], CarPos[1], CarPos[2]);
 		Get3DZone(CarPos[0], CarPos[1], CarPos[2], szCarLocation, sizeof(szCarLocation));
-		SendClientMessageEx(ownerid, COLOR_YELLOW, "SMS: Your %s(%d)'s Alarm at %s has been triggered, call 911, Sender: Vehicle Security Company", GetVehicleName(vehicleid), vehicleid, szCarLocation);
+		SendClientMessageEx(ownerid, COLOR_YELLOW, "SMS: Bao dong %s(%d) tai %s da kich hoat, goi 911, Nguoi gui: Vehicle Security Company", GetVehicleName(vehicleid), vehicleid, szCarLocation);
 		PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] = 1;
 		GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
 		SetVehicleParamsEx(vehicleid,engine,lights,VEHICLE_PARAMS_ON,doors,bonnet,boot,objective);
@@ -1231,7 +1231,7 @@ CheckPlayerVehiclesForDesync(playerid) {
 		if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID && GetVehicleModel(PlayerVehicleInfo[playerid][i][pvId]) != PlayerVehicleInfo[playerid][i][pvModelId]) {
 			UnloadPlayerVehicles(playerid);
 			LoadPlayerVehicles(playerid);
-			return SendClientMessageEx(playerid, COLOR_YELLOW, "Your vehicles were de-synced; they have been respawned to ensure no conflicts arise.");
+			return SendClientMessageEx(playerid, COLOR_YELLOW, "Xe cua ban bi mat dong bo, da duoc tao lai de tranh xung dot.");
 	    }
 	}
 	return 1;
@@ -1370,12 +1370,12 @@ stock SetVehicleLights(vehicleid, playerid)
     if(lights == VEHICLE_PARAMS_ON)
 	{
 		SetVehicleParamsEx(vehicleid,engine,VEHICLE_PARAMS_OFF,alarm,doors,bonnet,boot,objective);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle lights successfully turned off.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da tat den xe.");
 	}
     else if(lights == VEHICLE_PARAMS_OFF || lights == VEHICLE_PARAMS_UNSET)
 	{
 		SetVehicleParamsEx(vehicleid,engine,VEHICLE_PARAMS_ON,alarm,doors,bonnet,boot,objective);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle lights successfully turned on.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da bat den xe.");
 	}
 	return 1;
 }
@@ -1387,12 +1387,12 @@ stock SetVehicleHood(vehicleid, playerid)
     if(bonnet == VEHICLE_PARAMS_ON)
 	{
 		SetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,VEHICLE_PARAMS_OFF,boot,objective);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle hood successfully closed.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da dong nap capo.");
 	}
     else if(bonnet == VEHICLE_PARAMS_OFF || bonnet == VEHICLE_PARAMS_UNSET)
 	{
 		SetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,VEHICLE_PARAMS_ON,boot,objective);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle hood successfully opened.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da mo nap capo.");
 	}
 	return 1;
 }
@@ -1404,12 +1404,12 @@ stock SetVehicleTrunk(vehicleid, playerid)
     if(boot == VEHICLE_PARAMS_ON)
 	{
 		SetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,VEHICLE_PARAMS_OFF,objective);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle trunk successfully closed.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da dong cop xe.");
 	}
     else if(boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)
 	{
 		SetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,VEHICLE_PARAMS_ON,objective);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle trunk successfully opened.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Da mo cop xe.");
 	}
 	return 1;
 }
@@ -1421,12 +1421,12 @@ stock SetVehicleDoors(vehicleid, playerid)
     if(doors == VEHICLE_PARAMS_ON)
 	{
 		SetVehicleParamsEx(vehicleid,engine,lights,alarm,VEHICLE_PARAMS_OFF,bonnet,boot,objective);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle {AA3333}Doors {FFFFFF}successfully {33AA33}closed{FFFFFF}.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Cua xe {AA3333}da {FFFFFF}duoc {33AA33}dong{FFFFFF}.");
 	}
     else if(doors == VEHICLE_PARAMS_OFF || doors == VEHICLE_PARAMS_UNSET)
 	{
 		SetVehicleParamsEx(vehicleid,engine,lights,alarm,VEHICLE_PARAMS_ON,bonnet,boot,objective);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle {AA3333}Doors {FFFFFF}successfully {33AA33}opened{FFFFFF}.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Cua xe {AA3333}da {FFFFFF}duoc {33AA33}mo{FFFFFF}.");
 	}
 	return 1;
 }
@@ -1594,7 +1594,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
 		RemovePlayerFromVehicle(playerid);
 		defer NOPCheck(playerid);
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be in a Pizzaboy when delivering pizzas!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban phai ngoi tren Pizzaboy khi giao pizza!");
 		return 1;
 	}
 	if(!ispassenger)
@@ -1607,7 +1607,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			SetPlayerPos(playerid, slx, sly, slz+1.3);
 			RemovePlayerFromVehicle(playerid);
 			defer NOPCheck(playerid);
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot drive any vehicles while your account is restricted!");
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong the lai xe khi tai khoan dang bi han che!");
 		}
 		if(IsVIPcar(vehicleid))
 		{
@@ -1619,7 +1619,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 				PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
 			    RemovePlayerFromVehicle(playerid);
 			    defer NOPCheck(playerid);
-			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a VIP, this is a vehicle from the VIP Garage!");
+			    SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong phai VIP, day la xe cua VIP Garage!");
 			}
 		}
 		else if(IsWeaponizedVehicle(GetVehicleModel(vehicleid)))
@@ -1629,7 +1629,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 				if(gettime() > GetPVarInt(playerid, "timeWepVeh"))
 				{
 					new szString[128];
-					format(szString, sizeof(szString), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) has entered a weaponized vehicle (Vehicle ID: %d) (Level: %d)", GetPlayerNameEx(playerid), playerid, vehicleid, PlayerInfo[playerid][pLevel]);
+					format(szString, sizeof(szString), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) da len xe vu trang (Vehicle ID: %d) (Cap: %d)", GetPlayerNameEx(playerid), playerid, vehicleid, PlayerInfo[playerid][pLevel]);
 					ABroadCast(COLOR_YELLOW, szString, 2);
 					SetPVarInt(playerid, "timeWepVeh", gettime()+5);
 				}
@@ -1649,7 +1649,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 						PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
 					    RemovePlayerFromVehicle(playerid);
 					    defer NOPCheck(playerid);
-					    SendClientMessageEx(playerid, COLOR_GRAD2, "This is a Old-School+ Vehicle, therefore you may not drive this.");
+					    SendClientMessageEx(playerid, COLOR_GRAD2, "Day la xe Old-School+, ban khong duoc phep lai.");
 					}
 				}
 				else if(IsCOSModel(vehicleid))
@@ -1662,7 +1662,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 						PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
 					    RemovePlayerFromVehicle(playerid);
 					    defer NOPCheck(playerid);
-					    SendClientMessageEx(playerid, COLOR_GRAD2, "This is a Chartered Old-School+ Vehicle, therefore you may not drive this.");
+					    SendClientMessageEx(playerid, COLOR_GRAD2, "Day la xe Chartered Old-School+, ban khong duoc phep lai.");
 					}
 				}
 				else if(IsFamedModel(vehicleid))
@@ -1675,7 +1675,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 						PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
 					    RemovePlayerFromVehicle(playerid);
 					    defer NOPCheck(playerid);
-					    SendClientMessageEx(playerid, COLOR_GRAD2, "This is a Famed+ Vehicle, therefore you may not drive this.");
+					    SendClientMessageEx(playerid, COLOR_GRAD2, "Day la xe Famed+, ban khong duoc phep lai.");
 					}
 				}
 			}
@@ -1690,7 +1690,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 				PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
 			    RemovePlayerFromVehicle(playerid);
 			    defer NOPCheck(playerid);
-			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Pizza Boy!");
+			    SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong phai Pizza Boy!");
 			}
 		}
 
@@ -1701,46 +1701,46 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 				new iTruckContents = TruckContents{vehicleid};
 				new truckcontentname[50];
 				if(iTruckContents == 1)
-				{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Food & beverages");}
+				{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Thuc an & do uong");}
 				else if(iTruckContents == 2)
 				{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Clothing"); }
 				else if(iTruckContents == 3)
-				{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Legal materials"); }
+				{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Vat lieu hop phap"); }
 				else if(iTruckContents == 4)
-				{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}24/7 items"); }
+				{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Hang 24/7"); }
 				else if(iTruckContents == 5)
-				{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Illegal weapons"); }
+				{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Vu khi bat hop phap"); }
 				else if(iTruckContents == 6)
-				{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Illegal drugs"); }
+				{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Ma tuy bat hop phap"); }
 				else if(iTruckContents == 7)
-				{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Illegal materials"); }
+				{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Vat lieu bat hop phap"); }
 				if(iTruckContents == 0)
 				{ format(truckcontentname, sizeof(truckcontentname), "%s",  GetInventoryType(TruckDeliveringTo[vehicleid])); }
-				SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR: (Vehicle registration: %s %d) - (Content: %s{FFFF00})", GetVehicleName(vehicleid), vehicleid, truckcontentname);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR: (Dang ky xe: %s %d) - (Hang hoa: %s{FFFF00})", GetVehicleName(vehicleid), vehicleid, truckcontentname);
 
 				if(IsACop(playerid))
 				{
-					SendClientMessageEx(playerid, COLOR_DBLUE, "LAW ENFORCEMENT: To remove any illegal goods type /clearcargo near the Vehicle.");
+					SendClientMessageEx(playerid, COLOR_DBLUE, "LAW ENFORCEMENT: Dung /clearcargo gan xe de tich thu hang cam.");
 				}
 				if(TruckDeliveringTo[vehicleid] != INVALID_BUSINESS_ID && TruckUsed[playerid] == INVALID_VEHICLE_ID)
 				{
-					SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: To deliver the goods type /hijackcargo as the driver.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: Ngoi ghe lai va dung /hijackcargo de giao hang.");
 				}
 				else if(TruckUsed[playerid] == INVALID_VEHICLE_ID)
 				{
-    				SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: To get goods type /loadshipment as the driver.");
+    				SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: Ngoi ghe lai va dung /loadshipment de lay hang.");
 				}
 				else if(TruckUsed[playerid] == vehicleid && gPlayerCheckpointStatus[playerid] == CHECKPOINT_RETURNTRUCK)
 				{
-					SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: This is your shipment, you have not returned it to the docks yet for your pay.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: Day la lo hang cua ban, hay ve ben cang de nhan tien cong.");
 				}
 				else if(TruckUsed[playerid] == vehicleid)
    				{
-      				SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: This is your shipment, you have not delivered your goods yet.");
+      				SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: Day la lo hang cua ban, ban chua giao hang xong.");
      			}
 				else if(TruckUsed[playerid] != INVALID_VEHICLE_ID)
    				{
-      				SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: You are already on another delivery, type /cancel shipment to cancel that delivery.");
+      				SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: Ban dang giao lo hang khac, dung /cancel shipment de huy chuyen do.");
      			}
 			}
 		    else if(!IsABoat(vehicleid))
@@ -1750,7 +1750,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 				GetPlayerPos(playerid, slx, sly, slz);
 				SetPlayerPos(playerid, slx, sly, slz);
 			    defer NOPCheck(playerid);
-			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Shipment Contractor!");
+			    SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong phai Shipment Contractor!");
 			}
 		}
 		else if(IsInGarbageTruck(vehicleid))
@@ -1760,7 +1760,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			}
 		    else
 			{
-		        SendClientMessageEx(playerid,COLOR_GREY,"   You are not a Garbage Man!");
+		        SendClientMessageEx(playerid,COLOR_GREY,"   Ban khong phai Garbage Man!");
 		        RemovePlayerFromVehicle(playerid);
 		        new Float:slx, Float:sly, Float:slz;
 				GetPlayerPos(playerid, slx, sly, slz);
@@ -1778,7 +1778,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 					GetPlayerPos(playerid, slx, sly, slz);
 					SetPlayerPos(playerid, slx, sly, slz);
 					defer NOPCheck(playerid);
-					SendClientMessageEx(playerid,COLOR_GREY,"You don't have a pilot license!");
+					SendClientMessageEx(playerid,COLOR_GREY,"Ban khong co bang lai may bay!");
 				}
 	  		}
 		}
@@ -1794,7 +1794,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			}
 		    else
 			{
-		        SendClientMessageEx(playerid,COLOR_GREY,"   You are not a Taxi/Bus Driver!");
+		        SendClientMessageEx(playerid,COLOR_GREY,"   Ban khong phai Taxi/Bus Driver!");
 		        RemovePlayerFromVehicle(playerid);
 		        new Float:slx, Float:sly, Float:slz;
 				GetPlayerPos(playerid, slx, sly, slz);
@@ -1805,7 +1805,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		{
 			if(!IsATaxiDriver(playerid))
 			{
-				SendClientMessageEx(playerid,COLOR_GREY,"   You are not part of a transportation department!");
+				SendClientMessageEx(playerid,COLOR_GREY,"   Ban khong thuoc don vi van tai!");
 				RemovePlayerFromVehicle(playerid);
 				new Float:slx, Float:sly, Float:slz;
 				GetPlayerPos(playerid, slx, sly, slz);
@@ -1829,9 +1829,9 @@ CMD:carhelp(playerid, params[])
 CMD:ocarhelp(playerid, params[])
 {
     SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-    SendClientMessageEx(playerid, COLOR_WHITE,"*** CAR OWNERSHIP HELP *** - type a command for more infomation.");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"*** CAR OWNERSHIP *** /lock /pvlock /park /parktrailer /unmodcar /deletecar /sellmycar /trackcar");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"*** CAR OWNERSHIP *** /dmvmenu /givekeys /carkeys /trunkput /trunktake /car /refuel");
+    SendClientMessageEx(playerid, COLOR_WHITE,"*** HUONG DAN SO HUU XE *** - go lenh de xem chi tiet.");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"*** SO HUU XE *** /lock /pvlock /park /parktrailer /unmodcar /deletecar /sellmycar /trackcar");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"*** SO HUU XE *** /dmvmenu /givekeys /carkeys /trunkput /trunktake /car /refuel");
     return 1;
 }
 
@@ -1840,31 +1840,31 @@ CMD:car(playerid, params[])
 	new string[128], choice[8], id;
 	if(sscanf(params, "s[8]D(0)", choice, id))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /car [name]");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Status, Engine, Lights, Trunk, Hood, Fuel, Window [0-3], Windows");
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /car [name]");
+		SendClientMessageEx(playerid, COLOR_GREY, "Cac tuy chon: Status, Engine, Lights, Trunk, Hood, Fuel, Window [0-3], Windows");
 		return 1;
 	}
 	if(strcmp(choice, "engine", true) == 0 && IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
 		new engine,lights,alarm,doors,bonnet,boot,objective,vehicleid;
 		vehicleid = GetPlayerVehicleID(playerid);
-		if(GetVehicleModel(vehicleid) == 481 || GetVehicleModel(vehicleid) == 509 || GetVehicleModel(vehicleid) == 510 || DynVeh[vehicleid] != -1 && DynVehicleInfo[DynVeh[vehicleid]][gv_iType] == 1 && GetVehicleModel(vehicleid) == 592) return SendClientMessageEx(playerid,COLOR_WHITE,"This command can't be used in this vehicle.");
-		if(WheelClamp{vehicleid}) return SendClientMessageEx(playerid,COLOR_WHITE,"(( This vehicle has a wheel camp on its front tire, you will not be able to drive away with it. ))");
+		if(GetVehicleModel(vehicleid) == 481 || GetVehicleModel(vehicleid) == 509 || GetVehicleModel(vehicleid) == 510 || DynVeh[vehicleid] != -1 && DynVehicleInfo[DynVeh[vehicleid]][gv_iType] == 1 && GetVehicleModel(vehicleid) == 592) return SendClientMessageEx(playerid,COLOR_WHITE,"Khong the dung lenh nay trong xe nay.");
+		if(WheelClamp{vehicleid}) return SendClientMessageEx(playerid,COLOR_WHITE,"(( Lop truoc cua xe nay dang bi khoa banh, ban khong the lai xe di. ))");
 
 		GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
 		if(engine == VEHICLE_PARAMS_ON)
 		{
 			SetVehicleEngine(vehicleid, playerid);
-			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s turns the key in the ignition and the engine stops.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s van chia khoa va tat dong co.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		else if((engine == VEHICLE_PARAMS_OFF || engine == VEHICLE_PARAMS_UNSET))
 		{
-			if (GetPVarInt(playerid, "Refueling")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while refueling.");
+			if (GetPVarInt(playerid, "Refueling")) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong the lam vay khi dang do xang.");
 			// if(!Vehicle_LockCheck(playerid, vehicleid)) return 1;
-			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s turns the key in the ignition and the engine starts.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s van chia khoa va khoi dong co.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-			SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine starting, please wait...");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Dong co dang khoi dong, vui long cho...");
 			SetTimerEx("SetVehicleEngine", 1000, false, "dd",  vehicleid, playerid);
 			RemoveVehicleFromMeter(vehicleid);
 		}
@@ -1872,7 +1872,7 @@ CMD:car(playerid, params[])
 	else if(strcmp(choice, "lights", true) == 0 && IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
-		if(GetVehicleModel(vehicleid) == 481 || GetVehicleModel(vehicleid) == 509 || GetVehicleModel(vehicleid) == 510) return SendClientMessageEx(playerid,COLOR_WHITE,"This command can't be used in this vehicle.");
+		if(GetVehicleModel(vehicleid) == 481 || GetVehicleModel(vehicleid) == 509 || GetVehicleModel(vehicleid) == 510) return SendClientMessageEx(playerid,COLOR_WHITE,"Khong the dung lenh nay trong xe nay.");
 		SetVehicleLights(vehicleid, playerid);
 	}
 	else if(strcmp(choice, "hood", true) == 0)
@@ -1882,7 +1882,7 @@ CMD:car(playerid, params[])
 			new vehicleid = GetPlayerVehicleID(playerid);
 			if(GetVehicleModel(vehicleid) == 481 || GetVehicleModel(vehicleid) == 509 || GetVehicleModel(vehicleid) == 510 || IsAPlane(vehicleid) || IsABike(vehicleid))
 			{
-				return SendClientMessageEx(playerid,COLOR_WHITE,"This command can't be used in this vehicle.");
+				return SendClientMessageEx(playerid,COLOR_WHITE,"Khong the dung lenh nay trong xe nay.");
 			}
 			SetVehicleHood(vehicleid, playerid);
 		}
@@ -1893,7 +1893,7 @@ CMD:car(playerid, params[])
 			{
 				if(GetVehicleModel(closestcar) == 481 || GetVehicleModel(closestcar) == 509 || GetVehicleModel(closestcar) == 510 || IsAPlane(closestcar) || IsABike(closestcar))
 				{
-					return SendClientMessageEx(playerid,COLOR_WHITE,"This command can't be used on this vehicle.");
+					return SendClientMessageEx(playerid,COLOR_WHITE,"Lenh nay khong dung duoc voi xe nay.");
 				}
 				SetVehicleHood(closestcar, playerid);
 			}
@@ -1906,9 +1906,9 @@ CMD:car(playerid, params[])
 			new vehicleid = GetPlayerVehicleID(playerid);
 			if(GetVehicleModel(vehicleid) == 481 || GetVehicleModel(vehicleid) == 509 || GetVehicleModel(vehicleid) == 510)
 			{
-				return SendClientMessageEx(playerid,COLOR_WHITE,"This command can't be used in this vehicle.");
+				return SendClientMessageEx(playerid,COLOR_WHITE,"Khong the dung lenh nay trong xe nay.");
 			}
-			if(CarryCrate[playerid] != -1) return SendClientMessageEx(playerid,COLOR_WHITE,"You need both hands to open the car trunk!"); 
+			if(CarryCrate[playerid] != -1) return SendClientMessageEx(playerid,COLOR_WHITE,"Ban can ca hai tay de mo cop xe!"); 
 			SetVehicleTrunk(vehicleid, playerid);
 		}
 		else if(!IsPlayerInAnyVehicle(playerid))
@@ -1918,9 +1918,9 @@ CMD:car(playerid, params[])
 			{
 				if(GetVehicleModel(closestcar) == 481 || GetVehicleModel(closestcar) == 509 || GetVehicleModel(closestcar) == 510)
 				{
-					return SendClientMessageEx(playerid,COLOR_WHITE,"This command can't be used on this vehicle.");
+					return SendClientMessageEx(playerid,COLOR_WHITE,"Lenh nay khong dung duoc voi xe nay.");
 				}
-				if(CarryCrate[playerid] != -1) return SendClientMessageEx(playerid,COLOR_WHITE,"You need both hands to open the car trunk!"); 
+				if(CarryCrate[playerid] != -1) return SendClientMessageEx(playerid,COLOR_WHITE,"Ban can ca hai tay de mo cop xe!"); 
 				SetVehicleTrunk(closestcar, playerid);
 			}
 		}
@@ -1930,14 +1930,14 @@ CMD:car(playerid, params[])
 		new vehicleid = GetPlayerVehicleID(playerid);
 		new engine,lights,alarm,doors,bonnet,boot,objective,enginestatus[4],lightstatus[4];
 		GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
-		if(!IsRefuelableVehicle(vehicleid)) return SendClientMessageEx(playerid,COLOR_RED,"This vehicle doesn't need fuel.");
-		if(engine != VEHICLE_PARAMS_ON) strcpy(enginestatus, "OFF", 4);
-		else strcpy(enginestatus, "ON", 3);
-		if(lights != VEHICLE_PARAMS_ON) strcpy(lightstatus, "OFF", 4);
-		else strcpy(lightstatus, "ON", 3);
+		if(!IsRefuelableVehicle(vehicleid)) return SendClientMessageEx(playerid,COLOR_RED,"Xe nay khong can nhien lieu.");
+		if(engine != VEHICLE_PARAMS_ON) strcpy(enginestatus, "TAT", 4);
+		else strcpy(enginestatus, "BAT", 3);
+		if(lights != VEHICLE_PARAMS_ON) strcpy(lightstatus, "TAT", 4);
+		else strcpy(lightstatus, "BAT", 3);
 
-		if(IsVIPcar(vehicleid) || IsAdminSpawnedVehicle(vehicleid) || IsFamedVeh(vehicleid)) format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: Unlimited",enginestatus,lightstatus);
-		else format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: %.1f%s",enginestatus,lightstatus, VehicleFuel[vehicleid], "%");
+		if(IsVIPcar(vehicleid) || IsAdminSpawnedVehicle(vehicleid) || IsFamedVeh(vehicleid)) format(string, sizeof(string), "Dong co: %s | Den: %s | Xang: Vo han",enginestatus,lightstatus);
+		else format(string, sizeof(string), "Dong co: %s | Den: %s | Xang: %.1f%s",enginestatus,lightstatus, VehicleFuel[vehicleid], "%");
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 	}
 	else if(strcmp(choice, "status", true) == 0 && IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
@@ -1945,20 +1945,20 @@ CMD:car(playerid, params[])
 		new vehicleid = GetPlayerVehicleID(playerid), slot = GetPlayerVehicle(playerid, vehicleid);
 		new engine,lights,alarm,doors,bonnet,boot,objective,enginestatus[4],lightstatus[4];
 		GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
-		if(!IsRefuelableVehicle(vehicleid)) return SendClientMessageEx(playerid,COLOR_RED,"This vehicle doesn't need fuel.");
-		if(engine != VEHICLE_PARAMS_ON) strcpy(enginestatus, "OFF", 4);
-		else strcpy(enginestatus, "ON", 3);
-		if(lights != VEHICLE_PARAMS_ON) strcpy(lightstatus, "OFF", 4);
-		else strcpy(lightstatus, "ON", 3);
-		if (IsVIPcar(vehicleid) || IsAdminSpawnedVehicle(vehicleid) || IsFamedVeh(vehicleid)) format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: Unlimited | Windows: %s",enginestatus,lightstatus,(VehInfo[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"));
-		else if(slot != -1) format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: %.1f percent | Windows: %s | Lock Durability: %d/5",enginestatus,lightstatus, VehicleFuel[vehicleid], (VehInfo[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"), PlayerVehicleInfo[playerid][slot][pvLocksLeft]);
-		else format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: %.1f percent | Windows: %s",enginestatus,lightstatus, VehicleFuel[vehicleid], (VehInfo[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"));
+		if(!IsRefuelableVehicle(vehicleid)) return SendClientMessageEx(playerid,COLOR_RED,"Xe nay khong can nhien lieu.");
+		if(engine != VEHICLE_PARAMS_ON) strcpy(enginestatus, "TAT", 4);
+		else strcpy(enginestatus, "BAT", 3);
+		if(lights != VEHICLE_PARAMS_ON) strcpy(lightstatus, "TAT", 4);
+		else strcpy(lightstatus, "BAT", 3);
+		if (IsVIPcar(vehicleid) || IsAdminSpawnedVehicle(vehicleid) || IsFamedVeh(vehicleid)) format(string, sizeof(string), "Dong co: %s | Den: %s | Xang: Vo han | Kinh: %s",enginestatus,lightstatus,(VehInfo[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Len") : ("Xuong"));
+		else if(slot != -1) format(string, sizeof(string), "Dong co: %s | Den: %s | Xang: %.1f percent | Kinh: %s | Do ben khoa: %d/5",enginestatus,lightstatus, VehicleFuel[vehicleid], (VehInfo[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Len") : ("Xuong"), PlayerVehicleInfo[playerid][slot][pvLocksLeft]);
+		else format(string, sizeof(string), "Dong co: %s | Den: %s | Xang: %.1f percent | Kinh: %s",enginestatus,lightstatus, VehicleFuel[vehicleid], (VehInfo[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Len") : ("Xuong"));
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 	}
 	else if(strcmp(choice, "window", true) == 0 && IsPlayerInAnyVehicle(playerid) && !IsABike(GetPlayerVehicleID(playerid)) && !IsABoat(GetPlayerVehicleID(playerid)))
 	{
-		if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do that at this time.");
-		if(NoWindows(GetPlayerVehicleID(playerid))) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do use this on this type of vehicle.");
+		if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the lam viec nay luc nay.");
+		if(NoWindows(GetPlayerVehicleID(playerid))) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung tinh nang nay voi loai xe nay.");
 		new driver, passenger, backleft, backright;
 		GetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, passenger, backleft, backright);
 		if((GetPlayerState(playerid) == PLAYER_STATE_DRIVER && id == 0) || (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER && GetPlayerVehicleSeat(playerid) == 0))
@@ -1966,46 +1966,46 @@ CMD:car(playerid, params[])
 			if(VehInfo[GetPlayerVehicleID(playerid)][vCarWindow0]) VehInfo[GetPlayerVehicleID(playerid)][vCarWindow0] = 0;
 			else VehInfo[GetPlayerVehicleID(playerid)][vCarWindow0] = 1;
 			SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), !driver, passenger, backleft, backright);
-			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the driver-side window %s.", GetPlayerNameEx(playerid), (VehInfo[GetPlayerVehicleID(playerid)][vCarWindow0] == 0) ? ("up") : ("down"));
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s quay kinh cua ghe lai %s.", GetPlayerNameEx(playerid), (VehInfo[GetPlayerVehicleID(playerid)][vCarWindow0] == 0) ? ("len") : ("xuong"));
 		}
 		else if((GetPlayerState(playerid) == PLAYER_STATE_DRIVER && id == 1) || (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER && GetPlayerVehicleSeat(playerid) == 1))
 		{
 			if(VehInfo[GetPlayerVehicleID(playerid)][vCarWindow1]) VehInfo[GetPlayerVehicleID(playerid)][vCarWindow1] = 0;
 			else VehInfo[GetPlayerVehicleID(playerid)][vCarWindow1] = 1;
 			SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, !passenger, backleft, backright);
-			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the passenger-side window %s.", GetPlayerNameEx(playerid), (VehInfo[GetPlayerVehicleID(playerid)][vCarWindow1] == 0) ? ("up") : ("down"));
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s quay kinh cua ghe phu %s.", GetPlayerNameEx(playerid), (VehInfo[GetPlayerVehicleID(playerid)][vCarWindow1] == 0) ? ("len") : ("xuong"));
 		}
 		else if((GetPlayerState(playerid) == PLAYER_STATE_DRIVER && id == 2) || (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER && GetPlayerVehicleSeat(playerid) == 2))
 		{
 			if(VehInfo[GetPlayerVehicleID(playerid)][vCarWindow2]) VehInfo[GetPlayerVehicleID(playerid)][vCarWindow2] = 0;
 			else VehInfo[GetPlayerVehicleID(playerid)][vCarWindow2] = 1;
 			SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, passenger, !backleft, backright);
-			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the rear driver-side window %s.", GetPlayerNameEx(playerid), (VehInfo[GetPlayerVehicleID(playerid)][vCarWindow2] == 0) ? ("up") : ("down"));
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s quay kinh cua sau ben lai %s.", GetPlayerNameEx(playerid), (VehInfo[GetPlayerVehicleID(playerid)][vCarWindow2] == 0) ? ("len") : ("xuong"));
 		}
 		else if((GetPlayerState(playerid) == PLAYER_STATE_DRIVER && id == 3) || (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER && GetPlayerVehicleSeat(playerid) == 3))
 		{
 			if(VehInfo[GetPlayerVehicleID(playerid)][vCarWindow3]) VehInfo[GetPlayerVehicleID(playerid)][vCarWindow3] = 0;
 			else VehInfo[GetPlayerVehicleID(playerid)][vCarWindow3] = 1;
 			SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, passenger, backleft, !backright);
-			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the rear passenger-side window %s.", GetPlayerNameEx(playerid), (VehInfo[GetPlayerVehicleID(playerid)][vCarWindow3] == 0) ? ("up") : ("down"));
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s quay kinh cua sau ben phu %s.", GetPlayerNameEx(playerid), (VehInfo[GetPlayerVehicleID(playerid)][vCarWindow3] == 0) ? ("len") : ("xuong"));
 		}
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	}
 	else if(strcmp(choice, "windows", true) == 0 && IsPlayerInAnyVehicle(playerid) && !IsABike(GetPlayerVehicleID(playerid)) && !IsABoat(GetPlayerVehicleID(playerid)))
 	{
-		if(NoWindows(GetPlayerVehicleID(playerid))) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do use this on this type of vehicle.");
+		if(NoWindows(GetPlayerVehicleID(playerid))) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung tinh nang nay voi loai xe nay.");
 		new driver, passenger, backleft, backright;
 		GetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, passenger, backleft, backright);
 		SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), !driver, !passenger, !backleft, !backright);
 	    if(VehInfo[GetPlayerVehicleID(playerid)][vCarWindows])
 	    {
 	    	VehInfo[GetPlayerVehicleID(playerid)][vCarWindows] = 0;
-			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds their windows up.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s keo kinh xe len.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	    }
 	    else {
             VehInfo[GetPlayerVehicleID(playerid)][vCarWindows] = 1;
-			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds their windows down.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s ha kinh xe xuong.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	    }
 	}
@@ -2040,7 +2040,7 @@ CMD:window(playerid, params[]) {
             TogglePlayerSpectating(playerid, true);
             PlayerSpectateVehicle(playerid, InsidePlane[playerid]);
 
-            format(szMiscArray, sizeof(szMiscArray), "* %s glances out the window.", GetPlayerNameEx(playerid));
+            format(szMiscArray, sizeof(szMiscArray), "* %s nhin ra ngoai cua kinh.", GetPlayerNameEx(playerid));
             ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
         }
         else 
@@ -2058,19 +2058,19 @@ CMD:lock(playerid, params[])
 	{
  		if(IsPlayerInAnyVehicle(playerid))
    		{
-			if(PlayerInfo[playerid][pLockCar] != GetPlayerVehicleID(playerid) && PlayerInfo[playerid][pLockCar] != INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a lock for this vehicle!");
-   			if(GetPlayerVehicleSeat(playerid) != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Can't lock vehicles as a passenger!");
+			if(PlayerInfo[playerid][pLockCar] != GetPlayerVehicleID(playerid) && PlayerInfo[playerid][pLockCar] != INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua lap khoa cho xe nay!");
+   			if(GetPlayerVehicleSeat(playerid) != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the khoa xe khi ngoi ghe hanh khach!");
    			new v = -1;
    			foreach(new i: Player)
 			{
 				v = GetPlayerVehicle(i, GetPlayerVehicleID(playerid));
-				if(v != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Can't lock player-owned vehicles!");
+				if(v != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the khoa xe thuoc so huu nguoi choi!");
 			}	
    			if(PlayerInfo[playerid][pLockCar] == INVALID_VEHICLE_ID) PlayerInfo[playerid][pLockCar] = GetPlayerVehicleID(playerid);
       		if(LockStatus{GetPlayerVehicleID(playerid)} == 0)
         	{
 				LockStatus{GetPlayerVehicleID(playerid)} = 1;
-    			GameTextForPlayer(playerid, "~r~locked", 1000, 6);
+    			GameTextForPlayer(playerid, "~r~da khoa", 1000, 6);
        			PlayerPlaySound(playerid, 1145, 0.0, 0.0, 0.0);
           		vehicle_lock_doors(PlayerInfo[playerid][pLockCar]);
       		}
@@ -2078,7 +2078,7 @@ CMD:lock(playerid, params[])
 	        {
 				LockStatus{GetPlayerVehicleID(playerid)} = 0;
    				vehicle_unlock_doors(PlayerInfo[playerid][pLockCar]);
-      			GameTextForPlayer(playerid, "~g~unlocked", 1000, 6);
+      			GameTextForPlayer(playerid, "~g~da mo khoa", 1000, 6);
         		PlayerPlaySound(playerid, 1145, 0.0, 0.0, 0.0);
  	        }
    		}
@@ -2091,26 +2091,26 @@ CMD:lock(playerid, params[])
          		if(LockStatus{PlayerInfo[playerid][pLockCar]} == 0)
            		{
             		vehicle_lock_doors(PlayerInfo[playerid][pLockCar]);
-            		GameTextForPlayer(playerid, "~r~locked", 1000, 6);
+            		GameTextForPlayer(playerid, "~r~da khoa", 1000, 6);
 	            	PlayerPlaySound(playerid, 1145, 0.0, 0.0, 0.0);
  	            }
  	            else
  	            {
 	            	vehicle_unlock_doors(PlayerInfo[playerid][pLockCar]);
-	            	GameTextForPlayer(playerid, "~g~unlocked", 1000, 6);
+	            	GameTextForPlayer(playerid, "~g~da mo khoa", 1000, 6);
 	            	PlayerPlaySound(playerid, 1145, 0.0, 0.0, 0.0);
           		}
    	        }
    	        else
    	        {
-            	SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near your vehicle!");
+            	SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan xe cua minh!");
 	            return 1;
    	        }
        	}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, " You do not have a lock!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, " Ban khong co khoa!");
 		return 1;
  	}
 	return 1;
@@ -2118,40 +2118,40 @@ CMD:lock(playerid, params[])
 
 CMD:vstorage(playerid, params[])
 {
-	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
+	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong the lam viec nay luc nay.");
 	if(PlayerInfo[playerid][pFreezeCar] == 0 || PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new vstring[4096], icount = GetPlayerVehicleSlots(playerid);
 		new szCarLocation[MAX_ZONE_NAME];
-		format(vstring, sizeof(vstring), "Vehicle\tStatus\tLocation\tTickets\n");
+		format(vstring, sizeof(vstring), "Xe\tTrang thai\tVi tri\tTien phat\n");
 		for(new i, iModelID; i < icount; i++) {
 			if((iModelID = PlayerVehicleInfo[playerid][i][pvModelId] - 400) >= 0) {
 				new vehicleName[18];
 				Get3DZone(PlayerVehicleInfo[playerid][i][pvPosX], PlayerVehicleInfo[playerid][i][pvPosY], PlayerVehicleInfo[playerid][i][pvPosZ], szCarLocation, sizeof(szCarLocation));
 				if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
 					strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
-					format(vstring, sizeof(vstring), "%s%s\tImpounded\tDillimore DMV\t$%s\n", vstring, vehicleName, number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
+					format(vstring, sizeof(vstring), "%s%s\tTam giu\tDillimore DMV\t$%s\n", vstring, vehicleName, number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
 				}
 				else if(PlayerVehicleInfo[playerid][i][pvDisabled]) {
 					strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
-					format(vstring, sizeof(vstring), "%s%s\tDisabled\t--\t$%s\n", vstring, vehicleName, number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
+					format(vstring, sizeof(vstring), "%s%s\tBi tat\t--\t$%s\n", vstring, vehicleName, number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
 				}
 				else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
 					strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
-					format(vstring, sizeof(vstring), "%s%s\tStored\t--\t$%s\n", vstring, vehicleName, number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
+					format(vstring, sizeof(vstring), "%s%s\tDa cat\t--\t$%s\n", vstring, vehicleName, number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
 				}
 				else {
 					strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
-					format(vstring, sizeof(vstring), "%s%s\tSpawned\t%s\t$%s\n", vstring, vehicleName, szCarLocation, number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
+					format(vstring, sizeof(vstring), "%s%s\tDa lay\t%s\t$%s\n", vstring, vehicleName, szCarLocation, number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
 				}
 			}
-			else strcat(vstring, "Empty\t--\t--\t--\t--\n");
+			else strcat(vstring, "Trong\t--\t--\t--\t--\n");
 		}
 		format(vstring, sizeof(vstring), "%s{40FFFF}Additional Vehicle Slot\t{FFD700}(Credits: %s){A9C4E4}\t\t\n", vstring, number_format(ShopItems[23][sItemPrice]));
 
-		ShowPlayerDialogEx(playerid, VEHICLESTORAGE, DIALOG_STYLE_TABLIST_HEADERS, "Vehicle storage", vstring, "(De)spawn", "Cancel");
+		ShowPlayerDialogEx(playerid, VEHICLESTORAGE, DIALOG_STYLE_TABLIST_HEADERS, "Kho xe", vstring, "(De)spawn", "Huy");
 	}
-	else { return SendClientMessageEx(playerid, COLOR_GRAD2, "Your vehicle assets have been frozen by the Judiciary.  Consult your local courthouse to have this cleared"); }
+	else { return SendClientMessageEx(playerid, COLOR_GRAD2, "Tai san xe cua ban bi Judiciary dong bang. Hay lien he toa an dia phuong de giai quyet"); }
 	return 1;
 }
 /*
@@ -2191,7 +2191,7 @@ CMD:vstorage(playerid, params[])
 CMD:trackcar(playerid, params[])
 {
     if(GetPVarType(playerid, "RentedVehicle")) {
-        ShowPlayerDialogEx(playerid, TRACKCAR2, DIALOG_STYLE_LIST, "Vehicle GPS Tracking", "Rented Vehicle\nOwned Vehicles", "Track", "Cancel");
+        ShowPlayerDialogEx(playerid, TRACKCAR2, DIALOG_STYLE_LIST, "Theo doi GPS xe", "Xe thue\nXe so huu", "Theo doi", "Huy");
 	}
 	else
 	{
@@ -2206,23 +2206,23 @@ CMD:trackcar(playerid, params[])
 				Get3DZone(PlayerVehicleInfo[playerid][i][pvPosX], PlayerVehicleInfo[playerid][i][pvPosY], PlayerVehicleInfo[playerid][i][pvPosZ], szCarLocation, sizeof(szCarLocation));
 				if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
 					strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
-					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded) | Location: DMV", szMiscArray, vehicleName);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (tam giu) | Vi tri: DMV", szMiscArray, vehicleName);
 				}
 				else if(PlayerVehicleInfo[playerid][i][pvDisabled]) {
 					strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
-					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (disabled) | Location: Unknown", szMiscArray, vehicleName);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (bi tat) | Vi tri: Chua ro", szMiscArray, vehicleName);
 				}
 				else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
 					strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
-					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (stored)", szMiscArray, vehicleName);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (da cat)", szMiscArray, vehicleName);
 				}
 				else {
 					strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
-					format(szMiscArray, sizeof(szMiscArray), "%s\n%s | Location: %s", szMiscArray, vehicleName, szCarLocation);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s | Vi tri: %s", szMiscArray, vehicleName, szCarLocation);
 				}
 			}
 		}
-		ShowPlayerDialogEx(playerid, TRACKCAR, DIALOG_STYLE_LIST, "Vehicle GPS Tracking", szMiscArray, "Track", "Cancel");
+		ShowPlayerDialogEx(playerid, TRACKCAR, DIALOG_STYLE_LIST, "Theo doi GPS xe", szMiscArray, "Theo doi", "Huy");
 	}
 	return 1;
 }
@@ -2243,17 +2243,17 @@ CMD:unmodcar(playerid, params[]) {
 		}
 		if (count == 0)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, " This vehicle does not have any modifications.");
+			SendClientMessageEx(playerid, COLOR_GREY, " Xe nay khong co phu tung do.");
 			return 1;
 		}
-		format(modList, sizeof(modList), "%s\nAll", modList);
+		format(modList, sizeof(modList), "%s\nHet", modList);
 		format(string, sizeof(string), "partList%d", count);
 		SetPVarInt(playerid, string, 999);
 		count++;
 		SetPVarInt(playerid, "modCount", count);
-		return ShowPlayerDialogEx(playerid, UNMODCARMENU, DIALOG_STYLE_LIST, "Remove Modifications", modList, "Select", "Cancel");
+		return ShowPlayerDialogEx(playerid, UNMODCARMENU, DIALOG_STYLE_LIST, "Thao phu tung do", modList, "Chon", "Huy");
 	}
-	SendClientMessageEx(playerid, COLOR_GREY, " You need to be inside a vehicle that you own.");
+	SendClientMessageEx(playerid, COLOR_GREY, " Ban can ngoi trong xe cua minh.");
  	return 1;
 }
 
@@ -2267,21 +2267,21 @@ CMD:deletecar(playerid, params[])
 			new vehicleName[18];
 			strunpack(vehicleName, VehicleName[iModelID], sizeof(vehicleName));
 			if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
-				format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded)", szMiscArray, vehicleName);
+				format(szMiscArray, sizeof(szMiscArray), "%s\n%s (tam giu)", szMiscArray, vehicleName);
 			}
 			else if(PlayerVehicleInfo[playerid][i][pvDisabled]) {
-				format(szMiscArray, sizeof(szMiscArray), "%s\n%s (disabled)", szMiscArray, vehicleName);
+				format(szMiscArray, sizeof(szMiscArray), "%s\n%s (bi tat)", szMiscArray, vehicleName);
 			}
 			else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
-				format(szMiscArray, sizeof(szMiscArray), "%s\n%s (stored)", szMiscArray, vehicleName);
+				format(szMiscArray, sizeof(szMiscArray), "%s\n%s (da cat)", szMiscArray, vehicleName);
 			}
 			else {
 				format(szMiscArray, sizeof(szMiscArray), "%s\n%s", szMiscArray, vehicleName);
 			}
 		}
-		else strcat(szMiscArray, "\nEmpty");
+		else strcat(szMiscArray, "\nTrong");
 	}
-	return ShowPlayerDialogEx(playerid, DIALOG_DELETECAR, DIALOG_STYLE_LIST, "Delete Vehicle", szMiscArray, "Delete", "Cancel");
+	return ShowPlayerDialogEx(playerid, DIALOG_DELETECAR, DIALOG_STYLE_LIST, "Xoa xe", szMiscArray, "Xoa", "Huy");
 }
 
 CMD:parktrailer(playerid, params[]) {
@@ -2296,7 +2296,7 @@ CMD:parktrailer(playerid, params[]) {
 				GetVehicleZAngle(iVehicleID, fVehiclePos[3]);
 				UpdatePlayerVehicleParkPosition(playerid, i, fVehiclePos[0], fVehiclePos[1], fVehiclePos[2], fVehiclePos[3], 1000.0, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 
-				format(szMessage, sizeof szMessage, "* %s has parked their trailer.", GetPlayerNameEx(playerid));
+				format(szMessage, sizeof szMessage, "* %s da do ro-mooc cua minh.", GetPlayerNameEx(playerid));
 				return ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
 			}
 		}
@@ -2315,18 +2315,18 @@ CMD:park(playerid, params[])
 	{
 	    new Float:x, Float:y, Float:z, Float:health;
 		GetVehicleHealth(iVehicle, health);
-  		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "You must be in the driver seat.");
-		if(health < 800) return SendClientMessageEx(playerid, COLOR_GREY, " Your vehicle is too damaged to park it.");
+  		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai ngoi ghe lai.");
+		if(health < 800) return SendClientMessageEx(playerid, COLOR_GREY, " Xe hong qua nang, khong the do.");
 		if(PlayerInfo[playerid][pLockCar] == GetPlayerVehicleID(playerid)) PlayerInfo[playerid][pLockCar] = INVALID_VEHICLE_ID;
 		GetPlayerPos(playerid, x, y, z);
 
 		SetTimerEx("ParkRentedVehicle", 1000, false, "iiifff", playerid, iVehicle, GetVehicleModel(iVehicle), x, y, z);
-		SendClientMessageEx (playerid, COLOR_YELLOW, "Do not move to have your vehicle parked!");
+		SendClientMessageEx (playerid, COLOR_YELLOW, "Dung di chuyen de do xe!");
 		return 1;
 	}
 	if (iVehicle != 0 && iBusiness != INVALID_BUSINESS_ID)
 	{
-	 	if (iBusiness != PlayerInfo[playerid][pBusiness]) return SendClientMessageEx(playerid, COLOR_WHITE, "You're not authorized to park this vehicle.");
+	 	if (iBusiness != PlayerInfo[playerid][pBusiness]) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong co quyen do xe nay.");
 		new
 			iSlot = GetBusinessCarSlot(iVehicle);
 
@@ -2344,11 +2344,11 @@ CMD:park(playerid, params[])
 
 		if(IsValidDynamic3DTextLabel(Businesses[iBusiness][bVehicleLabel][iSlot])) DestroyDynamic3DTextLabel(Businesses[iBusiness][bVehicleLabel][iSlot]), Businesses[iBusiness][bVehicleLabel][iSlot] = Text3D:-1;
 		szMiscArray[0] = 0;
-		format(szMiscArray, sizeof(szMiscArray), "%s For Sale | Price: $%s", GetVehicleName(Businesses[iBusiness][bVehID][iSlot]), number_format(Businesses[iBusiness][bPrice][iSlot]));
+		format(szMiscArray, sizeof(szMiscArray), "%s Dang ban | Gia: $%s", GetVehicleName(Businesses[iBusiness][bVehID][iSlot]), number_format(Businesses[iBusiness][bPrice][iSlot]));
 		Businesses[iBusiness][bVehicleLabel][iSlot] = CreateDynamic3DTextLabel(szMiscArray, COLOR_LIGHTBLUE, Businesses[iBusiness][bParkPosX][iSlot]+1.0, Businesses[iBusiness][bParkPosY][iSlot]+1.0, Businesses[iBusiness][bParkPosZ][iSlot]+1.0, 8.0, INVALID_PLAYER_ID, Businesses[iBusiness][bVehID][iSlot]);
 		
         SaveDealershipVehicle(iBusiness, iSlot);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You've parked this vehicle.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da do xe nay.");
 		return 1;
 	}
 
@@ -2360,16 +2360,16 @@ CMD:park(playerid, params[])
 			new d = PlayerInfo[playerid][pVehicleKeys];
 			if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[ownerid][d][pvId]))
 			{
-				if(PlayerVehicleInfo[ownerid][d][pvBeingPickLocked] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot park this vehicle at the moment.");
-			    if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "You must be in the driver seat.");
+				if(PlayerVehicleInfo[ownerid][d][pvBeingPickLocked] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Hien ban khong the do xe nay.");
+			    if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai ngoi ghe lai.");
 				new Float:x, Float:y, Float:z, Float:health;
 				GetVehicleHealth(PlayerVehicleInfo[ownerid][d][pvId], health);
-				if(health < 800) return SendClientMessageEx(playerid, COLOR_GREY, " Your vehicle is too damaged to park it.");
+				if(health < 800) return SendClientMessageEx(playerid, COLOR_GREY, " Xe hong qua nang, khong the do.");
 				if(PlayerInfo[playerid][pLockCar] == GetPlayerVehicleID(playerid)) PlayerInfo[playerid][pLockCar] = INVALID_VEHICLE_ID;
 
                 GetPlayerPos(playerid, x, y, z);
                 SetTimerEx("ParkVehicle", 1000, false, "iiiifff", playerid, ownerid, PlayerVehicleInfo[ownerid][d][pvId], d, x, y, z);
-                SendClientMessageEx (playerid, COLOR_YELLOW, "Do not move to have your vehicle parked!");
+                SendClientMessageEx (playerid, COLOR_YELLOW, "Dung di chuyen de do xe!");
 				return 1;
 			}
 		}
@@ -2378,21 +2378,21 @@ CMD:park(playerid, params[])
 	{
 		if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][d][pvId]))
 		{
-			if(PlayerVehicleInfo[playerid][d][pvBeingPickLocked] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot park this vehicle at the moment.");
-			if(WheelClamp{PlayerVehicleInfo[playerid][d][pvId]}) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot park this vehicle at the moment.");
+			if(PlayerVehicleInfo[playerid][d][pvBeingPickLocked] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Hien ban khong the do xe nay.");
+			if(WheelClamp{PlayerVehicleInfo[playerid][d][pvId]}) return SendClientMessageEx(playerid, COLOR_GREY, "Hien ban khong the do xe nay.");
 			new Float:x, Float:y, Float:z, Float:health;
 			GetVehicleHealth(PlayerVehicleInfo[playerid][d][pvId], health);
-            if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "You must be in the driver seat.");
-			if(health < 800) return SendClientMessageEx(playerid, COLOR_GREY, " Your vehicle is too damaged to park it.");
+            if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai ngoi ghe lai.");
+			if(health < 800) return SendClientMessageEx(playerid, COLOR_GREY, " Xe hong qua nang, khong the do.");
 			if(PlayerInfo[playerid][pLockCar] == GetPlayerVehicleID(playerid)) PlayerInfo[playerid][pLockCar] = INVALID_VEHICLE_ID;
 			GetPlayerPos(playerid, x, y, z);
 
    			SetTimerEx("ParkVehicle", 1000, false, "iiiifff", playerid, INVALID_PLAYER_ID, PlayerVehicleInfo[playerid][d][pvId], d, x, y, z);
-      		SendClientMessageEx (playerid, COLOR_YELLOW, "Do not move to have your vehicle parked!");
+      		SendClientMessageEx (playerid, COLOR_YELLOW, "Dung di chuyen de do xe!");
 			return 1;
 		}
 	}
-	SendClientMessageEx(playerid, COLOR_GREY, "You need to be inside a vehicle that you own.");
+	SendClientMessageEx(playerid, COLOR_GREY, "Ban can ngoi trong xe cua minh.");
 	return 1;
 }
 
@@ -2406,28 +2406,28 @@ CMD:carkeys(playerid, params[])
 	    if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID) {
 	        if(PlayerVehicleInfo[playerid][i][pvAllowedPlayerId] != INVALID_PLAYER_ID) {
 				strunpack(vehicleName, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], sizeof(vehicleName));
-				format(szMiscArray, sizeof(szMiscArray), "%s\n%s | Keys: %s", szMiscArray, vehicleName, GetPlayerNameEx(PlayerVehicleInfo[playerid][i][pvAllowedPlayerId])), ++iValidVehicles;
+				format(szMiscArray, sizeof(szMiscArray), "%s\n%s | Khoa: %s", szMiscArray, vehicleName, GetPlayerNameEx(PlayerVehicleInfo[playerid][i][pvAllowedPlayerId])), ++iValidVehicles;
 			}
 			else {
                 strunpack(vehicleName, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], sizeof(vehicleName));
-                format(szMiscArray, sizeof(szMiscArray), "%s\n%s | Keys: No-one", szMiscArray, vehicleName);
+                format(szMiscArray, sizeof(szMiscArray), "%s\n%s | Khoa: Chua", szMiscArray, vehicleName);
 			}
 		}
         else if((PlayerVehicleInfo[playerid][i][pvImpounded] == 1 || PlayerVehicleInfo[playerid][i][pvSpawned] == 0) && PlayerVehicleInfo[playerid][i][pvModelId] != 0) {
             strunpack(vehicleName, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], sizeof(vehicleName));
-            format(szMiscArray, sizeof(szMiscArray), "%s\n%s | Keys: Unavailable", szMiscArray, vehicleName);
+            format(szMiscArray, sizeof(szMiscArray), "%s\n%s | Khoa: Chua co", szMiscArray, vehicleName);
 		}
         else {
-			strcat(szMiscArray, "\nEmpty");
+			strcat(szMiscArray, "\nTrong");
 		}
 	}
 	if(iValidVehicles != 0)
 	{
-		ShowPlayerDialogEx(playerid, REMOVEKEYS, DIALOG_STYLE_LIST, "Please select a vehicle.", szMiscArray, "Remove Keys", "Cancel");
+		ShowPlayerDialogEx(playerid, REMOVEKEYS, DIALOG_STYLE_LIST, "Vui long chon xe.", szMiscArray, "Thu hoi chia khoa", "Huy");
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have any keys given out.");
+	    SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua giao chia khoa cho ai.");
 	}
 	return 1;
 }
@@ -2439,18 +2439,18 @@ CMD:seatbelt(playerid, const params[])
 {
     if(IsPlayerInAnyVehicle(playerid) == false)
 	{
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in a vehicle!");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong ngoi trong xe!");
         return 1;
     }
 
     if(IsPlayerInAnyVehicle(playerid) == true && Seatbelt[playerid] == 0)
 	{
         if(IsABike(GetPlayerVehicleID(playerid)))
-            return SendClientMessageEx(playerid, COLOR_WHITE, "We have added a helmet feature, buy a helmet from any 24/7 and use /helmet(/hm).");
+            return SendClientMessageEx(playerid, COLOR_WHITE, "Da co tinh nang mu bao hiem, mua tai bat ky 24/7 nao va dung /helmet(/hm).");
         else
 		{
-            format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s reaches for their seatbelt, and buckles it up.", GetPlayerNameEx(playerid));
-            SendClientMessageEx(playerid, COLOR_WHITE, "You have put on your seatbelt.");
+            format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s dua tay lay day an toan va cai lai.", GetPlayerNameEx(playerid));
+            SendClientMessageEx(playerid, COLOR_WHITE, "Ban da that day an toan.");
 			Seatbelt[playerid] = 1;
         }
 
@@ -2459,12 +2459,12 @@ CMD:seatbelt(playerid, const params[])
 	{
         if(IsABike(GetPlayerVehicleID(playerid)))
 		{
-            return SendClientMessageEx(playerid, COLOR_WHITE, "We have added a helmet feature, buy a helmet from any 24/7 and use /helmet(/hm).");
+            return SendClientMessageEx(playerid, COLOR_WHITE, "Da co tinh nang mu bao hiem, mua tai bat ky 24/7 nao va dung /helmet(/hm).");
         }
         else
 		{
-            format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s reaches for their seatbelt, and unbuckles it.", GetPlayerNameEx(playerid));
-            SendClientMessageEx(playerid, COLOR_WHITE, "You have taken off your seatbelt.");
+            format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s dua tay thao day an toan.", GetPlayerNameEx(playerid));
+            SendClientMessageEx(playerid, COLOR_WHITE, "Ban da thao day an toan.");
 			Seatbelt[playerid] = 0;
         }
     }
@@ -2480,33 +2480,33 @@ alias:checkbelt("cb")
 CMD:checkbelt(playerid, params[])
 {
 	new giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /checkbelt [player]");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /checkbelt [player]");
 
     if(GetPlayerState(giveplayerid) == PLAYER_STATE_ONFOOT)
 	{
-        SendClientMessageEx(playerid,COLOR_GREY,"That person is not in any vehicle!");
+        SendClientMessageEx(playerid,COLOR_GREY,"Nguoi do khong o trong xe!");
         return 1;
     }
     if (ProxDetectorS(9.0, playerid, giveplayerid))
 	{
 		new string[128];
         new stext[4];
-        if(Seatbelt[giveplayerid] == 0) { stext = "off"; }
-        else { stext = "on"; }
+        if(Seatbelt[giveplayerid] == 0) { stext = "tat"; }
+        else { stext = "bat"; }
         if(IsABike(GetPlayerVehicleID(playerid)))
 		{
-            SendClientMessageEx(playerid, COLOR_WHITE, "We have added a helmet feature, use /checkhelmet(/chm) instead.");
+            SendClientMessageEx(playerid, COLOR_WHITE, "Da co tinh nang mu bao hiem, hay dung /checkhelmet(/chm).");
         }
         else
 		{
-            SendClientMessageEx(playerid,COLOR_WHITE,"%s's seat belt is currently %s." , GetPlayerNameEx(giveplayerid) , stext);
+            SendClientMessageEx(playerid,COLOR_WHITE,"Day an toan cua %s hien dang %s." , GetPlayerNameEx(giveplayerid) , stext);
 
-            format(string, sizeof(string), "* %s peers through the window at %s, checking to see if they are wearing a seatbelt.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
+            format(string, sizeof(string), "* %s nhin qua kinh xe vao %s, kiem tra xem ho co that day an toan khong.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
             // ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
             ProxChatBubble(playerid, string);
         }
     }
-    else { SendClientMessageEx(playerid, COLOR_GREY, "You are not around that player!"); }
+    else { SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan nguoi choi do!"); }
     return 1;
 }
 
@@ -2515,7 +2515,7 @@ CMD:givekeys(playerid, params[])
 	new
 		giveplayerid;
 
-    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givekeys [player]");
+    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /givekeys [player]");
     if(IsPlayerConnected(giveplayerid))
 	{
         if(playerid == giveplayerid) return 1;
@@ -2530,19 +2530,19 @@ CMD:givekeys(playerid, params[])
 				if(PlayerVehicleInfo[playerid][i][pvImpounded] == 1)
 					{
 						strunpack(vehicleName, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], sizeof(vehicleName));
-						format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded)", szMiscArray, vehicleName);
+						format(szMiscArray, sizeof(szMiscArray), "%s\n%s (tam giu)", szMiscArray, vehicleName);
 					}
 
 				else if(PlayerVehicleInfo[playerid][i][pvDisabled] == 1)
 					{
 						strunpack(vehicleName, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], sizeof(vehicleName));
-						format(szMiscArray, sizeof(szMiscArray), "%s\n%s (disabled)", szMiscArray, vehicleName);
+						format(szMiscArray, sizeof(szMiscArray), "%s\n%s (bi tat)", szMiscArray, vehicleName);
 					}
 
 				else if(PlayerVehicleInfo[playerid][i][pvSpawned] == 0)
 					{
 						strunpack(vehicleName, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], sizeof(vehicleName));
-						format(szMiscArray, sizeof(szMiscArray), "%s\n%s (stored)", szMiscArray, vehicleName);
+						format(szMiscArray, sizeof(szMiscArray), "%s\n%s (da cat)", szMiscArray, vehicleName);
 					}
 
 				else
@@ -2551,20 +2551,20 @@ CMD:givekeys(playerid, params[])
 						format(szMiscArray, sizeof(szMiscArray), "%s\n%s", szMiscArray, vehicleName), ++iValidVehicles;
 					}
 			}
-			else strcat(szMiscArray, "\nEmpty");
+			else strcat(szMiscArray, "\nTrong");
             if(iValidVehicles != 0)
 			{
                 GiveKeysTo[playerid] = giveplayerid;
-                ShowPlayerDialogEx(playerid, GIVEKEYS, DIALOG_STYLE_LIST, "Please select a vehicle.", szMiscArray, "Give Keys", "Cancel");
+                ShowPlayerDialogEx(playerid, GIVEKEYS, DIALOG_STYLE_LIST, "Vui long chon xe.", szMiscArray, "Giao chia khoa", "Huy");
             }
             else
 			{
-                SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have any vehicles for which you can give out keys.");
+                SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co xe de giao chia khoa.");
             }
         }
         else
 		{
-            SendClientMessageEx(playerid, COLOR_GRAD1, "You're not close enough to that player.");
+            SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o du gan nguoi choi do.");
         }
     }
     return 1;
@@ -2572,10 +2572,10 @@ CMD:givekeys(playerid, params[])
 
 CMD:sellmycar(playerid, params[])
 {
-	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
+	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Giao dich da tam dung de khoi dong lai may chu bao tri.");
     if(PlayerInfo[playerid][pFreezeCar] == 1)
     {
-   		return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: Your car assets are frozen, you cannot sell a car!");
+   		return SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Tai san xe cua ban bi dong bang, ban khong the ban xe!");
 	}
     for(new d = 0 ; d < MAX_PLAYERVEHICLES; d++)
 	{
@@ -2584,30 +2584,30 @@ CMD:sellmycar(playerid, params[])
 			if(PlayerInfo[playerid][pBackpack] > 0 && PlayerInfo[playerid][pBStoredV] == PlayerVehicleInfo[playerid][d][pvSlotId] && !GetPVarInt(playerid, "confirmvehsell")) 
 			{
 				SetPVarInt(playerid, "confirmvehsell", 1);
-				return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You have a backpack stored in this car, withdraw it first or you will loose it, please confirm!");
+				return SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Ban co ba lo trong xe nay, hay lay ra truoc de tranh mat do, vui long xac nhan!");
 			}
             new Float:health;
             GetVehicleHealth(PlayerVehicleInfo[playerid][d][pvId], health);
             if(PlayerInfo[playerid][pLevel] == 1)
 			{
-                SendClientMessageEx(playerid, COLOR_GREY, "You have to be level 2 or higher to be able to sell vehicles.");
+                SendClientMessageEx(playerid, COLOR_GREY, "Ban phai dat cap 2 tro len de ban xe.");
                 return 1;
             }
-            if(health < 500) return SendClientMessageEx(playerid, COLOR_GREY, " Your vehicle is too damaged to sell it.");
+            if(health < 500) return SendClientMessageEx(playerid, COLOR_GREY, " Xe cua ban hong qua nang de ban.");
 
             new giveplayerid, price, alarmstring[9], lockstring[11], worklockstring[10];
-			if(sscanf(params, "ud", giveplayerid, price)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellmycar [player] [price]");
+			if(sscanf(params, "ud", giveplayerid, price)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /sellmycar [player] [price]");
 
-            if(price < 1 || price > 1000000000) return SendClientMessageEx(playerid, COLOR_GREY, "Price must be higher than 0 and less than 1,000,000,000.");
-            if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+            if(price < 1 || price > 1000000000) return SendClientMessageEx(playerid, COLOR_GREY, "Gia phai lon hon 0 va nho hon 1,000,000,000.");
+            if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
             if(PlayerInfo[giveplayerid][pLevel] == 1)
 			{
-                SendClientMessageEx(playerid, COLOR_GREY, "The person has to be Level 2 or higher to be able to sell vehicles to them.");
+                SendClientMessageEx(playerid, COLOR_GREY, "Nguoi mua xe phai dat cap 2 tro len.");
                 return 1;
             }
             if(playerid == giveplayerid)
 			{
-                SendClientMessageEx(playerid, COLOR_GREY, "You can not use this command on yourself.");
+                SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the dung lenh nay voi chinh minh.");
                 return 1;
             }
             /*if(IsWeaponizedVehicle(PlayerVehicleInfo[playerid][d][pvModelId]))
@@ -2617,28 +2617,28 @@ CMD:sellmycar(playerid, params[])
             }*/ // Uncomment to disallow the sale of weaponized vehicles. 
 			if(gettime()-GetPVarInt(playerid, "LastTransaction") < 60)
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You can only sell a car once every 60 seconds, please wait!");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chi co the ban xe moi 60 giay, vui long cho!");
 				return 1;
 			}
 			if(PlayerVehicleInfo[playerid][d][pvTicket] > 0)
 			{
-			    SendClientMessageEx(playerid, COLOR_GREY, "Your vehicle currently has unpaid tickets, you need to pay them before selling.");
+			    SendClientMessageEx(playerid, COLOR_GREY, "Xe cua ban con tien phat chua nop, hay nop phat truoc khi ban.");
 			    return 1;
 			}
-            if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Player is currently not connected to the server.");
+            if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi hien khong ket noi voi may chu.");
             if (ProxDetectorS(8.0, playerid, giveplayerid))
 		 	{
 		 	    if(PlayerInfo[giveplayerid][pFreezeCar] == 1)
 	 		    {
-	            	SendClientMessageEx(giveplayerid, COLOR_WHITE, "ERROR: Your car assets are frozen, you cannot buy a car!");
-	            	SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: Their car assets are frozen, they cannot buy a car!");
+	            	SendClientMessageEx(giveplayerid, COLOR_WHITE, "LOI: Tai san xe cua ban bi dong bang, ban khong the mua xe!");
+	            	SendClientMessageEx(playerid, COLOR_WHITE, "LOI: Tai san xe cua ho bi dong bang, ho khong the mua xe!");
 	            	return 1;
 				}
 				if(IsWeaponizedVehicle(PlayerVehicleInfo[playerid][d][pvModelId]))
 				{
 					new dialogstring[255], fine = (price / 100) * 15;
-					format(dialogstring, sizeof(dialogstring), "Selling weaponized vehicles results in a 15 percent fine for each vehicle sold.\n\n{FF0000}You will only recieve %s(fine: %s) for this transaction, proceed?", number_format(price-fine), number_format(fine));
-					ShowPlayerDialogEx(playerid, DIALOG_WEPVEHSALE, DIALOG_STYLE_MSGBOX, "{FF0000}Notice", dialogstring, "Proceed", "Exit");
+					format(dialogstring, sizeof(dialogstring), "Ban xe vu trang se bi phat 15 percent gia tri moi xe.\n\n{FF0000}Ban chi nhan %s(tien phat: %s) tu giao dich nay, tiep tuc?", number_format(price-fine), number_format(fine));
+					ShowPlayerDialogEx(playerid, DIALOG_WEPVEHSALE, DIALOG_STYLE_MSGBOX, "{FF0000}Notice", dialogstring, "Tiep tuc", "Thoat");
 
 					SetPVarInt(playerid, "WepVehSalePlayer", giveplayerid);
 					SetPVarInt(playerid, "WepVehSaleSession", g_arrQueryHandle[giveplayerid]);
@@ -2657,27 +2657,27 @@ CMD:sellmycar(playerid, params[])
 				switch(PlayerVehicleInfo[playerid][d][pvAlarm]) {
 					case 1: alarmstring = "Standard";
 					case 2: alarmstring = "Deluxe";
-					default: alarmstring = "no";
+					default: alarmstring = "khong";
 				}
 				switch(PlayerVehicleInfo[playerid][d][pvLock]) {
 					case 2: lockstring = "Electronic";
 					case 3: lockstring = "Industrial";
-					default: lockstring = "no";
+					default: lockstring = "khong";
 				}
-				if(PlayerVehicleInfo[playerid][d][pvLocksLeft] < 1) worklockstring = "(Broken)";
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered %s to buy this %s with %s Alarm & %s%s Lock for $%s.", GetPlayerNameEx(giveplayerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), alarmstring, worklockstring, lockstring, number_format(price));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s has offered you their %s (VID: %d) with %s Alarm & %s%s Lock for $%s, (type /accept car) to buy.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), PlayerVehicleInfo[playerid][d][pvId], alarmstring, worklockstring, lockstring, number_format(price));
+				if(PlayerVehicleInfo[playerid][d][pvLocksLeft] < 1) worklockstring = "(Hong)";
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban chao ban cho %s xe %s nay voi bao dong %s & khoa %s%s gia $%s.", GetPlayerNameEx(giveplayerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), alarmstring, worklockstring, lockstring, number_format(price));
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* %s chao ban xe %s (VID: %d) voi bao dong %s & khoa %s%s gia $%s, (go /accept car) de mua.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), PlayerVehicleInfo[playerid][d][pvId], alarmstring, worklockstring, lockstring, number_format(price));
 				DeletePVar(playerid, "confirmvehsell");
                 return 1;
             }
             else
 			{
-                SendClientMessageEx(playerid, COLOR_GREY, "That person is not near you.");
+                SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
                 return 1;
             }
         }
     }
-    SendClientMessageEx(playerid, COLOR_GREY, " You need to be inside a vehicle that you own.");
+    SendClientMessageEx(playerid, COLOR_GREY, " Ban can ngoi trong xe cua minh.");
     return 1;
 }
 
@@ -2696,16 +2696,16 @@ CMD:pvlock(playerid, params[])
                 if(PlayerVehicleInfo[ownerid][d][pvLock] > 0)
 				{
 					if(PlayerVehicleInfo[ownerid][d][pvLocksLeft] <= 0) {
-						SendClientMessageEx(playerid, COLOR_GREY, "The lock has been damaged as result of a lock pick!");
+						SendClientMessageEx(playerid, COLOR_GREY, "Khoa da bi hong do bi pha!");
 						return 1;
 					}
 					if(PlayerVehicleInfo[ownerid][d][pvBeingPickLocked]) {
-						SendClientMessageEx(playerid, COLOR_GREY, "This vehicle cannot be locked/unlocked right now.");
+						SendClientMessageEx(playerid, COLOR_GREY, "Hien khong the khoa/mo khoa xe nay.");
 						return 1;
 					}
                     if(PlayerVehicleInfo[ownerid][d][pvLocked] == 0)
 					{
-                        GameTextForPlayer(playerid,"~r~Vehicle Locked!",5000,6);
+                        GameTextForPlayer(playerid,"~r~Da khoa xe!",5000,6);
                         PlayerPlaySound(playerid, 1145, 0.0, 0.0, 0.0);
                         PlayerVehicleInfo[ownerid][d][pvLocked] = 1;
                         LockPlayerVehicle(ownerid, PlayerVehicleInfo[ownerid][d][pvId], PlayerVehicleInfo[ownerid][d][pvLock]);
@@ -2713,7 +2713,7 @@ CMD:pvlock(playerid, params[])
                     }
                     else
 					{
-                        GameTextForPlayer(playerid,"~g~Vehicle Unlocked!",5000,6);
+                        GameTextForPlayer(playerid,"~g~Da mo khoa xe!",5000,6);
                         PlayerPlaySound(playerid, 1145, 0.0, 0.0, 0.0);
                         PlayerVehicleInfo[ownerid][d][pvLocked] = 0;
                         UnLockPlayerVehicle(ownerid, PlayerVehicleInfo[ownerid][d][pvId], PlayerVehicleInfo[ownerid][d][pvLock]);
@@ -2722,7 +2722,7 @@ CMD:pvlock(playerid, params[])
                 }
                 else
 				{
-                    SendClientMessageEx(playerid, COLOR_GREY, " You don't have a lock system installed on this vehicle.");
+                    SendClientMessageEx(playerid, COLOR_GREY, " Ban chua lap he thong khoa tren xe nay.");
 					return 1;
                 }
             }
@@ -2734,16 +2734,16 @@ CMD:pvlock(playerid, params[])
         if(IsPlayerInRangeOfPoint(playerid, 3.0, x, y, z))
 		{
 			if(PlayerVehicleInfo[playerid][d][pvLocksLeft] <= 0) {
-				SendClientMessageEx(playerid, COLOR_GREY, "The lock has been damaged as result of a lock pick, please buy a new one!");
+				SendClientMessageEx(playerid, COLOR_GREY, "Khoa da bi hong do bi pha, hay mua khoa moi!");
 				return 1;
 			}
 			if(PlayerVehicleInfo[playerid][d][pvBeingPickLocked]) {
-				SendClientMessageEx(playerid, COLOR_GREY, "This vehicle cannot be locked/unlocked right now.");
+				SendClientMessageEx(playerid, COLOR_GREY, "Hien khong the khoa/mo khoa xe nay.");
 				return 1;
 			}
             if(PlayerVehicleInfo[playerid][d][pvLock] > 0 && PlayerVehicleInfo[playerid][d][pvLocked] == 0)
 			{
-                GameTextForPlayer(playerid,"~r~Vehicle Locked!",5000,6);
+                GameTextForPlayer(playerid,"~r~Da khoa xe!",5000,6);
                 PlayerPlaySound(playerid, 1145, 0.0, 0.0, 0.0);
                 PlayerVehicleInfo[playerid][d][pvLocked] = 1;
                 LockPlayerVehicle(playerid, PlayerVehicleInfo[playerid][d][pvId], PlayerVehicleInfo[playerid][d][pvLock]);
@@ -2751,18 +2751,18 @@ CMD:pvlock(playerid, params[])
             }
             else if(PlayerVehicleInfo[playerid][d][pvLock] > 0 && PlayerVehicleInfo[playerid][d][pvLocked] == 1)
 			{
-                GameTextForPlayer(playerid,"~g~Vehicle Unlocked!",5000,6);
+                GameTextForPlayer(playerid,"~g~Da mo khoa xe!",5000,6);
                 PlayerPlaySound(playerid, 1145, 0.0, 0.0, 0.0);
                 PlayerVehicleInfo[playerid][d][pvLocked] = 0;
                 UnLockPlayerVehicle(playerid, PlayerVehicleInfo[playerid][d][pvId], PlayerVehicleInfo[playerid][d][pvLock]);
                 return 1;
 
             }
-            SendClientMessageEx(playerid, COLOR_GREY, " You don't have a lock system installed on this vehicle.");
+            SendClientMessageEx(playerid, COLOR_GREY, " Ban chua lap he thong khoa tren xe nay.");
             return 1;
         }
     }
-    SendClientMessageEx(playerid, COLOR_GREY, " You are not near any vehicle that you own.");
+    SendClientMessageEx(playerid, COLOR_GREY, " Ban khong o gan xe cua minh.");
     return 1;
 }
 
@@ -2771,7 +2771,7 @@ CMD:vehid(playerid, params[])
     if(IsPlayerInAnyVehicle(playerid))
     {
     	new idcar = GetPlayerVehicleID(playerid);
-		SendClientMessageEx(playerid, COLOR_GREY, "* Vehicle Name: %s | Vehicle Model:%d | Vehicle ID: %d.",GetVehicleName(idcar), GetVehicleModel(idcar), idcar);
+		SendClientMessageEx(playerid, COLOR_GREY, "* Ten xe: %s | Model xe:%d | ID xe: %d.",GetVehicleName(idcar), GetVehicleModel(idcar), idcar);
 	}
 	return 1;
 }
@@ -2779,7 +2779,7 @@ CMD:vehid(playerid, params[])
 CMD:rc(playerid, params[])
 {
 	#if defined zombiemode
-	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
+	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies khong the dung tinh nang nay.");
 	#endif
 	new ccar = GetClosestCar(playerid);
 	if(IsARC(ccar) && IsPlayerInRangeOfVehicle(playerid, ccar, 5.0))
@@ -2814,26 +2814,26 @@ CMD:rc(playerid, params[])
 alias:oldcar("lastcar")
 CMD:oldcar(playerid, params[])
 {
-	if(!gLastCar[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You have not driven a vehicle yet.");
-	SendClientMessageEx(playerid, COLOR_GREY, "Your last driven vehicle was a %s (Model: %d -- ID: %d)", GetVehicleName(gLastCar[playerid]), GetVehicleModel(gLastCar[playerid]), gLastCar[playerid]);
+	if(!gLastCar[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban chua tung lai xe.");
+	SendClientMessageEx(playerid, COLOR_GREY, "Xe ban lai gan nhat la %s (Model: %d -- ID: %d)", GetVehicleName(gLastCar[playerid]), GetVehicleModel(gLastCar[playerid]), gLastCar[playerid]);
 	return 1;
 }
 
 CMD:userimkit(playerid, params[])
 {
 	if(PlayerInfo[playerid][pRimMod] == 0)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "You don't have any rim modification kits.");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co Rim Modification Kit.");
 
     if(!IsPlayerInAnyVehicle(playerid))
- 		return SendClientMessageEx(playerid, COLOR_GREY, "You aren't in a vehicle.");
+ 		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong ngoi trong xe.");
 
 	if(!Job_HasJob(playerid, JOB_MECHANIC))
- 		return SendClientMessageEx(playerid, COLOR_GREY, "You must be a mechanic to use this command.");
+ 		return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai la mechanic de dung lenh nay.");
 	
 	new iVeh = GetPlayerVehicleID(playerid);
 	new iModel  = GetVehicleModel(iVeh);
 
-	if(IsRestrictedVehicle(iModel)) return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle cannot have rims applied to it");
+	if(IsRestrictedVehicle(iModel)) return SendClientMessageEx(playerid, COLOR_GREY, "Xe nay khong the lap mam xe");
 
     if(InvalidModCheck(iModel, 1025))
 	{
@@ -2841,16 +2841,16 @@ CMD:userimkit(playerid, params[])
 		{
 			if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][d][pvId]))
 			{
-				ShowPlayerDialogEx(playerid, DIALOG_RIMMOD, DIALOG_STYLE_LIST, "Rim Modification Kit", "Offroad\nShadow\nMega\nRimshine\nWires\nClassic\nTwist\nCutter\nSwitch\nGrove\nImport\nDollar\nTrance\nAtomic\nAhab\nVirtual\nAccess", "Select", "Exit");
+				ShowPlayerDialogEx(playerid, DIALOG_RIMMOD, DIALOG_STYLE_LIST, "Rim Modification Kit", "Offroad\nShadow\nMega\nRimshine\nWires\nClassic\nTwist\nCutter\nSwitch\nGrove\nImport\nDollar\nTrance\nAtomic\nAhab\nVirtual\nAccess", "Chon", "Thoat");
 				return 1;
 			}
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You need to be inside a vehicle that you own.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban can ngoi trong xe cua minh.");
 		return 1;
 	}
 	else
 	{
-	    SendClientMessageEx(playerid, COLOR_GREY, "This vehicle can't be modded.");
+	    SendClientMessageEx(playerid, COLOR_GREY, "Xe nay khong the do.");
 	}
 
 	return 1;
@@ -2864,12 +2864,12 @@ CMD:eject(playerid, params[])
 		State=GetPlayerState(playerid);
 		if(State!=PLAYER_STATE_DRIVER)
 		{
-			SendClientMessageEx(playerid,COLOR_GREY,"   You can only eject people as the driver!");
+			SendClientMessageEx(playerid,COLOR_GREY,"   Chi nguoi lai moi duoc duoi hanh khach!");
 			return 1;
 		}
 
 		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /eject [player]");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /eject [player]");
 
 		new test;
 		test = GetPlayerVehicleID(playerid);
@@ -2877,34 +2877,34 @@ CMD:eject(playerid, params[])
 		{
 			if(giveplayerid != INVALID_PLAYER_ID)
 			{
-				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot Eject yourself!"); return 1; }
+				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "Ban khong the tu duoi minh!"); return 1; }
 				if(IsPlayerInVehicle(giveplayerid,test))
 				{
-					if(GetPVarInt(giveplayerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't eject patients!");
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have thrown %s out of the car.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You have been thrown out the car by %s.", GetPlayerNameEx(playerid));
+					if(GetPVarInt(giveplayerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong the duoi benh nhan!");
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da duoi %s ra khoi xe.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Ban bi %s duoi ra khoi xe.", GetPlayerNameEx(playerid));
 					RemovePlayerFromVehicle(giveplayerid);
 					new Float:slx, Float:sly, Float:slz;
 					GetPlayerPos(giveplayerid, slx, sly, slz);
 					SetPlayerPos(giveplayerid, slx, sly+3, slz+1);
-					format(string, sizeof(string), "* %s has ejected %s from the vehicle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "* %s da duoi %s ra khoi xe.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "   That person is not in your Car!");
+					SendClientMessageEx(playerid, COLOR_GREY, "   Nguoi do khong o trong xe cua ban!");
 					return 1;
 				}
 			}
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, " Invalid ID/Name!");
+			SendClientMessageEx(playerid, COLOR_GREY, " ID/Ten khong hop le!");
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "   You need to be in a Vehicle to use this!");
+		SendClientMessageEx(playerid, COLOR_GREY, " Ban can ngoi trong xe de dung tinh nang nay!");
 	}
 	return 1;
 }
@@ -2919,7 +2919,7 @@ RentVehicleTimer(i)
 			SetPVarInt(i, "RentedHours", GetPVarInt(i, "RentedHours")-1);
 			if(GetPVarInt(i, "RentedHours") == 0)
 			{
-				SendClientMessageEx(i, COLOR_CYAN, "Your rented vehicle has expired.");
+				SendClientMessageEx(i, COLOR_CYAN, "Xe thue cua ban da het han.");
 				DestroyVehicle(GetPVarInt(i, "RentedVehicle"));
 
 				mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "DELETE FROM `rentedcars` WHERE `sqlid`= '%d'", GetPlayerSQLId(i));
@@ -2930,7 +2930,7 @@ RentVehicleTimer(i)
 			}
 			else if(GetPVarInt(i, "RentedHours") == 120 || GetPVarInt(i, "RentedHours") == 60)
 			{
-				format(szMiscArray, sizeof(szMiscArray), "%d minutes(s) remaining on your rented vehicle.", GetPVarInt(i, "RentedHours"));
+				format(szMiscArray, sizeof(szMiscArray), "Xe thue cua ban con %d phut.", GetPVarInt(i, "RentedHours"));
 				SendClientMessageEx(i, COLOR_CYAN, szMiscArray);
 			}
 			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `rentedcars` SET `hours` = '%d' WHERE `sqlid` = '%d'",GetPVarInt(i, "RentedHours"), GetPlayerSQLId(i));

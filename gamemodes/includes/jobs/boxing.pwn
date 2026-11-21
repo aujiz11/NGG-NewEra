@@ -111,20 +111,20 @@ stock Boxing_Accept(playerid)
 	{
 		BoxOffer[playerid] = INVALID_PLAYER_ID;
 		DeletePVar(playerid, "BoxOfferSession");
-		return SendClientMessageEx(playerid, COLOR_GREY, "This boxing offer is no longer valid.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Loi thach dau da het hieu luc.");
 	}
 
 	if(InRing || PlayerBoxing[playerid] || PlayerBoxing[challenger])
-		return SendClientMessageEx(playerid, COLOR_GREY, "A boxing match is already in progress.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Da co tran quyen anh dang dien ra.");
 	
 	if(challenger == playerid || !Boxing_IsBoxer(challenger) || !Boxing_CanFight(playerid) || !Boxing_CanFight(challenger))
-		return SendClientMessageEx(playerid, COLOR_GREY, "Both players must be available to fight.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ca hai phai san sang thi dau.");
 	
 	new gym = Boxing_GetGym(playerid), Float:x, Float:y, Float:z;
 	GetPlayerPos(challenger, x, y, z);
 	if(!gym || Boxing_GetGym(challenger) != gym || GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(challenger)
 		|| !IsPlayerInRangeOfPoint(playerid, 8.0, x, y, z))
-		return SendClientMessageEx(playerid, COLOR_GREY, "Both fighters must be near each other in the same gym.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Hai vo si phai o gan nhau trong cung phong tap.");
 
 	Boxer1 = challenger;
 	Boxer2 = playerid;
@@ -154,13 +154,13 @@ stock Boxing_Accept(playerid)
 		else SetPlayerPos(fighter, i == 0 ? 758.7064 : 762.9852, i == 0 ? -1.8038 : 2.4439, 1001.5942);
 		SetPlayerFacingAngle(fighter, i == 0 ? 313.1165 : 131.8632);
 		TogglePlayerControllable(fighter, false);
-		GameTextForPlayer(fighter, "~r~Waiting", 3000, 1);
-		SendClientMessageEx(fighter, COLOR_LIGHTBLUE, "* The Boxing Challenge is accepted. You will fight with %d Health.", health);
+		GameTextForPlayer(fighter, "~r~Dang cho", 3000, 1);
+		SendClientMessageEx(fighter, COLOR_LIGHTBLUE, "* Da nhan Boxing Challenge. Ban thi dau voi %d mau.", health);
 	}
 	if(TBoxer != INVALID_PLAYER_ID)
 	{
 		new message[128];
-		format(message, sizeof(message), "Boxing News: Champion %s will fight %s in 60 seconds.", GetPlayerNameEx(TBoxer), GetPlayerNameEx(TBoxer == challenger ? playerid : challenger));
+		format(message, sizeof(message), "Boxing News: Champion %s se thi dau voi %s sau 60 giay.", GetPlayerNameEx(TBoxer), GetPlayerNameEx(TBoxer == challenger ? playerid : challenger));
 		ProxDetector(30.0, playerid, message, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE);
 	}
 	return 1;
@@ -191,20 +191,20 @@ stock Boxing_End(winner = INVALID_PLAYER_ID, leaving = INVALID_PLAYER_ID)
 			new message[128];
 			if(winner != champion && Boxing_IsBoxer(winner))
 			{
-				format(message, sizeof(message), "Boxing News: %s defeated champion %s and is the new Boxing Champion.", GetPlayerNameEx(winner), GetPlayerNameEx(champion));
+				format(message, sizeof(message), "Boxing News: %s ha champion %s va la Boxing Champion moi.", GetPlayerNameEx(winner), GetPlayerNameEx(champion));
 				champion = winner;
 			}
 			else if(winner == champion)
-				format(message, sizeof(message), "Boxing News: Champion %s won the fight against %s.", GetPlayerNameEx(winner), GetPlayerNameEx(loser));
-			else SendClientMessageEx(winner, COLOR_LIGHTBLUE, "* You would have been the Champion if you had the Boxer Job!");
+				format(message, sizeof(message), "Boxing News: Champion %s da thang %s.", GetPlayerNameEx(winner), GetPlayerNameEx(loser));
+			else SendClientMessageEx(winner, COLOR_LIGHTBLUE, "* Ban da la Champion neu co cong viec Boxer!");
 			if(message[0]) ProxDetector(30.0, winner, message, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE);
 			format(Titel[TitelName], sizeof(Titel[TitelName]), "%s", GetPlayerNameEx(champion));
 			Titel[TitelWins] = PlayerInfo[champion][pWins];
 			Titel[TitelLoses] = PlayerInfo[champion][pLoses];
 			Misc_Save();
 		}
-		SendClientMessageEx(winner, COLOR_LIGHTBLUE, "* You have won the fight against %s.", GetPlayerNameEx(loser));
-		SendClientMessageEx(loser, COLOR_LIGHTBLUE, "* You have lost the fight against %s.", GetPlayerNameEx(winner));
+		SendClientMessageEx(winner, COLOR_LIGHTBLUE, "* Ban da thang %s.", GetPlayerNameEx(loser));
+		SendClientMessageEx(loser, COLOR_LIGHTBLUE, "* Ban da thua %s.", GetPlayerNameEx(winner));
 	}
 	for(new i; i < sizeof(fighters); ++i)
 	{
@@ -223,7 +223,7 @@ stock Boxing_End(winner = INVALID_PLAYER_ID, leaving = INVALID_PLAYER_ID)
 			GetHealth(fighter, health);
 			SetHealth(fighter, health < 20.0 ? 30.0 : 50.0);
 		}
-		GameTextForPlayer(fighter, finished ? ("~g~Match Over") : ("~r~Match interrupted"), 5000, 1);
+		GameTextForPlayer(fighter, finished ? ("~g~Het tran") : ("~r~Tran bi gian doan"), 5000, 1);
 	}
 	return 1;
 }
@@ -256,7 +256,7 @@ stock Boxing_Update()
 			else
 			{
 				PlayerPlaySound(fighters[i], 1057, 0.0, 0.0, 0.0);
-				GameTextForPlayer(fighters[i], "~g~Match Started", 5000, 1);
+				GameTextForPlayer(fighters[i], "~g~Tran da bat dau", 5000, 1);
 				TogglePlayerControllable(fighters[i], true);
 			}
 		}
@@ -288,19 +288,19 @@ stock Boxing_LearnStyle(playerid, listitem)
 {
 	if(!(0 <= listitem < 6)) return 1;
 	if(!Boxing_CanFight(playerid) || PlayerBoxing[playerid] || !Boxing_IsTrainingArea(playerid))
-		return SendClientMessageEx(playerid, COLOR_GREY, "You must be available at the learning area to change your fighting style.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Phai san sang tai khu hoc de doi kieu chien dau.");
 	
 	new price = listitem == 5 ? 0 : (PlayerInfo[playerid][pDonateRank] >= 1 ? 40000 : 50000);
 	if(price && GetPlayerCash(playerid) < price) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You do not have the cash for that!");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du tien mat!");
 	
 	static const styles[] = {FIGHT_STYLE_BOXING, FIGHT_STYLE_ELBOW, FIGHT_STYLE_KNEEHEAD, FIGHT_STYLE_KUNGFU, FIGHT_STYLE_GRABKICK, FIGHT_STYLE_NORMAL};
 	static const names[][] = {"boxing", "elbow", "kneehead", "kungfu", "grabkick", "normal"};
 	if(price) GivePlayerCash(playerid, -price);
 	PlayerInfo[playerid][pFightStyle] = styles[listitem];
 	SetPlayerFightingStyle(playerid, styles[listitem]);
-	SendClientMessageEx(playerid, COLOR_WHITE, "You are now using the %s fighting style!", names[listitem]);
-	if(price == 40000) SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You paid $40000 instead of $50000 with your 20 percent discount.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Ban dang dung kieu chien dau %s!", names[listitem]);
+	if(price == 40000) SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: Ban tra $40000 thay vi $50000 nho giam gia 20 phan tram.");
 	return 1;
 }
 
@@ -308,7 +308,7 @@ CMD:boxstats(playerid, params[])
 {
 	if(!Job_HasJob(playerid, JOB_BOXER))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Boxer!");
+		SendClientMessageEx(playerid, COLOR_GREY, "   Ban khong phai Boxer!");
 		return 1;
 	}
 
@@ -334,12 +334,12 @@ CMD:boxstats(playerid, params[])
 		else if(level >= 61 && level <= 70) { ntext = "Unbroken Warrior"; }
 		else if(level >= 71) { ntext = "Itallion Stallion"; }
 	}
-	SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Boxing Records __________________|");
-	SendClientMessageEx(playerid, COLOR_GREY, "| Current Champion: %s, with [%d] Winnings and [%d] Losses.", Titel[TitelName],Titel[TitelWins],Titel[TitelLoses]);
-	SendClientMessageEx(playerid, COLOR_GREY, "| Current Title: %s.", ttext);
-	SendClientMessageEx(playerid, COLOR_GREY, "| Current NickName: %s.", ntext);
-	SendClientMessageEx(playerid, COLOR_GREY, "| Total Wins: %d.", PlayerInfo[playerid][pWins]);
-	SendClientMessageEx(playerid, COLOR_GREY, "| Total Losses: %d.", PlayerInfo[playerid][pLoses]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Thanh tich Boxing _______________|");
+	SendClientMessageEx(playerid, COLOR_GREY, "| Champion hien tai: %s, [%d] thang va [%d] thua.", Titel[TitelName],Titel[TitelWins],Titel[TitelLoses]);
+	SendClientMessageEx(playerid, COLOR_GREY, "| Danh hieu: %s.", ttext);
+	SendClientMessageEx(playerid, COLOR_GREY, "| Biet danh: %s.", ntext);
+	SendClientMessageEx(playerid, COLOR_GREY, "| Tong thang: %d.", PlayerInfo[playerid][pWins]);
+	SendClientMessageEx(playerid, COLOR_GREY, "| Tong thua: %d.", PlayerInfo[playerid][pLoses]);
 	SendClientMessageEx(playerid, COLOR_WHITE, "|____________________________________________________|");
 	return 1;
 }
@@ -347,35 +347,35 @@ CMD:boxstats(playerid, params[])
 CMD:train(playerid, params[])
 {
 	if(!Boxing_CanFight(playerid) || PlayerBoxing[playerid] || !Boxing_IsTrainingArea(playerid))
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be available at the learning area inside a gym.");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Phai san sang tai khu hoc trong phong tap.");
 	if(PlayerInfo[playerid][pDonateRank] >= 1)
-		ShowPlayerDialogEx(playerid, FIGHTMENU, DIALOG_STYLE_LIST, "Fighting Moves", "Boxing\t\t$40000\nElbow\t\t$40000\nKneehead\t$40000\nKung-Fu\t$40000\nGrabKick\t$40000\nNormal", "Learn", "Cancel");
+		ShowPlayerDialogEx(playerid, FIGHTMENU, DIALOG_STYLE_LIST, "Kieu chien dau", "Boxing\t\t$40000\nElbow\t\t$40000\nKneehead\t$40000\nKung-Fu\t$40000\nGrabKick\t$40000\nNormal", "Hoc", "Huy");
 	else
-		ShowPlayerDialogEx(playerid, FIGHTMENU, DIALOG_STYLE_LIST, "Fighting Moves", "Boxing\t\t$50000\nElbow\t\t$50000\nKneehead\t$50000\nKung-Fu\t$50000\nGrabKick\t$50000\nNormal", "Learn", "Cancel");
+		ShowPlayerDialogEx(playerid, FIGHTMENU, DIALOG_STYLE_LIST, "Kieu chien dau", "Boxing\t\t$50000\nElbow\t\t$50000\nKneehead\t$50000\nKung-Fu\t$50000\nGrabKick\t$50000\nNormal", "Hoc", "Huy");
 	return 1;
 }
 
 CMD:fight(playerid, params[])
 {
-	if(!Boxing_IsBoxer(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Boxer!");
-	if(InRing || PlayerBoxing[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "A boxing match is already in progress.");
+	if(!Boxing_IsBoxer(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai Boxer!");
+	if(InRing || PlayerBoxing[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "Da co tran quyen anh dang dien ra.");
 	if(!Boxing_CanFight(playerid) || !Boxing_GetGym(playerid))
-		return SendClientMessageEx(playerid, COLOR_GREY, "You must be available inside a boxing gym.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Phai san sang trong phong tap quyen anh.");
 	new target;
-	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /fight [player]");
+	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /fight [player]");
 	if(!(0 <= target < MAX_PLAYERS) || !IsPlayerConnected(target))
-		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-	if(target == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot box with yourself!");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi choi khong hop le.");
+	if(target == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the tu dau voi minh!");
 	if(!Boxing_CanFight(target) || PlayerBoxing[target])
-		return SendClientMessageEx(playerid, COLOR_GREY, "That player is not available to fight.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do chua san sang thi dau.");
 	new Float:x, Float:y, Float:z;
 	GetPlayerPos(target, x, y, z);
 	if(Boxing_GetGym(target) != Boxing_GetGym(playerid) || GetPlayerVirtualWorld(target) != GetPlayerVirtualWorld(playerid)
 		|| !IsPlayerInRangeOfPoint(playerid, 8.0, x, y, z))
-		return SendClientMessageEx(playerid, COLOR_GREY, "That player must be near you in the same boxing gym.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do phai o gan ban trong cung phong tap.");
 	BoxOffer[target] = playerid;
 	SetPVarInt(target, "BoxOfferSession", g_arrQueryHandle[playerid]);
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You offered a Boxing Challenge to %s.", GetPlayerNameEx(target));
-	SendClientMessageEx(target, COLOR_LIGHTBLUE, "* Boxer %s wants to fight with you. Use /accept boxing to accept.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban moi %s dau Boxing Challenge.", GetPlayerNameEx(target));
+	SendClientMessageEx(target, COLOR_LIGHTBLUE, "* Boxer %s muon thi dau voi ban. Dung /accept boxing de dong y.", GetPlayerNameEx(playerid));
 	return 1;
 }

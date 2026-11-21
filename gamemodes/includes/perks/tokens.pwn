@@ -38,12 +38,12 @@
 CMD:tokenhelp(playerid, params[])
 {
     SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-    SendClientMessageEx(playerid, COLOR_WHITE,"*** TOKEN HELP ***");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"VIP tokens can be traded for weapons at the VIP Locker.");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"VIP tokens can be won at events or gifts.");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"Weapons cost 1-5 tokens each, from melee weapons to high-powered firearms.");
+    SendClientMessageEx(playerid, COLOR_WHITE,"*** HUONG DAN TOKEN ***");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"Doi VIP tokens lay vu khi tai VIP Locker.");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"VIP tokens co the nhan tu su kien hoac qua.");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"Vu khi gia 1-5 tokens moi mon, tu can chien den sung manh.");
 
-    SendClientMessageEx(playerid, COLOR_GRAD3,"If you wish to give other VIPs your tokens, use /givetokens.");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"De tang tokens cho VIP khac, dung /givetokens.");
     return 1;
 }
 
@@ -55,7 +55,7 @@ CMD:random(playerid, params[]) {
 			iBroadcast;
 
 		if(sscanf(params, "dd", iHours, iBroadcast)) {
-			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /random [hours] [broadcast]");
+			return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /random [hours] [broadcast]");
 		}
 
 		new
@@ -73,14 +73,14 @@ CMD:random(playerid, params[]) {
 				szMessage[48 + MAX_PLAYER_NAME];
 
 			if(iBroadcast == 1) {
-				SendClientMessageToAllEx(COLOR_WHITE, "%s was just randomly selected! Congratulations!", GetPlayerNameEx(iWinrar));
+				SendClientMessageToAllEx(COLOR_WHITE, "%s vua duoc chon ngau nhien! Chuc mung!", GetPlayerNameEx(iWinrar));
 			}
 			else {
-				format(szMessage, sizeof(szMessage), "%s (ID %d) was randomly selected.", GetPlayerNameEx(iWinrar), iWinrar);
+				format(szMessage, sizeof(szMessage), "%s (ID %d) duoc chon ngau nhien.", GetPlayerNameEx(iWinrar), iWinrar);
 				ABroadCast(COLOR_YELLOW, szMessage, 1338);
 			}
 		}
-		else SendClientMessageEx(playerid, COLOR_WHITE, "Nobody online can win!");
+		else SendClientMessageEx(playerid, COLOR_WHITE, "Khong co nguoi online du dieu kien thang!");
 	}
 	return 1;
 }
@@ -93,7 +93,7 @@ CMD:vrandom(playerid, params[]) {
 			iBroadcast;
 
 		if(sscanf(params, "dd", iHours, iBroadcast)) {
-			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vrandom [hours] [broadcast]");
+			return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /vrandom [hours] [broadcast]");
 		}
 
 		new
@@ -111,14 +111,14 @@ CMD:vrandom(playerid, params[]) {
 				szMessage[48 + MAX_PLAYER_NAME];
 
 			if(iBroadcast == 1) {
-				SendClientMessageToAllEx(COLOR_WHITE, "%s was just randomly selected! Congratulations!", GetPlayerNameEx(iWinrar));
+				SendClientMessageToAllEx(COLOR_WHITE, "%s vua duoc chon ngau nhien! Chuc mung!", GetPlayerNameEx(iWinrar));
 			}
 			else {
-				format(szMessage, sizeof(szMessage), "%s (ID %d) was randomly selected.", GetPlayerNameEx(iWinrar), iWinrar);
+				format(szMessage, sizeof(szMessage), "%s (ID %d) duoc chon ngau nhien.", GetPlayerNameEx(iWinrar), iWinrar);
 				ABroadCast(COLOR_YELLOW, szMessage, 1338);
 			}
 		}
-		else SendClientMessageEx(playerid, COLOR_WHITE, "Nobody online can win!");
+		else SendClientMessageEx(playerid, COLOR_WHITE, "Khong co nguoi online du dieu kien thang!");
 	}
 	return 1;
 }
@@ -128,7 +128,7 @@ CMD:givetokens(playerid, params[])
 	if(PlayerInfo[playerid][pDonateRank] > 0)
 	{
 		new string[128], giveplayerid, amount;
-		if(sscanf(params, "ud", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givetokens [player] [amount]");
+		if(sscanf(params, "ud", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /givetokens [player] [amount]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
@@ -138,42 +138,42 @@ CMD:givetokens(playerid, params[])
 				{
 					if(amount < 1)
 					{
-						SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give that amount!");
+						SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the tang so luong do!");
 						return 1;
 					}
 					if(giveplayerid == playerid)
 					{
-						SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give tokens to yourself!");
+						SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the tu tang tokens cho minh!");
 						return 1;
 					}
 					if (!ProxDetectorS(5.0, playerid, giveplayerid))
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+						SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong o gan ban.");
 						return 1;
 					}
 					PlayerInfo[playerid][pTokens] -= amount;
 					PlayerInfo[giveplayerid][pTokens] += amount;
 
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "You have received %d Tokens from %s.", amount, GetPlayerNameEx(playerid));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given %s %d Tokens.", GetPlayerNameEx(giveplayerid), amount);
-					format(string, sizeof(string), "* %s has given %s some Tokens.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Ban nhan %d Tokens tu %s.", amount, GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Ban da tang %s %d Tokens.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "* %s tang %s mot it Tokens.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have that many tokens!");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co du tokens!");
 				}
 			}
 			else
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "That person is not a VIP!");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Nguoi do khong phai VIP!");
 			}
 
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not a VIP!");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong phai VIP!");
 	}
 	return 1;
 }
@@ -183,13 +183,13 @@ CMD:settoken(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		new string[128], giveplayerid, amount;
-		if(sscanf(params, "ud", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /settoken [player] [amount]");
+		if(sscanf(params, "ud", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /settoken [player] [amount]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
 			PlayerInfo[giveplayerid][pTokens] = amount;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have set %s's tokens to %d !",GetPlayerNameEx(giveplayerid),amount);
-			SendClientMessageEx(giveplayerid, COLOR_YELLOW, "VIP: Admin %s has set your tokens to %d.",GetPlayerNameEx(playerid),amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da dat tokens cua %s thanh %d !",GetPlayerNameEx(giveplayerid),amount);
+			SendClientMessageEx(giveplayerid, COLOR_YELLOW, "VIP: Admin %s da dat tokens cua ban thanh %d.",GetPlayerNameEx(playerid),amount);
 
 			format(string, sizeof(string), "%s has set %s's(%d) tokens to %d.",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 			Log("logs/stats.log", string);
@@ -198,7 +198,7 @@ CMD:settoken(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }
@@ -208,13 +208,13 @@ CMD:givetoken(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		new string[128], giveplayerid, amount;
-		if(sscanf(params, "ud", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givetoken [player] [amount]");
+		if(sscanf(params, "ud", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /givetoken [player] [amount]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
 			PlayerInfo[giveplayerid][pTokens] += amount;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have given %s %d tokens !",GetPlayerNameEx(giveplayerid),amount);
-			SendClientMessageEx(giveplayerid, COLOR_YELLOW, "VIP: Admin %s has given you %d tokens.",GetPlayerNameEx(playerid),amount);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da tang %s %d tokens !",GetPlayerNameEx(giveplayerid),amount);
+			SendClientMessageEx(giveplayerid, COLOR_YELLOW, "VIP: Admin %s tang ban %d tokens.",GetPlayerNameEx(playerid),amount);
 
 			format(string, sizeof(string), "%s has given %s(%d) %d tokens.",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 			Log("logs/stats.log", string);
@@ -223,7 +223,7 @@ CMD:givetoken(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong co quyen dung lenh nay.");
 	}
 	return 1;
 }

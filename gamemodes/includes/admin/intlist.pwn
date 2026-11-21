@@ -95,64 +95,64 @@ ListInteriors(playerid, iType)
 		case INTERIOR_TYPE_SMALL:
 		{
 			format(szMiscArray, sizeof(szMiscArray),
-				"Interior (30)\n\
-				Interior (31)\n\
-				Interior (32)\n\
-				Interior (33)\n\
-				Interior (34)\n\
-				Interior (35)\n\
-				Interior (36)\n\
-				Interior (37)\n\
-				Interior (38)\n\
-				Interior (39)\n\
-				Interior (40)\n\
-				Interior (41)\n\
-				Interior (42)\n\
-				Interior (43)"
+				"Noi that (30)\n\
+				Noi that (31)\n\
+				Noi that (32)\n\
+				Noi that (33)\n\
+				Noi that (34)\n\
+				Noi that (35)\n\
+				Noi that (36)\n\
+				Noi that (37)\n\
+				Noi that (38)\n\
+				Noi that (39)\n\
+				Noi that (40)\n\
+				Noi that (41)\n\
+				Noi that (42)\n\
+				Noi that (43)"
 			);
 
 		}
 		case INTERIOR_TYPE_MEDIUM:
 		{
 			format(szMiscArray, sizeof(szMiscArray),
-				"Interior (7)\n\
-				Interior (8)\n\
-				Interior (9)\n\
-				Interior (10\n\
-				Interior (11)\n\
-				Interior (12)\n\
-				Interior (13)\n\
-				Interior (14)\n\
-				Interior (15)\n\
-				Iterior (16)\n\
-				Interior (17)\n\
-				Interior (18)\n\
-				Interior (19)\n\
-				Interior (20)\n\
-				Interior (21)\n\
-				Interior (22)\n\
-				Interior (23)\n\
-				Interior (24)\n\
-				Interior (25)\n\
-				Interior (26)\n\
-				Interior (27)\n\
-				Interior (28)\n\
-				Interior (29)"
+				"Noi that (7)\n\
+				Noi that (8)\n\
+				Noi that (9)\n\
+				Noi that (10\n\
+				Noi that (11)\n\
+				Noi that (12)\n\
+				Noi that (13)\n\
+				Noi that (14)\n\
+				Noi that (15)\n\
+				Noi that (16)\n\
+				Noi that (17)\n\
+				Noi that (18)\n\
+				Noi that (19)\n\
+				Noi that (20)\n\
+				Noi that (21)\n\
+				Noi that (22)\n\
+				Noi that (23)\n\
+				Noi that (24)\n\
+				Noi that (25)\n\
+				Noi that (26)\n\
+				Noi that (27)\n\
+				Noi that (28)\n\
+				Noi that (29)"
 			);
 
 		}
 		case INTERIOR_TYPE_LARGE:
 		{
 			format(szMiscArray, sizeof(szMiscArray),
-				"Interior (2)\n\
-				Interior (3)\n\
-				Interior (4)\n\
-				Interior (5)\n\
-				Interior (6)"
+				"Noi that (2)\n\
+				Noi that (3)\n\
+				Noi that (4)\n\
+				Noi that (5)\n\
+				Noi that (6)"
 			);
 		}
 	}
-	return ShowPlayerDialogEx(playerid, DIALOG_LIST_INTERIORS2, DIALOG_STYLE_LIST, "Interior List", szMiscArray, "Goto", "Cancel");
+	return ShowPlayerDialogEx(playerid, DIALOG_LIST_INTERIORS2, DIALOG_STYLE_LIST, "Danh sach noi that", szMiscArray, "Di den", "Huy");
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
@@ -178,7 +178,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 CMD:interiors(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to use this command!");
-	ShowPlayerDialogEx(playerid, DIALOG_LIST_INTERIORS, DIALOG_STYLE_LIST, "Select a category", "Small Interiors\nMedium Interiors\nLarge Interiors", "Select", "Cancel");
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong co quyen dung lenh nay!");
+	ShowPlayerDialogEx(playerid, DIALOG_LIST_INTERIORS, DIALOG_STYLE_LIST, "Chon danh muc", "Noi that nho\nNoi that vua\nNoi that lon", "Chon", "Huy");
 	return 1;
 }

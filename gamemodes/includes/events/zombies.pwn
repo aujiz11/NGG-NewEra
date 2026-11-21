@@ -73,7 +73,7 @@ stock MakeZombie(playerid)
 		DeletePVar(playerid, "pZombieBiter");
 	}
 
-	SendClientMessageEx(playerid, COLOR_RED, "You are now a zombie - use /bite to bite people!");
+	SendClientMessageEx(playerid, COLOR_RED, "Ban da thanh zombie, dung /bite de can nguoi khac!");
  	SetPVarInt(playerid, "pIsZombie", 1);
   	DeletePVar(playerid, "pZombieBit");
    	SetPlayerToTeamColor(playerid);
@@ -129,9 +129,9 @@ public ScrapMetal(playerid, vehicleid)
 	GetVehicleHealth(vehicleid, vHP);
 	SetVehicleHealth(vehicleid, vHP+500.0);
 	new string[128];
-	format(string, sizeof(string), "%s has added scrap metal to their vehicle.", GetPlayerNameEx(playerid));
+	format(string, sizeof(string), "%s da gia co xe bang Scrap Metal.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	SendClientMessage(playerid, COLOR_WHITE, "Your have applied scrap metal to your vehicle giving it +500HP!");
+	SendClientMessage(playerid, COLOR_WHITE, "Ban da gia co xe bang Scrap Metal, tang +500HP!");
 	PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
 	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, false, false, false, false, 0, 1);
 	format(string, sizeof(string), "[ZSCRAPMETAL] %s(%d) used a Scrap Metal. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][16]);
@@ -146,10 +146,10 @@ public ScrapMetal(playerid, vehicleid)
 alias:zombiehelp("zh")
 CMD:zombiehelp(playerid, params[])
 {
-	SendClientMessageEx(playerid, COLOR_GREY, "*** ZOMBIE HELP *** /buycure /bite /curevirus /getvials (For Medics)");
-	SendClientMessageEx(playerid, COLOR_GREY, "*** ZOMBIE HELP *** /buycure - 20 Credits (5x)  /zinject - 40 Credits (3x) /zopenkit - 30 Credits (1x)");
-	SendClientMessageEx(playerid, COLOR_GREY, "*** ZOMBIE HELP *** /z50cal - 20 Credits (14x bullets) /zscrapmetal - 10 Credits)");
-	SendClientMessageEx(playerid, COLOR_GREY, "*** ZOMBIE HELP *** /bite /curevirus /getvials (For Medics)");
+	SendClientMessageEx(playerid, COLOR_GREY, "*** TRO GIUP ZOMBIE *** /buycure /bite /curevirus /getvials (Cho Medic)");
+	SendClientMessageEx(playerid, COLOR_GREY, "*** TRO GIUP ZOMBIE *** /buycure - 20 Credits (5x)  /zinject - 40 Credits (3x) /zopenkit - 30 Credits (1x)");
+	SendClientMessageEx(playerid, COLOR_GREY, "*** TRO GIUP ZOMBIE *** /z50cal - 20 Credits (14x dan) /zscrapmetal - 10 Credits)");
+	SendClientMessageEx(playerid, COLOR_GREY, "*** TRO GIUP ZOMBIE *** /bite /curevirus /getvials (Cho Medic)");
 	if(PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "*** ZOMBIE ADMIN ***: /zombieweather /zombieevent /makezombie /setvials /zombieannounce /unzombie");
@@ -166,7 +166,7 @@ CMD:buycure(playerid, params[])
 			if(GetPVarInt(playerid, "PinConfirmed"))
 			{
 				if(PlayerInfo[playerid][pCredits] < 20)
-					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong du credits de mua vat pham nay. Vao shop.ng-gaming.net de mua credits.");
 				
 				
 
@@ -184,7 +184,7 @@ CMD:buycure(playerid, params[])
 				format(string, sizeof(string), "[BUYCURE] [User: %s(%i)] [IP: %s] [Credits: %s] [Zombie Cure] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(20));
 				Log("logs/credits.log", string), print(string);
 
-				SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a vial of the cure for %s credits. Use it with /curevirus.", number_format(20));
+				SendClientMessageEx(playerid, COLOR_CYAN, "Ban da mua mot lo thuoc giai voi gia %s credits. Dung /curevirus de su dung.", number_format(20));
 			}
 			else
 			{
@@ -193,11 +193,11 @@ CMD:buycure(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait 15 minutes between purchasing cures!");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Phai cho 15 phut giua cac lan mua thuoc giai!");
 		}
 	}
 	else {
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be at a hospital delivery point to purchase a cure!");
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban phai o diem giao hang benh vien de mua thuoc giai!");
 	}
 	return 1;
 }
@@ -209,7 +209,7 @@ CMD:zombieweather(playerid, params[])
     	SetWeather(9);
     	foreach(new i: Player) SyncMinTime(i);
     	SendRconCommand("loadfs zombie_mapping");
-    	SendClientMessageEx(playerid, COLOR_WHITE, "Zombie weather loaded.");
+    	SendClientMessageEx(playerid, COLOR_WHITE, "Da tai thoi tiet Zombie.");
 	}
 	return 1;
 }
@@ -228,8 +228,8 @@ CMD:zombieevent(playerid, params[])
 				SetPlayerWeaponsEx(playerid);
 			}	
 	        //SendAudioToRange(70, 100, 0.0, 0.0, 0.0, 10000); RESCRIPT NEW SOUND
-			SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_MED_COLOR, "Attention FDSA, the zombie event has started, you can now use /curevirus to cure the virus");
-	        SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled zombie mode.");
+			SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_MED_COLOR, "FDSA chu y, su kien zombie da bat dau, dung /curevirus de chua virus");
+	        SendClientMessageEx(playerid, COLOR_WHITE, "Da bat che do zombie.");
 	        mysql_tquery(MainPipeline, "DELETE FROM zombie", "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	    }
 	    else
@@ -243,7 +243,7 @@ CMD:zombieevent(playerid, params[])
 			{
 			    UnZombie(i);
 			}
-	        SendClientMessageEx(playerid, COLOR_WHITE, "Nothing to see here, folks.");
+	        SendClientMessageEx(playerid, COLOR_WHITE, "Khong co gi de xem dau.");
 		}
 	}
 	return 1;
@@ -256,11 +256,11 @@ CMD:zombieannounce(playerid, params[])
 	    if(zombieevent == 1)
 	    {
 	        //SendAudioToRange(65, 100, 0.0, 0.0, 0.0, 10000); RESCRIPT NEW SOUND
-			SendClientMessageToAllEx(COLOR_WHITE, "|___________ Government News Announcement ___________|");
-			SendClientMessageToAllEx(COLOR_DBLUE, "** Unknown Spokesman: Attention, attention. This is a government announcement.");
-			SendClientMessageToAllEx(COLOR_DBLUE, "** Unknown Spokesman: A state of emergency has been declared by the President of San Andreas");
-			SendClientMessageToAllEx(COLOR_DBLUE, "** Unknown Spokesman: The City of Los Santos has been quarantined under executive order 133B.");
-			SendClientMessageToAllEx(COLOR_DBLUE, "** Unknown Spokesman: Please direct yourself to government services for assistance. May god help us all.");
+			SendClientMessageToAllEx(COLOR_WHITE, "|___________ Thong bao tu chinh phu ___________|");
+			SendClientMessageToAllEx(COLOR_DBLUE, "** Unknown Spokesman: Chu y, chu y. Day la thong bao tu chinh phu.");
+			SendClientMessageToAllEx(COLOR_DBLUE, "** Unknown Spokesman: President of San Andreas da ban bo tinh trang khan cap");
+			SendClientMessageToAllEx(COLOR_DBLUE, "** Unknown Spokesman: Thanh pho Los Santos bi cach ly theo sac lenh 133B.");
+			SendClientMessageToAllEx(COLOR_DBLUE, "** Unknown Spokesman: Hay tim ho tro tu co quan chinh phu. Cau mong binh an cho tat ca.");
 	    }
 	}
 	return 1;
@@ -273,7 +273,7 @@ CMD:makezombie(playerid, params[])
  		if(zombieevent == 1)
 	    {
     		new giveplayerid;
-			if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /makezombie [player]");
+			if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /makezombie [player]");
 			MakeZombie(giveplayerid);
 	    }
 	}
@@ -284,13 +284,13 @@ CMD:getvials(playerid, params[])
 {
 	if(zombieevent == 1)
 	{
-		if(!IsAMedic(playerid) && PlayerInfo[playerid][pMember] != 11) return SendClientMessageEx(playerid, COLOR_GREY, "You aren't a Medic!");
-		if(!IsAnAmbulance(GetPlayerVehicleID(playerid)) && GetVehicleModel(GetPlayerVehicleID(playerid)) != 470) return SendClientMessageEx(playerid, COLOR_GREY, "You aren't in an ambulance!");
-		if(PlayerInfo[playerid][pVials] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You already have vials.");
+		if(!IsAMedic(playerid) && PlayerInfo[playerid][pMember] != 11) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai Medic!");
+		if(!IsAnAmbulance(GetPlayerVehicleID(playerid)) && GetVehicleModel(GetPlayerVehicleID(playerid)) != 470) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o trong xe cuu thuong!");
+		if(PlayerInfo[playerid][pVials] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ban da co lo thuoc.");
 		new string[128];
 		PlayerInfo[playerid][pVials] += 5;
-		SendClientMessageEx(playerid, COLOR_GREEN, "You have received 5 vials.");
-		format(string, sizeof(string), "* %s takes 5 vials from the vehicle.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_GREEN, "Ban da nhan 5 lo thuoc.");
+		format(string, sizeof(string), "* %s lay 5 lo thuoc tu xe.", GetPlayerNameEx(playerid));
 		ProxDetector(5.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	}
 	return 1;
@@ -301,12 +301,12 @@ CMD:setvials(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		new giveplayerid, vials;
-		if(sscanf(params, "ui", giveplayerid, vials)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setvials [player] [number]");
+		if(sscanf(params, "ui", giveplayerid, vials)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /setvials [player] [number]");
 		if(vials < 0) return 1;
 
 		PlayerInfo[giveplayerid][pVials] += vials;
-		SendClientMessageEx(playerid, COLOR_WHITE,"You gave %s %d vials of the cure!", GetPlayerNameEx(giveplayerid), vials);
-		SendClientMessageEx(giveplayerid, COLOR_WHITE,"You received %d vials of the cure - use them with /curevirus.", vials);
+		SendClientMessageEx(playerid, COLOR_WHITE,"Ban da dua %s %d lo thuoc giai!", GetPlayerNameEx(giveplayerid), vials);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE,"Ban nhan %d lo thuoc giai, dung /curevirus de su dung.", vials);
 	}
 	return 1;
 }
@@ -318,8 +318,8 @@ CMD:unzombie(playerid, params[])
  		if(zombieevent == 1)
 	    {
     		new giveplayerid;
-			if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /unzombie [player]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Done!");
+			if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /unzombie [player]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Xong!");
 			UnZombie(giveplayerid);
 	    }
 	}
@@ -348,7 +348,7 @@ CMD:bite(playerid, params[])
 					{
 						if(gettime() < GetPVarInt(i, "LastBiteTime"))
 						{
-							SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before you can bite that player.", (GetPVarInt(i, "LastBiteTime") - gettime()));
+							SendClientMessageEx(playerid, COLOR_GREY, "Phai cho %d giay truoc khi can nguoi choi do.", (GetPVarInt(i, "LastBiteTime") - gettime()));
 			    			return 1;
 						}
 					}
@@ -356,10 +356,10 @@ CMD:bite(playerid, params[])
 					{
 						PlayerInfo[i][mInventory][18]--;
 						SetPVarInt(i, "LastBiteTime", gettime()+15);
-						format(string, sizeof(string), "* %s clamps down onto %s's skin, biting into it.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
+						format(string, sizeof(string), "* %s ngoam va can vao da %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
 						ProxDetector(5.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-						SendClientMessageEx(i, COLOR_GREY, "You were not affected by the zombies bite due to the antibiotic in your bloodstream!");
-						return SendClientMessageEx(playerid, COLOR_GREY, "They have a antibiotic in their bloodstream! Your bite had no effect on them!");
+						SendClientMessageEx(i, COLOR_GREY, "Ban khong bi anh huong boi vet can zombie nho thuoc khang sinh trong mau!");
+						return SendClientMessageEx(playerid, COLOR_GREY, "Ho co thuoc khang sinh trong mau! Vet can cua ban khong co tac dung!");
 					}
 					GetHealth(i, hp);
 					SetHealth(i, hp - 30);
@@ -372,14 +372,14 @@ CMD:bite(playerid, params[])
 
 					SetPVarInt(playerid, "LastBiteID", i);
 					SetPlayerToTeamColor(i);
-					format(string, sizeof(string), "* %s clamps down onto %s's skin, biting into it.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
+					format(string, sizeof(string), "* %s ngoam va can vao da %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
 					ProxDetector(5.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					SendClientMessageEx(i, COLOR_GREY, "Use /buycure to purchase a cure to heal yourself.");
+					SendClientMessageEx(i, COLOR_GREY, "Dung /buycure de mua thuoc giai cho minh.");
 					//SendAudioToRange(66, 100, X, Y, Z, 5); RESCRIPT NEW SOUND
 					return 1;
 			    }
 			}
-			SendClientMessageEx(playerid, COLOR_GREY, "No one is near you to bite!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Khong co ai o gan de can!");
 		}
 	}
 	else
@@ -397,14 +397,14 @@ CMD:bite(playerid, params[])
 						new Float:hp, string[128];
 						GetHealth(i, hp);
 						SetHealth(i, hp-20);
-						format(string, sizeof(string), "* %s clamps down onto %s's skin, biting into it.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
+						format(string, sizeof(string), "* %s ngoam va can vao da %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
 						ProxDetector(5.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						//SendAudioToRange(65, 100, X, Y, Z, 5);
 						return 1;
 				    }
 				}
 			}
-			SendClientMessageEx(playerid, COLOR_GREY, "No one is near you to bite!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Khong co ai o gan de can!");
 		}
 	}
 	return 1;
@@ -415,22 +415,22 @@ CMD:curevirus(playerid, params[])
 	if(zombieevent == 1 && PlayerInfo[playerid][pVials])
 	{
 		new giveplayerid, string[128];
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /curevirus [player]");
-		if(!GetPVarType(giveplayerid, "pZombieBit")) return SendClientMessageEx(playerid, COLOR_GREY, "That person does not have the virus, or they're already a zombie!");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /curevirus [player]");
+		if(!GetPVarType(giveplayerid, "pZombieBit")) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do khong nhiem virus hoac da la zombie!");
 		new Float:X, Float:Y, Float:Z;
 		GetPlayerPos(giveplayerid, X, Y, Z);
-		if(!IsPlayerInRangeOfPoint(playerid, 5, X, Y, Z)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near that patient.");
+		if(!IsPlayerInRangeOfPoint(playerid, 5, X, Y, Z)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan benh nhan do.");
 
 		if(GetPVarInt(playerid, "pZombieHealTime"))
 		{
 			if(gettime() < GetPVarInt(playerid, "pZombieHealTime"))
 			{
-			    SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before you can heal again.", (GetPVarInt(playerid, "pZombieHealTime") - gettime()));
+			    SendClientMessageEx(playerid, COLOR_GREY, "Phai cho %d giay truoc khi chua tiep.", (GetPVarInt(playerid, "pZombieHealTime") - gettime()));
 			    return 1;
 			}
 		}
 
-		format(string, sizeof(string), "* %s injects %s with an antidote.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+		format(string, sizeof(string), "* %s tiem thuoc giai cho %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
         ProxDetector(5.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
 		DeletePVar(giveplayerid, "pZombieBit");
@@ -440,11 +440,11 @@ CMD:curevirus(playerid, params[])
 		PlayerInfo[playerid][pVials]--;
 		if(PlayerInfo[playerid][pVials] == 0)
 		{
-      		SendClientMessageEx(playerid, COLOR_GREY, "You've ran out of vials!");
+      		SendClientMessageEx(playerid, COLOR_GREY, "Ban da het lo thuoc!");
 		}
 		else
 		{
-  			format(string, sizeof(string), "You now have %d vials left.", PlayerInfo[playerid][pVials]);
+  			format(string, sizeof(string), "Ban con %d lo thuoc.", PlayerInfo[playerid][pVials]);
 			SendClientMessageEx(playerid, COLOR_GREY, string);
 		}
 
@@ -513,16 +513,16 @@ CMD:trickortreat(playerid, params[])
 
 CMD:prezombie(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay.");
 	if(prezombie)
 	{
 		prezombie = 0;
-		SendClientMessageEx(playerid, -1, "You have successfully disabled the pre-zombie event sale.");
+		SendClientMessageEx(playerid, -1, "Da tat dot giam gia truoc su kien zombie.");
 	}
 	else
 	{
 		prezombie = 1;
-		SendClientMessageEx(playerid, -1, "You have successfully enabled the pre-zombie event sale.");
+		SendClientMessageEx(playerid, -1, "Da bat dot giam gia truoc su kien zombie.");
 	}
 	return 1;
 }
@@ -531,21 +531,21 @@ CMD:zfuelcan(playerid, params[])
 {
 	new zyear, zmonth, zday;
 	getdate(zyear, zmonth, zday);
-	if(!zombieevent && !(zmonth == 10 && zday == 31) && !(zmonth == 11 && zday == 1)) return SendClientMessageEx(playerid, COLOR_GREY, "There is currently no active Zombie Event!");
-	if(!PlayerInfo[playerid][zFuelCan]) return SendClientMessage(playerid, COLOR_GREY, "You do not have a Fuel Can in your inventory!");
+	if(!zombieevent && !(zmonth == 10 && zday == 31) && !(zmonth == 11 && zday == 1)) return SendClientMessageEx(playerid, COLOR_GREY, "Hien khong co Zombie Event dang chay!");
+	if(!PlayerInfo[playerid][zFuelCan]) return SendClientMessage(playerid, COLOR_GREY, "Ban khong co Fuel Can trong hanh trang!");
 	if(GetPVarInt(playerid, "fuelcan") == 2) return 1;
-	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not use your fuel can while inside the vehicle.");
-	if(GetPVarInt(playerid, "EventToken")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
-	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do that at this time!");
+	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung Fuel Can khi o trong xe.");
+	if(GetPVarInt(playerid, "EventToken")) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung khi dang trong su kien.");
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the lam viec nay luc nay!");
 	new closestcar = GetClosestCar(playerid);
-	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not close enough to any vehicle.");
+	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o du gan xe nao.");
 	new string[72];
-	format(string, sizeof(string), "%s begins refilling their vehicle with a fuel can.", GetPlayerNameEx(playerid));
+	format(string, sizeof(string), "%s bat dau tiep nhien lieu cho xe bang Fuel Can.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	ApplyAnimation(playerid, "SCRATCHING", "scdldlp", 4.0, true, false, false, false, 0, 1);
 	SetTimerEx("FuelCan", 10000, false, "iii", playerid, closestcar, PlayerInfo[playerid][zFuelCan]);
 	SetPVarInt(playerid, "fuelcan", 2);
-	GameTextForPlayer(playerid, "~w~Refueling...", 10000, 3);
+	GameTextForPlayer(playerid, "~w~Dang bom xang...", 10000, 3);
 	return 1;
 }
 
@@ -553,40 +553,40 @@ CMD:zscrapmetal(playerid, params[])
 {
 	new zyear, zmonth, zday;
 	getdate(zyear, zmonth, zday);
-	if(!zombieevent && !(zmonth == 10 && zday == 31) && !(zmonth == 11 && zday == 1)) return SendClientMessageEx(playerid, COLOR_GREY, "There is currently no active Zombie Event!");
-	if(!PlayerInfo[playerid][mInventory][16]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Scrap Metal in your inventory, visit /microshop to purchase.");
+	if(!zombieevent && !(zmonth == 10 && zday == 31) && !(zmonth == 11 && zday == 1)) return SendClientMessageEx(playerid, COLOR_GREY, "Hien khong co Zombie Event dang chay!");
+	if(!PlayerInfo[playerid][mInventory][16]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co Scrap Metal, dung /microshop de mua.");
 	if(GetPVarInt(playerid, "zscrapmetal") == 1) return 1;
-	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not use this while inside the vehicle.");
-	if(GetPVarInt(playerid, "EventToken")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
-	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung khi o trong xe.");
+	if(GetPVarInt(playerid, "EventToken")) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the dung khi dang trong su kien.");
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "Khong the lam viec nay luc nay!");
 	new closestcar = GetClosestCar(playerid);
-	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not close enough to any vehicle.");
+	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o du gan xe nao.");
 	new Float:vHP;
 	GetVehicleHealth(closestcar, vHP);
-	if(vHP > 5000) return SendClientMessageEx(playerid, -1, "You cannot add scrapmetal when your vehicle's health is over 5000 HP!");
+	if(vHP > 5000) return SendClientMessageEx(playerid, -1, "Khong the gia co Scrap Metal khi xe co tren 5000 HP!");
 	new string[71];
-	format(string, sizeof(string), "%s begins to apply scrap metal to their vehicle.", GetPlayerNameEx(playerid));
+	format(string, sizeof(string), "%s bat dau gia co xe bang Scrap Metal.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	ApplyAnimation(playerid, "COP_AMBIENT", "Copbrowse_loop", 4.1, true, false, false, false, 0, 1);
 	SetTimerEx("ScrapMetal", 6000, false, "ii", playerid, closestcar);
 	SetPVarInt(playerid, "zscrapmetal", 1);
-	GameTextForPlayer(playerid, "~w~Applying...", 6000, 3);
+	GameTextForPlayer(playerid, "~w~Dang ap dung...", 6000, 3);
 	return 1;
 }
 
 CMD:z50cal(playerid, params[])
 {
-	if(!zombieevent) return SendClientMessageEx(playerid, COLOR_GREY, "There is currently no active Zombie Event!");
-	if(!PlayerInfo[playerid][mInventory][17]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any .50 Caliber Ammo in your inventory, visit /microshop to purchase.");
-	if((GetPlayerWeapon(playerid) != 33 || PlayerInfo[playerid][pGuns][6] != 33) && (GetPlayerWeapon(playerid) != 34 || PlayerInfo[playerid][pGuns][6] != 34)) return SendClientMessageEx(playerid, COLOR_GREY, "You can only load a rifle or sniper rifle with .50 cal ammo.");
+	if(!zombieevent) return SendClientMessageEx(playerid, COLOR_GREY, "Hien khong co Zombie Event dang chay!");
+	if(!PlayerInfo[playerid][mInventory][17]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co .50 Caliber Ammo, dung /microshop de mua.");
+	if((GetPlayerWeapon(playerid) != 33 || PlayerInfo[playerid][pGuns][6] != 33) && (GetPlayerWeapon(playerid) != 34 || PlayerInfo[playerid][pGuns][6] != 34)) return SendClientMessageEx(playerid, COLOR_GREY, "Chi duoc nap dan .50 cal vao rifle hoac sniper rifle.");
 	if(!GetPVarType(playerid, "z50Cal"))
 	{
-		SendClientMessageEx(playerid, -1, "You have loaded a .50 Caliber bullet into your weapon.");
+		SendClientMessageEx(playerid, -1, "Ban da nap mot vien .50 Caliber vao vu khi.");
 		SetPVarInt(playerid, "z50Cal", 1);
 	}
 	else
 	{
-		SendClientMessageEx(playerid, -1, "You have unloaded a .50 Caliber bullet from your weapon.");
+		SendClientMessageEx(playerid, -1, "Ban da thao mot vien .50 Caliber khoi vu khi.");
 		DeletePVar(playerid, "z50Cal");
 	}
 	ApplyAnimation(playerid, "RIFLE", "RIFLE_load", 4.0, false, false, false, false, 0, 1);
@@ -595,12 +595,12 @@ CMD:z50cal(playerid, params[])
 
 CMD:zinject(playerid, params[])
 {
-	if(!zombieevent) return SendClientMessageEx(playerid, COLOR_GREY, "There is currently no active Zombie Event!");
-	if(!PlayerInfo[playerid][mPurchaseCount][18]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Antibiotic Injections in your inventory, visit /microshop to purchase.");
-	if(PlayerInfo[playerid][mInventory][18]) return SendClientMessageEx(playerid, COLOR_GREY, "You currently have a active antibiotic in your bloodstream!");
+	if(!zombieevent) return SendClientMessageEx(playerid, COLOR_GREY, "Hien khong co Zombie Event dang chay!");
+	if(!PlayerInfo[playerid][mPurchaseCount][18]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co Antibiotic Injections, dung /microshop de mua.");
+	if(PlayerInfo[playerid][mInventory][18]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban dang co thuoc khang sinh trong mau!");
 	PlayerInfo[playerid][mPurchaseCount][18]--;
 	PlayerInfo[playerid][mInventory][18] = 3;
-	SendClientMessageEx(playerid, -1, "You have injected your self with a antibiotic! You will be immune from 3 zombie bites!");
+	SendClientMessageEx(playerid, -1, "Ban da tiem khang sinh! Ban se mien nhiem 3 vet can zombie!");
 	return 1;
 }
 
@@ -608,8 +608,8 @@ CMD:zopenkit(playerid, params[])
 {
 	new zyear, zmonth, zday;
 	getdate(zyear, zmonth, zday);
-	if(!zombieevent && !(zmonth == 10 && zday == 31) && !(zmonth == 11 && zday == 1)) return SendClientMessageEx(playerid, COLOR_GREY, "There is currently no active Zombie Event!");
-	if(!PlayerInfo[playerid][mInventory][19]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Survivor Kits in your inventory, visit /microshop to purchase.");
+	if(!zombieevent && !(zmonth == 10 && zday == 31) && !(zmonth == 11 && zday == 1)) return SendClientMessageEx(playerid, COLOR_GREY, "Hien khong co Zombie Event dang chay!");
+	if(!PlayerInfo[playerid][mInventory][19]) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co Survivor Kits, dung /microshop de mua.");
 	new string[128], rand = random(75);
 	switch(rand)
 	{
@@ -617,14 +617,14 @@ CMD:zopenkit(playerid, params[])
 		{
 			PlayerInfo[playerid][mInventory][16]++;
 			PlayerInfo[playerid][mInventory][17] += 2;
-			SendClientMessageEx(playerid, -1, "You found 1 Scrap Metal & 2 .50 Cal Bullets in your kit! Use /zscrapmetal and /z50cal to use your items.");
+			SendClientMessageEx(playerid, -1, "Ban tim thay 1 Scrap Metal & 2 .50 Cal Bullets! Dung /zscrapmetal va /z50cal de su dung.");
 			format(string, sizeof(string), "[ZOPEKIT] %s found 1 Scrap Metal & 2 .50 Cal Bullets in their kit!", GetPlayerNameEx(playerid));
 		}
 		case 25 .. 49://5 Bullets & 2 Antibiotic Injection
 		{
 			PlayerInfo[playerid][mInventory][17] += 5;
 			PlayerInfo[playerid][mPurchaseCount][18] += 2;
-			SendClientMessageEx(playerid, -1, "You found 5 .50 Cal Bullets & 2 Antibiotic Injections in your kit! Use /z50cal and /zinject to use your items.");
+			SendClientMessageEx(playerid, -1, "Ban tim thay 5 .50 Cal Bullets & 2 Antibiotic Injections! Dung /z50cal va /zinject de su dung.");
 			format(string, sizeof(string), "[ZOPEKIT] %s found 5 .50 Cal Bullets & 2 Antibiotic Injections in their kit!", GetPlayerNameEx(playerid));
 		}
 		case 50 .. 74://2 Engine Repair Kits & 1 Scrap Metal, 1 Antibiotic Injection
@@ -632,7 +632,7 @@ CMD:zopenkit(playerid, params[])
 			PlayerInfo[playerid][mInventory][8] += 2;
 			PlayerInfo[playerid][mInventory][16]++;
 			PlayerInfo[playerid][mPurchaseCount][18]++;
-			SendClientMessageEx(playerid, -1, "You found 2 Engine Repair Kits, 1 Scrap Metal & 1 Antibiotic Injection in your kit! Use /jumpstart /zscrapmetal and /zinject to use your items.");
+			SendClientMessageEx(playerid, -1, "Ban tim thay 2 Engine Repair Kits, 1 Scrap Metal & 1 Antibiotic Injection! Dung /jumpstart /zscrapmetal va /zinject de su dung.");
 			format(string, sizeof(string), "[ZOPEKIT] %s found 2 Engine Repair Kits, 1 Scrap Metal & 1 Antibiotic Injection in their kit!", GetPlayerNameEx(playerid));
 		}
 	}
@@ -643,52 +643,52 @@ CMD:zopenkit(playerid, params[])
 
 CMD:givez(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command!");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay!");
 	new target, option[11], amount;
-	if(sscanf(params, "us[11]d", target, option, amount) || amount <= 0) return SendClientMessageEx(playerid, -1, "USAGE: /givez [player] [option] [amount]"), SendClientMessageEx(playerid, -1, "Available Options: jumpstart, fuelcan, scrapmetal, 50cal, inject, kit");
-	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected.");
+	if(sscanf(params, "us[11]d", target, option, amount) || amount <= 0) return SendClientMessageEx(playerid, -1, "CACH DUNG: /givez [player] [option] [amount]"), SendClientMessageEx(playerid, -1, "Tuy chon: jumpstart, fuelcan, scrapmetal, 50cal, inject, kit");
+	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "Nguoi do chua ket noi.");
 	new string[128];
 	if(!strcmp(option, "jumpstart", true))
 	{
 		PlayerInfo[playerid][mInventory][8] += amount;
-		SendClientMessageEx(playerid, -1, "You have given %s %d Jump Start(s).", GetPlayerNameEx(target), amount);
-		SendClientMessageEx(target, -1, "%s has given you %d Jump Start(s). /jumpstart to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(playerid, -1, "Ban da dua %s %d Jump Start(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(target, -1, "%s da dua ban %d Jump Start(s). Dung /jumpstart de su dung.", GetPlayerNameEx(playerid), amount);
 		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d Jump Start(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
 	}
 	if(!strcmp(option, "fuelcan", true))
 	{
-		if(amount != 25 && amount != 50 && amount != 75) return SendClientMessageEx(playerid, -1, "Valid Amounts for fuel cans are 25, 50 and 75.");
+		if(amount != 25 && amount != 50 && amount != 75) return SendClientMessageEx(playerid, -1, "Luong Fuel Can hop le la 25, 50 va 75.");
 		PlayerInfo[target][zFuelCan] = amount;
-		SendClientMessageEx(playerid, -1, "You have given %s a fuelcan with %d fuel.", GetPlayerNameEx(target), amount);
-		SendClientMessageEx(target, -1, "%s has given you a fuelcan with %d fuel. /zfuelcan to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(playerid, -1, "Ban da dua %s Fuel Can voi %d nhien lieu.", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(target, -1, "%s da dua ban Fuel Can voi %d nhien lieu. Dung /zfuelcan de su dung.", GetPlayerNameEx(playerid), amount);
 		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) a fuelcan with %d fuel.", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
 	}
 	if(!strcmp(option, "scrapmetal", true))
 	{
 		PlayerInfo[target][mInventory][16] += amount;
-		SendClientMessageEx(playerid, -1, "You have given %s %d Scrap Metal(s).", GetPlayerNameEx(target), amount);
-		SendClientMessageEx(target, -1, "%s has given you %d Scrap Metal(s). /zscrapmetal to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(playerid, -1, "Ban da dua %s %d Scrap Metal(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(target, -1, "%s da dua ban %d Scrap Metal(s). Dung /zscrapmetal de su dung.", GetPlayerNameEx(playerid), amount);
 		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d Scrap Metal(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
 	}
 	if(!strcmp(option, "50cal", true))
 	{
 		PlayerInfo[target][mInventory][17] += amount;
-		SendClientMessageEx(playerid, -1, "You have given %s %d .50 Caliber Bullet(s).", GetPlayerNameEx(target), amount);
-		SendClientMessageEx(target, -1, "%s has given you %d .50 Caliber Bullet(s). /z50cal to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(playerid, -1, "Ban da dua %s %d vien .50 Caliber.", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(target, -1, "%s da dua ban %d vien .50 Caliber. Dung /z50cal de su dung.", GetPlayerNameEx(playerid), amount);
 		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d .50 Caliber Bullet(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
 	}
 	if(!strcmp(option, "inject", true))
 	{
 		PlayerInfo[target][mPurchaseCount][18] += amount;
-		SendClientMessageEx(playerid, -1, "You have given %s %d Antibiotic Injection(s).", GetPlayerNameEx(target), amount);
-		SendClientMessageEx(target, -1, "%s has given you %d Antibiotic Injection(s). /zinject to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(playerid, -1, "Ban da dua %s %d Antibiotic Injection(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(target, -1, "%s da dua ban %d Antibiotic Injection(s). Dung /zinject de su dung.", GetPlayerNameEx(playerid), amount);
 		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d Antibiotic Injection(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
 	}
 	if(!strcmp(option, "kit", true))
 	{
 		PlayerInfo[target][mInventory][19] += amount;
-		SendClientMessageEx(playerid, -1, "You have given %s %d Survivor Kit(s).", GetPlayerNameEx(target), amount);
-		SendClientMessageEx(target, -1, "%s has given you %d Survivor Kit(s). /zopenkit to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(playerid, -1, "Ban da dua %s %d Survivor Kit(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(target, -1, "%s da dua ban %d Survivor Kit(s). Dung /zopenkit de su dung.", GetPlayerNameEx(playerid), amount);
 		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d Survivor Kit(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
 	}
 	Log("logs/micro.log", string);
@@ -697,8 +697,8 @@ CMD:givez(playerid, params[])
 
 CMD:zscores(playerid, params[]) {
 
-	if(!zombieevent) return SendClientMessageEx(playerid, COLOR_GREY, "The zombie event is not active!");
-	ShowPlayerDialogEx(playerid, DIALOG_ZSCORES, DIALOG_STYLE_LIST, "Zombie Scores", "Human Kills\nZombie Infections\nLongest Surviving\nLongest Zombies", "Select", "Cancel");
+	if(!zombieevent) return SendClientMessageEx(playerid, COLOR_GREY, "Su kien zombie chua bat!");
+	ShowPlayerDialogEx(playerid, DIALOG_ZSCORES, DIALOG_STYLE_LIST, "Bang diem Zombie", "Luot tieu diet cua nguoi\nLuot lay nhiem zombie\nNguoi song sot lau nhat\nZombie ton tai lau nhat", "Chon", "Huy");
 	return 1;
 }
 
@@ -748,10 +748,10 @@ public OnShowZombieScoreBoard(iPlayerID, iScoreType) {
 	cache_get_row_count(iRows);
 
 	switch(iScoreType) {
-		case 0: szMiscArray = "Name\tKills";
-		case 1: szMiscArray = "Name\tKills";
-		case 2: szMiscArray = "Name\tTime";
-		case 3: szMiscArray = "Name\tTime";
+		case 0: szMiscArray = "Ten\tLuot tieu diet";
+		case 1: szMiscArray = "Ten\tLuot tieu diet";
+		case 2: szMiscArray = "Ten\tThoi gian";
+		case 3: szMiscArray = "Ten\tThoi gian";
 	}
 
 	while(iCount < iRows) {
@@ -767,8 +767,8 @@ public OnShowZombieScoreBoard(iPlayerID, iScoreType) {
 	}
 	
 	switch(iScoreType) {
-		case 0, 2: ShowPlayerDialogEx(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Survivor Scoreboard", szMiscArray, "Close", "");
-		case 1, 3: ShowPlayerDialogEx(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Zombie Scoreboard", szMiscArray, "Close", "");
+		case 0, 2: ShowPlayerDialogEx(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Bang diem nguoi song sot", szMiscArray, "Dong", "");
+		case 1, 3: ShowPlayerDialogEx(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Bang diem Zombie", szMiscArray, "Dong", "");
 	}
 	
 

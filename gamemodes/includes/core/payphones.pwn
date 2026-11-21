@@ -69,7 +69,7 @@ PayPhone_WriteMatches(i, revision) {
 
 PayPhone_Fail(i, revision) {
 	if(!PayPhone_WriteMatches(i, revision)) return 0;
-	if(PayPhone_Requester(i)) SendClientMessageEx(arrPayPhoneData[i][pp_iRequester], COLOR_GRAD1, "Pay phone save failed. Review and reload before retrying.");
+	if(PayPhone_Requester(i)) SendClientMessageEx(arrPayPhoneData[i][pp_iRequester], COLOR_GRAD1, "Luu dien thoai cong cong that bai. Kiem tra va tai lai truoc khi thu lai.");
 	arrPayPhoneData[i][pp_bPending] = false;
 	printf("[Pay Phones] Write/read failed for slot %d; world unchanged. Reload may be required.", i);
 	return 1;
@@ -187,7 +187,7 @@ PayPhone_EndCall(playerid) {
 		DeletePVar(actor, "BUSICALL");
 		RemovePlayerAttachedObject(actor, 8);
 		SetPlayerSpecialAction(actor, SPECIAL_ACTION_STOPUSECELLPHONE);
-		if(n == 1) SendClientMessageEx(actor, COLOR_GRAD2, "They hung up.");
+		if(n == 1) SendClientMessageEx(actor, COLOR_GRAD2, "Nguoi do da gac may.");
 	}
 	return 1;
 }
@@ -216,18 +216,18 @@ hook OnPlayerLeaveDynamicArea(playerid, STREAMER_TAG_AREA:areaid) {
 
 PayPhone_Directory(playerid) {
 	gPayPhoneListCount[playerid] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "Area Code\tNumber\tZone\n");
+	format(szMiscArray, sizeof(szMiscArray), "Ma vung\tSo\tKhu vuc\n");
 	new zone[MAX_ZONE_NAME], line[160];
 	for(new i; i < MAX_PAYPHONES; ++i) {
 		if(!PayPhone_Valid(i)) continue;
 		GetPhoneZone(i, zone, sizeof(zone));
-		format(line, sizeof(line), "Area: %d\t%d\t%s\n", GetPhoneAreaCode(i), arrPayPhoneData[i][pp_iNumber], zone);
+		format(line, sizeof(line), "Vung: %d\t%d\t%s\n", GetPhoneAreaCode(i), arrPayPhoneData[i][pp_iNumber], zone);
 		if(strlen(szMiscArray)+strlen(line) >= sizeof(szMiscArray) || gPayPhoneListCount[playerid] >= sizeof(ListItemTrackId[])) break;
 		strcat(szMiscArray, line, sizeof(szMiscArray));
 		ListItemTrackId[playerid][gPayPhoneListCount[playerid]++] = i;
 	}
-	if(!gPayPhoneListCount[playerid]) return SendClientMessageEx(playerid, COLOR_GRAD1, "There are no pay phones.");
-	return ShowPlayerDialogEx(playerid, DIALOG_PHONE_PAYPHONES, DIALOG_STYLE_TABLIST_HEADERS, "Pay Phones", szMiscArray, "Call", "Cancel");
+	if(!gPayPhoneListCount[playerid]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong co dien thoai cong cong.");
+	return ShowPlayerDialogEx(playerid, DIALOG_PHONE_PAYPHONES, DIALOG_STYLE_TABLIST_HEADERS, "Dien thoai cong cong", szMiscArray, "Goi", "Huy");
 }
 
 PayPhone_Menu(playerid, i) {
@@ -237,8 +237,8 @@ PayPhone_Menu(playerid, i) {
 	GetPhoneZone(i, zone, sizeof(zone));
 	SetPVarInt(playerid, "PayPhone", i);
 	arrPayPhoneData[i][pp_iUserID] = playerid;
-	format(szMiscArray, sizeof(szMiscArray), "Number: %d\nArea Code: %d | {FFFF00}%s\n\n{FFFFFF}Please enter the number you would like to dial.", arrPayPhoneData[i][pp_iNumber], GetPhoneAreaCode(i), zone);
-	return ShowPlayerDialogEx(playerid, DIALOG_PAYPHONE, DIALOG_STYLE_INPUT, "Pay Phone", szMiscArray, "Dial", "<<");
+	format(szMiscArray, sizeof(szMiscArray), "So: %d\nMa vung: %d | {FFFF00}%s\n\n{FFFFFF}Nhap so muon goi.", arrPayPhoneData[i][pp_iNumber], GetPhoneAreaCode(i), zone);
+	return ShowPlayerDialogEx(playerid, DIALOG_PAYPHONE, DIALOG_STYLE_INPUT, "Dien thoai cong cong", szMiscArray, "Quay so", "<<");
 }
 
 LoadPayPhones() {
@@ -288,7 +288,7 @@ ProcessPayPhone(i, Float:X, Float:Y, Float:Z, Float:RZ, iVW, iINT) {
 	PayPhone_Clear(i);
 	if(arrPayPhoneData[i][pp_iNumber] <= 0 || (X == 0.0 && Y == 0.0 && Z == 0.0)) return 1;
 	arrPayPhoneData[i][pp_iObjectID] = CreateDynamicObject(1216, X, Y, Z - 0.3, 0.0, 0.0, RZ + 180.0, .worldid = iVW, .interiorid = iINT);
-	format(szMiscArray, sizeof(szMiscArray), "Pay Phone {DDDDDD}(ID: %d)\n{FFFF00} Number: %d\n\n{DDDDDD}Press ~k~~CONVERSATION_YES~ to dial.", i, arrPayPhoneData[i][pp_iNumber]);
+	format(szMiscArray, sizeof(szMiscArray), "Dien thoai cong cong {DDDDDD}(ID: %d)\n{FFFF00} So: %d\n\n{DDDDDD}Nhan ~k~~CONVERSATION_YES~ de goi.", i, arrPayPhoneData[i][pp_iNumber]);
 	arrPayPhoneData[i][pp_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_YELLOW, X, Y, Z + 1.0, 5.0, .worldid = iVW, .interiorid = iINT);
 	arrPayPhoneData[i][pp_iAreaID] = CreateDynamicSphere(X, Y, Z, 3.0, iVW, iINT);
 	return 1;
@@ -297,12 +297,12 @@ ProcessPayPhone(i, Float:X, Float:Y, Float:Z, Float:RZ, iVW, iINT) {
 PayPhone_UpdateTextLabel(i, choice) {
     if(!PayPhone_Valid(i)) return 0;
     if(choice == 2) 
-		return UpdateDynamic3DTextLabelText(arrPayPhoneData[i][pp_iTextID], COLOR_PURPLE, "** The pay phone is in use **");
+		return UpdateDynamic3DTextLabelText(arrPayPhoneData[i][pp_iTextID], COLOR_PURPLE, "** Dien thoai dang duoc dung **");
     
 	if(choice == 1) 
-		return UpdateDynamic3DTextLabelText(arrPayPhoneData[i][pp_iTextID], COLOR_PURPLE, "** The pay phone is ringing **\nPress ~k~~CONVERSATION_YES~ to answer.");
+		return UpdateDynamic3DTextLabelText(arrPayPhoneData[i][pp_iTextID], COLOR_PURPLE, "** Dien thoai dang reo **\nNhan ~k~~CONVERSATION_YES~ de nghe.");
     
-	format(szMiscArray, sizeof(szMiscArray), "Pay Phone {DDDDDD}(ID: %d)\n{FFFF00} Number: %d\n\n{DDDDDD}Press ~k~~CONVERSATION_YES~ to dial.", i, arrPayPhoneData[i][pp_iNumber]);
+	format(szMiscArray, sizeof(szMiscArray), "Dien thoai cong cong {DDDDDD}(ID: %d)\n{FFFF00} So: %d\n\n{DDDDDD}Nhan ~k~~CONVERSATION_YES~ de goi.", i, arrPayPhoneData[i][pp_iNumber]);
     return UpdateDynamic3DTextLabelText(arrPayPhoneData[i][pp_iTextID], COLOR_YELLOW, szMiscArray);
 }
 
@@ -345,7 +345,7 @@ public OnPayPhoneRead(i, revision) {
 	cache_get_row_count(rows);
 	if(rows != 1 || !cache_get_value_name_int(0, "id", id) || id != i+1) return PayPhone_Fail(i, revision);
 	if(PayPhone_ReadRow(0) != i) return PayPhone_Fail(i, revision);
-	if(PayPhone_Requester(i)) SendClientMessageEx(arrPayPhoneData[i][pp_iRequester], COLOR_YELLOW, "Pay phone changes saved successfully.");
+	if(PayPhone_Requester(i)) SendClientMessageEx(arrPayPhoneData[i][pp_iRequester], COLOR_YELLOW, "Da luu thay doi dien thoai cong cong.");
 	arrPayPhoneData[i][pp_bPending] = false;
 	return 1;
 }
@@ -356,8 +356,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	DeletePVar(playerid, "AtPayPhone");
 	for(new i; i < MAX_PAYPHONES; ++i) {
 		if(!PayPhone_Valid(i) || gPayPhonesLoading || arrPayPhoneData[i][pp_bPending] || !IsPlayerInDynamicArea(playerid, arrPayPhoneData[i][pp_iAreaID])) continue;
-		if(arrPayPhoneData[i][pp_iUserID] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This pay phone is already in use.");
-		if(GetPVarType(playerid, "PayPhone")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are already communicating with a pay phone.");
+		if(arrPayPhoneData[i][pp_iUserID] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Dien thoai nay dang duoc dung.");
+		if(GetPVarType(playerid, "PayPhone")) return SendClientMessageEx(playerid, COLOR_GRAD1, "Ban dang dung dien thoai cong cong.");
 		if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID) {
 			SetPVarInt(playerid, "PayPhone", i);
 			return pc_cmd_pickup(playerid, "");
@@ -375,7 +375,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		gPayPhoneListCount[playerid] = 0;
 		if(!response || listitem < 0 || listitem >= count) return 1;
 		new i = ListItemTrackId[playerid][listitem], number[16];
-		if(!PayPhone_Valid(i) || gPayPhonesLoading || arrPayPhoneData[i][pp_bPending]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This pay phone is unavailable. Open the directory again.");
+		if(!PayPhone_Valid(i) || gPayPhonesLoading || arrPayPhoneData[i][pp_bPending]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Dien thoai khong kha dung. Hay mo lai danh ba.");
 		format(number, sizeof(number), "%d", arrPayPhoneData[i][pp_iNumber]);
 		return pc_cmd_call(playerid, number);
 	}
@@ -412,13 +412,13 @@ CMD:phones(playerid, params[]) {
 	for(new i; i < MAX_PAYPHONES; ++i) {
 		if(!PayPhone_Valid(i)) continue;
 		GetPhoneZone(i, zone, sizeof(zone));
-		format(line, sizeof(line), "%d - Number: %d - Location: %s\n", i, arrPayPhoneData[i][pp_iNumber], zone);
+		format(line, sizeof(line), "%d - So: %d - Vi tri: %s\n", i, arrPayPhoneData[i][pp_iNumber], zone);
 		if(strlen(szMiscArray) + strlen(line) >= sizeof(szMiscArray) || gPayPhoneListCount[playerid] >= sizeof(ListItemTrackId[])) break;
 		strcat(szMiscArray, line, sizeof(szMiscArray));
 		ListItemTrackId[playerid][gPayPhoneListCount[playerid]++] = i;
 	}
-	if(!gPayPhoneListCount[playerid]) return SendClientMessageEx(playerid, COLOR_GRAD1, "There are no pay phones.");
-	return ShowPlayerDialogEx(playerid, DIALOG_PAYPHONE_ADMIN, DIALOG_STYLE_LIST, "Pay Phones", szMiscArray, "Teleport", "Cancel");
+	if(!gPayPhoneListCount[playerid]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Khong co dien thoai cong cong.");
+	return ShowPlayerDialogEx(playerid, DIALOG_PAYPHONE_ADMIN, DIALOG_STYLE_LIST, "Dien thoai cong cong", szMiscArray, "Dich chuyen", "Huy");
 }
 
 CMD:createphone(playerid, params[]) {
@@ -435,20 +435,20 @@ CMD:createphone(playerid, params[]) {
 		arrPayPhoneData[i][pp_iObjectID] = oldobject;
 		format(numbertext, sizeof(numbertext), "024%d%d", area, Random(100, 999));
 		new number = strval(numbertext);
-		for(new x; x < MAX_PAYPHONES; ++x) if(arrPayPhoneData[x][pp_iNumber] == number) return SendClientMessageEx(playerid, COLOR_GRAD1, "Generated number already exists. Try again.");
-		if(!PayPhone_QueueEdit(i, number, pos[0], pos[1], pos[2], pos[3], vw, interior, playerid)) SendClientMessageEx(playerid, COLOR_GRAD1, "Pay phones are busy. Try again later.");
+		for(new x; x < MAX_PAYPHONES; ++x) if(arrPayPhoneData[x][pp_iNumber] == number) return SendClientMessageEx(playerid, COLOR_GRAD1, "So vua tao da ton tai. Hay thu lai.");
+		if(!PayPhone_QueueEdit(i, number, pos[0], pos[1], pos[2], pos[3], vw, interior, playerid)) SendClientMessageEx(playerid, COLOR_GRAD1, "Dien thoai cong cong dang ban. Hay thu lai sau.");
 		return 1;
 	}
-	return SendClientMessageEx(playerid, COLOR_GRAD1, "There are no more pay phone slots available.");
+	return SendClientMessageEx(playerid, COLOR_GRAD1, "Da het o trong cho dien thoai cong cong.");
 }
 
 CMD:destroyphone(playerid, params[]) {
 	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
 	new i;
 	if(sscanf(params, "i", i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "/destroyphone [phoneid]");
-	if(!PayPhone_Valid(i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "The specified pay phone ID has not been used.");
-	if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID || arrPayPhoneData[i][pp_iUserID] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "The phone is in use.");
-	if(!PayPhone_QueueEdit(i, -1, 0.0, 0.0, 0.0, 0.0, 0, 0, playerid)) SendClientMessageEx(playerid, COLOR_GRAD1, "Pay phones are busy. Try again later.");
+	if(!PayPhone_Valid(i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "ID dien thoai cong cong nay chua duoc dung.");
+	if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID || arrPayPhoneData[i][pp_iUserID] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Dien thoai dang duoc dung.");
+	if(!PayPhone_QueueEdit(i, -1, 0.0, 0.0, 0.0, 0.0, 0, 0, playerid)) SendClientMessageEx(playerid, COLOR_GRAD1, "Dien thoai cong cong dang ban. Hay thu lai sau.");
 	return 1;
 }
 
@@ -456,12 +456,12 @@ CMD:editphone(playerid, params[]) {
 	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
 	new i, Float:pos[4];
 	if(sscanf(params, "i", i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "/editphone [id]");
-	if(!PayPhone_Valid(i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "The specified pay phone ID has not been used.");
-	if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID || arrPayPhoneData[i][pp_iUserID] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "The phone is in use.");
+	if(!PayPhone_Valid(i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "ID dien thoai cong cong nay chua duoc dung.");
+	if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID || arrPayPhoneData[i][pp_iUserID] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "Dien thoai dang duoc dung.");
 	GetDynamicObjectPos(arrPayPhoneData[i][pp_iObjectID], pos[0], pos[1], pos[2]);
-	if(!IsPlayerInRangeOfPoint(playerid, 50.0, pos[0], pos[1], pos[2])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be near the pay phone.");
+	if(!IsPlayerInRangeOfPoint(playerid, 50.0, pos[0], pos[1], pos[2])) return SendClientMessageEx(playerid, COLOR_GRAD1, "Can dung gan dien thoai cong cong.");
 	GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
 	GetPlayerFacingAngle(playerid, pos[3]);
-	if(!PayPhone_Save(i, pos[0], pos[1], pos[2], pos[3], GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), playerid)) SendClientMessageEx(playerid, COLOR_GRAD1, "Pay phones are busy. Try again later.");
+	if(!PayPhone_Save(i, pos[0], pos[1], pos[2], pos[3], GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), playerid)) SendClientMessageEx(playerid, COLOR_GRAD1, "Dien thoai cong cong dang ban. Hay thu lai sau.");
 	return 1;
 }

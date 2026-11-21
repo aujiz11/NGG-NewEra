@@ -6,20 +6,20 @@
 stock GunLicense_CanApply(playerid) {
 	if(!(0 <= playerid < MAX_PLAYERS) || !IsPlayerConnected(playerid) || !gPlayerLogged{playerid}) return 0;
 	if(PlayerBusy(playerid) || PlayerTied[playerid] || PlayerInfo[playerid][pJailTime]) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot apply for a gun license right now.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban chua the xin giay phep sung luc nay.");
 		return 0;
 	}
 	if(GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0
 		|| !IsPlayerInRangeOfPoint(playerid, 5.0, 1464.3099, -1747.5853, 15.6267)) {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You aren't at the government arms point at City Hall in Los Santos.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o diem Government Arms tai City Hall, Los Santos.");
 		return 0;
 	}
 	if(PlayerInfo[playerid][pGunLic] > gettime()) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You already have a valid gun license.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban da co giay phep sung con han.");
 		return 0;
 	}
 	if(GetPlayerCash(playerid) < GUN_LICENSE_PRICE) {
-		SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough money.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong du tien.");
 		return 0;
 	}
 	return 1;
@@ -31,15 +31,15 @@ CMD:issuegunlicense(playerid, params[])
 	if((0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV)
 	{
 		new iTargetID;
-		if(sscanf(params, "u", iTargetID)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /issuegunlicense [playerid]");
-		if(!(0 <= iTargetID < MAX_PLAYERS) || !IsPlayerConnected(iTargetID) || !gPlayerLogged{iTargetID}) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
+		if(sscanf(params, "u", iTargetID)) return SendClientMessageEx(playerid, COLOR_GRAD2, "CACH DUNG: /issuegunlicense [playerid]");
+		if(!(0 <= iTargetID < MAX_PLAYERS) || !IsPlayerConnected(iTargetID) || !gPlayerLogged{iTargetID}) return SendClientMessageEx(playerid, COLOR_GRAD2, "Nguoi choi khong hop le.");
 
 		++GunLicenseRequest[iTargetID];
 		PlayerInfo[iTargetID][pGunLic] = gettime() + GUN_LICENSE_DURATION;
-		SendClientMessageEx(iTargetID, COLOR_WHITE, "%s has issued you a gun license valid for 30 days.", GetPlayerNameEx(playerid));
+		SendClientMessageEx(iTargetID, COLOR_WHITE, "%s da cap cho ban giay phep sung co han 30 ngay.", GetPlayerNameEx(playerid));
 
 		new message[256];
-		format(message, sizeof(message), "%s has renewed %s's gun license.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+		format(message, sizeof(message), "%s da gia han giay phep sung cho %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 		foreach(new i : Player)
 			if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[i][pMember]][g_iGroupType] == GROUP_TYPE_GOV)
 				SendClientMessageEx(i, COLOR_RED, message);
@@ -47,14 +47,14 @@ CMD:issuegunlicense(playerid, params[])
 		format(message, sizeof(message), "%s(%d) (%s) has issued %s(%d) (%s) a gun license.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), GetPlayerIpEx(iTargetID));
 		Log("logs/licenses.log", message);
 	}
-	else SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to use this command!");
+	else SendClientMessageEx(playerid, COLOR_WHITE, "Ban khong co quyen dung lenh nay!");
 	return 1;
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	if(dialogid == APPLY_GUN_LIC) {
-		if(!response) return SendClientMessageEx(playerid, COLOR_WHITE, "You have chosen not to apply for a gun license!");
+		if(!response) return SendClientMessageEx(playerid, COLOR_WHITE, "Ban da huy xin giay phep sung!");
 		SubmitGunLicApp(playerid);
 	}
 	return 0;
@@ -65,7 +65,7 @@ SubmitGunLicApp(iPlayerID) {
 	new query[160], request = ++GunLicenseRequest[iPlayerID];
 	mysql_format(MainPipeline, query, sizeof(query), "SELECT 1 FROM `mdc` WHERE `id` = %d AND `time` > DATE_SUB(NOW(), INTERVAL 21 DAY) LIMIT 1", GetPlayerSQLId(iPlayerID));
 	if(!mysql_tquery(MainPipeline, query, "OnSubmitGunLicApp", "iii", iPlayerID, g_arrQueryHandle[iPlayerID], request)) {
-		SendClientMessageEx(iPlayerID, COLOR_WHITE, "Unable to submit your gun license application. Please try again.");
+		SendClientMessageEx(iPlayerID, COLOR_WHITE, "Khong the gui don xin giay phep sung. Hay thu lai.");
 		return 0;
 	}
 	return 1;
@@ -83,16 +83,16 @@ public OnSubmitGunLicApp(iPlayerID, session, request) {
 	new rows;
 	cache_get_row_count(rows);
 	if(rows > 0) {
-		ShowPlayerDialogEx(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Gun License Application - Denied",
-			"Your background check found a criminal history within the past 21 days.\nPlease reapply once 21 days have passed since your last crime.", "Close", "");
+		ShowPlayerDialogEx(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Don xin giay phep sung - Tu choi",
+			"Ly lich cua ban co tien an trong 21 ngay qua.\nHay nop lai sau 21 ngay ke tu lan pham toi cuoi.", "Dong", "");
 		return 1;
 	}
-	if(Tax > cellmax - GUN_LICENSE_PRICE) return SendClientMessageEx(iPlayerID, COLOR_WHITE, "The government cannot accept your payment right now. Please try again later.");
+	if(Tax > cellmax - GUN_LICENSE_PRICE) return SendClientMessageEx(iPlayerID, COLOR_WHITE, "Chinh phu chua the nhan thanh toan. Hay thu lai sau.");
 
 	GivePlayerCash(iPlayerID, -GUN_LICENSE_PRICE);
 	Tax += GUN_LICENSE_PRICE;
 	PlayerInfo[iPlayerID][pGunLic] = gettime() + GUN_LICENSE_DURATION;
-	ShowPlayerDialogEx(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Gun License Application - Approved", "Your gun license is now valid for 30 days.\nHave a good day!", "Close", "");
+	ShowPlayerDialogEx(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Don xin giay phep sung - Chap thuan", "Giay phep sung cua ban co han 30 ngay.\nChuc mot ngay tot lanh!", "Dong", "");
 	new message[128];
 	format(message, sizeof(message), "%s has renewed their gun license for $100,000.", GetPlayerNameEx(iPlayerID));
 	Log("logs/licenses.log", message);

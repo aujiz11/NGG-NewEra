@@ -81,25 +81,25 @@ hook OnPlayerStateChange(playerid, newstate, oldstate) {
 		if((carid = IsDynamicCrateVehicle(GetPlayerVehicleID(playerid))) != -1) {
 			if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
 				if(ValidGroup(CrateVehicle[carid][cvGroupID])) {
-					SendClientMessageEx(playerid, COLOR_YELLOW, "This crate vehicle belongs to %s", arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName]);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Xe cho thung nay thuoc ve %s", arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName]);
 				}
 			} else {
 				if(ValidGroup(CrateVehicle[carid][cvGroupID])) {
 					if(PlayerInfo[playerid][pMember] != CrateVehicle[carid][cvGroupID]) {
-						SendClientMessageEx(playerid, COLOR_GREY, "You need to be apart of %s to drive this vehicle!", arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName]);
+						SendClientMessageEx(playerid, COLOR_GREY, "Ban phai thuoc %s de lai xe nay!", arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName]);
 						return RemovePlayerFromVehicle(playerid);
 					}
 					if(0 <= CrateVehicle[carid][cvRank] < MAX_GROUP_RANKS && (PlayerInfo[playerid][pRank] < CrateVehicle[carid][cvRank])) {
-						SendClientMessageEx(playerid, COLOR_GREY, "You need to be rank %s (%d) or above to drive this vehicle!", arrGroupRanks[CrateVehicle[carid][cvGroupID]][CrateVehicle[carid][cvRank]], CrateVehicle[carid][cvRank]);
+						SendClientMessageEx(playerid, COLOR_GREY, "Ban can hang %s (%d) tro len de lai xe nay!", arrGroupRanks[CrateVehicle[carid][cvGroupID]][CrateVehicle[carid][cvRank]], CrateVehicle[carid][cvRank]);
 						return RemovePlayerFromVehicle(playerid);
 					}
 				}
 				if(!ValidGroup(CrateVehicle[carid][cvGroupID]) && !ValidGroup(PlayerInfo[playerid][pMember])) {
-					SendClientMessageEx(playerid, COLOR_GREY, "You must be in a group to use this vehicle.");
+					SendClientMessageEx(playerid, COLOR_GREY, "Ban phai thuoc mot to chuc de dung xe nay.");
 					return RemovePlayerFromVehicle(playerid);
 				}
 			}
-			if(CreateCount(carid) > 0) SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* There are %d crate(s) stored in this vehicle.", CreateCount(carid));
+			if(CreateCount(carid) > 0) SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Co %d thung trong xe nay.", CreateCount(carid));
 		}
 	}
 	return 1;
@@ -116,7 +116,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
 						GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
 						SetPlayerPos(playerid, pos[0], pos[1], pos[2]+1.3);
 						PlayerPlaySound(playerid, 1130, pos[0], pos[1], pos[2]+1.3);
-						SendClientMessageEx(playerid, COLOR_GREY, "You need to be apart of %s to use this vehicle!", arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName]);
+						SendClientMessageEx(playerid, COLOR_GREY, "Ban phai thuoc %s de dung xe nay!", arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName]);
 						return 1;
 					}
 				}
@@ -124,7 +124,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
 					GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
 					SetPlayerPos(playerid, pos[0], pos[1], pos[2]+1.3);
 					PlayerPlaySound(playerid, 1130, pos[0], pos[1], pos[2]+1.3);
-					SendClientMessageEx(playerid, COLOR_GREY, "You must be in a group to use this vehicle.");
+					SendClientMessageEx(playerid, COLOR_GREY, "Ban phai thuoc mot to chuc de dung xe nay.");
 					return 1;
 				}
 			}
@@ -137,7 +137,7 @@ hook OnVehicleDeath(vehicleid, killerid) {
 	new carid;
 	if((carid = IsDynamicCrateVehicle(vehicleid)) != -1) {
 		CancelCrateVehicleActions(carid);
-		if(CreateCount(carid) > 0) AnnounceRespawn(CrateVehicle[carid][cvGroupID], "destroyed", carid, CreateCount(carid)), DestroyCratesInVeh(carid);
+		if(CreateCount(carid) > 0) AnnounceRespawn(CrateVehicle[carid][cvGroupID], "pha huy", carid, CreateCount(carid)), DestroyCratesInVeh(carid);
 		if(CrateVehicle[carid][cvCrate] != -1) DestroyCrate(CrateVehicle[carid][cvCrate]);
 	}
 	return 1;
@@ -147,7 +147,7 @@ hook OnVehicleSpawn(vehicleid) {
 	new carid;
 	if((carid = IsDynamicCrateVehicle(vehicleid)) != -1) {
 		CancelCrateVehicleActions(carid);
-		if(CreateCount(carid) > 0) AnnounceRespawn(CrateVehicle[carid][cvGroupID], "respawned", carid, CreateCount(carid)), DestroyCratesInVeh(carid);
+		if(CreateCount(carid) > 0) AnnounceRespawn(CrateVehicle[carid][cvGroupID], "tao lai", carid, CreateCount(carid)), DestroyCratesInVeh(carid);
 		if(CrateVehicle[carid][cvCrate] != -1) DestroyCrate(CrateVehicle[carid][cvCrate]);
 		SpawnCrateVeh(carid);
 	}
@@ -160,7 +160,7 @@ public AnnounceRespawn(group, const type[], veh, amount) {
 		new vehicleName[18];
 		new string[128];
 		strunpack(vehicleName, VehicleName[CrateVehicle[veh][cvModel] - 400], sizeof(vehicleName));
-		format(string, sizeof(string), "** Vehicle %s was %s %d crate(s) were destroyed. **", vehicleName, type, amount);
+		format(string, sizeof(string), "** Xe %s da bi %s, %d thung bi pha huy. **", vehicleName, type, amount);
 		foreach(new i: Player) {
 			if(PlayerInfo[i][pMember] == group) {
 				ChatTrafficProcess(i, arrGroupData[group][g_hOOCColor] * 256 + 255, string, CHAT_GROUP_OOC);
@@ -352,13 +352,13 @@ public IsDynamicCrateVehicle(vehicleid) {
 CMD:cvcreate(playerid, params[]) {
 	szMiscArray[0] = 0;
 	new iVehicle, iColors[2], Float:vpos[4];
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pFactionModerator] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command!");
-	if(CrateVehTotal >= MAX_CRATE_VEHCILES) return SendClientMessageEx(playerid, COLOR_GREY, "Your unable to create anymore crate vehicles the limit has been reached! (Max: %d)", MAX_CRATE_VEHCILES);
-	if(sscanf(params, "dD(0)D(0)", iVehicle, iColors[0], iColors[1])) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cvcreate [model ID] [color 1] [color 2]");
-	if(!(400 <= iVehicle < 612)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid vehicle model ID specified!");
-	if(IsATrain(iVehicle)) return SendClientMessageEx(playerid, COLOR_GREY, "Trains cannot be spawned during runtime.");
-	if(IsWeaponizedVehicle(iVehicle)) return SendClientMessageEx(playerid, COLOR_GREY, "You're unable to create weaponized vehicles as a crate vehicle!");
-	if(!(0 <= iColors[0] <= 255 && 0 <= iColors[1] <= 255)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid color specified (IDs start at 0, and end at 255).");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pFactionModerator] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay!");
+	if(CrateVehTotal >= MAX_CRATE_VEHCILES) return SendClientMessageEx(playerid, COLOR_GREY, "Da dat gioi han xe cho thung, khong the tao them! (Toi da: %d)", MAX_CRATE_VEHCILES);
+	if(sscanf(params, "dD(0)D(0)", iVehicle, iColors[0], iColors[1])) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /cvcreate [model ID] [color 1] [color 2]");
+	if(!(400 <= iVehicle < 612)) return SendClientMessageEx(playerid, COLOR_GREY, "Model xe khong hop le!");
+	if(IsATrain(iVehicle)) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the tao tau khi may chu dang chay.");
+	if(IsWeaponizedVehicle(iVehicle)) return SendClientMessageEx(playerid, COLOR_GREY, "Khong the dung xe vu trang lam xe cho thung!");
+	if(!(0 <= iColors[0] <= 255 && 0 <= iColors[1] <= 255)) return SendClientMessageEx(playerid, COLOR_GREY, "Mau khong hop le (ID tu 0 den 255).");
 
 	GetPlayerPos(playerid, vpos[0], vpos[1], vpos[2]);
 	GetPlayerFacingAngle(playerid, vpos[3]);
@@ -404,7 +404,7 @@ public OnCrateVehicle(playerid, i, veh, Float:pos1, Float:pos2, Float:pos3, Floa
 	SpawnCrateVeh(i);
 	++CrateVehTotal;
 	strunpack(vehicleName, VehicleName[veh - 400], sizeof(vehicleName));
-	SendClientMessageEx(playerid, COLOR_WHITE, "You have created a %s as a dynamic crate vehicle. (Slots Left: %d)", vehicleName, (MAX_CRATE_VEHCILES - CrateVehTotal));
+	SendClientMessageEx(playerid, COLOR_WHITE, "Ban da tao %s lam xe cho thung dynamic. (Con %d o)", vehicleName, (MAX_CRATE_VEHCILES - CrateVehTotal));
 	format(szMiscArray, sizeof(szMiscArray), "%s has created a dynamic crate vehicle (Name: %s | Model: %d)", GetPlayerNameEx(playerid), vehicleName, veh);
 	Log("logs/cvspawn.log", szMiscArray);
 	return 1;
@@ -415,15 +415,15 @@ CMD:cvstorage(playerid, params[])
 	szMiscArray[0] = 0;
 	if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
 		new group;
-		if(sscanf(params, "i", group)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /cvstorage [groupid]");
+		if(sscanf(params, "i", group)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /cvstorage [groupid]");
 		if(group != -1) {
-			if(!ValidGroup(group)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid group ID specified (0 - 39) | -1 will list vehicle not owned!");
+			if(!ValidGroup(group)) return SendClientMessageEx(playerid, COLOR_GREY, "ID to chuc khong hop le (0 - 39) | -1 de xem xe chua co chu!");
 		}
 		ListVehicles(playerid, group);
 	}
 	else {
-		if(!IsGroupLeader(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You need to be a group leader to use this command!");
-		if(!IsPlayerInRangeOfPoint(playerid, 100.0, arrGroupData[PlayerInfo[playerid][pMember]][g_fGaragePos][0], arrGroupData[PlayerInfo[playerid][pMember]][g_fGaragePos][1], arrGroupData[PlayerInfo[playerid][pMember]][g_fGaragePos][2])) return SendClientMessageEx(playerid, COLOR_GREY, "You're not in range of your garage!"); 
+		if(!IsGroupLeader(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Ban phai la lanh dao to chuc de dung lenh nay!");
+		if(!IsPlayerInRangeOfPoint(playerid, 100.0, arrGroupData[PlayerInfo[playerid][pMember]][g_fGaragePos][0], arrGroupData[PlayerInfo[playerid][pMember]][g_fGaragePos][1], arrGroupData[PlayerInfo[playerid][pMember]][g_fGaragePos][2])) return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong o gan garage cua minh!"); 
 		ListVehicles(playerid, PlayerInfo[playerid][pMember]);
 	}
 	return 1;
@@ -433,9 +433,9 @@ stock ListVehicles(playerid, group) {
 	szMiscArray[0] = 0;
 	new title[64];
 	SetPVarInt(playerid, "CarGroup", group);
-	if(group != -1) format(title, sizeof(title), "Crate Vehicles: {%s}%s", Group_NumToDialogHex(arrGroupData[group][g_hDutyColour]), arrGroupData[group][g_szGroupName]);
-	else format(title, sizeof(title), "Crate Vehicles: Unowned");
-	format(szMiscArray, sizeof(szMiscArray), "Vehicle\tStatus\tVehicle ID\tTickets\n");
+	if(group != -1) format(title, sizeof(title), "Xe cho thung: {%s}%s", Group_NumToDialogHex(arrGroupData[group][g_hDutyColour]), arrGroupData[group][g_szGroupName]);
+	else format(title, sizeof(title), "Xe cho thung: Chua co chu");
+	format(szMiscArray, sizeof(szMiscArray), "Xe\tTrang thai\tID xe\tTien phat\n");
 	for(new i; i < MAX_CRATE_VEHCILES; i++)
 	{
 		new iModelID = CrateVehicle[i][cvModel];
@@ -444,28 +444,28 @@ stock ListVehicles(playerid, group) {
 			new vehicleName[18];
 			if(CrateVehicle[i][cvDisabled]) {
 				strunpack(vehicleName, VehicleName[iModelID - 400], sizeof(vehicleName));
-				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s\tDisabled\t--\t$%s\n", szMiscArray, i, vehicleName, number_format(CrateVehicle[i][cvTickets]));
+				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s\tBi tat\t--\t$%s\n", szMiscArray, i, vehicleName, number_format(CrateVehicle[i][cvTickets]));
 			}
 			else if(CrateVehicle[i][cvImpound]) {
 				strunpack(vehicleName, VehicleName[iModelID - 400], sizeof(vehicleName));
-				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s\tImpounded\t--\t$%s\n", szMiscArray, i, vehicleName, number_format(CrateVehicle[i][cvTickets]));
+				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s\tTam giu\t--\t$%s\n", szMiscArray, i, vehicleName, number_format(CrateVehicle[i][cvTickets]));
 			}
 			else if(CrateVehicle[i][cvSpawnID] != INVALID_VEHICLE_ID) {
 				strunpack(vehicleName, VehicleName[iModelID - 400], sizeof(vehicleName));
-				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s\tSpawned\t%d\t$%s\n", szMiscArray, i, vehicleName, CrateVehicle[i][cvSpawnID], number_format(CrateVehicle[i][cvTickets]));
+				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s\tDa lay\t%d\t$%s\n", szMiscArray, i, vehicleName, CrateVehicle[i][cvSpawnID], number_format(CrateVehicle[i][cvTickets]));
 			}
 			else if(CrateVehicle[i][cvSpawnID] == INVALID_VEHICLE_ID) {
 				strunpack(vehicleName, VehicleName[iModelID - 400], sizeof(vehicleName));
-				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s\tStored\t--\t$%s\n", szMiscArray, i, vehicleName, number_format(CrateVehicle[i][cvTickets]));
+				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s\tDa cat\t--\t$%s\n", szMiscArray, i, vehicleName, number_format(CrateVehicle[i][cvTickets]));
 			}
 		}
 	}
 	if(strlen(szMiscArray) == 34) {
-		new dialogInfo[] = "This group doesn't own any vehicles!";
-		Dialog_Show(playerid, -1, DIALOG_STYLE_LIST, title, dialogInfo, "Close", "");
+		new dialogInfo[] = "To chuc nay khong so huu xe nao!";
+		Dialog_Show(playerid, -1, DIALOG_STYLE_LIST, title, dialogInfo, "Dong", "");
 	}
 	else {
-		Dialog_Show(playerid, cvstorage, DIALOG_STYLE_TABLIST_HEADERS, title, szMiscArray, "Manage", "Close");
+		Dialog_Show(playerid, cvstorage, DIALOG_STYLE_TABLIST_HEADERS, title, szMiscArray, "Quan ly", "Dong");
 	}
 	return 1;
 }
@@ -492,41 +492,41 @@ stock CarOptions(playerid) {
 	new title[64];
 	if(!GetPVarType(playerid, "CvStorageID") && !GetPVarType(playerid, "CarGroup")) return 1;
 	strunpack(vehicleName, VehicleName[CrateVehicle[GetPVarInt(playerid, "CvStorageID")][cvModel] - 400], sizeof(vehicleName));
-	format(title, sizeof(title), "Vehicle: %s", vehicleName);
+	format(title, sizeof(title), "Xe: %s", vehicleName);
     if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
     	format(szMiscArray, sizeof(szMiscArray),
-    		"%s Vehicle\n\
-    		Remove Tickets ($%s)\n\
-    		%s Vehicle\n\
-    		%s Vehicle\n\
-    		Refuel Vehicle\n\
-    		Delete Vehicle",
-    		(CrateVehicle[GetPVarInt(playerid, "CvStorageID")][cvSpawned]) ? ("Despawn") : ("Spawn"),
+    		"%s xe\n\
+    		Xoa tien phat ($%s)\n\
+    		%s xe\n\
+    		%s xe\n\
+    		Do xang\n\
+    		Xoa xe",
+    		(CrateVehicle[GetPVarInt(playerid, "CvStorageID")][cvSpawned]) ? ("Cat") : ("Lay"),
     		number_format(CrateVehicle[GetPVarInt(playerid, "CvStorageID")][cvTickets]),
-    		(CrateVehicle[GetPVarInt(playerid, "CvStorageID")][cvImpound]) ? ("Release") : ("Impound"),
-    		(CrateVehicle[GetPVarInt(playerid, "CvStorageID")][cvDisabled]) ? ("Enable") : ("Disable")
+    		(CrateVehicle[GetPVarInt(playerid, "CvStorageID")][cvImpound]) ? ("Chuoc") : ("Tam giu"),
+    		(CrateVehicle[GetPVarInt(playerid, "CvStorageID")][cvDisabled]) ? ("Cho phep dung") : ("Vo hieu hoa")
     	);
-    	Dialog_Show(playerid, veh_options, DIALOG_STYLE_LIST, title, szMiscArray, "Select", "Go Back");
+    	Dialog_Show(playerid, veh_options, DIALOG_STYLE_LIST, title, szMiscArray, "Chon", "Quay lai");
     } else {
-    	if(!IsGroupLeader(playerid)) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: Your not a group leader!");
+    	if(!IsGroupLeader(playerid)) return SendClientMessageEx(playerid, COLOR_RED, "LOI: Ban khong phai lanh dao to chuc!");
     	new price[28], tickets[28];
 
     	if(CrateVehicle[GetPVarInt(playerid, "CvStorageID")][cvImpound]) {
     		format(tickets, sizeof(tickets), "--");
-    		format(price, sizeof(price), "Cost: $%s", number_format(200000 + CrateVehicle[GetPVarInt(playerid, "CvStorageID")][cvTickets]));
+    		format(price, sizeof(price), "Phi: $%s", number_format(200000 + CrateVehicle[GetPVarInt(playerid, "CvStorageID")][cvTickets]));
 		} else {
 			format(tickets, sizeof(tickets), "$%s", number_format(CrateVehicle[GetPVarInt(playerid, "CvStorageID")][cvTickets]));
 			format(price, sizeof(price), "--");
 		}
     	format(szMiscArray, sizeof(szMiscArray),
-    		"%s Vehicle\n\
-    		Pay Tickets (%s)\n\
-    		Release Vehicle (%s)",
-    		(CrateVehicle[GetPVarInt(playerid, "CvStorageID")][cvSpawned]) ? ("Despawn") : ("Spawn"),
+    		"%s xe\n\
+    		Nop phat (%s)\n\
+    		Chuoc xe (%s)",
+    		(CrateVehicle[GetPVarInt(playerid, "CvStorageID")][cvSpawned]) ? ("Cat") : ("Lay"),
     		tickets,
     		price
     	);
-    	Dialog_Show(playerid, veh_options, DIALOG_STYLE_LIST, title, szMiscArray, "Select", "Go Back");
+    	Dialog_Show(playerid, veh_options, DIALOG_STYLE_LIST, title, szMiscArray, "Chon", "Quay lai");
     }
 	return 1;
 }
@@ -543,10 +543,10 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
                     if((!IsVehicleSeatOccupied(veh) || IsPlayerInVehicle(playerid, veh)) && !IsVehicleInTow(veh)) {
 						if(CreateCount(carid) > 0) {
 							strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-							return SendClientMessageEx(playerid, COLOR_GREY, "Unable to despawn %s (Veh id: %d) as it's carrying crates.", vehicleName, veh);
+							return SendClientMessageEx(playerid, COLOR_GREY, "Khong the cat %s (Veh id: %d) vi dang cho thung.", vehicleName, veh);
 						}
 			    		GetVehicleHealth(veh, vHealth);
-						if(vHealth < 800) return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle is too damaged to be stored.");
+						if(vHealth < 800) return SendClientMessageEx(playerid, COLOR_GREY, "Xe hong qua nang de cat.");
 						CrateVehicle[carid][cvHealth] = vHealth;
 						CrateVehicle[carid][cvFuel] = VehicleFuel[veh];
 						CancelCrateVehicleActions(carid);
@@ -556,43 +556,43 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 						CrateVehCheck(carid);
 						SaveCrateVehicle(carid);
 						strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-						SendClientMessageEx(playerid, COLOR_WHITE, "You have stored your group crate vehicle (%s)", vehicleName);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Ban da cat xe cho thung cua to chuc (%s)", vehicleName);
 					} else {
 						strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-						SendClientMessageEx(playerid, COLOR_GRAD1, "Unable to despawn %s (Veh id: %d) as it's currently being occupied.", vehicleName, veh);
+						SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the cat %s (Veh id: %d) vi dang co nguoi ngoi.", vehicleName, veh);
 					}
 				} else {
-	    			if(CrateVehicle[carid][cvDisabled]) return SendClientMessageEx(playerid, COLOR_GRAD1, "An administrator has disabled this vehicle, your unable to spawn it."), CarOptions(playerid);
-	    			if(CrateVehicle[carid][cvImpound]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Vehicle has been impounded; You'll need to release the vehicle before you can spawn it."), CarOptions(playerid);
+	    			if(CrateVehicle[carid][cvDisabled]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Admin da vo hieu hoa xe nay, ban khong the lay xe ra."), CarOptions(playerid);
+	    			if(CrateVehicle[carid][cvImpound]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Xe da bi tam giu, ban can chuoc truoc khi lay ra."), CarOptions(playerid);
 				 	CrateVehicle[carid][cvSpawned] = 1;
 				 	SpawnCrateVeh(carid);
 				 	SaveCrateVehicle(carid);
 					strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-					SendClientMessageEx(playerid, COLOR_WHITE, "You have spawned the group crate vehicle (%s)", vehicleName);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Ban da lay xe cho thung cua to chuc (%s)", vehicleName);
 				}
 				return CarOptions(playerid);
 			}
 			case 1: {
 				if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
-					if(!ValidGroup(CrateVehicle[carid][cvGroupID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "Unowned vehicles can't receive tickets so there's nothing to reset."), CarOptions(playerid);
-					if(!CrateVehicle[carid][cvTickets]) return SendClientMessageEx(playerid, COLOR_GRAD2, "The vehicle has no tickets that you can remove."), CarOptions(playerid);
+					if(!ValidGroup(CrateVehicle[carid][cvGroupID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "Xe chua co chu khong the bi phat, khong co gi de xoa."), CarOptions(playerid);
+					if(!CrateVehicle[carid][cvTickets]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Xe khong co tien phat de xoa."), CarOptions(playerid);
 					strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
 					format(szMiscArray, sizeof(szMiscArray), "%s removed all outstanding tickets ($%s) on vehicle %s (Veh id: %d | Group Owner: %s)", GetPlayerNameEx(playerid), number_format(CrateVehicle[carid][cvTickets]), vehicleName, CrateVehicle[carid][cvModel], arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName]);
 					Log("logs/cratevehicle.log", szMiscArray);
 					CrateVehicle[carid][cvTickets] = 0;
 					SaveCrateVehicle(carid);
 					strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-					format(szMiscArray, sizeof(szMiscArray), "* Your %s tickets have been removed by an administrator.", vehicleName);
+					format(szMiscArray, sizeof(szMiscArray), "* Tien phat cua %s da duoc admin xoa.", vehicleName);
 					foreach(new i: Player) {
 						if(PlayerInfo[i][pLeader] == CrateVehicle[carid][cvGroupID]) {
 							ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
 						}
 					}
-					SendClientMessageEx(playerid, COLOR_YELLOW, "You have removed all vehicle tickets on the vehicle.");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Ban da xoa tat ca tien phat cua xe.");
 					return CarOptions(playerid);
 				} else {
-					if(!CrateVehicle[carid][cvTickets]) return SendClientMessageEx(playerid, COLOR_GRAD2, "The vehicle has no outstanding tickets that needs paying."), CarOptions(playerid);
-					if(GetGroupBudget(GetPVarInt(playerid, "CarGroup")) < CrateVehicle[carid][cvTickets]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You group needs $%s to pay for the tickets.", number_format(CrateVehicle[carid][cvTickets])), CarOptions(playerid);
+					if(!CrateVehicle[carid][cvTickets]) return SendClientMessageEx(playerid, COLOR_GRAD2, "Xe khong co tien phat chua nop."), CarOptions(playerid);
+					if(GetGroupBudget(GetPVarInt(playerid, "CarGroup")) < CrateVehicle[carid][cvTickets]) return SendClientMessageEx(playerid, COLOR_GRAD2, "To chuc cua ban can $%s de nop phat.", number_format(CrateVehicle[carid][cvTickets])), CarOptions(playerid);
 					SetGroupBudget(GetPVarInt(playerid, "CarGroup"), -CrateVehicle[carid][cvTickets]);
 					SaveGroup(GetPVarInt(playerid, "CarGroup"));
 					strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
@@ -610,13 +610,13 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 			}
 			case 2: {
 				if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
-					if(!ValidGroup(CrateVehicle[carid][cvGroupID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't impound/release a vehicle that isn't owned by a group!"), CarOptions(playerid);
+					if(!ValidGroup(CrateVehicle[carid][cvGroupID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the tam giu/chuoc xe khong thuoc to chuc nao!"), CarOptions(playerid);
 					if(!CrateVehicle[carid][cvImpound]) {
 						if(CrateVehicle[carid][cvSpawnID] != INVALID_VEHICLE_ID) {
 							GetVehicleHealth(CrateVehicle[carid][cvSpawnID], vHealth);
 							CrateVehicle[carid][cvHealth] = vHealth;
 							CrateVehicle[carid][cvFuel] = VehicleFuel[CrateVehicle[carid][cvSpawnID]];
-							if(CreateCount(carid) > 0) AnnounceRespawn(CrateVehicle[carid][cvGroupID], "impounded by an admin", carid, CreateCount(carid));
+							if(CreateCount(carid) > 0) AnnounceRespawn(CrateVehicle[carid][cvGroupID], "tam giu boi admin", carid, CreateCount(carid));
 							CancelCrateVehicleActions(carid);
 							DestroyVehicle(CrateVehicle[carid][cvSpawnID]);
 							CrateVehicle[carid][cvSpawned] = 0;
@@ -626,14 +626,14 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 						CrateVehCheck(carid);
 						SaveCrateVehicle(carid);
 						strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-						format(szMiscArray, sizeof(szMiscArray), "* Your %s has been impounded by an admin you can recover it from your garage. (( /cvstorage ))", vehicleName);
+						format(szMiscArray, sizeof(szMiscArray), "* Xe %s cua ban bi admin tam giu, ban co the chuoc tai garage. (( /cvstorage ))", vehicleName);
 						foreach(new i: Player) {
 							if(PlayerInfo[i][pLeader] == CrateVehicle[carid][cvGroupID]) {
 								ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
 							}
 						}
 						strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have impounded %s's %s.", arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName], vehicleName);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da tam giu xe cua %s: %s.", arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName], vehicleName);
 						format(szMiscArray, sizeof(szMiscArray), "%s has impounded %s. (Veh id: %d | Owner: %s)", GetPlayerNameEx(playerid), vehicleName, CrateVehicle[carid][cvModel], arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName]);
 						Log("logs/cratevehicle.log", szMiscArray);
 						return CarOptions(playerid);
@@ -644,14 +644,14 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 				 		SpawnCrateVeh(carid);
 				 		SaveCrateVehicle(carid);
 						strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-						format(szMiscArray, sizeof(szMiscArray), "* Your %s has been released by an admin and has been parked at it's location.", vehicleName);
+						format(szMiscArray, sizeof(szMiscArray), "* Xe %s cua ban da duoc admin tra lai va do tai vi tri cu.", vehicleName);
 						foreach(new i: Player) {
 							if(PlayerInfo[i][pLeader] == CrateVehicle[carid][cvGroupID]) {
 								ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
 							}
 						}
 						strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have released %s's %s.", arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName], vehicleName);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da tra lai xe cua %s: %s.", arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName], vehicleName);
 						format(szMiscArray, sizeof(szMiscArray), "%s has released vehicle %s. (Veh id: %d | Owner: %s)", GetPlayerNameEx(playerid), vehicleName, CrateVehicle[carid][cvModel], arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName]);
 						Log("logs/cratevehicle.log", szMiscArray);
 						return CarOptions(playerid);
@@ -660,10 +660,10 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 				else {
 					if(!CrateVehicle[carid][cvImpound]) {
 						strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-						return SendClientMessageEx(playerid, COLOR_GRAD2, "Your %s hasn't been impounded!", vehicleName), CarOptions(playerid);
+						return SendClientMessageEx(playerid, COLOR_GRAD2, "Xe %s cua ban khong bi tam giu!", vehicleName), CarOptions(playerid);
 					}
 					new cost = (200000 + CrateVehicle[GetPVarInt(playerid, "CvStorageID")][cvTickets]);
-					if(GetGroupBudget(GetPVarInt(playerid, "CarGroup")) < cost) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your group can't afford the $%s to release this vehicle.", number_format(cost)), CarOptions(playerid);
+					if(GetGroupBudget(GetPVarInt(playerid, "CarGroup")) < cost) return SendClientMessageEx(playerid, COLOR_GRAD2, "To chuc cua ban khong du $%s de chuoc xe nay.", number_format(cost)), CarOptions(playerid);
 					SetGroupBudget(GetPVarInt(playerid, "CarGroup"), -cost);
 					SaveGroup(GetPVarInt(playerid, "CarGroup"));
 					strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
@@ -675,7 +675,7 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 			 		SpawnCrateVeh(carid);
 			 		SaveCrateVehicle(carid);
 					strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-					format(szMiscArray, sizeof(szMiscArray), "* Your %s has been released from the impound by %s and has been parked at it's location.", vehicleName, GetPlayerNameEx(playerid));
+					format(szMiscArray, sizeof(szMiscArray), "* Xe %s cua ban da duoc %s chuoc va do tai vi tri cu.", vehicleName, GetPlayerNameEx(playerid));
 					foreach(new i: Player) {
 						if(PlayerInfo[i][pLeader] == CrateVehicle[carid][cvGroupID]) {
 							ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
@@ -691,7 +691,7 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 							GetVehicleHealth(CrateVehicle[carid][cvSpawnID], vHealth);
 							CrateVehicle[carid][cvHealth] = vHealth;
 							CrateVehicle[carid][cvFuel] = VehicleFuel[CrateVehicle[carid][cvSpawnID]];
-							if(CreateCount(carid) > 0) AnnounceRespawn(CrateVehicle[carid][cvGroupID], "disabled by an admin", carid, CreateCount(carid));
+							if(CreateCount(carid) > 0) AnnounceRespawn(CrateVehicle[carid][cvGroupID], "vo hieu hoa boi admin", carid, CreateCount(carid));
 							CancelCrateVehicleActions(carid);
 							DestroyVehicle(CrateVehicle[carid][cvSpawnID]);
 							CrateVehicle[carid][cvSpawned] = 0;
@@ -702,19 +702,19 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 						SaveCrateVehicle(carid);
 						if(ValidGroup(CrateVehicle[carid][cvGroupID])) {
 							strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-							format(szMiscArray, sizeof(szMiscArray), "* Your %s has been disabled by an admin you'll be unable to use the vehicle.", vehicleName);
+							format(szMiscArray, sizeof(szMiscArray), "* Xe %s cua ban da bi admin vo hieu hoa, ban khong the dung xe.", vehicleName);
 							foreach(new i: Player) {
 								if(PlayerInfo[i][pLeader] == CrateVehicle[carid][cvGroupID]) {
 									ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
 								}
 							}
 							strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have disabled %s's %s.", arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName], vehicleName);
+							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da vo hieu hoa xe cua %s: %s.", arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName], vehicleName);
 							format(szMiscArray, sizeof(szMiscArray), "%s has disabled vehicle %s (Veh id: %d | Owner: %s)", GetPlayerNameEx(playerid), vehicleName, CrateVehicle[carid][cvModel], arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName]);
 						}
 						else {
 							strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have disabled the %s. (Not owned by any group).", vehicleName), format(szMiscArray, sizeof(szMiscArray), "%s has re-enabled vehicle %s (Veh id: %d | Owner: N/A)", GetPlayerNameEx(playerid), vehicleName, CrateVehicle[carid][cvModel]);
+							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da vo hieu hoa %s. (Chua thuoc to chuc nao).", vehicleName), format(szMiscArray, sizeof(szMiscArray), "%s has re-enabled vehicle %s (Veh id: %d | Owner: N/A)", GetPlayerNameEx(playerid), vehicleName, CrateVehicle[carid][cvModel]);
 						}
 						Log("logs/cratevehicle.log", szMiscArray);
 						return CarOptions(playerid);
@@ -725,19 +725,19 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 				 		SaveCrateVehicle(carid);
 						if(ValidGroup(CrateVehicle[carid][cvGroupID])) {
 							strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-							format(szMiscArray, sizeof(szMiscArray), "* Your %s has been re-enabled by an admin it has been parked at it's location.", vehicleName);
+							format(szMiscArray, sizeof(szMiscArray), "* Xe %s cua ban da duoc admin cho phep dung lai va do tai vi tri cu.", vehicleName);
 							foreach(new i: Player) {
 								if(PlayerInfo[i][pLeader] == CrateVehicle[carid][cvGroupID]) {
 									ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
 								}
 							}
 							strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have re-enabled %s's %s it has been spawned at it's location.", arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName], vehicleName);
+							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da cho phep dung lai xe cua %s: %s, xe da duoc lay ra tai vi tri cu.", arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName], vehicleName);
 							format(szMiscArray, sizeof(szMiscArray), "%s has re-enabled vehicle %s (Veh id: %d | Owner: %s)", GetPlayerNameEx(playerid), vehicleName, CrateVehicle[carid][cvModel], arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName]);
 						}
 						else {
 							strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have re-enabled the %s it has been spawned at it's location. (Not owned by any group).", vehicleName), format(szMiscArray, sizeof(szMiscArray), "%s has re-enabled vehicle %s (Veh id: %d | Owner: N/A)", GetPlayerNameEx(playerid), vehicleName, CrateVehicle[carid][cvModel]);
+							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da cho phep dung lai %s, xe da duoc lay ra tai vi tri cu. (Chua thuoc to chuc nao).", vehicleName), format(szMiscArray, sizeof(szMiscArray), "%s has re-enabled vehicle %s (Veh id: %d | Owner: N/A)", GetPlayerNameEx(playerid), vehicleName, CrateVehicle[carid][cvModel]);
 						}
 						Log("logs/cratevehicle.log", szMiscArray);
 						return CarOptions(playerid);
@@ -746,11 +746,11 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 			}
 			case 4: {
 				if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
-					if(CrateVehicle[carid][cvSpawnID] == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't add fuel to a vehicle that isn't spawned!"), CarOptions(playerid);
-					if(VehicleFuel[CrateVehicle[carid][cvSpawnID]] >= 100) return SendClientMessageEx(playerid, COLOR_GRAD2, "The vehicle already has max fuel; You can't add anymore."), CarOptions(playerid);
+					if(CrateVehicle[carid][cvSpawnID] == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the do xang khi xe chua duoc lay ra!"), CarOptions(playerid);
+					if(VehicleFuel[CrateVehicle[carid][cvSpawnID]] >= 100) return SendClientMessageEx(playerid, COLOR_GRAD2, "Xe da day xang, khong the do them."), CarOptions(playerid);
 					VehicleFuel[CrateVehicle[carid][cvSpawnID]] = 100;
 					strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-					SendClientMessageEx(playerid, COLOR_YELLOW, "You have restored the %ss fuel back to 100.", vehicleName);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Ban da nap lai nhien lieu cho %s ve 100.", vehicleName);
 					if(ValidGroup(CrateVehicle[carid][cvGroupID])) {
 						strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
 						format(szMiscArray, sizeof(szMiscArray), "%s has refuled vehicle %s (Veh id: %d | Owner: %s)", GetPlayerNameEx(playerid), vehicleName, CrateVehicle[carid][cvModel], arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName]);
@@ -766,8 +766,8 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 			case 5: {
 				if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
 					strunpack(vehicleName, VehicleName[CrateVehicle[carid][cvModel] - 400], sizeof(vehicleName));
-					format(szMiscArray, sizeof(szMiscArray), "Are you sure you want to delete the %s?", vehicleName);
-					Dialog_Show(playerid, confirm_delete_veh, DIALOG_STYLE_MSGBOX, "Are you sure?", szMiscArray, "Yes", "No");
+					format(szMiscArray, sizeof(szMiscArray), "Ban chac chan muon xoa %s?", vehicleName);
+					Dialog_Show(playerid, confirm_delete_veh, DIALOG_STYLE_MSGBOX, "Ban chac chan?", szMiscArray, "Co", "Khong");
 				}
 			}
 		}
@@ -796,7 +796,7 @@ stock DeleteCrateVehicle(playerid, veh) {
 	new vehicleName[18];
 	szMiscArray[0] = 0;
 	if(CrateVehicle[veh][cvSpawnID] != INVALID_VEHICLE_ID) {
-		if(CreateCount(veh) > 0) AnnounceRespawn(CrateVehicle[veh][cvGroupID], "deleted by an admin", veh, CreateCount(veh));
+		if(CreateCount(veh) > 0) AnnounceRespawn(CrateVehicle[veh][cvGroupID], "xoa boi admin", veh, CreateCount(veh));
 		CancelCrateVehicleActions(veh);
 		DestroyVehicle(CrateVehicle[veh][cvSpawnID]);
 		CrateVehicle[veh][cvSpawned] = 0;
@@ -805,19 +805,19 @@ stock DeleteCrateVehicle(playerid, veh) {
 	CrateVehCheck(veh);
 	if(ValidGroup(CrateVehicle[veh][cvGroupID])) {
 		strunpack(vehicleName, VehicleName[CrateVehicle[veh][cvModel] - 400], sizeof(vehicleName));
-		format(szMiscArray, sizeof(szMiscArray), "* Your %s has been deleted by an administrator.", vehicleName);
+		format(szMiscArray, sizeof(szMiscArray), "* Xe %s cua ban da bi admin xoa.", vehicleName);
 		foreach(new i: Player) {
 			if(PlayerInfo[i][pLeader] == CrateVehicle[veh][cvGroupID]) {
 				ChatTrafficProcess(i, arrGroupData[CrateVehicle[veh][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
 			}
 		}
 		strunpack(vehicleName, VehicleName[CrateVehicle[veh][cvModel] - 400], sizeof(vehicleName));
-		SendClientMessageEx(playerid, COLOR_YELLOW, "You have deleted the vehicle %s. (Owned by: %s)", vehicleName, arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName]);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Ban da xoa xe %s. (Chu so huu: %s)", vehicleName, arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName]);
 		format(szMiscArray, sizeof(szMiscArray), "%s has deleted vehicle %s (Veh id: %d | Owner: %s)", GetPlayerNameEx(playerid), vehicleName, CrateVehicle[veh][cvModel], arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName]);
 	}
 	else {
 		strunpack(vehicleName, VehicleName[CrateVehicle[veh][cvModel] - 400], sizeof(vehicleName));
-		SendClientMessageEx(playerid, COLOR_YELLOW, "You have deleted the vehicle %s. (Not Owned)", vehicleName), format(szMiscArray, sizeof(szMiscArray), "%s has deleted vehicle %s (Veh id: %d | Owner: N/A)", GetPlayerNameEx(playerid), vehicleName, CrateVehicle[veh][cvModel]);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Ban da xoa xe %s. (Chua co chu)", vehicleName), format(szMiscArray, sizeof(szMiscArray), "%s has deleted vehicle %s (Veh id: %d | Owner: N/A)", GetPlayerNameEx(playerid), vehicleName, CrateVehicle[veh][cvModel]);
 	}
 	Log("logs/cratevehicle.log", szMiscArray);
 
@@ -858,67 +858,67 @@ CMD:cvedit(playerid, params[]) {
 		new choice[32], vehid, value, cveh;
 		if(sscanf(params, "is[32]D(-1)", vehid, choice, value))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /crate [vehid] [name] [value]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Names: model, col1, col2, groupid, rank, maxhealth, loadmax, disable, delete");
-			SendClientMessageEx(playerid, COLOR_GREY, "Names: refuel");
-			SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Setting groupid to -1 will allow any group to access vehicle.");
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /crate [vehid] [name] [value]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: model, col1, col2, groupid, rank, maxhealth, loadmax, disable, delete");
+			SendClientMessageEx(playerid, COLOR_GREY, "Tuy chon: refuel");
+			SendClientMessageEx(playerid, COLOR_GREY, "LUU Y: Dat groupid thanh -1 de cho phep moi to chuc dung xe.");
 			return 1;
 		}
-		if((cveh = IsDynamicCrateVehicle(vehid)) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "The selected vehicle isn't a crate vehicle!");
+		if((cveh = IsDynamicCrateVehicle(vehid)) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Xe da chon khong phai xe cho thung!");
 		if(strcmp(choice, "model", true) == 0) {
-			if(!(400 <= value < 612)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid vehicle model ID specified!");
+			if(!(400 <= value < 612)) return SendClientMessageEx(playerid, COLOR_GREY, "Model xe khong hop le!");
 			CrateVehicle[cveh][cvModel] = value;
 			SaveCrateVehicle(cveh);
 			SpawnCrateVeh(cveh);
 			strunpack(vehicleName, VehicleName[value - 400], sizeof(vehicleName));
-			SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle has been changed to %s", vehicleName);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Da doi xe thanh %s", vehicleName);
 		}
 		else if(strcmp(choice, "col1", true) == 0) {
-			if(!(0 <= value <= 255)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
+			if(!(0 <= value <= 255)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Mau khong hop le (ID tu 0 den 255).");
 			CrateVehicle[cveh][cvColor][0] = value;
 			SaveCrateVehicle(cveh);
 			SpawnCrateVeh(cveh);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the color (1) of the crate vehicle.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da doi mau (1) cua xe cho thung.");
 		}
 		else if(strcmp(choice, "col2", true) == 0) {
-			if(!(0 <= value <= 255)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
+			if(!(0 <= value <= 255)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Mau khong hop le (ID tu 0 den 255).");
 			CrateVehicle[cveh][cvColor][1] = value;
 			SaveCrateVehicle(cveh);
 			SpawnCrateVeh(cveh);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the color (2) of the crate vehicle.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da doi mau (2) cua xe cho thung.");
 		}
 		else if(strcmp(choice, "groupid", true) == 0) {
-			if(value != -1 && !ValidGroup(value)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid Group ID! (0 - 39) | No Group = -1");
+			if(value != -1 && !ValidGroup(value)) return SendClientMessageEx(playerid, COLOR_GREY, "ID to chuc khong hop le! (0 - 39) | Khong thuoc to chuc = -1");
 			CrateVehicle[cveh][cvGroupID] = value;
 			if(value == -1) CrateVehicle[cveh][cvRank] = -1;
 			SaveCrateVehicle(cveh);
 			if(value != -1) {
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have assigned the vehicle to %s.", arrGroupData[value][g_szGroupName]);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ban da giao xe cho %s.", arrGroupData[value][g_szGroupName]);
 			} else {
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have assigned the vehicle to be accessed by any group member!");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ban da cho phep moi thanh vien to chuc dung xe!");
 			}
 		}
 		else if(strcmp(choice, "rank", true) == 0) {
-			if(value != -1 && !(0 <= value < 10)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid Rank ID! (0 - 9) | No Rank = -1");
+			if(value != -1 && !(0 <= value < 10)) return SendClientMessageEx(playerid, COLOR_GREY, "ID hang khong hop le! (0 - 9) | Khong gioi han hang = -1");
 			CrateVehicle[cveh][cvRank] = value;
 			SaveCrateVehicle(cveh);
 			if(value != -1) {
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have assigned the vehicle to only allow rank %d and above.", value);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ban da gioi han xe cho hang %d tro len.", value);
 			} else {
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have removed the rank restriction on this vehicle!");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Ban da bo gioi han hang cho xe nay!");
 			}
 		}
 		else if(strcmp(choice, "maxhealth", true) == 0) {
-			if(value < 1000) return SendClientMessageEx(playerid, COLOR_GREY, "You can't set the vehicle max health lower than 1,000!");
+			if(value < 1000) return SendClientMessageEx(playerid, COLOR_GREY, "Do ben toi da cua xe khong duoc duoi 1,000!");
 			CrateVehicle[cveh][cvMaxHealth] = value;
 			SaveCrateVehicle(cveh);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have set the vehicle max health to %s", number_format(value));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da dat do ben toi da cua xe thanh %s", number_format(value));
 		}
 		else if(strcmp(choice, "loadmax", true) == 0) {
-			if(value < 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't set load max below 0; Set it to 0 to disable!");
+			if(value < 0) return SendClientMessageEx(playerid, COLOR_GREY, "So thung toi da khong duoc duoi 0, dat 0 de vo hieu hoa!");
 			CrateVehicle[cveh][cvCrateMax] = value;
 			SaveCrateVehicle(cveh);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You set the vehicle crate load max to %d", value);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Ban da dat so thung toi da cua xe thanh %d", value);
 		}
 		else if(strcmp(choice, "disable", true) == 0) {
 			new Float:vHealth;
@@ -927,7 +927,7 @@ CMD:cvedit(playerid, params[]) {
 					GetVehicleHealth(CrateVehicle[cveh][cvSpawnID], vHealth);
 					CrateVehicle[cveh][cvHealth] = vHealth;
 					CrateVehicle[cveh][cvFuel] = VehicleFuel[CrateVehicle[cveh][cvSpawnID]];
-					if(CreateCount(cveh) > 0) AnnounceRespawn(CrateVehicle[cveh][cvGroupID], "disabled by an admin", cveh, CreateCount(cveh));
+					if(CreateCount(cveh) > 0) AnnounceRespawn(CrateVehicle[cveh][cvGroupID], "vo hieu hoa boi admin", cveh, CreateCount(cveh));
 					CancelCrateVehicleActions(cveh);
 					DestroyVehicle(CrateVehicle[cveh][cvSpawnID]);
 					CrateVehicle[cveh][cvSpawned] = 0;
@@ -938,39 +938,39 @@ CMD:cvedit(playerid, params[]) {
 				SaveCrateVehicle(cveh);
 				if(ValidGroup(CrateVehicle[cveh][cvGroupID])) {
 					strunpack(vehicleName, VehicleName[CrateVehicle[cveh][cvModel] - 400], sizeof(vehicleName));
-					format(szMiscArray, sizeof(szMiscArray), "* Your %s has been disabled by an admin you'll be unable to use the vehicle.", vehicleName);
+					format(szMiscArray, sizeof(szMiscArray), "* Xe %s cua ban da bi admin vo hieu hoa, ban khong the dung xe.", vehicleName);
 					foreach(new i: Player) {
 						if(PlayerInfo[i][pLeader] == CrateVehicle[cveh][cvGroupID]) {
 							ChatTrafficProcess(i, arrGroupData[CrateVehicle[cveh][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, CHAT_GROUP_RADIO);
 						}
 					}
 					strunpack(vehicleName, VehicleName[CrateVehicle[cveh][cvModel] - 400], sizeof(vehicleName));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have impounded %s's %s.", arrGroupData[CrateVehicle[cveh][cvGroupID]][g_szGroupName], vehicleName);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da tam giu xe cua %s: %s.", arrGroupData[CrateVehicle[cveh][cvGroupID]][g_szGroupName], vehicleName);
 					format(szMiscArray, sizeof(szMiscArray), "%s has disabled vehicle %s (Veh id: %d | Owner: %s)", GetPlayerNameEx(playerid), vehicleName, CrateVehicle[cveh][cvModel], arrGroupData[CrateVehicle[cveh][cvGroupID]][g_szGroupName]);
 				}
 				else {
 					strunpack(vehicleName, VehicleName[CrateVehicle[cveh][cvModel] - 400], sizeof(vehicleName));
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have disabled the %s. (Not owned by any group).", vehicleName), format(szMiscArray, sizeof(szMiscArray), "%s has re-enabled vehicle %s (Veh id: %d | Owner: N/A)", GetPlayerNameEx(playerid), vehicleName, CrateVehicle[cveh][cvModel]);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Ban da vo hieu hoa %s. (Chua thuoc to chuc nao).", vehicleName), format(szMiscArray, sizeof(szMiscArray), "%s has re-enabled vehicle %s (Veh id: %d | Owner: N/A)", GetPlayerNameEx(playerid), vehicleName, CrateVehicle[cveh][cvModel]);
 				}
 				Log("logs/cratevehicle.log", szMiscArray);
 			}
-			else SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle can't be disabled!");
+			else SendClientMessageEx(playerid, COLOR_GRAD2, "Xe nay khong the bi vo hieu hoa!");
 		}
 		else if(strcmp(choice, "delete", true) == 0) {
 			DeleteCrateVehicle(playerid, cveh);
 		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Invalid choice selected!");
+		else SendClientMessageEx(playerid, COLOR_GREY, "Lua chon khong hop le!");
 	} else {
-		SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command!");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay!");
 	}
 	return 1;
 }
 
 CMD:cvpark(playerid, params[]) {
 	new veh, string[128];
-	if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be in a vehicle that you want to park!");
-	if (GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_RED, "You're not in the driver seat!");
-	if((veh = IsDynamicCrateVehicle(GetPlayerVehicleID(playerid))) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't park this vehicle!");
+	if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban phai ngoi trong xe muon do!");
+	if (GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_RED, "Ban khong ngoi ghe lai!");
+	if((veh = IsDynamicCrateVehicle(GetPlayerVehicleID(playerid))) == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong the do xe nay!");
 	if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0 || IsGroupLeader(playerid) && PlayerInfo[playerid][pMember] == CrateVehicle[veh][cvGroupID]) {
 		new vehicleName[18];
 		GetVehiclePos(GetPlayerVehicleID(playerid), CrateVehicle[veh][cvPos][0], CrateVehicle[veh][cvPos][1], CrateVehicle[veh][cvPos][2]);
@@ -978,7 +978,7 @@ CMD:cvpark(playerid, params[]) {
 		CrateVehicle[veh][cvVw] = GetPlayerVirtualWorld(playerid);
 		CrateVehicle[veh][cvInt] = GetPlayerInterior(playerid);
 		strunpack(vehicleName, VehicleName[CrateVehicle[veh][cvModel] - 400], sizeof(vehicleName));
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have parked the %s in a new location.", vehicleName);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Ban da do %s tai vi tri moi.", vehicleName);
 		SaveCrateVehicle(veh);
 		SurfingCheck(GetPlayerVehicleID(playerid));
 		SpawnCrateVeh(veh);
@@ -986,10 +986,10 @@ CMD:cvpark(playerid, params[]) {
 		PutPlayerInVehicle(playerid, GetPlayerVehicleID(playerid), 0);
 		SetPlayerArmedWeapon(playerid, 0);
 		strunpack(vehicleName, VehicleName[CrateVehicle[veh][cvModel] - 400], sizeof(vehicleName));
-		format(string, sizeof(string), "* %s has parked the %s.", GetPlayerNameEx(playerid), vehicleName);
+		format(string, sizeof(string), "* %s da do %s.", GetPlayerNameEx(playerid), vehicleName);
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD2, "You can't park vehicles that doesn't belong to your group!");
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "Khong the do xe khong thuoc to chuc cua ban!");
 	return 1;
 }
 
@@ -1005,42 +1005,42 @@ CMD:cvcheck(playerid, params[]) {
 				}
 			}
 		}
-		if(VehFound == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not near any designated vehicles that can store crates.");
+		if(VehFound == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong o gan xe co the cho thung.");
 		if(CrateVehicle[VehFound][cvCrateMax] < 1) {
-			return SendClientMessageEx(playerid, COLOR_GRAD3, "The vehicle \"%s\" can't contain any crates.", GetVehicleName(CrateVehicle[VehFound][cvSpawnID]));
+			return SendClientMessageEx(playerid, COLOR_GRAD3, "Xe \"%s\" khong the cho thung.", GetVehicleName(CrateVehicle[VehFound][cvSpawnID]));
 		}
-		if(VehDelivering[VehFound]) return SendClientMessageEx(playerid, COLOR_GRAD3, "This vehicle is currently unloading crates - Please Wait!");
+		if(VehDelivering[VehFound]) return SendClientMessageEx(playerid, COLOR_GRAD3, "Xe dang do thung hang, vui long cho!");
 		if(!CreateCount(VehFound)) {
-			return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* There is no crates stored in the %s", GetVehicleName(CrateVehicle[VehFound][cvSpawnID]));
+			return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Khong co thung nao trong %s", GetVehicleName(CrateVehicle[VehFound][cvSpawnID]));
 		}
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The %s is currently carrying %d crates.", GetVehicleName(CrateVehicle[VehFound][cvSpawnID]), CreateCount(VehFound));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Xe %s hien dang cho %d thung.", GetVehicleName(CrateVehicle[VehFound][cvSpawnID]), CreateCount(VehFound));
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD2, "You must be apart of a group to use this command!"); 
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "Ban phai thuoc mot to chuc de dung lenh nay!"); 
 	return 1;
 }
 
 CMD:cvstatus(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
 		new vehicleid, veh;
-		if(sscanf(params, "i", vehicleid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cvstatus [vehicleid]");
+		if(sscanf(params, "i", vehicleid)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /cvstatus [vehicleid]");
 		if((veh = IsDynamicCrateVehicle(vehicleid)) != -1) {
 			new string[128], Float:vHealth;
 			GetVehicleHealth(vehicleid, vHealth);
-			SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Crate Vehicle Status (ID: %d | Slot ID: %d) ___________|", vehicleid, veh);
-			SendClientMessageEx(playerid, COLOR_WHITE, "X: %f | Y: %f | Z: %f | VW: %d | Int: %d | Model: %d  Maxhealth: %.1f", CrateVehicle[veh][cvPos][0], CrateVehicle[veh][cvPos][1], CrateVehicle[veh][cvPos][2], CrateVehicle[veh][cvVw], CrateVehicle[veh][cvInt], CrateVehicle[veh][cvModel], CrateVehicle[veh][cvMaxHealth]);
+			SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Trang thai xe cho thung (ID: %d | Slot ID: %d) ___________|", vehicleid, veh);
+			SendClientMessageEx(playerid, COLOR_WHITE, "X: %f | Y: %f | Z: %f | VW: %d | Int: %d | Model: %d  Ben max: %.1f", CrateVehicle[veh][cvPos][0], CrateVehicle[veh][cvPos][1], CrateVehicle[veh][cvPos][2], CrateVehicle[veh][cvVw], CrateVehicle[veh][cvInt], CrateVehicle[veh][cvModel], CrateVehicle[veh][cvMaxHealth]);
 			if(ValidGroup(CrateVehicle[veh][cvGroupID])) {
-				format(string, sizeof(string), "Group: %s (%d) | Rank: %d | Tickets: $%s | LoadMax: %d", arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], CrateVehicle[veh][cvGroupID], CrateVehicle[veh][cvRank], number_format(CrateVehicle[veh][cvTickets]), CrateVehicle[veh][cvCrateMax]);
+				format(string, sizeof(string), "To chuc: %s (%d) | Hang: %d | Phat: $%s | Thung max: %d", arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], CrateVehicle[veh][cvGroupID], CrateVehicle[veh][cvRank], number_format(CrateVehicle[veh][cvTickets]), CrateVehicle[veh][cvCrateMax]);
 			} else {
-				format(string, sizeof(string), "Group: -- | Rank: -- | Tickets: -- | LoadMax: %d", CrateVehicle[veh][cvCrateMax]);
+				format(string, sizeof(string), "To chuc: -- | Hang: -- | Tien phat: -- | So thung toi da: %d", CrateVehicle[veh][cvCrateMax]);
 			}
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			SendClientMessageEx(playerid, COLOR_WHITE, "Crates: %d | Health: %.1f | Fuel: %.1f percent", CreateCount(veh), vHealth, VehicleFuel[vehicleid]);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Thung: %d | Do ben: %.1f | Nhien lieu: %.1f percent", CreateCount(veh), vHealth, VehicleFuel[vehicleid]);
 		}
 		else {
-			SendClientMessageEx(playerid, COLOR_GREY, "The selected vehicle isn't a crate vehicle!");
+			SendClientMessageEx(playerid, COLOR_GREY, "Xe da chon khong phai xe cho thung!");
 		}
 	} else {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong co quyen dung lenh nay!");
 	}
 	return 1;
 }
@@ -1048,7 +1048,7 @@ CMD:cvstatus(playerid, params[]) {
 CMD:cvrespawn(playerid, params[]) {
 	szMiscArray[0] = 0;
 	if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
-		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /cvrespawn [Group/All]");
+		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /cvrespawn [Group/All]");
 		if(strcmp(params, "all", true) == 0) {
 			for(new v = 0; v < MAX_CRATE_VEHCILES; v++) {
 				if(CrateVehicle[v][cvSpawnID] != INVALID_VEHICLE_ID) {
@@ -1057,15 +1057,15 @@ CMD:cvrespawn(playerid, params[]) {
 					}
 				}
 			}
-			format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has respawned all dynamic crate vehicles loaded on the server.", GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s da tao lai tat ca xe cho thung dynamic tren may chu.", GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 			format(szMiscArray, sizeof(szMiscArray), "Administrator %s has respawned all dynamic crate vehicles loaded on the server.", GetPlayerNameEx(playerid));
 			Log("logs/admin.log", szMiscArray);
 		} else {
 			if(strval(params) != -1) {
-				if(!IsNumericString(params)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid input, please ensure it's a number!");
-				if(!ValidGroup(strval(params))) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group ID (0 - %d only)", MAX_GROUPS);
-				format(szMiscArray, sizeof(szMiscArray), "** Respawning all dynamic group crate vehicles...");
+				if(!IsNumericString(params)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Du lieu khong hop le, vui long nhap so!");
+				if(!ValidGroup(strval(params))) return SendClientMessageEx(playerid, COLOR_GRAD2, "ID to chuc khong hop le (chi tu 0 - %d)", MAX_GROUPS);
+				format(szMiscArray, sizeof(szMiscArray), "** Dang tao lai tat ca xe cho thung dynamic cua to chuc...");
 				foreach(new i: Player) {
 					if(PlayerInfo[i][pMember] == strval(params)) {
 						SendClientMessageEx(i, arrGroupData[strval(params)][g_hRadioColour] * 256 + 255, szMiscArray);
@@ -1080,13 +1080,13 @@ CMD:cvrespawn(playerid, params[]) {
 				}
 			}
 			if(strval(params) != -1) {
-				format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has respawned %s's dynamic crate vehicles.", GetPlayerNameEx(playerid), arrGroupData[strval(params)][g_szGroupName]);
+				format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s da tao lai xe cho thung dynamic cua %s.", GetPlayerNameEx(playerid), arrGroupData[strval(params)][g_szGroupName]);
 				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 				format(szMiscArray, sizeof(szMiscArray), "Administrator %s has respawned %s's (%d) dynamic crate vehicles.", GetPlayerNameEx(playerid), arrGroupData[strval(params)][g_szGroupName], strval(params));
 				Log("logs/admin.log", szMiscArray);
 			}
 			else {
-				format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has respawned unowned dynamic crate vehicles.", GetPlayerNameEx(playerid));
+				format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s da tao lai xe cho thung dynamic chua co chu.", GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 				format(szMiscArray, sizeof(szMiscArray), "Administrator %s has respawned unowned (-1) dynamic crate vehicles.", GetPlayerNameEx(playerid));
 				Log("logs/admin.log", szMiscArray);

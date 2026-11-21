@@ -104,12 +104,12 @@ stock Shipment_LoadTick(playerid, vehicleid, session)
 	{
 		if(TruckUsed[playerid] == vehicleid) CancelTruckDelivery(playerid, false);
 		else Shipment_StopLoading(playerid);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Shipment loading was cancelled because you are no longer driving the original vehicle.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Huy boc hang vi ban khong con lai xe ban dau.");
 		return 0;
 	}
 	new remaining = GetPVarInt(playerid, "LoadTruckTime") - 1, string[96];
 	SetPVarInt(playerid, "LoadTruckTime", remaining);
-	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", remaining);
+	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~Con %d giay", remaining);
 	GameTextForPlayer(playerid, string, 1100, 3);
 	return remaining <= 0;
 }
@@ -122,7 +122,7 @@ stock Shipment_SetDestination(playerid, vehicleid, bool:hijacked = false)
 		if(!(0 <= business < MAX_BUSINESSES) || Businesses[business][bOrderState] != 2) return 0;
 		gPlayerCheckpointStatus[playerid] = CHECKPOINT_DELIVERY;
 		SetPlayerCheckpoint(playerid, Businesses[business][bSupplyPos][0], Businesses[business][bSupplyPos][1], Businesses[business][bSupplyPos][2], 10.0);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "%s %s.", hijacked ? ("You hijacked a shipment of") : ("Your truck was filled with"), GetInventoryType(business));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "%s %s.", hijacked ? ("Ban da cuop chuyen hang") : ("Xe tai cua ban da duoc chat"), GetInventoryType(business));
 		SetPVarInt(playerid, "TruckRunDeadline", gettime() + floatround(GetPlayerDistanceFromPoint(playerid, Businesses[business][bSupplyPos][0], Businesses[business][bSupplyPos][1], Businesses[business][bSupplyPos][2]) / 100));
 	}
 	else
@@ -139,15 +139,15 @@ stock Shipment_SetDestination(playerid, vehicleid, bool:hijacked = false)
 			if(!(0 <= route < sizeof(TruckerDropoffs))) return 0;
 			SetPlayerCheckpoint(playerid, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ], 5.0);
 		}
-		static const names[][] = {"food & beverages", "clothing", "materials", "24/7 items", "weapons", "drugs", "illegal materials"};
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "%s %s.", hijacked ? ("You hijacked a shipment of") : ("Your vehicle was filled with"), names[cargo - 1]);
+		static const names[][] = {"thuc pham va do uong", "quan ao", "vat lieu", "hang 24/7", "vu khi", "ma tuy", "vat lieu trai phep"};
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "%s %s.", hijacked ? ("Ban da cuop chuyen hang") : ("Xe cua ban da duoc chat"), names[cargo - 1]);
 		SetPVarInt(playerid, "TruckDeliver", cargo);
 		SetPVarInt(playerid, "TruckRunDeadline", gettime() + 30);
 	}
-	SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Deliver the goods to the specified location (see checkpoint on radar).");
-	SendClientMessageEx(playerid, COLOR_REALRED, "WARNING: Watch out for shipment hijackers, they can get away with the goods.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "GOI Y: Giao hang den dung noi (xem checkpoint tren radar).");
+	SendClientMessageEx(playerid, COLOR_REALRED, "CHU Y: Canh giac ke cuop hang, chung co the lay hang di.");
 	if(cargo >= 5 || (cargo == 0 && Businesses[business][bType] == BUSINESS_TYPE_GUNSHOP))
-		SendClientMessageEx(playerid, COLOR_REALRED, "WARNING #2: You are transporting illegal goods so watch out for law enforcement.");
+		SendClientMessageEx(playerid, COLOR_REALRED, "CHU Y #2: Ban cho hang cam, hay canh giac luc luong hanh phap.");
 	return 1;
 }
 
@@ -170,14 +170,14 @@ public HijackTruck(playerid, vehicleid, session)
 		DeletePVar(i, "TruckRunDeadline");
 		gPlayerCheckpointStatus[i] = CHECKPOINT_NONE;
 		DisablePlayerCheckpoint(i);
-		SendClientMessageEx(i, COLOR_WHITE, "Your shipment delivery has failed. Your shipment was hijacked.");
+		SendClientMessageEx(i, COLOR_WHITE, "Chuyen giao that bai. Hang cua ban da bi cuop.");
 	}
 	TruckUsed[playerid] = vehicleid;
 	if(trailerid && IsValidVehicle(trailerid)) SetPVarInt(playerid, "Gas_TrailerID", trailerid);
 	if(!Shipment_SetDestination(playerid, vehicleid, true))
 	{
 		CancelTruckDelivery(playerid, false);
-		SendClientMessageEx(playerid, COLOR_WHITE, "This shipment is no longer available.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Chuyen hang khong con hop le.");
 	}
 	return 1;
 }
@@ -218,7 +218,7 @@ public LoadTruck(playerid, vehicleid, session)
 		if(trailerid == INVALID_VEHICLE_ID)
 		{
 			CancelTruckDelivery(playerid, false);
-			return SendClientMessageEx(playerid, COLOR_WHITE, "Unable to create the shipment trailer. Please try again.");
+			return SendClientMessageEx(playerid, COLOR_WHITE, "Khong tao duoc ro-mooc. Hay thu lai.");
 		}
 		SetPVarInt(playerid, "Gas_TrailerID", trailerid);
 		SetPVarInt(playerid, "ShipmentTrailerTimer", SetTimerEx("AttachGasTrailer", 500, false, "iiii", playerid, vehicleid, trailerid, session));
@@ -248,7 +248,7 @@ stock DisplayOrders(playerid, offset = 0)
 		if(skipped++ < offset) continue;
 		if(shown == sizeof(ListItemTrackId[]) || strlen(szDialog) + 96 >= sizeof(szDialog))
 		{
-			strcat(szDialog, "More orders...\n", sizeof(szDialog));
+			strcat(szDialog, "Don hang khac...\n", sizeof(szDialog));
 			SetPVarInt(playerid, "ShipmentOrderNext", offset + shown);
 			break;
 		}
@@ -257,13 +257,13 @@ stock DisplayOrders(playerid, offset = 0)
 		ListItemTrackId[playerid][shown++] = i;
 	}
 	SetPVarInt(playerid, "ShipmentOrderCount", shown);
-	if(shown) ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCK, DIALOG_STYLE_LIST, "Available Orders", szDialog, "Take", "Close");
+	if(shown) ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCK, DIALOG_STYLE_LIST, "Don hang kha dung", szDialog, "Lay", "Dong");
 	else if(model == 456 || model == 414 || model == 413 || model == 440 || model == 482 || IsABoat(vehicleid))
-		ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCKOLD, DIALOG_STYLE_LIST, "What do you want to transport?", "{00F70C}Legal goods {FFFFFF}(no risk but also no bonuses)\n{FF0606}Illegal goods {FFFFFF}(risk of getting caught but a bonus)", "Select", "Cancel");
+		ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCKOLD, DIALOG_STYLE_LIST, "Ban muon van chuyen gi?", "{00F70C}Hang hop phap {FFFFFF}(khong rui ro, khong thuong them)\n{FF0606}Hang cam {FFFFFF}(co the bi bat, co thuong them)", "Chon", "Huy");
 	else
 	{
 		CancelTruckDelivery(playerid, false);
-		ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Error", "No jobs available for this type of truck right now. Try again later.", "OK", "");
+		ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Loi", "Chua co viec cho loai xe tai nay. Hay thu lai sau.", "Dong y", "");
 	}
 	return 1;
 }
@@ -336,14 +336,14 @@ stock Shipment_ShowWeaponReward(playerid, count)
 	if(count >= 4) strcat(menu, "\nDeagle", sizeof(menu));
 	if(count >= 5) strcat(menu, "\nAK-47", sizeof(menu));
 	SetPVarInt(playerid, "ShipmentWeaponReward", count);
-	return ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", menu, "Select", "");
+	return ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Chon phan thuong", menu, "Chon", "");
 }
 
 CMD:checkcargo(playerid, params[])
 {
 	if(!Job_HasJob(playerid, JOB_SHIPMENT) && !IsACop(playerid))
 	{
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Shipment Contractor or a Cop!");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "Ban khong phai Shipment Contractor hay Cop!");
         return 1;
 	}
 
@@ -354,82 +354,82 @@ CMD:checkcargo(playerid, params[])
 	{
 		if(IsPlayerInAnyVehicle(playerid))
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot search the contents of this vehicle while inside a vehicle.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Khong the kham hang xe nay khi ban o trong xe.");
 			return 1;
 		}
 		new engine,lights,alarm,doors,bonnet,boot,objective;
 		GetVehicleParamsEx(closestcar,engine,lights,alarm,doors,bonnet,boot,objective);
 		if(boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "The vehicle's trunk must be opened in order to search it.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Phai mo cop xe de kham.");
 			return 1;
 		}
 
 
-     	SendClientMessageEx(playerid, COLOR_GREEN,"_______________ SHIPMENT CONTRACTOR LOAD SHEET _______________");
+     	SendClientMessageEx(playerid, COLOR_GREEN,"_______________ SHIPMENT CONTRACTOR BANG HANG _______________");
 		if(GetVehicleDriver(closestcar) != INVALID_PLAYER_ID)
   		{
-    		SendClientMessageEx(playerid, COLOR_WHITE, "There is a person in that truck. In order to check the content of the truck, the driver must be removed.");
+    		SendClientMessageEx(playerid, COLOR_WHITE, "Co nguoi trong xe tai. Can dua tai xe ra ngoai truoc khi kham hang.");
       		return 1;
 		}
 		new iTruckContents = TruckContents{closestcar};
 		new truckcontentname[50];
 		if(iTruckContents == 1)
-		{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Food & beverages");}
+		{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Thuc pham va do uong");}
 		else if(iTruckContents == 2)
-		{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Clothing"); }
+		{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Quan ao"); }
 		else if(iTruckContents == 3)
-		{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Legal materials"); }
+		{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Vat lieu hop phap"); }
 		else if(iTruckContents == 4)
-		{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}24/7 items"); }
+		{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Hang 24/7"); }
 		else if(iTruckContents == 5)
-		{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Illegal weapons"); }
+		{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Vu khi trai phep"); }
 		else if(iTruckContents == 6)
-		{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Illegal drugs"); }
+		{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Ma tuy"); }
 		else if(iTruckContents == 7)
-		{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Illegal materials"); }
-		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %s (%d)", GetVehicleName(closestcar), closestcar);
+		{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Vat lieu trai phep"); }
+		SendClientMessageEx(playerid, COLOR_WHITE, "Dang ky xe: %s (%d)", GetVehicleName(closestcar), closestcar);
 		if(iTruckContents == 0)
 		{
 			new business = TruckDeliveringTo[closestcar];
 			if(0 <= business < MAX_BUSINESSES) format(truckcontentname, sizeof(truckcontentname), "%s", GetInventoryType(business));
-			else truckcontentname = "Empty";
+			else truckcontentname = "Trong";
 		}
-		SendClientMessageEx(playerid, COLOR_WHITE, "Content: %s", truckcontentname);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Hang: %s", truckcontentname);
 
 		if(IsACop(playerid))
 		{
-			SendClientMessageEx(playerid, COLOR_YELLOW, "To remove the illegal goods, type /clearcargo near the truck.");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Dung /clearcargo gan xe tai de bo hang cam.");
 		}
 
 		if(Job_HasJob(playerid, JOB_SHIPMENT))
 		{
 			if((TruckContents{closestcar} > 0 || (0 <= TruckDeliveringTo[closestcar] < MAX_BUSINESSES && Businesses[TruckDeliveringTo[closestcar]][bOrderState] == 2)) && TruckUsed[playerid] == INVALID_VEHICLE_ID)
 			{
-				SendClientMessageEx(playerid, COLOR_YELLOW, "To deliver the goods, type /hijackcargo as the driver.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Dung /hijackcargo khi lai xe de giao hang.");
 			}
 			else if(TruckUsed[playerid] == INVALID_VEHICLE_ID)
 			{
-				SendClientMessageEx(playerid, COLOR_YELLOW, "To get goods, type /loadshipment as the driver.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Dung /loadshipment khi lai xe de nhan hang.");
 			}
 			else if(TruckUsed[playerid] == closestcar && gPlayerCheckpointStatus[playerid] == CHECKPOINT_RETURNTRUCK)
 			{
-				SendClientMessageEx(playerid, COLOR_YELLOW, "This is your Shipment Transport Vehicle. You have not returned it to the docks yet for your pay.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Day la Shipment Transport Vehicle cua ban. Hay tra xe ve cang de nhan tien.");
 			}
 			else if(TruckUsed[playerid] == closestcar)
 			{
-				SendClientMessageEx(playerid, COLOR_YELLOW, "This is your Shipment Transport Vehicle. You have not delivered your goods yet.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Day la Shipment Transport Vehicle cua ban. Ban chua giao hang.");
 			}
 			else if(TruckUsed[playerid] != INVALID_VEHICLE_ID)
 			{
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You are already on another delivery. Type /cancel shipment to cancel that delivery.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "Ban dang giao hang khac. Dung /cancel shipment de huy.");
 			}
 		}
      	SendClientMessageEx(playerid, COLOR_GREEN,"_________________________________________________________");
     }
 	else
 	{
- 		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not near a Shipment Transport Vehicle.");
+ 		SendClientMessageEx(playerid, COLOR_GRAD1, "Ban khong o gan Shipment Transport Vehicle.");
  	}
     return 1;
 }
@@ -445,45 +445,45 @@ CMD:hijackcargo(playerid, params[])
 	        {
          		if(GetPVarInt(playerid, "LoadTruckTime") > 0)
 	            {
-	                SendClientMessageEx(playerid, COLOR_WHITE, "You are currently loading your Truck!");
+	                SendClientMessageEx(playerid, COLOR_WHITE, "Ban dang boc hang len xe tai!");
 					return 1;
 	            }
 	            if(TruckUsed[playerid] != INVALID_VEHICLE_ID)
 	            {
-	                SendClientMessageEx(playerid, COLOR_WHITE, "You are already on another delivery, type /cancel shipment to cancel that delivery.");
+	                SendClientMessageEx(playerid, COLOR_WHITE, "Ban dang giao hang khac, dung /cancel shipment de huy.");
 					return 1;
 	            }
 				new business = TruckDeliveringTo[vehicleid];
 				if(TruckContents{vehicleid} == 0 && (!(0 <= business < MAX_BUSINESSES) || Businesses[business][bOrderState] != 2))
 				{
-				    SendClientMessageEx(playerid, COLOR_WHITE, "This Truck is empty, it does not contain any goods!");
+				    SendClientMessageEx(playerid, COLOR_WHITE, "Xe tai nay trong, khong co hang!");
 				    return 1;
 				}
 				if(IsPlayerInRangeOfPoint(playerid, 65, -1572.767822, 81.137527, 3.554687))
 				{
-				    SendClientMessageEx(playerid, COLOR_WHITE, "You can not hijack when that close to the San Fierro Docks!");
+				    SendClientMessageEx(playerid, COLOR_WHITE, "Khong the cuop hang qua gan San Fierro Docks!");
 					return 1;
 				}
 				if(!IsABoat(vehicleid))
 				{
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You are now attempting to hijack the truck, please wait....");
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Dang thu cuop xe tai, hay cho....");
 				} 
 				else 
 				{
 					if(GetJobLevel(playerid, JOB_SHIPMENT) >= 4)
 					{
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You are now attempting to hijack the boat, please wait....");
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* Dang thu cuop thuyen, hay cho....");
 					}
-					else return SendClientMessageEx(playerid, COLOR_WHITE, "Water shipments are restricted to Level 4+ Shipment Contracter.");
+					else return SendClientMessageEx(playerid, COLOR_WHITE, "Hang duong thuy can Shipment Contracter cap 4+.");
 				}
 
 				Shipment_BeginLoading(playerid, vehicleid, "HijackTruck");
 	        }
-	        else return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
+	        else return SendClientMessageEx(playerid, COLOR_WHITE, "Hay huy checkpoint hien tai truoc (ban dang giu goi vat lieu hoac co checkpoint khac).");
 	    }
-	    else return SendClientMessageEx(playerid, COLOR_GREY, "You are not driving a Shipment Transport Vehicle!");
+	    else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong lai Shipment Transport Vehicle!");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Shipment Contractor!");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai Shipment Contractor!");
 	return 1;
 }
 
@@ -498,60 +498,60 @@ CMD:loadshipment(playerid, params[])
 	        {
 	            if(GetPVarInt(playerid, "LoadTruckTime") > 0)
 	            {
-	                SendClientMessageEx(playerid, COLOR_WHITE, "You are currently loading the Shipment!");
+	                SendClientMessageEx(playerid, COLOR_WHITE, "Ban dang boc Shipment!");
 					return 1;
 	            }
 	            if(TruckUsed[playerid] != INVALID_VEHICLE_ID)
 	            {
-	                SendClientMessageEx(playerid, COLOR_WHITE, "You are already on another delivery, type /cancel shipment to cancel that delivery.");
+	                SendClientMessageEx(playerid, COLOR_WHITE, "Ban dang giao hang khac, dung /cancel shipment de huy.");
 					return 1;
 	            }
 				if(TruckContents{vehicleid} != 0)
 				{
-				    return SendClientMessageEx(playerid, COLOR_GRAD2, "That vehicle is already loaded.");
+				    return SendClientMessageEx(playerid, COLOR_GRAD2, "Xe do da co hang.");
 				}
 				if(TruckDeliveringTo[vehicleid] != INVALID_BUSINESS_ID && TruckContents{vehicleid} == 0)
 				{
-				    return SendClientMessageEx(playerid, COLOR_GRAD2, "That vehicle is already loaded.");
+				    return SendClientMessageEx(playerid, COLOR_GRAD2, "Xe do da co hang.");
 				}
 				if(GetVehicleModel(vehicleid) == 440 || GetVehicleModel(vehicleid) == 413) // Level Three Vehicle Check
 				{
 					if(GetJobLevel(playerid, JOB_SHIPMENT) < 3)
 					{
-						return SendClientMessageEx(playerid, COLOR_GRAD2, "Only level 3 Shipment Contractors may use this vehicle.");
+						return SendClientMessageEx(playerid, COLOR_GRAD2, "Chi Shipment Contractors cap 3 duoc dung xe nay.");
 					}
 				}
 				if(GetVehicleModel(vehicleid) == 482) // Level Five Vehicle Check
 				{
 					if(GetJobLevel(playerid, JOB_SHIPMENT) < 5)
 					{
-						return SendClientMessageEx(playerid, COLOR_GRAD2, "Only level 5 Shipment Contractors may use this vehicle.");
+						return SendClientMessageEx(playerid, COLOR_GRAD2, "Chi Shipment Contractors cap 5 duoc dung xe nay.");
 					}
 				}
 	            if(!IsABoat(vehicleid))
 	            {
 		            SetPlayerCheckpoint(playerid,-1572.767822, 81.137527, 3.554687, 4);
-		            GameTextForPlayer(playerid, "~w~Waypoint set ~r~San Fierro Docks", 5000, 1);
-		            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Pick up some goods to transport with your Truck at San Fierro Docks (see checkpoint on radar).");
+		            GameTextForPlayer(playerid, "~w~Da danh dau ~r~San Fierro Docks", 5000, 1);
+		            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Nhan hang cho xe tai tai San Fierro Docks (xem checkpoint tren radar).");
 				}
 				else
 				{
 					if(GetJobLevel(playerid, JOB_SHIPMENT) >= 4)
 					{
 						SetPlayerCheckpoint(playerid,2098.6543,-104.3568,-0.4820, 4);
-						GameTextForPlayer(playerid, "~w~Waypoint set ~r~Palamino Docks", 5000, 1);
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Pick up some goods to transport with your Boat at Palamino Docks (see checkpoint on radar).");
+						GameTextForPlayer(playerid, "~w~Da danh dau ~r~Palamino Docks", 5000, 1);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Nhan hang cho thuyen tai Palamino Docks (xem checkpoint tren radar).");
 					}
-					else return SendClientMessageEx(playerid, COLOR_WHITE, "Water shipments are restricted to Level 4+ Shipment Contracter.");
+					else return SendClientMessageEx(playerid, COLOR_WHITE, "Hang duong thuy can Shipment Contracter cap 4+.");
 				}
 				TruckUsed[playerid] = vehicleid;
 				gPlayerCheckpointStatus[playerid] = CHECKPOINT_LOADTRUCK;
 	        }
-	        else return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
+	        else return SendClientMessageEx(playerid, COLOR_WHITE, "Hay huy checkpoint hien tai truoc (ban dang giu goi vat lieu hoac co checkpoint khac).");
 	    }
-	    else return SendClientMessageEx(playerid, COLOR_GREY, "You are not driving a Shipment Transport Vehicle!");
+	    else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong lai Shipment Transport Vehicle!");
 	}
-	else return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Shipment Contractor!");
+	else return SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai Shipment Contractor!");
 	return 1;
 }
 

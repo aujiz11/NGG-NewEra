@@ -38,29 +38,29 @@
 CMD:settax(playerid, params[])
 {
 	if(!(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV)) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not a Government Leader.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai Government Leader.");
 		return 1;
 	}
 
 	new tax;
-	if(sscanf(params, "d", tax)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /settax [percentage]");
+	if(sscanf(params, "d", tax)) return SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /settax [percentage]");
 
 	if (tax < 1 || tax > 29)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Percentage must be greater than 0 and below 30.");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Ty le phai lon hon 0 va duoi 30.");
 		return 1;
 	}
 	if(arrGroupData[PlayerInfo[playerid][pLeader]][g_iAllegiance] == 1)
 	{
 		TaxValue = tax;
 		Misc_Save();
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "The SA income tax has been set to %d percent (of each paycheck).", TaxValue);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Thue thu nhap SA da dat la %d phan tram (moi ky luong).", TaxValue);
 	}
 	if(arrGroupData[PlayerInfo[playerid][pLeader]][g_iAllegiance] == 2)
 	{
 		TRTaxValue = tax;
 		Misc_Save();
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "The NE income tax has been set to %d percent (of each paycheck).", TRTaxValue);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Thue thu nhap NE da dat la %d phan tram (moi ky luong).", TRTaxValue);
 	}
 	return 1;
 }
@@ -69,7 +69,7 @@ CMD:taxwithdraw(playerid, params[])
 {
 	if(!(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not a Government Leader.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai Government Leader.");
 		return 1;
 	}
 
@@ -78,14 +78,14 @@ CMD:taxwithdraw(playerid, params[])
 	{
 		if(sscanf(params, "ds[64]", amount, reason))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /taxwithdraw [amount] [reason]");
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* VAULT BALANCE: $%s.", number_format(Tax));
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /taxwithdraw [amount] [reason]");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* SO DU KET: $%s.", number_format(Tax));
 			return 1;
 		}
 
 		if(amount < 0)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Invalid amount specified.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "So luong khong hop le.");
 			return 1;
 		}
 		if( Tax > amount )
@@ -93,8 +93,8 @@ CMD:taxwithdraw(playerid, params[])
 			Tax -= amount;
 			Misc_Save();
 			GivePlayerCash( playerid, amount );
-			SendClientMessageEx( playerid, COLOR_WHITE, "You have withdrawn $%s from the vault.", number_format(amount) );
-			format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has withdrawn $%s of the SA tax money from the vault, reason: %s.",GetPlayerNameEx(playerid),number_format(amount),reason);
+			SendClientMessageEx( playerid, COLOR_WHITE, "Ban da rut $%s tu ket.", number_format(amount) );
+			format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s da rut $%s tien thue SA tu ket, ly do: %s.",GetPlayerNameEx(playerid),number_format(amount),reason);
 			ABroadCast( COLOR_YELLOW, string, 2);
 			format(string,sizeof(string),"AdmWarning: %s(%d) has withdrawn $%s of the SA tax money from the vault, reason: %s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(amount),reason);
 			Log("logs/rpspecial.log", string);
@@ -103,21 +103,21 @@ CMD:taxwithdraw(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Insufficient funds are available.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Khong du ngan sach.");
 		}
 	}
 	if(arrGroupData[PlayerInfo[playerid][pLeader]][g_iAllegiance] == 2)
 	{
 		if(sscanf(params, "ds[64]", amount, reason))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /taxwithdraw [amount] [reason]");
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* VAULT BALANCE: $%s.", number_format(TRTax));
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /taxwithdraw [amount] [reason]");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* SO DU KET: $%s.", number_format(TRTax));
 			return 1;
 		}
 
 		if(amount < 0)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Invalid amount specified.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "So luong khong hop le.");
 			return 1;
 		}
 		if( TRTax > amount )
@@ -125,15 +125,15 @@ CMD:taxwithdraw(playerid, params[])
 			TRTax -= amount;
 			Misc_Save();
 			GivePlayerCash( playerid, amount );
-			SendClientMessageEx( playerid, COLOR_WHITE, "You have withdrawn $%s from the vault.", number_format(amount) );
-			format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has withdrawn $%s of the NE tax money from the vault, reason: %s.",GetPlayerNameEx(playerid),number_format(amount),reason);
+			SendClientMessageEx( playerid, COLOR_WHITE, "Ban da rut $%s tu ket.", number_format(amount) );
+			format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s da rut $%s tien thue NE tu ket, ly do: %s.",GetPlayerNameEx(playerid),number_format(amount),reason);
 			ABroadCast( COLOR_YELLOW, string, 2);
 			format(string,sizeof(string),"AdmWarning: %s(%d) has withdrawn $%s of the NE tax money from the vault, reason: %s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(amount),reason);
 			Log("logs/rpspecial.log", string);
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Insufficient funds are available.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Khong du ngan sach.");
 		}
 	}
 
@@ -144,7 +144,7 @@ CMD:taxdeposit(playerid, params[])
 {
 	if(!(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not a Government Leader.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai Government Leader.");
 		return 1;
 	}
 
@@ -153,26 +153,26 @@ CMD:taxdeposit(playerid, params[])
 	{
 		if(sscanf(params, "d", amount))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /taxdeposit [amount]");
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* VAULT BALANCE: $%s.", number_format(Tax));
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /taxdeposit [amount]");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* SO DU KET: $%s.", number_format(Tax));
 			return 1;
 		}
 
 		if(amount < 0)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Invalid amount specified.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "So luong khong hop le.");
 			return 1;
 		}
 
 		if (GetPlayerCash(playerid) < amount)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that much cash on you.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co du tien mat.");
 			return 1;
 		}
 		Tax += amount;
 		Misc_Save();
 		GivePlayerCash(playerid, -amount);
-		SendClientMessageEx( playerid, COLOR_WHITE, "You have deposited $%s into the SA vault.", number_format(amount) );
+		SendClientMessageEx( playerid, COLOR_WHITE, "Ban da gui $%s vao ket SA.", number_format(amount) );
 		format(string,sizeof(string),"%s has deposited $%s into the SA tax vault.",GetPlayerNameEx(playerid), number_format(amount));
 		GroupPayLog(PlayerInfo[playerid][pLeader], string);
 	}
@@ -180,26 +180,26 @@ CMD:taxdeposit(playerid, params[])
 	{
 		if(sscanf(params, "d", amount))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /taxdeposit [amount]");
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* VAULT BALANCE: $%s.", number_format(TRTax));
+			SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /taxdeposit [amount]");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* SO DU KET: $%s.", number_format(TRTax));
 			return 1;
 		}
 
 		if(amount < 0)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Invalid amount specified.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "So luong khong hop le.");
 			return 1;
 		}
 
 		if (GetPlayerCash(playerid) < amount)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that much cash on you.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co du tien mat.");
 			return 1;
 		}
 		TRTax += amount;
 		Misc_Save();
 		GivePlayerCash(playerid, -amount);
-		SendClientMessageEx( playerid, COLOR_WHITE, "You have deposited $%s into the NE vault.", number_format(amount) );
+		SendClientMessageEx( playerid, COLOR_WHITE, "Ban da gui $%s vao ket NE.", number_format(amount) );
 		format(string,sizeof(string),"%s has deposited $%s into the NE tax vault.",GetPlayerNameEx(playerid), number_format(amount));
 		GroupPayLog(PlayerInfo[playerid][pLeader], string);
 	}
@@ -210,16 +210,16 @@ CMD:settaxmoney(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 1337)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not authorised to use this command.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong co quyen dung lenh nay.");
 		return 1;
 	}
 
 	new country, amount;
 	if(sscanf(params, "dd", country, amount))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /settaxmoney [SA(1)/NE(2)] [amount]");
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* CURRENT SA VAULT BALANCE: $%s.", number_format(Tax));
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* CURRENT NE VAULT BALANCE: $%s.", number_format(TRTax));
+		SendClientMessageEx(playerid, COLOR_GREY, "CACH DUNG: /settaxmoney [SA(1)/NE(2)] [amount]");
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* SO DU KET SA: $%s.", number_format(Tax));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* SO DU KET NE: $%s.", number_format(TRTax));
 		return 1;
 	}
 	switch(country)
@@ -227,12 +227,12 @@ CMD:settaxmoney(playerid, params[])
 	    case 1:
 	    {
 			Tax = amount;
-			SendClientMessageEx( playerid, COLOR_WHITE, "You have set the tax money amount to $%s.", number_format(amount) );
+			SendClientMessageEx( playerid, COLOR_WHITE, "Da dat tien thue la $%s.", number_format(amount) );
 	    }
 	    case 2:
 	    {
 			TRTax = amount;
-			SendClientMessageEx( playerid, COLOR_WHITE, "You have set the tax money amount to $%s.", number_format(amount) );
+			SendClientMessageEx( playerid, COLOR_WHITE, "Da dat tien thue la $%s.", number_format(amount) );
 	    }
 	}
 	return 1;
@@ -242,16 +242,16 @@ CMD:checktax(playerid, params[])
 {
 	if(!(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not a government official.");
+		SendClientMessageEx(playerid, COLOR_GREY, "Ban khong phai quan chuc chinh phu.");
 		return 1;
 	}
 	if(arrGroupData[PlayerInfo[playerid][pLeader]][g_iAllegiance] == 1)
 	{
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* CURRENT SA VAULT BALANCE: $%s.", number_format(Tax));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* SO DU KET SA: $%s.", number_format(Tax));
 	}
 	else if(arrGroupData[PlayerInfo[playerid][pLeader]][g_iAllegiance] == 2)
 	{
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* CURRENT NE VAULT BALANCE: $%s.", number_format(TRTax));
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* SO DU KET NE: $%s.", number_format(TRTax));
 	}
 	return 1;
 }
