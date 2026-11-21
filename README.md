@@ -1,31 +1,31 @@
 # NGG-NewEra
 
-An independent modernization of the legacy Next Generation Gaming SA-MP gamemode for open.mp.
+Bản hiện đại hóa độc lập của gamemode SA-MP Next Generation Gaming dành cho open.mp.
 
-Original code belongs to its respective authors. This unofficial project is not affiliated with Next Generation Gaming, LLC. See the [original source](https://github.com/NextGenerationGamingLLC/SA-MP-Development) for attribution and applicable notices.
+Mã nguồn gốc thuộc về các tác giả tương ứng. Đây là dự án không chính thức, không có liên kết với Next Generation Gaming, LLC. Xem [mã nguồn gốc](https://github.com/NextGenerationGamingLLC/SA-MP-Development) để biết thông tin tác giả và các thông báo áp dụng.
 
-## Why this project exists
+## Lý do phát triển
 
-NGG-NewEra maintains and improves a gamemode that stopped receiving updates in 2017. Development focuses on:
+NGG-NewEra duy trì và cải tiến một gamemode đã ngừng cập nhật từ năm 2017. Quá trình phát triển tập trung vào:
 
-- Supporting open.mp and updated libraries through a sampctl-managed environment.
-- Fixing longstanding gameplay, command, loading and saving bugs.
-- Improving performance and resource cleanup across timers, jobs and world entities.
-- Protecting account credentials, player transactions and ownership transfers.
-- Simplifying legacy code and organizing systems for easier maintenance.
+- Hỗ trợ open.mp và các thư viện được cập nhật thông qua môi trường do sampctl quản lý.
+- Khắc phục các lỗi tồn đọng trong lối chơi, lệnh, tải và lưu dữ liệu.
+- Cải thiện hiệu năng và việc dọn dẹp tài nguyên của bộ định thời, công việc và các thực thể trong thế giới trò chơi.
+- Bảo vệ thông tin xác thực tài khoản, giao dịch của người chơi và việc chuyển quyền sở hữu.
+- Đơn giản hóa mã nguồn cũ và tổ chức lại các hệ thống để dễ bảo trì hơn.
 
-The goal is to resolve nearly all identified legacy issues while preserving core gameplay and existing data. Completed fixes and improvements are documented in the [changelog](CHANGES.md).
+Mục tiêu là giải quyết gần như toàn bộ vấn đề đã xác định trong mã nguồn cũ, đồng thời giữ nguyên lối chơi cốt lõi và dữ liệu hiện có. Các bản sửa lỗi và cải tiến đã hoàn tất được ghi trong [lịch sử thay đổi](CHANGES.md).
 
-## Requirements
+## Yêu cầu
 
-- Install [sampctl](https://github.com/Southclaws/sampctl/blob/master/docs/install.md).
-- [MariaDB](https://mariadb.org/download/) is recommended.
+- Cài đặt [sampctl](https://github.com/Southclaws/sampctl/blob/master/docs/install.md).
+- Khuyến nghị sử dụng [MariaDB](https://mariadb.org/download/).
 
-## Database setup
+## Thiết lập cơ sở dữ liệu
 
-Create a database and a user with access to it, then import [database/ngrp.sql](database/ngrp.sql).
+Tạo cơ sở dữ liệu và tài khoản có quyền truy cập, sau đó nhập [database/ngrp.sql](database/ngrp.sql).
 
-Update [scriptfiles/mysql.cfg](scriptfiles/mysql.cfg) with your connection settings:
+Cập nhật thông tin kết nối trong [scriptfiles/mysql.cfg](scriptfiles/mysql.cfg):
 
 ```ini
 HOST=127.0.0.1
@@ -38,12 +38,12 @@ BETASERVER=1
 SHOPAUTOMATED=0
 ```
 
-`SERVER` identifies the server instance. Use `BETASERVER=1` for testing or `0` for a normal server.
-To enable a separate shop database, set `SHOPAUTOMATED=1` and configure `SHOST`, `SDB`, `SUSER` and `SPASS`.
+`SERVER` là mã định danh của máy chủ. Đặt `BETASERVER=1` khi thử nghiệm hoặc `0` khi vận hành máy chủ thông thường.
+Để bật cơ sở dữ liệu riêng cho shop, đặt `SHOPAUTOMATED=1` và cấu hình `SHOST`, `SDB`, `SUSER`, `SPASS`.
 
-## Build and run
+## Biên dịch và chạy
 
-Run these commands from the repository root:
+Chạy các lệnh sau tại thư mục gốc của mã nguồn:
 
 ```sh
 sampctl ensure
@@ -51,4 +51,4 @@ sampctl build
 sampctl run
 ```
 
-The build produces `gamemodes/NGRP.amx`. Configure server settings under `runtime` in [pawn.json](pawn.json).
+Quá trình biên dịch tạo ra tệp `gamemodes/NGRP.amx`. Cấu hình các thiết lập máy chủ tại mục `runtime` trong [pawn.json](pawn.json).
